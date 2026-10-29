@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
-import { existsSync, mkdtempSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { createServer, Server } from 'node:http';
 import { AddressInfo } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { initialWorld, replay, RULES } from '../src';
-import { DEFAULT_TIMEOUT_MS } from '../src/agent';
+import { DEFAULT_TIMEOUT_MS, HTTP_SAMPLING } from '../src/agent';
 
 const DEMO = join('dist', 'scripts', 'demo.js');
 const DEMO_G01 = join('dist', 'scripts', 'demo-g01.js');
@@ -58,7 +58,7 @@ function runNode(script: string, env: NodeJS.ProcessEnv): Promise<{ code: number
 
 function childEnv(extra: Record<string, string | undefined> = {}): NodeJS.ProcessEnv {
   const env: NodeJS.ProcessEnv = { ...process.env };
-  for (const key of ['FROSTECHO_LLM_URL', 'FROSTECHO_LLM_MODEL', 'FROSTECHO_LLM_API_KEY', 'FROSTECHO_LIVE_ARTIFACT_DIR', 'FROSTECHO_LIVE_TIMEOUT_MS']) {
+  for (const key of ['FROSTECHO_LLM_URL', 'FROSTECHO_LLM_MODEL', 'FROSTECHO_LLM_API_KEY', 'FROSTECHO_LIVE_ARTIFACT_DIR', 'FROSTECHO_LIVE_TIMEOUT_MS', 'FROSTECHO_LLM_THINKING', 'FROSTECHO_G02_ARTIFACT_DIR']) {
     delete env[key];
   }
   for (const [key, value] of Object.entries(extra)) {
@@ -102,6 +102,15 @@ function startChat(handler: (index: number) => Reply): Promise<{ url: string; hi
 
 function tempDir(): string {
   return mkdtempSync(join(tmpdir(), 'frostecho-live-'));
+}
+
+function batchOf(root: string): string {
+  const kids = readdirSync(root).filter(name => {
+    const path = join(root, name);
+    return statSync(path).isDirectory() && existsSync(join(path, 'summary.json'));
+  });
+  assert.equal(kids.length, 1, `expected one live batch under ${root}, found ${kids.join(',') || 'none'}`);
+  return join(root, kids[0]);
 }
 
 function readJson(path: string): any {
@@ -296,19 +305,20 @@ test('fake HTTP happy path meets the goal three times, replays, and exits 0', as
       FROSTECHO_LIVE_ARTIFACT_DIR: dir,
     }));
     assert.equal(result.code, 0, result.stderr + result.stdout);
+    const saved = batchOf(dir);
     assert.match(result.stdout, /exit=0/);
     assert.equal(chat.hits(), 6);
     assert.equal(chat.bodies().length, 6);
     assert.deepEqual(chat.auths(), Array(6).fill(`Bearer ${KEY}`));
     for (const body of chat.bodies()) assertSampling(body);
 
-    const summary = assertSummaryMatches(dir);
+    const summary = assertSummaryMatches(saved);
     assert.equal(summary.successCount, 3);
     assert.equal(summary.requestCount, 6);
     assert.equal(summary.allGoalReached, true);
     assert.equal(summary.allReplayMatch, true);
     for (let i = 1; i <= 3; i++) {
-      const record = readRun(dir, i);
+      const record = readRun(saved, i);
       assert.equal(record.initial.npcs.npc_a.location, 'dorm');
       assert.equal(record.initial.npcs.npc_a.hunger, 40);
       assert.equal(record.initial.food.kitchen, 1);
@@ -372,14 +382,15 @@ test('HTTP 500 exits 1, keeps failure records, and does not change the world', a
     }));
     assert.equal(result.code, 1);
     assert.notEqual(result.code, 0);
+    const saved = batchOf(dir);
     assert.match(result.stdout, /exit=1/);
     assert.equal(chat.hits(), 3);
-    const summary = assertSummaryMatches(dir);
+    const summary = assertSummaryMatches(saved);
     assert.equal(summary.successCount, 0);
     assert.equal(summary.allGoalReached, false);
     assert.equal(summary.requestCount, 3);
     for (let i = 1; i <= 3; i++) {
-      const record = readRun(dir, i);
+      const record = readRun(saved, i);
       assertUnchanged(record);
       assert.equal(record.steps.length, 1);
       assert.equal(record.steps[0].raw, '');
@@ -408,13 +419,14 @@ test('live timeout exits 1 without applying a late action', { timeout: 20_000 },
       FROSTECHO_LIVE_TIMEOUT_MS: '200',
     }));
     assert.equal(result.code, 1);
+    const saved = batchOf(dir);
     assert.match(result.stdout, /exit=1/);
     assert.equal(chat.hits(), 3);
-    const summary = assertSummaryMatches(dir);
+    const summary = assertSummaryMatches(saved);
     assert.equal(summary.successCount, 0);
     assert.equal(summary.requestCount, 3);
     for (let i = 1; i <= 3; i++) {
-      const record = readRun(dir, i);
+      const record = readRun(saved, i);
       assertUnchanged(record);
       assert.equal(record.steps.length, 1);
       assert.equal(record.steps[0].raw, '');
@@ -440,14 +452,15 @@ test('consecutive illegal outputs exit 1 and ignore a legal action hidden in rea
       FROSTECHO_LIVE_ARTIFACT_DIR: dir,
     }));
     assert.equal(result.code, 1);
+    const saved = batchOf(dir);
     assert.match(result.stdout, /exit=1/);
     assert.equal(chat.hits(), 15);
     for (const body of chat.bodies()) assertSampling(body);
-    const summary = assertSummaryMatches(dir);
+    const summary = assertSummaryMatches(saved);
     assert.equal(summary.successCount, 0);
     assert.equal(summary.requestCount, 15);
     for (let i = 1; i <= 3; i++) {
-      const record = readRun(dir, i);
+      const record = readRun(saved, i);
       assertUnchanged(record);
       assert.equal(record.steps.length, 5);
       assert.equal(record.meta.outcome, 'budget_exhausted');
@@ -483,16 +496,90 @@ test('one failed live run among three exits 1', async () => {
       FROSTECHO_LIVE_ARTIFACT_DIR: dir,
     }));
     assert.equal(result.code, 1);
+    const saved = batchOf(dir);
     assert.equal(chat.hits(), 4);
-    const summary = assertSummaryMatches(dir);
+    const summary = assertSummaryMatches(saved);
     assert.equal(summary.successCount, 1);
     assert.equal(summary.requestCount, 4);
-    const first = readRun(dir, 1);
+    const first = readRun(saved, 1);
     assert.equal(first.final.npcs.npc_a.hunger, 70);
     assert.equal(first.replayFile.matches, true);
-    assertUnchanged(readRun(dir, 2));
-    assertUnchanged(readRun(dir, 3));
+    assertUnchanged(readRun(saved, 2));
+    assertUnchanged(readRun(saved, 3));
     assertNoSecrets(dir, chat.url, result.stdout, result.stderr);
+  } finally {
+    await chat.close();
+  }
+});
+
+test('live start keeps existing files and writes a second batch beside the first', async () => {
+  const chat = await startChat(index => message(
+    index % 2 === 0 ? '{"type":"move","to":"kitchen"}' : '{"type":"eat"}',
+    '{"type":"stop"}',
+  ));
+  const dir = tempDir();
+  const sentinel = 'keep-me-sentinel';
+  writeFileSync(join(dir, 'sentinel.txt'), sentinel);
+  mkdirSync(join(dir, 'run-1'));
+  writeFileSync(join(dir, 'run-1', 'old.json'), '{"historical":true}\n');
+  const env = childEnv({
+    FROSTECHO_LLM_URL: chat.url,
+    FROSTECHO_LLM_MODEL: 'live-model',
+    FROSTECHO_LLM_API_KEY: KEY,
+    FROSTECHO_LIVE_ARTIFACT_DIR: dir,
+  });
+  try {
+    const first = await runNode(LIVE, env);
+    const second = await runNode(LIVE, env);
+    assert.equal(first.code, 0, first.stderr + first.stdout);
+    assert.equal(second.code, 0, second.stderr + second.stdout);
+    assert.equal(readFileSync(join(dir, 'sentinel.txt'), 'utf8'), sentinel);
+    assert.equal(readFileSync(join(dir, 'run-1', 'old.json'), 'utf8'), '{"historical":true}\n');
+    assert.equal(existsSync(join(dir, 'summary.json')), false);
+    const batches = readdirSync(dir).filter(name => name.startsWith('batch-'));
+    assert.equal(batches.length, 2);
+    for (const name of batches) {
+      const summary = assertSummaryMatches(join(dir, name));
+      assert.equal(summary.successCount, 3);
+      assert.equal(summary.metadataMismatch, false);
+    }
+    assertNoSecrets(dir, chat.url, first.stdout + second.stdout, first.stderr + second.stderr);
+  } finally {
+    await chat.close();
+  }
+});
+
+test('FROSTECHO_LLM_THINKING=false is sent and recorded, and the default constant stays true', async () => {
+  assert.equal(HTTP_SAMPLING.chat_template_kwargs.enable_thinking, true);
+  const chat = await startChat(index => message(
+    index % 2 === 0 ? '{"type":"move","to":"kitchen"}' : '{"type":"eat"}',
+    '{"type":"stop"}',
+  ));
+  const dir = tempDir();
+  try {
+    const result = await runNode(LIVE, childEnv({
+      FROSTECHO_LLM_URL: chat.url,
+      FROSTECHO_LLM_MODEL: 'live-model',
+      FROSTECHO_LLM_API_KEY: KEY,
+      FROSTECHO_LIVE_ARTIFACT_DIR: dir,
+      FROSTECHO_LLM_THINKING: 'false',
+    }));
+    assert.equal(result.code, 0, result.stderr + result.stdout);
+    assert.equal(chat.bodies().length, 6);
+    for (const body of chat.bodies()) {
+      assert.equal(body.temperature, 0);
+      assert.equal(body.max_tokens, 1024);
+      assert.equal(body.stream, false);
+      assert.deepEqual(body.chat_template_kwargs, { enable_thinking: false });
+    }
+    const saved = batchOf(dir);
+    const record = readRun(saved, 1);
+    assert.deepEqual(record.meta.sampling.chat_template_kwargs, { enable_thinking: false });
+    assert.equal(record.steps[0].transport.status, 200);
+    assert.equal(record.steps[0].transport.requestBody.chat_template_kwargs.enable_thinking, false);
+    assert.equal(JSON.stringify(record.steps[0].transport).includes(KEY), false);
+    assert.equal(JSON.stringify(record.steps[0].transport).includes(chat.url), false);
+    assert.equal(HTTP_SAMPLING.chat_template_kwargs.enable_thinking, true);
   } finally {
     await chat.close();
   }

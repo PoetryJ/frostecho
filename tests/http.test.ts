@@ -4,7 +4,8 @@ import { AddressInfo } from 'node:net';
 import { test } from 'node:test';
 import { Engine, initialWorld, RULES } from '../src';
 import {
-  DecideInput, HTTP_SAMPLING, ProviderTransportError, createHttpProvider, loadHttpConfigFromEnv, renderDecidePrompt, runAgent,
+  DecideInput, HTTP_SAMPLING, ProviderTransportError, createHttpProvider, enableThinkingFromEnv, loadHttpConfigFromEnv,
+  renderDecidePrompt, runAgent,
 } from '../src/agent';
 import { countingWorld, delay, writeTrace } from './agent-helpers';
 
@@ -377,6 +378,44 @@ test('reasoning fields are not actions; only message content is returned', async
     }), { status: 200 }),
   });
   assert.equal(await mixedParts.decide(sample(), new AbortController().signal), '{"type":"stop"}');
+
+  assert.equal(HTTP_SAMPLING.chat_template_kwargs.enable_thinking, true);
+  assert.equal(enableThinkingFromEnv({}), true);
+  assert.equal(enableThinkingFromEnv({ FROSTECHO_LLM_THINKING: 'false' }), false);
+  const key = 'sekret-xyz';
+  let offBody: Record<string, unknown> = {};
+  const off = createHttpProvider({
+    url: 'http://example.test/v1/chat/completions',
+    model: 'server-model',
+    apiKey: key,
+    enableThinking: false,
+    fetchImpl: async (_url, init) => {
+      offBody = JSON.parse(String(init?.body));
+      const headers = new Headers(init?.headers);
+      assert.equal(headers.get('authorization'), `Bearer ${key}`);
+      return new Response(JSON.stringify({
+        choices: [{ message: { content: '{"type":"stop"}', reasoning_content: '{"type":"eat"}' } }],
+        usage: { prompt_tokens: 11, completion_tokens: 4, total_tokens: 15 },
+        echo: key,
+      }), { status: 200 });
+    },
+  });
+  assert.equal(await off.decide(sample(), new AbortController().signal), '{"type":"stop"}');
+  assert.deepEqual(offBody.chat_template_kwargs, { enable_thinking: false });
+  assert.equal(offBody.temperature, HTTP_SAMPLING.temperature);
+  const transport = off.consumeTransport?.();
+  assert.ok(transport);
+  assert.equal(transport?.status, 200);
+  assert.equal(transport?.error, null);
+  assert.deepEqual(transport?.usage, { prompt_tokens: 11, completion_tokens: 4, total_tokens: 15 });
+  assert.equal(typeof transport?.latencyMs, 'number');
+  assert.equal((transport?.requestBody.chat_template_kwargs as { enable_thinking: boolean }).enable_thinking, false);
+  const dumped = JSON.stringify(transport);
+  assert.equal(dumped.includes(key), false);
+  assert.equal(dumped.includes('http://example.test'), false);
+  assert.match(dumped, /\[redacted\]/);
+  assert.equal(off.consumeTransport?.(), null);
+  assert.equal(HTTP_SAMPLING.chat_template_kwargs.enable_thinking, true);
 
   const reasoningOnlyParts = createHttpProvider({
     url: 'http://example.test/v1/chat/completions',

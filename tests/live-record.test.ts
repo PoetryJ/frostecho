@@ -83,3 +83,43 @@ test('summary is regenerated from step records and drops secrets', async () => {
   assert.equal(liveExitCode(flagged), 1);
   assert.equal(liveExitCode({ ...flagged, runs: [] }), 1);
 });
+
+test('summary recomputes the goal and rejects metadata that disagrees with the records', async () => {
+  const result = await runAgent({
+    world: new Engine(initialWorld()),
+    provider: createReferenceProvider(),
+    actorId: 'npc_a',
+    runId: 'audit-1',
+    now: () => 0,
+  });
+  const dir = tempDir();
+  writeLiveRun(dir, 1, result, { model: 'live-model', apiKeyPresent: false, timeoutMs: 15000, secrets: [] });
+  writeLiveRun(dir, 2, result, { model: 'live-model', apiKeyPresent: false, timeoutMs: 15000, secrets: [] });
+  writeLiveRun(dir, 3, result, { model: 'live-model', apiKeyPresent: false, timeoutMs: 15000, secrets: [] });
+
+  const metaPath = join(dir, 'run-1', 'meta.json');
+  const meta = JSON.parse(readFileSync(metaPath, 'utf8'));
+  meta.goalReached = false;
+  writeFileSync(metaPath, JSON.stringify(meta, null, 2) + '\n');
+  const recomputed = summarizeLiveDir(dir);
+  assert.equal(recomputed.runs[0].goalReached, true);
+  assert.equal(recomputed.runs[0].computedGoalReached, true);
+  assert.equal(recomputed.runs[0].finalHunger, 70);
+  assert.equal(recomputed.runs[0].metadataMismatch, true);
+  assert.match(recomputed.runs[0].metadataError ?? '', /goalReached/);
+  assert.equal(recomputed.metadataMismatch, true);
+  assert.equal(liveExitCode(recomputed), 1);
+
+  meta.goalReached = true;
+  meta.providerCalls = 99;
+  meta.requestStats.providerCalls = 99;
+  writeFileSync(metaPath, JSON.stringify(meta, null, 2) + '\n');
+  const calls = summarizeLiveDir(dir);
+  const steps = JSON.parse(readFileSync(join(dir, 'run-1', 'steps.json'), 'utf8'));
+  assert.equal(calls.runs[0].providerCalls, steps.length);
+  assert.equal(calls.runs[0].computedProviderCalls, steps.length);
+  assert.notEqual(calls.runs[0].providerCalls, 99);
+  assert.equal(calls.requestCount, steps.length + 2 + 2);
+  assert.match(calls.error ?? '', /providerCalls/);
+  assert.equal(liveExitCode(calls), 1);
+});
