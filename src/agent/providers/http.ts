@@ -1,11 +1,14 @@
 import { RULES } from '../../types';
-import { DecideInput, Provider } from '../contracts';
+import { DecideInput, Provider, TransportRecord, UsageStats } from '../contracts';
 
 export const HTTP_ENV = {
   url: 'FROSTECHO_LLM_URL',
   model: 'FROSTECHO_LLM_MODEL',
   apiKey: 'FROSTECHO_LLM_API_KEY',
 } as const;
+
+/** `true` / `false`. Unset or blank keeps the production default, which is thinking on. */
+export const THINKING_ENV = 'FROSTECHO_LLM_THINKING';
 
 /**
  * Sampling the live server was validated with.
@@ -26,7 +29,20 @@ export interface HttpProviderConfig {
   model: string;
   /** Optional. Callers should take this from the environment, never from the prompt. */
   apiKey?: string;
+  /**
+   * chat_template_kwargs.enable_thinking. Default true, matching HTTP_SAMPLING.
+   * false is the comparison arm; it does not change the production default.
+   */
+  enableThinking?: boolean;
   fetchImpl?: typeof fetch;
+}
+
+/** Missing or unrecognized values stay on the production default (thinking enabled). */
+export function enableThinkingFromEnv(env: NodeJS.ProcessEnv = process.env): boolean {
+  const raw = env[THINKING_ENV]?.trim().toLowerCase();
+  if (raw === 'false' || raw === '0' || raw === 'off' || raw === 'no') return false;
+  if (raw === 'true' || raw === '1' || raw === 'on' || raw === 'yes') return true;
+  return HTTP_SAMPLING.chat_template_kwargs.enable_thinking;
 }
 
 export class ProviderTransportError extends Error {
@@ -52,6 +68,7 @@ export function renderDecidePrompt(input: DecideInput): string {
     'hunger is satiety: higher means fuller.',
     `Eat only in the kitchen. Each eat consumes ${RULES.EAT_FOOD_COST} food and restores ${RULES.EAT_HUNGER_RESTORE} hunger, clamped to ${RULES.HUNGER_MIN}..${RULES.HUNGER_MAX}.`,
     'Observation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.',
+    'If you are already in the kitchen, foodHere is 0, and hunger is below the goal, reply {"type":"stop"}. Do not move around looking for distant food; distant food is not observable.',
     `goal: hunger >= ${input.goal.hungerAtLeast}`,
     `observation: ${JSON.stringify(input.observation)}`,
     `feedback: ${JSON.stringify(input.feedback)}`,
@@ -106,47 +123,179 @@ function messageContent(body: unknown): string {
   return text;
 }
 
+function scrubText(value: string, secrets: string[]): string {
+  return secrets.reduce((out, secret) => (secret ? out.split(secret).join('[redacted]') : out), value);
+}
+
+/** Fetch failure text for the record. Codes and messages only; secrets are stripped. */
+function networkFailure(err: unknown, secrets: string[]): string {
+  const bits: string[] = [];
+  const push = (value: unknown) => {
+    if (typeof value !== 'string' || value.length === 0) return;
+    const text = scrubText(value, secrets).replace(/\s+/g, ' ').trim();
+    if (!text || bits.includes(text)) return;
+    bits.push(text);
+  };
+  const codeOf = (value: unknown): string | undefined => {
+    if (!value || typeof value !== 'object') return undefined;
+    const code = (value as { code?: unknown }).code;
+    return typeof code === 'string' && code.length > 0 ? code : undefined;
+  };
+  if (err instanceof Error) {
+    push(codeOf(err));
+    const cause = (err as { cause?: unknown }).cause;
+    push(codeOf(cause));
+    if (cause instanceof Error) push(cause.message);
+    else if (cause && typeof cause === 'object' && typeof (cause as { message?: unknown }).message === 'string') {
+      push((cause as { message: string }).message);
+    }
+    push(err.message);
+  } else if (typeof err === 'string') {
+    push(err);
+  }
+  const detail = bits.join(': ');
+  const clipped = detail.length > 300 ? detail.slice(0, 300) : detail;
+  return clipped ? `network error: ${clipped}` : 'network error';
+}
+
+function scrub(value: unknown, secrets: string[]): unknown {
+  if (typeof value === 'string') {
+    return secrets.reduce((out, secret) => (secret ? out.split(secret).join('[redacted]') : out), value);
+  }
+  if (Array.isArray(value)) return value.map(item => scrub(item, secrets));
+  if (value && typeof value === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const key of Object.keys(value)) out[key] = scrub((value as Record<string, unknown>)[key], secrets);
+    return out;
+  }
+  return value;
+}
+
+function readUsage(body: unknown): UsageStats | null {
+  if (!body || typeof body !== 'object') return null;
+  const usage = (body as { usage?: unknown }).usage;
+  if (!usage || typeof usage !== 'object' || Array.isArray(usage)) return null;
+  const record = usage as Record<string, unknown>;
+  const num = (key: string): number | null => (
+    typeof record[key] === 'number' && Number.isFinite(record[key] as number) ? record[key] as number : null
+  );
+  const stats: UsageStats = {
+    prompt_tokens: num('prompt_tokens'),
+    completion_tokens: num('completion_tokens'),
+    total_tokens: num('total_tokens'),
+  };
+  if (stats.prompt_tokens === null && stats.completion_tokens === null && stats.total_tokens === null) return null;
+  return stats;
+}
+
+function chatRequestBody(config: HttpProviderConfig, input: DecideInput, enableThinking: boolean): Record<string, unknown> {
+  return {
+    model: config.model,
+    temperature: HTTP_SAMPLING.temperature,
+    max_tokens: HTTP_SAMPLING.max_tokens,
+    stream: HTTP_SAMPLING.stream,
+    chat_template_kwargs: { enable_thinking: enableThinking },
+    messages: [{ role: 'user', content: renderDecidePrompt(input) }],
+  };
+}
+
 export function createHttpProvider(config: HttpProviderConfig): Provider {
   const fetchImpl = config.fetchImpl ?? fetch;
   const secret = config.apiKey;
+  const enableThinking = config.enableThinking ?? true;
+  const secrets = [secret ?? '', config.url].filter(value => value.length > 0);
+  let slot: TransportRecord | null = null;
   return {
     async decide(input, signal) {
       if (signal.aborted) throw abortError();
+      const started = Date.now();
+      const body = chatRequestBody(config, input, enableThinking);
+      const record: TransportRecord = {
+        requestBody: scrub(body, secrets) as Record<string, unknown>,
+        responseContent: null,
+        status: null,
+        usage: null,
+        latencyMs: 0,
+        error: null,
+      };
+      slot = record;
+      const touch = () => { record.latencyMs = Math.max(0, Date.now() - started); };
+      const markTimeout = () => {
+        if (!record.error) record.error = 'timeout';
+        touch();
+      };
+      signal.addEventListener('abort', markTimeout, { once: true });
       const headers: Record<string, string> = { 'content-type': 'application/json' };
       if (secret) headers.authorization = `Bearer ${secret}`;
-      let res: Response;
       try {
-        res = await fetchImpl(config.url, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({
-            model: config.model,
-            temperature: HTTP_SAMPLING.temperature,
-            max_tokens: HTTP_SAMPLING.max_tokens,
-            stream: HTTP_SAMPLING.stream,
-            chat_template_kwargs: HTTP_SAMPLING.chat_template_kwargs,
-            messages: [{ role: 'user', content: renderDecidePrompt(input) }],
-          }),
-          signal,
-        });
-      } catch (err) {
-        if (signal.aborted || (err instanceof Error && err.name === 'AbortError')) throw abortError();
-        throw new ProviderTransportError('network error');
+        let res: Response;
+        try {
+          res = await fetchImpl(config.url, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(body),
+            signal,
+          });
+        } catch (err) {
+          if (signal.aborted || (err instanceof Error && err.name === 'AbortError')) {
+            markTimeout();
+            throw abortError();
+          }
+          const cause = networkFailure(err, secrets);
+          record.error = cause;
+          throw new ProviderTransportError(cause);
+        }
+        // Abort wins over a body that arrives later. That body is not the action.
+        if (signal.aborted) {
+          markTimeout();
+          throw abortError();
+        }
+        record.status = res.status;
+        let rawText = '';
+        try {
+          rawText = await res.text();
+        } catch {
+          rawText = '';
+        }
+        if (signal.aborted) {
+          markTimeout();
+          throw abortError();
+        }
+        let parsed: unknown;
+        if (!res.ok) {
+          let content: unknown = rawText;
+          if (rawText) {
+            try { content = JSON.parse(rawText); } catch { content = rawText; }
+          } else content = null;
+          record.responseContent = scrub(content, secrets);
+          record.usage = readUsage(content);
+          record.error = `http ${res.status}`;
+          throw new ProviderTransportError(`http ${res.status}`, res.status);
+        }
+        try {
+          parsed = rawText ? JSON.parse(rawText) : null;
+        } catch {
+          record.responseContent = scrub(rawText, secrets);
+          record.error = 'invalid response json';
+          throw new ProviderTransportError('invalid response json');
+        }
+        record.responseContent = scrub(parsed, secrets);
+        record.usage = readUsage(parsed);
+        try {
+          return messageContent(parsed);
+        } catch (err) {
+          record.error = err instanceof Error ? err.message : 'missing message content';
+          throw err;
+        }
+      } finally {
+        touch();
+        signal.removeEventListener('abort', markTimeout);
       }
-      if (signal.aborted) throw abortError();
-      if (!res.ok) {
-        await res.body?.cancel().catch(() => undefined);
-        throw new ProviderTransportError(`http ${res.status}`, res.status);
-      }
-      let parsed: unknown;
-      try {
-        parsed = await res.json();
-      } catch {
-        if (signal.aborted) throw abortError();
-        throw new ProviderTransportError('invalid response json');
-      }
-      if (signal.aborted) throw abortError();
-      return messageContent(parsed);
+    },
+    consumeTransport() {
+      const current = slot;
+      slot = null;
+      return current;
     },
   };
 }

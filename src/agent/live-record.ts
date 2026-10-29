@@ -1,8 +1,8 @@
-import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { replay } from '../engine';
 import { canonical } from '../util';
-import { MAX_PROVIDER_CALLS, RunResult, StepRecord } from './contracts';
+import { GOAL_HUNGER_AT_LEAST, MAX_PROVIDER_CALLS, RunResult, StepRecord } from './contracts';
 import { HTTP_SAMPLING } from './providers/http';
 import type { WorldState } from '../types';
 
@@ -33,6 +33,8 @@ export interface LiveRunMeta {
   timeoutMs: number;
   /** Exact strings to strip from every written record. Never written themselves. */
   secrets: string[];
+  /** Actual enable_thinking for this run. Omitted means the production default, true. */
+  enableThinking?: boolean;
 }
 
 export interface LiveSummaryRun {
@@ -59,6 +61,12 @@ export interface LiveSummaryRun {
   timing: RunResult['timing'];
   requestStats: { providerCalls: number; maxDecisions: number; timeoutMs: number; retries: number };
   finalHunger: number | null;
+  /** Goal implied by the saved final state, not by meta.goalReached. */
+  computedGoalReached: boolean;
+  /** Provider calls implied by the saved step list, not by meta.providerCalls. */
+  computedProviderCalls: number;
+  metadataMismatch: boolean;
+  metadataError: string | null;
 }
 
 export interface LiveSummary {
@@ -67,6 +75,9 @@ export interface LiveSummary {
   requestCount: number;
   allGoalReached: boolean;
   allReplayMatch: boolean;
+  /** True when any run's metadata disagrees with the saved steps or final state. */
+  metadataMismatch: boolean;
+  error: string | null;
 }
 
 function redact(value: unknown, secrets: string[]): unknown {
@@ -86,13 +97,30 @@ function writeJson(path: string, value: unknown): void {
   writeFileSync(path, JSON.stringify(value, null, 2) + '\n');
 }
 
-function samplingRecord() {
+function samplingRecord(enableThinking: boolean) {
   return {
     temperature: HTTP_SAMPLING.temperature,
     max_tokens: HTTP_SAMPLING.max_tokens,
     stream: HTTP_SAMPLING.stream,
-    chat_template_kwargs: { enable_thinking: HTTP_SAMPLING.chat_template_kwargs.enable_thinking },
+    chat_template_kwargs: { enable_thinking: enableThinking },
   };
+}
+
+/**
+ * A new directory under `root`. Does not delete or rename anything already there.
+ * Names use `-` instead of `:` so they are safe on Windows.
+ */
+export function allocateLiveBatchDir(root: string, now: () => number = Date.now): string {
+  mkdirSync(root, { recursive: true });
+  for (let attempt = 0; attempt < 100; attempt++) {
+    const stamp = new Date(now()).toISOString().replace(/[:.]/g, '-');
+    const suffix = Math.random().toString(16).slice(2, 8);
+    const dir = join(root, `batch-${stamp}-${suffix}`);
+    if (existsSync(dir)) continue;
+    mkdirSync(dir);
+    return dir;
+  }
+  throw new Error('could not allocate a unique live batch directory');
 }
 
 /** One live run directory. Failed runs use the same files. Secrets are stripped before write. */
@@ -115,7 +143,7 @@ export function writeLiveRun(root: string, index: number, result: RunResult, met
     error: result.error ?? null,
     model: meta.model,
     apiKey: meta.apiKeyPresent ? 'present' : 'absent',
-    sampling: samplingRecord(),
+    sampling: samplingRecord(meta.enableThinking ?? true),
     timing: result.timing,
     requestStats: {
       providerCalls: result.providerCalls,
@@ -126,9 +154,11 @@ export function writeLiveRun(root: string, index: number, result: RunResult, met
   });
 }
 
-function hungerOf(state: WorldState): number | null {
-  const npc = state.npcs?.npc_a;
-  return npc && typeof npc.hunger === 'number' ? npc.hunger : null;
+function hungerOf(state: WorldState, actorId: string): number | null {
+  if (!state || typeof state !== 'object' || !state.npcs || typeof state.npcs !== 'object') return null;
+  if (typeof actorId !== 'string' || !Object.hasOwn(state.npcs, actorId)) return null;
+  const npc = state.npcs[actorId];
+  return npc && typeof npc === 'object' && typeof npc.hunger === 'number' ? npc.hunger : null;
 }
 
 function readJson(dir: string, name: string): unknown {
@@ -156,14 +186,30 @@ export function summarizeLiveDir(root: string): LiveSummary {
     const events = readJson(dir, 'events.json') as RunResult['events'];
     const finalState = readJson(dir, 'final-state.json') as WorldState;
     const actual = canonical(replay(initial, events)) === canonical(finalState);
+    const finalHunger = hungerOf(finalState, meta.actorId);
+    const computedGoalReached = finalHunger !== null && finalHunger >= GOAL_HUNGER_AT_LEAST;
+    const computedProviderCalls = steps.length;
+    const mismatches: string[] = [];
+    if (meta.goalReached !== computedGoalReached) {
+      mismatches.push(`goalReached metadata ${String(meta.goalReached)} != final state ${computedGoalReached}`);
+    }
+    if (meta.providerCalls !== computedProviderCalls) {
+      mismatches.push(`providerCalls metadata ${String(meta.providerCalls)} != step records ${computedProviderCalls}`);
+    }
+    if (meta.requestStats?.providerCalls !== computedProviderCalls) {
+      mismatches.push(`requestStats.providerCalls metadata ${String(meta.requestStats?.providerCalls)} != step records ${computedProviderCalls}`);
+    }
+    if (!meta.timing || !Array.isArray(meta.timing.calls) || meta.timing.calls.length !== computedProviderCalls) {
+      mismatches.push(`timing.calls ${String(meta.timing?.calls?.length)} != step records ${computedProviderCalls}`);
+    }
     return {
       name,
       runId: meta.runId,
       actorId: meta.actorId,
       outcome: meta.outcome,
-      goalReached: meta.goalReached,
+      goalReached: computedGoalReached,
       replayMatches: recorded.matches === true && actual,
-      providerCalls: meta.providerCalls,
+      providerCalls: computedProviderCalls,
       error: meta.error,
       stepCount: steps.length,
       raw: steps.map(step => step.raw),
@@ -174,15 +220,24 @@ export function summarizeLiveDir(root: string): LiveSummary {
       sampling: meta.sampling,
       timing: meta.timing,
       requestStats: meta.requestStats,
-      finalHunger: hungerOf(finalState),
+      finalHunger,
+      computedGoalReached,
+      computedProviderCalls,
+      metadataMismatch: mismatches.length > 0,
+      metadataError: mismatches.length > 0 ? mismatches.join('; ') : null,
     };
   });
+  const metadataMismatch = runs.some(run => run.metadataMismatch);
   const summary: LiveSummary = {
     runs,
-    successCount: runs.filter(run => run.goalReached && run.replayMatches).length,
-    requestCount: runs.reduce((sum, run) => sum + (typeof run.providerCalls === 'number' ? run.providerCalls : 0), 0),
+    successCount: runs.filter(run => run.goalReached && run.replayMatches && !run.metadataMismatch).length,
+    requestCount: runs.reduce((sum, run) => sum + run.computedProviderCalls, 0),
     allGoalReached: runs.length > 0 && runs.every(run => run.goalReached),
     allReplayMatch: runs.length > 0 && runs.every(run => run.replayMatches),
+    metadataMismatch,
+    error: metadataMismatch
+      ? runs.filter(run => run.metadataError).map(run => `${run.name}: ${run.metadataError}`).join('; ')
+      : null,
   };
   writeJson(join(root, 'summary.json'), summary);
   return summary;
@@ -190,6 +245,8 @@ export function summarizeLiveDir(root: string): LiveSummary {
 
 /** Exit 0 only when every expected run reached the goal and replayed. Empty or partial sessions are 1. */
 export function liveExitCode(summary: LiveSummary, expectedRuns = LIVE_RUN_COUNT): 0 | 1 {
+  if (summary.metadataMismatch) return 1;
+  if (summary.runs.some(run => run.metadataMismatch)) return 1;
   if (summary.runs.length !== expectedRuns) return 1;
   if (!summary.runs.every(run => run.goalReached && run.replayMatches)) return 1;
   return 0;

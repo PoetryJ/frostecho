@@ -1,10 +1,11 @@
-import { mkdirSync, rmSync } from 'node:fs';
+import { mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { isAbsolute, relative, resolve, sep } from 'node:path';
 import { Engine, initialWorld } from '../src';
 import {
-  DEFAULT_TIMEOUT_MS, HTTP_ENV, LIVE_RUN_COUNT, RunResult, createHttpProvider, liveArtifactDir, liveExitCode,
-  liveTimeoutMs, loadHttpConfigFromEnv, replayMatches, runAgent, summarizeLiveDir, writeLiveRun,
+  HTTP_ENV, LIVE_DECISION_TIMEOUT_MS, LIVE_RUN_COUNT, RunResult, allocateLiveBatchDir, createHttpProvider,
+  enableThinkingFromEnv, liveArtifactDir, liveExitCode, liveTimeoutMs, loadHttpConfigFromEnv, replayMatches,
+  runAgent, summarizeLiveDir, writeLiveRun,
 } from '../src/agent';
 
 function strictlyInside(parent: string, child: string): boolean {
@@ -29,7 +30,8 @@ function say(line: string) {
  * Live G01 entry. HTTP only. Does not fall back to the reference policy.
  * Exit 2: FROSTECHO_LLM_URL or FROSTECHO_LLM_MODEL missing.
  * Exit 0: LIVE_RUN_COUNT runs each reach hunger >= 70 and replay.
- * Exit 1: any run failed, the goal was missed, or replay diverged.
+ * Exit 1: any run failed, the goal was missed, replay diverged, or saved metadata disagrees with the records.
+ * Each invocation writes a new batch directory and does not delete older batches.
  */
 async function main() {
   const config = loadHttpConfigFromEnv(process.env);
@@ -40,13 +42,15 @@ async function main() {
   }
 
   const root = resolveArtifactRoot(process.env);
-  rmSync(root, { recursive: true, force: true });
   mkdirSync(root, { recursive: true });
-  const timeoutMs = liveTimeoutMs(process.env, DEFAULT_TIMEOUT_MS);
+  // Each invocation gets its own directory. Prior batches and any other files under root stay put.
+  const batch = allocateLiveBatchDir(root);
+  const timeoutMs = liveTimeoutMs(process.env, LIVE_DECISION_TIMEOUT_MS);
+  const enableThinking = enableThinkingFromEnv(process.env);
   const secrets = [config.apiKey ?? '', config.url].filter(secret => secret.length > 0);
-  const meta = { model: config.model, apiKeyPresent: Boolean(config.apiKey), timeoutMs, secrets };
-  const provider = createHttpProvider(config);
-  say(`live model=${config.model} apiKey=${config.apiKey ? 'present' : 'absent'} timeoutMs=${timeoutMs} runs=${LIVE_RUN_COUNT}`);
+  const meta = { model: config.model, apiKeyPresent: Boolean(config.apiKey), timeoutMs, secrets, enableThinking };
+  const provider = createHttpProvider({ ...config, enableThinking });
+  say(`live model=${config.model} apiKey=${config.apiKey ? 'present' : 'absent'} thinking=${enableThinking} timeoutMs=${timeoutMs} runs=${LIVE_RUN_COUNT} batch=${batch}`);
 
   for (let i = 1; i <= LIVE_RUN_COUNT; i++) {
     const runId = `g01-live-${i}`;
@@ -59,7 +63,7 @@ async function main() {
         runId,
         timeoutMs,
       });
-      writeLiveRun(root, i, result, meta);
+      writeLiveRun(batch, i, result, meta);
       say(`run ${i} outcome=${result.outcome} goalReached=${result.goalReached} replay=${replayMatches(result)} providerCalls=${result.providerCalls}`);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'provider error';
@@ -76,12 +80,12 @@ async function main() {
         timing: { totalMs: 0, calls: [] },
         error: message,
       };
-      writeLiveRun(root, i, failed, meta);
+      writeLiveRun(batch, i, failed, meta);
       say(`run ${i} outcome=provider_error goalReached=false replay=${replayMatches(failed)} providerCalls=0`);
     }
   }
 
-  const summary = summarizeLiveDir(root);
+  const summary = summarizeLiveDir(batch);
   const code = liveExitCode(summary);
   say(`live runs=${summary.runs.length} success=${summary.successCount} requests=${summary.requestCount} exit=${code}`);
   process.exit(code);

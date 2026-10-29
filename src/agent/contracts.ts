@@ -10,7 +10,13 @@ import type { CommandResult, Location, WorldEvent, WorldState } from '../types';
 
 export const GOAL_HUNGER_AT_LEAST = 70;
 export const MAX_PROVIDER_CALLS = 5;
+/** Runner default when a caller does not pass timeoutMs. */
 export const DEFAULT_TIMEOUT_MS = 15_000;
+/**
+ * Live and eval decision timeout. A thinking completion near 15s must not be aborted.
+ * FROSTECHO_LIVE_TIMEOUT_MS overrides this. There is no implicit retry.
+ */
+export const LIVE_DECISION_TIMEOUT_MS = 30_000;
 
 /** What one NPC can see. No other NPC, no other place's food, no global log. */
 export interface Observation {
@@ -44,9 +50,34 @@ export interface DecideInput {
   feedback: StepFeedback | null;
 }
 
+/** Token counts copied from a chat-completions `usage` object, when the server sends one. */
+export interface UsageStats {
+  prompt_tokens: number | null;
+  completion_tokens: number | null;
+  total_tokens: number | null;
+}
+
+/**
+ * One HTTP exchange. The API key and request URL are never stored.
+ * A late body after abort does not replace an error already recorded here.
+ */
+export interface TransportRecord {
+  requestBody: Record<string, unknown>;
+  responseContent: unknown;
+  status: number | null;
+  usage: UsageStats | null;
+  latencyMs: number;
+  error: string | null;
+}
+
 export interface Provider {
   /** Raw model text. Must stop when signal aborts; the runner ignores late results. */
   decide(input: DecideInput, signal: AbortSignal): Promise<string>;
+  /**
+   * HTTP adapter only. Returns the exchange for the decide() that just settled,
+   * then clears it. Absent on the reference policy.
+   */
+  consumeTransport?(): TransportRecord | null;
 }
 
 /** The only three actions the parser can accept. */
@@ -87,6 +118,23 @@ export interface RunOptions {
    * read the returned values. Default Date.now.
    */
   now?: () => number;
+  /**
+   * Command id for a decision round. Default `${runId}:${round}` (G01).
+   * G02 passes `${batchId}:npc:${round}` so player and NPC ids do not collide.
+   */
+  commandIdFor?(round: number): string;
+  /**
+   * Test hook for the decision timeout. Default is setTimeout.
+   * The returned cancel runs when the call settles. Ordering tests fire `fn`
+   * themselves instead of sleeping.
+   */
+  scheduleTimeout?(fn: () => void, ms: number): { cancel(): void };
+  /**
+   * Called after this step's provider call has started and before that call's
+   * text is consumed. The observation for this step is already fixed.
+   * Player commands issued here still submit against the world after the call returns.
+   */
+  onDeciding?(info: { round: number; observation: Observation }): void | Promise<void>;
 }
 
 export interface StepRecord {
@@ -100,6 +148,8 @@ export interface StepRecord {
   exec?: CommandResult;
   /** Parse error, engine rejection, timeout, or transport error. */
   error?: string;
+  /** Present only for an HTTP provider call. Omitted by the reference policy. */
+  transport?: TransportRecord;
 }
 
 export type RunOutcome =
@@ -129,4 +179,47 @@ export interface RunResult {
   finalState: WorldState;
   timing: RunTiming;
   error?: string;
+}
+
+export type SessionStatus =
+  | 'ready'
+  | 'deciding'
+  | 'goal_reached'
+  | 'stopped'
+  | 'budget_exhausted'
+  | 'timeout'
+  | 'provider_error'
+  | 'invalid_run';
+
+export interface DecidingPhase {
+  round: number;
+  observation: Observation;
+}
+
+export interface StepAgentResult {
+  /** `busy` means a step is already in flight. No new provider call was made. */
+  status: SessionStatus | 'busy';
+  terminal: boolean;
+  providerCalled: boolean;
+  step?: StepRecord;
+}
+
+/**
+ * One NPC loop that can be stepped. `runAgent` is this session driven to a terminal status.
+ * `round` is the decision round in flight, or the last started round. It is 0 before the first step.
+ */
+export interface AgentSession {
+  readonly runId: string;
+  readonly actorId: string;
+  round: number;
+  feedback: StepFeedback | null;
+  status: SessionStatus;
+  providerCalls: number;
+  readonly steps: readonly StepRecord[];
+  /** Replaces RunOptions.onDeciding. Scenarios set this before the step that must be interleaved. */
+  onDeciding?: (info: DecidingPhase) => void | Promise<void>;
+  /** Resolves immediately when a step is already inside decide. */
+  whenDeciding(): Promise<DecidingPhase>;
+  /** Terminal run record. Call it after status has left `ready` and `deciding`. */
+  result(): RunResult;
 }
