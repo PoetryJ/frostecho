@@ -1,0 +1,68 @@
+{
+  "runId": "http-timeout",
+  "actorId": "npc_a",
+  "outcome": "timeout",
+  "goalReached": false,
+  "providerCalls": 1,
+  "steps": [
+    {
+      "round": 1,
+      "observation": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "raw": "",
+      "parse": {
+        "ok": false,
+        "error": "timeout"
+      },
+      "error": "timeout"
+    }
+  ],
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "events": [],
+  "finalState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "error": "timeout"
+}

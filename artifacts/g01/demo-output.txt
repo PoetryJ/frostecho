@@ -1,0 +1,9 @@
+== offline reference policy ==
+runId=g01-offline-reference outcome=goal_reached goalReached=true providerCalls=2
+  #1 npc_a@dorm hunger=40 foodHere=0 raw="{\"type\":\"move\",\"to\":\"kitchen\"}" accepted
+  #2 npc_a@kitchen hunger=40 foodHere=1 raw="{\"type\":\"eat\"}" accepted
+final: npc_a@kitchen hunger=70 kitchen.food=0
+replay matches final state: true
+REAL MODEL UNVERIFIED
+missing: FROSTECHO_LLM_URL, FROSTECHO_LLM_MODEL
+The offline reference-policy run was not used as a substitute for the real-model check.
