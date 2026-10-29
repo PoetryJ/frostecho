@@ -5,7 +5,7 @@
   "description": "G00: minimal action execution & event replay kernel",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "npm run build && node --test dist/tests/",
+    "test": "npm run build && node --test dist/tests/scenarios.test.js",
     "demo": "npm run build && node dist/scripts/demo.js",
     "manifest": "node scripts/manifest.mjs"
   },

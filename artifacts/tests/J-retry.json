@@ -1,0 +1,108 @@
+{
+  "scenario": "J-retry",
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "log": [
+    {
+      "seq": 1,
+      "command": {
+        "commandId": "j-fail",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "j-fail",
+        "seq": 1,
+        "status": "rejected",
+        "reason": "NOT_IN_KITCHEN",
+        "detail": "at dorm",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 2,
+      "command": {
+        "commandId": "j-move",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "result": {
+        "commandId": "j-move",
+        "seq": 2,
+        "status": "accepted",
+        "eventIds": [
+          "e1"
+        ]
+      }
+    },
+    {
+      "seq": 3,
+      "command": {
+        "commandId": "j-fail",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "j-fail",
+        "seq": 3,
+        "status": "duplicate",
+        "reason": "NOT_IN_KITCHEN",
+        "detail": "replay of original result: rejected NOT_IN_KITCHEN",
+        "eventIds": [],
+        "originalSeq": 1
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_a",
+      "from": "dorm",
+      "to": "kitchen",
+      "eventId": "e1",
+      "seq": 2,
+      "commandId": "j-move"
+    }
+  ],
+  "finalState": {
+    "tick": 2,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  }
+}
