@@ -1,0 +1,74 @@
+[
+  {
+    "round": 1,
+    "observation": {
+      "id": "npc_a",
+      "location": "dorm",
+      "hunger": 40,
+      "foodHere": 0,
+      "reachable": [
+        "dorm",
+        "kitchen"
+      ]
+    },
+    "raw": "\n\n{\"type\":\"move\",\"to\":\"kitchen\"}",
+    "parse": {
+      "ok": true,
+      "action": {
+        "type": "move",
+        "to": "kitchen"
+      }
+    },
+    "command": {
+      "commandId": "g01-live-1:1",
+      "actorId": "npc_a",
+      "type": "move",
+      "payload": {
+        "to": "kitchen"
+      }
+    },
+    "exec": {
+      "commandId": "g01-live-1:1",
+      "seq": 1,
+      "status": "accepted",
+      "eventIds": [
+        "e1"
+      ]
+    }
+  },
+  {
+    "round": 2,
+    "observation": {
+      "id": "npc_a",
+      "location": "kitchen",
+      "hunger": 40,
+      "foodHere": 1,
+      "reachable": [
+        "dorm",
+        "kitchen"
+      ]
+    },
+    "raw": "\n\n{\"type\":\"eat\"}",
+    "parse": {
+      "ok": true,
+      "action": {
+        "type": "eat"
+      }
+    },
+    "command": {
+      "commandId": "g01-live-1:2",
+      "actorId": "npc_a",
+      "type": "eat",
+      "payload": {}
+    },
+    "exec": {
+      "commandId": "g01-live-1:2",
+      "seq": 2,
+      "status": "accepted",
+      "eventIds": [
+        "e2",
+        "e3"
+      ]
+    }
+  }
+]

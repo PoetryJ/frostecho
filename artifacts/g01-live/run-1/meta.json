@@ -1,0 +1,37 @@
+{
+  "runId": "g01-live-1",
+  "actorId": "npc_a",
+  "outcome": "goal_reached",
+  "goalReached": true,
+  "providerCalls": 2,
+  "error": null,
+  "model": "qwen3.8-27b",
+  "apiKey": "absent",
+  "sampling": {
+    "temperature": 0,
+    "max_tokens": 1024,
+    "stream": false,
+    "chat_template_kwargs": {
+      "enable_thinking": true
+    }
+  },
+  "timing": {
+    "totalMs": 12505,
+    "calls": [
+      {
+        "round": 1,
+        "ms": 6370
+      },
+      {
+        "round": 2,
+        "ms": 6133
+      }
+    ]
+  },
+  "requestStats": {
+    "providerCalls": 2,
+    "maxDecisions": 5,
+    "timeoutMs": 15000,
+    "retries": 0
+  }
+}
