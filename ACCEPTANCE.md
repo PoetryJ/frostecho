@@ -1,6 +1,6 @@
 # G00-R1 验收报告
 
-实现提交（代码、测试、DESIGN、运行记录）：`PENDING_IMPLEMENTATION_SHA`。
+实现提交（代码、测试、DESIGN、运行记录）：`d4d7c583718cb6aa44dc64776fe34bcd4a3d8f68`。
 本文件与 `MANIFEST.sha256` 在该提交的直接子提交中冻结。验收树以 `git rev-parse HEAD` 为准。
 
 运行环境（`artifacts/env.txt`）：Node v22.23.4，npm 10.9.9，TypeScript 5.9.3，Linux 6.12.94+ x86_64。命令与退出码：`npm test` → 0（`artifacts/test-run.txt`），`npm run demo` → 0（`artifacts/demo-run.txt`，演示正文仍是 `artifacts/demo-output.txt`）。
