@@ -15,6 +15,21 @@ test('reference policy moves, eats, or stops from its own input', () => {
   assert.equal(referenceDecision(input({ id: 'npc_a', location: 'dorm', hunger: 70, foodHere: 0, reachable: [...reachable] })), '{"type":"stop"}');
 });
 
+test('reference policy stops when already satiated in the kitchen', () => {
+  assert.equal(
+    referenceDecision(input({ id: 'npc_a', location: 'kitchen', hunger: 70, foodHere: 1, reachable: [...reachable] })),
+    '{"type":"stop"}',
+  );
+  assert.equal(
+    referenceDecision(input({ id: 'npc_a', location: 'kitchen', hunger: 100, foodHere: 4, reachable: [...reachable] })),
+    '{"type":"stop"}',
+  );
+  assert.equal(
+    referenceDecision(input({ id: 'npc_a', location: 'kitchen', hunger: 69, foodHere: 1, reachable: [...reachable] })),
+    '{"type":"eat"}',
+  );
+});
+
 test('reference policy ignores feedback and does not need a world', async () => {
   const decided = input(
     { id: 'npc_a', location: 'dorm', hunger: 40, foodHere: 0, reachable: [...reachable] },
