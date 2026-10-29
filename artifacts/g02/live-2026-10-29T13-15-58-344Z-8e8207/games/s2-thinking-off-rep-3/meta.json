@@ -1,0 +1,33 @@
+{
+  "batchId": "s2-thinking-off-rep-3",
+  "scenarioId": "s2",
+  "mode": "live",
+  "thinking": false,
+  "scenarioPass": false,
+  "goalReached": false,
+  "outcome": "provider_error",
+  "providerCalls": 1,
+  "replayMatches": true,
+  "reasons": [
+    "pass: A goalReached stays false",
+    "fail: outcome stopped",
+    "fail: stop is not goalReached",
+    "pass: A hunger stays 40",
+    "pass: A has no HungerChanged",
+    "pass: B ate the food",
+    "pass: B hunger increased",
+    "pass: kitchen food is gone",
+    "fail: A observed no food and stopped",
+    "pass: replay matches"
+  ],
+  "error": "network error",
+  "timing": {
+    "totalMs": 29,
+    "calls": [
+      {
+        "round": 1,
+        "ms": 29
+      }
+    ]
+  }
+}
