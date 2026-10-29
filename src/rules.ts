@@ -1,4 +1,4 @@
-import { Command, Location, RejectReason, RULES, WorldEvent, WorldState } from './types';
+import { Command, Location, NpcState, RejectReason, RULES, WorldEvent, WorldState } from './types';
 
 export type Decision =
   | { ok: true; events: Omit<WorldEvent, 'eventId' | 'seq' | 'commandId'>[] }
@@ -7,9 +7,21 @@ export type Decision =
 const isLoc = (x: unknown): x is Location => typeof x === 'string' && (RULES.LOCATIONS as readonly string[]).includes(x);
 const clamp = (n: number) => Math.min(RULES.HUNGER_MAX, Math.max(RULES.HUNGER_MIN, n));
 
+/**
+ * Own-property lookup only. Bracket access walks Object.prototype, so actorIds
+ * such as "toString" and "constructor" are truthy functions; decide would then
+ * emit NpcMoved with a missing id and applyEvent would throw TypeError.
+ */
+function actorOf(state: Readonly<WorldState>, actorId: string): NpcState | undefined {
+  if (!Object.hasOwn(state.npcs, actorId)) return undefined;
+  const npc = state.npcs[actorId];
+  if (!npc || typeof npc !== 'object') return undefined;
+  return npc;
+}
+
 /** Pure: validate a command against state and decide events. Never mutates state. */
 export function decide(state: Readonly<WorldState>, cmd: Command): Decision {
-  const npc = state.npcs[cmd.actorId];
+  const npc = actorOf(state, cmd.actorId);
   if (!npc) return { ok: false, reason: 'UNKNOWN_ACTOR', detail: `actor ${cmd.actorId} not found` };
   switch (cmd.type) {
     case 'move': {

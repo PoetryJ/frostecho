@@ -1,0 +1,298 @@
+{
+  "fingerprints": {
+    "omit": "{\"actorId\":\"npc_a\",\"type\":\"eat\"}",
+    "empty": "{\"actorId\":\"npc_a\",\"payload\":{},\"type\":\"eat\"}",
+    "null": "{\"actorId\":\"npc_a\",\"payload\":null,\"type\":\"eat\"}",
+    "undef": "{\"actorId\":\"npc_a\",\"type\":\"eat\"}"
+  },
+  "actors": [
+    {
+      "actorId": "toString",
+      "threw": false,
+      "status": "rejected",
+      "reason": "UNKNOWN_ACTOR",
+      "detail": "actor toString not found",
+      "stateSame": true,
+      "events": 0,
+      "log": [
+        {
+          "seq": 1,
+          "status": "rejected",
+          "reason": "UNKNOWN_ACTOR"
+        }
+      ]
+    },
+    {
+      "actorId": "constructor",
+      "threw": false,
+      "status": "rejected",
+      "reason": "UNKNOWN_ACTOR",
+      "detail": "actor constructor not found",
+      "stateSame": true,
+      "events": 0,
+      "log": [
+        {
+          "seq": 1,
+          "status": "rejected",
+          "reason": "UNKNOWN_ACTOR"
+        }
+      ]
+    },
+    {
+      "actorId": "proto",
+      "threw": false,
+      "status": "rejected",
+      "reason": "UNKNOWN_ACTOR",
+      "detail": "actor proto not found",
+      "stateSame": true,
+      "events": 0,
+      "log": [
+        {
+          "seq": 1,
+          "status": "rejected",
+          "reason": "UNKNOWN_ACTOR"
+        }
+      ]
+    },
+    {
+      "actorId": "__proto__",
+      "threw": false,
+      "status": "rejected",
+      "reason": "UNKNOWN_ACTOR",
+      "detail": "actor __proto__ not found",
+      "stateSame": true,
+      "events": 0,
+      "log": [
+        {
+          "seq": 1,
+          "status": "rejected",
+          "reason": "UNKNOWN_ACTOR"
+        }
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "a": "omit",
+      "b": "empty",
+      "restore": false,
+      "r1": {
+        "status": "accepted"
+      },
+      "r2": {
+        "status": "rejected",
+        "reason": "COMMAND_ID_CONFLICT"
+      },
+      "stateSame": true,
+      "evSame": true
+    },
+    {
+      "a": "empty",
+      "b": "omit",
+      "restore": false,
+      "r1": {
+        "status": "accepted"
+      },
+      "r2": {
+        "status": "rejected",
+        "reason": "COMMAND_ID_CONFLICT"
+      },
+      "stateSame": true,
+      "evSame": true
+    },
+    {
+      "a": "omit",
+      "b": "null",
+      "restore": false,
+      "r1": {
+        "status": "accepted"
+      },
+      "r2": {
+        "status": "rejected",
+        "reason": "COMMAND_ID_CONFLICT"
+      },
+      "stateSame": true,
+      "evSame": true
+    },
+    {
+      "a": "null",
+      "b": "omit",
+      "restore": false,
+      "r1": {
+        "status": "rejected",
+        "reason": "INVALID_PAYLOAD"
+      },
+      "r2": {
+        "status": "rejected",
+        "reason": "COMMAND_ID_CONFLICT"
+      },
+      "stateSame": true,
+      "evSame": true
+    },
+    {
+      "a": "empty",
+      "b": "empty",
+      "restore": false,
+      "r1": {
+        "status": "accepted"
+      },
+      "r2": {
+        "status": "duplicate"
+      },
+      "stateSame": true,
+      "evSame": true
+    },
+    {
+      "a": "omit",
+      "b": "omit",
+      "restore": false,
+      "r1": {
+        "status": "accepted"
+      },
+      "r2": {
+        "status": "duplicate"
+      },
+      "stateSame": true,
+      "evSame": true
+    },
+    {
+      "a": "null",
+      "b": "null",
+      "restore": false,
+      "r1": {
+        "status": "rejected",
+        "reason": "INVALID_PAYLOAD"
+      },
+      "r2": {
+        "status": "duplicate",
+        "reason": "INVALID_PAYLOAD"
+      },
+      "stateSame": true,
+      "evSame": true
+    },
+    {
+      "a": "omit",
+      "b": "undef",
+      "restore": false,
+      "r1": {
+        "status": "accepted"
+      },
+      "r2": {
+        "status": "duplicate"
+      },
+      "stateSame": true,
+      "evSame": true
+    },
+    {
+      "a": "omit",
+      "b": "empty",
+      "restore": true,
+      "r1": {
+        "status": "accepted"
+      },
+      "r2": {
+        "status": "rejected",
+        "reason": "COMMAND_ID_CONFLICT"
+      },
+      "stateSame": true,
+      "evSame": true
+    },
+    {
+      "a": "empty",
+      "b": "omit",
+      "restore": true,
+      "r1": {
+        "status": "accepted"
+      },
+      "r2": {
+        "status": "rejected",
+        "reason": "COMMAND_ID_CONFLICT"
+      },
+      "stateSame": true,
+      "evSame": true
+    },
+    {
+      "a": "omit",
+      "b": "null",
+      "restore": true,
+      "r1": {
+        "status": "accepted"
+      },
+      "r2": {
+        "status": "rejected",
+        "reason": "COMMAND_ID_CONFLICT"
+      },
+      "stateSame": true,
+      "evSame": true
+    },
+    {
+      "a": "null",
+      "b": "omit",
+      "restore": true,
+      "r1": {
+        "status": "rejected",
+        "reason": "INVALID_PAYLOAD"
+      },
+      "r2": {
+        "status": "rejected",
+        "reason": "COMMAND_ID_CONFLICT"
+      },
+      "stateSame": true,
+      "evSame": true
+    },
+    {
+      "a": "empty",
+      "b": "empty",
+      "restore": true,
+      "r1": {
+        "status": "accepted"
+      },
+      "r2": {
+        "status": "duplicate"
+      },
+      "stateSame": true,
+      "evSame": true
+    },
+    {
+      "a": "omit",
+      "b": "omit",
+      "restore": true,
+      "r1": {
+        "status": "accepted"
+      },
+      "r2": {
+        "status": "duplicate"
+      },
+      "stateSame": true,
+      "evSame": true
+    },
+    {
+      "a": "null",
+      "b": "null",
+      "restore": true,
+      "r1": {
+        "status": "rejected",
+        "reason": "INVALID_PAYLOAD"
+      },
+      "r2": {
+        "status": "duplicate",
+        "reason": "INVALID_PAYLOAD"
+      },
+      "stateSame": true,
+      "evSame": true
+    },
+    {
+      "a": "omit",
+      "b": "undef",
+      "restore": true,
+      "r1": {
+        "status": "accepted"
+      },
+      "r2": {
+        "status": "duplicate"
+      },
+      "stateSame": true,
+      "evSame": true
+    }
+  ]
+}

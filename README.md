@@ -1,12 +1,14 @@
-# gospel-rebuild — G00 最小动作执行与事件重放内核
+# FrostEcho — G00 最小动作执行与事件重放内核
+
+包名仍是 `gospel-rebuild`（改名留给 G01）。
 
 GitHub 仓库：PoetryJ/frostecho（https://github.com/PoetryJ/frostecho）。
 
-TypeScript + Node 20，测试用 `node:test`，无其他运行时依赖。
+TypeScript，测试用 `node:test`，无其他运行时依赖。本轮在 Node 22.23.4 上验收（脚本兼容 Node 20 的文件路径）。
 
 ```
 npm install        # 仅 typescript / @types/node
-npm test           # tsc 编译 + 运行 A–G 及附加测试；原始记录写入 artifacts/tests/*.json
+npm test           # tsc 编译 + 运行 A–J；原始记录写入 artifacts/tests/*.json
 npm run demo       # 可读演示；写 artifacts/demo-output.txt 与 artifacts/demo-records.json
 npm run build      # 仅编译
 npm run manifest   # 生成 MANIFEST.sha256

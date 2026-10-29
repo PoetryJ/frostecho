@@ -1,0 +1,61 @@
+{
+  "note": "Captured on this tree before the G00-R1 fix, Node v22.23.4, by submitting the same inputs to Engine. Not a re-run; the fixed code no longer throws.",
+  "fingerprints": {
+    "omit": "{\"actorId\":\"npc_a\",\"payload\":null,\"type\":\"eat\"}",
+    "empty": "{\"actorId\":\"npc_a\",\"payload\":{},\"type\":\"eat\"}",
+    "null": "{\"actorId\":\"npc_a\",\"payload\":null,\"type\":\"eat\"}",
+    "undef": "{\"actorId\":\"npc_a\",\"payload\":null,\"type\":\"eat\"}"
+  },
+  "actors": [
+    {
+      "actorId": "toString",
+      "threw": true,
+      "name": "TypeError",
+      "message": "Cannot set properties of undefined (setting 'location')",
+      "stateSame": true,
+      "events": 0,
+      "logLen": 0
+    },
+    {
+      "actorId": "constructor",
+      "threw": true,
+      "name": "TypeError",
+      "message": "Cannot set properties of undefined (setting 'location')",
+      "stateSame": true,
+      "events": 0,
+      "logLen": 0
+    },
+    {
+      "actorId": "proto",
+      "threw": false,
+      "status": "rejected",
+      "reason": "UNKNOWN_ACTOR",
+      "detail": "actor proto not found",
+      "stateSame": true,
+      "events": 0,
+      "logLen": 1
+    },
+    {
+      "actorId": "__proto__",
+      "threw": true,
+      "name": "TypeError",
+      "message": "Cannot set properties of undefined (setting 'location')",
+      "stateSame": true,
+      "events": 0,
+      "logLen": 0
+    }
+  ],
+  "pairs": [
+    {"a": "omit", "b": "empty", "restore": false, "r2": "COMMAND_ID_CONFLICT"},
+    {"a": "empty", "b": "omit", "restore": false, "r2": "COMMAND_ID_CONFLICT"},
+    {"a": "omit", "b": "null", "restore": false, "r1": "accepted", "r2": "duplicate"},
+    {"a": "null", "b": "omit", "restore": false, "r1": "INVALID_PAYLOAD", "r2": "duplicate"},
+    {"a": "omit", "b": "empty", "restore": true, "r2": "COMMAND_ID_CONFLICT"},
+    {"a": "empty", "b": "omit", "restore": true, "r2": "COMMAND_ID_CONFLICT"},
+    {"a": "omit", "b": "null", "restore": true, "r2": "duplicate"},
+    {"a": "null", "b": "omit", "restore": true, "r2": "duplicate"},
+    {"a": "omit", "b": "omit", "restore": false, "r2": "duplicate"},
+    {"a": "empty", "b": "empty", "restore": false, "r2": "duplicate"},
+    {"a": "null", "b": "null", "restore": false, "r2": "duplicate"}
+  ]
+}

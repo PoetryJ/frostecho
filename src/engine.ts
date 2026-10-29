@@ -16,8 +16,14 @@ export interface SaveData {
   processed: Record<string, { fingerprint: string; result: CommandResult }>;
 }
 
+/**
+ * Content identity for dedupe: actorId + type + payload.
+ * Missing payload is not coerced to null or {}. Eat accepts both omission and
+ * {}, and rejects null; those three must not share a fingerprint.
+ * Explicit payload: undefined is the same as omission (JSON drops both).
+ */
 export function fingerprint(c: Command): string {
-  return canonical({ actorId: c.actorId, type: c.type, payload: c.payload ?? null });
+  return canonical({ actorId: c.actorId, type: c.type, payload: c.payload });
 }
 
 export class Engine {

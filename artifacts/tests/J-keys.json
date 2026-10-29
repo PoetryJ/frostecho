@@ -1,0 +1,135 @@
+{
+  "scenario": "J-keys",
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "log": [
+    {
+      "seq": 1,
+      "command": {
+        "commandId": "j-k",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "result": {
+        "commandId": "j-k",
+        "seq": 1,
+        "status": "accepted",
+        "eventIds": [
+          "e1"
+        ]
+      }
+    },
+    {
+      "seq": 2,
+      "command": {
+        "payload": {
+          "to": "kitchen"
+        },
+        "type": "move",
+        "commandId": "j-k",
+        "actorId": "npc_a"
+      },
+      "result": {
+        "commandId": "j-k",
+        "seq": 2,
+        "status": "duplicate",
+        "eventIds": [
+          "e1"
+        ],
+        "originalSeq": 1,
+        "detail": "replay of original result: accepted"
+      }
+    },
+    {
+      "seq": 3,
+      "command": {
+        "commandId": "j-p",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": {
+          "extra": 1,
+          "to": "moon"
+        }
+      },
+      "result": {
+        "commandId": "j-p",
+        "seq": 3,
+        "status": "rejected",
+        "reason": "INVALID_PAYLOAD",
+        "detail": "move.to must be one of dorm|kitchen",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 4,
+      "command": {
+        "commandId": "j-p",
+        "type": "move",
+        "actorId": "npc_a",
+        "payload": {
+          "to": "moon",
+          "extra": 1
+        }
+      },
+      "result": {
+        "commandId": "j-p",
+        "seq": 4,
+        "status": "duplicate",
+        "reason": "INVALID_PAYLOAD",
+        "detail": "replay of original result: rejected INVALID_PAYLOAD",
+        "eventIds": [],
+        "originalSeq": 3
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_a",
+      "from": "dorm",
+      "to": "kitchen",
+      "eventId": "e1",
+      "seq": 1,
+      "commandId": "j-k"
+    }
+  ],
+  "finalState": {
+    "tick": 1,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  }
+}

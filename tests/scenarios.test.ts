@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { Engine, initialWorld, replay, RULES, SaveData } from '../src';
+import { Command, Engine, fingerprint, initialWorld, replay, RULES, SaveData } from '../src';
 import { dump, globalChecks } from './helpers';
 
 const mv = (id: string, a: string, to: string) => ({ commandId: id, actorId: a, type: 'move', payload: { to } });
@@ -145,4 +145,143 @@ test('Immutability: returned state/history cannot corrupt engine', () => {
 test('Determinism: same commands -> identical records (no wall clock)', () => {
   const run = () => { const e = new Engine(initialWorld()); e.submit(mv('x1', 'npc_a', 'kitchen')); e.submit(eat('x2', 'npc_a')); return JSON.stringify(e.save()); };
   assert.equal(run(), run());
+});
+
+function kitchenEng() {
+  const w = initialWorld();
+  w.npcs.npc_a.location = 'kitchen';
+  return new Engine(w);
+}
+/** Eat command. mode omit = no payload key; empty = {}; null = explicit null. */
+function eatPayload(id: string, mode: 'omit' | 'empty' | 'null' | 'undef') {
+  const c: Record<string, unknown> = { commandId: id, actorId: 'npc_a', type: 'eat' };
+  if (mode === 'empty') c.payload = {};
+  else if (mode === 'null') c.payload = null;
+  else if (mode === 'undef') c.payload = undefined;
+  return c;
+}
+function jsonRestore(eng: Engine) {
+  return Engine.restore(JSON.parse(JSON.stringify(eng.save())) as SaveData);
+}
+
+for (const actorId of ['toString', 'constructor', 'proto']) {
+  test(`H: move actorId ${actorId} -> UNKNOWN_ACTOR, no throw, state and events unchanged`, () => {
+    const eng = new Engine(initialWorld());
+    const before = eng.getState();
+    const r = eng.submit({ commandId: 'h-' + actorId, actorId, type: 'move', payload: { to: 'kitchen' } });
+    assert.equal(r.status, 'rejected');
+    assert.equal(r.reason, 'UNKNOWN_ACTOR');
+    assert.deepEqual(eng.getState(), before);
+    assert.deepEqual(eng.getEvents(), []);
+    const log = eng.getLog();
+    assert.equal(log.length, 1);
+    assert.equal(log[0].command.actorId, actorId);
+    assert.equal(log[0].result.status, 'rejected');
+    assert.equal(log[0].result.reason, 'UNKNOWN_ACTOR');
+    globalChecks(eng); dump('H-' + actorId, eng);
+  });
+}
+
+test('I: same commandId eat, omitted payload vs {} -> COMMAND_ID_CONFLICT both orders', () => {
+  const orders = [['omit', 'empty'], ['empty', 'omit']] as const;
+  for (const [first, second] of orders) {
+    const eng = kitchenEng();
+    const r1 = eng.submit(eatPayload('i-' + first, first));
+    const before = eng.getState();
+    const n = eng.getEvents().length;
+    const r2 = eng.submit(eatPayload('i-' + first, second));
+    assert.equal(r1.status, 'accepted', first);
+    assert.equal(r2.status, 'rejected');
+    assert.equal(r2.reason, 'COMMAND_ID_CONFLICT', first + ' then ' + second);
+    assert.deepEqual(eng.getState(), before);
+    assert.equal(eng.getEvents().length, n);
+    globalChecks(eng); dump('I-' + first + '-then-' + second, eng);
+  }
+});
+
+test('I-restore: omitted payload vs {} still conflicts after JSON save/restore, both orders', () => {
+  for (const [first, second] of [['omit', 'empty'], ['empty', 'omit']] as const) {
+    const eng = kitchenEng();
+    assert.equal(eng.submit(eatPayload('ir-' + first, first)).status, 'accepted');
+    const saved = JSON.parse(JSON.stringify(eng.save())) as SaveData;
+    const eng2 = Engine.restore(saved);
+    const before = eng2.getState();
+    const n = eng2.getEvents().length;
+    const r2 = eng2.submit(eatPayload('ir-' + first, second));
+    assert.equal(r2.status, 'rejected');
+    assert.equal(r2.reason, 'COMMAND_ID_CONFLICT', first + ' then ' + second);
+    assert.deepEqual(eng2.getState(), before);
+    assert.equal(eng2.getEvents().length, n);
+    globalChecks(eng2); dump('I-restore-' + first + '-then-' + second, eng2, { saveData: saved });
+  }
+});
+
+test('I-null: omitted payload vs explicit null -> COMMAND_ID_CONFLICT, both orders, and both after JSON restore', () => {
+  const fpOmit = fingerprint({ commandId: 'fp', actorId: 'npc_a', type: 'eat' } as Command);
+  const fpNull = fingerprint({ commandId: 'fp', actorId: 'npc_a', type: 'eat', payload: null });
+  const fpEmpty = fingerprint({ commandId: 'fp', actorId: 'npc_a', type: 'eat', payload: {} });
+  assert.notEqual(fpOmit, fpNull);
+  assert.notEqual(fpOmit, fpEmpty);
+  assert.notEqual(fpNull, fpEmpty);
+  assert.equal(fpOmit, fingerprint({ commandId: 'fp', actorId: 'npc_a', type: 'eat', payload: undefined }));
+  for (const restore of [false, true]) {
+    for (const [first, second] of [['omit', 'null'], ['null', 'omit']] as const) {
+      const eng = kitchenEng();
+      const r1 = eng.submit(eatPayload('in-' + first + (restore ? '-r' : ''), first));
+      const eng2 = restore ? jsonRestore(eng) : eng;
+      const before = eng2.getState();
+      const n = eng2.getEvents().length;
+      const r2 = eng2.submit(eatPayload(r1.commandId, second));
+      assert.equal(r2.status, 'rejected', `${first} then ${second} restore=${restore}`);
+      assert.equal(r2.reason, 'COMMAND_ID_CONFLICT');
+      assert.deepEqual(eng2.getState(), before);
+      assert.equal(eng2.getEvents().length, n);
+      if (first === 'null') assert.equal(r1.reason, 'INVALID_PAYLOAD');
+      else assert.equal(r1.status, 'accepted');
+      globalChecks(eng2);
+      if (!restore) dump('I-null-' + first + '-then-' + second, eng2);
+      else dump('I-null-restore-' + first + '-then-' + second, eng2);
+    }
+  }
+});
+
+test('J: true duplicates, key-order equality, and failed-command retry stay duplicates', () => {
+  const dup = kitchenEng();
+  const e1 = dup.submit(eatPayload('j-empty', 'empty'));
+  const e2 = dup.submit({ payload: {}, type: 'eat', actorId: 'npc_a', commandId: 'j-empty' });
+  assert.equal(e1.status, 'accepted');
+  assert.equal(e2.status, 'duplicate');
+  assert.equal(e2.originalSeq, e1.seq);
+  assert.deepEqual(e2.eventIds, e1.eventIds);
+  const o1 = dup.submit(eatPayload('j-omit', 'omit'));
+  const o2 = dup.submit(eatPayload('j-omit', 'undef'));
+  assert.equal(o1.status, 'rejected');
+  assert.equal(o1.reason, 'NO_FOOD');
+  assert.equal(o2.status, 'duplicate');
+  assert.equal(o2.reason, 'NO_FOOD');
+
+  const keys = new Engine(initialWorld());
+  const k1 = keys.submit({ commandId: 'j-k', actorId: 'npc_a', type: 'move', payload: { to: 'kitchen' } });
+  const k2 = keys.submit({ payload: { to: 'kitchen' }, type: 'move', commandId: 'j-k', actorId: 'npc_a' });
+  assert.equal(k1.status, 'accepted');
+  assert.equal(k2.status, 'duplicate');
+  const p1 = keys.submit({ commandId: 'j-p', actorId: 'npc_a', type: 'move', payload: { extra: 1, to: 'moon' } });
+  const p2 = keys.submit({ commandId: 'j-p', type: 'move', actorId: 'npc_a', payload: { to: 'moon', extra: 1 } });
+  assert.equal(p1.status, 'rejected');
+  assert.equal(p1.reason, 'INVALID_PAYLOAD');
+  assert.equal(p2.status, 'duplicate');
+  assert.equal(p2.reason, 'INVALID_PAYLOAD');
+
+  const retry = new Engine(initialWorld());
+  const f1 = retry.submit(eat('j-fail', 'npc_a'));
+  assert.equal(f1.reason, 'NOT_IN_KITCHEN');
+  assert.equal(retry.submit(mv('j-move', 'npc_a', 'kitchen')).status, 'accepted');
+  const f2 = retry.submit(eat('j-fail', 'npc_a'));
+  assert.equal(f2.status, 'duplicate');
+  assert.equal(f2.reason, 'NOT_IN_KITCHEN');
+  assert.equal(f2.originalSeq, f1.seq);
+  assert.equal(retry.getState().food.kitchen, 1);
+  assert.equal(retry.getState().npcs.npc_a.hunger, 40);
+  globalChecks(dup); globalChecks(keys); globalChecks(retry);
+  dump('J-dup', dup); dump('J-keys', keys); dump('J-retry', retry);
 });
