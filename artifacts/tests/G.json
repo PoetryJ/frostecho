@@ -1,0 +1,315 @@
+{
+  "scenario": "G",
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "log": [
+    {
+      "seq": 1,
+      "command": {
+        "commandId": "g1",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "result": {
+        "commandId": "g1",
+        "seq": 1,
+        "status": "accepted",
+        "eventIds": [
+          "e1"
+        ]
+      }
+    },
+    {
+      "seq": 2,
+      "command": {
+        "commandId": "g2",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "g2",
+        "seq": 2,
+        "status": "accepted",
+        "eventIds": [
+          "e2",
+          "e3"
+        ]
+      }
+    },
+    {
+      "seq": 3,
+      "command": {
+        "commandId": "g2",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "g2",
+        "seq": 3,
+        "status": "duplicate",
+        "eventIds": [
+          "e2",
+          "e3"
+        ],
+        "originalSeq": 2,
+        "detail": "replay of original result: accepted"
+      }
+    },
+    {
+      "seq": 4,
+      "command": {
+        "commandId": "g2",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": {
+          "to": "dorm"
+        }
+      },
+      "result": {
+        "commandId": "g2",
+        "seq": 4,
+        "status": "rejected",
+        "reason": "COMMAND_ID_CONFLICT",
+        "detail": "commandId reused with different content (original seq 2)",
+        "eventIds": [],
+        "originalSeq": 2
+      }
+    },
+    {
+      "seq": 5,
+      "command": {
+        "commandId": "g3",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": {
+          "to": "dorm"
+        }
+      },
+      "result": {
+        "commandId": "g3",
+        "seq": 5,
+        "status": "accepted",
+        "eventIds": [
+          "e4"
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_a",
+      "from": "dorm",
+      "to": "kitchen",
+      "eventId": "e1",
+      "seq": 1,
+      "commandId": "g1"
+    },
+    {
+      "type": "FoodConsumed",
+      "location": "kitchen",
+      "amount": 1,
+      "before": 1,
+      "after": 0,
+      "eventId": "e2",
+      "seq": 2,
+      "commandId": "g2"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_a",
+      "before": 40,
+      "after": 70,
+      "eventId": "e3",
+      "seq": 2,
+      "commandId": "g2"
+    },
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_a",
+      "from": "kitchen",
+      "to": "dorm",
+      "eventId": "e4",
+      "seq": 5,
+      "commandId": "g3"
+    }
+  ],
+  "finalState": {
+    "tick": 5,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 70
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 0
+    }
+  },
+  "saveData": {
+    "version": 1,
+    "initialState": {
+      "tick": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "dorm",
+          "hunger": 40
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "dorm",
+          "hunger": 20
+        }
+      },
+      "food": {
+        "dorm": 0,
+        "kitchen": 1
+      }
+    },
+    "state": {
+      "tick": 2,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 70
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "dorm",
+          "hunger": 20
+        }
+      },
+      "food": {
+        "dorm": 0,
+        "kitchen": 0
+      }
+    },
+    "seq": 2,
+    "eventCounter": 3,
+    "events": [
+      {
+        "type": "NpcMoved",
+        "npcId": "npc_a",
+        "from": "dorm",
+        "to": "kitchen",
+        "eventId": "e1",
+        "seq": 1,
+        "commandId": "g1"
+      },
+      {
+        "type": "FoodConsumed",
+        "location": "kitchen",
+        "amount": 1,
+        "before": 1,
+        "after": 0,
+        "eventId": "e2",
+        "seq": 2,
+        "commandId": "g2"
+      },
+      {
+        "type": "HungerChanged",
+        "npcId": "npc_a",
+        "before": 40,
+        "after": 70,
+        "eventId": "e3",
+        "seq": 2,
+        "commandId": "g2"
+      }
+    ],
+    "log": [
+      {
+        "seq": 1,
+        "command": {
+          "commandId": "g1",
+          "actorId": "npc_a",
+          "type": "move",
+          "payload": {
+            "to": "kitchen"
+          }
+        },
+        "result": {
+          "commandId": "g1",
+          "seq": 1,
+          "status": "accepted",
+          "eventIds": [
+            "e1"
+          ]
+        }
+      },
+      {
+        "seq": 2,
+        "command": {
+          "commandId": "g2",
+          "actorId": "npc_a",
+          "type": "eat",
+          "payload": {}
+        },
+        "result": {
+          "commandId": "g2",
+          "seq": 2,
+          "status": "accepted",
+          "eventIds": [
+            "e2",
+            "e3"
+          ]
+        }
+      }
+    ],
+    "processed": {
+      "g1": {
+        "fingerprint": "{\"actorId\":\"npc_a\",\"payload\":{\"to\":\"kitchen\"},\"type\":\"move\"}",
+        "result": {
+          "commandId": "g1",
+          "seq": 1,
+          "status": "accepted",
+          "eventIds": [
+            "e1"
+          ]
+        }
+      },
+      "g2": {
+        "fingerprint": "{\"actorId\":\"npc_a\",\"payload\":{},\"type\":\"eat\"}",
+        "result": {
+          "commandId": "g2",
+          "seq": 2,
+          "status": "accepted",
+          "eventIds": [
+            "e2",
+            "e3"
+          ]
+        }
+      }
+    }
+  }
+}

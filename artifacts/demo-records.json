@@ -1,0 +1,550 @@
+{
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "commandsAndResults": [
+    {
+      "seq": 1,
+      "command": {
+        "commandId": "c1",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "result": {
+        "commandId": "c1",
+        "seq": 1,
+        "status": "accepted",
+        "eventIds": [
+          "e1"
+        ]
+      }
+    },
+    {
+      "seq": 2,
+      "command": {
+        "commandId": "c2",
+        "actorId": "npc_b",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "result": {
+        "commandId": "c2",
+        "seq": 2,
+        "status": "accepted",
+        "eventIds": [
+          "e2"
+        ]
+      }
+    },
+    {
+      "seq": 3,
+      "command": {
+        "commandId": "c3",
+        "actorId": "npc_b",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "c3",
+        "seq": 3,
+        "status": "accepted",
+        "eventIds": [
+          "e3",
+          "e4"
+        ]
+      }
+    },
+    {
+      "seq": 4,
+      "command": {
+        "commandId": "c4",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "c4",
+        "seq": 4,
+        "status": "rejected",
+        "reason": "NO_FOOD",
+        "detail": "kitchen food=0",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 5,
+      "command": {
+        "commandId": "c3",
+        "actorId": "npc_b",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "c3",
+        "seq": 5,
+        "status": "duplicate",
+        "eventIds": [
+          "e3",
+          "e4"
+        ],
+        "originalSeq": 3,
+        "detail": "replay of original result: accepted"
+      }
+    },
+    {
+      "seq": 6,
+      "command": {
+        "commandId": "c3",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "c3",
+        "seq": 6,
+        "status": "rejected",
+        "reason": "COMMAND_ID_CONFLICT",
+        "detail": "commandId reused with different content (original seq 3)",
+        "eventIds": [],
+        "originalSeq": 3
+      }
+    },
+    {
+      "seq": 7,
+      "command": {
+        "commandId": "c5",
+        "actorId": "ghost",
+        "type": "move",
+        "payload": {
+          "to": "dorm"
+        }
+      },
+      "result": {
+        "commandId": "c5",
+        "seq": 7,
+        "status": "rejected",
+        "reason": "UNKNOWN_ACTOR",
+        "detail": "actor ghost not found",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 8,
+      "command": {
+        "commandId": "c6",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": {
+          "to": "dorm"
+        }
+      },
+      "result": {
+        "commandId": "c6",
+        "seq": 8,
+        "status": "accepted",
+        "eventIds": [
+          "e5"
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_a",
+      "from": "dorm",
+      "to": "kitchen",
+      "eventId": "e1",
+      "seq": 1,
+      "commandId": "c1"
+    },
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_b",
+      "from": "dorm",
+      "to": "kitchen",
+      "eventId": "e2",
+      "seq": 2,
+      "commandId": "c2"
+    },
+    {
+      "type": "FoodConsumed",
+      "location": "kitchen",
+      "amount": 1,
+      "before": 1,
+      "after": 0,
+      "eventId": "e3",
+      "seq": 3,
+      "commandId": "c3"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_b",
+      "before": 20,
+      "after": 50,
+      "eventId": "e4",
+      "seq": 3,
+      "commandId": "c3"
+    },
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_a",
+      "from": "kitchen",
+      "to": "dorm",
+      "eventId": "e5",
+      "seq": 8,
+      "commandId": "c6"
+    }
+  ],
+  "finalState": {
+    "tick": 8,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "kitchen",
+        "hunger": 50
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 0
+    }
+  },
+  "save": {
+    "version": 1,
+    "initialState": {
+      "tick": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "dorm",
+          "hunger": 40
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "dorm",
+          "hunger": 20
+        }
+      },
+      "food": {
+        "dorm": 0,
+        "kitchen": 1
+      }
+    },
+    "state": {
+      "tick": 8,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "dorm",
+          "hunger": 40
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 50
+        }
+      },
+      "food": {
+        "dorm": 0,
+        "kitchen": 0
+      }
+    },
+    "seq": 8,
+    "eventCounter": 5,
+    "events": [
+      {
+        "type": "NpcMoved",
+        "npcId": "npc_a",
+        "from": "dorm",
+        "to": "kitchen",
+        "eventId": "e1",
+        "seq": 1,
+        "commandId": "c1"
+      },
+      {
+        "type": "NpcMoved",
+        "npcId": "npc_b",
+        "from": "dorm",
+        "to": "kitchen",
+        "eventId": "e2",
+        "seq": 2,
+        "commandId": "c2"
+      },
+      {
+        "type": "FoodConsumed",
+        "location": "kitchen",
+        "amount": 1,
+        "before": 1,
+        "after": 0,
+        "eventId": "e3",
+        "seq": 3,
+        "commandId": "c3"
+      },
+      {
+        "type": "HungerChanged",
+        "npcId": "npc_b",
+        "before": 20,
+        "after": 50,
+        "eventId": "e4",
+        "seq": 3,
+        "commandId": "c3"
+      },
+      {
+        "type": "NpcMoved",
+        "npcId": "npc_a",
+        "from": "kitchen",
+        "to": "dorm",
+        "eventId": "e5",
+        "seq": 8,
+        "commandId": "c6"
+      }
+    ],
+    "log": [
+      {
+        "seq": 1,
+        "command": {
+          "commandId": "c1",
+          "actorId": "npc_a",
+          "type": "move",
+          "payload": {
+            "to": "kitchen"
+          }
+        },
+        "result": {
+          "commandId": "c1",
+          "seq": 1,
+          "status": "accepted",
+          "eventIds": [
+            "e1"
+          ]
+        }
+      },
+      {
+        "seq": 2,
+        "command": {
+          "commandId": "c2",
+          "actorId": "npc_b",
+          "type": "move",
+          "payload": {
+            "to": "kitchen"
+          }
+        },
+        "result": {
+          "commandId": "c2",
+          "seq": 2,
+          "status": "accepted",
+          "eventIds": [
+            "e2"
+          ]
+        }
+      },
+      {
+        "seq": 3,
+        "command": {
+          "commandId": "c3",
+          "actorId": "npc_b",
+          "type": "eat",
+          "payload": {}
+        },
+        "result": {
+          "commandId": "c3",
+          "seq": 3,
+          "status": "accepted",
+          "eventIds": [
+            "e3",
+            "e4"
+          ]
+        }
+      },
+      {
+        "seq": 4,
+        "command": {
+          "commandId": "c4",
+          "actorId": "npc_a",
+          "type": "eat",
+          "payload": {}
+        },
+        "result": {
+          "commandId": "c4",
+          "seq": 4,
+          "status": "rejected",
+          "reason": "NO_FOOD",
+          "detail": "kitchen food=0",
+          "eventIds": []
+        }
+      },
+      {
+        "seq": 5,
+        "command": {
+          "commandId": "c3",
+          "actorId": "npc_b",
+          "type": "eat",
+          "payload": {}
+        },
+        "result": {
+          "commandId": "c3",
+          "seq": 5,
+          "status": "duplicate",
+          "eventIds": [
+            "e3",
+            "e4"
+          ],
+          "originalSeq": 3,
+          "detail": "replay of original result: accepted"
+        }
+      },
+      {
+        "seq": 6,
+        "command": {
+          "commandId": "c3",
+          "actorId": "npc_a",
+          "type": "eat",
+          "payload": {}
+        },
+        "result": {
+          "commandId": "c3",
+          "seq": 6,
+          "status": "rejected",
+          "reason": "COMMAND_ID_CONFLICT",
+          "detail": "commandId reused with different content (original seq 3)",
+          "eventIds": [],
+          "originalSeq": 3
+        }
+      },
+      {
+        "seq": 7,
+        "command": {
+          "commandId": "c5",
+          "actorId": "ghost",
+          "type": "move",
+          "payload": {
+            "to": "dorm"
+          }
+        },
+        "result": {
+          "commandId": "c5",
+          "seq": 7,
+          "status": "rejected",
+          "reason": "UNKNOWN_ACTOR",
+          "detail": "actor ghost not found",
+          "eventIds": []
+        }
+      },
+      {
+        "seq": 8,
+        "command": {
+          "commandId": "c6",
+          "actorId": "npc_a",
+          "type": "move",
+          "payload": {
+            "to": "dorm"
+          }
+        },
+        "result": {
+          "commandId": "c6",
+          "seq": 8,
+          "status": "accepted",
+          "eventIds": [
+            "e5"
+          ]
+        }
+      }
+    ],
+    "processed": {
+      "c1": {
+        "fingerprint": "{\"actorId\":\"npc_a\",\"payload\":{\"to\":\"kitchen\"},\"type\":\"move\"}",
+        "result": {
+          "commandId": "c1",
+          "seq": 1,
+          "status": "accepted",
+          "eventIds": [
+            "e1"
+          ]
+        }
+      },
+      "c2": {
+        "fingerprint": "{\"actorId\":\"npc_b\",\"payload\":{\"to\":\"kitchen\"},\"type\":\"move\"}",
+        "result": {
+          "commandId": "c2",
+          "seq": 2,
+          "status": "accepted",
+          "eventIds": [
+            "e2"
+          ]
+        }
+      },
+      "c3": {
+        "fingerprint": "{\"actorId\":\"npc_b\",\"payload\":{},\"type\":\"eat\"}",
+        "result": {
+          "commandId": "c3",
+          "seq": 3,
+          "status": "accepted",
+          "eventIds": [
+            "e3",
+            "e4"
+          ]
+        }
+      },
+      "c4": {
+        "fingerprint": "{\"actorId\":\"npc_a\",\"payload\":{},\"type\":\"eat\"}",
+        "result": {
+          "commandId": "c4",
+          "seq": 4,
+          "status": "rejected",
+          "reason": "NO_FOOD",
+          "detail": "kitchen food=0",
+          "eventIds": []
+        }
+      },
+      "c5": {
+        "fingerprint": "{\"actorId\":\"ghost\",\"payload\":{\"to\":\"dorm\"},\"type\":\"move\"}",
+        "result": {
+          "commandId": "c5",
+          "seq": 7,
+          "status": "rejected",
+          "reason": "UNKNOWN_ACTOR",
+          "detail": "actor ghost not found",
+          "eventIds": []
+        }
+      },
+      "c6": {
+        "fingerprint": "{\"actorId\":\"npc_a\",\"payload\":{\"to\":\"dorm\"},\"type\":\"move\"}",
+        "result": {
+          "commandId": "c6",
+          "seq": 8,
+          "status": "accepted",
+          "eventIds": [
+            "e5"
+          ]
+        }
+      }
+    }
+  }
+}

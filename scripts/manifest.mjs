@@ -1,0 +1,10 @@
+import { createHash } from 'node:crypto';
+import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { join, relative } from 'node:path';
+const skip = new Set(['node_modules', 'dist', '.git', 'MANIFEST.sha256']);
+const files = [];
+const walk = d => { for (const f of readdirSync(d).sort()) { if (skip.has(f)) continue; const p = join(d, f); statSync(p).isDirectory() ? walk(p) : files.push(p); } };
+walk('.');
+const lines = files.map(f => `${createHash('sha256').update(readFileSync(f)).digest('hex')}  ${relative('.', f).split('\\').join('/')}`);
+writeFileSync('MANIFEST.sha256', lines.join('\n') + '\n');
+console.log(lines.join('\n'));

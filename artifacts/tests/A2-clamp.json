@@ -1,0 +1,82 @@
+{
+  "scenario": "A2-clamp",
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 90
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "log": [
+    {
+      "seq": 1,
+      "command": {
+        "commandId": "c1",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "c1",
+        "seq": 1,
+        "status": "accepted",
+        "eventIds": [
+          "e1",
+          "e2"
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "FoodConsumed",
+      "location": "kitchen",
+      "amount": 1,
+      "before": 1,
+      "after": 0,
+      "eventId": "e1",
+      "seq": 1,
+      "commandId": "c1"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_a",
+      "before": 90,
+      "after": 100,
+      "eventId": "e2",
+      "seq": 1,
+      "commandId": "c1"
+    }
+  ],
+  "finalState": {
+    "tick": 1,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 100
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 0
+    }
+  }
+}

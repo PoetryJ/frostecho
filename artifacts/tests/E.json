@@ -1,0 +1,269 @@
+{
+  "scenario": "E",
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "log": [
+    {
+      "seq": 1,
+      "command": {
+        "commandId": "e1",
+        "actorId": "ghost",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "result": {
+        "commandId": "e1",
+        "seq": 1,
+        "status": "rejected",
+        "reason": "UNKNOWN_ACTOR",
+        "detail": "actor ghost not found",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 2,
+      "command": {
+        "commandId": "e2",
+        "actorId": "npc_a",
+        "type": "fly",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "e2",
+        "seq": 2,
+        "status": "rejected",
+        "reason": "UNKNOWN_ACTION",
+        "detail": "unknown type fly",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 3,
+      "command": {
+        "commandId": "e3",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": {
+          "to": "moon"
+        }
+      },
+      "result": {
+        "commandId": "e3",
+        "seq": 3,
+        "status": "rejected",
+        "reason": "INVALID_PAYLOAD",
+        "detail": "move.to must be one of dorm|kitchen",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 4,
+      "command": {
+        "commandId": "e4",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": null
+      },
+      "result": {
+        "commandId": "e4",
+        "seq": 4,
+        "status": "rejected",
+        "reason": "INVALID_PAYLOAD",
+        "detail": "move.to must be one of dorm|kitchen",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 5,
+      "command": {
+        "commandId": "e5",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {
+          "amount": 5
+        }
+      },
+      "result": {
+        "commandId": "e5",
+        "seq": 5,
+        "status": "rejected",
+        "reason": "INVALID_PAYLOAD",
+        "detail": "eat takes empty payload {}",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 6,
+      "command": {
+        "actorId": "npc_a",
+        "type": "eat"
+      },
+      "result": {
+        "commandId": "",
+        "seq": 6,
+        "status": "rejected",
+        "reason": "INVALID_COMMAND",
+        "detail": "commandId/actorId/type must be non-empty strings",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 7,
+      "command": {
+        "commandId": "e6",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": {
+          "to": "dorm"
+        }
+      },
+      "result": {
+        "commandId": "e6",
+        "seq": 7,
+        "status": "rejected",
+        "reason": "ALREADY_THERE",
+        "detail": "already at dorm",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 8,
+      "command": {
+        "commandId": "e7",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "e7",
+        "seq": 8,
+        "status": "rejected",
+        "reason": "NOT_IN_KITCHEN",
+        "detail": "at dorm",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 9,
+      "command": {
+        "commandId": "e8",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "result": {
+        "commandId": "e8",
+        "seq": 9,
+        "status": "accepted",
+        "eventIds": [
+          "e1"
+        ]
+      }
+    },
+    {
+      "seq": 10,
+      "command": {
+        "commandId": "e9",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "e9",
+        "seq": 10,
+        "status": "accepted",
+        "eventIds": [
+          "e2",
+          "e3"
+        ]
+      }
+    },
+    {
+      "seq": 11,
+      "command": {
+        "commandId": "e10",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "e10",
+        "seq": 11,
+        "status": "rejected",
+        "reason": "NO_FOOD",
+        "detail": "kitchen food=0",
+        "eventIds": []
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_a",
+      "from": "dorm",
+      "to": "kitchen",
+      "eventId": "e1",
+      "seq": 9,
+      "commandId": "e8"
+    },
+    {
+      "type": "FoodConsumed",
+      "location": "kitchen",
+      "amount": 1,
+      "before": 1,
+      "after": 0,
+      "eventId": "e2",
+      "seq": 10,
+      "commandId": "e9"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_a",
+      "before": 40,
+      "after": 70,
+      "eventId": "e3",
+      "seq": 10,
+      "commandId": "e9"
+    }
+  ],
+  "finalState": {
+    "tick": 10,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 70
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 0
+    }
+  }
+}

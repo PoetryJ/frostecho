@@ -1,0 +1,13 @@
+{
+  "name": "gospel-rebuild",
+  "version": "0.0.1",
+  "private": true,
+  "description": "G00: minimal action execution & event replay kernel",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test dist/tests/",
+    "demo": "npm run build && node dist/scripts/demo.js",
+    "manifest": "node scripts/manifest.mjs"
+  },
+  "devDependencies": { "@types/node": "^20", "typescript": "^5" }
+}

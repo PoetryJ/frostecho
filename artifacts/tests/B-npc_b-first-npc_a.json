@@ -1,0 +1,155 @@
+{
+  "scenario": "B-npc_b-first-npc_a",
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "log": [
+    {
+      "seq": 1,
+      "command": {
+        "commandId": "m_a",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "result": {
+        "commandId": "m_a",
+        "seq": 1,
+        "status": "accepted",
+        "eventIds": [
+          "e1"
+        ]
+      }
+    },
+    {
+      "seq": 2,
+      "command": {
+        "commandId": "m_b",
+        "actorId": "npc_b",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "result": {
+        "commandId": "m_b",
+        "seq": 2,
+        "status": "accepted",
+        "eventIds": [
+          "e2"
+        ]
+      }
+    },
+    {
+      "seq": 3,
+      "command": {
+        "commandId": "eat_npc_b",
+        "actorId": "npc_b",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "eat_npc_b",
+        "seq": 3,
+        "status": "accepted",
+        "eventIds": [
+          "e3",
+          "e4"
+        ]
+      }
+    },
+    {
+      "seq": 4,
+      "command": {
+        "commandId": "eat_npc_a",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "eat_npc_a",
+        "seq": 4,
+        "status": "rejected",
+        "reason": "NO_FOOD",
+        "detail": "kitchen food=0",
+        "eventIds": []
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_a",
+      "from": "dorm",
+      "to": "kitchen",
+      "eventId": "e1",
+      "seq": 1,
+      "commandId": "m_a"
+    },
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_b",
+      "from": "dorm",
+      "to": "kitchen",
+      "eventId": "e2",
+      "seq": 2,
+      "commandId": "m_b"
+    },
+    {
+      "type": "FoodConsumed",
+      "location": "kitchen",
+      "amount": 1,
+      "before": 1,
+      "after": 0,
+      "eventId": "e3",
+      "seq": 3,
+      "commandId": "eat_npc_b"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_b",
+      "before": 20,
+      "after": 50,
+      "eventId": "e4",
+      "seq": 3,
+      "commandId": "eat_npc_b"
+    }
+  ],
+  "finalState": {
+    "tick": 3,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "kitchen",
+        "hunger": 50
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 0
+    }
+  }
+}

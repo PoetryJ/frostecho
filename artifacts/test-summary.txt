@@ -1,0 +1,11 @@
+ok 1 - A: move to kitchen then eat
+ok 2 - A2: hunger clamps at 100
+ok 3 - B: contention for last food, order npc_a then npc_b
+ok 4 - B: contention for last food, order npc_b then npc_a
+ok 5 - C: duplicate successful command has no extra effect
+ok 6 - D: same commandId with different payload -> COMMAND_ID_CONFLICT
+ok 7 - E: invalid input / unmet preconditions leave state unchanged
+ok 8 - F: replay(initial, events) equals live final state; no executor called
+ok 9 - G: restore from save then retry completed command -> no duplicate effect
+ok 10 - Immutability: returned state/history cannot corrupt engine
+ok 11 - Determinism: same commands -> identical records (no wall clock)

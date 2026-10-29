@@ -1,0 +1,239 @@
+{
+  "scenario": "F",
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "log": [
+    {
+      "seq": 1,
+      "command": {
+        "commandId": "f1",
+        "actorId": "npc_b",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "result": {
+        "commandId": "f1",
+        "seq": 1,
+        "status": "accepted",
+        "eventIds": [
+          "e1"
+        ]
+      }
+    },
+    {
+      "seq": 2,
+      "command": {
+        "commandId": "f2",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "f2",
+        "seq": 2,
+        "status": "rejected",
+        "reason": "NOT_IN_KITCHEN",
+        "detail": "at dorm",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 3,
+      "command": {
+        "commandId": "f3",
+        "actorId": "npc_b",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "f3",
+        "seq": 3,
+        "status": "accepted",
+        "eventIds": [
+          "e2",
+          "e3"
+        ]
+      }
+    },
+    {
+      "seq": 4,
+      "command": {
+        "commandId": "f4",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "result": {
+        "commandId": "f4",
+        "seq": 4,
+        "status": "accepted",
+        "eventIds": [
+          "e4"
+        ]
+      }
+    },
+    {
+      "seq": 5,
+      "command": {
+        "commandId": "f5",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "f5",
+        "seq": 5,
+        "status": "rejected",
+        "reason": "NO_FOOD",
+        "detail": "kitchen food=0",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 6,
+      "command": {
+        "commandId": "f6",
+        "actorId": "npc_b",
+        "type": "move",
+        "payload": {
+          "to": "dorm"
+        }
+      },
+      "result": {
+        "commandId": "f6",
+        "seq": 6,
+        "status": "accepted",
+        "eventIds": [
+          "e5"
+        ]
+      }
+    },
+    {
+      "seq": 7,
+      "command": {
+        "commandId": "f3",
+        "actorId": "npc_b",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "f3",
+        "seq": 7,
+        "status": "duplicate",
+        "eventIds": [
+          "e2",
+          "e3"
+        ],
+        "originalSeq": 3,
+        "detail": "replay of original result: accepted"
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_b",
+      "from": "dorm",
+      "to": "kitchen",
+      "eventId": "e1",
+      "seq": 1,
+      "commandId": "f1"
+    },
+    {
+      "type": "FoodConsumed",
+      "location": "kitchen",
+      "amount": 1,
+      "before": 1,
+      "after": 0,
+      "eventId": "e2",
+      "seq": 3,
+      "commandId": "f3"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_b",
+      "before": 20,
+      "after": 50,
+      "eventId": "e3",
+      "seq": 3,
+      "commandId": "f3"
+    },
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_a",
+      "from": "dorm",
+      "to": "kitchen",
+      "eventId": "e4",
+      "seq": 4,
+      "commandId": "f4"
+    },
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_b",
+      "from": "kitchen",
+      "to": "dorm",
+      "eventId": "e5",
+      "seq": 6,
+      "commandId": "f6"
+    }
+  ],
+  "finalState": {
+    "tick": 6,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 50
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 0
+    }
+  },
+  "replayedState": {
+    "tick": 6,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 50
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 0
+    }
+  }
+}

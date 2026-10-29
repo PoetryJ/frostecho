@@ -1,0 +1,19 @@
+EXPERIMENTAL RULES: {"LOCATIONS":["dorm","kitchen"],"EAT_FOOD_COST":1,"EAT_HUNGER_RESTORE":30,"HUNGER_MIN":0,"HUNGER_MAX":100}
+INITIAL: kitchen.food=1 | npc_a@dorm hunger=40 | npc_b@dorm hunger=20
+#1 npc_a move {"to":"kitchen"} [c1] -> ACCEPTED events=e1
+     state: kitchen.food=1 | npc_a@kitchen hunger=40 | npc_b@dorm hunger=20
+#2 npc_b move {"to":"kitchen"} [c2] -> ACCEPTED events=e2
+     state: kitchen.food=1 | npc_a@kitchen hunger=40 | npc_b@kitchen hunger=20
+#3 npc_b eat {} [c3] -> ACCEPTED events=e3,e4
+     state: kitchen.food=0 | npc_a@kitchen hunger=40 | npc_b@kitchen hunger=50
+#4 npc_a eat {} [c4] -> REJECTED NO_FOOD (kitchen food=0)
+     state: kitchen.food=0 | npc_a@kitchen hunger=40 | npc_b@kitchen hunger=50
+#5 npc_b eat {} [c3] -> DUPLICATE (replay of original result: accepted) events=e3,e4
+     state: kitchen.food=0 | npc_a@kitchen hunger=40 | npc_b@kitchen hunger=50
+#6 npc_a eat {} [c3] -> REJECTED COMMAND_ID_CONFLICT (commandId reused with different content (original seq 3))
+     state: kitchen.food=0 | npc_a@kitchen hunger=40 | npc_b@kitchen hunger=50
+#7 ghost move {"to":"dorm"} [c5] -> REJECTED UNKNOWN_ACTOR (actor ghost not found)
+     state: kitchen.food=0 | npc_a@kitchen hunger=40 | npc_b@kitchen hunger=50
+#8 npc_a move {"to":"dorm"} [c6] -> ACCEPTED events=e5
+     state: kitchen.food=0 | npc_a@dorm hunger=40 | npc_b@kitchen hunger=50
+AFTER RESTORE retry c3 -> duplicate ; state: kitchen.food=0 | npc_a@dorm hunger=40 | npc_b@kitchen hunger=50
