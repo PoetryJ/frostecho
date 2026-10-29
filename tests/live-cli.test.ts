@@ -7,7 +7,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { initialWorld, replay, RULES } from '../src';
-import { DEFAULT_TIMEOUT_MS, HTTP_SAMPLING } from '../src/agent';
+import { HTTP_SAMPLING, LIVE_DECISION_TIMEOUT_MS } from '../src/agent';
 
 const DEMO = join('dist', 'scripts', 'demo.js');
 const DEMO_G01 = join('dist', 'scripts', 'demo-g01.js');
@@ -184,6 +184,8 @@ function assertSampling(body: Record<string, unknown>) {
   assert.equal(messages[0].content.includes('NpcMoved'), false);
   assert.match(messages[0].content, /hunger is satiety/);
   assert.match(messages[0].content, /Eat only in the kitchen/);
+  assert.match(messages[0].content, /already in the kitchen, foodHere is 0/);
+  assert.match(messages[0].content, /distant food is not observable/);
   assert.match(messages[0].content, new RegExp(`consumes ${RULES.EAT_FOOD_COST} food`));
   assert.match(messages[0].content, new RegExp(`restores ${RULES.EAT_HUNGER_RESTORE} hunger`));
   assert.match(messages[0].content, /Do not set actorId/);
@@ -356,7 +358,8 @@ test('fake HTTP happy path meets the goal three times, replays, and exits 0', as
       assert.deepEqual(record.meta.sampling, SAMPLING);
       assert.equal(record.meta.requestStats.retries, 0);
       assert.equal(record.meta.requestStats.maxDecisions, 5);
-      assert.equal(record.meta.requestStats.timeoutMs, DEFAULT_TIMEOUT_MS);
+      assert.equal(record.meta.requestStats.timeoutMs, LIVE_DECISION_TIMEOUT_MS);
+      assert.equal(LIVE_DECISION_TIMEOUT_MS, 30000);
       assert.equal(record.meta.requestStats.providerCalls, 2);
       assert.equal(summary.runs[i - 1].finalHunger, 70);
       assert.deepEqual(summary.runs[i - 1].commands, ['move', 'eat']);

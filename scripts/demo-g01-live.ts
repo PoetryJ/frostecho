@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { isAbsolute, relative, resolve, sep } from 'node:path';
 import { Engine, initialWorld } from '../src';
 import {
-  DEFAULT_TIMEOUT_MS, HTTP_ENV, LIVE_RUN_COUNT, RunResult, allocateLiveBatchDir, createHttpProvider,
+  HTTP_ENV, LIVE_DECISION_TIMEOUT_MS, LIVE_RUN_COUNT, RunResult, allocateLiveBatchDir, createHttpProvider,
   enableThinkingFromEnv, liveArtifactDir, liveExitCode, liveTimeoutMs, loadHttpConfigFromEnv, replayMatches,
   runAgent, summarizeLiveDir, writeLiveRun,
 } from '../src/agent';
@@ -45,7 +45,7 @@ async function main() {
   mkdirSync(root, { recursive: true });
   // Each invocation gets its own directory. Prior batches and any other files under root stay put.
   const batch = allocateLiveBatchDir(root);
-  const timeoutMs = liveTimeoutMs(process.env, DEFAULT_TIMEOUT_MS);
+  const timeoutMs = liveTimeoutMs(process.env, LIVE_DECISION_TIMEOUT_MS);
   const enableThinking = enableThinkingFromEnv(process.env);
   const secrets = [config.apiKey ?? '', config.url].filter(secret => secret.length > 0);
   const meta = { model: config.model, apiKeyPresent: Boolean(config.apiKey), timeoutMs, secrets, enableThinking };

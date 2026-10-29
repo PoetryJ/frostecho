@@ -12,6 +12,7 @@ test('reference policy moves, eats, or stops from its own input', () => {
   assert.equal(referenceDecision(input({ id: 'npc_a', location: 'dorm', hunger: 40, foodHere: 0, reachable: [...reachable] })), '{"type":"move","to":"kitchen"}');
   assert.equal(referenceDecision(input({ id: 'npc_a', location: 'kitchen', hunger: 40, foodHere: 1, reachable: [...reachable] })), '{"type":"eat"}');
   assert.equal(referenceDecision(input({ id: 'npc_a', location: 'kitchen', hunger: 40, foodHere: 0, reachable: [...reachable] })), '{"type":"stop"}');
+  assert.equal(referenceDecision(input({ id: 'npc_a', location: 'kitchen', hunger: 69, foodHere: 0, reachable: [...reachable] })), '{"type":"stop"}');
   assert.equal(referenceDecision(input({ id: 'npc_a', location: 'dorm', hunger: 70, foodHere: 0, reachable: [...reachable] })), '{"type":"stop"}');
 });
 

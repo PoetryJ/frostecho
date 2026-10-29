@@ -3,7 +3,7 @@ import readline from 'node:readline';
 import { tmpdir } from 'node:os';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 import {
-  DEFAULT_TIMEOUT_MS, HTTP_ENV, createHttpProvider, createReferenceProvider, enableThinkingFromEnv,
+  HTTP_ENV, LIVE_DECISION_TIMEOUT_MS, createHttpProvider, createReferenceProvider, enableThinkingFromEnv,
   liveTimeoutMs, loadHttpConfigFromEnv,
 } from '../src/agent';
 import { createPlayGame, parsePlayCommand, saveGameRecord } from '../src/play';
@@ -69,7 +69,7 @@ async function main() {
   }
 
   const id = batchId();
-  const timeoutMs = liveTimeoutMs(process.env, DEFAULT_TIMEOUT_MS);
+  const timeoutMs = liveTimeoutMs(process.env, LIVE_DECISION_TIMEOUT_MS);
   const game = createPlayGame({
     batchId: id,
     provider,

@@ -94,6 +94,8 @@ test('fixture eval runs 18 games, keeps scenario pass apart from the goal, and i
   assert.equal(out.summary.errors.decide, 0);
   assert.equal(out.summary.errors.execute, 6);
   assert.match(out.summary.notes.join('\n'), /default enable_thinking remains true/);
+  assert.match(out.summary.notes.join('\n'), /30000ms/);
+  assert.match(out.summary.notes.join('\n'), /No implicit retries/);
   const on = JSON.parse(readFileSync(join(root, 'fixture-unit', 'games', 's1-thinking-on-rep-1', 'events.json'), 'utf8'));
   const off = JSON.parse(readFileSync(join(root, 'fixture-unit', 'games', 's1-thinking-off-rep-1', 'events.json'), 'utf8'));
   assert.deepEqual(on.map((event: { type: string }) => event.type), off.map((event: { type: string }) => event.type));

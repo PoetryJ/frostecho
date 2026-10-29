@@ -1,8 +1,8 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  Provider, ProviderTransportError, createHttpProvider, createReferenceProvider, enableThinkingFromEnv,
-  loadHttpConfigFromEnv,
+  LIVE_DECISION_TIMEOUT_MS, Provider, ProviderTransportError, createHttpProvider, createReferenceProvider,
+  enableThinkingFromEnv, liveTimeoutMs, loadHttpConfigFromEnv,
 } from '../agent';
 import { saveGameRecord } from './game';
 import { SCENARIO_IDS, ScenarioId, ScenarioJudgement, runScenario } from './scenarios';
@@ -102,7 +102,7 @@ function emptyScenarioMap(): G02Summary['byScenario'] {
 function isTransport(stepError: string | undefined, parseError: string | undefined): boolean {
   if (parseError === 'timeout' || parseError === 'provider_error') return true;
   if (!stepError) return false;
-  return stepError === 'timeout' || stepError === 'network error' || stepError === 'provider call cap' || /^http \d+$/.test(stepError);
+  return stepError === 'timeout' || stepError.startsWith('network error') || stepError === 'provider call cap' || /^http \d+$/.test(stepError);
 }
 
 function addStepErrors(bucket: ErrorCounts, judgement: ScenarioJudgement) {
@@ -202,6 +202,7 @@ export async function runG02Eval(options: G02EvalOptions): Promise<G02EvalOutput
     };
   }
 
+  const timeoutMs = options.timeoutMs ?? liveTimeoutMs(env, LIVE_DECISION_TIMEOUT_MS);
   const batchId = options.batchId ?? allocateG02BatchId(options.mode, options.now);
   const batchDir = join(options.root, batchId);
   mkdirSync(join(batchDir, 'games'), { recursive: true });
@@ -235,7 +236,7 @@ export async function runG02Eval(options: G02EvalOptions): Promise<G02EvalOutput
             batchId: gameId,
             thinking,
             mode: options.mode === 'live' && config ? 'live' : 'fixture',
-            timeoutMs: options.timeoutMs,
+            timeoutMs,
             now: options.now,
           });
           judgements.push(judgement);
@@ -300,6 +301,7 @@ export async function runG02Eval(options: G02EvalOptions): Promise<G02EvalOutput
     errors,
     notes: [
       'Production default enable_thinking remains true. This batch compares true and false and does not switch the default.',
+      `Decision timeout defaults to ${LIVE_DECISION_TIMEOUT_MS}ms so a thinking completion near 15s is not a false timeout. Override with FROSTECHO_LIVE_TIMEOUT_MS. No implicit retries.`,
       options.mode === 'fixture'
         ? 'mode=fixture uses the reference policy in process. It is not a real-model result.'
         : 'mode=live sends one HTTP chat completion at a time. Failures are not retried.',

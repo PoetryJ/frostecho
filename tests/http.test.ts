@@ -67,6 +67,10 @@ test('prompt states public eat rules and forbids actorId', () => {
   assert.match(prompt, /Do not set actorId/);
   assert.match(prompt, /Engine\.submit/);
   assert.match(prompt, /Distant food, other NPCs, and the global log are omitted/);
+  assert.match(prompt, /already in the kitchen, foodHere is 0, and hunger is below the goal/);
+  assert.match(prompt, /reply \{"type":"stop"\}/);
+  assert.match(prompt, /Do not move around looking for distant food/);
+  assert.match(prompt, /distant food is not observable/);
   assert.equal(prompt.includes('npc_b'), false);
   assert.equal(prompt.includes('sekret-xyz'), false);
 });
@@ -143,8 +147,29 @@ test('HTTP errors do not include the response body or the API key', async () => 
   });
   await assert.rejects(() => broken.decide(sample(), new AbortController().signal), (err: Error) => {
     assert.equal(err.name, 'ProviderTransportError');
-    assert.equal(err.message, 'network error');
+    assert.match(err.message, /^network error: connect \[redacted\]$/);
     assert.equal(err.message.includes(key), false);
+    const recorded = broken.consumeTransport?.();
+    assert.equal(recorded?.status, null);
+    assert.equal(recorded?.responseContent, null);
+    assert.equal(recorded?.error, err.message);
+    assert.equal(JSON.stringify(recorded).includes(key), false);
+    return true;
+  });
+
+  const refused = new Error('fetch failed');
+  (refused as { cause?: unknown }).cause = Object.assign(new Error(`connect ECONNREFUSED ${key}`), { code: 'ECONNREFUSED' });
+  const coded = createHttpProvider({
+    url: 'http://example.test/v1/chat/completions',
+    model: 'server-model',
+    apiKey: key,
+    fetchImpl: async () => { throw refused; },
+  });
+  await assert.rejects(() => coded.decide(sample(), new AbortController().signal), (err: Error) => {
+    assert.equal(err.name, 'ProviderTransportError');
+    assert.match(err.message, /^network error: ECONNREFUSED: connect ECONNREFUSED \[redacted\]/);
+    assert.equal(err.message.includes(key), false);
+    assert.equal(coded.consumeTransport?.()?.error, err.message);
     return true;
   });
 });

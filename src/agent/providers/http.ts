@@ -68,6 +68,7 @@ export function renderDecidePrompt(input: DecideInput): string {
     'hunger is satiety: higher means fuller.',
     `Eat only in the kitchen. Each eat consumes ${RULES.EAT_FOOD_COST} food and restores ${RULES.EAT_HUNGER_RESTORE} hunger, clamped to ${RULES.HUNGER_MIN}..${RULES.HUNGER_MAX}.`,
     'Observation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.',
+    'If you are already in the kitchen, foodHere is 0, and hunger is below the goal, reply {"type":"stop"}. Do not move around looking for distant food; distant food is not observable.',
     `goal: hunger >= ${input.goal.hungerAtLeast}`,
     `observation: ${JSON.stringify(input.observation)}`,
     `feedback: ${JSON.stringify(input.feedback)}`,
@@ -120,6 +121,41 @@ function messageContent(body: unknown): string {
   const text = textFromContent((message as { content?: unknown }).content);
   if (text === undefined) throw new ProviderTransportError('missing message content');
   return text;
+}
+
+function scrubText(value: string, secrets: string[]): string {
+  return secrets.reduce((out, secret) => (secret ? out.split(secret).join('[redacted]') : out), value);
+}
+
+/** Fetch failure text for the record. Codes and messages only; secrets are stripped. */
+function networkFailure(err: unknown, secrets: string[]): string {
+  const bits: string[] = [];
+  const push = (value: unknown) => {
+    if (typeof value !== 'string' || value.length === 0) return;
+    const text = scrubText(value, secrets).replace(/\s+/g, ' ').trim();
+    if (!text || bits.includes(text)) return;
+    bits.push(text);
+  };
+  const codeOf = (value: unknown): string | undefined => {
+    if (!value || typeof value !== 'object') return undefined;
+    const code = (value as { code?: unknown }).code;
+    return typeof code === 'string' && code.length > 0 ? code : undefined;
+  };
+  if (err instanceof Error) {
+    push(codeOf(err));
+    const cause = (err as { cause?: unknown }).cause;
+    push(codeOf(cause));
+    if (cause instanceof Error) push(cause.message);
+    else if (cause && typeof cause === 'object' && typeof (cause as { message?: unknown }).message === 'string') {
+      push((cause as { message: string }).message);
+    }
+    push(err.message);
+  } else if (typeof err === 'string') {
+    push(err);
+  }
+  const detail = bits.join(': ');
+  const clipped = detail.length > 300 ? detail.slice(0, 300) : detail;
+  return clipped ? `network error: ${clipped}` : 'network error';
 }
 
 function scrub(value: unknown, secrets: string[]): unknown {
@@ -205,8 +241,9 @@ export function createHttpProvider(config: HttpProviderConfig): Provider {
             markTimeout();
             throw abortError();
           }
-          record.error = 'network error';
-          throw new ProviderTransportError('network error');
+          const cause = networkFailure(err, secrets);
+          record.error = cause;
+          throw new ProviderTransportError(cause);
         }
         // Abort wins over a body that arrives later. That body is not the action.
         if (signal.aborted) {

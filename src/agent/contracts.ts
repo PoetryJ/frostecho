@@ -10,7 +10,13 @@ import type { CommandResult, Location, WorldEvent, WorldState } from '../types';
 
 export const GOAL_HUNGER_AT_LEAST = 70;
 export const MAX_PROVIDER_CALLS = 5;
+/** Runner default when a caller does not pass timeoutMs. */
 export const DEFAULT_TIMEOUT_MS = 15_000;
+/**
+ * Live and eval decision timeout. A thinking completion near 15s must not be aborted.
+ * FROSTECHO_LIVE_TIMEOUT_MS overrides this. There is no implicit retry.
+ */
+export const LIVE_DECISION_TIMEOUT_MS = 30_000;
 
 /** What one NPC can see. No other NPC, no other place's food, no global log. */
 export interface Observation {

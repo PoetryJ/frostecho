@@ -22,7 +22,7 @@ npm run manifest
 
 实模型入口是 `npm run demo:g01:live`。它只发 HTTP，没有参考策略兜底。`FROSTECHO_LLM_URL` 必须是完整的 chat/completions URL，`FROSTECHO_LLM_MODEL` 是服务器上的模型名。两者缺一，或只有空白，退出码 **2**，不发请求。`FROSTECHO_LLM_API_KEY` 可选，只放 `Authorization` 头，不写入记录、不进提示词。
 
-请求体固定为已验证的采样：`temperature: 0`，`max_tokens: 1024`，`stream: false`。`chat_template_kwargs.enable_thinking` 默认 **true**。`FROSTECHO_LLM_THINKING=false` 只关闭这一次请求的 thinking，不改变生产默认。解析只用 `choices[0].message.content`。`reasoning` / `reasoning_content` / thinking 不是动作。每一轮有超时（默认 15000ms），每轮最多 5 次决策，失败不自动重试。
+请求体固定为已验证的采样：`temperature: 0`，`max_tokens: 1024`，`stream: false`。`chat_template_kwargs.enable_thinking` 默认 **true**。`FROSTECHO_LLM_THINKING=false` 只关闭这一次请求的 thinking，不改变生产默认。解析只用 `choices[0].message.content`。`reasoning` / `reasoning_content` / thinking 不是动作。人已经在厨房、这里食物是 0、饥饿还没到目标时，提示词要求回复 `{"type":"stop"}`，不要为了看不见的远处食物来回移动。实模型每一轮超时默认 **30000ms**（`FROSTECHO_LIVE_TIMEOUT_MS` 可覆盖），避免大约 15 秒的 thinking 被当成超时。每轮最多 5 次决策，失败不自动重试。连接失败会记下不含密钥的 cause code 和 message，而不是只有一句 `network error`。
 
 连续 3 次都满足 hunger≥70 且事件重放与终态一致，并且元数据里的目标和调用次数与落盘的终态、步骤一致，退出码 **0**。任一失败、目标未达到、重放不一致或元数据对不上，退出码 **1**。三次网络尝试都失败时不会退出 0。每次启动新建 `artifacts/g01-live/batch-<时间>-<随机>/`，里面是 `run-1` … `run-3` 和 `summary.json`。已有批次和目录里的其他文件不会被删除。步骤里会记下实际请求体、响应内容、HTTP 状态、usage、耗时和错误；密钥和 URL 不落盘。`summary.json` 用终态重算 hunger≥70，并用步骤条数核对调用次数，不信任内存里的另一份结果。
 
@@ -35,7 +35,7 @@ npm test
 npm run eval:g02
 ```
 
-`npm run eval:g02` 串行打 18 局（S1/S2/S3 × 3 次 × thinking 开/关），最多 90 次请求，失败不重试，不改共享 GPU 的采样。生产默认仍是 thinking=true。结果在 `artifacts/g02/<batch>/`。没有那两个环境变量时退出码 **2**。只想检查夹具、不打实模型：`npm run eval:g02 -- --fixture`（这不是实模型成功）。
+`npm run eval:g02` 串行打 18 局（S1/S2/S3 × 3 次 × thinking 开/关），最多 90 次请求，决策超时默认 30000ms，失败不重试，不改共享 GPU 的采样。生产默认仍是 thinking=true。结果在 `artifacts/g02/<batch>/`。没有那两个环境变量时退出码 **2**。只想检查夹具、不打实模型：`npm run eval:g02 -- --fixture`（这不是实模型成功）。模型进程被停掉之后要先在 Windows 上把服务拉起来，这里不会重启共享 GPU。
 
 `npm run demo:g01:live` 仍是 G01 的三次实跑，写入一个新的 `artifacts/g01-live/batch-*/`。
 
