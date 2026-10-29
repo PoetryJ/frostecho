@@ -164,7 +164,7 @@ function jsonRestore(eng: Engine) {
   return Engine.restore(JSON.parse(JSON.stringify(eng.save())) as SaveData);
 }
 
-for (const actorId of ['toString', 'constructor', 'proto']) {
+for (const actorId of ['toString', 'constructor', 'proto', '__proto__']) {
   test(`H: move actorId ${actorId} -> UNKNOWN_ACTOR, no throw, state and events unchanged`, () => {
     const eng = new Engine(initialWorld());
     const before = eng.getState();

@@ -331,22 +331,24 @@ test('same initial state, runId, and reference policy produce identical actions,
   assert.deepEqual(replay(first.initialState, first.events), first.finalState);
 });
 
-test('actorId proto is not submitted by the runner', async () => {
-  const eng = new Engine(initialWorld());
-  const port = countingWorld(eng);
-  const result = await runAgent({
-    world: port,
-    provider: createReferenceProvider(),
-    actorId: 'proto',
-    runId: 'proto-run',
+for (const actorId of ['proto', '__proto__']) {
+  test(`actorId ${actorId} is not submitted by the runner`, async () => {
+    const eng = new Engine(initialWorld());
+    const port = countingWorld(eng);
+    const result = await runAgent({
+      world: port,
+      provider: createReferenceProvider(),
+      actorId,
+      runId: 'proto-run',
+    });
+    assert.equal(result.outcome, 'invalid_run');
+    assert.equal(result.goalReached, false);
+    assert.equal(result.providerCalls, 0);
+    assert.equal(port.submits(), 0);
+    assert.deepEqual(eng.getEvents(), []);
+    assert.equal(eng.getLog().length, 0);
   });
-  assert.equal(result.outcome, 'invalid_run');
-  assert.equal(result.goalReached, false);
-  assert.equal(result.providerCalls, 0);
-  assert.equal(port.submits(), 0);
-  assert.deepEqual(eng.getEvents(), []);
-  assert.equal(eng.getLog().length, 0);
-});
+}
 
 test('already full hunger is success without a provider call', async () => {
   const world = initialWorld();

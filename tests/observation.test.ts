@@ -55,7 +55,7 @@ test('observation does not mutate the world and reachable is a copy', () => {
 
 test('prototype actor ids are not observable NPCs', () => {
   const state = initialWorld();
-  for (const actorId of ['proto', 'toString', 'constructor']) {
+  for (const actorId of ['proto', 'toString', 'constructor', '__proto__']) {
     assert.throws(() => observe(state, actorId), new RegExp(`unknown actor ${actorId}`));
   }
 });

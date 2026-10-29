@@ -2,9 +2,9 @@ import assert from 'node:assert/strict';
 import { createServer, Server } from 'node:http';
 import { AddressInfo } from 'node:net';
 import { test } from 'node:test';
-import { Engine, initialWorld } from '../src';
+import { Engine, initialWorld, RULES } from '../src';
 import {
-  DecideInput, ProviderTransportError, createHttpProvider, loadHttpConfigFromEnv, renderDecidePrompt, runAgent,
+  DecideInput, HTTP_SAMPLING, ProviderTransportError, createHttpProvider, loadHttpConfigFromEnv, renderDecidePrompt, runAgent,
 } from '../src/agent';
 import { countingWorld, delay, writeTrace } from './agent-helpers';
 
@@ -56,6 +56,20 @@ test('prompt is only the decide input', () => {
   assert.match(prompt, /"id":"npc_a"/);
 });
 
+test('prompt states public eat rules and forbids actorId', () => {
+  const prompt = renderDecidePrompt(sample());
+  assert.match(prompt, /hunger is satiety/);
+  assert.match(prompt, /Eat only in the kitchen/);
+  assert.match(prompt, new RegExp(`consumes ${RULES.EAT_FOOD_COST} food`));
+  assert.match(prompt, new RegExp(`restores ${RULES.EAT_HUNGER_RESTORE} hunger`));
+  assert.match(prompt, new RegExp(`clamped to ${RULES.HUNGER_MIN}\\.\\.${RULES.HUNGER_MAX}`));
+  assert.match(prompt, /Do not set actorId/);
+  assert.match(prompt, /Engine\.submit/);
+  assert.match(prompt, /Distant food, other NPCs, and the global log are omitted/);
+  assert.equal(prompt.includes('npc_b'), false);
+  assert.equal(prompt.includes('sekret-xyz'), false);
+});
+
 test('HTTP adapter posts chat completions to the full URL and reads message content', async () => {
   let seenUrl = '';
   let seenAuth: string | undefined;
@@ -79,7 +93,14 @@ test('HTTP adapter posts chat completions to the full URL and reads message cont
   assert.equal(seenUrl, 'http://example.test/v1/chat/completions');
   assert.equal(seenAuth, `Bearer ${key}`);
   assert.equal(body.model, 'server-model');
+  assert.equal(body.temperature, 0);
+  assert.equal(body.max_tokens, 1024);
   assert.equal(body.stream, false);
+  assert.deepEqual(body.chat_template_kwargs, { enable_thinking: true });
+  assert.deepEqual(body.chat_template_kwargs, HTTP_SAMPLING.chat_template_kwargs);
+  assert.equal(body.temperature, HTTP_SAMPLING.temperature);
+  assert.equal(body.max_tokens, HTTP_SAMPLING.max_tokens);
+  assert.equal(body.stream, HTTP_SAMPLING.stream);
   const messages = body.messages as { role: string; content: string }[];
   assert.equal(messages.length, 1);
   assert.equal(messages[0].role, 'user');
@@ -158,11 +179,22 @@ test('fake chat completions server: move then eat, and a transport error submits
     req.on('end', () => {
       const raw = Buffer.concat(chunks).toString('utf8');
       bodies.push(raw);
-      const parsed = JSON.parse(raw) as { model?: string; messages?: { content?: string }[] };
+      const parsed = JSON.parse(raw) as {
+        model?: string;
+        temperature?: number;
+        max_tokens?: number;
+        stream?: boolean;
+        chat_template_kwargs?: { enable_thinking?: boolean };
+        messages?: { content?: string }[];
+      };
       assert.equal(req.method, 'POST');
       assert.equal(req.url, '/v1/chat/completions');
       assert.equal(req.headers.authorization, 'Bearer test-key');
       assert.equal(parsed.model, 'server-model');
+      assert.equal(parsed.temperature, 0);
+      assert.equal(parsed.max_tokens, 1024);
+      assert.equal(parsed.stream, false);
+      assert.deepEqual(parsed.chat_template_kwargs, { enable_thinking: true });
       const content = parsed.messages?.[0]?.content ?? '';
       assert.equal(content.includes('npc_b'), false);
       assert.equal(content.includes('test-key'), false);
@@ -253,4 +285,105 @@ test('HTTP timeout aborts the request and submits nothing', async () => {
   assert.equal(eng.getEvents().length, 0);
   assert.equal(JSON.stringify(result).includes('sekret-xyz'), false);
   writeTrace('http-timeout', result);
+});
+
+test('reasoning fields are not actions; only message content is returned', async () => {
+  const bodies: Record<string, unknown>[] = [];
+  const provider = createHttpProvider({
+    url: 'http://example.test/v1/chat/completions',
+    model: 'server-model',
+    apiKey: 'sekret-xyz',
+    fetchImpl: async (_url, init) => {
+      bodies.push(JSON.parse(String(init?.body)));
+      return new Response(JSON.stringify({
+        choices: [{
+          message: {
+            content: '{"type":"stop"}',
+            reasoning_content: '{"type":"move","to":"kitchen"}',
+            reasoning: '{"type":"eat"}',
+            thinking: '{"type":"eat"}',
+          },
+        }],
+      }), { status: 200 });
+    },
+  });
+  const eng = new Engine(initialWorld());
+  const counted = countingWorld(eng);
+  const result = await runAgent({
+    world: counted,
+    provider,
+    actorId: 'npc_a',
+    runId: 'ignore-reasoning',
+    now: () => 0,
+  });
+  assert.equal(result.steps[0].raw, '{"type":"stop"}');
+  assert.equal(result.outcome, 'stopped');
+  assert.equal(counted.submits(), 0);
+  assert.equal(eng.getState().npcs.npc_a.location, 'dorm');
+  assert.equal(eng.getState().npcs.npc_a.hunger, 40);
+  assert.equal(bodies.length, 1);
+  assert.equal(bodies[0].temperature, 0);
+  assert.equal(bodies[0].max_tokens, 1024);
+  assert.equal(bodies[0].stream, false);
+  assert.deepEqual(bodies[0].chat_template_kwargs, { enable_thinking: true });
+
+  const onlyReasoning = createHttpProvider({
+    url: 'http://example.test/v1/chat/completions',
+    model: 'server-model',
+    fetchImpl: async () => new Response(JSON.stringify({
+      choices: [{ message: { reasoning_content: '{"type":"eat"}', reasoning: '{"type":"move","to":"kitchen"}' } }],
+    }), { status: 200 }),
+  });
+  await assert.rejects(() => onlyReasoning.decide(sample(), new AbortController().signal), (err: Error) => {
+    assert.equal(err.name, 'ProviderTransportError');
+    assert.equal(err.message, 'missing message content');
+    return true;
+  });
+
+  const nullContent = createHttpProvider({
+    url: 'http://example.test/v1/chat/completions',
+    model: 'server-model',
+    fetchImpl: async () => new Response(JSON.stringify({
+      choices: [{ message: { content: null, reasoning_content: '{"type":"eat"}' } }],
+    }), { status: 200 }),
+  });
+  await assert.rejects(() => nullContent.decide(sample(), new AbortController().signal), (err: Error) => {
+    assert.equal(err.message, 'missing message content');
+    return true;
+  });
+
+  const emptyContent = createHttpProvider({
+    url: 'http://example.test/v1/chat/completions',
+    model: 'server-model',
+    fetchImpl: async () => new Response(JSON.stringify({
+      choices: [{ message: { content: '', reasoning_content: '{"type":"eat"}' } }],
+    }), { status: 200 }),
+  });
+  assert.equal(await emptyContent.decide(sample(), new AbortController().signal), '');
+
+  const mixedParts = createHttpProvider({
+    url: 'http://example.test/v1/chat/completions',
+    model: 'server-model',
+    fetchImpl: async () => new Response(JSON.stringify({
+      choices: [{
+        message: {
+          content: [
+            { type: 'reasoning', text: '{"type":"eat"}' },
+            { type: 'thinking', text: '{"type":"move","to":"kitchen"}' },
+            { type: 'text', text: '{"type":"stop"}' },
+          ],
+        },
+      }],
+    }), { status: 200 }),
+  });
+  assert.equal(await mixedParts.decide(sample(), new AbortController().signal), '{"type":"stop"}');
+
+  const reasoningOnlyParts = createHttpProvider({
+    url: 'http://example.test/v1/chat/completions',
+    model: 'server-model',
+    fetchImpl: async () => new Response(JSON.stringify({
+      choices: [{ message: { content: [{ type: 'reasoning', text: '{"type":"eat"}' }] } }],
+    }), { status: 200 }),
+  });
+  await assert.rejects(() => reasoningOnlyParts.decide(sample(), new AbortController().signal), /missing message content/);
 });

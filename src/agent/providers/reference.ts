@@ -4,16 +4,17 @@ import { DecideInput, Provider } from '../contracts';
  * Offline policy. Reads only DecideInput (observation + goal). Feedback is not
  * consulted; the next observation already reflects the world.
  *
- * 1. Not full and not in the kitchen → move to kitchen.
- * 2. In the kitchen with food here → eat.
- * 3. Otherwise (no food, or already full) → stop.
+ * 1. Already at the hunger goal → stop, including in the kitchen with food left.
+ * 2. Not in the kitchen → move to kitchen.
+ * 3. In the kitchen with food here → eat.
+ * 4. Otherwise → stop.
  * Stop is a decision, not a world command.
  */
 export function referenceDecision(input: DecideInput): string {
   const { observation, goal } = input;
-  const full = observation.hunger >= goal.hungerAtLeast;
-  if (!full && observation.location !== 'kitchen') return '{"type":"move","to":"kitchen"}';
-  if (observation.location === 'kitchen' && observation.foodHere > 0) return '{"type":"eat"}';
+  if (observation.hunger >= goal.hungerAtLeast) return '{"type":"stop"}';
+  if (observation.location !== 'kitchen') return '{"type":"move","to":"kitchen"}';
+  if (observation.foodHere > 0) return '{"type":"eat"}';
   return '{"type":"stop"}';
 }
 

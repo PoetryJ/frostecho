@@ -1,0 +1,63 @@
+{
+  "scenario": "H-__proto__",
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "log": [
+    {
+      "seq": 1,
+      "command": {
+        "commandId": "h-__proto__",
+        "actorId": "__proto__",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "result": {
+        "commandId": "h-__proto__",
+        "seq": 1,
+        "status": "rejected",
+        "reason": "UNKNOWN_ACTOR",
+        "detail": "actor __proto__ not found",
+        "eventIds": []
+      }
+    }
+  ],
+  "events": [],
+  "finalState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  }
+}
