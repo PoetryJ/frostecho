@@ -418,11 +418,18 @@ export interface G02Verification {
 export function verifyG02Batch(batchDir: string, repoRoot: string = process.cwd()): G02Verification {
   const batch = JSON.parse(readFileSync(join(batchDir, 'batch.json'), 'utf8')) as { batchId: string; plan: unknown[]; version: VersionInfo };
   const stored = JSON.parse(readFileSync(join(batchDir, 'summary.json'), 'utf8')) as G02Summary;
+  const rootIssues: string[] = [];
+  for (const [name, value] of [['batch.json', batch], ['summary.json', stored]] as const) {
+    if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+      rootIssues.push(`${name} root is not a non-null object`);
+    }
+  }
+  if (rootIssues.length > 0) return { ok: false, issues: rootIssues, provesCurrentSource: false };
   const rebuilt = summarizeBatchDir(batchDir, batch.batchId, batch.plan.length);
   const issues = [...rebuilt.issues];
   if (JSON.stringify(stored.rebuilt) !== JSON.stringify(rebuilt)) issues.push('summary.json does not match a rebuild from disk');
   if (stored.requestCount !== rebuilt.global.forwardedCalls || stored.httpRequests !== rebuilt.global.httpRequests) issues.push('summary.json request counts tampered');
   if (stored.gamesRun !== rebuilt.byStatus.pass + rebuilt.byStatus.behavior_fail) issues.push('summary.json gamesRun tampered');
-  const provesCurrentSource = batch.version.sourceFingerprint === sourceFingerprint(repoRoot) && batch.version.dirty === false;
+  const provesCurrentSource = batch.version?.sourceFingerprint === sourceFingerprint(repoRoot) && batch.version?.dirty === false;
   return { ok: issues.length === 0, issues, provesCurrentSource };
 }

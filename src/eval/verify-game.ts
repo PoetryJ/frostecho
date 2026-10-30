@@ -56,14 +56,27 @@ export function verifyGameEvidence(gameDir: string): GameEvidenceVerification {
     ? readJsonFile(join(gameDir, 'game.json'), 'game.json', issues)
     : undefined;
   if (gameRaw === undefined || gameRaw === null || typeof gameRaw !== 'object' || Array.isArray(gameRaw)) {
+    if (present.get('game.json')) issues.push('game.json root is not a non-null object');
     return { ok: false, issues, game: null };
   }
   const game = gameRaw as GameRecord;
-  const meta = present.get('meta.json')
-    ? readJsonFile(join(gameDir, 'meta.json'), 'meta.json', issues) as Record<string, unknown> | undefined
+  const metaRaw = present.get('meta.json')
+    ? readJsonFile(join(gameDir, 'meta.json'), 'meta.json', issues)
     : undefined;
-  const replayFile = present.get('replay.json')
-    ? readJsonFile(join(gameDir, 'replay.json'), 'replay.json', issues) as { matches?: unknown } | undefined
+  if (metaRaw !== undefined && (metaRaw === null || typeof metaRaw !== 'object' || Array.isArray(metaRaw))) {
+    issues.push('meta.json root is not a non-null object');
+  }
+  const meta = (metaRaw !== undefined && metaRaw !== null && typeof metaRaw === 'object' && !Array.isArray(metaRaw))
+    ? metaRaw as Record<string, unknown>
+    : undefined;
+  const replayRaw = present.get('replay.json')
+    ? readJsonFile(join(gameDir, 'replay.json'), 'replay.json', issues)
+    : undefined;
+  if (replayRaw !== undefined && (replayRaw === null || typeof replayRaw !== 'object' || Array.isArray(replayRaw))) {
+    issues.push('replay.json root is not a non-null object');
+  }
+  const replayFile = (replayRaw !== undefined && replayRaw !== null && typeof replayRaw === 'object' && !Array.isArray(replayRaw))
+    ? replayRaw as { matches?: unknown }
     : undefined;
 
   // 2. sidecar files must canonically equal the matching game.json content
