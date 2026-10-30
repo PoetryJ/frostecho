@@ -1,0 +1,403 @@
+{
+  "schema": "frostecho.g02.summary/2",
+  "mode": "live",
+  "realModel": true,
+  "model": "qwen3.8-27b",
+  "thinkingDefault": true,
+  "batchId": "g02-r1-live-18",
+  "gamesPlanned": 18,
+  "gamesRun": 18,
+  "maxProviderCalls": 90,
+  "requestCount": 42,
+  "httpRequests": 42,
+  "decisionCalls": 42,
+  "budgetIntercepts": 0,
+  "callCapExceeded": false,
+  "serial": true,
+  "retries": 0,
+  "gate": {
+    "size": 6,
+    "passed": true
+  },
+  "stopReason": "completed",
+  "health": {
+    "ok": true,
+    "checkedAt": "2026-10-30T03:31:40.818Z",
+    "modelsUrlPath": "/v1/models",
+    "status": 200,
+    "models": [
+      "qwen3.8-27b"
+    ],
+    "expectedModel": "qwen3.8-27b",
+    "modelMatch": true,
+    "kind": null,
+    "error": null,
+    "latencyMs": 80
+  },
+  "byScenario": {
+    "s1": {
+      "games": 6,
+      "scenarioPass": 6,
+      "passRate": 1,
+      "goalReached": 6
+    },
+    "s2": {
+      "games": 6,
+      "scenarioPass": 6,
+      "passRate": 1,
+      "goalReached": 0
+    },
+    "s3": {
+      "games": 6,
+      "scenarioPass": 6,
+      "passRate": 1,
+      "goalReached": 0
+    }
+  },
+  "byThinking": {
+    "true": {
+      "games": 9,
+      "scenarioPass": 9,
+      "passRate": 1,
+      "goalReached": 3,
+      "requestCount": 21,
+      "httpRequests": 21,
+      "decisionCalls": 21,
+      "budgetIntercepts": 0,
+      "latencyMs": 139955,
+      "promptTokens": 5856,
+      "completionTokens": 2427,
+      "totalTokens": 8283,
+      "usageKnownRequests": 21,
+      "usageUnknownRequests": 0,
+      "errors": {
+        "transport": 0,
+        "parse": 0,
+        "decide": 0,
+        "execute": 0,
+        "s3ExpectedNoFood": 3
+      }
+    },
+    "false": {
+      "games": 9,
+      "scenarioPass": 9,
+      "passRate": 1,
+      "goalReached": 3,
+      "requestCount": 21,
+      "httpRequests": 21,
+      "decisionCalls": 21,
+      "budgetIntercepts": 0,
+      "latencyMs": 11636,
+      "promptTokens": 5016,
+      "completionTokens": 171,
+      "totalTokens": 5187,
+      "usageKnownRequests": 21,
+      "usageUnknownRequests": 0,
+      "errors": {
+        "transport": 0,
+        "parse": 0,
+        "decide": 0,
+        "execute": 0,
+        "s3ExpectedNoFood": 3
+      }
+    }
+  },
+  "errors": {
+    "transport": 0,
+    "parse": 0,
+    "decide": 0,
+    "execute": 0,
+    "s3ExpectedNoFood": 6
+  },
+  "rebuilt": {
+    "schema": "frostecho.g02.summary/2",
+    "batchId": "g02-r1-live-18",
+    "planned": 18,
+    "byStatus": {
+      "pass": 18,
+      "behavior_fail": 0,
+      "interrupted": 0,
+      "not_run": 0
+    },
+    "combinations": [
+      {
+        "scenarioId": "s1",
+        "thinking": true,
+        "planned": 3,
+        "valid": 3,
+        "pass": 3,
+        "behaviorFail": 0,
+        "interrupted": 0,
+        "notRun": 0,
+        "goalReached": 3,
+        "counters": {
+          "decisionCalls": 6,
+          "forwardedCalls": 6,
+          "httpRequests": 6,
+          "budgetIntercepts": 0,
+          "latencyMs": 42585,
+          "usage": {
+            "promptTokens": 1656,
+            "completionTokens": 738,
+            "totalTokens": 2394,
+            "knownRequests": 6,
+            "unknownRequests": 0
+          },
+          "errors": {
+            "transport": 0,
+            "parse": 0,
+            "decide": 0,
+            "execute": 0,
+            "s3ExpectedNoFood": 0
+          }
+        }
+      },
+      {
+        "scenarioId": "s1",
+        "thinking": false,
+        "planned": 3,
+        "valid": 3,
+        "pass": 3,
+        "behaviorFail": 0,
+        "interrupted": 0,
+        "notRun": 0,
+        "goalReached": 3,
+        "counters": {
+          "decisionCalls": 6,
+          "forwardedCalls": 6,
+          "httpRequests": 6,
+          "budgetIntercepts": 0,
+          "latencyMs": 3468,
+          "usage": {
+            "promptTokens": 1416,
+            "completionTokens": 51,
+            "totalTokens": 1467,
+            "knownRequests": 6,
+            "unknownRequests": 0
+          },
+          "errors": {
+            "transport": 0,
+            "parse": 0,
+            "decide": 0,
+            "execute": 0,
+            "s3ExpectedNoFood": 0
+          }
+        }
+      },
+      {
+        "scenarioId": "s2",
+        "thinking": true,
+        "planned": 3,
+        "valid": 3,
+        "pass": 3,
+        "behaviorFail": 0,
+        "interrupted": 0,
+        "notRun": 0,
+        "goalReached": 0,
+        "counters": {
+          "decisionCalls": 6,
+          "forwardedCalls": 6,
+          "httpRequests": 6,
+          "budgetIntercepts": 0,
+          "latencyMs": 37055,
+          "usage": {
+            "promptTokens": 1656,
+            "completionTokens": 642,
+            "totalTokens": 2298,
+            "knownRequests": 6,
+            "unknownRequests": 0
+          },
+          "errors": {
+            "transport": 0,
+            "parse": 0,
+            "decide": 0,
+            "execute": 0,
+            "s3ExpectedNoFood": 0
+          }
+        }
+      },
+      {
+        "scenarioId": "s2",
+        "thinking": false,
+        "planned": 3,
+        "valid": 3,
+        "pass": 3,
+        "behaviorFail": 0,
+        "interrupted": 0,
+        "notRun": 0,
+        "goalReached": 0,
+        "counters": {
+          "decisionCalls": 6,
+          "forwardedCalls": 6,
+          "httpRequests": 6,
+          "budgetIntercepts": 0,
+          "latencyMs": 3441,
+          "usage": {
+            "promptTokens": 1416,
+            "completionTokens": 51,
+            "totalTokens": 1467,
+            "knownRequests": 6,
+            "unknownRequests": 0
+          },
+          "errors": {
+            "transport": 0,
+            "parse": 0,
+            "decide": 0,
+            "execute": 0,
+            "s3ExpectedNoFood": 0
+          }
+        }
+      },
+      {
+        "scenarioId": "s3",
+        "thinking": true,
+        "planned": 3,
+        "valid": 3,
+        "pass": 3,
+        "behaviorFail": 0,
+        "interrupted": 0,
+        "notRun": 0,
+        "goalReached": 0,
+        "counters": {
+          "decisionCalls": 9,
+          "forwardedCalls": 9,
+          "httpRequests": 9,
+          "budgetIntercepts": 0,
+          "latencyMs": 60315,
+          "usage": {
+            "promptTokens": 2544,
+            "completionTokens": 1047,
+            "totalTokens": 3591,
+            "knownRequests": 9,
+            "unknownRequests": 0
+          },
+          "errors": {
+            "transport": 0,
+            "parse": 0,
+            "decide": 0,
+            "execute": 0,
+            "s3ExpectedNoFood": 3
+          }
+        }
+      },
+      {
+        "scenarioId": "s3",
+        "thinking": false,
+        "planned": 3,
+        "valid": 3,
+        "pass": 3,
+        "behaviorFail": 0,
+        "interrupted": 0,
+        "notRun": 0,
+        "goalReached": 0,
+        "counters": {
+          "decisionCalls": 9,
+          "forwardedCalls": 9,
+          "httpRequests": 9,
+          "budgetIntercepts": 0,
+          "latencyMs": 4727,
+          "usage": {
+            "promptTokens": 2184,
+            "completionTokens": 69,
+            "totalTokens": 2253,
+            "knownRequests": 9,
+            "unknownRequests": 0
+          },
+          "errors": {
+            "transport": 0,
+            "parse": 0,
+            "decide": 0,
+            "execute": 0,
+            "s3ExpectedNoFood": 3
+          }
+        }
+      }
+    ],
+    "byThinking": {
+      "true": {
+        "decisionCalls": 21,
+        "forwardedCalls": 21,
+        "httpRequests": 21,
+        "budgetIntercepts": 0,
+        "latencyMs": 139955,
+        "usage": {
+          "promptTokens": 5856,
+          "completionTokens": 2427,
+          "totalTokens": 8283,
+          "knownRequests": 21,
+          "unknownRequests": 0
+        },
+        "errors": {
+          "transport": 0,
+          "parse": 0,
+          "decide": 0,
+          "execute": 0,
+          "s3ExpectedNoFood": 3
+        },
+        "games": 9,
+        "pass": 9
+      },
+      "false": {
+        "decisionCalls": 21,
+        "forwardedCalls": 21,
+        "httpRequests": 21,
+        "budgetIntercepts": 0,
+        "latencyMs": 11636,
+        "usage": {
+          "promptTokens": 5016,
+          "completionTokens": 171,
+          "totalTokens": 5187,
+          "knownRequests": 21,
+          "unknownRequests": 0
+        },
+        "errors": {
+          "transport": 0,
+          "parse": 0,
+          "decide": 0,
+          "execute": 0,
+          "s3ExpectedNoFood": 3
+        },
+        "games": 9,
+        "pass": 9
+      }
+    },
+    "global": {
+      "decisionCalls": 42,
+      "forwardedCalls": 42,
+      "httpRequests": 42,
+      "budgetIntercepts": 0,
+      "latencyMs": 151591,
+      "usage": {
+        "promptTokens": 10872,
+        "completionTokens": 2598,
+        "totalTokens": 13470,
+        "knownRequests": 42,
+        "unknownRequests": 0
+      },
+      "errors": {
+        "transport": 0,
+        "parse": 0,
+        "decide": 0,
+        "execute": 0,
+        "s3ExpectedNoFood": 6
+      }
+    },
+    "notRun": [],
+    "interrupted": [],
+    "issues": [],
+    "complete": true,
+    "success": true
+  },
+  "notes": [
+    "Production default enable_thinking remains true. This batch compares true and false and does not switch the default.",
+    "Decision timeout defaults to 30000ms so a thinking completion near 15s is not a false timeout. Override with FROSTECHO_LIVE_TIMEOUT_MS. No implicit retries.",
+    "mode=live sends one HTTP chat completion at a time. Failures are not retried. The harness never restarts the model service.",
+    "Order is paired: rep → scenario → thinking on/off. Rep 1 (one game per combination) is the gate; reps 2..3 run only if the gate passes.",
+    "scenarioPass is separate from goalReached. S2 and S3 pass when A stops with hunger still 40. stop is never goalReached.",
+    "S3 stale-observe NO_FOOD is counted in errors.s3ExpectedNoFood, not in errors.execute.",
+    "requestCount = calls forwarded past the local budget; httpRequests = chat completions actually sent; budgetIntercepts = local refusals.",
+    "Token totals cover only requests whose response had usage; usageUnknownRequests counts the rest (never assumed 0).",
+    "Evidence is tied to commit 95ffb2e96760574d7d3662021f9441cfd37f9a3c (dirty=false) and source beddadc44452; older artifacts do not prove this source.",
+    "thinking env default at process start: true"
+  ]
+}
