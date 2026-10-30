@@ -1,0 +1,150 @@
+{
+  "schema": "frostecho.g04.batch/1",
+  "batchId": "g04-live-20261030-r1",
+  "rows": [
+    {
+      "episodeId": "n1-ac-event",
+      "scenarioId": "n1",
+      "wakePolicy": "event",
+      "verdict": "pass",
+      "valid": true,
+      "issues": [],
+      "calls": 4,
+      "detail": "event: both wake, eat and reach 70, kitchen drains to 0"
+    },
+    {
+      "episodeId": "n1-ac-legacy",
+      "scenarioId": "n1",
+      "wakePolicy": "legacy",
+      "verdict": "pass",
+      "valid": true,
+      "issues": [],
+      "calls": 2,
+      "detail": "legacy: both stay stopped at 40, kitchen keeps 2"
+    },
+    {
+      "episodeId": "n1-ca-event",
+      "scenarioId": "n1",
+      "wakePolicy": "event",
+      "verdict": "pass",
+      "valid": true,
+      "issues": [],
+      "calls": 4,
+      "detail": "event: both wake, eat and reach 70, kitchen drains to 0"
+    },
+    {
+      "episodeId": "n1-ca-legacy",
+      "scenarioId": "n1",
+      "wakePolicy": "legacy",
+      "verdict": "pass",
+      "valid": true,
+      "issues": [],
+      "calls": 2,
+      "detail": "legacy: both stay stopped at 40, kitchen keeps 2"
+    },
+    {
+      "episodeId": "n2-ac-event",
+      "scenarioId": "n2",
+      "wakePolicy": "event",
+      "verdict": "pass",
+      "valid": true,
+      "issues": [],
+      "calls": 2,
+      "detail": "event: both wait, dorm food is invisible, 100 pumps add nothing"
+    },
+    {
+      "episodeId": "n2-ac-legacy",
+      "scenarioId": "n2",
+      "wakePolicy": "legacy",
+      "verdict": "pass",
+      "valid": true,
+      "issues": [],
+      "calls": 2,
+      "detail": "legacy: both keep stopped, dorm food is invisible"
+    },
+    {
+      "episodeId": "n2-ca-event",
+      "scenarioId": "n2",
+      "wakePolicy": "event",
+      "verdict": "pass",
+      "valid": true,
+      "issues": [],
+      "calls": 2,
+      "detail": "event: both wait, dorm food is invisible, 100 pumps add nothing"
+    },
+    {
+      "episodeId": "n2-ca-legacy",
+      "scenarioId": "n2",
+      "wakePolicy": "legacy",
+      "verdict": "pass",
+      "valid": true,
+      "issues": [],
+      "calls": 2,
+      "detail": "legacy: both keep stopped, dorm food is invisible"
+    },
+    {
+      "episodeId": "n3-ac-event",
+      "scenarioId": "n3",
+      "wakePolicy": "event",
+      "verdict": "pass",
+      "valid": true,
+      "issues": [],
+      "calls": 3,
+      "detail": "event: the interrupted stop wakes and both reach 70"
+    },
+    {
+      "episodeId": "n3-ac-legacy",
+      "scenarioId": "n3",
+      "wakePolicy": "legacy",
+      "verdict": "pass",
+      "valid": true,
+      "issues": [],
+      "calls": 2,
+      "detail": "legacy: the in-flight stop is not recovered, the second actor eats"
+    },
+    {
+      "episodeId": "n3-ca-event",
+      "scenarioId": "n3",
+      "wakePolicy": "event",
+      "verdict": "pass",
+      "valid": true,
+      "issues": [],
+      "calls": 3,
+      "detail": "event: the interrupted stop wakes and both reach 70"
+    },
+    {
+      "episodeId": "n3-ca-legacy",
+      "scenarioId": "n3",
+      "wakePolicy": "legacy",
+      "verdict": "pass",
+      "valid": true,
+      "issues": [],
+      "calls": 2,
+      "detail": "legacy: the in-flight stop is not recovered, the second actor eats"
+    }
+  ],
+  "totals": {
+    "episodes": 12,
+    "pass": 12,
+    "behavior_fail": 0,
+    "configuration_fail": 0,
+    "invalid": 0,
+    "interrupted": 0,
+    "notRun": 0,
+    "providerCalls": 30,
+    "replayMismatches": 0
+  },
+  "byPolicy": {
+    "event": {
+      "episodes": 6,
+      "pass": 6,
+      "calls": 18
+    },
+    "legacy": {
+      "episodes": 6,
+      "pass": 6,
+      "calls": 12
+    }
+  },
+  "issues": []
+}
