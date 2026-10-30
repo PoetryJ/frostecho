@@ -7,7 +7,7 @@
  * including interrupted ones, and the batch stops as soon as a transport
  * interruption latches.
  */
-import { mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Provider } from '../agent/contracts';
 import { createHttpProvider, loadHttpConfigFromEnv } from '../agent/providers/http';
@@ -172,9 +172,30 @@ export async function runG04Batch(options: G04BatchOptions): Promise<G04BatchRes
   return { exitCode: 0, batchDir, message, health };
 }
 
-/** Read-only settlement of an existing batch. */
+/**
+ * Read-only settlement of an existing batch.
+ * A missing/empty batch directory must never settle as "ok": an evidence
+ * verifier that passes on nothing is indistinguishable from a broken one.
+ */
 export function verifyG04Batch(batchDir: string): { exitCode: 0 | 1; summary: ReturnType<typeof summarizeReactiveBatchDir> } {
   const summary = summarizeReactiveBatchDir(batchDir);
+  const issues: string[] = [];
+  if (summary.rows.length === 0) issues.push(`no episodes found under ${join(batchDir, 'episodes')}`);
+  const batchFile = join(batchDir, 'batch.json');
+  if (!existsSync(batchFile)) {
+    issues.push('batch.json is missing');
+  } else {
+    try {
+      const batch = JSON.parse(readFileSync(batchFile, 'utf8')) as { plannedEpisodes?: unknown };
+      const planned = Array.isArray(batch.plannedEpisodes) ? batch.plannedEpisodes.filter((id): id is string => typeof id === 'string') : [];
+      const present = new Set(summary.rows.map(row => row.episodeId));
+      const missing = planned.filter(id => !present.has(id));
+      if (planned.length === 0) issues.push('batch.json has no plannedEpisodes');
+      for (const id of missing) issues.push(`${id}: planned but not persisted`);
+    } catch (err) {
+      issues.push(`batch.json is unreadable: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
   const bad = summary.rows.filter(row => row.verdict !== 'pass').length;
-  return { exitCode: bad === 0 ? 0 : 1, summary };
+  return { exitCode: bad === 0 && issues.length === 0 ? 0 : 1, summary: { ...summary, issues: [...summary.issues, ...issues] } };
 }

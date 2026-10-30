@@ -43,6 +43,7 @@ async function main(): Promise<void> {
   if (args.verify) {
     const { exitCode, summary } = verifyG04Batch(`${args.out}/${args.batch}`);
     log(`verify ${args.batch}: ${exitCode === 0 ? 'ok' : 'FAILED'} (${summary.totals.pass}/${summary.rows.length} pass)`);
+    for (const issue of summary.issues) log(`  ! ${issue}`);
     for (const row of summary.rows) {
       log(`  ${row.episodeId}: ${row.verdict}${row.valid ? '' : ' [invalid]'} calls=${row.calls}${row.detail ? ` — ${row.detail}` : ''}`);
       for (const issue of row.issues) log(`    ! ${issue}`);

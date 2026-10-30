@@ -253,3 +253,24 @@ test('verification re-judges the scenario and rejects a tampered record', async 
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+test('an empty or missing batch never settles as verified', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'g04-empty-'));
+  try {
+    const missing = verifyG04Batch(join(root, 'does-not-exist'));
+    assert.equal(missing.exitCode, 1, 'a missing batch directory must fail');
+    assert.ok(missing.summary.issues.some(issue => issue.includes('no episodes')), missing.summary.issues.join('; '));
+
+    const result = await runG04Batch({ artifactsRoot: root, batch: 'partial', mode: 'fixture', scenarios: ['n1'], orders: ['ac'], policies: ['legacy'] });
+    assert.equal(result.exitCode, 0, result.message);
+    const batchFile = join(root, 'partial', 'batch.json');
+    const batch = JSON.parse(readFileSync(batchFile, 'utf8'));
+    batch.plannedEpisodes = [...batch.plannedEpisodes, 'n2-ac-event'];
+    writeFileSync(batchFile, JSON.stringify(batch, null, 2) + '\n');
+    const partial = verifyG04Batch(join(root, 'partial'));
+    assert.equal(partial.exitCode, 1, 'a planned-but-missing episode must fail');
+    assert.ok(partial.summary.issues.some(issue => issue.includes('planned but not persisted')), partial.summary.issues.join('; '));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
