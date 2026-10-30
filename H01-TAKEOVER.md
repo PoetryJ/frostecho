@@ -52,4 +52,6 @@ node handoff/20261030-g02-r1-90873a7/probe-verifier.cjs "$PWD"
 - 门槛命令：h01-fixture-20261030T073148Z 18/18 exit=0（s1 6/6 goal=6；s2/s3 6/6 goal=0）；--verify g02-r1-live-18 ok=true exit=0；
   verify-evidence.cjs --allow-source-mismatch 全部核对通过（provesCurrentSource=false，未篡改旧指纹）；
   probe-verifier.cjs 三例全部 ok=false、CLI exit=1（修复前均 ok=true、exit=0）
-- 提交：见分支 codex/g02-evidence-verifier（H01-TAKEOVER.md 与 handoff 证据副本一并提交）
+- 提交：462c3445b0aa494c7b3c264cdd9882b6b3bb2988（分支 codex/g02-evidence-verifier，base 90873a7）
+- 交付 bundle：handoff/20261030-g02-r1-90873a7/frostecho-h01-462c344.bundle（已验证：clone→npm ci→106/106→--verify live-18 ok=true）
+- push：超时失败（出站 git 443 不可达）；draft PR 待具备写权限后以 base=cursor/g02-player-intervention-8cb8（48fa6ae）创建，说明包含未合并的 G02-R1
