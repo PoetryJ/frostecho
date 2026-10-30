@@ -1,0 +1,58 @@
+[
+  {
+    "role": "player",
+    "command": {
+      "commandId": "s2-thinking-off-rep-2:player:1",
+      "actorId": "npc_b",
+      "type": "move",
+      "payload": {
+        "to": "kitchen"
+      }
+    },
+    "exec": {
+      "commandId": "s2-thinking-off-rep-2:player:1",
+      "seq": 1,
+      "status": "accepted",
+      "eventIds": [
+        "e1"
+      ]
+    }
+  },
+  {
+    "role": "player",
+    "command": {
+      "commandId": "s2-thinking-off-rep-2:player:2",
+      "actorId": "npc_b",
+      "type": "eat",
+      "payload": {}
+    },
+    "exec": {
+      "commandId": "s2-thinking-off-rep-2:player:2",
+      "seq": 2,
+      "status": "accepted",
+      "eventIds": [
+        "e2",
+        "e3"
+      ]
+    }
+  },
+  {
+    "role": "npc",
+    "command": {
+      "commandId": "s2-thinking-off-rep-2:npc:1",
+      "actorId": "npc_a",
+      "type": "move",
+      "payload": {
+        "to": "kitchen"
+      }
+    },
+    "exec": {
+      "commandId": "s2-thinking-off-rep-2:npc:1",
+      "seq": 3,
+      "status": "accepted",
+      "eventIds": [
+        "e4"
+      ]
+    }
+  }
+]

@@ -1,0 +1,305 @@
+{
+  "batchId": "s2-thinking-on-rep-2",
+  "scenarioId": "s2",
+  "mode": "fixture",
+  "thinking": true,
+  "scenarioPass": true,
+  "goalReached": false,
+  "outcome": "stopped",
+  "providerCalls": 2,
+  "commands": [
+    {
+      "role": "player",
+      "command": {
+        "commandId": "s2-thinking-on-rep-2:player:1",
+        "actorId": "npc_b",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "exec": {
+        "commandId": "s2-thinking-on-rep-2:player:1",
+        "seq": 1,
+        "status": "accepted",
+        "eventIds": [
+          "e1"
+        ]
+      }
+    },
+    {
+      "role": "player",
+      "command": {
+        "commandId": "s2-thinking-on-rep-2:player:2",
+        "actorId": "npc_b",
+        "type": "eat",
+        "payload": {}
+      },
+      "exec": {
+        "commandId": "s2-thinking-on-rep-2:player:2",
+        "seq": 2,
+        "status": "accepted",
+        "eventIds": [
+          "e2",
+          "e3"
+        ]
+      }
+    },
+    {
+      "role": "npc",
+      "command": {
+        "commandId": "s2-thinking-on-rep-2:npc:1",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "exec": {
+        "commandId": "s2-thinking-on-rep-2:npc:1",
+        "seq": 3,
+        "status": "accepted",
+        "eventIds": [
+          "e4"
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_b",
+      "from": "dorm",
+      "to": "kitchen",
+      "eventId": "e1",
+      "seq": 1,
+      "commandId": "s2-thinking-on-rep-2:player:1"
+    },
+    {
+      "type": "FoodConsumed",
+      "location": "kitchen",
+      "amount": 1,
+      "before": 1,
+      "after": 0,
+      "eventId": "e2",
+      "seq": 2,
+      "commandId": "s2-thinking-on-rep-2:player:2"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_b",
+      "before": 20,
+      "after": 50,
+      "eventId": "e3",
+      "seq": 2,
+      "commandId": "s2-thinking-on-rep-2:player:2"
+    },
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_a",
+      "from": "dorm",
+      "to": "kitchen",
+      "eventId": "e4",
+      "seq": 3,
+      "commandId": "s2-thinking-on-rep-2:npc:1"
+    }
+  ],
+  "steps": [
+    {
+      "round": 1,
+      "observation": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "raw": "{\"type\":\"move\",\"to\":\"kitchen\"}",
+      "parse": {
+        "ok": true,
+        "action": {
+          "type": "move",
+          "to": "kitchen"
+        }
+      },
+      "command": {
+        "commandId": "s2-thinking-on-rep-2:npc:1",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "exec": {
+        "commandId": "s2-thinking-on-rep-2:npc:1",
+        "seq": 3,
+        "status": "accepted",
+        "eventIds": [
+          "e4"
+        ]
+      }
+    },
+    {
+      "round": 2,
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "raw": "{\"type\":\"stop\"}",
+      "parse": {
+        "ok": true,
+        "action": {
+          "type": "stop"
+        }
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "round": 1,
+      "inputFeedback": null,
+      "step": {
+        "round": 1,
+        "observation": {
+          "id": "npc_a",
+          "location": "dorm",
+          "hunger": 40,
+          "foodHere": 0,
+          "reachable": [
+            "dorm",
+            "kitchen"
+          ]
+        },
+        "raw": "{\"type\":\"move\",\"to\":\"kitchen\"}",
+        "parse": {
+          "ok": true,
+          "action": {
+            "type": "move",
+            "to": "kitchen"
+          }
+        },
+        "command": {
+          "commandId": "s2-thinking-on-rep-2:npc:1",
+          "actorId": "npc_a",
+          "type": "move",
+          "payload": {
+            "to": "kitchen"
+          }
+        },
+        "exec": {
+          "commandId": "s2-thinking-on-rep-2:npc:1",
+          "seq": 3,
+          "status": "accepted",
+          "eventIds": [
+            "e4"
+          ]
+        }
+      },
+      "terminalStatus": "ready",
+      "providerCalled": true
+    },
+    {
+      "round": 2,
+      "inputFeedback": {
+        "round": 1,
+        "kind": "accepted",
+        "detail": "move"
+      },
+      "step": {
+        "round": 2,
+        "observation": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40,
+          "foodHere": 0,
+          "reachable": [
+            "dorm",
+            "kitchen"
+          ]
+        },
+        "raw": "{\"type\":\"stop\"}",
+        "parse": {
+          "ok": true,
+          "action": {
+            "type": "stop"
+          }
+        }
+      },
+      "terminalStatus": "stopped",
+      "providerCalled": true
+    }
+  ],
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "finalState": {
+    "tick": 3,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "kitchen",
+        "hunger": 50
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 0
+    }
+  },
+  "replayMatches": true,
+  "reasons": [
+    "pass: A goalReached stays false",
+    "pass: outcome stopped",
+    "pass: stop is not goalReached",
+    "pass: A hunger stays 40",
+    "pass: A has no HungerChanged",
+    "pass: B ate the food",
+    "pass: B hunger increased",
+    "pass: kitchen food is gone",
+    "pass: A observed no food and stopped",
+    "pass: replay matches"
+  ],
+  "timing": {
+    "totalMs": 1,
+    "calls": [
+      {
+        "round": 1,
+        "ms": 1
+      },
+      {
+        "round": 2,
+        "ms": 0
+      }
+    ]
+  }
+}

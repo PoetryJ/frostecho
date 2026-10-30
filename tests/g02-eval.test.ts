@@ -92,7 +92,8 @@ test('fixture eval runs 18 games, keeps scenario pass apart from the goal, and i
   assert.equal(out.summary.errors.transport, 0);
   assert.equal(out.summary.errors.parse, 0);
   assert.equal(out.summary.errors.decide, 0);
-  assert.equal(out.summary.errors.execute, 6);
+  assert.equal(out.summary.errors.execute, 0);
+  assert.equal(out.summary.errors.s3ExpectedNoFood, 6);
   assert.match(out.summary.notes.join('\n'), /default enable_thinking remains true/);
   assert.match(out.summary.notes.join('\n'), /30000ms/);
   assert.match(out.summary.notes.join('\n'), /No implicit retries/);
@@ -112,6 +113,11 @@ test('injected live eval is serial, shares the prompt, records thinking on and o
   const bodies: Record<string, unknown>[] = [];
   const prompts: string[] = [];
   const server = createServer((req, res) => {
+    if (req.method === 'GET' && req.url?.endsWith('/models')) {
+      res.setHeader('content-type', 'application/json');
+      res.end(JSON.stringify({ data: [{ id: 'live-model' }] }));
+      return;
+    }
     inFlight += 1;
     maxInFlight = Math.max(maxInFlight, inFlight);
     const chunks: Buffer[] = [];
@@ -162,9 +168,11 @@ test('injected live eval is serial, shares the prompt, records thinking on and o
       assert.equal(body.stream, false);
     }
     const thinking = bodies.map(body => (body.chat_template_kwargs as { enable_thinking: boolean }).enable_thinking);
-    assert.deepEqual(thinking.slice(0, 21), Array(21).fill(true));
-    assert.deepEqual(thinking.slice(21), Array(21).fill(false));
-    assert.equal(prompts[0], prompts[21]);
+    assert.equal(thinking.filter(Boolean).length, 21);
+    assert.equal(thinking.filter(value => !value).length, 21);
+    // Paired order: s1 thinking on (2 calls) is followed by s1 thinking off on the same world and prompt.
+    assert.deepEqual(thinking.slice(0, 4), [true, true, false, false]);
+    assert.equal(prompts[0], prompts[2]);
     assert.equal(out.summary.byThinking.true.totalTokens, 21 * 15);
     assert.equal(out.summary.byThinking.false.totalTokens, 21 * 15);
     assert.equal(out.summary.byScenario.s2.goalReached, 0);
@@ -174,7 +182,8 @@ test('injected live eval is serial, shares the prompt, records thinking on and o
       + readFileSync(join(root, 'injected-live', 'games', 's1-thinking-on-rep-1', 'steps.json'), 'utf8');
     assert.equal(dumped.includes('sekret-eval'), false);
     assert.equal(dumped.includes(url), false);
-    assert.equal(out.summary.errors.execute, 6);
+    assert.equal(out.summary.errors.execute, 0);
+    assert.equal(out.summary.errors.s3ExpectedNoFood, 6);
   } finally {
     await close(server);
   }
@@ -193,6 +202,10 @@ test('a transport failure is not retried and the failed game record is kept', as
     batchId: 'no-retry',
     env: { FROSTECHO_LLM_URL: 'http://example.test/v1/chat/completions', FROSTECHO_LLM_MODEL: 'live-model', FROSTECHO_LLM_API_KEY: 'sekret-eval' },
     fetchImpl,
+    health: async config => ({
+      ok: true, checkedAt: '', modelsUrlPath: '/v1/models', status: 200, models: [config.model], expectedModel: config.model,
+      modelMatch: true, kind: null, error: null, latencyMs: 0,
+    }),
     scenarios: ['s1'],
     reps: 1,
     thinkingValues: [true],

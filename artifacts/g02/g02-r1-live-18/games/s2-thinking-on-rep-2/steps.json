@@ -1,0 +1,193 @@
+[
+  {
+    "round": 1,
+    "observation": {
+      "id": "npc_a",
+      "location": "dorm",
+      "hunger": 40,
+      "foodHere": 0,
+      "reachable": [
+        "dorm",
+        "kitchen"
+      ]
+    },
+    "raw": "\n\n{\"type\":\"move\",\"to\":\"kitchen\"}",
+    "parse": {
+      "ok": true,
+      "action": {
+        "type": "move",
+        "to": "kitchen"
+      }
+    },
+    "command": {
+      "commandId": "s2-thinking-on-rep-2:npc:1",
+      "actorId": "npc_a",
+      "type": "move",
+      "payload": {
+        "to": "kitchen"
+      }
+    },
+    "exec": {
+      "commandId": "s2-thinking-on-rep-2:npc:1",
+      "seq": 3,
+      "status": "accepted",
+      "eventIds": [
+        "e4"
+      ]
+    },
+    "transport": {
+      "requestBody": {
+        "model": "qwen3.8-27b",
+        "temperature": 0,
+        "max_tokens": 1024,
+        "stream": false,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "Reply with one JSON object and no other text.\nAllowed: {\"type\":\"move\",\"to\":\"dorm\"|\"kitchen\"}, {\"type\":\"eat\"}, {\"type\":\"stop\"}.\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\nIf you are already in the kitchen, foodHere is 0, and hunger is below the goal, reply {\"type\":\"stop\"}. Do not move around looking for distant food; distant food is not observable.\ngoal: hunger >= 70\nobservation: {\"id\":\"npc_a\",\"location\":\"dorm\",\"hunger\":40,\"foodHere\":0,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null"
+          }
+        ]
+      },
+      "responseContent": {
+        "id": "chatcmpl-8d6d566e4e102520",
+        "object": "chat.completion",
+        "created": 1793331166,
+        "model": "qwen3.8-27b",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"type\":\"move\",\"to\":\"kitchen\"}",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": "We need answer user's request. Need produce final one JSON object only. Need reason: observation npc_a location dorm hunger 40 foodHere 0 reachable dorm kitchen. Goal hunger >=70. Eat only in kitchen. If already in kitchen, foodHere 0, hunger below goal stop. We are in dorm, not kitchen. Need move to kitchen presumably. Allowed move to dorm|kitchen. So {\"type\":\"move\",\"to\":\"kitchen\"}. Ensure no other text.\n"
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-0.32.0-tp4-042ad0af",
+        "usage": {
+          "prompt_tokens": 270,
+          "total_tokens": 384,
+          "completion_tokens": 114,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 101
+          }
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      },
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 270,
+        "completion_tokens": 114,
+        "total_tokens": 384
+      },
+      "latencyMs": 6587,
+      "error": null
+    }
+  },
+  {
+    "round": 2,
+    "observation": {
+      "id": "npc_a",
+      "location": "kitchen",
+      "hunger": 40,
+      "foodHere": 0,
+      "reachable": [
+        "dorm",
+        "kitchen"
+      ]
+    },
+    "raw": "\n\n{\"type\":\"stop\"}",
+    "parse": {
+      "ok": true,
+      "action": {
+        "type": "stop"
+      }
+    },
+    "transport": {
+      "requestBody": {
+        "model": "qwen3.8-27b",
+        "temperature": 0,
+        "max_tokens": 1024,
+        "stream": false,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "Reply with one JSON object and no other text.\nAllowed: {\"type\":\"move\",\"to\":\"dorm\"|\"kitchen\"}, {\"type\":\"eat\"}, {\"type\":\"stop\"}.\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\nIf you are already in the kitchen, foodHere is 0, and hunger is below the goal, reply {\"type\":\"stop\"}. Do not move around looking for distant food; distant food is not observable.\ngoal: hunger >= 70\nobservation: {\"id\":\"npc_a\",\"location\":\"kitchen\",\"hunger\":40,\"foodHere\":0,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: {\"round\":1,\"kind\":\"accepted\",\"detail\":\"move\"}"
+          }
+        ]
+      },
+      "responseContent": {
+        "id": "chatcmpl-bae59d77b4fbd90c",
+        "object": "chat.completion",
+        "created": 1793331173,
+        "model": "qwen3.8-27b",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "\n\n{\"type\":\"stop\"}",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "reasoning": "We need answer user's request. Need output one JSON object only. Need reason: observation: id npc_a, location kitchen, hunger 40, foodHere 0, reachable dorm,kitchen. goal hunger >=70. Rule: If already in kitchen, foodHere is 0, and hunger below goal, reply stop. Do not move looking for distant food. So output {\"type\":\"stop\"}. Ensure only JSON no other text.\n"
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null,
+            "routed_experts": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": "vllm-0.32.0-tp4-042ad0af",
+        "usage": {
+          "prompt_tokens": 282,
+          "total_tokens": 382,
+          "completion_tokens": 100,
+          "prompt_tokens_details": null,
+          "completion_tokens_details": {
+            "reasoning_tokens": 92
+          }
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "prompt_text": null,
+        "kv_transfer_params": null,
+        "ec_transfer_params": null,
+        "metrics": null
+      },
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 282,
+        "completion_tokens": 100,
+        "total_tokens": 382
+      },
+      "latencyMs": 5791,
+      "error": null
+    }
+  }
+]
