@@ -1,5 +1,36 @@
 import { Command, Location, NpcState, RejectReason, RULES, WorldEvent, WorldState } from './types';
 
+/** G04: internal routing marker for experimental environment input. */
+export const WORLD_ACTOR_ID = 'world';
+const RESTOCK_MIN = 1;
+const RESTOCK_MAX = 10;
+
+/**
+ * restock is world-only (a network-driven NPC can never grow food), targets an
+ * existing location, takes an integer amount in [1,10] and nothing else, and
+ * must keep the new total a safe integer.
+ */
+function decideRestock(state: Readonly<WorldState>, cmd: Command): Decision {
+  if (cmd.actorId !== WORLD_ACTOR_ID) {
+    return { ok: false, reason: 'FORBIDDEN_ACTION', detail: `only ${WORLD_ACTOR_ID} may restock, not ${cmd.actorId}` };
+  }
+  const p = cmd.payload as any;
+  if (!p || typeof p !== 'object' || Array.isArray(p)) {
+    return { ok: false, reason: 'INVALID_PAYLOAD', detail: 'restock payload must be {location, amount}' };
+  }
+  const keys = Object.keys(p).sort().join(',');
+  if (keys !== 'amount,location') return { ok: false, reason: 'INVALID_PAYLOAD', detail: 'restock accepts only {location, amount}' };
+  if (!isLoc(p.location)) return { ok: false, reason: 'INVALID_PAYLOAD', detail: `restock.location must be one of ${RULES.LOCATIONS.join('|')}` };
+  if (!Number.isSafeInteger(p.amount) || p.amount < RESTOCK_MIN || p.amount > RESTOCK_MAX) {
+    return { ok: false, reason: 'INVALID_PAYLOAD', detail: `restock.amount must be an integer in [${RESTOCK_MIN},${RESTOCK_MAX}]` };
+  }
+  const location = p.location as Location;
+  const before = state.food[location];
+  const after = before + p.amount;
+  if (!Number.isSafeInteger(after)) return { ok: false, reason: 'INVALID_PAYLOAD', detail: 'restock would overflow the food counter' };
+  return { ok: true, events: [{ type: 'FoodRestocked', location, amount: p.amount as number, before, after } as any] };
+}
+
 export type Decision =
   | { ok: true; events: Omit<WorldEvent, 'eventId' | 'seq' | 'commandId'>[] }
   | { ok: false; reason: RejectReason; detail: string };
@@ -21,6 +52,11 @@ function actorOf(state: Readonly<WorldState>, actorId: string): NpcState | undef
 
 /** Pure: validate a command against state and decide events. Never mutates state. */
 export function decide(state: Readonly<WorldState>, cmd: Command): Decision {
+  if (cmd.type === 'restock') return decideRestock(state, cmd);
+  if (cmd.actorId === WORLD_ACTOR_ID) {
+    // The world is not an NPC: it may restock, nothing else.
+    return { ok: false, reason: 'FORBIDDEN_ACTION', detail: `world may only restock, not ${String(cmd.type)}` };
+  }
   const npc = actorOf(state, cmd.actorId);
   if (!npc) return { ok: false, reason: 'UNKNOWN_ACTOR', detail: `actor ${cmd.actorId} not found` };
   switch (cmd.type) {
@@ -55,6 +91,7 @@ export function applyEvent(state: WorldState, e: WorldEvent): WorldState {
     case 'NpcMoved': s.npcs[e.npcId].location = e.to; break;
     case 'FoodConsumed': s.food[e.location] = e.after; break;
     case 'HungerChanged': s.npcs[e.npcId].hunger = e.after; break;
+    case 'FoodRestocked': s.food[e.location] = e.after; break;
   }
   s.tick = e.seq;
   return s;
