@@ -12,6 +12,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { join } from 'node:path';
 import { GOAL_HUNGER_AT_LEAST, MAX_PROVIDER_CALLS } from '../agent/contracts';
 import { parseAction } from '../agent/parser';
+import { HTTP_SAMPLING } from '../agent/providers/http';
 import { Engine, replay } from '../engine';
 import type { LogEntry } from '../engine';
 import { canonical } from '../util';
@@ -151,6 +152,37 @@ export function verifyMultiEpisode(episodeDir: string): MultiEpisodeVerification
     if (canonical(metaRaw.actorOrder) !== canonical(record.actorOrder)) {
       issues.push('meta.json actorOrder does not match game.json');
     }
+  }
+
+  // Request-config cross-check: the recorded thinking flag must match every
+  // actual request body, and live mode must account for every decision as HTTP.
+  const bodies: Record<string, unknown>[] = [];
+  for (const turn of Array.isArray(record.turns) ? record.turns : []) {
+    const transport = turn?.step?.transport ?? null;
+    if (transport === null) {
+      if (record.mode === 'live' && turn?.providerCalled !== false) {
+        issues.push(`turn ${String(turn?.globalTurn ?? '?')}: live decision without a transport record`);
+      }
+      continue;
+    }
+    const body = transport.requestBody;
+    if (!isPlainObject(body)) {
+      issues.push(`turn ${String(turn?.globalTurn ?? '?')}: transport.requestBody is not an object`);
+      continue;
+    }
+    bodies.push(body);
+    const kwargs = body.chat_template_kwargs;
+    const thinking = isPlainObject(kwargs) ? kwargs.enable_thinking : undefined;
+    if (thinking !== record.thinking) {
+      issues.push(`turn ${String(turn?.globalTurn ?? '?')}: request enable_thinking=${String(thinking)} contradicts recorded thinking=${String(record.thinking)}`);
+    }
+    if (body.temperature !== HTTP_SAMPLING.temperature || body.max_tokens !== HTTP_SAMPLING.max_tokens || body.stream !== HTTP_SAMPLING.stream) {
+      issues.push(`turn ${String(turn?.globalTurn ?? '?')}: request sampling differs from the declared HTTP profile`);
+    }
+  }
+  if (bodies.length > 0) {
+    const models = new Set(bodies.map(body => String(body.model ?? '')));
+    if (models.size !== 1) issues.push(`request bodies name ${models.size} different models`);
   }
 
   // fresh Engine re-execution of the world ledger

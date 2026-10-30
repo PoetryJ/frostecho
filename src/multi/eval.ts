@@ -12,7 +12,7 @@ import type { Provider } from '../agent/contracts';
 import { createHttpProvider, loadHttpConfigFromEnv } from '../agent/providers/http';
 import { createReferenceProvider } from '../agent/providers/reference';
 import { checkLlmHealth, type HealthResult } from '../eval/health';
-import { validateBatchName } from '../eval/store';
+import { collectVersion, validateBatchName, type VersionInfo } from '../eval/store';
 import type { MultiGame } from './contracts';
 import { createMultiGame } from './game';
 import type { MultiRecord } from './contracts';
@@ -53,16 +53,16 @@ interface EpisodeAttempt {
 }
 
 /** Drive one episode: run to terminal/user close/infra stop; inject the scripted player line. */
-async function runEpisode(scenarioId: MultiScenarioId, order: G03Order, thinking: boolean, mode: G03Mode, batch: string, providerFor: (actorId: string) => Provider, now: () => number): Promise<EpisodeAttempt> {
+async function runEpisode(scenarioId: MultiScenarioId, order: G03Order, thinking: boolean, mode: G03Mode, batch: string, makeProvider: (actorId: string, thinking: boolean) => Provider, now: () => number): Promise<EpisodeAttempt> {
   const scenario = loadMultiScenario(scenarioId);
   const episodeId = episodeIdFor(scenarioId, order, thinking);
   const game: MultiGame = createMultiGame({
     episodeId,
     initialState: structuredClone(scenario.initialState),
     actorIds: actorIdsFor(order),
-    providerFor,
+    providerFor: (actorId: string) => makeProvider(actorId, thinking),
     mode,
-    thinking: mode === 'fixture' ? (thinking ? true : false) : thinking,
+    thinking,
     now,
   });
   let intervened = false;
@@ -110,8 +110,8 @@ export async function runG03Batch(options: G03BatchOptions): Promise<G03BatchRes
     const episodesRoot = join(batchDir, 'episodes');
     mkdirSync(episodesRoot, { recursive: true });
 
-    // provider factory
-    let providerFor: (actorId: string) => Provider;
+    // provider factory: thinking is bound per episode, never to the process env
+    let makeProvider: (actorId: string, thinking: boolean) => Provider;
     let health: HealthResult | undefined;
     const thinkingPlans: boolean[] = [false, true];
     if (options.mode === 'live') {
@@ -123,9 +123,10 @@ export async function runG03Batch(options: G03BatchOptions): Promise<G03BatchRes
       if (!health.ok) {
         return { exitCode: 2, batchDir, message: `health check failed: ${health.error ?? health.kind ?? 'unknown'}`, health };
       }
-      providerFor = () => createHttpProvider(config);
+      // One provider per actor per episode, with that episode's enable_thinking.
+      makeProvider = (_actorId: string, thinking: boolean) => createHttpProvider({ ...config, enableThinking: thinking });
     } else {
-      providerFor = () => createReferenceProvider();
+      makeProvider = () => createReferenceProvider();
     }
 
     const orders: G03Order[] = options.order !== undefined ? [options.order] : ['ac', 'ca'];
@@ -137,16 +138,21 @@ export async function runG03Batch(options: G03BatchOptions): Promise<G03BatchRes
         }
       }
     }
-    writeMultiBatchFile(batchDir, {
+    // Recorded once and preserved by every later write (status flips used to drop it).
+    const createdAt = new Date(now()).toISOString();
+    const version: VersionInfo = collectVersion(process.cwd());
+    const meta: Record<string, unknown> = {
       schema: MULTI_BATCH_SCHEMA,
       batchId: options.batch,
       mode: options.mode,
       orders,
       plannedEpisodes,
-      createdAt: new Date(now()).toISOString(),
-      status: 'running',
-      ...(health !== undefined ? { health: { ok: health.ok, status: health.status, expectedModel: health.expectedModel, models: health.models, latencyMs: health.latencyMs } } : {}),
-    });
+      thinkingPlan: thinkingPlans,
+      createdAt,
+      version,
+      ...(health !== undefined ? { health: { ok: health.ok, status: health.status, modelsUrlPath: health.modelsUrlPath, expectedModel: health.expectedModel, models: health.models, modelMatch: health.modelMatch, latencyMs: health.latencyMs } } : {}),
+    };
+    writeMultiBatchFile(batchDir, { ...meta, status: 'running' });
 
     let interruptedBatch = false;
     const gateResults: boolean[] = [];
@@ -159,7 +165,7 @@ export async function runG03Batch(options: G03BatchOptions): Promise<G03BatchRes
             orderEpisodes.push(false);
             continue;
           }
-          const attempt = await runEpisode(scenarioId, order, thinking, options.mode, options.batch, providerFor, now);
+          const attempt = await runEpisode(scenarioId, order, thinking, options.mode, options.batch, makeProvider, now);
           if (attempt.record === null) {
             orderEpisodes.push(false);
             continue;
@@ -189,12 +195,7 @@ export async function runG03Batch(options: G03BatchOptions): Promise<G03BatchRes
       if (options.mode === 'live' && orders.length === 2 && order === 'ac') {
         const gateOk = orderEpisodes.length === 6 && orderEpisodes.every(v => v);
         writeMultiBatchFile(batchDir, {
-          schema: MULTI_BATCH_SCHEMA,
-          batchId: options.batch,
-          mode: options.mode,
-          orders,
-          plannedEpisodes,
-          createdAt: new Date(now()).toISOString(),
+          ...meta,
           status: interruptedBatch ? 'interrupted' : gateOk ? 'gate-passed' : 'gate-failed',
           gate: { order: 'ac', pass: gateOk },
         });
@@ -214,12 +215,7 @@ export async function runG03Batch(options: G03BatchOptions): Promise<G03BatchRes
     const summary = summarizeMultiBatchDir(batchDir);
     writeMultiSummary(batchDir, { schema: MULTI_SUMMARY_SCHEMA, ...summary });
     writeMultiBatchFile(batchDir, {
-      schema: MULTI_BATCH_SCHEMA,
-      batchId: options.batch,
-      mode: options.mode,
-      orders,
-      plannedEpisodes,
-      createdAt: new Date(now()).toISOString(),
+      ...meta,
       status: summary.totals.notRun > 0 || summary.totals.interrupted > 0 ? 'incomplete' : 'finished',
     });
     const allOk = summary.ok
