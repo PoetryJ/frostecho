@@ -57,6 +57,13 @@ test('12 reference episodes pass with exactly 30 provider calls', async () => {
     }
     assert.equal(total, 30);
     assert.equal(verifyG04Batch(join(root, 'fixture')).exitCode, 0);
+    // The effective live decision timeout (30s, env-overridable) is recorded,
+    // not left to the runner's 15s fallback.
+    const batch = JSON.parse(readFileSync(join(root, 'fixture', 'batch.json'), 'utf8'));
+    assert.equal(batch.timeoutMs, 30_000);
+    for (const episodeId of episodes) {
+      assert.equal(JSON.parse(readFileSync(join(root, 'fixture', 'episodes', episodeId, 'game.json'), 'utf8')).requestConfig.timeoutMs, 30_000);
+    }
     // plain fixture never opens a socket: no transport record anywhere
     for (const episodeId of episodes) {
       const record = verifyReactiveEpisode(join(root, 'fixture', 'episodes', episodeId)).record!;

@@ -8,7 +8,8 @@
  */
 import { existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Provider } from '../agent/contracts';
+import { LIVE_DECISION_TIMEOUT_MS, type Provider } from '../agent/contracts';
+import { liveTimeoutMs } from '../agent/live-record';
 import { createHttpProvider, loadHttpConfigFromEnv } from '../agent/providers/http';
 import { createReferenceProvider } from '../agent/providers/reference';
 import { checkLlmHealth, type HealthResult } from '../eval/health';
@@ -53,7 +54,7 @@ interface EpisodeAttempt {
 }
 
 /** Drive one episode: run to terminal/user close/infra stop; inject the scripted player line. */
-async function runEpisode(scenarioId: MultiScenarioId, order: G03Order, thinking: boolean, mode: G03Mode, batch: string, makeProvider: (actorId: string, thinking: boolean) => Provider, now: () => number): Promise<EpisodeAttempt> {
+async function runEpisode(scenarioId: MultiScenarioId, order: G03Order, thinking: boolean, mode: G03Mode, batch: string, makeProvider: (actorId: string, thinking: boolean) => Provider, now: () => number, timeoutMs: number): Promise<EpisodeAttempt> {
   const scenario = loadMultiScenario(scenarioId);
   const episodeId = episodeIdFor(scenarioId, order, thinking);
   const game: MultiGame = createMultiGame({
@@ -63,6 +64,7 @@ async function runEpisode(scenarioId: MultiScenarioId, order: G03Order, thinking
     providerFor: (actorId: string) => makeProvider(actorId, thinking),
     mode,
     thinking,
+    timeoutMs,
     now,
   });
   let intervened = false;
@@ -129,6 +131,9 @@ export async function runG03Batch(options: G03BatchOptions): Promise<G03BatchRes
       makeProvider = () => createReferenceProvider();
     }
 
+    // Effective per-decision timeout: env override, 30s live default so thinking
+    // completions are not aborted by the runner's 15s fallback.
+    const timeoutMs = liveTimeoutMs(process.env, LIVE_DECISION_TIMEOUT_MS);
     const orders: G03Order[] = options.order !== undefined ? [options.order] : ['ac', 'ca'];
     const plannedEpisodes: string[] = [];
     for (const order of orders) {
@@ -148,6 +153,7 @@ export async function runG03Batch(options: G03BatchOptions): Promise<G03BatchRes
       orders,
       plannedEpisodes,
       thinkingPlan: thinkingPlans,
+      timeoutMs,
       createdAt,
       version,
       ...(health !== undefined ? { health: { ok: health.ok, status: health.status, modelsUrlPath: health.modelsUrlPath, expectedModel: health.expectedModel, models: health.models, modelMatch: health.modelMatch, latencyMs: health.latencyMs } } : {}),
@@ -165,7 +171,7 @@ export async function runG03Batch(options: G03BatchOptions): Promise<G03BatchRes
             orderEpisodes.push(false);
             continue;
           }
-          const attempt = await runEpisode(scenarioId, order, thinking, options.mode, options.batch, makeProvider, now);
+          const attempt = await runEpisode(scenarioId, order, thinking, options.mode, options.batch, makeProvider, now, timeoutMs);
           if (attempt.record === null) {
             orderEpisodes.push(false);
             continue;

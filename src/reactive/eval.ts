@@ -9,7 +9,8 @@
  */
 import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Provider } from '../agent/contracts';
+import { LIVE_DECISION_TIMEOUT_MS, type Provider } from '../agent/contracts';
+import { liveTimeoutMs } from '../agent/live-record';
 import { createHttpProvider, loadHttpConfigFromEnv } from '../agent/providers/http';
 import { createReferenceProvider } from '../agent/providers/reference';
 import { checkLlmHealth, type HealthResult } from '../eval/health';
@@ -50,6 +51,7 @@ async function runEpisode(
   makeProvider: (actorId: string) => Provider,
   artifactsRoot: string,
   batch: string,
+  timeoutMs: number,
 ): Promise<EpisodeAttempt> {
   const scenario = loadScenario(scenarioId as never);
   const episodeId = scenarioIdFor(scenarioId as never, order, policy);
@@ -62,6 +64,7 @@ async function runEpisode(
     mode,
     thinking: G04_THINKING,
     wakePolicy: policy,
+    timeoutMs,
     onDeciding: () => {
       // N3: the restock must land while the first empty-kitchen stop is in
       // flight, i.e. after the request started and before its text is consumed.
@@ -102,6 +105,7 @@ export async function runG04Batch(options: G04BatchOptions): Promise<G04BatchRes
     return { exitCode: 2, batchDir: join(artifactsRoot, options.batch), message: err instanceof Error ? err.message : String(err) };
   }
   const now = () => Date.now();
+  const timeoutMs = liveTimeoutMs(process.env, LIVE_DECISION_TIMEOUT_MS);
 
   const scenarios = (options.scenarios ?? SCENARIO_IDS) as readonly string[];
   const orders = (options.orders ?? ORDER_CODES) as readonly string[];
@@ -133,6 +137,7 @@ export async function runG04Batch(options: G04BatchOptions): Promise<G04BatchRes
     policies,
     plannedEpisodes: planned,
     thinking: G04_THINKING,
+    timeoutMs,
     createdAt: new Date(now()).toISOString(),
     version,
     sourceFingerprint: sourceFingerprint(process.cwd()),
@@ -149,7 +154,7 @@ export async function runG04Batch(options: G04BatchOptions): Promise<G04BatchRes
           results.push({ episodeId: scenarioIdFor(scenarioId as never, order as OrderCode, policy), pass: null, interrupted: false, invalid: false, issues: ['not run: batch stopped after an interrupted episode'] });
           continue;
         }
-        const attempt = await runEpisode(scenarioId, order as OrderCode, policy, options.mode, makeProvider, artifactsRoot, options.batch);
+        const attempt = await runEpisode(scenarioId, order as OrderCode, policy, options.mode, makeProvider, artifactsRoot, options.batch, timeoutMs);
         results.push(attempt);
         if (attempt.interrupted) interrupted = true;
       }
