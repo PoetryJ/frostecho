@@ -6,6 +6,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { GameRecord, ScenarioId } from '../play';
 import { TransportKind, classifyTransport, isInfrastructure } from './health';
+import { verifyGameEvidence } from './verify-game';
 
 export const TASK_SCHEMA = 'frostecho.g02.task/1';
 export const SUMMARY_SCHEMA = 'frostecho.g02.summary/2';
@@ -224,17 +225,25 @@ export function summarizeBatchDir(batchDir: string, batchId: string, expectedPla
     if (!task.trace.gameDir) { issues.push(`${task.taskId}: ran but has no game dir`); return; }
     const gameDir = join(batchDir, task.trace.gameDir);
     if (!existsSync(join(gameDir, 'game.json'))) { issues.push(`${task.taskId}: game.json missing`); return; }
-    const game = readJson<GameRecord>(join(gameDir, 'game.json'));
-    const meta = readJson<{ batchId: string; thinking: boolean | null; scenarioPass: boolean | null; replayMatches: boolean; scenarioId: string | null }>(join(gameDir, 'meta.json'));
-    const replay = readJson<{ matches: boolean }>(join(gameDir, 'replay.json'));
-    if (meta.batchId !== task.taskId || game.batchId !== task.taskId) issues.push(`${task.taskId}: game batchId mismatch`);
-    if (meta.scenarioId !== task.scenarioId) issues.push(`${task.taskId}: scenario mismatch`);
-    if (game.mode === 'live' && meta.thinking !== task.thinking) issues.push(`${task.taskId}: thinking mismatch`);
-    if (replay.matches !== game.replayMatches || meta.replayMatches !== game.replayMatches) issues.push(`${task.taskId}: replay evidence mismatch`);
+    // H01: full deterministic re-verification (never throws on corrupt JSON).
+    const verification = verifyGameEvidence(gameDir);
+    for (const issue of verification.issues) issues.push(`${task.taskId}: ${issue}`);
+    const game = verification.game;
+    if (!game) return; // game.json unreadable/corrupt: issues already recorded
+    let meta: { batchId: string; thinking: boolean | null; scenarioPass: boolean | null; replayMatches: boolean; scenarioId: string | null } | null = null;
+    let replay: { matches: boolean } | null = null;
+    try { meta = readJson<{ batchId: string; thinking: boolean | null; scenarioPass: boolean | null; replayMatches: boolean; scenarioId: string | null }>(join(gameDir, 'meta.json')); } catch { issues.push(`${task.taskId}: meta.json unreadable`); }
+    try { replay = readJson<{ matches: boolean }>(join(gameDir, 'replay.json')); } catch { issues.push(`${task.taskId}: replay.json unreadable`); }
+    if (meta && (meta.batchId !== task.taskId || game.batchId !== task.taskId)) issues.push(`${task.taskId}: game batchId mismatch`);
+    if (meta && meta.scenarioId !== task.scenarioId) issues.push(`${task.taskId}: scenario mismatch`);
+    if (meta && game.mode === 'live' && meta.thinking !== task.thinking) issues.push(`${task.taskId}: thinking mismatch`);
+    if (replay && meta && (replay.matches !== game.replayMatches || meta.replayMatches !== game.replayMatches)) issues.push(`${task.taskId}: replay evidence mismatch`);
     if (task.status === 'pass' && (game.scenarioPass !== true || !game.replayMatches)) issues.push(`${task.taskId}: status pass contradicts game.json`);
     if (task.status === 'behavior_fail' && game.scenarioPass !== false) issues.push(`${task.taskId}: status behavior_fail contradicts game.json`);
-    const recount = countGame(game, task.scenarioId, task.counters.budgetIntercepts);
-    if (JSON.stringify(recount) !== JSON.stringify(task.counters)) issues.push(`${task.taskId}: counters do not match game.json`);
+    try {
+      const recount = countGame(game, task.scenarioId, task.counters.budgetIntercepts);
+      if (JSON.stringify(recount) !== JSON.stringify(task.counters)) issues.push(`${task.taskId}: counters do not match game.json`);
+    } catch { issues.push(`${task.taskId}: counters cannot be recomputed from game.json`); }
     if (task.trace.requests !== game.steps.filter(s => s.transport).length || task.trace.commands !== game.commands.length || task.trace.events !== game.events.length) {
       issues.push(`${task.taskId}: trace counts do not match game.json`);
     }
