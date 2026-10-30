@@ -1,0 +1,75 @@
+[
+  {
+    "role": "npc",
+    "command": {
+      "commandId": "s3-thinking-on-rep-1:npc:1",
+      "actorId": "npc_a",
+      "type": "move",
+      "payload": {
+        "to": "kitchen"
+      }
+    },
+    "exec": {
+      "commandId": "s3-thinking-on-rep-1:npc:1",
+      "seq": 1,
+      "status": "accepted",
+      "eventIds": [
+        "e1"
+      ]
+    }
+  },
+  {
+    "role": "player",
+    "command": {
+      "commandId": "s3-thinking-on-rep-1:player:1",
+      "actorId": "npc_b",
+      "type": "move",
+      "payload": {
+        "to": "kitchen"
+      }
+    },
+    "exec": {
+      "commandId": "s3-thinking-on-rep-1:player:1",
+      "seq": 2,
+      "status": "accepted",
+      "eventIds": [
+        "e2"
+      ]
+    }
+  },
+  {
+    "role": "player",
+    "command": {
+      "commandId": "s3-thinking-on-rep-1:player:2",
+      "actorId": "npc_b",
+      "type": "eat",
+      "payload": {}
+    },
+    "exec": {
+      "commandId": "s3-thinking-on-rep-1:player:2",
+      "seq": 3,
+      "status": "accepted",
+      "eventIds": [
+        "e3",
+        "e4"
+      ]
+    }
+  },
+  {
+    "role": "npc",
+    "command": {
+      "commandId": "s3-thinking-on-rep-1:npc:2",
+      "actorId": "npc_a",
+      "type": "eat",
+      "payload": {}
+    },
+    "exec": {
+      "commandId": "s3-thinking-on-rep-1:npc:2",
+      "seq": 4,
+      "status": "rejected",
+      "reason": "NO_FOOD",
+      "detail": "kitchen food=0",
+      "eventIds": []
+    }
+  }
+]
