@@ -5,6 +5,10 @@ export const RULES = Object.freeze({
   EAT_HUNGER_RESTORE: 30,  // hunger(=satiety) points restored per eat
   HUNGER_MIN: 0,
   HUNGER_MAX: 100,
+  /** G05: simulated minutes; every METABOLISM_INTERVAL_MIN of sim time, each NPC gets +1 hunger. */
+  METABOLISM_INTERVAL_MIN: 10,
+  /** G05: single advance_time command may span at most this many simulated minutes. */
+  TIME_ADVANCE_MAX_MIN: 120,
 });
 export type Location = (typeof RULES.LOCATIONS)[number];
 
@@ -14,6 +18,12 @@ export interface WorldState {
   tick: number; // logical sequence counter (no wall clock)
   npcs: Record<string, NpcState>;
   food: Record<Location, number>;
+  /**
+   * G05: simulated minutes since episode start. Optional so pre-G05 records
+   * (and worlds that never advance time) stay canonically identical; the first
+   * TimeAdvanced event materializes it.
+   */
+  simTime?: number;
 }
 
 /** Command: what an actor WANTS to do. Not a fact. */
@@ -22,6 +32,8 @@ export type Command =
   | { commandId: string; actorId: string; type: 'eat'; payload: Record<string, never> }
   /** G04: experimental environment input. Only the `world` actor may submit it. */
   | { commandId: string; actorId: string; type: 'restock'; payload: { location: Location; amount: number } }
+  /** G05: advance simulated time. Only the `world` actor may submit it. */
+  | { commandId: string; actorId: string; type: 'advance_time'; payload: { minutes: number } }
   | { commandId: string; actorId: string; type: string; payload: unknown };
 
 export type RejectReason =
@@ -47,4 +59,6 @@ export type WorldEvent =
   | { eventId: string; seq: number; commandId: string; type: 'FoodConsumed'; location: Location; amount: number; before: number; after: number }
   | { eventId: string; seq: number; commandId: string; type: 'HungerChanged'; npcId: string; before: number; after: number }
   /** G04: world restocked a location. */
-  | { eventId: string; seq: number; commandId: string; type: 'FoodRestocked'; location: Location; amount: number; before: number; after: number };
+  | { eventId: string; seq: number; commandId: string; type: 'FoodRestocked'; location: Location; amount: number; before: number; after: number }
+  /** G05: simulated time advanced by an advance_time command; metabolism may follow. */
+  | { eventId: string; seq: number; commandId: string; type: 'TimeAdvanced'; before: number; after: number };

@@ -4,7 +4,6 @@ import { Command, Location, NpcState, RejectReason, RULES, WorldEvent, WorldStat
 export const WORLD_ACTOR_ID = 'world';
 const RESTOCK_MIN = 1;
 const RESTOCK_MAX = 10;
-
 /**
  * restock is world-only (a network-driven NPC can never grow food), targets an
  * existing location, takes an integer amount in [1,10] and nothing else, and
@@ -35,6 +34,41 @@ export type Decision =
   | { ok: true; events: Omit<WorldEvent, 'eventId' | 'seq' | 'commandId'>[] }
   | { ok: false; reason: RejectReason; detail: string };
 
+/**
+ * G05: advance_time is world-only, takes an integer minutes in
+ * [1, TIME_ADVANCE_MAX_MIN] and nothing else. Events: TimeAdvanced first, then
+ * one HungerChanged per NPC (id-sorted) for every METABOLISM_INTERVAL_MIN
+ * boundary crossed, clamped to HUNGER_MAX.
+ */
+function decideAdvanceTime(state: Readonly<WorldState>, cmd: Command): Decision {
+  if (cmd.actorId !== WORLD_ACTOR_ID) {
+    return { ok: false, reason: 'FORBIDDEN_ACTION', detail: `only ${WORLD_ACTOR_ID} may advance_time, not ${cmd.actorId}` };
+  }
+  const p = cmd.payload as any;
+  if (!p || typeof p !== 'object' || Array.isArray(p)) {
+    return { ok: false, reason: 'INVALID_PAYLOAD', detail: 'advance_time payload must be {minutes}' };
+  }
+  const keys = Object.keys(p).sort().join(',');
+  if (keys !== 'minutes') return { ok: false, reason: 'INVALID_PAYLOAD', detail: 'advance_time accepts only {minutes}' };
+  if (!Number.isSafeInteger(p.minutes) || p.minutes < 1 || p.minutes > RULES.TIME_ADVANCE_MAX_MIN) {
+    return { ok: false, reason: 'INVALID_PAYLOAD', detail: `advance_time.minutes must be an integer in [1,${RULES.TIME_ADVANCE_MAX_MIN}]` };
+  }
+  const before = state.simTime ?? 0;
+  const after = before + p.minutes;
+  const events: Omit<WorldEvent, 'eventId' | 'seq' | 'commandId'>[] = [
+    { type: 'TimeAdvanced', before, after } as any,
+  ];
+  const crossed = Math.floor(after / RULES.METABOLISM_INTERVAL_MIN) - Math.floor(before / RULES.METABOLISM_INTERVAL_MIN);
+  if (crossed > 0) {
+    for (const npcId of Object.keys(state.npcs).sort()) {
+      const npc = state.npcs[npcId];
+      const gain = Math.min(crossed, RULES.HUNGER_MAX - npc.hunger);
+      if (gain > 0) events.push({ type: 'HungerChanged', npcId, before: npc.hunger, after: npc.hunger + gain } as any);
+    }
+  }
+  return { ok: true, events };
+}
+
 const isLoc = (x: unknown): x is Location => typeof x === 'string' && (RULES.LOCATIONS as readonly string[]).includes(x);
 const clamp = (n: number) => Math.min(RULES.HUNGER_MAX, Math.max(RULES.HUNGER_MIN, n));
 
@@ -53,9 +87,10 @@ function actorOf(state: Readonly<WorldState>, actorId: string): NpcState | undef
 /** Pure: validate a command against state and decide events. Never mutates state. */
 export function decide(state: Readonly<WorldState>, cmd: Command): Decision {
   if (cmd.type === 'restock') return decideRestock(state, cmd);
+  if (cmd.type === 'advance_time') return decideAdvanceTime(state, cmd);
   if (cmd.actorId === WORLD_ACTOR_ID) {
-    // The world is not an NPC: it may restock, nothing else.
-    return { ok: false, reason: 'FORBIDDEN_ACTION', detail: `world may only restock, not ${String(cmd.type)}` };
+    // The world is not an NPC: it may restock and advance time, nothing else.
+    return { ok: false, reason: 'FORBIDDEN_ACTION', detail: `world may only restock or advance_time, not ${String(cmd.type)}` };
   }
   const npc = actorOf(state, cmd.actorId);
   if (!npc) return { ok: false, reason: 'UNKNOWN_ACTOR', detail: `actor ${cmd.actorId} not found` };
@@ -92,6 +127,7 @@ export function applyEvent(state: WorldState, e: WorldEvent): WorldState {
     case 'FoodConsumed': s.food[e.location] = e.after; break;
     case 'HungerChanged': s.npcs[e.npcId].hunger = e.after; break;
     case 'FoodRestocked': s.food[e.location] = e.after; break;
+    case 'TimeAdvanced': s.simTime = e.after; break;
   }
   s.tick = e.seq;
   return s;
@@ -104,5 +140,6 @@ export function checkInvariants(s: WorldState): string[] {
     if (!(n.hunger >= RULES.HUNGER_MIN && n.hunger <= RULES.HUNGER_MAX)) errs.push(`hunger ${n.id}=${n.hunger}`);
     if (!isLoc(n.location)) errs.push(`location ${n.id}=${n.location}`);
   }
+  if (s.simTime !== undefined && (!Number.isSafeInteger(s.simTime) || s.simTime < 0)) errs.push(`simTime=${String(s.simTime)}`);
   return errs;
 }
