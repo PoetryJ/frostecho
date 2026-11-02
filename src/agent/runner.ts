@@ -1,6 +1,6 @@
 import { WorldState } from '../types';
 import {
-  AgentAction, AgentSession, DecideInput, DecidingPhase, DEFAULT_TIMEOUT_MS, GOAL_HUNGER_AT_LEAST, MAX_PROVIDER_CALLS,
+  AgentAction, AgentSession, CommandIdScheme, DecideInput, DecidingPhase, DEFAULT_TIMEOUT_MS, GOAL_HUNGER_AT_LEAST, MAX_PROVIDER_CALLS,
   Provider, RunOptions, RunOutcome, RunResult, SessionStatus, StepAgentResult, StepFeedback, StepRecord,
   SubmittedCommand,
 } from './contracts';
@@ -133,6 +133,7 @@ class AgentSessionImpl implements AgentSession {
   readonly eventsBefore: number;
   readonly calls: { round: number; ms: number }[] = [];
   readonly commandIdFor: (round: number) => string;
+  readonly commandIdScheme: CommandIdScheme;
   terminalOutcome: RunOutcome | null = null;
   explicitError?: string;
   phaseInfo: DecidingPhase | null = null;
@@ -149,6 +150,8 @@ class AgentSessionImpl implements AgentSession {
     this.eventsBefore = options.world.getEvents().length;
     this.onDeciding = options.onDeciding;
     this.commandIdFor = options.commandIdFor ?? ((round: number) => `${options.runId}:${round}`);
+    this.commandIdScheme = options.commandIdScheme
+      ?? (options.commandIdFor !== undefined ? 'unknown' : 'run-round');
     if (typeof this.runId !== 'string' || this.runId.length === 0 || typeof this.actorId !== 'string' || this.actorId.length === 0) {
       this.failInvalid('runId and actorId must be non-empty strings');
       return;
@@ -362,4 +365,42 @@ export async function runAgent(options: RunOptions): Promise<RunResult> {
     if (step.status === 'busy') break;
   }
   return session.result();
+}
+
+/**
+ * G06 checkpoint restore core: overwrites the mutable causal fields of an
+ * existing session with values from a validated SessionCheckpoint. All
+ * validation lives in agent/checkpoint.ts; this function assigns only.
+ */
+export function hydrateAgentSession(
+  session: AgentSession,
+  state: {
+    round: number;
+    feedback: StepFeedback | null;
+    status: SessionStatus;
+    providerCalls: number;
+    steps: StepRecord[];
+    terminalOutcome: RunOutcome | null;
+    explicitError?: string;
+    initialState: WorldState;
+    eventsBefore: number;
+    started: number;
+    calls: { round: number; ms: number }[];
+  },
+): void {
+  const impl = session as AgentSessionImpl;
+  impl.round = state.round;
+  impl.feedback = state.feedback;
+  impl.status = state.status;
+  impl.providerCalls = state.providerCalls;
+  impl.steps.length = 0;
+  impl.steps.push(...state.steps);
+  impl.terminalOutcome = state.terminalOutcome;
+  if (state.explicitError !== undefined) impl.explicitError = state.explicitError;
+  const mutable = impl as unknown as { initialState: WorldState; eventsBefore: number; started: number };
+  mutable.initialState = state.initialState;
+  mutable.eventsBefore = state.eventsBefore;
+  mutable.started = state.started;
+  impl.calls.length = 0;
+  impl.calls.push(...state.calls);
 }

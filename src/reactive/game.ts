@@ -27,6 +27,11 @@ import {
   type ReactiveTurnRecord, type RestockResult,
 } from './contracts';
 import { canWake, describeObservation, isTerminalStatus, isWaitingObservation } from './lifecycle';
+import { exportSessionCheckpoint, restoreAgentSession } from '../agent/checkpoint';
+import {
+  G06_CHECKPOINT_SCHEMA,
+  type GameCheckpoint, type GameCycleCheckpoint,
+} from '../persistence/contracts';
 
 interface CycleState {
   cycle: number;
@@ -56,7 +61,7 @@ export function parsePlayerLine(line: string): ParsedPlayerLine {
   return { kind: 'invalid', error: `unknown player command ${JSON.stringify(text)}` };
 }
 
-class ReactiveGameImpl implements ReactiveGame {
+export class ReactiveGameImpl implements ReactiveGame {
   readonly episodeId: string;
   readonly world: Engine;
   readonly actorIds: readonly string[];
@@ -163,6 +168,7 @@ class ReactiveGameImpl implements ReactiveGame {
       now: this.options.now,
       scheduleTimeout: this.options.scheduleTimeout,
       commandIdFor: round => `${this.episodeId}:npc:${actorId}:${cycle}:${round}`,
+      commandIdScheme: 'g06-episode-cycle',
     });
     if (this.options.onDeciding) {
       const hook = this.options.onDeciding;
@@ -584,6 +590,140 @@ class ReactiveGameImpl implements ReactiveGame {
       }
     }
     return null;
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* G06 worker B: checkpoint material + restore path                  */
+  /* ---------------------------------------------------------------- */
+
+  /**
+   * Raw checkpoint data. Export-layer checks (busy/SAVE_BUSY) live in
+   * reactive/checkpoint.ts; this method only reads and deep-copies. The
+   * in-flight flag is included so a caller can never mistake a busy game for
+   * a saveable one.
+   */
+  checkpointData(): GameCheckpoint {
+    const cycles: Record<string, GameCycleCheckpoint[]> = {};
+    for (const actorId of this.actorIds) {
+      cycles[actorId] = this.actorCycles(actorId).map(cycle => {
+        const exported = exportSessionCheckpoint(cycle.session);
+        if (!exported.ok) {
+          throw new CheckpointExportError(exported.code, exported.issues ?? []);
+        }
+        return {
+          cycle: cycle.cycle,
+          reason: cycle.reason,
+          startLogCursor: cycle.startLogCursor,
+          endState: cycle.endState,
+          turns: structuredClone(cycle.turns),
+          session: exported.value,
+        };
+      });
+    }
+    return {
+      schema: G06_CHECKPOINT_SCHEMA,
+      episodeId: this.episodeId,
+      actorIds: [...this.actorIds],
+      wakePolicy: this.wakePolicy,
+      mode: this.mode,
+      thinking: this.thinking,
+      needPolicy: this.needPolicy,
+      recordSchema: this.recordSchema,
+      requestModel: this.options.requestModel ?? null,
+      timeoutMs: this.timeoutMs,
+      engine: this.world.save(),
+      initialState: structuredClone(this.initialState),
+      startedAt: this.startedAt,
+      states: structuredClone(this.states),
+      transitions: structuredClone(this.transitions),
+      cursor: this.cursor,
+      globalTurn: this.globalTurn,
+      playerSeq: this.playerSeq,
+      worldSeq: this.worldSeq,
+      busy: this.busy,
+      closed: this.closed,
+      interrupted: this.interrupted,
+      lastInterruptedActor: this.lastInterruptedActor,
+      totalCalls: this.totalCalls,
+      idlePumps: structuredClone(this.idlePumps),
+      cycles,
+    };
+  }
+
+  /**
+   * Restore from validated checkpoint data. This is NOT the normal constructor
+   * path: no openCycle, no provider call, no command submission. The Engine is
+   * rebuilt from the saved ledger; every session is restored with that same
+   * engine and the episode-cycle command-id formula. Options supply only
+   * resources (providers, clock, timer, hooks); all causal state comes from
+   * the data.
+   */
+  static restoreFromCheckpoint(data: GameCheckpoint, options: ReactiveGameOptions): ReactiveGameImpl {
+    const impl = Object.create(ReactiveGameImpl.prototype) as Record<string, unknown>;
+    impl.options = options;
+    impl.episodeId = data.episodeId;
+    impl.actorIds = [...data.actorIds];
+    impl.wakePolicy = data.wakePolicy;
+    impl.mode = data.mode;
+    impl.thinking = data.thinking;
+    impl.needPolicy = data.needPolicy;
+    impl.recordSchema = data.recordSchema;
+    impl.nowFn = options.now ?? Date.now;
+    impl.startedAt = data.startedAt;
+    impl.initialState = structuredClone(data.initialState);
+    impl.timeoutMs = data.timeoutMs;
+    impl.world = Engine.restore(data.engine);
+    impl.states = structuredClone(data.states);
+    impl.transitions = structuredClone(data.transitions);
+    impl.globalTurn = data.globalTurn;
+    impl.cursor = data.cursor;
+    impl.playerSeq = data.playerSeq;
+    impl.worldSeq = data.worldSeq;
+    impl.busy = false;
+    impl.closed = data.closed;
+    impl.interrupted = data.interrupted;
+    impl.lastInterruptedActor = data.lastInterruptedActor;
+    impl.totalCalls = data.totalCalls;
+    impl.idlePumps = structuredClone(data.idlePumps);
+    const cycles: Record<string, CycleState[]> = {};
+    for (const actorId of data.actorIds) cycles[actorId] = [];
+    for (const actorId of data.actorIds) {
+      for (const saved of data.cycles[actorId] ?? []) {
+        const restored = restoreAgentSession(saved.session, {
+          world: impl.world as Engine,
+          provider: options.providerFor(actorId),
+          commandIdFor: round => `${data.episodeId}:npc:${actorId}:${saved.cycle}:${round}`,
+          now: options.now,
+          scheduleTimeout: options.scheduleTimeout,
+        });
+        if (!restored.ok) {
+          throw new CheckpointExportError(restored.code, restored.issues ?? [`session ${saved.session.runId}`]);
+        }
+        const session = restored.value;
+        if (options.onDeciding) {
+          const hook = options.onDeciding;
+          session.onDeciding = phase => hook({ actorId, cycle: saved.cycle, round: phase.round, observation: phase.observation });
+        }
+        cycles[actorId].push({
+          cycle: saved.cycle,
+          reason: saved.reason,
+          session,
+          turns: structuredClone(saved.turns),
+          startLogCursor: saved.startLogCursor,
+          endState: saved.endState,
+        });
+      }
+    }
+    impl.cycles = cycles;
+    return impl as unknown as ReactiveGameImpl;
+  }
+}
+
+/** Internal carrier so the export layer can surface Result codes. */
+export class CheckpointExportError extends Error {
+  constructor(readonly code: string, readonly issues: string[]) {
+    super(`${code}: ${issues.join('; ')}`);
+    this.name = 'CheckpointExportError';
   }
 }
 

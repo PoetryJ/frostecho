@@ -90,9 +90,16 @@ export function sumAttempts(ledger: AttemptLedger): Pick<CostTotals, 'httpAttemp
   let latencyMsSum = 0;
   let sawUnknown = false;
   let httpAttempts = 0;
+  let unresolvedAttempts = 0;
   for (const begin of ledger.begins) {
     const finish = finished.get(begin.attemptId);
-    if (finish === undefined) continue; // unresolved, counted separately
+    if (finish === undefined) {
+      // G06 correction: a begin without a finish was a real in-flight request
+      // whose cost is unknown — it poisons the confident total, it is not zero.
+      unresolvedAttempts += 1;
+      sawUnknown = true;
+      continue;
+    }
     httpAttempts += 1;
     byOutcome[finish.outcome] += 1;
     latencyMsSum += Math.max(0, Math.round(finish.elapsedMs));
@@ -106,7 +113,7 @@ export function sumAttempts(ledger: AttemptLedger): Pick<CostTotals, 'httpAttemp
   }
   return {
     httpAttempts,
-    unresolvedAttempts: ledger.begins.filter(b => !finished.has(b.attemptId)).length,
+    unresolvedAttempts,
     budgetBlocked: ledger.blocked.length,
     byOutcome,
     knownTokenSum,
