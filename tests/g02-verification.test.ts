@@ -10,6 +10,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { verifyGameEvidence } from '../src/eval/verify-game';
+import { verifyG02Batch } from '../src/play';
 
 const LIVE18 = join('artifacts', 'g02', 'g02-r1-live-18');
 const VERIFY_CLI = join('dist', 'scripts', 'eval-g02.js');
@@ -209,6 +210,101 @@ test('corrupt game.json is rejected without throwing', () => {
     assert.ok(verification.issues.some(i => i.includes('game.json unreadable')), verification.issues.join('; '));
     const cli = verifyCli(batchDir);
     assert.equal(cli.code, 1, cli.stdout);
+  } finally {
+    rmSync(batchDir, { recursive: true, force: true });
+  }
+});
+
+// G03/D regression: JSON null / array / wrong-primitive roots must never throw
+// and must never be silently accepted at the batch level (CONTRACTS §7).
+test('game.json null root: per-game rejected with a named issue and the batch CLI fails instead of passing', () => {
+  const batchDir = tempBatch();
+  try {
+    const dir = gameDirOf(batchDir, 's1-thinking-on-rep-1');
+    writeFileSync(join(dir, 'game.json'), 'null');
+    const verification = verifyGameEvidence(dir);
+    assert.equal(verification.ok, false);
+    assert.equal(verification.game, null);
+    assert.ok(verification.issues.some(i => i.includes('game.json root')), verification.issues.join('; '));
+    const cli = verifyCli(batchDir);
+    assert.equal(cli.code, 1, cli.stdout);
+  } finally {
+    rmSync(batchDir, { recursive: true, force: true });
+  }
+});
+
+test('meta.json null root: rejected with a named issue, no TypeError', () => {
+  const batchDir = tempBatch();
+  try {
+    const dir = gameDirOf(batchDir, 's1-thinking-on-rep-1');
+    writeFileSync(join(dir, 'meta.json'), 'null');
+    const verification = verifyGameEvidence(dir);
+    assert.equal(verification.ok, false);
+    assert.ok(verification.issues.some(i => i.includes('meta.json root')), verification.issues.join('; '));
+    const cli = verifyCli(batchDir);
+    assert.equal(cli.code, 1, cli.stdout);
+  } finally {
+    rmSync(batchDir, { recursive: true, force: true });
+  }
+});
+
+test('replay.json null root: rejected with a named issue, no TypeError', () => {
+  const batchDir = tempBatch();
+  try {
+    const dir = gameDirOf(batchDir, 's1-thinking-on-rep-1');
+    writeFileSync(join(dir, 'replay.json'), 'null');
+    const verification = verifyGameEvidence(dir);
+    assert.equal(verification.ok, false);
+    assert.ok(verification.issues.some(i => i.includes('replay.json root')), verification.issues.join('; '));
+    const cli = verifyCli(batchDir);
+    assert.equal(cli.code, 1, cli.stdout);
+  } finally {
+    rmSync(batchDir, { recursive: true, force: true });
+  }
+});
+
+test('array and wrong-primitive roots are rejected with named issues', () => {
+  const batchDir = tempBatch();
+  try {
+    const dir = gameDirOf(batchDir, 's1-thinking-on-rep-1');
+    writeFileSync(join(dir, 'game.json'), '[]');
+    let verification = verifyGameEvidence(dir);
+    assert.equal(verification.ok, false);
+    assert.ok(verification.issues.some(i => i.includes('game.json root')), verification.issues.join('; '));
+
+    writeFileSync(join(dir, 'game.json'), readFileSync(join(dir, 'meta.json'), 'utf8'));
+    writeFileSync(join(dir, 'meta.json'), '42');
+    verification = verifyGameEvidence(dir);
+    assert.equal(verification.ok, false);
+    assert.ok(verification.issues.some(i => i.includes('meta.json root')), verification.issues.join('; '));
+    writeFileSync(join(dir, 'meta.json'), '"text"');
+    verification = verifyGameEvidence(dir);
+    assert.equal(verification.ok, false);
+    assert.ok(verification.issues.some(i => i.includes('meta.json root')), verification.issues.join('; '));
+
+    writeFileSync(join(dir, 'meta.json'), readFileSync(join(gameDirOf(batchDir, 's1-thinking-on-rep-2'), 'meta.json'), 'utf8'));
+    writeFileSync(join(dir, 'replay.json'), '[]');
+    verification = verifyGameEvidence(dir);
+    assert.equal(verification.ok, false);
+    assert.ok(verification.issues.some(i => i.includes('replay.json root')), verification.issues.join('; '));
+  } finally {
+    rmSync(batchDir, { recursive: true, force: true });
+  }
+});
+
+test('verifyG02Batch rejects null batch.json/summary.json roots without throwing', () => {
+  const batchDir = tempBatch();
+  try {
+    writeFileSync(join(batchDir, 'summary.json'), 'null');
+    let result = verifyG02Batch(batchDir);
+    assert.equal(result.ok, false);
+    assert.ok(result.issues.some(i => i.includes('summary.json root')), result.issues.join('; '));
+    // restore the real summary copy from the committed evidence, then break batch.json
+    writeFileSync(join(batchDir, 'summary.json'), readFileSync(join('artifacts', 'g02', 'g02-r1-live-18', 'summary.json'), 'utf8'));
+    writeFileSync(join(batchDir, 'batch.json'), 'null');
+    result = verifyG02Batch(batchDir);
+    assert.equal(result.ok, false);
+    assert.ok(result.issues.some(i => i.includes('batch.json root')), result.issues.join('; '));
   } finally {
     rmSync(batchDir, { recursive: true, force: true });
   }

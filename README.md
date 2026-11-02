@@ -76,3 +76,19 @@ npm run play -- --live
 | S3 | A 已观察到厨房食物为 1、还没提交 eat；B 先吃掉；A 的 eat 得到 `NO_FOOD`，下一步拿到新观察和拒绝反馈后停止 | 保持 40 | 通过 | false |
 
 `npm run eval:g02` 对这三组各打 3 次，thinking 开和关各打一遍，共 18 局。两组用同一个模型、同一份提示词、同一套世界规则和同一种干预顺序，只改 `enable_thinking`。摘要里有场景通过率、请求数、耗时、token，以及 transport / parse / decide / execute 计数。失败局留在 `artifacts/g02/<batch>/games/`。云端夹具结果不能当作 qwen 实跑。
+
+G04（条件等待与唤醒）把 NPC 的停止分成两件事：`stop` 只是这一轮的条件不满足，不等于这一局结束。`wakePolicy=legacy` 完全沿用 G03 终态，停止后不再复活；`wakePolicy=event` 只有在“原观察是厨房、这里食物为 0、自己还没饱”时才把 NPC 放进 `waiting`，之后补货或玩家输入只是让它重新检查自己的局部观察，不直接触发一次模型请求。唤醒时新建 session 和 cycle，旧 cycle 完整保留；每 session 5 次、每 actor 整局 10 次的预算跨 cycle 累计、不清零。全局最多一个请求在途。
+
+补货是实验环境输入，只有 `world` actor 能提交：`Engine.submit({actorId:'world',type:'restock',payload:{location,amount}})`，新增 `FoodRestocked` 事件（含 before/after）。NPC 提交 restock 得到 `FORBIDDEN_ACTION`；world 不能 move/eat。补货不改变 hunger，也不调用模型。
+
+```
+npm run play:g04                     # 交互，离线参考策略，默认 event；--policy legacy 对照
+npm run play:g04 -- --live           # 实模型；缺 FROSTECHO_LLM_URL/FROSTECHO_LLM_MODEL 退出 2
+npm run eval:g04                     # fixture 12 局，零 HTTP
+npm run eval:g04 -- --live --batch <唯一批名>
+npm run eval:g04 -- --verify --batch <批名>   # 只读复核，不产生请求、不改证据
+```
+
+交互命令：`run | step | status | player move dorm|kitchen | player eat | world restock dorm|kitchen <1-10> | quit`。`status` 只读，不发请求。所有退出路径走同一个 finalize：quit/EOF/错误都只落盘一次；HTTP/超时退出 1，缺配置 2，正常 0。记录由 `writeReactiveEpisode` 写到 `<out>/<episode>/episodes/<id>/{meta.json,game.json}`，不另存一份。
+
+`eval:g04` 是 N1/N2/N3 × ac/ca × legacy/event 共 12 局，串行无重试，参考精确 30 次调用，整批硬限 80 次 chat。真实批固定 `thinking=true` 并在每个请求体里核对。场景预期：N1 legacy 双方停在 40、厨房留 2；event 双方醒来到 70、厨房 0。N2 补的是宿舍，双方看不到，100 次通知/泵后新增调用为 0。N3 在空厨房 stop 请求在途时补厨房 2，legacy 只第二个吃，event 两个都醒。`scenarioPass` 表示“符合对照预期”，不是“NPC 全部达标”。

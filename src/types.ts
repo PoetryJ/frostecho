@@ -20,11 +20,15 @@ export interface WorldState {
 export type Command =
   | { commandId: string; actorId: string; type: 'move'; payload: { to: string } }
   | { commandId: string; actorId: string; type: 'eat'; payload: Record<string, never> }
+  /** G04: experimental environment input. Only the `world` actor may submit it. */
+  | { commandId: string; actorId: string; type: 'restock'; payload: { location: Location; amount: number } }
   | { commandId: string; actorId: string; type: string; payload: unknown };
 
 export type RejectReason =
   | 'INVALID_COMMAND' | 'UNKNOWN_ACTOR' | 'UNKNOWN_ACTION' | 'INVALID_PAYLOAD'
-  | 'ALREADY_THERE' | 'NOT_IN_KITCHEN' | 'NO_FOOD' | 'COMMAND_ID_CONFLICT';
+  | 'ALREADY_THERE' | 'NOT_IN_KITCHEN' | 'NO_FOOD' | 'COMMAND_ID_CONFLICT'
+  /** G04: an actor tried an action it may never perform (NPC restock / world move-eat-stop). */
+  | 'FORBIDDEN_ACTION';
 
 /** CommandResult: accepted or rejected, with reason & linked events. */
 export interface CommandResult {
@@ -41,4 +45,6 @@ export interface CommandResult {
 export type WorldEvent =
   | { eventId: string; seq: number; commandId: string; type: 'NpcMoved'; npcId: string; from: Location; to: Location }
   | { eventId: string; seq: number; commandId: string; type: 'FoodConsumed'; location: Location; amount: number; before: number; after: number }
-  | { eventId: string; seq: number; commandId: string; type: 'HungerChanged'; npcId: string; before: number; after: number };
+  | { eventId: string; seq: number; commandId: string; type: 'HungerChanged'; npcId: string; before: number; after: number }
+  /** G04: world restocked a location. */
+  | { eventId: string; seq: number; commandId: string; type: 'FoodRestocked'; location: Location; amount: number; before: number; after: number };

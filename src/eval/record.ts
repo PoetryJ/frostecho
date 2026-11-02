@@ -229,7 +229,14 @@ export function summarizeBatchDir(batchDir: string, batchId: string, expectedPla
     const verification = verifyGameEvidence(gameDir);
     for (const issue of verification.issues) issues.push(`${task.taskId}: ${issue}`);
     const game = verification.game;
-    if (!game) return; // game.json unreadable/corrupt: issues already recorded
+    if (!game || !verification.ok) {
+      // G03/H01: a failed verification must never be silently ignored, even when
+      // the per-game verifier returned no explicit issue (e.g. game.json is null).
+      if (verification.ok === false && verification.issues.length === 0) {
+        issues.push(`${task.taskId}: evidence verification failed without an explicit issue`);
+      }
+      return;
+    }
     let meta: { batchId: string; thinking: boolean | null; scenarioPass: boolean | null; replayMatches: boolean; scenarioId: string | null } | null = null;
     let replay: { matches: boolean } | null = null;
     try { meta = readJson<{ batchId: string; thinking: boolean | null; scenarioPass: boolean | null; replayMatches: boolean; scenarioId: string | null }>(join(gameDir, 'meta.json')); } catch { issues.push(`${task.taskId}: meta.json unreadable`); }

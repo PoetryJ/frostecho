@@ -1,0 +1,51 @@
+{
+  "schema": "frostecho.g04.batch/1",
+  "batchId": "g04-fixture-20261030-final",
+  "mode": "fixture",
+  "scenarios": [
+    "n1",
+    "n2",
+    "n3"
+  ],
+  "orders": [
+    "ac",
+    "ca"
+  ],
+  "policies": [
+    "legacy",
+    "event"
+  ],
+  "plannedEpisodes": [
+    "n1-ac-legacy",
+    "n1-ac-event",
+    "n2-ac-legacy",
+    "n2-ac-event",
+    "n3-ac-legacy",
+    "n3-ac-event",
+    "n1-ca-legacy",
+    "n1-ca-event",
+    "n2-ca-legacy",
+    "n2-ca-event",
+    "n3-ca-legacy",
+    "n3-ca-event"
+  ],
+  "thinking": true,
+  "createdAt": "2026-10-30T10:38:16.395Z",
+  "version": {
+    "commit": "01adb574287c85ac41623e1b762c5ef3129c4063",
+    "dirty": true,
+    "dirtyFiles": [
+      "rtifacts/g01/offline-timing.json",
+      "scripts/eval-g04.ts",
+      "src/reactive/eval.ts",
+      "tests/g04-integration.test.ts"
+    ],
+    "sourceFingerprint": "0d185f56268aa170dfdd6e1e0756d9c5a2365600cc4bb7763bc675c036369e0b",
+    "promptFingerprint": "8d66afdf043633df7103189682fdd5b1647e293554bba761825529f1364c9ae2",
+    "node": "v20.18.0",
+    "platform": "linux"
+  },
+  "sourceFingerprint": "0d185f56268aa170dfdd6e1e0756d9c5a2365600cc4bb7763bc675c036369e0b",
+  "status": "finished",
+  "completedEpisodes": 12
+}
