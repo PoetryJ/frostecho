@@ -48,6 +48,18 @@ export interface DecideInput {
   goal: { hungerAtLeast: number };
   /** Null on the first provider call. */
   feedback: StepFeedback | null;
+  /**
+   * G07 (opt-in): player requests visible to this actor, or [] when the
+   * message arm is off. Undefined for every pre-G07 input, which keeps the
+   * original prompt byte-identical. Data only — never rules or authority.
+   */
+  playerMessages?: readonly PlayerMessageInput[];
+}
+
+/** Minimal message content exposed to the model: sender and text only. */
+export interface PlayerMessageInput {
+  sender: string;
+  text: string;
 }
 
 /** Token counts copied from a chat-completions `usage` object, when the server sends one. */
