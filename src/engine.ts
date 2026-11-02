@@ -118,5 +118,7 @@ export function replay(initial: WorldState, events: readonly WorldEvent[]): Worl
 }
 
 export function initialWorld(): WorldState {
+  // G05-R1: no implicit simTime here — pre-G05 records stay canonically
+  // identical; the G05 world builder sets simTime: 0 explicitly.
   return { tick: 0, npcs: { npc_a: { id: 'npc_a', location: 'dorm', hunger: 40 }, npc_b: { id: 'npc_b', location: 'dorm', hunger: 20 } }, food: { dorm: 0, kitchen: 1 } };
 }

@@ -20,6 +20,10 @@ import type { Location, WorldEvent, WorldState } from '../types';
 export const G04_SCHEMA = 'frostecho.g04.game/1' as const;
 export const G04_BATCH_SCHEMA = 'frostecho.g04.batch/1' as const;
 export const G04_SUMMARY_SCHEMA = 'frostecho.g04.summary/1' as const;
+/** G05-R1: /2 marks the restored contract (steps decay, LOW/GOAL reactivation). */
+export const G05_SCHEMA = 'frostecho.g05.game/2' as const;
+export const G05_BATCH_SCHEMA = 'frostecho.g05.batch/2' as const;
+export const G05_MATRIX_VERSION = 'g05-r1-t123' as const;
 
 /** Internal command routing marker. Not a network identity and not an NPC. */
 export const WORLD_ACTOR_ID = 'world';
@@ -60,6 +64,7 @@ export type WakePolicy = 'legacy' | 'event';
 export type ReactiveActorState =
   | 'active' // a cycle is running and may take turns
   | 'waiting' // stopped for lack of observable food; the sole auto-wake candidate
+  | 'hungry' // G05: a scheduled need is pending; the sole need-scheduling candidate
   | 'satisfied' // authoritative hunger >= goal
   | 'stopped' // stopped for any other reason (legacy policy or non-empty stop)
   | 'failed' // timeout / provider_error, latched for the episode
@@ -80,6 +85,42 @@ export type ReactiveAdvanceOutcome =
   | { kind: 'closed' }
   | { kind: 'interrupted'; actorId: string };
 
+/* §2b G05 needs — frozen interface (G05-R1 contract) */
+
+/**
+ * one-shot: the initial goal pursuit only — a satisfied actor never reactivates.
+ * recurring: a satisfied actor whose own current hunger <= NEED_REACTIVATE_HUNGER
+ * opens exactly one new cycle (checked on reconcile, i.e. after time/world input);
+ * above the threshold it rests with no cycle and no provider call.
+ * There is no third 'never' arm in G05-R1.
+ */
+export type NeedPolicy = 'one-shot' | 'recurring';
+/** LOW threshold: re-pursue the goal only at or below this satiety. */
+export const NEED_REACTIVATE_HUNGER = 40;
+/** GOAL threshold lives in agent/contracts as GOAL_HUNGER_AT_LEAST (70). */
+
+export interface AdvanceTimeCommand {
+  commandId: string;
+  actorId: string;
+  type: 'advance_time';
+  payload: { steps: number };
+}
+
+export type AdvanceTimeResult =
+  | {
+      ok: true;
+      command: AdvanceTimeCommand;
+      /** Sim time before the command. */
+      before: number;
+      /** Sim time after the command. */
+      after: number;
+    }
+  | {
+      ok: false;
+      command: AdvanceTimeCommand;
+      error: string;
+    };
+
 /* §3 Frozen interfaces */
 
 export interface ReactiveDecidingInfo {
@@ -99,6 +140,12 @@ export interface ReactiveGameOptions {
   /** Recorded configuration; live G04 runs fixed true. */
   thinking: boolean;
   wakePolicy: WakePolicy;
+  /** G05: need reactivation policy; default 'one-shot' (G04 semantics). */
+  needPolicy?: NeedPolicy;
+  /** G05: record schema version; default G04. */
+  schemaVersion?: typeof G04_SCHEMA | typeof G05_SCHEMA;
+  /** Live model name for requestConfig even on zero-request trajectories. */
+  requestModel?: string;
   timeoutMs?: number;
   now?: () => number;
   scheduleTimeout?(fn: () => void, ms: number): { cancel(): void };
@@ -122,6 +169,8 @@ export interface ReactiveTurnRecord {
 
 export interface ReactiveCycleRecord {
   cycle: number;
+  /** G05: why this cycle opened (autonomous wake vs need cycle). */
+  reason?: string;
   startLogCursor: number;
   endState: ReactiveActorState;
   turns: ReactiveTurnRecord[];
@@ -166,7 +215,7 @@ export interface ReactiveRequestConfig {
 }
 
 export interface ReactiveRecord {
-  schema: typeof G04_SCHEMA;
+  schema: typeof G04_SCHEMA | typeof G05_SCHEMA;
   episodeId: string;
   scenarioId: string | null;
   wakePolicy: WakePolicy;
@@ -188,6 +237,8 @@ export interface ReactiveRecord {
   idlePumps: ReactiveIdlePumps;
   requestConfig: ReactiveRequestConfig;
   timing: { totalMs: number };
+  /** G05: need policy in force ('one-shot' on pre-G05 semantics). */
+  needPolicy?: NeedPolicy;
 }
 
 export interface ReactiveStatus {
@@ -200,6 +251,8 @@ export interface ReactiveStatus {
   actors: Record<string, { state: ReactiveActorState; cycle: number; providerCalls: number; hunger: number | null; location: Location | null }>;
   player: { location: Location | null; hunger: number | null };
   food: Record<string, number>;
+  /** G05: simulated minutes (0 before the first advance_time). */
+  simTime: number;
   commands: number;
   events: number;
 }
@@ -216,6 +269,8 @@ export interface ReactiveGame {
   close(): Promise<void>;
   playerLine(line: string): { ok: boolean; detail: string };
   worldRestock(location: Location, amount: number, commandId?: string): RestockResult;
+  /** G05: advance simulated time by steps; world-only; accepted even while a provider call is in flight. */
+  worldAdvanceTime(steps: number): AdvanceTimeResult;
   /** Reconcile (and maybe wake) after an external notification; never calls a provider. */
   notifyWorldChange(): void;
   actorStateOf(actorId: string): ReactiveActorState;
@@ -224,6 +279,10 @@ export interface ReactiveGame {
   snapshot(): ReactiveRecord;
   isClosed(): boolean;
   isInterrupted(): boolean;
+  /** G05: current need scheduling policy. */
+  getNeedPolicy(): NeedPolicy;
+  /** G05: interactive switch (one-shot/recurring); affects future reconciles only. */
+  setNeedPolicy(policy: NeedPolicy): void;
 }
 
 export interface SessionArgs {

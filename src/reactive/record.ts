@@ -15,6 +15,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { join } from 'node:path';
 import { HTTP_SAMPLING } from '../agent/providers/http';
 import { GOAL_HUNGER_AT_LEAST } from '../agent/contracts';
+import { G05_SCHEMA } from './contracts';
 import { parseAction } from '../agent/parser';
 import { Engine, replay } from '../engine';
 import type { WorldState } from '../types';
@@ -49,8 +50,8 @@ function writeJson(path: string, value: unknown): void {
 export function writeReactiveEpisode(artifactsRoot: string, batch: string, record: ReactiveRecord): string {
   const dir = join(artifactsRoot, batch, 'episodes', record.episodeId);
   mkdirSync(dir, { recursive: true });
-  const meta = {
-    schema: G04_SCHEMA,
+  const meta: Record<string, unknown> = {
+    schema: record.schema,
     episodeId: record.episodeId,
     scenarioId: record.scenarioId,
     wakePolicy: record.wakePolicy,
@@ -64,6 +65,9 @@ export function writeReactiveEpisode(artifactsRoot: string, batch: string, recor
     scenarioPass: record.scenarioPass,
     idlePumps: record.idlePumps,
   };
+  if (record.schema === G05_SCHEMA) {
+    meta.needPolicy = record.needPolicy ?? 'one-shot';
+  }
   writeJson(join(dir, 'meta.json'), meta);
   writeJson(join(dir, 'game.json'), record);
   return dir;
@@ -109,7 +113,9 @@ export function verifyReactiveEpisode(episodeDir: string): ReactiveVerification 
   const record = gameRead.value;
   if (!isPlainObject(meta)) return emptyVerification(['meta.json root is not a non-null object']);
   if (!isPlainObject(record)) return emptyVerification(['game.json root is not a non-null object']);
-  if (record.schema !== G04_SCHEMA) return emptyVerification([`game.json schema is ${String(record.schema)}, expected ${G04_SCHEMA}`]);
+  if (record.schema !== G04_SCHEMA && record.schema !== G05_SCHEMA) {
+    return emptyVerification([`game.json schema is ${String(record.schema)}, expected ${G04_SCHEMA} or ${G05_SCHEMA}`]);
+  }
 
   // sidecar must match the record it describes
   const fields: [string, unknown, unknown][] = [
@@ -122,6 +128,9 @@ export function verifyReactiveEpisode(episodeDir: string): ReactiveVerification 
     ['commands', meta.commands, (record.commands as unknown[]).length],
     ['events', meta.events, (record.events as unknown[]).length],
   ];
+  if (record.schema === G05_SCHEMA) {
+    fields.push(['needPolicy', meta.needPolicy, (record as unknown as ReactiveRecord).needPolicy ?? 'one-shot']);
+  }
   for (const [name, left, right] of fields) {
     if (canonical(left) !== canonical(right)) issues.push(`meta.json ${name} does not match game.json`);
   }
@@ -137,12 +146,16 @@ export function verifyReactiveEpisode(episodeDir: string): ReactiveVerification 
       continue;
     }
     const result = engine.submit(structuredClone(entry.command as never));
-    if (entry.status === 'accepted') {
+    // LogEntry stores the execution outcome nested under `result`.
+    const saved: JsonObject = isPlainObject(entry.result) ? entry.result : {};
+    const savedStatus = typeof saved.status === 'string' ? saved.status : '';
+    const savedReason = typeof saved.reason === 'string' ? saved.reason : undefined;
+    if (savedStatus === 'accepted') {
       if (result.status !== 'accepted') issues.push(`command ${String((entry.command as JsonObject).commandId)} no longer executes (${result.status})`);
-    } else if (entry.status === 'duplicate') {
+    } else if (savedStatus === 'duplicate') {
       if (result.status !== 'duplicate') issues.push(`command ${String((entry.command as JsonObject).commandId)} is no longer a duplicate`);
-    } else if (result.status === 'rejected') {
-      if (result.status !== 'rejected' || result.reason !== entry.reason) {
+    } else if (savedStatus === 'rejected') {
+      if (result.status !== 'rejected' || result.reason !== savedReason) {
         issues.push(`command ${String((entry.command as JsonObject).commandId)} rejection no longer reproduces`);
       }
     }
@@ -194,7 +207,7 @@ export function verifyReactiveEpisode(episodeDir: string): ReactiveVerification 
     }
   }
 
-  // cycle ledger and the two budgets
+  // cycle ledger and the two budgets — G05-R1: no exemptions, ever.
   const cycles = isPlainObject(typed.cycles) ? typed.cycles : {};
   for (const actorId of typed.actorOrder) {
     const list = Array.isArray(cycles[actorId]) ? (cycles[actorId] as unknown as JsonObject[]) : [];
@@ -270,9 +283,11 @@ export function verifyReactiveEpisode(episodeDir: string): ReactiveVerification 
     else if (String(config.model) !== [...models][0]) issues.push('requestConfig.model does not match the request bodies');
   }
 
-  // scenario judgement, recomputed
+  // scenario judgement, recomputed — G04 scenarios only. G05-R1 episodes carry
+  // matrix scenario ids (ac/t1/recurring…) judged independently by the needs
+  // verifier (checkpoint replay), not by the G04 scenario table.
   let judgement: ScenarioJudgement | null = null;
-  if (typeof typed.scenarioId === 'string') {
+  if (typed.schema !== G05_SCHEMA && typeof typed.scenarioId === 'string') {
     const scenario = loadScenario(typed.scenarioId as ScenarioId);
     judgement = scenario.judge(typed);
     if (typed.scenarioPass !== judgement.pass) issues.push(`stored scenarioPass=${String(typed.scenarioPass)} contradicts the recomputed ${String(judgement.pass)}`);
