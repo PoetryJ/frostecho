@@ -110,7 +110,13 @@ test('missing live configuration exits 2 and names both environment variables', 
 });
 
 test('reference event run saves once, exits 0, and both NPCs wait on an empty kitchen', async () => {
-  const run = await runCli([], 'run\nquit\n');
+  // Wait for the run to drain before quitting: a quit that races an in-flight
+  // run now closes the game synchronously (G04-R1-CLOSE) and would legitimately
+  // stop the second NPC from ever starting.
+  const run = await runCliSteps([], [
+    { line: 'run\n', until: '[run idle]' },
+    { line: 'quit\n' },
+  ]);
   assert.equal(run.code, 0, `${run.stdout}\n${run.stderr}`);
   assert.equal(savedLines(run.stdout), 1, run.stdout);
   const { record, verification } = readSaved(run.outDir);
@@ -190,7 +196,7 @@ test('an out-of-range restock is rejected and leaves the world unchanged', async
 });
 
 test('EOF without quit still saves exactly once and exits 0', async () => {
-  const run = await runCli([], 'run\n');
+  const run = await runCliSteps([], [{ line: 'run\n', until: '[run idle]' }]);
   assert.equal(run.code, 0, `${run.stdout}\n${run.stderr}`);
   assert.equal(savedLines(run.stdout), 1, run.stdout);
   const { record } = readSaved(run.outDir);
@@ -247,3 +253,67 @@ test('status only reads: a live session issues no chat request for status, and q
     server.close();
   }
 });
+
+test('quit during an in-flight live request waits only the started request', async () => {
+  // G04-R1-CLOSE at the CLI level: quit while npc_a's request is on the wire
+  // must not start npc_c, must reject later input, and must save exactly once.
+  let release!: () => void;
+  const gate = new Promise<void>(resolve => { release = resolve; });
+  const counter = { chats: 0 };
+  const server = createServer((req, res) => {
+    if (req.url === '/v1/models') {
+      res.writeHead(200, { 'content-type': 'application/json' });
+      res.end(JSON.stringify({ data: [{ id: 'qwen3.8-27b' }] }));
+      return;
+    }
+    counter.chats += 1;
+    void gate.then(() => {
+      res.writeHead(200, { 'content-type': 'application/json' });
+      res.end(JSON.stringify({ choices: [{ message: { content: '{"type":"stop"}' } }] }));
+    });
+  });
+  await new Promise<void>(resolveListen => { server.listen(0, '127.0.0.1', resolveListen); });
+  const url = `http://127.0.0.1:${(server.address() as { port: number }).port}/v1/chat/completions`;
+  try {
+    const outDir = mkdtempSync(join(tmpdir(), 'g04-cli-close-'));
+    const child = spawn(process.execPath, [CLI, '--live', '--out', outDir, '--episode', 'ep'], {
+      env: { ...process.env, FROSTECHO_LLM_URL: url, FROSTECHO_LLM_MODEL: 'qwen3.8-27b' },
+      stdio: ['pipe', 'pipe', 'pipe'],
+    });
+    let stdout = '';
+    child.stdout.on('data', (chunk: Buffer) => { stdout += chunk.toString(); });
+    child.stderr.on('data', () => {});
+    child.stdin.write('run\n');
+    const deadline = Date.now() + 10_000;
+    while (counter.chats < 1 && Date.now() < deadline) await new Promise(r => setTimeout(r, 10));
+    assert.equal(counter.chats, 1, 'npc_a request must be in flight');
+    child.stdin.write('quit\n');
+    // While the started request is still on the wire, later input is refused.
+    child.stdin.write('world restock kitchen 1\n');
+    for (;;) {
+      if (stdout.includes('[world rejected]')) break;
+      if (Date.now() > deadline) throw new Error(`post-quit input not refused\n${stdout}`);
+      await new Promise(r => setTimeout(r, 10));
+    }
+    // Only now does the in-flight request settle; finalize prints after close drains.
+    release();
+    for (;;) {
+      if (stdout.includes('[finalize quit]')) break;
+      if (Date.now() > deadline) throw new Error(`finalize not reached\n${stdout}`);
+      await new Promise(r => setTimeout(r, 10));
+    }
+    const code = await new Promise<number | null>(resolveExit => child.on('exit', c => resolveExit(c)));
+    assert.equal(code, 0, stdout);
+    assert.equal(counter.chats, 1, 'no second request may start after quit');
+    assert.equal(savedLines(stdout), 1, stdout);
+    const { record, verification } = readSaved(outDir);
+    assert.equal(verification.ok, true, verification.issues.join('; '));
+    assert.equal(record.actors.npc_a.providerCalls, 1);
+    assert.equal(record.actors.npc_c.providerCalls, 0);
+    assert.equal(record.stopReason, 'user_closed');
+    rmSync(outDir, { recursive: true, force: true });
+  } finally {
+    server.close();
+  }
+});
+

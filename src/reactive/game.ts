@@ -330,9 +330,12 @@ class ReactiveGameImpl implements ReactiveGame {
   }
 
   async close(): Promise<void> {
-    // Bounded wait for an in-flight step: the runner's own timeout bounds it.
-    while (this.busy) await new Promise<void>(resolve => setTimeout(resolve, 5));
+    // G04-R1-CLOSE: latch the closed flag synchronously so every entrypoint
+    // (advance/player/world) rejects from this tick on, then wait only for the
+    // in-flight step to finish its own bookkeeping (the runner's own timeout
+    // bounds it). Idempotent: a repeated close adds no request and no wait.
     this.closed = true;
+    while (this.busy) await new Promise<void>(resolve => setTimeout(resolve, 5));
   }
 
   playerLine(line: string): { ok: boolean; detail: string } {
