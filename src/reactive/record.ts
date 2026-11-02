@@ -66,8 +66,7 @@ export function writeReactiveEpisode(artifactsRoot: string, batch: string, recor
     idlePumps: record.idlePumps,
   };
   if (record.schema === G05_SCHEMA) {
-    meta.needPolicy = record.needPolicy ?? 'never';
-    meta.needs = (record.needs ?? []).length;
+    meta.needPolicy = record.needPolicy ?? 'one-shot';
   }
   writeJson(join(dir, 'meta.json'), meta);
   writeJson(join(dir, 'game.json'), record);
@@ -130,10 +129,7 @@ export function verifyReactiveEpisode(episodeDir: string): ReactiveVerification 
     ['events', meta.events, (record.events as unknown[]).length],
   ];
   if (record.schema === G05_SCHEMA) {
-    fields.push(
-      ['needPolicy', meta.needPolicy, (record as unknown as ReactiveRecord).needPolicy ?? 'never'],
-      ['needs', meta.needs, ((record as unknown as ReactiveRecord).needs ?? []).length],
-    );
+    fields.push(['needPolicy', meta.needPolicy, (record as unknown as ReactiveRecord).needPolicy ?? 'one-shot']);
   }
   for (const [name, left, right] of fields) {
     if (canonical(left) !== canonical(right)) issues.push(`meta.json ${name} does not match game.json`);
@@ -211,15 +207,13 @@ export function verifyReactiveEpisode(episodeDir: string): ReactiveVerification 
     }
   }
 
-  // cycle ledger and the two budgets
+  // cycle ledger and the two budgets — G05-R1: no exemptions, ever.
   const cycles = isPlainObject(typed.cycles) ? typed.cycles : {};
-  const isG05 = typed.schema === G05_SCHEMA;
   for (const actorId of typed.actorOrder) {
     const list = Array.isArray(cycles[actorId]) ? (cycles[actorId] as unknown as JsonObject[]) : [];
     if (list.length === 0) issues.push(`actor ${actorId} has no cycle record`);
     let previousCycle = 0;
     let actorCalls = 0;
-    let autoCalls = 0;
     for (const cycle of list) {
       const number = Number(cycle.cycle);
       if (number !== previousCycle + 1) issues.push(`actor ${actorId}: cycle ${String(cycle.cycle)} is not consecutive`);
@@ -236,14 +230,11 @@ export function verifyReactiveEpisode(episodeDir: string): ReactiveVerification 
       const counted = cycleTurns.filter(turn => turn.providerCalled === true).length;
       if (counted !== providerCalls) issues.push(`actor ${actorId} cycle ${String(number)}: providerCalls ${providerCalls} != ${counted} flagged turns`);
       actorCalls += providerCalls;
-      // G05: need cycles run on the need decision budget and are exempt here.
-      const reason = typeof cycle.reason === 'string' ? cycle.reason : '';
-      if (!(isG05 && reason.startsWith('need cycle'))) autoCalls += providerCalls;
     }
     const summary = isPlainObject(typed.actors) ? (typed.actors[actorId] as unknown as JsonObject | undefined) : undefined;
     const declared = summary ? Number(summary.providerCalls) : NaN;
     if (declared !== actorCalls) issues.push(`actor ${actorId}: summary calls ${String(declared)} != cycle total ${actorCalls}`);
-    if (autoCalls > EPISODE_CALL_LIMIT) issues.push(`actor ${actorId}: ${autoCalls} autonomous calls exceeds the ${EPISODE_CALL_LIMIT}-call episode budget`);
+    if (actorCalls > EPISODE_CALL_LIMIT) issues.push(`actor ${actorId}: ${actorCalls} calls exceeds the ${EPISODE_CALL_LIMIT}-call episode budget`);
     const hunger = (typed.finalState as WorldState).npcs[actorId]?.hunger;
     const goal = summary?.goalReached;
     if (typeof hunger === 'number' && goal !== (hunger >= GOAL_HUNGER_AT_LEAST)) issues.push(`actor ${actorId}: goalReached flag contradicts the authoritative hunger ${hunger}`);
@@ -292,9 +283,11 @@ export function verifyReactiveEpisode(episodeDir: string): ReactiveVerification 
     else if (String(config.model) !== [...models][0]) issues.push('requestConfig.model does not match the request bodies');
   }
 
-  // scenario judgement, recomputed
+  // scenario judgement, recomputed — G04 scenarios only. G05-R1 episodes carry
+  // matrix scenario ids (ac/t1/recurring…) judged independently by the needs
+  // verifier (checkpoint replay), not by the G04 scenario table.
   let judgement: ScenarioJudgement | null = null;
-  if (typeof typed.scenarioId === 'string') {
+  if (typed.schema !== G05_SCHEMA && typeof typed.scenarioId === 'string') {
     const scenario = loadScenario(typed.scenarioId as ScenarioId);
     judgement = scenario.judge(typed);
     if (typed.scenarioPass !== judgement.pass) issues.push(`stored scenarioPass=${String(typed.scenarioPass)} contradicts the recomputed ${String(judgement.pass)}`);

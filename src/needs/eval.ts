@@ -1,139 +1,219 @@
 /**
- * G05 workstream C — batch drivers for the 12-trajectory matrix.
+ * G05-R1 workstream C — batch drivers for the restored matrix.
  *
- * fixture: reference provider, zero HTTP, every trajectory.
- * live: the HTTP provider behind the shared G03/G04 live env contract; chains
- * run ac first then ca (the bounded comparison), one health probe each.
+ * Batches own an exclusive directory; the summary is a pure function of the
+ * runs being persisted. Live runs gate on a health precheck, run the ac chain
+ * first and stop on the first behavioural or transport failure, keeping every
+ * remaining trajectory as not_run. HTTP counts come from actual transport
+ * records; missing usage stays unknown.
  */
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { LIVE_DECISION_TIMEOUT_MS, type Provider } from '../agent/contracts';
 import { liveTimeoutMs } from '../agent/live-record';
 import { createReferenceProvider } from '../agent/providers/reference';
 import { createHttpProvider, loadHttpConfigFromEnv } from '../agent/providers/http';
 import { checkLlmHealth, type HealthResult } from '../eval/health';
-import { G05_SCENARIOS, runScenario, type ScenarioRun } from './scenarios';
-import { saveNeedsBatch, saveNeedsEpisode, type NeedsBatchFile, type NeedsSummaryFile } from './record';
-import type { ReactiveRecord } from '../reactive/contracts';
+import { canonical } from '../util';
+import { G05_BATCH_SCHEMA } from '../reactive/contracts';
+import { G05_SCENARIOS, runScenario, type G05Chain, type G05ScenarioRun } from './scenarios';
+import { saveNeedsEpisode } from './record';
+import { writeReactiveBatchFile, writeReactiveSummary } from '../reactive/record';
 
 export interface RunBatchOptions {
   artifactsRoot: string;
   batchId: string;
   timeoutMs?: number;
-  /** Live only: chain filter, defaults to both in the official order. */
-  chains?: ('ac' | 'ca')[];
-  /** Live only: stop after this many total provider calls (bounded rework guard). */
+  /** Chain filter; the official run is ac first, then ca. */
+  chains?: G05Chain[];
+  /** Live only: stop before spending past this total (bounded rework guard). */
   maxTotalCalls?: number;
 }
 
 export interface BatchResult {
-  runs: ScenarioRun[];
-  summary: NeedsSummaryFile;
+  runs: G05ScenarioRun[];
+  summary: NeedsSummary;
   totalCalls: number;
   scenarioPass: number;
   aborted?: string;
   health?: HealthResult;
 }
 
-function summarize(batchId: string, mode: 'fixture' | 'live', runs: ScenarioRun[]): NeedsSummaryFile {
-  const perEpisode = runs.map(run => {
-    const needs = run.record.needs ?? [];
-    return {
-      id: run.scenario.id,
-      totalCalls: Object.values(run.record.actors).reduce((s, a) => s + a.providerCalls, 0),
-      httpCalls: mode === 'live' ? Object.values(run.record.actors).reduce((s, a) => s + a.providerCalls, 0) : 0,
-      interrupted: run.record.stopReason === 'interrupted',
-      scenarioPass: run.scenarioPass,
-      simTime: run.record.finalState.simTime ?? 0,
-      needs: {
-        granted: needs.length,
-        satisfied: needs.filter(n => n.outcome === 'satisfied').length,
-        expired: needs.filter(n => n.outcome === 'expired').length,
-        stopped: needs.filter(n => n.outcome === 'stopped').length,
-        pending: needs.filter(n => n.outcome === 'pending').length,
-      },
-    };
-  });
-  const httpCalls = mode === 'live' ? perEpisode.reduce((s, e) => s + e.httpCalls, 0) : 0;
-  const needsAll = runs.flatMap(run => run.record.needs ?? []);
+export interface NeedsSummary {
+  schema: 'frostecho.g05.summary/2';
+  batchId: string;
+  matrixVersion: string;
+  mode: string;
+  totals: {
+    episodes: number;
+    scenarioPass: number;
+    behaviourFailed: number;
+    notRun: number;
+    httpCalls: number;
+    referenceDecisions: number;
+  };
+  sourceFingerprint: string;
+  promptFingerprint: string | 'unknown';
+  perEpisode: {
+    id: string;
+    episodeId: string;
+    scenarioPass: boolean;
+    calls: number;
+    transports: number;
+    usage: unknown;
+    simTime: number;
+    stopReason: string;
+  }[];
+}
+
+function sourceFingerprint(): string {
+  const hash = createHash('sha256');
+  for (const rel of ['dist/src/rules.js', 'dist/src/reactive/game.js', 'dist/src/needs/scenarios.js', 'dist/src/agent/runner.js']) {
+    try {
+      hash.update(rel);
+      hash.update(readFileSync(join(process.cwd(), rel)));
+    } catch {
+      hash.update(`${rel}:missing`);
+    }
+  }
+  return hash.digest('hex');
+}
+
+function transportsOf(run: G05ScenarioRun): number {
+  return Object.values(run.record.cycles).flatMap(list => list.flatMap(c => c.turns))
+    .filter(t => t.step?.transport !== undefined && t.step?.transport !== null).length;
+}
+
+function usageOf(run: G05ScenarioRun): unknown {
+  for (const list of Object.values(run.record.cycles)) {
+    for (const cycle of list) {
+      for (const turn of cycle.turns) {
+        const usage = (turn.step?.transport as { usage?: unknown } | undefined)?.usage;
+        if (usage !== undefined && usage !== null) return usage;
+      }
+    }
+  }
+  return 'unknown';
+}
+
+function promptFingerprintOf(runs: G05ScenarioRun[]): string | 'unknown' {
+  for (const run of runs) {
+    for (const list of Object.values(run.record.cycles)) {
+      for (const cycle of list) {
+        for (const turn of cycle.turns) {
+          const body = turn.step?.transport?.requestBody as { messages?: unknown } | undefined;
+          if (body?.messages !== undefined) {
+            return createHash('sha256').update(canonical(body.messages)).digest('hex');
+          }
+        }
+      }
+    }
+  }
+  return 'unknown';
+}
+
+function summarize(batchId: string, mode: string, runs: G05ScenarioRun[], notRun: string[]): NeedsSummary {
+  const perEpisode = runs.map(run => ({
+    id: run.scenario.id,
+    episodeId: run.record.episodeId,
+    scenarioPass: run.scenarioPass,
+    calls: Object.values(run.record.actors).reduce((s, a) => s + a.providerCalls, 0),
+    transports: transportsOf(run),
+    usage: usageOf(run),
+    simTime: run.record.finalState.simTime ?? 0,
+    stopReason: run.record.stopReason,
+  }));
   return {
-    schema: 'frostecho.g05.summary/1',
+    schema: 'frostecho.g05.summary/2',
     batchId,
+    matrixVersion: 'g05-r1-t123',
     mode,
     totals: {
       episodes: runs.length,
-      scenarioPass: perEpisode.filter(e => e.scenarioPass).length,
-      httpCalls,
-      referenceDecisions: mode === 'fixture' ? perEpisode.reduce((s, e) => s + e.totalCalls, 0) : 0,
-      interrupted: perEpisode.filter(e => e.interrupted).length,
-      needsGranted: needsAll.length,
-      needsSatisfied: needsAll.filter(n => n.outcome === 'satisfied').length,
-      needsExpired: needsAll.filter(n => n.outcome === 'expired').length,
-      simMinutes: perEpisode.reduce((s, e) => s + e.simTime, 0),
+      scenarioPass: runs.filter(r => r.scenarioPass).length,
+      behaviourFailed: runs.filter(r => !r.scenarioPass).length,
+      notRun: notRun.length,
+      httpCalls: perEpisode.reduce((s, e) => s + e.transports, 0),
+      referenceDecisions: perEpisode.reduce((s, e) => s + e.calls, 0),
     },
+    sourceFingerprint: sourceFingerprint(),
+    promptFingerprint: promptFingerprintOf(runs),
     perEpisode,
   };
 }
 
+function persist(options: RunBatchOptions, mode: string, runs: G05ScenarioRun[], summary: NeedsSummary, notRun: string[]): void {
+  for (const run of runs) saveNeedsEpisode(options.artifactsRoot, options.batchId, run.record);
+  writeReactiveBatchFile(join(options.artifactsRoot, options.batchId), {
+    schema: G05_BATCH_SCHEMA,
+    batchId: options.batchId,
+    matrixVersion: 'g05-r1-t123',
+    mode,
+    episodes: runs.map(r => r.record.episodeId),
+    notRun,
+    createdAt: new Date().toISOString(),
+  });
+  writeReactiveSummary(join(options.artifactsRoot, options.batchId), summary as never);
+}
+
 export async function runFixtureBatch(options: RunBatchOptions): Promise<BatchResult> {
-  const runs: ScenarioRun[] = [];
+  const runs: G05ScenarioRun[] = [];
   for (const scenario of G05_SCENARIOS) {
     if (options.chains !== undefined && !options.chains.includes(scenario.chain)) continue;
     runs.push(await runScenario(scenario, {
       providerFor: () => createReferenceProvider(),
-      mode: 'fixture',
-      thinking: false,
+      mode: 'reference',
+      thinking: true,
       timeoutMs: options.timeoutMs,
     }));
   }
-  const summary = summarize(options.batchId, 'fixture', runs);
-  persist(options.artifactsRoot, options.batchId, 'fixture', runs, summary);
+  const summary = summarize(options.batchId, 'fixture', runs, []);
+  persist(options, 'fixture', runs, summary, []);
   return { runs, summary, totalCalls: summary.totals.referenceDecisions, scenarioPass: summary.totals.scenarioPass };
 }
 
 export async function runLiveBatch(options: RunBatchOptions): Promise<BatchResult> {
   const config = loadHttpConfigFromEnv();
-  if (config === null) return { runs: [], summary: summarize(options.batchId, 'live', []), totalCalls: 0, scenarioPass: 0, aborted: 'live mode requires FROSTECHO_LLM_URL and FROSTECHO_LLM_MODEL' };
+  if (config === null) {
+    return { runs: [], summary: summarize(options.batchId, 'live', [], []), totalCalls: 0, scenarioPass: 0, aborted: 'live mode requires FROSTECHO_LLM_URL and FROSTECHO_LLM_MODEL' };
+  }
   const health = await checkLlmHealth(config);
   if (!health.ok) {
-    return { runs: [], summary: summarize(options.batchId, 'live', []), totalCalls: 0, scenarioPass: 0, aborted: `health check failed: ${health.error ?? health.kind ?? 'unknown'}`, health };
+    return { runs: [], summary: summarize(options.batchId, 'live', [], []), totalCalls: 0, scenarioPass: 0, aborted: `health check failed: ${health.error ?? health.kind ?? 'unknown'}`, health };
   }
   const timeoutMs = options.timeoutMs ?? liveTimeoutMs(process.env, LIVE_DECISION_TIMEOUT_MS);
+  const cap = options.maxTotalCalls ?? 60;
+  const runs: G05ScenarioRun[] = [];
+  const notRun: string[] = [];
   let spent = 0;
-  const runs: ScenarioRun[] = [];
+  let gateFailed: string | null = null;
   for (const scenario of G05_SCENARIOS) {
     if (options.chains !== undefined && !options.chains.includes(scenario.chain)) continue;
-    if (options.maxTotalCalls !== undefined) {
-      const expected = scenario.expected.totalCalls;
-      if (spent + expected > options.maxTotalCalls) {
-        return { runs, summary: summarize(options.batchId, 'live', runs), totalCalls: spent, scenarioPass: 0, aborted: `budget guard: spent ${spent}, next ${scenario.id} wants ${expected}, cap ${options.maxTotalCalls}`, health };
-      }
+    if (gateFailed !== null) { notRun.push(scenario.id); continue; }
+    // Chain gate: the ca chain only starts after every ac trajectory passed.
+    if (scenario.chain === 'ca' && runs.some(r => r.scenario.chain === 'ac' && !r.scenarioPass)) {
+      gateFailed = 'ac gate failed';
+      notRun.push(scenario.id);
+      continue;
     }
-    const providerFor = (): Provider => createHttpProvider({ ...config, enableThinking: true });
+    if (spent >= cap) { gateFailed = `chat budget ${cap} exhausted`; notRun.push(scenario.id); continue; }
     const run = await runScenario(scenario, {
-      providerFor,
+      providerFor: (): Provider => createHttpProvider({ ...config, enableThinking: true }),
       mode: 'live',
       thinking: true,
       timeoutMs,
+      requestModel: config.model,
     });
-    spent += Object.values(run.record.actors).reduce((s, a) => s + a.providerCalls, 0);
     runs.push(run);
+    spent += Object.values(run.record.actors).reduce((s, a) => s + a.providerCalls, 0);
+    if (run.record.stopReason === 'interrupted') gateFailed = `transport failure in ${scenario.id}`;
+    else if (!run.scenarioPass) gateFailed = `behaviour failure in ${scenario.id}`;
   }
-  const summary = summarize(options.batchId, 'live', runs);
-  persist(options.artifactsRoot, options.batchId, 'live', runs, summary);
-  return { runs, summary, totalCalls: summary.totals.httpCalls, scenarioPass: summary.totals.scenarioPass, health };
-}
-
-function persist(artifactsRoot: string, batchId: string, mode: 'fixture' | 'live', runs: ScenarioRun[], summary: NeedsSummaryFile): void {
-  for (const run of runs) {
-    const record: ReactiveRecord = { ...run.record, scenarioPass: run.scenarioPass };
-    saveNeedsEpisode(artifactsRoot, batchId, record);
-  }
-  const batch: NeedsBatchFile = {
-    schema: 'frostecho.g05.batch/1',
-    batchId,
-    createdAt: new Date().toISOString(),
-    mode,
-    episodes: runs.map(run => run.record.episodeId),
+  const summary = summarize(options.batchId, 'live', runs, notRun);
+  persist(options, 'live', runs, summary, notRun);
+  return {
+    runs, summary, totalCalls: summary.totals.httpCalls, scenarioPass: summary.totals.scenarioPass,
+    ...(gateFailed !== null ? { aborted: gateFailed } : {}), health,
   };
-  const batchDir = `${artifactsRoot}/${batchId}`;
-  saveNeedsBatch(batchDir, batch, summary);
 }

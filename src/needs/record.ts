@@ -1,64 +1,105 @@
 /**
- * G05 workstream C — persistence and verification for needs episodes.
+ * G05-R1 workstream C — episode persistence and independent verification.
  *
- * Layout mirrors the G04 batch layout: <batch>/<episode>/game.json (the saved
- * ReactiveRecord) plus <batch>/batch.json and <batch>/summary.json. The
- * verifier re-uses verifyReactiveEpisode and adds the G05 invariants: the need
- * ledger agrees with the cycles, need cycles are exempt from the generic
- * episode budget but bounded by NEED_DECISION_BUDGET, and metabolism lines up
- * with the TimeAdvanced ledger.
+ * Verification never trusts saved booleans: it re-executes the command/event
+ * ledger (base G04 verifier), replays the world to every checkpoint cursor and
+ * recomputes satiety/simTime/food/call counts from turns, then re-judges the
+ * frozen expectations. A record whose saved scenarioPass disagrees with the
+ * recomputed verdict fails.
  */
-import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import {
-  G05_BATCH_SCHEMA, G05_SCHEMA, NEED_DECISION_BUDGET, NEED_HUNGER_AT_LEAST, NEED_PERIOD_MIN,
-  type ReactiveRecord,
-} from '../reactive/contracts';
-import { RULES } from '../types';
+import { G05_BATCH_SCHEMA, G05_SCHEMA } from '../reactive/contracts';
 import { verifyReactiveEpisode, writeReactiveEpisode } from '../reactive/record';
+import { replay } from '../engine';
+import type { G05ScenarioRecord, G05Checkpoint } from './scenarios';
 
-export interface NeedsBatchFile {
-  schema: typeof G05_BATCH_SCHEMA;
-  batchId: string;
-  createdAt: string;
-  mode: 'reference' | 'fixture' | 'live';
-  episodes: string[]; // episode directories in run order
-}
-
-export interface NeedsSummaryFile {
-  schema: 'frostecho.g05.summary/1';
-  batchId: string;
-  mode: 'reference' | 'fixture' | 'live';
-  totals: {
-    episodes: number;
-    scenarioPass: number;
-    httpCalls: number;
-    referenceDecisions: number;
-    interrupted: number;
-    needsGranted: number;
-    needsSatisfied: number;
-    needsExpired: number;
-    simMinutes: number;
-  };
-  perEpisode: {
-    id: string;
-    totalCalls: number;
-    httpCalls: number;
-    interrupted: boolean;
-    scenarioPass: boolean;
-    simTime: number;
-    needs: { granted: number; satisfied: number; expired: number; stopped: number; pending: number };
-  }[];
-}
-
-export function saveNeedsEpisode(artifactsRoot: string, batch: string, record: ReactiveRecord): string {
+export function saveNeedsEpisode(artifactsRoot: string, batch: string, record: G05ScenarioRecord): string {
   // Same layout as G04: <root>/<batch>/episodes/<episodeId>/{meta,game}.json
   return writeReactiveEpisode(artifactsRoot, batch, record);
 }
 
-export function saveNeedsBatch(batchDir: string, batch: NeedsBatchFile, summary: NeedsSummaryFile): void {
-  writeFileSync(join(batchDir, 'batch.json'), `${JSON.stringify(batch, null, 2)}\n`);
-  writeFileSync(join(batchDir, 'summary.json'), `${JSON.stringify(summary, null, 2)}\n`);
+/** Recompute every checkpoint from the raw event/turn ledgers. */
+export function verifyNeedsSemantics(record: G05ScenarioRecord): string[] {
+  const issues: string[] = [];
+  if (record.schema !== G05_SCHEMA) {
+    issues.push(`schema ${String(record.schema)} != ${G05_SCHEMA} (out-of-contract /1 records are not re-judged)`);
+    return issues;
+  }
+  if (record.matrixVersion !== 'g05-r1-t123') issues.push(`matrixVersion ${String(record.matrixVersion)} != g05-r1-t123`);
+  if (record.rules?.LOW !== 40 || record.rules?.GOAL !== 70 || record.rules?.DECAY_PER_STEP !== 10) {
+    issues.push('frozen rule triple is not LOW=40 GOAL=70 DECAY=10');
+  }
+  const events = Array.isArray(record.events) ? record.events : [];
+  const turns = Object.values(record.cycles ?? {}).flatMap(list => list.flatMap(cycle => cycle.turns));
+
+  // The matrix fixes the initial state: A/C/B kitchen 70, simTime 0, dorm 0.
+  const init = record.initialState;
+  if ((init.simTime ?? 0) !== 0) issues.push('initial simTime != 0');
+  for (const id of ['npc_a', 'npc_b', 'npc_c']) {
+    if (init.npcs[id]?.hunger !== 70 || init.npcs[id]?.location !== 'kitchen') {
+      issues.push(`initial ${id} is not kitchen/70`);
+    }
+  }
+  if (init.food.dorm !== 0) issues.push('initial dorm food != 0');
+
+  let pass = true;
+  for (const cp of record.checkpoints ?? []) {
+    issues.push(...verifyCheckpoint(record, cp, events, turns));
+    for (const [key, value] of Object.entries(cp.expected)) {
+      if (cp.actual[key as keyof typeof cp.actual] !== value) pass = false;
+    }
+  }
+  if (record.restCycles) {
+    for (const [id, before] of Object.entries(record.restCycles.before)) {
+      if (record.restCycles.after[id] !== before) {
+        pass = false;
+        issues.push(`rest100.${id}: cycle count changed during the 100 pumps`);
+      }
+    }
+  }
+  // T3 recurring: both actors must have waited on the empty kitchen.
+  if (record.scenarioId.endsWith('/t3/recurring')) {
+    const waited = new Set(
+      (record.transitions ?? [])
+        .filter(t => t.to === 'waiting')
+        .map(t => t.actorId),
+    );
+    for (const id of record.actorOrder) {
+      if (!waited.has(id)) { pass = false; issues.push(`t3 recurring: ${id} never waited on the empty kitchen`); }
+    }
+  }
+  if (record.scenarioPass !== pass) {
+    issues.push(`saved scenarioPass ${String(record.scenarioPass)} != recomputed ${pass}`);
+  }
+  return issues;
+}
+
+function verifyCheckpoint(
+  record: G05ScenarioRecord,
+  cp: G05Checkpoint,
+  events: G05ScenarioRecord['events'],
+  turns: { providerCalled: boolean; logCursorAfter: number }[],
+): string[] {
+  const issues: string[] = [];
+  if (!Number.isInteger(cp.logCursor) || cp.logCursor < 0 || cp.logCursor > events.length) {
+    return [`checkpoint ${cp.label}: bad logCursor ${String(cp.logCursor)}`];
+  }
+  const state = replay(record.initialState, events.slice(0, cp.logCursor));
+  const expectedActual = {
+    simTime: state.simTime ?? 0,
+    a: state.npcs.npc_a?.hunger,
+    b: state.npcs.npc_b?.hunger,
+    c: state.npcs.npc_c?.hunger,
+    food: state.food.kitchen,
+    calls: turns.filter(t => t.providerCalled && t.logCursorAfter <= cp.commandCursor).length,
+  };
+  for (const [key, value] of Object.entries(expectedActual)) {
+    if (cp.actual[key as keyof typeof cp.actual] !== value) {
+      issues.push(`checkpoint ${cp.label}.${key}: saved ${String(cp.actual[key as keyof typeof cp.actual])} != replayed ${String(value)}`);
+    }
+  }
+  return issues;
 }
 
 export interface NeedsVerifyResult {
@@ -68,6 +109,16 @@ export interface NeedsVerifyResult {
   httpCalls: number;
 }
 
+interface NeedsBatchFile {
+  schema: string;
+  episodes: string[];
+  notRun?: string[];
+}
+
+interface NeedsSummaryFile {
+  totals: { episodes: number; httpCalls: number; scenarioPass: number };
+}
+
 export function verifyNeedsBatch(batchDir: string): NeedsVerifyResult {
   const issues: string[] = [];
   const batch = JSON.parse(readFileSync(join(batchDir, 'batch.json'), 'utf8')) as NeedsBatchFile;
@@ -75,6 +126,7 @@ export function verifyNeedsBatch(batchDir: string): NeedsVerifyResult {
   const summary = JSON.parse(readFileSync(join(batchDir, 'summary.json'), 'utf8')) as NeedsSummaryFile;
 
   let httpCalls = 0;
+  let scenarioPass = 0;
   const episodesDir = join(batchDir, 'episodes');
   const present = new Set(readdirSync(episodesDir));
   for (const episodeId of batch.episodes) {
@@ -82,118 +134,16 @@ export function verifyNeedsBatch(batchDir: string): NeedsVerifyResult {
     const base = verifyReactiveEpisode(join(episodesDir, episodeId));
     issues.push(...base.issues.map(i => `${episodeId}: ${i}`));
     if (base.record === null) continue;
-    issues.push(...verifyNeedsSemantics(base.record).map(i => `${episodeId}: ${i}`));
-    httpCalls += base.record.mode === 'live' ? Object.values(base.record.actors).reduce((s, a) => s + a.providerCalls, 0) : 0;
+    const record = base.record as G05ScenarioRecord;
+    issues.push(...verifyNeedsSemantics(record).map(i => `${episodeId}: ${i}`));
+    // HTTP calls come from actual transport records, never from the mode flag.
+    httpCalls += Object.values(record.cycles).flatMap(list => list.flatMap(c => c.turns))
+      .filter(t => t.step?.transport !== undefined && t.step?.transport !== null).length;
+    if (record.scenarioPass === true) scenarioPass += 1;
   }
+  // Summary is rebuilt from disk; any disagreement is an issue.
   if (summary.totals.episodes !== batch.episodes.length) issues.push('summary episodes mismatch');
   if (summary.totals.httpCalls !== httpCalls) issues.push(`summary httpCalls ${summary.totals.httpCalls} != ${httpCalls}`);
+  if (summary.totals.scenarioPass !== scenarioPass) issues.push(`summary scenarioPass ${summary.totals.scenarioPass} != ${scenarioPass}`);
   return { ok: issues.length === 0, issues, episodes: batch.episodes.length, httpCalls };
-}
-
-/** G05 semantics on top of the G04 record verification. */
-export function verifyNeedsSemantics(record: ReactiveRecord): string[] {
-  const issues: string[] = [];
-  if (record.schema !== G05_SCHEMA) { issues.push(`schema ${record.schema} != ${G05_SCHEMA}`); return issues; }
-  const needs = record.needs ?? [];
-  if (record.needPolicy === undefined) issues.push('needPolicy missing');
-
-  // Need cycles are visible as cycles whose reason starts with 'need cycle'.
-  for (const [actorId, cycles] of Object.entries(record.cycles)) {
-    let autoCalls = 0;
-    let needCalls = 0;
-    for (const cycle of cycles) {
-      const calls = cycle.turns.filter(t => t.providerCalled).length;
-      if ((cycle.reason ?? '').startsWith('need cycle')) needCalls += calls; else autoCalls += calls;
-    }
-    if (autoCalls > 10) issues.push(`${actorId}: autonomous calls ${autoCalls} exceed the episode budget`);
-    // Every need cycle must belong to a granted need of this actor.
-    if (needCalls > 0 && !needs.some(n => n.actorId === actorId)) {
-      issues.push(`${actorId}: need cycles without a granted need`);
-    }
-  }
-
-  for (const cycles of Object.values(record.cycles)) {
-    for (const cycle of cycles) {
-      const reason = cycle.reason ?? '';
-      if (!reason.startsWith('need cycle')) continue;
-      const m = /period (\d+)/.exec(reason);
-      if (m === null) { issues.push(`unparsable need cycle reason: ${reason}`); continue; }
-    }
-  }
-
-  for (const need of needs) {
-    if (need.decisionsUsed > NEED_DECISION_BUDGET) {
-      issues.push(`${need.actorId} period ${need.period}: decisionsUsed ${need.decisionsUsed} > ${NEED_DECISION_BUDGET}`);
-    }
-    if (need.period < 1 || !Number.isInteger(need.period)) issues.push(`bad period ${need.period}`);
-    if (need.atSimTime !== need.period * NEED_PERIOD_MIN) {
-      issues.push(`${need.actorId}: atSimTime ${need.atSimTime} != ${need.period}×${NEED_PERIOD_MIN}`);
-    }
-    if (need.outcome === 'pending') {
-      // Pending is only acceptable when the episode was interrupted for other reasons.
-      if (record.stopReason !== 'interrupted') issues.push(`${need.actorId}: pending need in a ${record.stopReason} episode`);
-    }
-  }
-
-  // Period budget: at most one grant per actor per period.
-  const seen = new Set<string>();
-  for (const need of needs) {
-    const key = `${need.actorId}:${need.period}`;
-    if (seen.has(key)) issues.push(`duplicate grant ${key}`);
-    seen.add(key);
-  }
-
-  // Metabolism ledger: TimeAdvanced events must reconstruct simTime, and each
-  // HungerChanged must move +1 per crossed boundary per NPC (clamped).
-  const timeEvents = record.events.filter(e => e.type === 'TimeAdvanced') as { before: number; after: number }[];
-  let simTime = record.initialState.simTime ?? 0;
-  const hunger = { ...Object.fromEntries(Object.entries(record.initialState.npcs).map(([id, npc]) => [id, npc.hunger])) } as Record<string, number>;
-  for (const event of timeEvents) {
-    if (event.before !== simTime) { issues.push(`TimeAdvanced before ${event.before} != running ${simTime}`); break; }
-    const crossed = Math.floor(event.after / RULES.METABOLISM_INTERVAL_MIN) - Math.floor(event.before / RULES.METABOLISM_INTERVAL_MIN);
-    for (const npcId of Object.keys(hunger)) {
-      hunger[npcId] = Math.min(RULES.HUNGER_MAX, hunger[npcId] + crossed);
-    }
-    simTime = event.after;
-  }
-  if ((record.finalState.simTime ?? 0) !== simTime) issues.push(`final simTime ${record.finalState.simTime} != replayed ${simTime}`);
-  for (const [npcId, value] of Object.entries(hunger)) {
-    // Eating (and only eating) can add on top of metabolic hunger; stops/moves cannot.
-    if ((record.finalState.npcs[npcId]?.hunger ?? value) < value) {
-      issues.push(`${npcId}: final hunger below the metabolic floor ${value}`);
-    }
-  }
-
-  // One-shot grants at most a single need across the whole episode.
-  if (record.needPolicy === 'one-shot') {
-    const grantedActors = needs.map(n => n.actorId);
-    if (needs.length > 2) issues.push(`one-shot granted ${needs.length} needs`);
-    for (const actorId of new Set(grantedActors)) {
-      const own = needs.filter(n => n.actorId === actorId);
-      if (own.length > 1) issues.push(`one-shot granted ${own.length} needs to ${actorId}`);
-    }
-  }
-
-  // Need eligibility: hunger at the granting boundary must be at/above the
-  // gate. Metabolic replay from the initial state gives the exact floor (eats
-  // only raise it, so a grant below the floor is provably illegal).
-  for (const need of needs) {
-    let simTime = record.initialState.simTime ?? 0;
-    let hunger = record.initialState.npcs[need.actorId]?.hunger ?? 0;
-    for (const event of record.events) {
-      if (event.type === 'TimeAdvanced') {
-        const crossed = Math.floor((event as { after: number }).after / RULES.METABOLISM_INTERVAL_MIN)
-          - Math.floor((event as { before: number }).before / RULES.METABOLISM_INTERVAL_MIN);
-        if (crossed > 0) hunger = Math.min(RULES.HUNGER_MAX, hunger + crossed);
-        simTime = (event as { after: number }).after;
-        if (simTime >= need.atSimTime) break;
-      } else if (event.type === 'HungerChanged' && (event as { npcId: string }).npcId === need.actorId && simTime < need.atSimTime) {
-        hunger = (event as { after: number }).after;
-      }
-    }
-    if (hunger < NEED_HUNGER_AT_LEAST) {
-      issues.push(`${need.actorId}: need granted at hunger floor ${hunger} < ${NEED_HUNGER_AT_LEAST}`);
-    }
-  }
-  return issues;
 }

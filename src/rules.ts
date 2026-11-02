@@ -35,10 +35,12 @@ export type Decision =
   | { ok: false; reason: RejectReason; detail: string };
 
 /**
- * G05: advance_time is world-only, takes an integer minutes in
- * [1, TIME_ADVANCE_MAX_MIN] and nothing else. Events: TimeAdvanced first, then
- * one HungerChanged per NPC (id-sorted) for every METABOLISM_INTERVAL_MIN
- * boundary crossed, clamped to HUNGER_MAX.
+ * G05-R1: advance_time is world-only, takes an integer steps in
+ * [1, TIME_ADVANCE_MAX_STEPS] and nothing else. One atomic commit: TimeAdvanced
+ * first, then one HungerChanged per NPC (actorId-sorted, player included) of
+ * -DECAY_PER_STEP per step, floored at 0. A multi-step advance is a single time
+ * jump with no interleaved NPC actions; with no intermediate actions, advance N
+ * equals N×advance 1 in simTime and satiety (logs may differ).
  */
 function decideAdvanceTime(state: Readonly<WorldState>, cmd: Command): Decision {
   if (cmd.actorId !== WORLD_ACTOR_ID) {
@@ -46,25 +48,25 @@ function decideAdvanceTime(state: Readonly<WorldState>, cmd: Command): Decision 
   }
   const p = cmd.payload as any;
   if (!p || typeof p !== 'object' || Array.isArray(p)) {
-    return { ok: false, reason: 'INVALID_PAYLOAD', detail: 'advance_time payload must be {minutes}' };
+    return { ok: false, reason: 'INVALID_PAYLOAD', detail: 'advance_time payload must be {steps}' };
   }
   const keys = Object.keys(p).sort().join(',');
-  if (keys !== 'minutes') return { ok: false, reason: 'INVALID_PAYLOAD', detail: 'advance_time accepts only {minutes}' };
-  if (!Number.isSafeInteger(p.minutes) || p.minutes < 1 || p.minutes > RULES.TIME_ADVANCE_MAX_MIN) {
-    return { ok: false, reason: 'INVALID_PAYLOAD', detail: `advance_time.minutes must be an integer in [1,${RULES.TIME_ADVANCE_MAX_MIN}]` };
+  if (keys !== 'steps') return { ok: false, reason: 'INVALID_PAYLOAD', detail: 'advance_time accepts only {steps}' };
+  if (!Number.isSafeInteger(p.steps) || p.steps < 1 || p.steps > RULES.TIME_ADVANCE_MAX_STEPS) {
+    return { ok: false, reason: 'INVALID_PAYLOAD', detail: `advance_time.steps must be an integer in [1,${RULES.TIME_ADVANCE_MAX_STEPS}]` };
   }
   const before = state.simTime ?? 0;
-  const after = before + p.minutes;
+  const after = before + p.steps;
+  if (!Number.isSafeInteger(after)) {
+    return { ok: false, reason: 'INVALID_PAYLOAD', detail: 'advance_time would overflow simTime' };
+  }
   const events: Omit<WorldEvent, 'eventId' | 'seq' | 'commandId'>[] = [
-    { type: 'TimeAdvanced', before, after } as any,
+    { type: 'TimeAdvanced', before, after, steps: p.steps } as any,
   ];
-  const crossed = Math.floor(after / RULES.METABOLISM_INTERVAL_MIN) - Math.floor(before / RULES.METABOLISM_INTERVAL_MIN);
-  if (crossed > 0) {
-    for (const npcId of Object.keys(state.npcs).sort()) {
-      const npc = state.npcs[npcId];
-      const gain = Math.min(crossed, RULES.HUNGER_MAX - npc.hunger);
-      if (gain > 0) events.push({ type: 'HungerChanged', npcId, before: npc.hunger, after: npc.hunger + gain } as any);
-    }
+  for (const npcId of Object.keys(state.npcs).sort()) {
+    const npc = state.npcs[npcId];
+    const decayed = Math.max(RULES.HUNGER_MIN, npc.hunger - p.steps * RULES.DECAY_PER_STEP);
+    if (decayed !== npc.hunger) events.push({ type: 'HungerChanged', npcId, before: npc.hunger, after: decayed } as any);
   }
   return { ok: true, events };
 }

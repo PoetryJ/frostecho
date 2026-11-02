@@ -19,9 +19,9 @@ import type { Location, WorldState } from '../types';
 import { canonical } from '../util';
 import { HTTP_SAMPLING } from '../agent/providers/http';
 import {
-  EPISODE_CALL_LIMIT, G04_SCHEMA, G05_SCHEMA, NEED_DECISION_BUDGET, NEED_HUNGER_AT_LEAST, NEED_PERIOD_MIN,
+  EPISODE_CALL_LIMIT, G04_SCHEMA, G05_SCHEMA, NEED_REACTIVATE_HUNGER,
   PLAYER_ACTOR_ID, WORLD_ACTOR_ID,
-  type AdvanceTimeResult, type NeedLedgerEntry, type NeedPolicy,
+  type AdvanceTimeResult, type NeedPolicy,
   type ReactiveActorState, type ReactiveActorSummary, type ReactiveAdvanceOutcome, type ReactiveCycleRecord,
   type ReactiveGame, type ReactiveGameOptions, type ReactiveRecord, type ReactiveStopReason, type ReactiveTransition,
   type ReactiveTurnRecord, type RestockResult,
@@ -82,11 +82,6 @@ class ReactiveGameImpl implements ReactiveGame {
   private interrupted = false;
   private lastInterruptedActor: string | null = null;
   private totalCalls = 0;
-  /** G05 need bookkeeping: ledger, granted periods per actor, pending needs. */
-  private readonly needsLedger: NeedLedgerEntry[] = [];
-  private readonly needGranted = new Map<string, Set<number>>();
-  private readonly activeNeed = new Map<string, NeedLedgerEntry>();
-  private oneShotBoundaryUsed = false;
   private idlePumps: ReactiveRecord['idlePumps'] = {
     pumps: 0, callsBefore: 0, callsAfter: 0, cyclesBefore: 0, cyclesAfter: 0, actorStatesBefore: {}, actorStatesAfter: {},
   };
@@ -97,7 +92,7 @@ class ReactiveGameImpl implements ReactiveGame {
     this.wakePolicy = options.wakePolicy;
     this.mode = options.mode;
     this.thinking = options.thinking;
-    this.needPolicy = options.needPolicy ?? 'never';
+    this.needPolicy = options.needPolicy ?? 'one-shot';
     this.recordSchema = options.schemaVersion ?? G04_SCHEMA;
     this.nowFn = options.now ?? Date.now;
     this.startedAt = this.nowFn();
@@ -194,8 +189,8 @@ class ReactiveGameImpl implements ReactiveGame {
     const cycle = this.activeCycle(actorId);
     if (cycle === null) return { kind: 'idle' };
     if (this.states[actorId] !== 'active') return { kind: 'idle' };
-    // Need cycles run on the need decision budget, not the generic episode budget.
-    if (!this.activeNeed.has(actorId) && this.callsOf(actorId) >= EPISODE_CALL_LIMIT) {
+    // G05-R1: no exemptions — the per-actor episode budget binds every cycle.
+    if (this.callsOf(actorId) >= EPISODE_CALL_LIMIT) {
       this.transition(actorId, 'budget_exhausted', `per-actor budget ${EPISODE_CALL_LIMIT} exhausted across cycles`);
       cycle.endState = 'budget_exhausted';
       return { kind: 'idle' };
@@ -209,7 +204,6 @@ class ReactiveGameImpl implements ReactiveGame {
       const result = await stepAgent(cycle.session);
       this.recordTurn(actorId, cycle, result, feedback, logBefore);
       this.afterStep(actorId, cycle, result);
-      this.checkNeedExpiry(actorId, cycle);
       return {
         kind: 'stepped',
         actorId,
@@ -236,11 +230,7 @@ class ReactiveGameImpl implements ReactiveGame {
       logCursorAfter: this.world.getLog().length,
       step: result.step,
     });
-    if (result.providerCalled) {
-      this.totalCalls += 1;
-      const need = this.activeNeed.get(actorId);
-      if (need && need.outcome === 'pending') need.decisionsUsed += 1;
-    }
+    if (result.providerCalled) this.totalCalls += 1;
   }
 
   private afterStep(actorId: string, cycle: CycleState, result: StepAgentResult): void {
@@ -251,9 +241,9 @@ class ReactiveGameImpl implements ReactiveGame {
       this.transition(actorId, 'failed', `transport ${result.status}`);
       return;
     }
-    // A landed eat settles any pending need as satisfied.
-    const landedEat = result.step?.command?.type === 'eat' && result.step?.exec?.status === 'accepted';
-    if (landedEat) this.settleNeed(actorId, 'satisfied');
+    // Success is judged on the authoritative post-exec hunger (>= GOAL), never
+    // on a stale observation: an accepted eat that only reaches 60 keeps the
+    // current session running until 70+.
     if (!result.terminal) return;
     if (result.status === 'goal_reached') {
       cycle.endState = 'satisfied';
@@ -273,39 +263,16 @@ class ReactiveGameImpl implements ReactiveGame {
     }
     cycle.endState = this.wakePolicy === 'event' ? 'stopped' : 'stopped';
     this.transition(actorId, 'stopped', `stop (${observation === null ? 'no observation' : describeObservation(observation)})`);
-    this.settleNeed(actorId, 'stopped');
-  }
-
-  /** Close a pending need; an expired need interrupts the whole episode. */
-  private settleNeed(actorId: string, outcome: 'satisfied' | 'stopped'): void {
-    const need = this.activeNeed.get(actorId);
-    if (!need || need.outcome !== 'pending') return;
-    need.outcome = outcome;
-    this.activeNeed.delete(actorId);
-  }
-
-  /** Called after every recorded turn: a need that outlives its decision budget expires. */
-  private checkNeedExpiry(actorId: string, cycle: CycleState): void {
-    const need = this.activeNeed.get(actorId);
-    if (!need || need.outcome !== 'pending') return;
-    if (need.decisionsUsed < NEED_DECISION_BUDGET) return;
-    need.outcome = 'expired';
-    this.activeNeed.delete(actorId);
-    this.interrupted = true;
-    this.lastInterruptedActor = actorId;
-    cycle.endState = 'failed';
-    this.transition(actorId, 'failed', `need expired: ${NEED_DECISION_BUDGET} decisions without a landed eat`);
   }
 
   /* ---------------------------------------------------------------- */
   /* wake-ups                                                          */
   /* ---------------------------------------------------------------- */
 
-  /** An active actor that has spent its episode budget can never run again; pending needs are exempt. */
+  /** An active actor that has spent its episode budget can never run again. */
   private settleBudgetStates(): void {
     for (const actorId of this.actorIds) {
       if (this.states[actorId] !== 'active') continue;
-      if (this.activeNeed.has(actorId)) continue;
       if (this.callsOf(actorId) < EPISODE_CALL_LIMIT) continue;
       const cycle = this.activeCycle(actorId);
       if (cycle !== null) cycle.endState = 'budget_exhausted';
@@ -313,11 +280,26 @@ class ReactiveGameImpl implements ReactiveGame {
     }
   }
 
-  /** Re-read every waiting actor's own observation; wake only on real food. No provider call here. */
+  /**
+   * Re-read every actor's own authoritative state. Waiting actors wake only on
+   * real local food (restock/player input). Under the recurring need policy a
+   * satisfied actor whose own current hunger is at/below NEED_REACTIVATE_HUNGER
+   * opens exactly one new cycle; above it, it rests. Ordinary stops, failures
+   * and budget exhaustion never resurrect. No provider call happens here.
+   */
   reconcile(): void {
     for (const actorId of this.actorIds) {
-      if (this.states[actorId] !== 'waiting') continue;
-      if (!this.activeNeed.has(actorId) && this.callsOf(actorId) >= EPISODE_CALL_LIMIT) {
+      const lifecycle = this.states[actorId];
+      if (lifecycle === 'satisfied') {
+        if (this.needPolicy !== 'recurring') continue;
+        if (this.callsOf(actorId) >= EPISODE_CALL_LIMIT) continue;
+        const hunger = this.world.getState().npcs[actorId]?.hunger;
+        if (typeof hunger !== 'number' || hunger > NEED_REACTIVATE_HUNGER) continue;
+        this.openCycle(actorId, `need reactivation: hunger ${hunger} <= ${NEED_REACTIVATE_HUNGER} after a satisfied cycle`);
+        continue;
+      }
+      if (lifecycle !== 'waiting') continue;
+      if (this.callsOf(actorId) >= EPISODE_CALL_LIMIT) {
         const cycle = this.activeCycle(actorId);
         if (cycle) cycle.endState = 'budget_exhausted';
         this.transition(actorId, 'budget_exhausted', `per-actor budget exhausted while waiting`);
@@ -343,22 +325,19 @@ class ReactiveGameImpl implements ReactiveGame {
     for (let offset = 0; offset < this.actorIds.length; offset++) {
       const index = (this.cursor + offset) % this.actorIds.length;
       const actorId = this.actorIds[index];
-      // G05: a pending need schedules an actor even under the event policy,
-      // including a need-cycle stop that left the actor waiting, and takes
-      // priority over an actor still inside its initial/autonomous cycle. Need
-      // cycles carry their own decision budget (NEED_DECISION_BUDGET) and are
-      // exempt from the generic episode call limit, which stays in force for
-      // autonomous cycles.
-      const pendingNeed = this.activeNeed.get(actorId);
-      const state = this.states[actorId];
-      if (pendingNeed !== undefined && (state === 'hungry' || state === 'waiting' || state === 'active')) {
-        this.cursor = (index + 1) % this.actorIds.length;
-        this.openCycle(actorId, `need cycle (period ${pendingNeed.period}, sim ${pendingNeed.atSimTime}min)`);
-        return actorId;
-      }
       if (this.states[actorId] !== 'active') continue;
       const cycle = this.activeCycle(actorId);
       if (cycle === null) continue;
+      // Goal pre-check on the authoritative state: a cycle whose actor is
+      // already at/above GOAL completes with zero provider calls (e.g. the
+      // initial all-70 world). goalReached is never confused with "the
+      // previous cycle completed".
+      const hunger = this.world.getState().npcs[actorId]?.hunger;
+      if (typeof hunger === 'number' && hunger >= GOAL_HUNGER_AT_LEAST) {
+        cycle.endState = 'satisfied';
+        this.transition(actorId, 'satisfied', `authoritative hunger ${hunger} >= ${GOAL_HUNGER_AT_LEAST} at cycle start; no provider call`);
+        continue;
+      }
       if (this.callsOf(actorId) >= EPISODE_CALL_LIMIT) continue;
       if (cycle.session.status !== 'ready') continue;
       this.cursor = (index + 1) % this.actorIds.length;
@@ -425,21 +404,20 @@ class ReactiveGameImpl implements ReactiveGame {
   }
 
   /**
-   * G05: advance simulated time. Serialised with NPC work by the in-flight
-   * guard; metabolism applies inside the engine, then need scheduling runs on
-   * the post-metabolism state. Boundaries strictly after `before` and at or
-   * before `after`.
+   * G05-R1: advance simulated time by steps. World input is accepted even while
+   * a provider call is in flight (the in-flight step still executes against the
+   * authoritative world afterwards); only submission + reconcile happen here,
+   * never a provider call. The world command id sequence is shared with restock.
    */
-  worldAdvanceTime(minutes: number): AdvanceTimeResult {
+  worldAdvanceTime(steps: number): AdvanceTimeResult {
     const command = {
       commandId: `${this.episodeId}:${WORLD_ACTOR_ID}:advance:${this.worldSeq}`,
       actorId: WORLD_ACTOR_ID,
       type: 'advance_time' as const,
-      payload: { minutes },
+      payload: { steps },
     };
     if (this.closed) return { ok: false, command, error: 'game is closed' };
     if (this.interrupted) return { ok: false, command, error: 'game is interrupted' };
-    if (this.busy) return { ok: false, command, error: 'game is busy' };
     this.worldSeq += 1;
     const before = this.world.getState().simTime ?? 0;
     const exec = this.world.submit(structuredClone(command));
@@ -447,55 +425,8 @@ class ReactiveGameImpl implements ReactiveGame {
       return { ok: false, command, error: `${exec.reason ?? exec.status}${exec.detail ? `: ${exec.detail}` : ''}` };
     }
     const after = this.world.getState().simTime ?? 0;
-    const needsScheduled = this.scheduleNeeds(before, after);
-    return { ok: true, command, before, after, needsScheduled };
-  }
-
-  /** Grant at most one need per actor per crossed 30-minute period. */
-  private scheduleNeeds(before: number, after: number): string[] {
-    if (this.needPolicy === 'never') return [];
-    const granted: string[] = [];
-    const firstBoundary = Math.floor(before / NEED_PERIOD_MIN) * NEED_PERIOD_MIN + NEED_PERIOD_MIN;
-    for (let boundary = firstBoundary; boundary <= after; boundary += NEED_PERIOD_MIN) {
-      if (boundary <= before) continue;
-      if (this.needPolicy === 'one-shot') {
-        if (this.oneShotBoundaryUsed) return granted;
-        this.oneShotBoundaryUsed = true;
-      }
-      const period = boundary / NEED_PERIOD_MIN;
-      const state = this.world.getState();
-      for (const actorId of this.actorIds) {
-        const lifecycle = this.states[actorId];
-        // Any non-terminal actor is need-eligible: an actor mid-cycle (active)
-        // keeps its current cycle, and the pending need takes over afterwards.
-        if (lifecycle !== 'active' && lifecycle !== 'waiting' && lifecycle !== 'hungry') continue;
-        // One pending need per actor: a new boundary cannot double-grant while
-        // the previous need is still undecided.
-        if (this.activeNeed.has(actorId)) continue;
-        if (this.callsOf(actorId) >= EPISODE_CALL_LIMIT) continue;
-        const hunger = state.npcs[actorId]?.hunger;
-        if (typeof hunger !== 'number' || hunger < NEED_HUNGER_AT_LEAST) continue;
-        const periods = this.needGranted.get(actorId) ?? new Set<number>();
-        if (periods.has(period)) continue;
-        periods.add(period);
-        this.needGranted.set(actorId, periods);
-        const entry: NeedLedgerEntry = {
-          seq: this.needsLedger.length + 1,
-          actorId,
-          atSimTime: boundary,
-          period,
-          decisionsUsed: 0,
-          outcome: 'pending',
-        };
-        this.needsLedger.push(entry);
-        this.activeNeed.set(actorId, entry);
-        if (lifecycle === 'waiting') {
-          this.transition(actorId, 'hungry', `need scheduled at sim ${boundary}min (period ${period}, hunger ${hunger})`);
-        }
-        granted.push(actorId);
-      }
-    }
-    return granted;
+    this.reconcile();
+    return { ok: true, command, before, after };
   }
 
   notifyWorldChange(): void {
@@ -631,7 +562,7 @@ class ReactiveGameImpl implements ReactiveGame {
       replayMatches: canonical(replay(this.initialState, events)) === canonical(finalState),
       idlePumps: this.idlePumps,
       requestConfig: {
-        model: typeof firstBody?.model === 'string' ? firstBody.model : null,
+        model: typeof firstBody?.model === 'string' ? firstBody.model : this.options.requestModel ?? null,
         temperature: HTTP_SAMPLING.temperature,
         max_tokens: HTTP_SAMPLING.max_tokens,
         stream: HTTP_SAMPLING.stream,
@@ -640,7 +571,6 @@ class ReactiveGameImpl implements ReactiveGame {
       },
       timing: { totalMs: Math.max(0, this.nowFn() - this.startedAt) },
       needPolicy: this.needPolicy,
-      needs: structuredClone(this.needsLedger),
     } satisfies ReactiveRecord);
   }
 

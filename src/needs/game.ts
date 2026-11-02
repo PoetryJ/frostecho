@@ -15,23 +15,19 @@ import type { WorldState } from '../types';
 export interface NeedsGameWorldOptions {
   /** Autonomous rotation order; a permutation of npc_a/npc_c. */
   actorIds?: readonly string[];
-  /** Kitchen food at t=0 (both NPCs start in the kitchen, npc_b in the dorm). */
+  /** Kitchen food at t=0 (T1=4, T2=2, T3=0). Dorm food is always 0. */
   kitchenFood?: number;
-  /** Starting hunger per actor; defaults mirror G04 (npc_a 40, npc_c 20). */
+  /** Starting satiety override per NPC; the frozen matrix starts everyone at 70. */
   hunger?: Partial<Record<string, number>>;
 }
 
 export function buildNeedsWorld(options: NeedsGameWorldOptions = {}): WorldState {
-  const actorIds = options.actorIds ?? REACTIVE_ACTOR_IDS;
-  const npcs: WorldState['npcs'] = {
-    npc_b: { id: 'npc_b', location: 'dorm', hunger: 0 },
-  };
-  for (const actorId of actorIds) {
-    npcs[actorId] = {
-      id: actorId,
-      location: 'kitchen',
-      hunger: options.hunger?.[actorId] ?? (actorId === 'npc_a' ? 40 : 20),
-    };
+  // G05-R1 frozen matrix initial state: A/C/B all in the kitchen at satiety 70,
+  // simTime 0, dorm food 0. npc_b is the passive player: it decays with time
+  // but is never scheduled as an actor.
+  const npcs: WorldState['npcs'] = {};
+  for (const id of ['npc_a', 'npc_b', 'npc_c']) {
+    npcs[id] = { id, location: 'kitchen', hunger: options.hunger?.[id] ?? 70 };
   }
   return {
     tick: 0,
@@ -50,6 +46,8 @@ export interface NeedsGameOptions {
   thinking?: boolean;
   needPolicy: NeedPolicy;
   timeoutMs?: number;
+  /** Live model name recorded even when a trajectory makes zero requests. */
+  requestModel?: string;
   now?: () => number;
   scheduleTimeout?: ReactiveGameOptions['scheduleTimeout'];
   onDeciding?: ReactiveGameOptions['onDeciding'];
@@ -68,8 +66,9 @@ export function createNeedsGame(options: NeedsGameOptions): NeedsGame {
     thinking: options.thinking ?? true,
     wakePolicy: 'event',
     needPolicy: options.needPolicy,
-    schemaVersion: 'frostecho.g05.game/1',
+    schemaVersion: 'frostecho.g05.game/2',
     timeoutMs: options.timeoutMs,
+    requestModel: options.requestModel,
     now: options.now,
     scheduleTimeout: options.scheduleTimeout,
     onDeciding: options.onDeciding,

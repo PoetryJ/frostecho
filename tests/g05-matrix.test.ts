@@ -1,46 +1,55 @@
 /**
- * G05 workstream C — the official 12-trajectory matrix as an offline system
- * test: run the fixture batch into a temp directory, judge every trajectory,
- * then settle the same batch read-only through verifyNeedsBatch.
+ * G05-R1 workstream C — the restored matrix as an offline system test.
+ *
+ * The fixture batch must produce 12 trajectories, exactly 20 reference
+ * decisions and zero HTTP; the read-only verifier recomputes everything from
+ * disk. Negative tests prove the verifier rejects forged pass flags, budget
+ * exemptions, tampered checkpoints and wrong metadata instead of trusting them.
  */
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { G05_SCENARIOS } from '../src/needs/scenarios';
+import type { G05ScenarioRecord } from '../src/needs/scenarios';
 import { runFixtureBatch } from '../src/needs/eval';
-import { verifyNeedsBatch } from '../src/needs/record';
+import { verifyNeedsBatch, verifyNeedsSemantics } from '../src/needs/record';
 
-test('the G05 matrix is 12 trajectories: two chains of six, four model-based and eight zero-call', () => {
+test('the restored matrix: T1/T2/T3 × ac/ca × one-shot/recurring, 4 model + 8 zero-call', () => {
   assert.equal(G05_SCENARIOS.length, 12);
-  const byChain = { ac: G05_SCENARIOS.filter(s => s.chain === 'ac'), ca: G05_SCENARIOS.filter(s => s.chain === 'ca') };
-  assert.equal(byChain.ac.length, 6);
-  assert.equal(byChain.ca.length, 6);
-  const modelBased = G05_SCENARIOS.filter(s => s.expected.totalCalls > 0);
-  const zeroCall = G05_SCENARIOS.filter(s => s.expected.totalCalls === 0);
-  assert.equal(modelBased.length, 4, 'exactly four trajectories need the model');
-  assert.equal(zeroCall.length, 8, 'eight trajectories must finish with zero calls');
+  for (const chain of ['ac', 'ca']) {
+    assert.equal(G05_SCENARIOS.filter(s => s.chain === chain).length, 6);
+  }
+  const modelBased = G05_SCENARIOS.filter(s => s.needPolicy === 'recurring' && s.kind !== 't2');
+  assert.equal(modelBased.length, 4, 't1/t3 recurring in both chains call the model');
+  assert.equal(G05_SCENARIOS.length - modelBased.length, 8, 'eight zero-call trajectories');
   for (const s of G05_SCENARIOS) {
-    assert.ok(s.steps.at(-1)?.kind !== 'run' || s.expected.totalCalls > 0, `${s.id}: run step implies model calls`);
-    assert.ok(s.steps.some(st => st.kind === 'run') || s.expected.totalCalls === 0, `${s.id}: no run step implies zero calls`);
+    assert.equal(s.kitchenFood, s.kind === 't1' ? 4 : s.kind === 't2' ? 2 : 0);
   }
 });
 
-test('fixture batch: every trajectory passes and settles read-only', async () => {
-  const root = mkdtempSync(join(tmpdir(), 'g05-matrix-'));
+test('fixture batch: 12/12 pass, exactly 20 reference decisions, zero HTTP, verify settles', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'g05-r1-matrix-'));
   try {
-    const batchId = 'matrix-test';
-    const result = await runFixtureBatch({ artifactsRoot: root, batchId });
+    const result = await runFixtureBatch({ artifactsRoot: root, batchId: 'matrix' });
     assert.equal(result.summary.totals.episodes, 12);
     assert.equal(result.scenarioPass, 12, result.runs.filter(r => !r.scenarioPass).map(r => `${r.scenario.id}: ${r.issues.join('; ')}`).join(' | '));
-    assert.equal(result.totalCalls, 28, 'the matrix costs exactly 28 reference decisions');
-    // Zero-call trajectories stayed at zero; model-based ones spent their plan.
+    assert.equal(result.totalCalls, 20, 'the frozen matrix costs exactly 20 reference decisions');
+    assert.equal(result.summary.totals.httpCalls, 0, 'reference fixture makes no HTTP');
     for (const run of result.runs) {
       const calls = Object.values(run.record.actors).reduce((s, a) => s + a.providerCalls, 0);
-      assert.equal(calls, run.scenario.expected.totalCalls, run.scenario.id);
+      const expectedCalls = run.scenario.needPolicy === 'recurring'
+        ? run.scenario.kind === 't1' ? 4 : run.scenario.kind === 't3' ? 6 : 0
+        : 0;
+      assert.equal(calls, expectedCalls, run.scenario.id);
+      if (run.scenario.kind === 't2') {
+        // Zero-call trajectories really ran: 100 pumps happened, cycles unchanged.
+        assert.ok(run.record.restCycles !== undefined, 't2 records its 100-pump cycle counters');
+        assert.deepEqual(run.record.restCycles?.after, run.record.restCycles?.before);
+      }
     }
-    const verification = verifyNeedsBatch(join(root, batchId));
+    const verification = verifyNeedsBatch(join(root, 'matrix'));
     assert.ok(verification.ok, verification.issues.join('; '));
     assert.equal(verification.episodes, 12);
     assert.equal(verification.httpCalls, 0);
@@ -49,20 +58,61 @@ test('fixture batch: every trajectory passes and settles read-only', async () =>
   }
 });
 
-test('G05 records carry the need ledger and the g05 schema', async () => {
-  const root = mkdtempSync(join(tmpdir(), 'g05-matrix-'));
+test('records carry the frozen rule triple and replayable checkpoints', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'g05-r1-matrix-'));
   try {
-    const result = await runFixtureBatch({ artifactsRoot: root, batchId: 'schema-test', chains: ['ac'] });
-    const expired = result.runs.find(r => r.scenario.id === 'ac/recurring-need-expired');
-    assert.ok(expired !== undefined);
-    assert.equal(expired.record.schema, 'frostecho.g05.game/1');
-    assert.equal(expired.record.needPolicy, 'recurring');
-    assert.deepEqual(expired.record.needs?.map(n => [n.actorId, n.period, n.outcome, n.decisionsUsed]), [['npc_a', 1, 'expired', 10]]);
-    const loop = result.runs.find(r => r.scenario.id === 'ac/oneshot-feed-loop');
-    assert.ok(loop !== undefined);
-    assert.equal(loop.record.needPolicy, 'one-shot');
-    assert.deepEqual(loop.record.needs?.map(n => [n.actorId, n.period, n.outcome]), [['npc_a', 1, 'satisfied']]);
-    assert.ok(loop.record.cycles.npc_a.some(c => (c.reason ?? '').startsWith('need cycle')), 'need cycle recorded with its reason');
+    const result = await runFixtureBatch({ artifactsRoot: root, batchId: 'schema', chains: ['ac'] });
+    const t3 = result.runs.find(r => r.scenario.id === 'ac/t3/recurring');
+    assert.ok(t3 !== undefined);
+    assert.equal(t3.record.schema, 'frostecho.g05.game/2');
+    assert.deepEqual(t3.record.rules, { LOW: 40, GOAL: 70, DECAY_PER_STEP: 10 });
+    assert.deepEqual(t3.record.checkpoints.map(c => c.label), ['initial', 'empty', 'waiting_decay', 'refed']);
+    const refed = t3.record.checkpoints.find(c => c.label === 'refed');
+    assert.deepEqual(refed?.actual, { simTime: 4, a: 90, b: 30, c: 90, food: 0, calls: 6 });
+    for (const cp of t3.record.checkpoints) {
+      assert.ok(Number.isInteger(cp.logCursor) && cp.logCursor >= 0, 'checkpoints locate themselves in the event log');
+    }
+    const verification = verifyNeedsBatch(join(root, 'schema'));
+    assert.ok(verification.ok, verification.issues.join('; '));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('verifier rejects a forged scenarioPass and a tampered checkpoint', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'g05-r1-matrix-'));
+  try {
+    await runFixtureBatch({ artifactsRoot: root, batchId: 'tamper', chains: ['ac'] });
+    const dir = join(root, 'tamper', 'episodes', 'g05-ac-t3-one-shot');
+    const file = join(dir, 'game.json');
+    const record = JSON.parse(readFileSync(file, 'utf8')) as G05ScenarioRecord;
+    // Forge: pretend the one-shot trajectory failed, verifier recomputes pass=true.
+    record.scenarioPass = false;
+    const issues = verifyNeedsSemantics(record);
+    assert.ok(issues.some(i => i.includes('scenarioPass')), `forged pass flag must be caught: ${issues.join('; ')}`);
+    // Tamper: claim a checkpoint saw different satiety than the events replay to.
+    const record2 = JSON.parse(readFileSync(file, 'utf8')) as G05ScenarioRecord;
+    record2.checkpoints[1].actual.a = 99;
+    const issues2 = verifyNeedsSemantics(record2);
+    assert.ok(issues2.some(i => i.includes('replayed')), `tampered checkpoint must be caught: ${issues2.join('; ')}`);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('verifier rejects budget exemptions and a changed matrix version', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'g05-r1-matrix-'));
+  try {
+    await runFixtureBatch({ artifactsRoot: root, batchId: 'tamper2', chains: ['ac'] });
+    const file = join(root, 'tamper2', 'episodes', 'g05-ac-t1-recurring', 'game.json');
+    const record = JSON.parse(readFileSync(file, 'utf8')) as G05ScenarioRecord;
+    // Inflate calls beyond the episode budget: the base verifier must fail the batch.
+    record.actors.npc_a.providerCalls = 11;
+    record.cycles.npc_a[0].providerCalls = 11;
+    writeFileSync(file, JSON.stringify(record, null, 2));
+    const verification = verifyNeedsBatch(join(root, 'tamper2'));
+    assert.equal(verification.ok, false);
+    assert.ok(verification.issues.some(i => i.includes('budget') || i.includes('providerCalls')), verification.issues.join('; '));
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

@@ -49,8 +49,8 @@ function parseArgs(argv: string[]): CliOptions {
       options.order = value;
     } else if (arg === '--need') {
       const value = argv[++i] ?? '';
-      if (value !== 'never' && value !== 'one-shot' && value !== 'recurring') {
-        console.error('--need must be never, one-shot or recurring');
+      if (value !== 'one-shot' && value !== 'recurring') {
+        console.error('--need must be one-shot or recurring (G05-R1 has no third arm)');
         process.exit(2);
       }
       options.need = value;
@@ -68,11 +68,13 @@ export function effectiveTimeoutMs(options: CliOptions, env: NodeJS.ProcessEnv):
   return options.timeoutMs ?? liveTimeoutMs(env, LIVE_DECISION_TIMEOUT_MS);
 }
 
-const USAGE = 'commands: step | run | status | time <1-120> | world restock dorm|kitchen <1-10> | need never|one-shot|recurring | quit';
+const USAGE = 'commands: step | run | status | world advance <1-10> | world restock dorm|kitchen <1-10> | need one-shot|recurring | quit';
 
 async function main(): Promise<void> {
   const options = parseArgs(process.argv.slice(2));
   const timeoutMs = effectiveTimeoutMs(options, process.env);
+  // G05-R1-D: one thinking value feeds both the provider and the metadata.
+  const thinking = G04_THINKING;
   let providerFor: (actorId: string) => Provider;
   let mode: 'reference' | 'live' = 'reference';
   if (options.live) {
@@ -83,7 +85,7 @@ async function main(): Promise<void> {
       return;
     }
     mode = 'live';
-    providerFor = () => createHttpProvider({ ...config, enableThinking: G04_THINKING });
+    providerFor = () => createHttpProvider({ ...config, enableThinking: thinking });
   } else {
     providerFor = () => createReferenceProvider();
   }
@@ -91,11 +93,11 @@ async function main(): Promise<void> {
   const actorIds = options.order === 'ac' ? ['npc_a', 'npc_c'] : ['npc_c', 'npc_a'];
   const game: ReactiveGame = createNeedsGame({
     episodeId: options.episode,
-    initialState: buildNeedsWorld({ actorIds }),
+    initialState: buildNeedsWorld({ kitchenFood: 4 }),
     actorIds,
     providerFor,
     mode,
-    thinking: false,
+    thinking,
     needPolicy: options.need,
     timeoutMs,
   });
@@ -114,10 +116,7 @@ async function main(): Promise<void> {
       const actor = status.actors[id];
       console.log(`  ${id}: ${actor?.location ?? '?'} hunger=${actor?.hunger ?? '?'} state=${actor?.state ?? '?'} cycle=${actor?.cycle ?? 0} calls=${actor?.providerCalls ?? 0}`);
     }
-    const needs = game.snapshot().needs ?? [];
-    const needLine = needs.length === 0 ? 'none'
-      : needs.map(n => `${n.actorId}#${n.period}:${n.outcome}${n.outcome === 'pending' ? `(${n.decisionsUsed}/10)` : ''}`).join(' ');
-    console.log(`  simTime=${status.simTime} food.kitchen=${status.food.kitchen} food.dorm=${status.food.dorm} need=${game.getNeedPolicy()} needs=[${needLine}]`);
+    console.log(`  simTime=${status.simTime} food.kitchen=${status.food.kitchen} food.dorm=${status.food.dorm} need=${game.getNeedPolicy()}`);
   };
 
   const finalize = async (reason: string): Promise<void> => {
@@ -133,7 +132,7 @@ async function main(): Promise<void> {
     const record = game.snapshot();
     try {
       const dir = writeReactiveEpisode(options.out, options.episode, record);
-      console.log(`saved ${dir} (stopReason=${record.stopReason}, needPolicy=${record.needPolicy ?? 'never'})`);
+      console.log(`saved ${dir} (stopReason=${record.stopReason}, needPolicy=${record.needPolicy ?? 'one-shot'})`);
     } catch (err) {
       fatal = true;
       console.error(`[save] ${err instanceof Error ? err.message : String(err)}`);
@@ -192,17 +191,17 @@ async function main(): Promise<void> {
       rl.prompt();
       return;
     }
-    if (line.startsWith('time ')) {
-      const match = /^time ([0-9]+)$/.exec(line);
+    if (line.startsWith('world advance')) {
+      const match = /^world advance ([0-9]+)$/.exec(line);
       if (match === null) {
-        console.log('[time rejected] usage: time <1-120>');
+        console.log('[advance rejected] usage: world advance <1-10>');
         rl.prompt();
         return;
       }
       const result = game.worldAdvanceTime(Number(match[1]));
       console.log(result.ok
-        ? `[time accepted] simTime ${result.before} -> ${result.after}${result.needsScheduled.length > 0 ? `, needs: ${result.needsScheduled.join(',')}` : ''}`
-        : `[time rejected] ${result.error}`);
+        ? `[advance accepted] simTime ${result.before} -> ${result.after}`
+        : `[advance rejected] ${result.error}`);
       report();
       rl.prompt();
       return;
@@ -211,11 +210,11 @@ async function main(): Promise<void> {
       const arg = line === 'need' ? '' : line.slice(5);
       if (arg === '') {
         console.log(`need policy = ${game.getNeedPolicy()}`);
-      } else if (arg === 'never' || arg === 'one-shot' || arg === 'recurring') {
+      } else if (arg === 'one-shot' || arg === 'recurring') {
         game.setNeedPolicy(arg);
         console.log(`need policy -> ${game.getNeedPolicy()}`);
       } else {
-        console.log('[need rejected] usage: need never|one-shot|recurring');
+        console.log('[need rejected] usage: need one-shot|recurring');
       }
       rl.prompt();
       return;
