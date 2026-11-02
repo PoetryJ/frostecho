@@ -30,6 +30,8 @@ import { canWake, describeObservation, isTerminalStatus, isWaitingObservation } 
 
 interface CycleState {
   cycle: number;
+  /** G05: opening reason (autonomous wake vs need cycle). */
+  reason: string;
   session: AgentSession;
   turns: ReactiveTurnRecord[];
   startLogCursor: number;
@@ -173,6 +175,7 @@ class ReactiveGameImpl implements ReactiveGame {
     }
     const state: CycleState = {
       cycle,
+      reason,
       session,
       turns: [],
       startLogCursor: this.world.getLog().length,
@@ -341,12 +344,14 @@ class ReactiveGameImpl implements ReactiveGame {
       const index = (this.cursor + offset) % this.actorIds.length;
       const actorId = this.actorIds[index];
       // G05: a pending need schedules an actor even under the event policy,
-      // including a need-cycle stop that left the actor waiting. Need cycles
-      // carry their own decision budget (NEED_DECISION_BUDGET) and are exempt
-      // from the generic episode call limit, which stays in force for
+      // including a need-cycle stop that left the actor waiting, and takes
+      // priority over an actor still inside its initial/autonomous cycle. Need
+      // cycles carry their own decision budget (NEED_DECISION_BUDGET) and are
+      // exempt from the generic episode call limit, which stays in force for
       // autonomous cycles.
       const pendingNeed = this.activeNeed.get(actorId);
-      if (pendingNeed !== undefined && (this.states[actorId] === 'hungry' || this.states[actorId] === 'waiting')) {
+      const state = this.states[actorId];
+      if (pendingNeed !== undefined && (state === 'hungry' || state === 'waiting' || state === 'active')) {
         this.cursor = (index + 1) % this.actorIds.length;
         this.openCycle(actorId, `need cycle (period ${pendingNeed.period}, sim ${pendingNeed.atSimTime}min)`);
         return actorId;
@@ -461,7 +466,12 @@ class ReactiveGameImpl implements ReactiveGame {
       const state = this.world.getState();
       for (const actorId of this.actorIds) {
         const lifecycle = this.states[actorId];
-        if (lifecycle !== 'waiting' && lifecycle !== 'hungry') continue;
+        // Any non-terminal actor is need-eligible: an actor mid-cycle (active)
+        // keeps its current cycle, and the pending need takes over afterwards.
+        if (lifecycle !== 'active' && lifecycle !== 'waiting' && lifecycle !== 'hungry') continue;
+        // One pending need per actor: a new boundary cannot double-grant while
+        // the previous need is still undecided.
+        if (this.activeNeed.has(actorId)) continue;
         if (this.callsOf(actorId) >= EPISODE_CALL_LIMIT) continue;
         const hunger = state.npcs[actorId]?.hunger;
         if (typeof hunger !== 'number' || hunger < NEED_HUNGER_AT_LEAST) continue;
@@ -573,6 +583,7 @@ class ReactiveGameImpl implements ReactiveGame {
       const list = this.actorCycles(actorId);
       cyclesOut[actorId] = list.map(cycle => ({
         cycle: cycle.cycle,
+        reason: cycle.reason,
         startLogCursor: cycle.startLogCursor,
         endState: cycle.endState,
         turns: cycle.turns.map(turn => structuredClone(turn)),

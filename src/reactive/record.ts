@@ -15,6 +15,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { join } from 'node:path';
 import { HTTP_SAMPLING } from '../agent/providers/http';
 import { GOAL_HUNGER_AT_LEAST } from '../agent/contracts';
+import { G05_SCHEMA } from './contracts';
 import { parseAction } from '../agent/parser';
 import { Engine, replay } from '../engine';
 import type { WorldState } from '../types';
@@ -49,8 +50,8 @@ function writeJson(path: string, value: unknown): void {
 export function writeReactiveEpisode(artifactsRoot: string, batch: string, record: ReactiveRecord): string {
   const dir = join(artifactsRoot, batch, 'episodes', record.episodeId);
   mkdirSync(dir, { recursive: true });
-  const meta = {
-    schema: G04_SCHEMA,
+  const meta: Record<string, unknown> = {
+    schema: record.schema,
     episodeId: record.episodeId,
     scenarioId: record.scenarioId,
     wakePolicy: record.wakePolicy,
@@ -64,6 +65,10 @@ export function writeReactiveEpisode(artifactsRoot: string, batch: string, recor
     scenarioPass: record.scenarioPass,
     idlePumps: record.idlePumps,
   };
+  if (record.schema === G05_SCHEMA) {
+    meta.needPolicy = record.needPolicy ?? 'never';
+    meta.needs = (record.needs ?? []).length;
+  }
   writeJson(join(dir, 'meta.json'), meta);
   writeJson(join(dir, 'game.json'), record);
   return dir;
@@ -109,7 +114,9 @@ export function verifyReactiveEpisode(episodeDir: string): ReactiveVerification 
   const record = gameRead.value;
   if (!isPlainObject(meta)) return emptyVerification(['meta.json root is not a non-null object']);
   if (!isPlainObject(record)) return emptyVerification(['game.json root is not a non-null object']);
-  if (record.schema !== G04_SCHEMA) return emptyVerification([`game.json schema is ${String(record.schema)}, expected ${G04_SCHEMA}`]);
+  if (record.schema !== G04_SCHEMA && record.schema !== G05_SCHEMA) {
+    return emptyVerification([`game.json schema is ${String(record.schema)}, expected ${G04_SCHEMA} or ${G05_SCHEMA}`]);
+  }
 
   // sidecar must match the record it describes
   const fields: [string, unknown, unknown][] = [
@@ -122,6 +129,12 @@ export function verifyReactiveEpisode(episodeDir: string): ReactiveVerification 
     ['commands', meta.commands, (record.commands as unknown[]).length],
     ['events', meta.events, (record.events as unknown[]).length],
   ];
+  if (record.schema === G05_SCHEMA) {
+    fields.push(
+      ['needPolicy', meta.needPolicy, (record as unknown as ReactiveRecord).needPolicy ?? 'never'],
+      ['needs', meta.needs, ((record as unknown as ReactiveRecord).needs ?? []).length],
+    );
+  }
   for (const [name, left, right] of fields) {
     if (canonical(left) !== canonical(right)) issues.push(`meta.json ${name} does not match game.json`);
   }
@@ -137,12 +150,16 @@ export function verifyReactiveEpisode(episodeDir: string): ReactiveVerification 
       continue;
     }
     const result = engine.submit(structuredClone(entry.command as never));
-    if (entry.status === 'accepted') {
+    // LogEntry stores the execution outcome nested under `result`.
+    const saved: JsonObject = isPlainObject(entry.result) ? entry.result : {};
+    const savedStatus = typeof saved.status === 'string' ? saved.status : '';
+    const savedReason = typeof saved.reason === 'string' ? saved.reason : undefined;
+    if (savedStatus === 'accepted') {
       if (result.status !== 'accepted') issues.push(`command ${String((entry.command as JsonObject).commandId)} no longer executes (${result.status})`);
-    } else if (entry.status === 'duplicate') {
+    } else if (savedStatus === 'duplicate') {
       if (result.status !== 'duplicate') issues.push(`command ${String((entry.command as JsonObject).commandId)} is no longer a duplicate`);
-    } else if (result.status === 'rejected') {
-      if (result.status !== 'rejected' || result.reason !== entry.reason) {
+    } else if (savedStatus === 'rejected') {
+      if (result.status !== 'rejected' || result.reason !== savedReason) {
         issues.push(`command ${String((entry.command as JsonObject).commandId)} rejection no longer reproduces`);
       }
     }
@@ -196,11 +213,13 @@ export function verifyReactiveEpisode(episodeDir: string): ReactiveVerification 
 
   // cycle ledger and the two budgets
   const cycles = isPlainObject(typed.cycles) ? typed.cycles : {};
+  const isG05 = typed.schema === G05_SCHEMA;
   for (const actorId of typed.actorOrder) {
     const list = Array.isArray(cycles[actorId]) ? (cycles[actorId] as unknown as JsonObject[]) : [];
     if (list.length === 0) issues.push(`actor ${actorId} has no cycle record`);
     let previousCycle = 0;
     let actorCalls = 0;
+    let autoCalls = 0;
     for (const cycle of list) {
       const number = Number(cycle.cycle);
       if (number !== previousCycle + 1) issues.push(`actor ${actorId}: cycle ${String(cycle.cycle)} is not consecutive`);
@@ -217,11 +236,14 @@ export function verifyReactiveEpisode(episodeDir: string): ReactiveVerification 
       const counted = cycleTurns.filter(turn => turn.providerCalled === true).length;
       if (counted !== providerCalls) issues.push(`actor ${actorId} cycle ${String(number)}: providerCalls ${providerCalls} != ${counted} flagged turns`);
       actorCalls += providerCalls;
+      // G05: need cycles run on the need decision budget and are exempt here.
+      const reason = typeof cycle.reason === 'string' ? cycle.reason : '';
+      if (!(isG05 && reason.startsWith('need cycle'))) autoCalls += providerCalls;
     }
     const summary = isPlainObject(typed.actors) ? (typed.actors[actorId] as unknown as JsonObject | undefined) : undefined;
     const declared = summary ? Number(summary.providerCalls) : NaN;
     if (declared !== actorCalls) issues.push(`actor ${actorId}: summary calls ${String(declared)} != cycle total ${actorCalls}`);
-    if (actorCalls > EPISODE_CALL_LIMIT) issues.push(`actor ${actorId}: ${actorCalls} calls exceeds the ${EPISODE_CALL_LIMIT}-call episode budget`);
+    if (autoCalls > EPISODE_CALL_LIMIT) issues.push(`actor ${actorId}: ${autoCalls} autonomous calls exceeds the ${EPISODE_CALL_LIMIT}-call episode budget`);
     const hunger = (typed.finalState as WorldState).npcs[actorId]?.hunger;
     const goal = summary?.goalReached;
     if (typeof hunger === 'number' && goal !== (hunger >= GOAL_HUNGER_AT_LEAST)) issues.push(`actor ${actorId}: goalReached flag contradicts the authoritative hunger ${hunger}`);

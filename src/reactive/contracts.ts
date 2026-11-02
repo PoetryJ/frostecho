@@ -180,6 +180,8 @@ export interface ReactiveTurnRecord {
 
 export interface ReactiveCycleRecord {
   cycle: number;
+  /** G05: why this cycle opened (autonomous wake vs need cycle). */
+  reason?: string;
   startLogCursor: number;
   endState: ReactiveActorState;
   turns: ReactiveTurnRecord[];
