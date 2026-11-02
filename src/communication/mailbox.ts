@@ -123,8 +123,9 @@ class MailboxImpl implements Mailbox {
     for (let i = this.receipts.length - 1; i >= 0; i -= 1) {
       const receipt = this.receipts[i];
       if (receipt.bindSeq !== bindSeq) continue;
-      // Only escalate from the bind state; never rewrite an already settled receipt.
-      if (receipt.status === 'suppressed' || receipt.status === 'attached') receipt.status = outcome;
+      // Only escalate an attached receipt. A suppressed (off-arm) receipt keeps
+      // saying "this text was never shown", whatever the attempt outcome was.
+      if (receipt.status === 'attached') receipt.status = outcome;
       return;
     }
   }

@@ -33,6 +33,8 @@ export type MessageErrorCode =
   | 'TOO_LONG'
   | 'QUEUE_FULL'
   | 'CONFLICT'
+  | 'EXISTS'
+  | 'IO_ERROR'
   | 'SCHEMA_MISMATCH'
   | 'INVALID_SNAPSHOT';
 

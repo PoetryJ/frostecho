@@ -99,9 +99,15 @@ test('off arm binds at the same point but suppresses the text; receipt never cla
   assert.equal(receipt?.text, 'take the food first', 'the suppressed text is only in the receipt for audit');
   assert.equal(box.status().pending.npc_c, undefined, 'off arm still consumes the pending slot');
   box.completeBind(ctx.bindSeq, 'failed');
-  assert.equal(box.status().lastReceipt?.status, 'failed');
-  box.completeBind(ctx.bindSeq, 'attempted');
-  assert.equal(box.status().lastReceipt?.status, 'failed', 'a settled receipt is never rewritten');
+  assert.equal(box.status().lastReceipt?.status, 'suppressed', 'a suppressed receipt keeps saying the text was never shown');
+  // An attached receipt does settle to attempted/failed, and settles only once.
+  box.send(cmd('o2', 'npc_c', 'second'), positions('kitchen', 'kitchen', 'kitchen'));
+  const attached = unwrap(box.bindNext('npc_c', true));
+  assert.equal(attached.status, 'attached');
+  box.completeBind(attached.bindSeq, 'attempted');
+  assert.equal(box.status().lastReceipt?.status, 'attempted');
+  box.completeBind(attached.bindSeq, 'failed');
+  assert.equal(box.status().lastReceipt?.status, 'attempted', 'a settled receipt is never rewritten');
 });
 
 test('restore of pending and consumed states: nothing re-binds or re-delivers', () => {
