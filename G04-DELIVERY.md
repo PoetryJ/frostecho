@@ -1,6 +1,7 @@
 # G04 交付：条件等待与唤醒（含 G03-R1 收尾）
 
-- 分支：`codex/g04-reactive-npcs`，基线 `30d7fab`，当前 `aba44ba`
+- 分支：`codex/g04-reactive-npcs`，基线 `30d7fab`，交付 HEAD `859ee1a`
+- 版本口径：最终证据（G04-r2 两批）运行源码为 `aba44ba`；`aba44ba..859ee1a` 仅 manifest 工具与文档变更，`src/`、`tests/`、`package.json` 未变
 - 执行包：`handoff/20261030-g04-reactive-npcs`
 - 结论：G03-R1 三处缺陷已修并实测；G04 对照批 fixture 12/12、live 12/12，均为参考 30 次调用
 - 全量测试：169 通过 / 0 失败（含真实子进程 CLI 与集成套件）
@@ -10,13 +11,13 @@
 | 批次 | 代码 | 模式 | 有效超时 | 结果 | chat 请求 | 硬限 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `g03-live-20261030-r3` | `11458a1` | 参考实现 | 15s（旧默认，已过时） | 12/12 pass | 44 | 120 |
-| `g03-live-20261030-r4` | `320f6ef` | live | 30s | **中断（保留）** | 2 | 120 |
-| `g03-live-20261030-r5` | `320f6ef` | live | 30s | **中断（保留）** | 2 | 120 |
+| `g03-live-20261030-r4` | `320f6ef` | live | 30s | **中断（保留）** | 6 | 120 |
+| `g03-live-20261030-r5` | `320f6ef` | live | 30s | **中断（保留）** | 6 | 120 |
 | `g03-live-20261030-r6` | `320f6ef` | live | 120s（env 覆盖，已记录） | 12/12 pass | 44 | 120 |
 | `g04-fixture-20261030-r2` | `aba44ba` | fixture | 30s | 12/12 pass | 0（零 HTTP） | — |
 | `g04-live-20261030-r2` | `aba44ba` | live | 120s（env 覆盖，已记录） | 12/12 pass | 30 | 80 |
 
-r4/r5 的失败原因相同且已定位：`m1-ac-on` 的第二个决策（`npc_c` 首轮）在 30003ms 触发超时。同一请求体在 r3 只要 13.4s，服务端随后基准延迟升到约 10s（64 token 探测），属端点容量回落，不是解析或预算缺陷。r6 用 `FROSTECHO_LIVE_TIMEOUT_MS=120000` 跑通，`batch.json.timeoutMs=120000`，代码默认仍为 30s。
+r4/r5 的失败原因相同且已定位：`m1-ac-on` 的第二个决策（`npc_c` 首轮）在 30003ms 触发超时。两批各运行 2 局（1 通过/1 中断/10 未运行），各产生 6 次 chat 请求（`summary.json.totals.totalChatRequests=6`）。同一请求体在 r3 只要 13.4s，服务端随后基准延迟升到约 10s（64 token 探测），属端点容量回落，不是解析或预算缺陷。r6 用 `FROSTECHO_LIVE_TIMEOUT_MS=120000` 跑通，`batch.json.timeoutMs=120000`，代码默认仍为 30s。
 
 ## 2. G03-R1：三处修复与实际证据
 
