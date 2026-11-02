@@ -63,7 +63,7 @@ class ReactiveGameImpl implements ReactiveGame {
   readonly wakePolicy: ReactiveGameOptions['wakePolicy'];
   readonly mode: ReactiveGameOptions['mode'];
   readonly thinking: boolean;
-  readonly needPolicy: NeedPolicy;
+  private needPolicy: NeedPolicy;
   private readonly recordSchema: typeof G04_SCHEMA | typeof G05_SCHEMA;
 
   private readonly states: Record<string, ReactiveActorState> = {};
@@ -516,6 +516,15 @@ class ReactiveGameImpl implements ReactiveGame {
 
   isInterrupted(): boolean {
     return this.interrupted;
+  }
+
+  getNeedPolicy(): NeedPolicy {
+    return this.needPolicy;
+  }
+
+  /** G05: interactive switch of the need scheduling policy (CLI `need` command). */
+  setNeedPolicy(policy: NeedPolicy): void {
+    this.needPolicy = policy;
   }
 
   setPumpCounters(pumps: number, before: { calls: number; cycles: number; states: Record<string, ReactiveActorState> }): void {

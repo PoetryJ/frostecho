@@ -292,6 +292,10 @@ export interface ReactiveGame {
   snapshot(): ReactiveRecord;
   isClosed(): boolean;
   isInterrupted(): boolean;
+  /** G05: current need scheduling policy. */
+  getNeedPolicy(): NeedPolicy;
+  /** G05: interactive switch (never/one-shot/recurring); affects future boundaries only. */
+  setNeedPolicy(policy: NeedPolicy): void;
 }
 
 export interface SessionArgs {
