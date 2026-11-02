@@ -1,0 +1,40 @@
+{
+  "schema": "frostecho.g05.game/2",
+  "episodeId": "g05-ca-t3-one-shot",
+  "scenarioId": "ca/t3/one-shot",
+  "wakePolicy": "event",
+  "mode": "reference",
+  "thinking": true,
+  "actorOrder": [
+    "npc_c",
+    "npc_a"
+  ],
+  "stopReason": "completed",
+  "commands": 3,
+  "events": 9,
+  "actors": {
+    "npc_c": {
+      "state": "satisfied",
+      "cycles": 1,
+      "providerCalls": 0,
+      "goalReached": false
+    },
+    "npc_a": {
+      "state": "satisfied",
+      "cycles": 1,
+      "providerCalls": 0,
+      "goalReached": false
+    }
+  },
+  "scenarioPass": true,
+  "idlePumps": {
+    "pumps": 0,
+    "callsBefore": 0,
+    "callsAfter": 0,
+    "cyclesBefore": 0,
+    "cyclesAfter": 0,
+    "actorStatesBefore": {},
+    "actorStatesAfter": {}
+  },
+  "needPolicy": "one-shot"
+}

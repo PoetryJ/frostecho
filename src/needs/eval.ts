@@ -1,33 +1,33 @@
 /**
- * G05-R1 workstream C — batch drivers for the restored matrix.
- *
- * Batches own an exclusive directory; the summary is a pure function of the
- * runs being persisted. Live runs gate on a health precheck, run the ac chain
- * first and stop on the first behavioural or transport failure, keeping every
- * remaining trajectory as not_run. HTTP counts come from actual transport
- * records; missing usage stays unknown.
+ * G05-live integration (main agent). A/B/C modules wired together:
+ *   ChatBudgetGate (A) → NeedsBatchStore (B) → live judges + disk-rebuilt
+ *   summaries (C). One batch = one exclusive directory created before anything
+ *   runs; every request is reserve → durable begin → HTTP → durable finish;
+ *   every finished episode is saved immediately; the summary and the cost
+ *   totals are rebuilt from the files on disk, never from memory.
  */
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { LIVE_DECISION_TIMEOUT_MS, type Provider } from '../agent/contracts';
 import { liveTimeoutMs } from '../agent/live-record';
 import { createReferenceProvider } from '../agent/providers/reference';
-import { createHttpProvider, loadHttpConfigFromEnv } from '../agent/providers/http';
+import { createHttpProvider, loadHttpConfigFromEnv, HTTP_SAMPLING } from '../agent/providers/http';
 import { checkLlmHealth, type HealthResult } from '../eval/health';
 import { canonical } from '../util';
-import { G05_BATCH_SCHEMA } from '../reactive/contracts';
-import { G05_SCENARIOS, runScenario, type G05Chain, type G05ScenarioRun } from './scenarios';
-import { saveNeedsEpisode } from './record';
-import { writeReactiveBatchFile, writeReactiveSummary } from '../reactive/record';
+import { G05_SCENARIOS, runScenario, type G05Chain, type G05Scenario, type G05ScenarioRun } from './scenarios';
+import { NeedsBatchStore, readAttemptLedger, BatchStoreError } from './batch-store';
+import { ChatBudgetGate, createBudgetedProvider } from './live-budget';
+import { costTotalsOf, httpCallsOfRecords, decisionAttemptsOfRecords, type CostTotals } from './metrics';
+import type { AttemptRequestConfig } from './live-contracts';
 
 export interface RunBatchOptions {
   artifactsRoot: string;
   batchId: string;
   timeoutMs?: number;
-  /** Chain filter; the official run is ac first, then ca. */
+  /** Chain filter; the official run is ac first, then ca (never ca-only live). */
   chains?: G05Chain[];
-  /** Live only: stop before spending past this total (bounded rework guard). */
+  /** Live only: total chat-request hard limit, enforced per request. */
   maxTotalCalls?: number;
 }
 
@@ -38,13 +38,15 @@ export interface BatchResult {
   scenarioPass: number;
   aborted?: string;
   health?: HealthResult;
+  budget?: { limit: number; spent: number; blocked: number };
 }
 
 export interface NeedsSummary {
-  schema: 'frostecho.g05.summary/2';
+  schema: 'frostecho.g05.summary/3';
   batchId: string;
   matrixVersion: string;
   mode: string;
+  chatBudget: { limit: number; spent: number; blocked: number };
   totals: {
     episodes: number;
     scenarioPass: number;
@@ -52,7 +54,16 @@ export interface NeedsSummary {
     notRun: number;
     httpCalls: number;
     referenceDecisions: number;
+    decisionAttempts: number;
+    httpAttempts: number;
+    unresolvedAttempts: number;
+    budgetBlocked: number;
+    knownTokenSum: number;
+    usageUnknownCount: number;
+    totalTokens: number | null;
+    preflightRequests: number;
   };
+  costs: { latencyMsSum: number; byOutcome: CostTotals['byOutcome'] };
   sourceFingerprint: string;
   promptFingerprint: string | 'unknown';
   perEpisode: {
@@ -61,7 +72,6 @@ export interface NeedsSummary {
     scenarioPass: boolean;
     calls: number;
     transports: number;
-    usage: unknown;
     simTime: number;
     stopReason: string;
   }[];
@@ -80,29 +90,34 @@ function sourceFingerprint(): string {
   return hash.digest('hex');
 }
 
-function transportsOf(run: G05ScenarioRun): number {
-  return Object.values(run.record.cycles).flatMap(list => list.flatMap(c => c.turns))
-    .filter(t => t.step?.transport !== undefined && t.step?.transport !== null).length;
+interface EpisodeFile {
+  episodeId: string;
+  scenarioId: string | null;
+  stopReason: string;
+  scenarioPass: boolean | null;
+  actors: Record<string, { providerCalls: number }>;
+  cycles: Record<string, { turns: { providerCalled?: boolean; step?: { transport?: unknown } }[] }[]>;
+  finalState: { simTime?: number };
 }
 
-function usageOf(run: G05ScenarioRun): unknown {
-  for (const list of Object.values(run.record.cycles)) {
-    for (const cycle of list) {
-      for (const turn of cycle.turns) {
-        const usage = (turn.step?.transport as { usage?: unknown } | undefined)?.usage;
-        if (usage !== undefined && usage !== null) return usage;
-      }
-    }
+function readEpisodes(batchDir: string): EpisodeFile[] {
+  const dir = join(batchDir, 'episodes');
+  if (!existsSync(dir)) return [];
+  const out: EpisodeFile[] = [];
+  for (const name of readdirSync(dir).sort()) {
+    const file = join(dir, name, 'game.json');
+    if (!existsSync(file)) continue;
+    out.push(JSON.parse(readFileSync(file, 'utf8')) as EpisodeFile);
   }
-  return 'unknown';
+  return out;
 }
 
-function promptFingerprintOf(runs: G05ScenarioRun[]): string | 'unknown' {
-  for (const run of runs) {
-    for (const list of Object.values(run.record.cycles)) {
-      for (const cycle of list) {
-        for (const turn of cycle.turns) {
-          const body = turn.step?.transport?.requestBody as { messages?: unknown } | undefined;
+function promptFingerprintOfEpisodes(episodes: EpisodeFile[]): string | 'unknown' {
+  for (const record of episodes) {
+    for (const list of Object.values(record.cycles ?? {})) {
+      for (const cycle of list ?? []) {
+        for (const turn of cycle.turns ?? []) {
+          const body = (turn.step?.transport as { requestBody?: { messages?: unknown } } | undefined)?.requestBody;
           if (body?.messages !== undefined) {
             return createHash('sha256').update(canonical(body.messages)).digest('hex');
           }
@@ -113,107 +128,227 @@ function promptFingerprintOf(runs: G05ScenarioRun[]): string | 'unknown' {
   return 'unknown';
 }
 
-function summarize(batchId: string, mode: string, runs: G05ScenarioRun[], notRun: string[]): NeedsSummary {
-  const perEpisode = runs.map(run => ({
-    id: run.scenario.id,
-    episodeId: run.record.episodeId,
-    scenarioPass: run.scenarioPass,
-    calls: Object.values(run.record.actors).reduce((s, a) => s + a.providerCalls, 0),
-    transports: transportsOf(run),
-    usage: usageOf(run),
-    simTime: run.record.finalState.simTime ?? 0,
-    stopReason: run.record.stopReason,
+/**
+ * Rebuild the whole summary from the durable files: episodes saved so far, the
+ * attempt ledger and the plan. Nothing here trusts an in-memory run result.
+ */
+export function rebuildSummary(
+  batchDir: string,
+  batchId: string,
+  mode: string,
+  budget: { limit: number; spent: number; blocked: number },
+  notRun: string[],
+  preflightRequests: number,
+): NeedsSummary {
+  const episodes = readEpisodes(batchDir);
+  const ledger = readAttemptLedger(batchDir);
+  const costs = costTotalsOf(batchDir, ledger);
+  const httpCalls = httpCallsOfRecords(batchDir);
+  const perEpisode = episodes.map(record => ({
+    id: record.scenarioId ?? record.episodeId,
+    episodeId: record.episodeId,
+    scenarioPass: record.scenarioPass === true,
+    calls: Object.values(record.actors ?? {}).reduce((s, a) => s + (a?.providerCalls ?? 0), 0),
+    transports: Object.values(record.cycles ?? {}).flatMap(list => (list ?? []).flatMap(c => c.turns ?? []))
+      .filter(t => t.step?.transport !== undefined && t.step?.transport !== null).length,
+    simTime: record.finalState?.simTime ?? 0,
+    stopReason: record.stopReason,
   }));
   return {
-    schema: 'frostecho.g05.summary/2',
+    schema: 'frostecho.g05.summary/3',
     batchId,
     matrixVersion: 'g05-r1-t123',
     mode,
+    chatBudget: budget,
     totals: {
-      episodes: runs.length,
-      scenarioPass: runs.filter(r => r.scenarioPass).length,
-      behaviourFailed: runs.filter(r => !r.scenarioPass).length,
+      episodes: episodes.length,
+      scenarioPass: perEpisode.filter(e => e.scenarioPass).length,
+      behaviourFailed: perEpisode.filter(e => !e.scenarioPass).length,
       notRun: notRun.length,
-      httpCalls: perEpisode.reduce((s, e) => s + e.transports, 0),
-      referenceDecisions: perEpisode.reduce((s, e) => s + e.calls, 0),
+      httpCalls,
+      referenceDecisions: 0,
+      decisionAttempts: decisionAttemptsOfRecords(batchDir),
+      httpAttempts: costs.httpAttempts,
+      unresolvedAttempts: costs.unresolvedAttempts,
+      budgetBlocked: costs.budgetBlocked,
+      knownTokenSum: costs.knownTokenSum,
+      usageUnknownCount: costs.usageUnknownCount,
+      totalTokens: costs.totalTokens,
+      preflightRequests,
     },
+    costs: { latencyMsSum: costs.latencyMsSum, byOutcome: costs.byOutcome },
     sourceFingerprint: sourceFingerprint(),
-    promptFingerprint: promptFingerprintOf(runs),
+    promptFingerprint: promptFingerprintOfEpisodes(episodes),
     perEpisode,
   };
 }
 
-function persist(options: RunBatchOptions, mode: string, runs: G05ScenarioRun[], summary: NeedsSummary, notRun: string[]): void {
-  for (const run of runs) saveNeedsEpisode(options.artifactsRoot, options.batchId, run.record);
-  writeReactiveBatchFile(join(options.artifactsRoot, options.batchId), {
-    schema: G05_BATCH_SCHEMA,
-    batchId: options.batchId,
-    matrixVersion: 'g05-r1-t123',
-    mode,
-    episodes: runs.map(r => r.record.episodeId),
-    notRun,
-    createdAt: new Date().toISOString(),
-  });
-  writeReactiveSummary(join(options.artifactsRoot, options.batchId), summary as never);
+function scenariosOf(options: RunBatchOptions): G05Scenario[] {
+  return G05_SCENARIOS.filter(s => options.chains === undefined || options.chains.includes(s.chain));
+}
+
+function attemptRequestConfig(model: string | null, timeoutMs: number, enableThinking: boolean): AttemptRequestConfig {
+  return {
+    model,
+    temperature: HTTP_SAMPLING.temperature,
+    max_tokens: HTTP_SAMPLING.max_tokens,
+    stream: HTTP_SAMPLING.stream,
+    enableThinking: [enableThinking],
+    timeoutMs,
+  };
 }
 
 export async function runFixtureBatch(options: RunBatchOptions): Promise<BatchResult> {
+  const scenarios = scenariosOf(options);
+  const store = NeedsBatchStore.open(options.artifactsRoot, options.batchId, {
+    mode: 'fixture',
+    matrixVersion: 'g05-r1-t123',
+    chatBudget: { limit: 0 },
+    requestDefaults: {
+      model: null,
+      temperature: HTTP_SAMPLING.temperature,
+      max_tokens: HTTP_SAMPLING.max_tokens,
+      stream: HTTP_SAMPLING.stream,
+      enableThinking: true,
+      timeoutMs: options.timeoutMs ?? LIVE_DECISION_TIMEOUT_MS,
+      urlPresent: false,
+    },
+    scenarios,
+  });
   const runs: G05ScenarioRun[] = [];
-  for (const scenario of G05_SCENARIOS) {
-    if (options.chains !== undefined && !options.chains.includes(scenario.chain)) continue;
-    runs.push(await runScenario(scenario, {
+  const notRun: string[] = [];
+  let failed: string | null = null;
+  for (const scenario of scenarios) {
+    if (failed !== null) { notRun.push(scenario.id); continue; }
+    store.markScenarioStatus(scenario.id, 'running');
+    const run = await runScenario(scenario, {
       providerFor: () => createReferenceProvider(),
       mode: 'reference',
       thinking: true,
       timeoutMs: options.timeoutMs,
-    }));
+    });
+    runs.push(run);
+    store.saveEpisode(run.record);
+    store.markScenarioStatus(scenario.id, run.scenarioPass ? 'passed' : 'behaviour_failed', run.issues.join('; ') || undefined);
+    if (!run.scenarioPass) failed = `behaviour failure in ${scenario.id}`;
   }
-  const summary = summarize(options.batchId, 'fixture', runs, []);
-  persist(options, 'fixture', runs, summary, []);
-  return { runs, summary, totalCalls: summary.totals.referenceDecisions, scenarioPass: summary.totals.scenarioPass };
+  const referenceDecisions = runs.reduce((s, r) => s + Object.values(r.record.actors).reduce((t, a) => t + a.providerCalls, 0), 0);
+  const summary = rebuildSummary(store.dir, options.batchId, 'fixture', { limit: 0, spent: 0, blocked: 0 }, notRun, 0);
+  summary.totals.referenceDecisions = referenceDecisions;
+  store.finalizeBatchFile(runs.map(r => r.record.episodeId), notRun);
+  store.writeSummary(summary);
+  store.writeDone({ batchId: options.batchId, stoppedReason: failed, at: new Date().toISOString() });
+  return {
+    runs, summary, totalCalls: referenceDecisions, scenarioPass: summary.totals.scenarioPass,
+    ...(failed !== null ? { aborted: failed } : {}),
+  };
 }
 
 export async function runLiveBatch(options: RunBatchOptions): Promise<BatchResult> {
   const config = loadHttpConfigFromEnv();
   if (config === null) {
-    return { runs: [], summary: summarize(options.batchId, 'live', [], []), totalCalls: 0, scenarioPass: 0, aborted: 'live mode requires FROSTECHO_LLM_URL and FROSTECHO_LLM_MODEL' };
+    throw new Error('live mode requires FROSTECHO_LLM_URL and FROSTECHO_LLM_MODEL');
   }
+  const limit = options.maxTotalCalls ?? 60;
+  const timeoutMs = options.timeoutMs ?? liveTimeoutMs(process.env, LIVE_DECISION_TIMEOUT_MS);
+  const scenarios = scenariosOf(options);
+  const store = NeedsBatchStore.open(options.artifactsRoot, options.batchId, {
+    mode: 'live',
+    matrixVersion: 'g05-r1-t123',
+    chatBudget: { limit },
+    requestDefaults: {
+      model: config.model,
+      temperature: HTTP_SAMPLING.temperature,
+      max_tokens: HTTP_SAMPLING.max_tokens,
+      stream: HTTP_SAMPLING.stream,
+      enableThinking: true,
+      timeoutMs,
+      urlPresent: true,
+    },
+    scenarios,
+  });
+  const gate = new ChatBudgetGate(limit);
+  const requestConfig = attemptRequestConfig(config.model, timeoutMs, true);
+  const abortWithPreflight = async (reason: string, health: HealthResult): Promise<BatchResult> => {
+    store.savePreflight({
+      ok: health.ok, kind: health.kind ?? null, error: health.error, status: health.status,
+      models: health.models, expectedModel: health.expectedModel, checkedAt: health.checkedAt, latencyMs: health.latencyMs,
+    });
+    for (const scenario of scenarios) store.markScenarioStatus(scenario.id, 'preflight_failed', reason);
+    const summary = rebuildSummary(store.dir, options.batchId, 'live', { limit, spent: gate.spent, blocked: gate.blocked }, scenarios.map(s => s.id), 1);
+    store.finalizeBatchFile([], scenarios.map(s => s.id));
+    store.writeSummary(summary);
+    store.writeDone({ batchId: options.batchId, stoppedReason: reason, at: new Date().toISOString() });
+    return { runs: [], summary, totalCalls: 0, scenarioPass: 0, aborted: reason, health };
+  };
+
   const health = await checkLlmHealth(config);
   if (!health.ok) {
-    return { runs: [], summary: summarize(options.batchId, 'live', [], []), totalCalls: 0, scenarioPass: 0, aborted: `health check failed: ${health.error ?? health.kind ?? 'unknown'}`, health };
+    return abortWithPreflight(`health check failed: ${health.error ?? health.kind ?? 'unknown'}`, health);
   }
-  const timeoutMs = options.timeoutMs ?? liveTimeoutMs(process.env, LIVE_DECISION_TIMEOUT_MS);
-  const cap = options.maxTotalCalls ?? 60;
+  store.savePreflight({
+    ok: health.ok, kind: health.kind ?? null, error: health.error, status: health.status,
+    models: health.models, expectedModel: health.expectedModel, checkedAt: health.checkedAt, latencyMs: health.latencyMs,
+  });
+
   const runs: G05ScenarioRun[] = [];
   const notRun: string[] = [];
-  let spent = 0;
-  let gateFailed: string | null = null;
-  for (const scenario of G05_SCENARIOS) {
-    if (options.chains !== undefined && !options.chains.includes(scenario.chain)) continue;
-    if (gateFailed !== null) { notRun.push(scenario.id); continue; }
-    // Chain gate: the ca chain only starts after every ac trajectory passed.
-    if (scenario.chain === 'ca' && runs.some(r => r.scenario.chain === 'ac' && !r.scenarioPass)) {
-      gateFailed = 'ac gate failed';
+  let stopped: string | null = null;
+  for (const scenario of scenarios) {
+    if (stopped !== null) {
       notRun.push(scenario.id);
+      store.markScenarioStatus(scenario.id, 'not_run', stopped);
       continue;
     }
-    if (spent >= cap) { gateFailed = `chat budget ${cap} exhausted`; notRun.push(scenario.id); continue; }
+    if (scenario.chain === 'ca' && runs.some(r => r.scenario.chain === 'ac' && !r.scenarioPass)) {
+      stopped = 'ac gate failed';
+      notRun.push(scenario.id);
+      store.markScenarioStatus(scenario.id, 'not_run', stopped);
+      continue;
+    }
+    store.markScenarioStatus(scenario.id, 'running');
+    // One budgeted provider per cycle: the factory ordinal is the cycle number.
+    const cycleCount: Record<string, number> = {};
     const run = await runScenario(scenario, {
-      providerFor: (): Provider => createHttpProvider({ ...config, enableThinking: true }),
+      providerFor: (actorId): Provider => {
+        cycleCount[actorId] = (cycleCount[actorId] ?? 0) + 1;
+        return createBudgetedProvider({
+          gate,
+          hooks: store,
+          requestConfig,
+          episodeId: `g05-${scenario.id.replace(/\//g, '-')}`,
+          actorId,
+          cycle: cycleCount[actorId],
+          inner: createHttpProvider({ ...config, enableThinking: true }),
+        });
+      },
       mode: 'live',
       thinking: true,
       timeoutMs,
       requestModel: config.model,
     });
     runs.push(run);
-    spent += Object.values(run.record.actors).reduce((s, a) => s + a.providerCalls, 0);
-    if (run.record.stopReason === 'interrupted') gateFailed = `transport failure in ${scenario.id}`;
-    else if (!run.scenarioPass) gateFailed = `behaviour failure in ${scenario.id}`;
+    store.saveEpisode(run.record); // immediately, pass or fail
+    if (run.record.stopReason === 'interrupted') {
+      stopped = gate.blocked > 0 ? `chat budget ${limit} exhausted in ${scenario.id}` : `transport failure in ${scenario.id}`;
+      store.markScenarioStatus(scenario.id, gate.blocked > 0 ? 'budget_blocked' : 'interrupted', stopped);
+    } else if (!run.scenarioPass) {
+      stopped = `behaviour failure in ${scenario.id}: ${run.issues.slice(0, 3).join('; ')}`;
+      store.markScenarioStatus(scenario.id, 'behaviour_failed', run.issues.join('; ') || undefined);
+    } else {
+      store.markScenarioStatus(scenario.id, 'passed');
+    }
   }
-  const summary = summarize(options.batchId, 'live', runs, notRun);
-  persist(options, 'live', runs, summary, notRun);
+  const summary = rebuildSummary(store.dir, options.batchId, 'live', { limit, spent: gate.spent, blocked: gate.blocked }, notRun, 1);
+  store.finalizeBatchFile(runs.map(r => r.record.episodeId), notRun);
+  store.writeSummary(summary);
+  store.writeDone({ batchId: options.batchId, stoppedReason: stopped, at: new Date().toISOString() });
   return {
     runs, summary, totalCalls: summary.totals.httpCalls, scenarioPass: summary.totals.scenarioPass,
-    ...(gateFailed !== null ? { aborted: gateFailed } : {}), health,
+    budget: { limit, spent: gate.spent, blocked: gate.blocked },
+    ...(stopped !== null ? { aborted: stopped } : {}),
+    health,
   };
 }
+
+export { BatchStoreError };

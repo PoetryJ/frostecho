@@ -1,12 +1,13 @@
 /**
  * G05 batch CLI.
  * Default: offline reference fixture (zero HTTP, all 12 trajectories).
- * --live uses the HTTP provider (bounded comparison, default cap 60 calls).
+ * --live uses the budgeted HTTP provider (per-request hard cap, default 60).
  * --verify settles an existing batch read-only.
  * Exit: 0 all scenario judges pass, 1 failure/interruption/budget stop,
- * 2 missing configuration / bad arguments.
+ * 2 missing configuration / bad arguments / batch name already exists.
+ * A live run must cover the ac chain (gate) — ca-only is rejected.
  */
-import { runFixtureBatch, runLiveBatch } from '../src/needs/eval';
+import { runFixtureBatch, runLiveBatch, BatchStoreError } from '../src/needs/eval';
 import { verifyNeedsBatch } from '../src/needs/record';
 
 interface CliArgs {
@@ -39,7 +40,12 @@ function parseArgs(argv: string[]): CliArgs {
     else { console.error(`unknown argument ${arg}`); process.exit(2); }
   }
   if (!args.batch) { console.error('--batch requires a value'); process.exit(2); }
-  if (args.maxTotalCalls !== undefined && !Number.isFinite(args.maxTotalCalls)) { console.error('--max-calls requires a number'); process.exit(2); }
+  if (args.maxTotalCalls !== undefined && (!Number.isFinite(args.maxTotalCalls) || args.maxTotalCalls < 0)) { console.error('--max-calls requires a non-negative number'); process.exit(2); }
+  if (args.timeoutMs !== undefined && (!Number.isFinite(args.timeoutMs) || args.timeoutMs <= 0)) { console.error('--timeout requires a positive number'); process.exit(2); }
+  if (args.live && args.chains !== undefined && !args.chains.includes('ac')) {
+    console.error('a live batch must include the ac chain (gate); ca-only is not allowed');
+    process.exit(2);
+  }
   return args;
 }
 
@@ -60,18 +66,25 @@ async function main(): Promise<void> {
     ...(args.timeoutMs !== undefined ? { timeoutMs: args.timeoutMs } : {}),
   };
   if (args.live) {
-    const result = await runLiveBatch({
-      ...options,
-      maxTotalCalls: args.maxTotalCalls ?? 60,
-    });
-    if (result.aborted !== undefined && result.runs.length === 0) {
-      console.error(`FAIL ${result.aborted}`);
-      process.exitCode = 2;
-      return;
+    let result;
+    try {
+      result = await runLiveBatch({ ...options, maxTotalCalls: args.maxTotalCalls ?? 60 });
+    } catch (err) {
+      if (err instanceof BatchStoreError) {
+        console.error(`batch ${args.batch} cannot be created: ${err.message} (no old byte was touched)`);
+        process.exitCode = 2;
+        return;
+      }
+      throw err;
     }
-    log(`${result.aborted === undefined ? 'PASS' : 'FAIL'} ${args.batch}: episodes=${result.summary.totals.episodes} scenarioPass=${result.scenarioPass} httpCalls=${result.totalCalls}${result.aborted !== undefined ? ` — ${result.aborted}` : ''}`);
-    if (result.health !== undefined) log(`  health: ${result.health.ok ? 'ok' : 'FAIL'} model=${result.health.expectedModel}`);
-    process.exitCode = result.aborted === undefined && result.scenarioPass === result.summary.totals.episodes ? 0 : 1;
+    const t = result.summary.totals;
+    log(`${result.aborted === undefined ? 'PASS' : 'FAIL'} ${args.batch}: episodes=${t.episodes} scenarioPass=${result.scenarioPass} httpCalls=${result.totalCalls}${result.aborted !== undefined ? ` — ${result.aborted}` : ''}`);
+    if (result.health !== undefined) log(`  health: ${result.health.ok ? 'ok' : 'FAIL'} model=${result.health.expectedModel} latency=${result.health.latencyMs}ms`);
+    if (result.budget !== undefined) {
+      log(`  budget: limit=${result.budget.limit} spent=${result.budget.spent} blocked=${result.budget.blocked}`);
+    }
+    log(`  costs: requests=${t.httpAttempts} unresolved=${t.unresolvedAttempts} blocked=${t.budgetBlocked} knownTokens=${t.knownTokenSum} usageUnknown=${t.usageUnknownCount} totalTokens=${t.totalTokens === null ? 'unknown' : t.totalTokens} latencySum=${result.summary.costs.latencyMsSum}ms`);
+    process.exitCode = result.aborted === undefined && result.scenarioPass === t.episodes ? 0 : 1;
     return;
   }
   const result = await runFixtureBatch(options);

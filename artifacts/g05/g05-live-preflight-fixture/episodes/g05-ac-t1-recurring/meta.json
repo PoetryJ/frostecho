@@ -1,0 +1,40 @@
+{
+  "schema": "frostecho.g05.game/2",
+  "episodeId": "g05-ac-t1-recurring",
+  "scenarioId": "ac/t1/recurring",
+  "wakePolicy": "event",
+  "mode": "reference",
+  "thinking": true,
+  "actorOrder": [
+    "npc_a",
+    "npc_c"
+  ],
+  "stopReason": "completed",
+  "commands": 6,
+  "events": 16,
+  "actors": {
+    "npc_a": {
+      "state": "satisfied",
+      "cycles": 3,
+      "providerCalls": 2,
+      "goalReached": true
+    },
+    "npc_c": {
+      "state": "satisfied",
+      "cycles": 3,
+      "providerCalls": 2,
+      "goalReached": true
+    }
+  },
+  "scenarioPass": true,
+  "idlePumps": {
+    "pumps": 0,
+    "callsBefore": 0,
+    "callsAfter": 0,
+    "cyclesBefore": 0,
+    "cyclesAfter": 0,
+    "actorStatesBefore": {},
+    "actorStatesAfter": {}
+  },
+  "needPolicy": "recurring"
+}
