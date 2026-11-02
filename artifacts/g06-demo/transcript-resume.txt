@@ -1,0 +1,22 @@
+G06 resumed g06-demo from artifacts/g06-demo/slots/between.g06.json (mode=reference, need=recurring) — no model call, no command replay
+commands: step | run | status | world advance <1-120> | world restock dorm|kitchen <1-10> | player move dorm|kitchen | player eat | save <slot> | need one-shot|recurring | quit
+>   npc_a: kitchen hunger=70 state=satisfied cycle=1 calls=0
+  npc_c: kitchen hunger=70 state=satisfied cycle=1 calls=0
+  simTime=0 food.kitchen=4 food.dorm=0 player=kitchen hunger=70 closed=false
+> [player accepted] g06-demo:player:npc_b:1
+  npc_a: kitchen hunger=70 state=satisfied cycle=1 calls=0
+  npc_c: kitchen hunger=70 state=satisfied cycle=1 calls=0
+  simTime=0 food.kitchen=4 food.dorm=0 player=dorm hunger=70 closed=false
+> [player accepted] g06-demo:player:npc_b:2
+  npc_a: kitchen hunger=70 state=satisfied cycle=1 calls=0
+  npc_c: kitchen hunger=70 state=satisfied cycle=1 calls=0
+  simTime=0 food.kitchen=4 food.dorm=0 player=kitchen hunger=70 closed=false
+> [player accepted] g06-demo:player:npc_b:3
+  npc_a: kitchen hunger=70 state=satisfied cycle=1 calls=0
+  npc_c: kitchen hunger=70 state=satisfied cycle=1 calls=0
+  simTime=0 food.kitchen=3 food.dorm=0 player=kitchen hunger=100 closed=false
+> [save ok] artifacts/g06-demo/slots/after.g06.json simTime=0 closed=false interrupted=false
+  npc_a: state=satisfied cycle=1 calls=0 hunger=70
+  npc_c: state=satisfied cycle=1 calls=0 hunger=70
+> saved artifacts/g06-demo/episodes2/g06-demo/episodes/g06-demo (stopReason=completed)
+[finalize quit] exit=0

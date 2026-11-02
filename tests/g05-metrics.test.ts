@@ -81,14 +81,27 @@ test('partial usage is still unknown unless it can be derived', () => {
   assert.equal(totals.totalTokens, null);
 });
 
-test('zero requests ⇒ all zero with a confident 0; an unresolved begin stays unresolved', () => {
+test('zero requests ⇒ all zero with a confident 0; an unresolved begin poisons the total', () => {
   const empty = sumAttempts({ begins: [], finishes: [], blocked: [] });
   assert.equal(empty.httpAttempts, 0);
   assert.equal(empty.totalTokens, 0);
-  const crashed = sumAttempts({ begins: [begin(1)], finishes: [], blocked: [] });
-  assert.equal(crashed.unresolvedAttempts, 1);
-  assert.equal(crashed.httpAttempts, 0, 'unresolved is not a confirmed response');
-  assert.equal(crashed.totalTokens, 0);
+  // G06 correction probes: an in-flight request that never finished has an
+  // unknown cost — the confident total must be null, never the known subtotal
+  // and never 0. knownTokens keeps whatever finished requests reported.
+  const zeroKnownOneUnresolved = sumAttempts({ begins: [begin(1)], finishes: [], blocked: [] });
+  assert.equal(zeroKnownOneUnresolved.unresolvedAttempts, 1);
+  assert.equal(zeroKnownOneUnresolved.httpAttempts, 0, 'unresolved is not a confirmed response');
+  assert.equal(zeroKnownOneUnresolved.knownTokenSum, 0);
+  assert.equal(zeroKnownOneUnresolved.totalTokens, null);
+  const elevenKnownOneUnresolved = sumAttempts({
+    begins: [begin(1), begin(2)],
+    finishes: [finish(1, 'success', U11)],
+    blocked: [],
+  });
+  assert.equal(elevenKnownOneUnresolved.unresolvedAttempts, 1);
+  assert.equal(elevenKnownOneUnresolved.knownTokenSum, 11);
+  assert.equal(elevenKnownOneUnresolved.usageUnknownCount, 0);
+  assert.equal(elevenKnownOneUnresolved.totalTokens, null, '11 known + 1 unresolved reports null, not 11');
 });
 
 test('denials and outcomes are separate counters', () => {

@@ -124,6 +124,12 @@ export interface RunOptions {
    */
   commandIdFor?(round: number): string;
   /**
+   * G06: declares the command-id formula in use so the session can be
+   * checkpointed. Required when a custom commandIdFor is passed; a custom
+   * formula without a scheme refuses export instead of guessing.
+   */
+  commandIdScheme?: 'run-round' | 'g06-episode-cycle';
+  /**
    * Test hook for the decision timeout. Default is setTimeout.
    * The returned cancel runs when the call settles. Ordering tests fire `fn`
    * themselves instead of sleeping.
@@ -191,6 +197,14 @@ export type SessionStatus =
   | 'provider_error'
   | 'invalid_run';
 
+/**
+ * G06: which command-id formula this session uses. 'g06-episode-cycle' is
+ * `${episodeId}:npc:${actorId}:${cycle}:${round}`; 'run-round' is the G01
+ * default `${runId}:${round}`. 'unknown' marks a custom commandIdFor without
+ * a declared scheme — such a session refuses to be checkpointed.
+ */
+export type CommandIdScheme = 'run-round' | 'g06-episode-cycle' | 'unknown';
+
 export interface DecidingPhase {
   round: number;
   observation: Observation;
@@ -216,6 +230,8 @@ export interface AgentSession {
   status: SessionStatus;
   providerCalls: number;
   readonly steps: readonly StepRecord[];
+  /** G06: the declared command-id formula ('unknown' = custom, not checkpointable). */
+  readonly commandIdScheme: CommandIdScheme;
   /** Replaces RunOptions.onDeciding. Scenarios set this before the step that must be interleaved. */
   onDeciding?: (info: DecidingPhase) => void | Promise<void>;
   /** Resolves immediately when a step is already inside decide. */
