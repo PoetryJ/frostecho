@@ -317,3 +317,31 @@ test('quit during an in-flight live request waits only the started request', asy
   }
 });
 
+
+test('live timeout precedence: --timeout beats env, env beats the 30s default', async () => {
+  // No chat request at all: status/quit only. The effective value must still be
+  // the one actually handed to the runner and recorded (G04-R1-TIMEOUT).
+  const fakeEnv = (timeout?: string): NodeJS.ProcessEnv => ({
+    FROSTECHO_LLM_URL: 'http://127.0.0.1:9/v1/chat/completions',
+    FROSTECHO_LLM_MODEL: 'unused-no-request',
+    ...(timeout === undefined ? { FROSTECHO_LIVE_TIMEOUT_MS: '' } : { FROSTECHO_LIVE_TIMEOUT_MS: timeout }),
+  });
+  const recorded = async (args: string[], env: NodeJS.ProcessEnv): Promise<number> => {
+    const run = await runCli(args, 'status\nquit\n', env);
+    assert.equal(run.code, 0, `${run.stdout}\n${run.stderr}`);
+    return readSaved(run.outDir).record.requestConfig.timeoutMs;
+  };
+  assert.equal(await recorded(['--live'], fakeEnv('120000')), 120_000, 'env override reaches the record');
+  assert.equal(await recorded(['--live', '--timeout', '45000'], fakeEnv('120000')), 45_000, 'explicit --timeout beats env');
+  assert.equal(await recorded(['--live'], fakeEnv()), 30_000, 'default is the 30s live decision timeout, not 15s');
+  assert.equal(await recorded(['--live'], fakeEnv('not-a-number')), 30_000, 'invalid env falls back to the default');
+  const invalid = await runCli(['--live', '--timeout', 'abc'], 'quit\n', fakeEnv());
+  assert.equal(invalid.code, 2, `${invalid.stdout}\n${invalid.stderr}`);
+  assert.ok(invalid.stderr.includes('--timeout'), invalid.stderr);
+});
+
+test('offline reference mode records the same effective timeout resolution', async () => {
+  const run = await runCli([], 'status\nquit\n', { FROSTECHO_LIVE_TIMEOUT_MS: '120000' });
+  assert.equal(run.code, 0, `${run.stdout}\n${run.stderr}`);
+  assert.equal(readSaved(run.outDir).record.requestConfig.timeoutMs, 120_000);
+});

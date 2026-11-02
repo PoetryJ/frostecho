@@ -14,6 +14,8 @@
  * 2 missing configuration.
  */
 import { createInterface } from 'node:readline/promises';
+import { LIVE_DECISION_TIMEOUT_MS } from '../src/agent/contracts';
+import { liveTimeoutMs } from '../src/agent/live-record';
 import { createHttpProvider, loadHttpConfigFromEnv } from '../src/agent/providers/http';
 import { createReferenceProvider } from '../src/agent/providers/reference';
 import type { Provider } from '../src/agent/contracts';
@@ -28,7 +30,8 @@ interface CliOptions {
   live: boolean;
   episode: string;
   out: string;
-  timeoutMs: number;
+  /** Explicit --timeout only; otherwise env override, then the 30s live default. */
+  timeoutMs?: number;
   policy: WakePolicy;
   order: 'ac' | 'ca';
 }
@@ -39,7 +42,6 @@ function parseArgs(argv: string[]): CliOptions {
     live: false,
     episode: `play-g04-${stamp}`,
     out: 'artifacts/g04-play',
-    timeoutMs: 15_000,
     policy: 'event',
     order: 'ac',
   };
@@ -60,14 +62,23 @@ function parseArgs(argv: string[]): CliOptions {
     } else { console.error(`unknown argument ${arg}`); process.exit(2); }
   }
   if (!options.episode) { console.error('--episode requires a value'); process.exit(2); }
-  if (!Number.isFinite(options.timeoutMs) || options.timeoutMs <= 0) { console.error('--timeout must be a positive number'); process.exit(2); }
+  if (options.timeoutMs !== undefined && (!Number.isFinite(options.timeoutMs) || options.timeoutMs <= 0)) {
+    console.error('--timeout must be a positive number');
+    process.exit(2);
+  }
   return options;
+}
+
+/** Effective live decision timeout: explicit --timeout > FROSTECHO_LIVE_TIMEOUT_MS > 30s. */
+export function effectiveTimeoutMs(options: CliOptions, env: NodeJS.ProcessEnv): number {
+  return options.timeoutMs ?? liveTimeoutMs(env, LIVE_DECISION_TIMEOUT_MS);
 }
 
 const USAGE = 'commands: step | run | status | player move dorm|kitchen | player eat | world restock dorm|kitchen <1-10> | quit';
 
 async function main(): Promise<void> {
   const options = parseArgs(process.argv.slice(2));
+  const timeoutMs = effectiveTimeoutMs(options, process.env);
   let providerFor: (actorId: string) => Provider;
   let mode: 'reference' | 'live' = 'reference';
   if (options.live) {
@@ -91,7 +102,7 @@ async function main(): Promise<void> {
     mode,
     thinking: G04_THINKING,
     wakePolicy: options.policy,
-    timeoutMs: options.timeoutMs,
+    timeoutMs,
   });
 
   console.log(`G04 episode ${options.episode} (${mode}, policy=${options.policy}, order=${options.order}) — you are npc_b`);
