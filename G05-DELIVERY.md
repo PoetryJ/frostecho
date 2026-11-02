@@ -1,36 +1,40 @@
-# FrostEcho G05 交付说明（needs loop）
+# FrostEcho G05-R1 交付说明（恢复冻结的需求循环契约）
 
 ## 1. 版本
 
-- 基线：`e2177b4`（G04 最终交付）
-- G04-R1 修复（`codex/g04-reactive-npcs` 分支）：`4dc0d36` close 同步闩锁；`c22f25f` play:g04 超时优先级 `--timeout > FROSTECHO_LIVE_TIMEOUT_MS > 30s`
-- G05 分支：`codex/g05-needs-loop`（基于 `c22f25f`）
-  - `3fc5e62` A+B：模拟时间/代谢 + needs 循环（never/one-shot/recurring、10 决策预算、expired 中断）
-  - `ede4a28` C：12 轨迹矩阵、批驱动与 G05 感知核验（顺带修复 G04 verify 的 LogEntry 嵌套结果读取 bug——只影响含被拒命令的记录，旧证据不受影响）
-  - `c2cca79` D：play:g05 交互 CLI 与子进程系统测试
+- G05-R1 实现：`f9949ae`（接续 `07195ee`，历史未回滚）
+- 目标契约：`handoff/20261102-g05-r1-contract/CONTRACTS.txt`；独立黑盒门槛 `golden-g05.cjs`
+- G04-R1（`c22f25f`，PR #6）不改动；G03/G04 三批旧证据 verify 复验全过
 
-## 2. 机制摘要
+## 2. 原偏离的根因与修复
 
-- `advance_time`：仅 world、整数 1..120 分钟、tick+1；每跨 10 分钟边界每 NPC `hunger+1`（钳 100，饱和静默）；`simTime` 为可选字段，pre-G05 记录 canonical 不变
-- needs：跨 30 分钟边界授予；`NEED_HUNGER_AT_LEAST=30` 门槛；每 actor 每周期至多一次；每 actor 同时至多一个未决 need；need 优先于自主 cycle 调度（含接管 active）；`NEED_DECISION_BUDGET=10` 内未吃到即 `expired` 并中断整局；吃到（eat accepted）即 `satisfied`
-- need cycle 豁免通用 `EPISODE_CALL_LIMIT`（记录核验按 cycle reason 分类）
+| 偏离（07195ee） | 契约 | 修复 |
+| --- | --- | --- |
+| `advance_time{minutes:1..120}`，每 10 分钟 +1 饱食 | `{steps:1..10}`，每 step 每 NPC（含玩家）饱食 **-10**、最低 0 | A：`rules.ts`/`types.ts` 重写，`TimeAdvanced{before,after,steps}`，单命令单 tick |
+| `initialWorld` 自动补 `simTime:0` | 旧存档不补写字段，缺省读 0 | A：撤销；G05 初始化器显式 0（41 项 artifacts 污染随之消除） |
+| 30 分钟 period 授予、need 抢占 active、10 决策预算 expired 中断、need cycle 豁免整局预算 | recurring 下仅 satisfied 且自身 hunger≤40 开新 cycle；≥70 完成；session5/actor10 无豁免不重置 | B：删 `scheduleNeeds`/`activeNeed`/豁免分支；`reconcile` 加 LOW 再激活；`pickReady` 加 goal 预检（初始 70 零调用） |
+| busy 时拒绝时间输入 | 模型在途可提交时间，执行读权威状态 | B：`worldAdvanceTime` 去掉 busy 拒绝（closed/interrupted 仍拒） |
+| 自编 12 场景（metab/expired），28 决策，8 条零调用不跑 run | T1/T2/T3 × ac/ca × 两策略，20 参考决策，零调用轨迹必须实际 run/pump | C：恢复冻结矩阵（T2 实际 100 次 notify/pump，cycle 计数前后一致）；`g05.game/2` schema + checkpoints 记录 |
+| play:g05 provider thinking=true 但 metadata false；`time <minutes>`；never 第三臂 | 配置来源统一；`world advance <steps>`；one-shot/recurring | D：CLI 修正，跨平台保存断言（真实文件 + child close 收齐输出） |
 
-## 3. 轨迹矩阵与证据
+## 3. 验收结果
 
-- 12 条轨迹（ac/ca 两链镜像）：8 条零调用（never 代谢×3、advance 拒绝、restock 静默）+ 4 条需模型（one-shot feed-loop ×2、recurring expired ×2）
-- fixture 批 `g05-fixture-20261102-r1`：12/12 PASS，28 参考决策，0 HTTP；`node dist/scripts/eval-g05.js --verify --batch g05-fixture-20261102-r1` 通过
-- live 批：**未执行**。两次健康探测（间隔 20s）均 `ECONNREFUSED 127.0.0.1:18872`，端口无监听；按执行包"健康预检失败则完成离线交付并报告 live 未验证，不重启服务"，未产生任何 chat 请求（0/60 预算消耗）
+- 全量测试：**214/214**（替换错误规则断言，保留 G04-R1 及有效回归；数量非目标）
+- 独立黑盒 `golden-g05.cjs`：**12/12**（红灯基线 `evidence/golden-red-r0.json` 0/12 → `evidence/golden-green-r1.json` 12/12）
+- 正式 fixture 批 `artifacts/g05/g05-r1-fixture-20261102`：**12/12、20 参考决策、0 HTTP**；`eval-g05 --verify` 只读核验通过（checkpoint 重放、调用重算、预算、伪达标/篡改拒绝）
+- fakeHTTP 矩阵：实测 **20 请求**、逐请求配置（model/temperature0/max_tokens1024/stream=false/enable_thinking=true）与元信息一致、并发 ≤1、health 预检失败即停、HTTP500 中断落盘
+- G03/G04 旧批 verify：全过；测试输出用临时目录，版本化 artifacts 仅 `demo-output.txt` 的规则常量表合理更新
 
-## 4. 复跑
+## 4. live：未验证
 
-- 测试：`npm test`（199/199，含 G05 矩阵离线系统测试与 CLI 子进程测试）
-- fixture：`npm run eval:g05 -- --batch <批名>`（默认 reference，零 HTTP）
-- 只读核验：`node dist/scripts/eval-g05.js --verify --batch <批名>`
-- live（服务可用时）：`FROSTECHO_LLM_URL=http://127.0.0.1:18872/v1/chat/completions FROSTECHO_LLM_MODEL=qwen3.8-27b FROSTECHO_LIVE_TIMEOUT_MS=120000 node dist/scripts/eval-g05.js --live --chain ac --batch <批名>`；ac 六条全过再 `--chain ca`；默认 `--max-calls 60`
-- 交互：`npm run play:g05 -- [--need never|one-shot|recurring] [--order ac|ca]`
+- 2026-11-02 探测 `http://127.0.0.1:18872/v1/models` 连接拒绝（curl 7），本轮 **0 次真实模型调用**
+- 按执行包交 `offline_ready / live_unverified`；不重启共享 GPU 服务
+- 服务恢复后复跑：`FROSTECHO_LLM_URL=http://127.0.0.1:18872/v1/chat/completions FROSTECHO_LLM_MODEL=qwen3.8-27b FROSTECHO_LIVE_TIMEOUT_MS=120000 node dist/scripts/eval-g05.js --live --batch <新批名>`（ac 六条门控通过再 ca；60 次 chat 硬预算，预期 20 请求）
 
-## 5. 未证明
+## 5. 旧偏离批处理
 
-- G05 live 对照（endpoint 不可达，0 请求；fixture 已覆盖全部 12 轨迹判定与核验）
-- 更长时程（>120 分钟/局）与多 NPC（>2）下的 need 行为
-- 30s 默认超时稳定性（沿 G04 结论，正式批仍显式 120s）
+- `artifacts/g05/g05-fixture-20261102-r1`（schema g05/1、28 决策）原样保留，标记 **out_of_contract**，不作为成功对照；新核验拒绝其 schema
+
+## 6. 未证明
+
+- live 真实模型行为（服务不可用）；>2 actor / 无限生存 / 更多 NPC；30s 默认超时稳定性（正式实验显式 120s）；Windows 实机（跨平台断言已按路径 join 与真实文件修正）
