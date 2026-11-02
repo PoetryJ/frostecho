@@ -7,11 +7,13 @@
  * frozen expectations. A record whose saved scenarioPass disagrees with the
  * recomputed verdict fails.
  */
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { G05_BATCH_SCHEMA, G05_SCHEMA } from '../reactive/contracts';
 import { verifyReactiveEpisode, writeReactiveEpisode } from '../reactive/record';
 import { replay } from '../engine';
+import { readAttemptLedger } from './batch-store';
+import { sumAttempts } from './metrics';
 import type { G05ScenarioRecord, G05Checkpoint } from './scenarios';
 
 export function saveNeedsEpisode(artifactsRoot: string, batch: string, record: G05ScenarioRecord): string {
@@ -44,9 +46,14 @@ export function verifyNeedsSemantics(record: G05ScenarioRecord): string[] {
   if (init.food.dorm !== 0) issues.push('initial dorm food != 0');
 
   let pass = true;
+  // WORKER-C live judging: a model trajectory may legally spend fewer/more
+  // decisions than the reference where the reference spent some; checkpoints
+  // that must be zero-call stay strictly zero in every mode.
+  const liveLooseCalls = record.mode === 'live';
   for (const cp of record.checkpoints ?? []) {
     issues.push(...verifyCheckpoint(record, cp, events, turns));
     for (const [key, value] of Object.entries(cp.expected)) {
+      if (liveLooseCalls && key === 'calls' && value > 0) continue;
       if (cp.actual[key as keyof typeof cp.actual] !== value) pass = false;
     }
   }
@@ -107,6 +114,15 @@ export interface NeedsVerifyResult {
   issues: string[];
   episodes: number;
   httpCalls: number;
+  /** Present when the batch carries a live plan: ledger cross-checks. */
+  costs?: {
+    httpAttempts: number;
+    unresolvedAttempts: number;
+    budgetBlocked: number;
+    knownTokenSum: number;
+    usageUnknownCount: number;
+    totalTokens: number | null;
+  };
 }
 
 interface NeedsBatchFile {
@@ -116,7 +132,17 @@ interface NeedsBatchFile {
 }
 
 interface NeedsSummaryFile {
-  totals: { episodes: number; httpCalls: number; scenarioPass: number };
+  totals: {
+    episodes: number;
+    httpCalls: number;
+    scenarioPass: number;
+    httpAttempts?: number;
+    unresolvedAttempts?: number;
+    budgetBlocked?: number;
+    knownTokenSum?: number;
+    usageUnknownCount?: number;
+    totalTokens?: number | null;
+  };
 }
 
 export function verifyNeedsBatch(batchDir: string): NeedsVerifyResult {
@@ -145,5 +171,39 @@ export function verifyNeedsBatch(batchDir: string): NeedsVerifyResult {
   if (summary.totals.episodes !== batch.episodes.length) issues.push('summary episodes mismatch');
   if (summary.totals.httpCalls !== httpCalls) issues.push(`summary httpCalls ${summary.totals.httpCalls} != ${httpCalls}`);
   if (summary.totals.scenarioPass !== scenarioPass) issues.push(`summary scenarioPass ${summary.totals.scenarioPass} != ${scenarioPass}`);
-  return { ok: issues.length === 0, issues, episodes: batch.episodes.length, httpCalls };
+  // G05-live batches: cross-check the durable attempt ledger. Requests counted
+  // from transports must equal finished attempts; unresolved begins (crash
+  // during a request) and local denials are reported, never silently dropped.
+  let costs: NeedsVerifyResult['costs'];
+  if (existsSync(join(batchDir, 'plan.json'))) {
+    const ledger = readAttemptLedger(batchDir);
+    const summed = sumAttempts(ledger);
+    costs = {
+      httpAttempts: summed.httpAttempts,
+      unresolvedAttempts: summed.unresolvedAttempts,
+      budgetBlocked: summed.budgetBlocked,
+      knownTokenSum: summed.knownTokenSum,
+      usageUnknownCount: summed.usageUnknownCount,
+      totalTokens: summed.totalTokens,
+    };
+    if (summed.httpAttempts !== httpCalls) {
+      issues.push(`attempt ledger has ${summed.httpAttempts} finished requests != ${httpCalls} recorded transports`);
+    }
+    if (summary.totals.httpAttempts !== undefined && summary.totals.httpAttempts !== summed.httpAttempts) {
+      issues.push(`summary httpAttempts ${String(summary.totals.httpAttempts)} != ledger ${summed.httpAttempts}`);
+    }
+    if (summary.totals.budgetBlocked !== undefined && summary.totals.budgetBlocked !== summed.budgetBlocked) {
+      issues.push(`summary budgetBlocked ${String(summary.totals.budgetBlocked)} != ledger ${summed.budgetBlocked}`);
+    }
+    if (summary.totals.knownTokenSum !== undefined && summary.totals.knownTokenSum !== summed.knownTokenSum) {
+      issues.push(`summary knownTokenSum ${String(summary.totals.knownTokenSum)} != ledger ${summed.knownTokenSum}`);
+    }
+    if (summary.totals.usageUnknownCount !== undefined && summary.totals.usageUnknownCount !== summed.usageUnknownCount) {
+      issues.push(`summary usageUnknownCount ${String(summary.totals.usageUnknownCount)} != ledger ${summed.usageUnknownCount}`);
+    }
+    if (summed.unresolvedAttempts > 0) {
+      issues.push(`${summed.unresolvedAttempts} attempt(s) began without a finish (unresolved; slot conservatively spent)`);
+    }
+  }
+  return { ok: issues.length === 0, issues, episodes: batch.episodes.length, httpCalls, ...(costs !== undefined ? { costs } : {}) };
 }

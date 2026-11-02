@@ -144,7 +144,15 @@ export async function runScenario(scenario: G05Scenario, options: RunScenarioOpt
       calls: Object.values(record.actors).reduce((s, actor) => s + actor.providerCalls, 0),
     };
     const exp = label === 'initial' ? { simTime: 0, a: 70, b: 70, c: 70, calls: 0 } : expected[label];
+    // Live judging (WORKER-C): model trajectories are judged by fixed checkpoint
+    // end states, legality, local observations and the 5/10 budgets — the
+    // reference call count is not required to match. Every checkpoint whose
+    // expectation is zero calls (all of T2/one-shot, the initial check, the
+    // empty/waiting stages) stays strictly zero: an unexpected request there is
+    // still a failure.
+    const liveAllowsExtraCalls = options.mode === 'live' && (exp.calls ?? 0) > 0;
     for (const [key, value] of Object.entries(exp)) {
+      if (liveAllowsExtraCalls && key === 'calls') continue;
       if (actual[key as keyof CheckpointView] !== value) {
         issues.push(`${label}.${key}: ${actual[key as keyof CheckpointView]} != ${value}`);
       }

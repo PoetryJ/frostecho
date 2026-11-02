@@ -98,7 +98,7 @@ test('fakeHTTP: the full matrix spends exactly 20 requests with frozen per-reque
     assert.equal(result.scenarioPass, 12, result.runs.filter(r => !r.scenarioPass).map(r => `${r.scenario.id}: ${r.issues.join('; ')}`).join(' | '));
     assert.equal(fake.seen.length, 20, `the matrix must cost exactly 20 chat requests, got ${fake.seen.length}`);
     assert.equal(result.summary.totals.httpCalls, 20);
-    assert.equal(result.summary.totals.referenceDecisions, 20);
+    assert.equal(result.summary.totals.decisionAttempts, 20, 'decision attempts come from the saved episode records');
     assert.ok(fake.maxInFlight() <= 1, 'at most one request in flight');
     for (const { body } of fake.seen) {
       assert.equal(body.model, model);
