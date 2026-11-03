@@ -37,7 +37,7 @@ import {
 import {
   G08_HARD_CHAT_LIMIT, G08_PLAN, G08_PLAN_SCHEMA, G08_SUMMARY_SCHEMA, G08_SCENARIO_TEXT,
   G08_EPISODE_SCHEMA,
-  stripG08PromptData, verifyG08Batch,
+  stripG08PromptData, verifyG08Batch, verifyG08Prefix,
   type G08Behavior, type G08EpisodeRecord, type G08ParseOutcome, type G08PlanEntry,
   type G08VerifyResult,
 } from './g08-eval-lib';
@@ -491,15 +491,18 @@ export async function runG08Batch(options: G08RunOptions): Promise<G08RunResult>
     // The first legacy off/on pair is the structural gate: prove the wiring
     // and the shared template before spending the remaining six requests.
     if (entry.index === 2) {
-      const gateResult = verifyG08Batch(store.dir);
+      // Independent prefix scope: only the first legacy off/on pair is proven
+      // here; zero completed episodes can never pass this gate.
+      const gateResult = verifyG08Prefix(store.dir);
       log(`structural gate ${gateResult.ok ? 'ok' : `failed: ${[...gateResult.issues, ...gateResult.configurationIssues].join('; ')}`}`);
-      if (!gateResult.ok) fatal = `structural gate failed: ${[...gateResult.issues, ...gateResult.configurationIssues].join('; ')}`;
+      if (!gateResult.evidenceOk) fatal = `structural gate failed: ${[...gateResult.issues, ...gateResult.configurationIssues].join('; ')}`;
     }
   }
 
   const verify = verifyG08Batch(store.dir);
   store.writeJson('summary.json', buildG08Summary(store.dir, options.batchId, options.mode, options.model, version, limit, gate, fatal, verify));
-  const exitCode = verify.stats.completed === G08_PLAN.length && verify.ok ? 0 : 1;
+  // 0 only for a complete, self-consistent 8/8 batch.
+  const exitCode = verify.runSucceeded ? 0 : 1;
   log(`completed=${verify.stats.completed} failed=${verify.stats.failed} notRun=${verify.stats.notRun} spent=${gate.spent}/${limit}${fatal === null ? '' : ` fatal=${fatal}`}`);
   return { batchDir: store.dir, exitCode, verify };
 }

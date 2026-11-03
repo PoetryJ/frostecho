@@ -311,9 +311,12 @@ test('a transport failure stops the batch: no retry, the rest stay not_run, veri
       return body.status === 'not_run';
     });
     assert.equal(notRun.length, 5);
-    // verify.ok is evidence correctness, not completeness: the failure itself
-    // is reported through stats/exitCode, and its evidence must still be true.
-    assert.equal(result.verify.ok, true);
+    // G08-R1: an incomplete batch is never "ok" (ok = evidenceOk && complete),
+    // but the evidence that DOES exist must still be self-consistent.
+    assert.equal(result.verify.ok, false);
+    assert.equal(result.verify.complete, false);
+    assert.equal(result.verify.runSucceeded, false);
+    assert.equal(result.verify.evidenceOk, true);
     assert.equal(result.verify.stats.failed, 1);
     assert.notEqual(result.exitCode, 0);
   } finally {
@@ -343,7 +346,7 @@ test('the hard budget stops the batch mid-matrix and the blocked attempts are re
 
 test('verifyG08Batch re-reads a finished batch from disk and stays read-only', async () => {
   const root = tempRoot();
-  const server = await startServer({ content: '{"type":"wait"}' });
+  const server = await startServer({ perAxis: true });
   try {
     await runG08Batch(batchOptions(server.url, root, 'b5'));
     const dir = join(root, 'b5');
@@ -351,6 +354,8 @@ test('verifyG08Batch re-reads a finished batch from disk and stays read-only', a
     const first = verifyG08Batch(dir);
     const second = verifyG08Batch(dir);
     assert.equal(first.ok, true);
+    assert.equal(first.complete, true);
+    assert.equal(first.runSucceeded, true);
     assert.equal(second.ok, true);
     assert.deepEqual(second.stats.cells, first.stats.cells);
     assert.equal(dirFingerprint(dir), before);

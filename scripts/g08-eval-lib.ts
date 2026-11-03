@@ -21,7 +21,9 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { MessageMode } from '../src/communication/contracts';
 import type { ReactiveRecord } from '../src/reactive/contracts';
-import { RULES, type Location } from '../src/types';
+import { RULES, type Location, type WorldState } from '../src/types';
+import { replay } from '../src/engine';
+import { HTTP_SAMPLING } from '../src/agent/providers/http';
 import type { ActionSet } from '../src/temporal/contracts';
 import { G08_EPISODE_SCHEMA, G08_PLAN_SCHEMA, G08_SUMMARY_SCHEMA } from '../src/temporal/contracts';
 import type { AttemptRequestConfig } from '../src/needs/live-contracts';
@@ -214,8 +216,39 @@ function jsonFilesIn(dir: string): string[] {
   return readdirSync(dir).filter(name => name.endsWith('.json')).sort();
 }
 
+/** Key-sorted JSON so two structurally equal worlds compare equal. */
+function canonicalJson(value: unknown): string {
+  const walk = (v: unknown): unknown => {
+    if (Array.isArray(v)) return v.map(walk);
+    if (v !== null && typeof v === 'object') {
+      const src = v as Record<string, unknown>;
+      return Object.fromEntries(Object.keys(src).sort().map(k => [k, walk(src[k])]));
+    }
+    return v;
+  };
+  return JSON.stringify(walk(value));
+}
+
+/** The model's raw content inside a captured chat response, or null. */
+function responseContent(raw: unknown): string | null {
+  if (typeof raw !== 'string') return null;
+  try {
+    const parsed = JSON.parse(raw) as { choices?: { message?: { content?: unknown } }[] };
+    const content = parsed.choices?.[0]?.message?.content;
+    return typeof content === 'string' ? content : null;
+  } catch {
+    return null;
+  }
+}
+
 export interface G08VerifyResult {
+  /** Evidence is complete AND self-consistent: 8/8 + zero issues. */
   ok: boolean;
+  /** The recomputed evidence carries no issue at all. */
+  evidenceOk: boolean;
+  /** Every planned episode completed on disk. */
+  complete: boolean;
+  runSucceeded: boolean;
   issues: string[];
   configurationIssues: string[];
   behaviorAndCostOk: boolean;
@@ -243,23 +276,40 @@ export interface G08VerifyResult {
 }
 
 /**
- * Read-only cross-check of a finished G08 batch: plan order, per-episode
- * prompt axis (allowedActions / wait line / playerMessages), one chat request
- * per completed episode, timeout wiring at every layer, wait deadline = 1 at
- * simTime 0, template identity across all arms, and the frozen sampling.
- * Never re-runs the model and never rewrites evidence.
+ * G08-R1 read-only verifier. Everything below is recomputed from the raw
+ * materials on disk (HTTP request/response bodies, the session raw, the
+ * command/event log, the attempt ledger) — recorded flags such as
+ * behavior/replayMatches/summary are never trusted. A batch is accepted only
+ * when the evidence is complete (all planned episodes present) and every
+ * recomputation agrees. Never re-runs the model and never writes.
+ *
+ * `entries` defaults to the full frozen matrix; the structural gate passes the
+ * first two entries explicitly (independent prefix scope).
  */
-export function verifyG08Batch(batchDir: string): G08VerifyResult {
+export function verifyG08Batch(batchDir: string, entries: readonly G08PlanEntry[] = G08_PLAN): G08VerifyResult {
   const issues: string[] = [];
   const configurationIssues: string[] = [];
+  try {
+    return verifyInner(batchDir, entries, issues, configurationIssues);
+  } catch (error) {
+    // A broken/tampered/unknown JSON structure is a named finding, never an
+    // unclassified exception.
+    issues.push(`verifier could not process the evidence: ${error instanceof Error ? error.message : String(error)}`);
+    return settle(entries, [], issues, configurationIssues, 0, null);
+  }
+}
+
+function verifyInner(
+  batchDir: string,
+  entries: readonly G08PlanEntry[],
+  issues: string[],
+  configurationIssues: string[],
+): G08VerifyResult {
   const planPath = join(batchDir, 'plan.json');
   const summaryPath = join(batchDir, 'summary.json');
   if (!existsSync(planPath)) {
-    return {
-      ok: false, issues: ['plan.json is missing'], configurationIssues,
-      behaviorAndCostOk: false, configurationConsistent: false,
-      stats: { planned: G08_PLAN.length, completed: 0, failed: 0, notRun: G08_PLAN.length, chatRequests: 0, mode: null, cells: [] },
-    };
+    issues.push('plan.json is missing');
+    return settle(entries, [], issues, configurationIssues, 0, null);
   }
   const plan = readJson<Record<string, unknown>>(planPath);
   const summary = existsSync(summaryPath) ? readJson<{ schema?: string; mode?: string }>(summaryPath) : null;
@@ -272,12 +322,17 @@ export function verifyG08Batch(batchDir: string): G08VerifyResult {
   if (plan.scenarios !== undefined && plan.scenarios !== G08_SCENARIO_TEXT) {
     issues.push('the scenario text is not the frozen S1');
   }
+  const planModel = typeof plan.model === 'string' ? plan.model : null;
 
   const episodes = new Map<string, G08EpisodeRecord>();
-  const episodeDir = join(batchDir, 'episodes');
-  for (const name of jsonFilesIn(episodeDir)) {
-    const record = readJson<G08EpisodeRecord>(join(episodeDir, name));
-    episodes.set(record.plan.episodeId, record);
+  for (const name of jsonFilesIn(join(batchDir, 'episodes'))) {
+    const record = readJson<G08EpisodeRecord>(join(batchDir, 'episodes', name));
+    const id = record?.plan?.episodeId;
+    if (typeof id !== 'string') {
+      issues.push(`episode file ${name} carries no plan.episodeId`);
+      continue;
+    }
+    episodes.set(id, record);
   }
   const statuses = new Map<string, G07EpisodeStatusFile>();
   for (const name of jsonFilesIn(join(batchDir, 'status'))) {
@@ -304,9 +359,9 @@ export function verifyG08Batch(batchDir: string): G08VerifyResult {
 
   const templates = new Set<string>();
   const cells: G08VerifyResult['stats']['cells'] = [];
-  for (const entry of G08_PLAN) {
+  let completed = 0;
+  for (const entry of entries) {
     const record = episodes.get(entry.episodeId) ?? null;
-    const status = statuses.get(entry.episodeId) ?? null;
     if (record === null) {
       cells.push({
         episodeId: entry.episodeId, actionSet: entry.actionSet, arm: entry.arm,
@@ -325,11 +380,43 @@ export function verifyG08Batch(batchDir: string): G08VerifyResult {
       configurationIssues.push(`${entry.episodeId}: requestConfig timeout ${record.requestConfig.timeoutMs} is not ${G07_TIMEOUT_MS}`);
     }
 
+    const snapshot = record.snapshot as ReactiveRecord | undefined;
+    if (snapshot === undefined || typeof snapshot !== 'object') {
+      issues.push(`${entry.episodeId}: the record embeds no usable snapshot`);
+      cells.push({
+        episodeId: entry.episodeId, actionSet: entry.actionSet, arm: entry.arm,
+        outcome: record.outcome, npcAction: null, npcAte: null, playerAte: null,
+        waitAccepted: false, wakeAtSimTime: null, totalTokens: null,
+      });
+      continue;
+    }
+    // The frozen sampling must be visible in the captured request itself.
+    const body = record.http[0]?.request?.body as Record<string, unknown> | undefined;
+    if (body !== undefined && body !== null) {
+      if (body.model !== planModel) {
+        configurationIssues.push(`${entry.episodeId}: request body model ${JSON.stringify(body.model)} is not the planned ${JSON.stringify(planModel)}`);
+      }
+      const kwargs = body.chat_template_kwargs as { enable_thinking?: unknown } | undefined;
+      if (kwargs?.enable_thinking !== HTTP_SAMPLING.chat_template_kwargs.enable_thinking) {
+        configurationIssues.push(`${entry.episodeId}: request body enable_thinking ${JSON.stringify(kwargs?.enable_thinking)} is not ${HTTP_SAMPLING.chat_template_kwargs.enable_thinking}`);
+      }
+      if (body.temperature !== HTTP_SAMPLING.temperature) {
+        configurationIssues.push(`${entry.episodeId}: request body temperature ${JSON.stringify(body.temperature)} is not ${HTTP_SAMPLING.temperature}`);
+      }
+      if (body.max_tokens !== HTTP_SAMPLING.max_tokens) {
+        configurationIssues.push(`${entry.episodeId}: request body max_tokens ${JSON.stringify(body.max_tokens)} is not ${HTTP_SAMPLING.max_tokens}`);
+      }
+      if (body.stream !== HTTP_SAMPLING.stream) {
+        configurationIssues.push(`${entry.episodeId}: request body stream ${JSON.stringify(body.stream)} is not ${HTTP_SAMPLING.stream}`);
+      }
+    }
+
     // Prompt evidence: the capability axis must be visible in the real request.
-    const promptText = record.http[0]?.request.body.messages !== undefined
+    const promptText = record.http[0]?.request?.body?.messages !== undefined
       ? String(((record.http[0].request.body.messages as { content?: string }[])[0]?.content) ?? '')
       : '';
     if (record.outcome === 'completed') {
+      completed += 1;
       for (const issue of promptIssuesFor(entry, promptText === '' ? null : promptText)) {
         issues.push(`${entry.episodeId}: ${issue}`);
       }
@@ -337,28 +424,60 @@ export function verifyG08Batch(batchDir: string): G08VerifyResult {
       if (record.http.length !== 1) {
         issues.push(`${entry.episodeId}: expected exactly 1 chat request, found ${record.http.length}`);
       }
-      const usage = /"total_tokens"\s*:\s*(\d+)/.exec(record.http[0]?.response.raw ?? '');
-      if (usage === null) issues.push(`${entry.episodeId}: the response carries no token usage`);
+      // One attempt per completed episode: the ledger and the HTTP trail must
+      // be a 1:1 pair (a deleted ledger cannot pass by moving the goalposts).
+      const ownAttemptId = record.attempts[0]?.attemptId;
+      const beginIds = begins.map(name => (readJson<Record<string, unknown>>(join(attemptDir, name)).attemptId as unknown));
+      const finishIds = finishes.map(name => (readJson<Record<string, unknown>>(join(attemptDir, name)).attemptId as unknown));
+      if (record.attempts.length !== 1
+        || !beginIds.includes(ownAttemptId)
+        || !finishIds.includes(ownAttemptId)) {
+        issues.push(`${entry.episodeId}: expected exactly 1 attempt begin/finish pair for ${JSON.stringify(ownAttemptId ?? null)}, found ${record.attempts.length} attempts on the episode record`);
+      }
+      // The action must be re-derivable from the RAW response, not the flags.
+      const rawContent = responseContent(record.http[0]?.response?.raw);
+      if (rawContent === null) {
+        issues.push(`${entry.episodeId}: the captured response carries no parseable raw content`);
+      } else if (canonicalJson(strictG08Action(rawContent)) !== canonicalJson(record.behavior?.npcAction ?? null)) {
+        issues.push(`${entry.episodeId}: re-parsing the raw response does not reproduce the recorded action`);
+      }
+      // The world must be reachable from the recorded initial state, and the
+      // final state must be the one the engine rebuilds (impossible worlds).
+      const initialWorld = snapshot.initialState as WorldState | undefined;
+      const finalWorld = snapshot.finalState as WorldState | undefined;
+      if (initialWorld === undefined || finalWorld === undefined) {
+        issues.push(`${entry.episodeId}: the snapshot has no initialState/finalState pair`);
+      } else if (canonicalJson(replay(initialWorld, snapshot.events ?? [])) !== canonicalJson(finalWorld)) {
+        issues.push(`${entry.episodeId}: replaying the recorded events does not rebuild the final state`);
+      }
+      if (snapshot.requestConfig?.timeoutMs !== G07_TIMEOUT_MS) {
+        configurationIssues.push(`${entry.episodeId}: snapshot requestConfig timeout ${String(snapshot.requestConfig?.timeoutMs ?? null)} is not ${G07_TIMEOUT_MS}`);
+      }
+      if (record.replayMatches !== true) {
+        issues.push(`${entry.episodeId}: the engine replay flag is false`);
+      }
       const decision = record.decision as G07Decision | null;
       if (decision === null || decision.providerCalls !== 1) {
         issues.push(`${entry.episodeId}: provider accounting does not show exactly 1 call`);
       }
-      if (record.replayMatches !== true) {
-        issues.push(`${entry.episodeId}: the engine replay does not match the recorded commands`);
-      }
-      if (record.behavior !== null) {
-        const behavior = record.behavior;
+      const usage = (() => {
+        try {
+          const parsed = JSON.parse(record.http[0]?.response?.raw ?? '{}') as { usage?: { total_tokens?: unknown } };
+          return typeof parsed.usage?.total_tokens === 'number' ? parsed.usage.total_tokens : null;
+        } catch {
+          return null;
+        }
+      })();
+      const behavior = record.behavior;
+      if (behavior !== null) {
         if (behavior.actionSet !== entry.actionSet) {
           issues.push(`${entry.episodeId}: behavior actionSet does not match the plan`);
         }
         if (behavior.wait.accepted && entry.actionSet !== 'timed_wait') {
           issues.push(`${entry.episodeId}: wait was accepted on the legacy axis`);
         }
-        if (behavior.wait.accepted) {
-          // The frozen start is simTime 0, so the deadline is exactly 1.
-          if (behavior.wait.wakeAtSimTime !== 1) {
-            issues.push(`${entry.episodeId}: wait deadline ${String(behavior.wait.wakeAtSimTime)} is not simTime 0 + 1`);
-          }
+        if (behavior.wait.accepted && behavior.wait.wakeAtSimTime !== 1) {
+          issues.push(`${entry.episodeId}: wait deadline ${String(behavior.wait.wakeAtSimTime)} is not simTime 0 + 1`);
         }
         cells.push({
           episodeId: entry.episodeId, actionSet: entry.actionSet, arm: entry.arm,
@@ -370,7 +489,7 @@ export function verifyG08Batch(batchDir: string): G08VerifyResult {
           playerAte: behavior.playerEatCommand?.status === 'accepted',
           waitAccepted: behavior.wait.accepted,
           wakeAtSimTime: behavior.wait.wakeAtSimTime,
-          totalTokens: usage === null ? null : Number(usage[1]),
+          totalTokens: usage,
         });
         continue;
       }
@@ -382,23 +501,55 @@ export function verifyG08Batch(batchDir: string): G08VerifyResult {
     });
   }
 
+  // A completed episode must have consumed a ledger entry; a failed transport
+  // attempt legitimately leaves a begin without a matching completed episode.
+  if (begins.length < completed) {
+    issues.push(`the ledger has ${begins.length} attempt begins for ${completed} completed episodes (a missing ledger)`);
+  }
   if (templates.size > 1) {
     issues.push(`the ${templates.size} arms do not share one G08 template (after stripping the axis data lines)`);
   }
-
   if (summary !== null && summary.schema !== G08_SUMMARY_SCHEMA) {
-    // The G08 summary reuses the G07 shape; a foreign schema is a finding, not a crash.
     configurationIssues.push(`summary schema ${String(summary.schema)} is not the expected ${G08_SUMMARY_SCHEMA}`);
   }
 
-  const completed = cells.filter(c => c.outcome === 'completed').length;
-  const failed = cells.filter(c => c.outcome !== 'completed' && c.outcome !== 'not_run').length;
-  const notRun = cells.filter(c => c.outcome === 'not_run').length;
+  return settle(entries, cells, issues, configurationIssues, chatRequests, summary?.mode ?? null);
+}
+
+function settle(
+  entries: readonly G08PlanEntry[],
+  cells: G08VerifyResult['stats']['cells'],
+  issues: string[],
+  configurationIssues: string[],
+  chatRequests: number,
+  mode: string | null,
+): G08VerifyResult {
+  const byId = new Map(cells.map(cell => [cell.episodeId, cell]));
+  const full: G08VerifyResult['stats']['cells'] = entries.map(entry => byId.get(entry.episodeId) ?? {
+    episodeId: entry.episodeId, actionSet: entry.actionSet, arm: entry.arm,
+    outcome: 'not_run', npcAction: null, npcAte: null, playerAte: null,
+    waitAccepted: false, wakeAtSimTime: null, totalTokens: null,
+  });
+  const completed = full.filter(c => c.outcome === 'completed').length;
+  const failed = full.filter(c => c.outcome !== 'completed' && c.outcome !== 'not_run').length;
+  const notRun = full.filter(c => c.outcome === 'not_run').length;
   const behaviorAndCostOk = issues.length === 0;
   const configurationConsistent = configurationIssues.length === 0;
+  const evidenceOk = behaviorAndCostOk && configurationConsistent;
+  // An empty/incomplete batch can never count as success.
+  const complete = completed === entries.length;
+  const runSucceeded = evidenceOk && complete;
   return {
-    ok: behaviorAndCostOk && configurationConsistent,
+    ok: runSucceeded, evidenceOk, complete, runSucceeded,
     issues, configurationIssues, behaviorAndCostOk, configurationConsistent,
-    stats: { planned: G08_PLAN.length, completed, failed, notRun, chatRequests, mode: summary?.mode ?? null, cells },
+    stats: { planned: entries.length, completed, failed, notRun, chatRequests, mode, cells: full },
   };
+}
+
+/**
+ * Independent prefix scope for the structural gate: verify ONLY the first two
+ * frozen entries. Zero completed episodes never passes (complete=false).
+ */
+export function verifyG08Prefix(batchDir: string): G08VerifyResult {
+  return verifyG08Batch(batchDir, G08_PLAN.slice(0, 2));
 }
