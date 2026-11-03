@@ -617,6 +617,12 @@ export class ReactiveGameImpl implements ReactiveGame {
       wakePolicy: this.wakePolicy,
       mode: this.mode,
       thinking: this.thinking,
+      // G08-R1: the record carries the same effective configuration the
+      // envelope saves — one source, cross-checked at save and restore.
+      ...(this.actionSet !== undefined ? {
+        requestModel: this.options.requestModel ?? null,
+        timeoutMs: this.timeoutMs,
+      } : {}),
       actorOrder: [...this.actorIds],
       initialState: this.initialState,
       finalState,

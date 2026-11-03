@@ -63,6 +63,12 @@ export function saveG08Checkpoint(
     if (exported.code === 'SAVE_BUSY') return messageFail('QUEUE_FULL', 'a decision is in flight; save at a decision boundary only');
     return messageFail(exported.code === 'SCHEMA_MISMATCH' ? 'SCHEMA_MISMATCH' : 'INVALID_SNAPSHOT', ...(exported.issues ?? []));
   }
+  // G08-R1: one source — the game record and the envelope must describe the
+  // same runtime, or the slot would lie about itself.
+  if (!effectiveConfigMatchesRecord(effectiveConfig, exported.value)) {
+    return messageFail('INVALID_COMMAND',
+      'the effectiveConfig passed to save disagrees with the game record (mode/requestModel/timeoutMs/thinking); the game was built with a different runtime');
+  }
   const envelope: G08Checkpoint = {
     schema: G08_CHECKPOINT_SCHEMA,
     actionSet,
@@ -148,6 +154,11 @@ export function restoreG08Game(
     return messageFail('CONFLICT',
       `messageMode mismatch: save ${JSON.stringify(loaded.envelope.messageMode)}, runtime ${JSON.stringify(runtime.messageMode)}`);
   }
+  // G08-R1: the game record and the envelope must describe the SAME runtime.
+  if (!effectiveConfigMatchesRecord(loaded.envelope.effectiveConfig, loaded.envelope.game)) {
+    return messageFail('SCHEMA_MISMATCH',
+      'the game record effective configuration disagrees with the envelope effectiveConfig; the slot was written by inconsistent code and must be recreated');
+  }
   const restored = restoreNeedsGame(loaded.envelope.game, runtime as GameRestoreRuntime);
   if (!restored.ok) {
     return messageFail(restored.code === 'SCHEMA_MISMATCH' ? 'SCHEMA_MISMATCH' : 'INVALID_SNAPSHOT', ...(restored.issues ?? []));
@@ -181,4 +192,18 @@ export function effectiveConfigIssues(config: unknown): string[] {
     issues.push(`effectiveConfig.timeoutMs must be a positive integer, got ${JSON.stringify(c.timeoutMs ?? null)}`);
   }
   return issues;
+}
+
+/**
+ * G08-R1: does the game record describe the same runtime as this config?
+ * The record is authoritative — the envelope config is a claim that must
+ * match it, and the CLI builds its provider from the same values.
+ */
+export function effectiveConfigMatchesRecord(config: G08EffectiveConfig, record: unknown): boolean {
+  if (typeof record !== 'object' || record === null) return false;
+  const r = record as Record<string, unknown>;
+  return r.mode === config.mode
+    && r.thinking === config.thinking
+    && (r.requestModel ?? null) === config.requestModel
+    && r.timeoutMs === config.timeoutMs;
 }

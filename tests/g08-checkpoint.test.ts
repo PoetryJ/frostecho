@@ -29,7 +29,9 @@ import type { Provider } from '../src/agent/contracts';
 import type { WorldState } from '../src/types';
 
 /** G08-R1: every save now carries one effective configuration. */
-const REF_CONFIG = { mode: 'reference', requestModel: null, thinking: false, timeoutMs: 120000 } as const;
+// The fixture game records the default wired timeout (15000); the saved
+// effectiveConfig must describe the very same runtime.
+const REF_CONFIG = { mode: 'reference', requestModel: null, thinking: false, timeoutMs: 15000 } as const;
 
 function queued(scripts: Record<string, string[]>, counters: Record<string, number>): (actorId: string) => Provider {
   return (actorId: string) => ({

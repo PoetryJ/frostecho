@@ -1,21 +1,32 @@
 /**
- * G08 worker C — playable CLI for the timed-wait capability.
+ * G08 playable CLI — R1 revision.
  *
  * A command-style tool: each invocation loads (or creates) a .g08.json slot,
  * applies one world/game action, prints the resulting status, and optionally
  * saves. Debug play defaults to the script provider; --live switches to the
  * real HTTP provider from the environment (no credentials are ever saved).
  * The status print exposes the paused actors and their wake deadlines.
+ *
+ * G08-R1:
+ *  - exactly ONE effectiveConfig per process (mode/requestModel/thinking/
+ *    timeoutMs); it is built before anything runs, threaded into the provider
+ *    and the save, and verified against the slot on load (a live slot will
+ *    not load without --live and the very same FROSTECHO_LLM_MODEL; refusal
+ *    is CONFIGURATION exit 2 before any HTTP request or world mutation)
+ *  - step and run share one finalize: a transport failure exits 1 and writes
+ *    a run-failure record under <root>/failures/<slot>/ (own directory, never
+ *    overwriting the input slot or a --save target)
+ *  - the printed status reads totalCalls from the authoritative game record
  */
-import { mkdirSync, existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { mkdirSync, existsSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { createNeedsGame, buildNeedsWorld } from '../src/needs/game';
 import { createHttpProvider, loadHttpConfigFromEnv } from '../src/agent/providers/http';
 import { createMailbox, restoreMailbox } from '../src/communication/mailbox';
 import type { Mailbox, MessageMode } from '../src/communication/contracts';
 import { createMessageProvider } from '../src/communication/provider';
 import type { Provider } from '../src/agent/contracts';
-import type { ActionSet } from '../src/temporal/contracts';
+import type { ActionSet, G08EffectiveConfig } from '../src/temporal/contracts';
 import { g08CheckpointPath, loadG08Checkpoint, restoreG08Game, saveG08Checkpoint } from '../src/temporal/checkpoint';
 
 const USAGE = `usage: play-g08 --root DIR --slot NAME {--new|--load} [actions]
@@ -35,9 +46,18 @@ const USAGE = `usage: play-g08 --root DIR --slot NAME {--new|--load} [actions]
   --say NPC=TEXT        the player says TEXT to a colocated NPC (mailbox)
   --status              print the status JSON only`;
 
+const WIRED_TIMEOUT_MS = 120000;
+
+/** Usage / data errors stop here (exit 1). */
 function fail(message: string): never {
   console.error(String(message));
   process.exit(1);
+}
+
+/** CONFIGURATION conflicts stop here (exit 2) — before HTTP, before the world. */
+function failConfig(message: string): never {
+  console.error(String(message));
+  process.exit(2);
 }
 
 /** Deterministic scripted provider for offline play: repeatable move lists per npc. */
@@ -148,11 +168,46 @@ function parseArgs(argv: string[]): Args {
 interface Runtime {
   game: ReturnType<typeof createNeedsGame>;
   mailbox: Mailbox;
-  counters: Record<string, number>;
-  totalCalls: number;
 }
 
-function providerFactory(args: Args, mailbox: Mailbox, counters: Record<string, number>): (actorId: string) => Provider {
+/**
+ * The ONE effective configuration for this process. Built once, before any
+ * provider, world or save exists. The timeout is the wired default; thinking
+ * is on for live sessions.
+ */
+function buildEffectiveConfig(args: Args): G08EffectiveConfig {
+  if (args.live) {
+    const env = loadHttpConfigFromEnv();
+    if (env === null) failConfig('--live requires FROSTECHO_LLM_URL and FROSTECHO_LLM_MODEL in the environment');
+    return { mode: 'live', requestModel: env.model, thinking: true, timeoutMs: WIRED_TIMEOUT_MS };
+  }
+  return { mode: 'reference', requestModel: null, thinking: false, timeoutMs: WIRED_TIMEOUT_MS };
+}
+
+/**
+ * A loaded slot refuses to run under a different runtime: a live slot needs
+ * --live AND the very same FROSTECHO_LLM_MODEL; a script slot must not be
+ * silently upgraded to live. Checked before any HTTP request or world
+ * mutation, and always CONFIGURATION exit 2.
+ */
+function assertProviderMatchesSlot(config: G08EffectiveConfig, args: Args): void {
+  if (config.mode === 'live') {
+    if (!args.live) {
+      failConfig('configuration conflict: this slot was created with --live; loading it requires --live and the same FROSTECHO_LLM_MODEL (a script substitution is not allowed)');
+    }
+    const env = loadHttpConfigFromEnv();
+    if (env === null) failConfig('--live requires FROSTECHO_LLM_URL and FROSTECHO_LLM_MODEL in the environment');
+    if (env.model !== config.requestModel) {
+      failConfig(`configuration conflict: this slot was created with model ${JSON.stringify(config.requestModel)} but the environment provides ${JSON.stringify(env.model)}; refusing before any request`);
+    }
+    return;
+  }
+  if (args.live) {
+    failConfig('configuration conflict: this slot was created with the script provider; --live cannot load it');
+  }
+}
+
+function providerFactory(args: Args, mailbox: Mailbox, counters: Record<string, number>, config: G08EffectiveConfig): (actorId: string) => Provider {
   const scripted = scriptedProvider(
     Object.keys(args.scripts).length > 0 ? args.scripts : {
       npc_a: ['{"type":"wait"}', '{"type":"eat"}', '{"type":"stop"}'],
@@ -160,11 +215,10 @@ function providerFactory(args: Args, mailbox: Mailbox, counters: Record<string, 
     },
     counters,
   );
-  const liveConfig = args.live ? loadHttpConfigFromEnv() : null;
-  if (args.live && liveConfig === null) fail('--live requires FROSTECHO_LLM_URL and FROSTECHO_LLM_MODEL');
+  const env = config.mode === 'live' ? loadHttpConfigFromEnv() : null;
   return (actorId: string) => {
-    const inner = liveConfig !== null
-      ? createHttpProvider({ ...liveConfig, enableThinking: true })
+    const inner = env !== null
+      ? createHttpProvider({ url: env.url, model: config.requestModel!, apiKey: env.apiKey, enableThinking: true })
       : scripted(actorId);
     if (args.messageMode !== 'on') return inner;
     return createMessageProvider(inner, mailbox, { enabled: true, actorId });
@@ -190,8 +244,35 @@ function printStatus(rt: Runtime, args: Args): void {
     player: status.player,
     food: status.food,
     mailbox: mailboxView,
-    totalCalls: rt.totalCalls,
+    // Authoritative count straight from the game record (the same sum the
+    // checkpoint verifier cross-checks against the sessions).
+    totalCalls: Object.values(status.actors).reduce((sum, a) => sum + a.providerCalls, 0),
   }, null, 2));
+}
+
+/**
+ * R1 finalize for transport failures: persistent evidence in an exclusive
+ * directory (never the input slot, never a --save target), then exit 1.
+ */
+function writeRunFailure(args: Args, kind: string, detail: string): never {
+  const dir = join(resolve(args.root), 'failures', args.slot);
+  mkdirSync(dir, { recursive: true });
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const file = join(dir, `${kind}-${stamp}.json`);
+  try {
+    writeFileSync(file, JSON.stringify({
+      schema: 'frostecho.g08.run-failure/1',
+      slot: args.slot,
+      kind,
+      detail,
+      wroteAt: new Date().toISOString(),
+    }, null, 2));
+    console.error(`run failed: ${kind} — ${detail}`);
+    console.error(`failure evidence: ${file}`);
+  } catch (err) {
+    console.error(`run failed: ${kind} — ${detail} (writing the failure record also failed: ${err instanceof Error ? err.message : String(err)})`);
+  }
+  process.exit(1);
 }
 
 async function main(): Promise<void> {
@@ -205,9 +286,11 @@ async function main(): Promise<void> {
   const path = g08CheckpointPath(resolve(args.root), args.slot);
   const counters: Record<string, number> = {};
 
+  // The one effective configuration for this whole process.
+  const effectiveConfig = buildEffectiveConfig(args);
+
   let game: ReturnType<typeof createNeedsGame>;
   let mailbox: Mailbox;
-  let totalCalls = 0;
 
   if (args.create) {
     if (existsSync(path)) fail(`slot exists: ${path}`);
@@ -215,15 +298,21 @@ async function main(): Promise<void> {
     game = createNeedsGame({
       episodeId: `g08-${args.slot}-${Date.now()}`,
       initialState: buildNeedsWorld({ kitchenFood: 3, hunger: { npc_a: 40, npc_c: 40 } }),
-      providerFor: providerFactory(args, mailbox, counters),
-      mode: args.live ? 'live' : 'reference',
+      providerFor: providerFactory(args, mailbox, counters, effectiveConfig),
+      mode: effectiveConfig.mode === 'live' ? 'live' : 'reference',
+      thinking: effectiveConfig.thinking,
+      // The game record carries the same runtime values the envelope saves.
+      requestModel: effectiveConfig.requestModel ?? undefined,
+      timeoutMs: effectiveConfig.timeoutMs,
       needPolicy: 'recurring',
       actionSet: args.actionSet,
     });
   } else {
     const loaded = loadG08Checkpoint(path);
     if (!loaded.ok) fail(`load failed: ${loaded.code} ${(loaded.issues ?? []).join('; ')}`);
-    const factory = providerFactory(args, loaded.value.mailbox, counters);
+    // Provider must match the saved runtime BEFORE any HTTP or world work.
+    assertProviderMatchesSlot(loaded.value.envelope.effectiveConfig, args);
+    const factory = providerFactory(args, loaded.value.mailbox, counters, effectiveConfig);
     const restored = restoreG08Game(loaded.value, {
       providerFor: (actorId: string) => factory(actorId),
       actionSet: args.actionSet,
@@ -232,10 +321,9 @@ async function main(): Promise<void> {
     if (!restored.ok) fail(`restore failed: ${restored.code} ${(restored.issues ?? []).join('; ')}`);
     game = restored.value as ReturnType<typeof createNeedsGame>;
     mailbox = loaded.value.mailbox;
-    totalCalls = loaded.value.envelope.game.totalCalls;
   }
 
-  const rt: Runtime = { game, mailbox, counters, totalCalls };
+  const rt: Runtime = { game, mailbox };
   let acted = false;
 
   if (args.time !== null) {
@@ -265,16 +353,28 @@ async function main(): Promise<void> {
   if (args.step !== null) {
     for (let i = 0; i < args.step; i += 1) {
       const res = await rt.game.advance();
-      if (res.kind === 'stepped') rt.totalCalls += 1;
       if (res.kind === 'closed') { console.log('game closed'); break; }
-      if (res.kind === 'interrupted') { console.log(`interrupted: ${res.actorId}`); break; }
+      if (res.kind === 'interrupted') {
+        writeRunFailure(args, 'interrupted-step', `transport failure while stepping actor ${res.actorId}`);
+      }
+      // A transport failure fails the session and flags the game; the step
+      // itself still "completes" from the rotation's point of view.
+      if (rt.game.status().interrupted) {
+        const failed = Object.entries(rt.game.status().actors).find(([, a]) => a.state === 'failed');
+        writeRunFailure(args, 'interrupted-step', `transport failure while stepping ${failed?.[0] ?? 'an actor'}`);
+      }
     }
     acted = true;
   }
   if (args.run) {
     const res = await rt.game.runUntilIdle();
-    if (res.kind === 'stepped') rt.totalCalls += 1;
-    if (res.kind === 'interrupted') fail(`run interrupted: ${res.actorId}`);
+    if (res.kind === 'interrupted') {
+      writeRunFailure(args, 'interrupted-run', `transport failure while running actor ${res.actorId}`);
+    }
+    if (rt.game.status().interrupted) {
+      const failed = Object.entries(rt.game.status().actors).find(([, a]) => a.state === 'failed');
+      writeRunFailure(args, 'interrupted-run', `transport failure while running ${failed?.[0] ?? 'an actor'}`);
+    }
     acted = true;
   }
   if (args.close) {
@@ -283,11 +383,6 @@ async function main(): Promise<void> {
   }
   if (args.statusOnly || acted) printStatus(rt, args);
   if (args.save) {
-    // G08-R1 interim wiring — worker B replaces this with the single
-    // effectiveConfig the whole process is built from.
-    const effectiveConfig = args.live
-      ? { mode: 'live' as const, requestModel: process.env.FROSTECHO_LLM_MODEL ?? null, thinking: true, timeoutMs: 120000 }
-      : { mode: 'reference' as const, requestModel: null, thinking: false, timeoutMs: 120000 };
     const saved = saveG08Checkpoint(resolve(args.root), args.slot, rt.game, rt.mailbox, args.actionSet, args.messageMode, effectiveConfig);
     if (!saved.ok) fail(`save failed: ${saved.code} ${(saved.issues ?? []).join('; ')}`);
     console.log(`saved ${saved.value.path}`);

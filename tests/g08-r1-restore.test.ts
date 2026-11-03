@@ -25,7 +25,9 @@ import { saveG08Checkpoint } from '../src/temporal/checkpoint';
 import { createMailbox } from '../src/communication/mailbox';
 import type { WorldState } from '../src/types';
 
-const REF_CONFIG = { mode: 'reference', requestModel: null, thinking: false, timeoutMs: 120000 } as const;
+// The fixture game records the default wired timeout (15000); the saved
+// effectiveConfig must describe the very same runtime.
+const REF_CONFIG = { mode: 'reference', requestModel: null, thinking: false, timeoutMs: 15000 } as const;
 
 /** Same starting world the frozen probes use. */
 function probeWorld(hungerC = 70): WorldState {
