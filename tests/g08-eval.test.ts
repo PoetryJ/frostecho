@@ -46,7 +46,7 @@ interface FakeServer {
   close(): Promise<void>;
 }
 
-async function startServer(options: { failAt?: number; content?: string; model?: string } = {}): Promise<FakeServer> {
+async function startServer(options: { failAt?: number; content?: string; model?: string; perAxis?: boolean } = {}): Promise<FakeServer> {
   const requests: Record<string, unknown>[] = [];
   const server = createServer((req, res) => {
     if (req.method === 'GET') {
@@ -67,15 +67,26 @@ async function startServer(options: { failAt?: number; content?: string; model?:
     let raw = '';
     req.on('data', (chunk: Buffer) => { raw += chunk.toString('utf8'); });
     req.on('end', () => {
-      requests.push(JSON.parse(raw) as Record<string, unknown>);
+      const parsed = JSON.parse(raw) as Record<string, unknown>;
+      requests.push(parsed);
+      res.statusCode = 200;
       res.setHeader('content-type', 'application/json');
       if (options.failAt !== undefined && requests.length === options.failAt) {
         res.statusCode = 500;
         res.end('{"error":"boom"}');
         return;
       }
+      let content = options.content ?? '{"type":"wait"}';
+      if (options.perAxis === true) {
+        // Answer within the arm's own action set: legacy cannot wait.
+        const body = parsed as { messages?: { content?: string }[] };
+        const prompt = String(body.messages?.[0]?.content ?? '');
+        content = prompt.includes('"wait"') && prompt.includes('allowedActions: ["move","eat","stop","wait"]')
+          ? '{"type":"wait"}'
+          : '{"type":"eat"}';
+      }
       res.end(JSON.stringify({
-        choices: [{ message: { content: options.content ?? '{"type":"wait"}' } }],
+        choices: [{ message: { content } }],
         usage: { prompt_tokens: 10, completion_tokens: 2, total_tokens: 12 },
       }));
     });
@@ -130,14 +141,16 @@ test('the plan is frozen: rep1 forward, rep2 the exact reverse, 4 balanced cells
   for (let i = 0; i < G08_PLAN.length; i += 1) assert.equal(G08_PLAN[i].index, i + 1);
 });
 
-test('the capability axis is visible in the prompt: allowedActions and the wait line', () => {
+test('the capability axis is visible in allowedActions; the wait rule is shared (G08-R1 C2)', () => {
   const legacy = promptWith({ actionSet: 'legacy', playerMessages: false });
   const timed = promptWith({ actionSet: 'timed_wait', playerMessages: false });
   assert.equal(allowedActionsLine(legacy), `allowedActions: ${G08_ALLOWED_BY_ACTION_SET.legacy}`);
   assert.equal(allowedActionsLine(timed), `allowedActions: ${G08_ALLOWED_BY_ACTION_SET.timed_wait}`);
-  assert.equal(hasWaitLine(legacy), false);
+  // The wait rule is part of the ONE skeleton on both arms — the capability
+  // difference lives in the allowedActions data line only.
+  assert.equal(hasWaitLine(legacy), true);
   assert.equal(hasWaitLine(timed), true);
-  assert.ok(timed.includes('"wait"'));
+  assert.ok(legacy.includes('only when allowedActions includes "wait"'));
 });
 
 test('all four arms share one template once the axis data lines are stripped', () => {
@@ -164,7 +177,9 @@ test('promptIssuesFor catches a wrong axis, a missing wait line and a leaked pla
   assert.ok(promptIssuesFor(G08_PLAN[0], legacyOn).some(i => i.includes('messages-off')));
   assert.ok(promptIssuesFor(G08_PLAN[1], legacy).some(i => i.includes('messages-on')));
   assert.ok(promptIssuesFor(G08_PLAN[0], timed).some(i => i.includes('legacy axis')));
-  assert.ok(promptIssuesFor(G08_PLAN[2], legacy).some(i => i.includes('timed_wait axis')));
+  // A skeleton without the shared wait rule is rejected on either arm.
+  const missingWait = legacy.split('\n').filter(line => line !== G08_WAIT_LINE).join('\n');
+  assert.ok(promptIssuesFor(G08_PLAN[2], missingWait).includes('the shared G08 template must carry the wait rule'));
   assert.deepEqual(promptIssuesFor(G08_PLAN[0], null), ['no prompt text was captured']);
 });
 
@@ -184,9 +199,9 @@ test('strictG08Action accepts wait only as the exact one-key object', () => {
   assert.equal(strictG08Action('{"type":"eat","to":"kitchen"}'), 'invalid_output');
 });
 
-test('a wait-responder batch: timed_wait accepts with deadline 1, legacy rejects, player eats only when the NPC waits', async () => {
+test('a legal per-axis batch: timed_wait accepts wait with deadline 1, legacy eats first', async () => {
   const root = tempRoot();
-  const server = await startServer({ content: '{"type":"wait"}' });
+  const server = await startServer({ perAxis: true });
   try {
     const result = await runG08Batch(batchOptions(server.url, root, 'b1'));
     assert.equal(result.verify.stats.completed, 8);
@@ -204,11 +219,10 @@ test('a wait-responder batch: timed_wait accepts with deadline 1, legacy rejects
         assert.equal(cell.npcAte, false, entry.episodeId);
         assert.equal(cell.playerAte, true, entry.episodeId);
       } else {
-        // The legacy axis has no wait: the same answer is invalid output.
+        // The legacy axis answered eat (its only sensible action here).
         assert.equal(cell.waitAccepted, false, entry.episodeId);
-        assert.equal(cell.wakeAtSimTime, null, entry.episodeId);
-        assert.equal(cell.npcAte, false, entry.episodeId);
-        assert.equal(cell.playerAte, true, entry.episodeId);
+        assert.equal(cell.npcAte, true, entry.episodeId);
+        assert.equal(cell.playerAte, false, entry.episodeId);
       }
       assert.equal(cell.totalTokens, 12, entry.episodeId);
     }
@@ -220,11 +234,39 @@ test('a wait-responder batch: timed_wait accepts with deadline 1, legacy rejects
     const legacyContent = promptOfEpisode(root, 'b1', 'g08-r1-legacy-off');
     const timedContent = promptOfEpisode(root, 'b1', 'g08-r1-timed_wait-on');
     assert.ok(legacyContent.includes('allowedActions: ["move","eat","stop"]'));
-    assert.ok(!legacyContent.includes('"wait" pauses your current session'));
+    assert.ok(legacyContent.includes('only when allowedActions includes "wait"'));
     assert.ok(timedContent.includes('allowedActions: ["move","eat","stop","wait"]'));
     assert.ok(timedContent.includes('"wait" pauses your current session'));
     // And the message arm carried the frozen S1 into the real request.
     assert.ok(timedContent.includes(G08_SCENARIO_TEXT));
+  } finally {
+    await server.close();
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('an illegal legacy wait fails the experiment fast (G08-R1 C1)', async () => {
+  const root = tempRoot();
+  const server = await startServer({ content: '{"type":"wait"}' });
+  try {
+    const result = await runG08Batch(batchOptions(server.url, root, 'b0'));
+    // The very first legacy episode is invalid output: no player action, no
+    // second decision, no retry — the remaining seven slots stay not_run.
+    assert.equal(server.requests.length, 1);
+    assert.equal(result.verify.stats.completed, 0);
+    assert.equal(result.verify.stats.failed, 1);
+    assert.equal(result.verify.stats.notRun, 7);
+    assert.notEqual(result.exitCode, 0);
+    const first = result.verify.stats.cells.find(c => c.episodeId === 'g08-r1-legacy-off');
+    assert.ok(first !== undefined);
+    assert.equal(first.outcome, 'invalid_output');
+    // The episode record proves the player action never ran.
+    const episode = JSON.parse(readFileSync(join(root, 'b0', 'episodes', 'g08-r1-legacy-off.json'), 'utf8')) as {
+      outcome: string;
+      behavior: unknown;
+    };
+    assert.equal(episode.outcome, 'invalid_output');
+    assert.equal(episode.behavior, null);
   } finally {
     await server.close();
     rmSync(root, { recursive: true, force: true });

@@ -81,13 +81,21 @@ export function allowedActionsLine(prompt: string): string | null {
   return line === undefined ? null : line;
 }
 
-export const G08_WAIT_LINE = '"wait" pauses your current session for one logical time step, then it resumes automatically. wait does not eat, move, or change the world.';
+/**
+ * G08-R1: the wait rule is part of the SHARED skeleton (with a capability
+ * guard), not a timed_wait-only extra line. Both arms carry it verbatim.
+ */
+export const G08_WAIT_LINE = '"wait" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {"type":"wait"} only when allowedActions includes "wait".';
 
 export function hasWaitLine(prompt: string): boolean {
   return prompt.split('\n').includes(G08_WAIT_LINE);
 }
 
-/** Strips every data line + the capability-only wait line: the rest is the shared G08 template. */
+/**
+ * Strips every DATA line; the wait rule stays in the skeleton on purpose
+ * (it is shared by both arms, so it must not be stripped from the template
+ * fingerprint).
+ */
 export function stripG08PromptData(prompt: string): string {
   return prompt
     .split('\n')
@@ -96,8 +104,7 @@ export function stripG08PromptData(prompt: string): string {
       && !line.startsWith('allowedActions:')
       && !line.startsWith('goal:')
       && !line.startsWith('observation:')
-      && !line.startsWith('feedback:')
-      && line !== G08_WAIT_LINE)
+      && !line.startsWith('feedback:'))
     .join('\n');
 }
 
@@ -108,11 +115,10 @@ export function promptIssuesFor(entry: G08PlanEntry, prompt: string | null): str
   if (allowed !== `allowedActions: ${G08_ALLOWED_BY_ACTION_SET[entry.actionSet]}`) {
     issues.push(`allowedActions line ${JSON.stringify(allowed)} does not match the ${entry.actionSet} axis`);
   }
-  if (entry.actionSet === 'timed_wait' && !hasWaitLine(prompt)) {
-    issues.push('the timed_wait axis must explain the wait action');
-  }
-  if (entry.actionSet === 'legacy' && hasWaitLine(prompt)) {
-    issues.push('the legacy axis must not offer the wait action');
+  // G08-R1: the wait rule is common to both arms; it must be present and
+  // byte-identical everywhere. Capability is expressed by allowedActions only.
+  if (!hasWaitLine(prompt)) {
+    issues.push('the shared G08 template must carry the wait rule');
   }
   const messageLine = prompt.split('\n').find(line => line.startsWith('playerMessages:')) ?? null;
   if (entry.arm === 'on') {

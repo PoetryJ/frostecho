@@ -391,11 +391,31 @@ async function runG08Episode(
     return { outcome, failure };
   }
 
+  // --- C1: an illegal action fails THIS experiment fast -----------------
+  // The general NPC session keeps its own invalid-output retry strategy; the
+  // experiment does not. A legacy wait (or any strict re-parse failure) is a
+  // first-class failed episode: no player action, no second decision, and the
+  // batch stops with the remaining slots not_run.
+  const rawAction = decision.turns.find(turn => turn.providerCalled)?.raw ?? null;
+  const action = strictG08Reparse(rawAction, entry.actionSet);
+  if (action === 'invalid_output') {
+    const run: EpisodeRun = {
+      outcome: 'invalid_output',
+      failure: `illegal action for the ${entry.actionSet} axis (strict re-parse failed); the experiment stops here without a player action`,
+    };
+    store.writeJson(`episodes/${entry.episodeId}.json`, record(run.outcome, run.failure, {
+      decision,
+      behavior: null,
+      snapshot: afterNpc,
+      prompt: promptEvidence(http),
+    }));
+    writeStatus(store, entry.episodeId, statusOf(entry.episodeId, run));
+    return run;
+  }
+
   // --- the player's single eat attempt (only after a real decision) -----
   const playerEat = game.playerLine('player eat');
   const final = game.snapshot();
-  const rawAction = decision.turns.find(turn => turn.providerCalled)?.raw ?? null;
-  const action = strictG08Reparse(rawAction, entry.actionSet);
   const behavior = g08BehaviorOf(final, entry, action, playerEat, game);
   const run: EpisodeRun = { outcome: 'completed', failure: null };
   store.writeJson(`episodes/${entry.episodeId}.json`, record(run.outcome, run.failure, {

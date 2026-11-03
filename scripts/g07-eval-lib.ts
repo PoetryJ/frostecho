@@ -516,7 +516,9 @@ export type G07EpisodeOutcome =
   | 'completed'
   | 'transport_failure'
   | 'budget_blocked'
-  | 'protocol_failure';
+  | 'protocol_failure'
+  /** G08-R1: the decision parsed but was illegal for this experiment's axis. */
+  | 'invalid_output';
 
 export interface G07EpisodeRecord {
   schema: typeof G07_EPISODE_SCHEMA;
