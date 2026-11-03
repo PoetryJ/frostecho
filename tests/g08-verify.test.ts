@@ -134,7 +134,7 @@ test('a raw response that no longer matches the recorded action is caught', asyn
     });
     const verify = verifyG08Batch(dir);
     assert.equal(verify.ok, false);
-    assert.ok(verify.issues.some(issue => issue.includes('re-parsing the raw response')), verify.issues.join('; '));
+    assert.ok(verify.issues.some(issue => issue.includes('the raw response says')), verify.issues.join('; '));
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

@@ -13,8 +13,8 @@
  * legacy off/on pair is the structural gate before the remaining six run.
  * `--verify <batchId>` re-checks a finished batch from disk only.
  */
-import { existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import type { Provider } from '../src/agent/contracts';
 import { createHttpProvider, loadHttpConfigFromEnv } from '../src/agent/providers/http';
 import { createMailbox } from '../src/communication/mailbox';
@@ -41,6 +41,8 @@ import {
   type G08Behavior, type G08EpisodeRecord, type G08ParseOutcome, type G08PlanEntry,
   type G08VerifyResult,
 } from './g08-eval-lib';
+import { auditWorldEpisode } from './g08-evidence-world';
+import { deriveLedgerCosts } from './g08-evidence-cost';
 
 export { G08_HARD_CHAT_LIMIT, G08_PLAN, verifyG08Batch };
 
@@ -471,8 +473,9 @@ export async function runG08Batch(options: G08RunOptions): Promise<G08RunResult>
   const gate = new ChatBudgetGate(limit);
   if (options.preflight !== undefined && options.preflight !== null && !options.preflight.ok) {
     for (const entry of G08_PLAN) writeStatus(store, entry.episodeId, notRunStatus(entry.episodeId, 'preflight failed; no chat request was sent'));
+    // Derive -> write the summary ONCE -> read-only verify (G08 closeout).
+    store.writeJson('summary.json', buildG08Summary(store.dir, options.batchId, options.mode, options.model, version, limit, gate, 'preflight_failed'));
     const verify = verifyG08Batch(store.dir);
-    store.writeJson('summary.json', buildG08Summary(store.dir, options.batchId, options.mode, options.model, version, limit, gate, 'preflight_failed', verify));
     return { batchDir: store.dir, exitCode: 2, verify };
   }
 
@@ -499,20 +502,57 @@ export async function runG08Batch(options: G08RunOptions): Promise<G08RunResult>
     }
   }
 
+  // G08 closeout ordering: derive the evidence from raw materials FIRST,
+  // write the summary once, and only then run the full read-only verifier.
+  // The summary is never built from (or used to justify) the verify result.
+  store.writeJson('summary.json', buildG08Summary(store.dir, options.batchId, options.mode, options.model, version, limit, gate, fatal));
   const verify = verifyG08Batch(store.dir);
-  store.writeJson('summary.json', buildG08Summary(store.dir, options.batchId, options.mode, options.model, version, limit, gate, fatal, verify));
   // 0 only for a complete, self-consistent 8/8 batch.
   const exitCode = verify.runSucceeded ? 0 : 1;
   log(`completed=${verify.stats.completed} failed=${verify.stats.failed} notRun=${verify.stats.notRun} spent=${gate.spent}/${limit}${fatal === null ? '' : ` fatal=${fatal}`}`);
   return { batchDir: store.dir, exitCode, verify };
 }
 
+function readJson<T>(path: string): T {
+  return JSON.parse(readFileSync(path, 'utf8')) as T;
+}
+
 function buildG08Summary(
   batchDir: string, batchId: string, mode: 'live' | 'fake', model: string,
-  version: unknown, limit: number, gate: ChatBudgetGate, fatal: string | null, verify: G08VerifyResult,
+  version: unknown, limit: number, gate: ChatBudgetGate, fatal: string | null,
 ): Record<string, unknown> {
   const batch = readBatch(batchDir);
-  const cellOf = (key: string) => verify.stats.cells.find(c => c.episodeId === key) ?? null;
+  // G08 closeout: the summary is a PROJECTION of the raw ledger, never of a
+  // verifier verdict. The full verifier afterwards compares it back.
+  const ledger = deriveLedgerCosts(batchDir);
+  const cells = ledger.episodes.map(cost => {
+    const file = join(batchDir, 'episodes', `${cost.episodeId}.json`);
+    const record = existsSync(file)
+      ? readJson<G08EpisodeRecord & { failure?: string | null }>(file)
+      : null;
+    // Only a completed episode has a re-derivable behavior; a not_run slot
+    // has no record at all and a failed one has no accepted decision.
+    const audit = record !== null && record.outcome === 'completed'
+      ? auditWorldEpisode({ episodeId: cost.episodeId, actionSet: cost.actionSet }, record as never)
+      : null;
+    const derived = audit?.derivedBehavior ?? null;
+    return {
+      episodeId: cost.episodeId,
+      actionSet: cost.actionSet,
+      arm: cost.arm,
+      outcome: cost.outcome,
+      npcAction: derived?.npcAction ?? null,
+      npcAte: derived?.npcAte ?? null,
+      playerAte: derived === null ? null : derived.playerEatStatus === 'accepted',
+      waitAccepted: derived?.waitAccepted ?? false,
+      wakeAtSimTime: derived?.waitDeadline ?? null,
+      totalTokens: cost.totalTokens,
+      requests: cost.requests,
+      latencyMs: cost.latencyMs,
+      usageUnknown: cost.usageUnknown,
+    };
+  });
+  const cellOf = (key: string) => cells.find(c => c.episodeId === key) ?? null;
   const byCell = {
     'legacy-off': cellOf('g08-r1-legacy-off') ?? cellOf('g08-r2-legacy-off'),
     'legacy-on': cellOf('g08-r1-legacy-on') ?? cellOf('g08-r2-legacy-on'),
@@ -521,6 +561,9 @@ function buildG08Summary(
   };
   return {
     schema: G08_SUMMARY_SCHEMA,
+    // G08 closeout: versioned evidence derivation. Its presence tells the
+    // verifier that the costs block must be compared too.
+    costsSchema: 'frostecho.g08.eval.costs/1',
     batch: batchId,
     createdAt: new Date().toISOString(),
     mode,
@@ -531,12 +574,17 @@ function buildG08Summary(
     gateSpent: gate.spent,
     gateBlocked: gate.blocked,
     fatal,
-    totals: { planned: verify.stats.planned, completed: verify.stats.completed, failed: verify.stats.failed, notRun: verify.stats.notRun },
-    chatRequests: verify.stats.chatRequests,
-    structuralGate: { ok: verify.issues.length === 0 && verify.configurationIssues.length === 0, issues: verify.issues, configurationIssues: verify.configurationIssues },
+    totals: {
+      planned: ledger.counts.planned,
+      completed: ledger.counts.completed,
+      failed: ledger.counts.failed,
+      notRun: ledger.counts.notRun,
+    },
+    chatRequests: ledger.counts.chatRequests,
     cells: byCell,
-    episodes: verify.stats.cells,
-    tokens: verify.stats.cells.map(c => ({ episodeId: c.episodeId, totalTokens: c.totalTokens })),
+    episodes: cells,
+    tokens: ledger.episodes.map(cost => ({ episodeId: cost.episodeId, totalTokens: cost.totalTokens })),
+    costs: ledger.expectation.costs,
   };
 }
 

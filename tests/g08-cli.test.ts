@@ -158,7 +158,7 @@ test('an HTTP 500 on --step exits 1, writes failure evidence, and never saves th
     const files = readdirSync(failureDir);
     assert.equal(files.length, 1);
     const record = JSON.parse(readFileSync(join(failureDir, files[0]), 'utf8')) as { schema: string; kind: string; slot: string };
-    assert.equal(record.schema, 'frostecho.g08.run-failure/1');
+    assert.equal(record.schema, 'frostecho.g08.run-failure/2');
     assert.match(record.kind, /interrupted-step/);
     assert.equal(record.slot, 'error-step');
   } finally {

@@ -25,6 +25,11 @@ import { RULES, type Location, type WorldState } from '../src/types';
 import { replay } from '../src/engine';
 import { HTTP_SAMPLING } from '../src/agent/providers/http';
 import type { ActionSet } from '../src/temporal/contracts';
+import { strictG08Action } from './g08-evidence-contracts';
+import type { G08ParseOutcome, StrictG08Action, WorldAuditRecord } from './g08-evidence-contracts';
+import { auditWorldEpisode } from './g08-evidence-world';
+import { deriveLedgerCosts } from './g08-evidence-cost';
+import { reexecuteCommands } from './g07-eval-lib';
 import { G08_EPISODE_SCHEMA, G08_PLAN_SCHEMA, G08_SUMMARY_SCHEMA } from '../src/temporal/contracts';
 import type { AttemptRequestConfig } from '../src/needs/live-contracts';
 import {
@@ -37,6 +42,8 @@ import {
 export const G08_HARD_CHAT_LIMIT = 8;
 export { G07_TIMEOUT_MS as G08_TIMEOUT_MS };
 export { G08_EPISODE_SCHEMA, G08_PLAN_SCHEMA, G08_SUMMARY_SCHEMA };
+export { strictG08Action };
+export type { StrictG08Action, G08ParseOutcome };
 export { G07_ACTOR_ORDER, G07_INITIAL_STATE, G07_TARGET, commandViews, requestConfigFor };
 export type { ReactiveRecord, G07Decision, G07EpisodeOutcome, G07HttpExchange, G07Attempt, G07EpisodeStatusFile, G07Summary, ParseOutcome };
 
@@ -139,46 +146,6 @@ export function promptIssuesFor(entry: G08PlanEntry, prompt: string | null): str
 /* ------------------------------------------------------------------ */
 /* strict G08 re-parse (wait joins the legal set)                      */
 /* ------------------------------------------------------------------ */
-
-export interface StrictG08Action {
-  type: 'move' | 'eat' | 'stop' | 'wait';
-  to?: Location;
-}
-
-export type G08ParseOutcome = StrictG08Action | 'invalid_output' | null;
-
-function countKey(raw: string, key: string): number {
-  return (raw.match(new RegExp(`"${key}"\\s*:`, 'g')) ?? []).length;
-}
-
-/** Independent of the runner's parser: wait is legal ONLY with the exact one-key object. */
-export function strictG08Action(raw: string | null): G08ParseOutcome {
-  if (raw === null) return null;
-  let value: unknown;
-  try {
-    value = JSON.parse(raw);
-  } catch {
-    return 'invalid_output';
-  }
-  if (typeof value !== 'object' || value === null || Array.isArray(value)) return 'invalid_output';
-  const record = value as Record<string, unknown>;
-  const keys = Object.keys(record);
-  const type = record.type;
-  if (typeof type !== 'string') return 'invalid_output';
-  if (countKey(raw, 'type') !== 1) return 'invalid_output';
-  if (keys.includes('to') && countKey(raw, 'to') !== 1) return 'invalid_output';
-  if (type === 'eat' || type === 'stop' || type === 'wait') {
-    if (keys.some(key => key !== 'type')) return 'invalid_output';
-    return { type };
-  }
-  if (type === 'move') {
-    if (keys.some(key => key !== 'type' && key !== 'to')) return 'invalid_output';
-    const to = record.to;
-    if (typeof to !== 'string' || !(RULES.LOCATIONS as readonly string[]).includes(to)) return 'invalid_output';
-    return { type: 'move', to: to as Location };
-  }
-  return 'invalid_output';
-}
 
 /* ------------------------------------------------------------------ */
 /* G08 evidence shapes                                                 */
@@ -434,12 +401,17 @@ function verifyInner(
         || !finishIds.includes(ownAttemptId)) {
         issues.push(`${entry.episodeId}: expected exactly 1 attempt begin/finish pair for ${JSON.stringify(ownAttemptId ?? null)}, found ${record.attempts.length} attempts on the episode record`);
       }
-      // The action must be re-derivable from the RAW response, not the flags.
-      const rawContent = responseContent(record.http[0]?.response?.raw);
-      if (rawContent === null) {
-        issues.push(`${entry.episodeId}: the captured response carries no parseable raw content`);
-      } else if (canonicalJson(strictG08Action(rawContent)) !== canonicalJson(record.behavior?.npcAction ?? null)) {
-        issues.push(`${entry.episodeId}: re-parsing the raw response does not reproduce the recorded action`);
+      // G08 closeout A: the world causal chain. One raw decision -> one
+      // command -> its events -> the final state, all re-derived on a fresh
+      // Engine and cross-checked against the recorded behavior.
+      const audit = auditWorldEpisode(
+        { episodeId: entry.episodeId, actionSet: entry.actionSet },
+        record as unknown as WorldAuditRecord,
+      );
+      issues.push(...audit.issues);
+      const derived = audit.derivedBehavior;
+      if (derived === null) {
+        issues.push(`${entry.episodeId}: the world audit could not derive a behavior from the ledger`);
       }
       // The world must be reachable from the recorded initial state, and the
       // final state must be the one the engine rebuilds (impossible worlds).
@@ -468,31 +440,34 @@ function verifyInner(
           return null;
         }
       })();
-      const behavior = record.behavior;
-      if (behavior !== null) {
-        if (behavior.actionSet !== entry.actionSet) {
-          issues.push(`${entry.episodeId}: behavior actionSet does not match the plan`);
-        }
-        if (behavior.wait.accepted && entry.actionSet !== 'timed_wait') {
+      if (derived !== null) {
+        // G08 closeout A: the cells come from the RE-EXECUTED ledger, never
+        // from the recorded behavior flags.
+        if (derived.waitAccepted && entry.actionSet !== 'timed_wait') {
           issues.push(`${entry.episodeId}: wait was accepted on the legacy axis`);
         }
-        if (behavior.wait.accepted && behavior.wait.wakeAtSimTime !== 1) {
-          issues.push(`${entry.episodeId}: wait deadline ${String(behavior.wait.wakeAtSimTime)} is not simTime 0 + 1`);
+        if (derived.waitAccepted && derived.waitDeadline !== 1) {
+          issues.push(`${entry.episodeId}: wait deadline ${String(derived.waitDeadline)} is not simTime 0 + 1`);
         }
         cells.push({
           episodeId: entry.episodeId, actionSet: entry.actionSet, arm: entry.arm,
           outcome: record.outcome,
-          npcAction: behavior.npcAction === null || typeof behavior.npcAction === 'string'
-            ? behavior.npcAction
-            : behavior.npcAction.type,
-          npcAte: behavior.npcAte,
-          playerAte: behavior.playerEatCommand?.status === 'accepted',
-          waitAccepted: behavior.wait.accepted,
-          wakeAtSimTime: behavior.wait.wakeAtSimTime,
+          npcAction: derived.npcAction,
+          npcAte: derived.npcAte,
+          playerAte: derived.playerEatStatus === 'accepted',
+          waitAccepted: derived.waitAccepted,
+          wakeAtSimTime: derived.waitDeadline,
           totalTokens: usage,
         });
         continue;
       }
+    } else if (snapshot !== undefined && snapshot !== null && Array.isArray(snapshot.commands) && snapshot.commands.length > 0) {
+      // G08 closeout A: a failed batch still re-executes the commands that
+      // were legally executed BEFORE the failure.
+      issues.push(...reexecuteCommands({
+        plan: { episodeId: entry.episodeId },
+        snapshot: snapshot as unknown as ReactiveRecord,
+      }));
     }
     cells.push({
       episodeId: entry.episodeId, actionSet: entry.actionSet, arm: entry.arm,
@@ -509,12 +484,170 @@ function verifyInner(
   if (templates.size > 1) {
     issues.push(`the ${templates.size} arms do not share one G08 template (after stripping the axis data lines)`);
   }
+
+  /* ---------------------------------------------------------------- */
+  /* G08 closeout B: the summary is CHECKED, never trusted             */
+  /* ---------------------------------------------------------------- */
+  // Re-derive the whole ledger from the raw materials. Any ledger
+  // inconsistency (missing/duplicate/orphan attempt, over-budget, broken
+  // usage) is an evidence issue in its own right.
+  const ledger = deriveLedgerCosts(batchDir);
+  issues.push(...ledger.issues);
+  const fullScope = entries.length === G08_PLAN.length;
   if (summary !== null && summary.schema !== G08_SUMMARY_SCHEMA) {
     configurationIssues.push(`summary schema ${String(summary.schema)} is not the expected ${G08_SUMMARY_SCHEMA}`);
   }
+  if (fullScope) {
+    // A complete 8-episode batch MUST carry a summary, and every derivable
+    // field must equal the recomputation. The summary is never its own proof.
+    if (summary === null) {
+      issues.push('summary.json is missing; a complete batch must carry its derived summary');
+    } else {
+      compareSummary(summary as Record<string, unknown>, ledger, issues, configurationIssues);
+    }
+  }
+  // A prefix scope deliberately does not require the (not yet written) full
+  // summary; it only proves the episodes inside its scope.
 
-  return settle(entries, cells, issues, configurationIssues, chatRequests, summary?.mode ?? null);
+  return settle(entries, cells, issues, configurationIssues, ledger.counts.chatRequests, summary?.mode ?? null);
 }
+
+/**
+ * G08 closeout B: compare every derivable summary field with the ledger
+ * derivation. Metadata (createdAt, version, batch, mode, endpointHost) is
+ * never used as a correctness signal.
+ */
+function compareSummary(
+  summary: Record<string, unknown>,
+  ledger: ReturnType<typeof deriveLedgerCosts>,
+  issues: string[],
+  configurationIssues: string[],
+): void {
+  const expect = ledger.expectation as {
+    totals: Record<string, number>;
+    chatRequests: number;
+    gateSpent: number;
+    gateBlocked: number;
+    hardChatLimit: number;
+    tokens: { episodeId: string; totalTokens: number | null }[];
+    costs: Record<string, unknown>;
+  };
+
+  const totals = summary.totals as Record<string, unknown> | undefined;
+  if (totals === undefined || totals === null) {
+    issues.push('summary has no totals block');
+  } else {
+    for (const key of ['planned', 'completed', 'failed', 'notRun'] as const) {
+      if (totals[key] !== expect.totals[key]) {
+        issues.push(`summary.totals.${key} ${JSON.stringify(totals[key] ?? null)} disagrees with the derived ${expect.totals[key]}`);
+      }
+    }
+  }
+  for (const key of ['chatRequests', 'gateSpent', 'gateBlocked', 'hardChatLimit'] as const) {
+    if (summary[key] === undefined) {
+      issues.push(`summary.${key} is missing`);
+    } else if (summary[key] !== expect[key]) {
+      issues.push(`summary.${key} ${JSON.stringify(summary[key])} disagrees with the derived ${expect[key]}`);
+    }
+  }
+
+  const tokens = summary.tokens;
+  if (!Array.isArray(tokens)) {
+    issues.push('summary.tokens is missing or not an array');
+  } else {
+    if (tokens.length !== expect.tokens.length) {
+      issues.push(`summary.tokens holds ${tokens.length} entries, the ledger derives ${expect.tokens.length}`);
+    }
+    const byId = new Map(expect.tokens.map(entry => [entry.episodeId, entry.totalTokens]));
+    for (const entry of tokens as { episodeId?: unknown; totalTokens?: unknown }[]) {
+      const id = typeof entry.episodeId === 'string' ? entry.episodeId : null;
+      if (id === null || !byId.has(id)) {
+        issues.push(`summary.tokens names an episode the ledger does not derive: ${JSON.stringify(entry.episodeId ?? null)}`);
+        continue;
+      }
+      if ((entry.totalTokens ?? null) !== (byId.get(id) ?? null)) {
+        issues.push(`summary.tokens[${id}] ${JSON.stringify(entry.totalTokens ?? null)} disagrees with the derived ${JSON.stringify(byId.get(id) ?? null)}`);
+      }
+    }
+  }
+
+  // The versioned costs block is compared whenever the writer declared one.
+  const declared = summary.costsSchema !== undefined || summary.costs !== undefined;
+  if (!declared) return;
+  const costs = summary.costs as Record<string, unknown> | undefined;
+  if (costs === undefined || costs === null) {
+    issues.push('summary declares costs but carries no costs block');
+    return;
+  }
+  const derivedCosts = expect.costs;
+  if (costs.schema !== derivedCosts.schema) {
+    configurationIssues.push(`summary.costs.schema ${JSON.stringify(costs.schema ?? null)} is not ${JSON.stringify(derivedCosts.schema)}`);
+  }
+  if (costs.knownTokenSum !== derivedCosts.knownTokenSum) {
+    issues.push(`summary.costs.knownTokenSum ${JSON.stringify(costs.knownTokenSum ?? null)} disagrees with the derived ${JSON.stringify(derivedCosts.knownTokenSum)}`);
+  }
+  const derivedCounts = derivedCosts.counts as Record<string, number>;
+  const costCounts = costs.counts as Record<string, unknown> | undefined;
+  if (costCounts === undefined || costCounts === null) {
+    issues.push('summary.costs has no counts block');
+  } else {
+    for (const key of Object.keys(derivedCounts)) {
+      if (costCounts[key] !== derivedCounts[key]) {
+        issues.push(`summary.costs.counts.${key} ${JSON.stringify(costCounts[key] ?? null)} disagrees with the derived ${derivedCounts[key]}`);
+      }
+    }
+  }
+  const derivedEpisodes = derivedCosts.episodes as { episodeId: string; totalTokens: number | null; requests: number }[];
+  const costEpisodes = costs.episodes;
+  if (!Array.isArray(costEpisodes) || costEpisodes.length !== derivedEpisodes.length) {
+    issues.push(`summary.costs.episodes holds ${Array.isArray(costEpisodes) ? costEpisodes.length : 'no'} entries, the ledger derives ${derivedEpisodes.length}`);
+  } else {
+    for (const derived of derivedEpisodes) {
+      const recorded = (costEpisodes as { episodeId?: unknown; totalTokens?: unknown; requests?: unknown }[])
+        .find(entry => entry.episodeId === derived.episodeId);
+      if (recorded === undefined) {
+        issues.push(`summary.costs.episodes is missing ${derived.episodeId}`);
+        continue;
+      }
+      if ((recorded.totalTokens ?? null) !== derived.totalTokens) {
+        issues.push(`summary.costs ${derived.episodeId} totalTokens ${JSON.stringify(recorded.totalTokens ?? null)} disagrees with the derived ${JSON.stringify(derived.totalTokens)}`);
+      }
+      if (recorded.requests !== derived.requests) {
+        issues.push(`summary.costs ${derived.episodeId} requests ${JSON.stringify(recorded.requests ?? null)} disagrees with the derived ${derived.requests}`);
+      }
+    }
+  }
+  const derivedCells = derivedCosts.cells as { cell: string; requests: number; totalTokens: number | null }[];
+  const costCells = costs.cells;
+  if (!Array.isArray(costCells) || costCells.length !== derivedCells.length) {
+    issues.push(`summary.costs.cells holds ${Array.isArray(costCells) ? costCells.length : 'no'} entries, the ledger derives ${derivedCells.length}`);
+  } else {
+    for (const derived of derivedCells) {
+      const recorded = (costCells as { cell?: unknown; requests?: unknown; totalTokens?: unknown }[])
+        .find(entry => entry.cell === derived.cell);
+      if (recorded === undefined) {
+        issues.push(`summary.costs.cells is missing ${derived.cell}`);
+        continue;
+      }
+      if (recorded.requests !== derived.requests || (recorded.totalTokens ?? null) !== derived.totalTokens) {
+        issues.push(`summary.costs ${derived.cell} (${JSON.stringify(recorded.requests ?? null)} requests / ${JSON.stringify(recorded.totalTokens ?? null)} tokens) disagrees with the derived (${derived.requests} / ${JSON.stringify(derived.totalTokens)})`);
+      }
+    }
+  }
+  const derivedPairs = derivedCosts.pairs as { pair: string; delta: number | null }[];
+  const costPairs = costs.pairs;
+  if (!Array.isArray(costPairs) || costPairs.length !== derivedPairs.length) {
+    issues.push(`summary.costs.pairs holds ${Array.isArray(costPairs) ? costPairs.length : 'no'} entries, the ledger derives ${derivedPairs.length}`);
+  } else {
+    for (const derived of derivedPairs) {
+      const recorded = (costPairs as { pair?: unknown; delta?: unknown }[]).find(entry => entry.pair === derived.pair);
+      if (recorded === undefined || (recorded.delta ?? null) !== derived.delta) {
+        issues.push(`summary.costs pair ${derived.pair} disagrees with the derived delta ${JSON.stringify(derived.delta)}`);
+      }
+    }
+  }
+}
+
 
 function settle(
   entries: readonly G08PlanEntry[],
