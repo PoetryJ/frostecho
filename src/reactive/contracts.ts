@@ -14,6 +14,7 @@
 import type {
   AgentSession, Observation, Provider, SessionStatus, StepFeedback, StepRecord,
 } from '../agent/contracts';
+import { G08_GAME_SCHEMA, type ActionSet } from '../temporal/contracts';
 import type { Engine, LogEntry } from '../engine';
 import type { Location, WorldEvent, WorldState } from '../types';
 
@@ -68,7 +69,9 @@ export type ReactiveActorState =
   | 'satisfied' // authoritative hunger >= goal
   | 'stopped' // stopped for any other reason (legacy policy or non-empty stop)
   | 'failed' // timeout / provider_error, latched for the episode
-  | 'budget_exhausted';
+  | 'budget_exhausted'
+  /** G08: the actor's session paused on logical time (waiting_time); non-terminal. */
+  | 'timed_wait';
 
 export type ReactiveStopReason = 'completed' | 'user_closed' | 'interrupted';
 
@@ -144,6 +147,13 @@ export interface ReactiveGameOptions {
   needPolicy?: NeedPolicy;
   /** G05: record schema version; default G04. */
   schemaVersion?: typeof G04_SCHEMA | typeof G05_SCHEMA;
+  /**
+   * G08 (opt-in): the capability axis. Present (legacy or timed_wait) the
+   * game runs G08 semantics: every session gets the axis, records and
+   * checkpoints carry it, and the record schema is the G08 schema.
+   * Undefined keeps pre-G08 behaviour byte-identical.
+   */
+  actionSet?: ActionSet;
   /** Live model name for requestConfig even on zero-request trajectories. */
   requestModel?: string;
   timeoutMs?: number;
@@ -215,7 +225,7 @@ export interface ReactiveRequestConfig {
 }
 
 export interface ReactiveRecord {
-  schema: typeof G04_SCHEMA | typeof G05_SCHEMA;
+  schema: typeof G04_SCHEMA | typeof G05_SCHEMA | typeof G08_GAME_SCHEMA;
   episodeId: string;
   scenarioId: string | null;
   wakePolicy: WakePolicy;
@@ -239,6 +249,10 @@ export interface ReactiveRecord {
   timing: { totalMs: number };
   /** G05: need policy in force ('one-shot' on pre-G05 semantics). */
   needPolicy?: NeedPolicy;
+  /** G08: capability axis; present exactly when the game opted in. */
+  actionSet?: ActionSet;
+  /** G08: per-actor wait deadlines at snapshot time; null for actors without one. */
+  wakeAtSimTime?: Record<string, number | null>;
 }
 
 export interface ReactiveStatus {
@@ -255,6 +269,10 @@ export interface ReactiveStatus {
   simTime: number;
   commands: number;
   events: number;
+  /** G08: capability axis; present exactly when the game opted in. */
+  actionSet?: ActionSet;
+  /** G08: per-actor wait deadlines; null for actors without one. */
+  wakeAtSimTime?: Record<string, number | null>;
 }
 
 export interface ReactiveGame {
