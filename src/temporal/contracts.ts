@@ -158,11 +158,27 @@ export interface G08GameCheckpoint extends Omit<GameCheckpoint, 'schema' | 'reco
 /* C: playable envelope                                                */
 /* ------------------------------------------------------------------ */
 
+/**
+ * G08-R1: the ONE effective runtime configuration a slot was created with.
+ * Saved verbatim; a load must reconstruct a matching provider (mode and
+ * model) before anything else happens. requestModel is null only for
+ * reference/script slots — a live slot always names its model.
+ */
+export interface G08EffectiveConfig {
+  mode: 'reference' | 'live';
+  requestModel: string | null;
+  thinking: boolean;
+  /** Positive; live saves the actually wired timeout. */
+  timeoutMs: number;
+}
+
 /** The .g08.json payload: capability + messages mode + full game + mailbox. */
 export interface G08Checkpoint {
   schema: typeof G08_CHECKPOINT_SCHEMA;
   actionSet: ActionSet;
   messageMode: MessageMode;
+  /** G08-R1: required. Envelopes that predate it are rejected at load. */
+  effectiveConfig: G08EffectiveConfig;
   /** Complete G08 game state: world, sessions, budgets, rotation, deadlines, mailbox history stays in communication. */
   game: G08GameCheckpoint;
   /** G07 mailbox snapshot restored verbatim; restore never re-delivers bound messages. */

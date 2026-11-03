@@ -103,6 +103,15 @@ export class ReactiveGameImpl implements ReactiveGame {
     this.needPolicy = options.needPolicy ?? 'one-shot';
     this.recordSchema = options.actionSet !== undefined ? G08_GAME_SCHEMA : (options.schemaVersion ?? G04_SCHEMA);
     this.actionSet = options.actionSet;
+    // G08-R1: the timed_wait axis is meaningless without an authoritative
+    // clock. Refuse construction before any provider call; legacy worlds
+    // keep their pre-G08 freedom (no simTime requirement).
+    if (options.actionSet === 'timed_wait') {
+      const simTime = options.initialState.simTime;
+      if (typeof simTime !== 'number' || !Number.isSafeInteger(simTime) || simTime < 0) {
+        throw new Error('INVALID_INITIAL_STATE: actionSet timed_wait requires a non-negative integer initialState.simTime');
+      }
+    }
     this.nowFn = options.now ?? Date.now;
     this.startedAt = this.nowFn();
     this.initialState = structuredClone(options.initialState);
@@ -213,6 +222,16 @@ export class ReactiveGameImpl implements ReactiveGame {
     const feedback: StepFeedback | null = cycle.session.feedback ? { ...cycle.session.feedback } : null;
     try {
       const result = await stepAgent(cycle.session);
+      // G08-R1: the actor-level budget settles inside THIS advance. A wait
+      // returned on the actor's limit call must not publish a recoverable
+      // deadline — exhaust the session (clearing the deadline) BEFORE the
+      // turn is recorded, so the record, the cycle and the returned result
+      // all reflect the termination.
+      if (result.status === 'waiting_time' && this.callsOf(actorId) >= EPISODE_CALL_LIMIT) {
+        cycle.session.exhaustBudget(`per-actor budget ${EPISODE_CALL_LIMIT} exhausted on the wait call`);
+        result.status = 'budget_exhausted';
+        result.terminal = true;
+      }
       this.recordTurn(actorId, cycle, result, feedback, logBefore);
       this.afterStep(actorId, cycle, result);
       return {

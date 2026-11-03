@@ -137,7 +137,7 @@ test('a wait on the last session call ends budget_exhausted with no deadline', a
   assert.equal(session.result().outcome, 'budget_exhausted');
 });
 
-test('a world without simTime waits against the engine fallback 0', async () => {
+test('a world without simTime rejects the wait as a protocol failure (G08-R1: no ?? 0 fallback)', async () => {
   const { eng } = timedWorld(0);
   const script = scripted(['{"type":"wait"}']);
   const session = createAgentSession({
@@ -148,8 +148,12 @@ test('a world without simTime waits against the engine fallback 0', async () => 
     now: () => 0,
     actionSet: 'timed_wait',
   });
-  await stepAgent(session);
-  assert.equal(session.wakeAtSimTime, 1);
+  const result = await stepAgent(session);
+  // The call already happened, but the wait is NOT accepted: no fallback
+  // deadline is invented from a missing authoritative clock.
+  assert.equal(result.status, 'invalid_run');
+  assert.equal(session.wakeAtSimTime, null);
+  assert.equal(session.status, 'invalid_run');
 });
 
 test('exhaustBudget terminates a paused session and clears its deadline', async () => {

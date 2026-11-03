@@ -283,7 +283,12 @@ async function main(): Promise<void> {
   }
   if (args.statusOnly || acted) printStatus(rt, args);
   if (args.save) {
-    const saved = saveG08Checkpoint(resolve(args.root), args.slot, rt.game, rt.mailbox, args.actionSet, args.messageMode);
+    // G08-R1 interim wiring — worker B replaces this with the single
+    // effectiveConfig the whole process is built from.
+    const effectiveConfig = args.live
+      ? { mode: 'live' as const, requestModel: process.env.FROSTECHO_LLM_MODEL ?? null, thinking: true, timeoutMs: 120000 }
+      : { mode: 'reference' as const, requestModel: null, thinking: false, timeoutMs: 120000 };
+    const saved = saveG08Checkpoint(resolve(args.root), args.slot, rt.game, rt.mailbox, args.actionSet, args.messageMode, effectiveConfig);
     if (!saved.ok) fail(`save failed: ${saved.code} ${(saved.issues ?? []).join('; ')}`);
     console.log(`saved ${saved.value.path}`);
   }

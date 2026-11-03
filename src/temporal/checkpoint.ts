@@ -27,7 +27,7 @@ import {
 import type { ReactiveGame } from '../reactive/contracts';
 import {
   ACTION_SETS, G08_CHECKPOINT_SCHEMA, G08_FILE_SUFFIX, G08_GAME_SCHEMA,
-  type ActionSet, type G08Checkpoint, type G08CheckpointRuntime,
+  type ActionSet, type G08Checkpoint, type G08CheckpointRuntime, type G08EffectiveConfig,
 } from './contracts';
 
 const SLOT_ERROR_CODES: readonly SlotErrorCode[] = ['INVALID_SLOT', 'INVALID_PAYLOAD', 'SCHEMA_MISMATCH', 'EXISTS', 'IO_ERROR'];
@@ -48,6 +48,7 @@ export function saveG08Checkpoint(
   mailbox: Mailbox,
   actionSet: ActionSet,
   messageMode: MessageMode,
+  effectiveConfig: G08EffectiveConfig,
 ): MessageResult<{ path: string }> {
   if (!ACTION_SETS.includes(actionSet)) {
     return messageFail('INVALID_COMMAND', `unknown action set ${JSON.stringify(actionSet)}`);
@@ -55,6 +56,8 @@ export function saveG08Checkpoint(
   if (messageMode !== 'off' && messageMode !== 'on') {
     return messageFail('INVALID_COMMAND', `unknown message mode ${JSON.stringify(messageMode)}`);
   }
+  const configIssues = effectiveConfigIssues(effectiveConfig);
+  if (configIssues.length > 0) return messageFail('INVALID_COMMAND', ...configIssues);
   const exported = exportGameCheckpoint(game);
   if (!exported.ok) {
     if (exported.code === 'SAVE_BUSY') return messageFail('QUEUE_FULL', 'a decision is in flight; save at a decision boundary only');
@@ -64,6 +67,7 @@ export function saveG08Checkpoint(
     schema: G08_CHECKPOINT_SCHEMA,
     actionSet,
     messageMode,
+    effectiveConfig,
     game: exported.value as unknown as G08Checkpoint['game'],
     communication: mailbox.export(),
   };
@@ -102,6 +106,13 @@ export function loadG08Checkpoint(path: string): MessageResult<LoadedG08Checkpoi
   }
   if (envelope.messageMode !== 'off' && envelope.messageMode !== 'on') {
     return messageFail('SCHEMA_MISMATCH', `envelope messageMode must be off|on, got ${JSON.stringify(envelope.messageMode)}`);
+  }
+  // G08-R1: an envelope without its effective config cannot be proven to
+  // reconstruct the same runtime — refuse rather than silently migrate.
+  const configIssues = effectiveConfigIssues(envelope.effectiveConfig);
+  if (configIssues.length > 0) {
+    return messageFail('SCHEMA_MISMATCH',
+      `effectiveConfig is missing or invalid (${configIssues.join('; ')}); the slot predates G08-R1 and must be recreated`);
   }
   const game = envelope.game as { schema?: unknown; actionSet?: unknown } | undefined;
   if (game === undefined || game === null || typeof game !== 'object' || game.schema !== G08_GAME_SCHEMA) {
@@ -142,4 +153,32 @@ export function restoreG08Game(
     return messageFail(restored.code === 'SCHEMA_MISMATCH' ? 'SCHEMA_MISMATCH' : 'INVALID_SNAPSHOT', ...(restored.issues ?? []));
   }
   return messageOk(restored.value);
+}
+
+/**
+ * G08-R1: shape validation for the single effectiveConfig, shared by save
+ * and load and exported for the CLI. Data only — it never reads the env.
+ */
+export function effectiveConfigIssues(config: unknown): string[] {
+  const issues: string[] = [];
+  if (typeof config !== 'object' || config === null || Array.isArray(config)) {
+    return ['effectiveConfig must be an object'];
+  }
+  const c = config as Record<string, unknown>;
+  if (c.mode !== 'reference' && c.mode !== 'live') {
+    issues.push(`effectiveConfig.mode must be 'reference' or 'live', got ${JSON.stringify(c.mode ?? null)}`);
+  }
+  if (c.mode === 'live' && (typeof c.requestModel !== 'string' || c.requestModel.length === 0)) {
+    issues.push('a live effectiveConfig must name its requestModel');
+  }
+  if (c.mode === 'reference' && c.requestModel !== null && c.requestModel !== undefined) {
+    issues.push('a reference effectiveConfig carries no requestModel');
+  }
+  if (typeof c.thinking !== 'boolean') {
+    issues.push(`effectiveConfig.thinking must be a boolean, got ${JSON.stringify(c.thinking ?? null)}`);
+  }
+  if (typeof c.timeoutMs !== 'number' || !Number.isSafeInteger(c.timeoutMs) || c.timeoutMs <= 0) {
+    issues.push(`effectiveConfig.timeoutMs must be a positive integer, got ${JSON.stringify(c.timeoutMs ?? null)}`);
+  }
+  return issues;
 }

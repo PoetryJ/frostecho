@@ -142,6 +142,11 @@ export function restoreAgentSession(data: unknown, runtime: SessionRestoreRuntim
     } else {
       actionSet = d.actionSet;
     }
+    // G08-R1: waiting_time exists ONLY on the timed_wait axis. A legacy
+    // session that claims a time pause is an impossible combination.
+    if (d.actionSet === 'legacy' && d.status === 'waiting_time') {
+      issues.push('a legacy session can never be waiting_time (wait is not in the legacy action set)');
+    }
     if (d.status === 'waiting_time') {
       if (!isNonNegInt(d.wakeAtSimTime)) {
         issues.push('a waiting_time session must carry a non-negative integer wakeAtSimTime');

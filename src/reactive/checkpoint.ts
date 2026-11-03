@@ -177,6 +177,72 @@ export function restoreNeedsGame(data: unknown, runtime: GameRestoreRuntime): Re
   if (isNonNegInt(d.totalCalls) && sessionCalls !== d.totalCalls) {
     issues.push(`totalCalls ${d.totalCalls} does not equal the sum of session providerCalls ${sessionCalls}`);
   }
+
+  /* ---------------------------------------------------------------- */
+  /* G08-R1 cross-layer invariants (named failures, no half-restore)   */
+  /* ---------------------------------------------------------------- */
+  if (g08d !== null && isPlainObject(d.cycles)) {
+    const actionSetIssues: string[] = [];
+    const deadlineIssues: string[] = [];
+    const stateIssues: string[] = [];
+    const projected = isPlainObject(g08d.wakeAtSimTime) ? g08d.wakeAtSimTime : null;
+    for (const actorId of actorIds) {
+      const list = (d.cycles as Record<string, unknown>)[actorId];
+      if (!Array.isArray(list) || list.length === 0) continue;
+      const current = list[list.length - 1];
+      const session = isPlainObject(current) && isPlainObject(current.session) ? current.session : null;
+      const actorState = isPlainObject(d.states) ? (d.states as Record<string, unknown>)[actorId] : undefined;
+      // Every G08 session carries the game's capability axis.
+      if (session !== null && g08ActionSet !== undefined && session.actionSet !== g08ActionSet) {
+        actionSetIssues.push(
+          `cycles[${actorId}] session actionSet ${JSON.stringify(session.actionSet)} contradicts the game actionSet ${JSON.stringify(g08ActionSet)}`,
+        );
+      }
+      const sessionDeadline = session !== null ? session.wakeAtSimTime : undefined;
+      const gameDeadline = projected !== null ? projected[actorId] : undefined;
+      if (actorState === 'timed_wait') {
+        // A paused actor needs a waiting session and one agreeing deadline.
+        if (session === null || session.status !== 'waiting_time') {
+          stateIssues.push(`actor ${actorId} is timed_wait but its current session status is ${JSON.stringify(session?.status ?? null)}`);
+        } else if (gameDeadline !== sessionDeadline) {
+          deadlineIssues.push(
+            `actor ${actorId} game deadline ${JSON.stringify(gameDeadline ?? null)} contradicts the session deadline ${JSON.stringify(sessionDeadline ?? null)}`,
+          );
+        }
+      } else if (session !== null && session.status === 'waiting_time') {
+        // Only a timed_wait actor may hold a waiting session (covers active
+        // and terminal actors alike).
+        stateIssues.push(`actor ${actorId} is ${JSON.stringify(actorState ?? null)} but its session is waiting_time`);
+      }
+    }
+    // waiting_time exists only on the timed_wait axis — enforce at game level too.
+    if (g08ActionSet === 'legacy' && projected !== null) {
+      for (const actorId of actorIds) {
+        if (projected[actorId] !== null && projected[actorId] !== undefined) {
+          actionSetIssues.push(`legacy game carries a wake deadline for ${actorId} (wait is not in the legacy action set)`);
+          break;
+        }
+      }
+    }
+    // The timed_wait axis is meaningless without an authoritative clock.
+    if (g08ActionSet === 'timed_wait') {
+      const simTime = isPlainObject(d.initialState) ? (d.initialState as Record<string, unknown>).simTime : undefined;
+      if (typeof simTime !== 'number' || !Number.isSafeInteger(simTime) || simTime < 0) {
+        return checkpointFail('MISSING_SIMTIME',
+          `actionSet timed_wait requires a non-negative integer initialState.simTime, got ${JSON.stringify(simTime ?? null)}`);
+      }
+    }
+    if (actionSetIssues.length > 0) {
+      return checkpointFail('ACTION_SET_CONFLICT', ...actionSetIssues, ...deadlineIssues, ...stateIssues);
+    }
+    if (deadlineIssues.length > 0) {
+      return checkpointFail('DEADLINE_CONFLICT', ...deadlineIssues, ...stateIssues);
+    }
+    if (stateIssues.length > 0) {
+      return checkpointFail('SESSION_STATE_CONFLICT', ...stateIssues);
+    }
+  }
+
   if (issues.length > 0) return checkpointFail('INVALID_CHECKPOINT', ...issues);
 
   try {

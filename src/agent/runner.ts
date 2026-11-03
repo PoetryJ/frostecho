@@ -343,7 +343,19 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
       // authoritative simTime; the budget takes precedence over pausing, so a
       // wait on the last call ends budget_exhausted with no recoverable
       // deadline. Round/feedback/cycle survive the pause untouched.
-      const simTime = session.options.world.getState().simTime ?? 0;
+      // G08-R1: a missing simTime is a protocol failure — never ?? 0.
+      const simTime = session.options.world.getState().simTime;
+      if (typeof simTime !== 'number' || !Number.isSafeInteger(simTime) || simTime < 0) {
+        const step = withTransport({
+          round,
+          observation: structuredClone(observation),
+          raw: decision.raw,
+          parse,
+        }, transport);
+        session.steps.push(step);
+        finishTerminal(session, 'invalid_run', 'invalid_run', 'timed_wait wait without a valid authoritative simTime');
+        return { status: 'invalid_run', terminal: true, providerCalled: true, step };
+      }
       const budgetTerminated = session.providerCalls >= MAX_PROVIDER_CALLS;
       const wakeAtSimTime = budgetTerminated ? null : simTime + WAIT_SIM_STEPS;
       const step = withTransport({

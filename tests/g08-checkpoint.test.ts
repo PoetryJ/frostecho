@@ -28,6 +28,9 @@ import { slotChecksum } from '../src/persistence/atomic-slot';
 import type { Provider } from '../src/agent/contracts';
 import type { WorldState } from '../src/types';
 
+/** G08-R1: every save now carries one effective configuration. */
+const REF_CONFIG = { mode: 'reference', requestModel: null, thinking: false, timeoutMs: 120000 } as const;
+
 function queued(scripts: Record<string, string[]>, counters: Record<string, number>): (actorId: string) => Provider {
   return (actorId: string) => ({
     decide: async () => {
@@ -86,7 +89,7 @@ test('save/load round-trip: paused session restores with zero provider calls and
       npc_c: ['{"type":"stop"}'],
     });
     await playToPause(built);
-    const saved = saveG08Checkpoint(root, 'paused', built.game, built.mailbox, 'timed_wait', 'off');
+    const saved = saveG08Checkpoint(root, 'paused', built.game, built.mailbox, 'timed_wait', 'off', REF_CONFIG);
     assert.ok(saved.ok, (saved as { issues?: string[] }).issues?.join('; '));
     assert.equal(existsSync(join(root, 'paused.g08.json')), true);
 
@@ -157,7 +160,7 @@ test('resumed trajectory matches the never-interrupted one: wake, continue, iden
   try {
     const interrupted = newG08Game('g08-c-res', scripts);
     await playToPause(interrupted);
-    const saved = saveG08Checkpoint(root, 'res', interrupted.game, interrupted.mailbox, 'timed_wait', 'off');
+    const saved = saveG08Checkpoint(root, 'res', interrupted.game, interrupted.mailbox, 'timed_wait', 'off', REF_CONFIG);
     assert.ok(saved.ok);
     const loaded = loadG08Checkpoint(g08CheckpointPath(root, 'res'));
     assert.ok(loaded.ok);
@@ -202,7 +205,7 @@ test('a runtime axis contradiction is refused with CONFLICT before any restore',
       npc_c: ['{"type":"stop"}'],
     });
     await playToPause(built);
-    const saved = saveG08Checkpoint(root, 'axes', built.game, built.mailbox, 'timed_wait', 'off');
+    const saved = saveG08Checkpoint(root, 'axes', built.game, built.mailbox, 'timed_wait', 'off', REF_CONFIG);
     assert.ok(saved.ok);
     const loaded = loadG08Checkpoint(g08CheckpointPath(root, 'axes'));
     assert.ok(loaded.ok);
@@ -246,7 +249,7 @@ test('foreign suffixes (.g06/.g07) and tampered envelopes are rejected, existing
       npc_c: ['{"type":"stop"}'],
     });
     await playToPause(built);
-    const saved = saveG08Checkpoint(root, 'guard', built.game, built.mailbox, 'timed_wait', 'off');
+    const saved = saveG08Checkpoint(root, 'guard', built.game, built.mailbox, 'timed_wait', 'off', REF_CONFIG);
     assert.ok(saved.ok);
 
     // Tampered payloads are rewritten with a FRESH checksum, so the guard
@@ -280,7 +283,7 @@ test('foreign suffixes (.g06/.g07) and tampered envelopes are rejected, existing
 
     // Second save into the SAME slot is refused; the file keeps the first bytes.
     const before = readFileSync(g08CheckpointPath(root, 'guard'), 'utf8');
-    const again = saveG08Checkpoint(root, 'guard', built.game, built.mailbox, 'timed_wait', 'off');
+    const again = saveG08Checkpoint(root, 'guard', built.game, built.mailbox, 'timed_wait', 'off', REF_CONFIG);
     assert.equal(again.ok, false);
     assert.equal(readFileSync(g08CheckpointPath(root, 'guard'), 'utf8'), before, 'the existing slot is untouched');
     await built.game.close();
