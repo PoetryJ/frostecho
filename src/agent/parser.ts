@@ -1,3 +1,4 @@
+import type { ActionSet } from '../temporal/contracts';
 import { Location, RULES } from '../types';
 import { AgentAction, ParseResult } from './contracts';
 
@@ -8,9 +9,11 @@ const LOCATIONS = new Set<string>(RULES.LOCATIONS);
  *   {"type":"move","to":"dorm"|"kitchen"}
  *   {"type":"eat"}
  *   {"type":"stop"}
+ *   {"type":"wait"}  — only with actionSet 'timed_wait'
  * Extra fields, forged actorId/commandId, and unknown places are rejected.
+ * The legacy action set reports wait like any other unknown type.
  */
-export function parseAction(raw: string): ParseResult {
+export function parseAction(raw: string, actionSet: ActionSet = 'legacy'): ParseResult {
   if (typeof raw !== 'string') return { ok: false, error: 'invalid JSON' };
   let value: unknown;
   try {
@@ -39,5 +42,11 @@ export function parseAction(raw: string): ParseResult {
     }
     return { ok: true, action: { type: obj.type } };
   }
-  return { ok: false, error: 'type must be move, eat, or stop' };
+  if (obj.type === 'wait' && actionSet === 'timed_wait') {
+    if (keys.length !== 1) {
+      return { ok: false, error: 'wait must be exactly {"type":"wait"}' };
+    }
+    return { ok: true, action: { type: 'wait' } };
+  }
+  return { ok: false, error: actionSet === 'timed_wait' ? 'type must be move, eat, stop, or wait' : 'type must be move, eat, or stop' };
 }
