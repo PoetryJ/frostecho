@@ -395,6 +395,72 @@ test('verify is read-only', async () => {
   }
 });
 
+test('G07-R1: omitting --timeout wires the effective 120000 ms into every layer', async () => {
+  const server = await startServer();
+  const root = tempRoot();
+  try {
+    // batchOptions carries no timeoutMs, so runG07Batch normalizes to the
+    // frozen 120000 ms; the fake server answers instantly, nothing waits.
+    const result = await runG07Batch(batchOptions(server.url, root, 'g07-wiring'));
+    assert.equal(result.exitCode, 0);
+    assert.equal(server.requests.length, 8);
+
+    const plan = JSON.parse(readFileSync(join(result.batchDir, 'plan.json'), 'utf8')) as {
+      requestConfig: { timeoutMs: number };
+    };
+    assert.equal(plan.requestConfig.timeoutMs, G07_TIMEOUT_MS, 'plan layer');
+
+    const batch = readBatch(result.batchDir);
+    for (const record of batch.episodes.values()) {
+      assert.equal(record.requestConfig.timeoutMs, G07_TIMEOUT_MS, 'episode ledger layer');
+      assert.equal(record.snapshot.requestConfig.timeoutMs, G07_TIMEOUT_MS,
+        'the game/session layer must run the normalized timeout, not the 15000 ms fallback');
+      for (const attempt of record.attempts) {
+        assert.equal(attempt.begin.requestConfig.timeoutMs, G07_TIMEOUT_MS, 'attempt begin layer');
+      }
+    }
+
+    const verified = verifyBatch(result.batchDir);
+    assert.equal(verified.ok, true);
+    assert.equal(verified.behaviorAndCostOk, true);
+    assert.equal(verified.configurationConsistent, true);
+  } finally {
+    await server.close();
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('G07-R1: a snapshot/plan timeout divergence is a configuration issue, not a behaviour failure', async () => {
+  const server = await startServer();
+  const root = tempRoot();
+  try {
+    const result = await runG07Batch(batchOptions(server.url, root, 'g07-divergence'));
+    assert.equal(result.exitCode, 0);
+    // Reproduce the shipped-batch state on disk: the game layer actually ran
+    // 15000 ms while the plan and the ledger recorded 120000 ms.
+    const episodesDir = join(result.batchDir, 'episodes');
+    for (const name of readdirSync(episodesDir)) {
+      const path = join(episodesDir, name);
+      const episode = JSON.parse(readFileSync(path, 'utf8')) as {
+        snapshot: { requestConfig: { timeoutMs: number } };
+      };
+      episode.snapshot.requestConfig.timeoutMs = 15000;
+      writeFileSync(path, JSON.stringify(episode, null, 2));
+    }
+    const verified = verifyBatch(result.batchDir);
+    assert.equal(verified.ok, false, 'strict verify reports the mismatch');
+    assert.equal(verified.behaviorAndCostOk, true, 'the behaviour and cost evidence stays valid');
+    assert.equal(verified.configurationConsistent, false);
+    assert.ok(verified.configurationIssues.length >= 8, 'every diverging episode is flagged');
+    assert.ok(verified.configurationIssues.every(issue => issue.includes('timeout')));
+    // No whitelisting: the mismatch is also visible in the full issue list.
+    assert.ok(verified.issues.some(issue => issue.includes('differs from the planned 120000 ms')));
+  } finally {
+    await server.close();
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test('an HTTP 500 stops the batch: failed record saved, later slots not_run, no retry', async () => {
   const server = await startServer({ failAt: 3 });
   const root = tempRoot();

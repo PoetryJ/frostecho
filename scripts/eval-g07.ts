@@ -530,7 +530,10 @@ export async function runG07Batch(options: G07RunOptions): Promise<G07RunResult>
       writeNotRun(store, entry, `batch stopped earlier: ${fatal}`);
       continue;
     }
-    const run = await runEpisode(entry, store, gate, { ...options, requestConfig });
+    // G07-R1: the normalized timeout must reach every layer. Spreading only
+    // {...options, requestConfig} dropped it when the CLI omitted --timeout,
+    // so the game fell back to 15000 ms while plan/ledger said 120000 ms.
+    const run = await runEpisode(entry, store, gate, { ...options, timeoutMs, requestConfig });
     log(`${run.outcome.toUpperCase()} ${entry.episodeId}${run.failure === null ? '' : ` (${run.failure})`}`);
     if (run.outcome !== 'completed') {
       fatal = `${entry.episodeId}: ${run.outcome}${run.failure === null ? '' : ` (${run.failure})`}`;
@@ -649,6 +652,11 @@ function printVerify(result: ReturnType<typeof verifyBatch>, batchId: string): v
     for (const issue of result.issues) console.error(`  - ${issue}`);
   } else {
     console.log(`verify ${batchId}: ok`);
+  }
+  console.log(`  behaviorAndCost=${result.behaviorAndCostOk ? 'ok' : 'fail'} configuration=${result.configurationConsistent ? 'consistent' : 'mismatch'}`);
+  if (result.configurationIssues.length > 0) {
+    console.log('  configuration issues:');
+    for (const issue of result.configurationIssues) console.log(`    - ${issue}`);
   }
   console.log(`  mode=${String(stats.mode)} model=${String(stats.model)} planned=${stats.planned} completed=${stats.completed} failed=${stats.failed} notRun=${stats.notRun}`);
   console.log(`  records=${stats.records} http=${stats.http} attempts=${stats.attempts} blocked=${stats.blocked} spent=${stats.spent}`);

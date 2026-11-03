@@ -812,6 +812,15 @@ export function readBatch(batchDir: string): BatchFiles {
 export interface G07VerifyResult {
   ok: boolean;
   issues: string[];
+  /**
+   * G07-R1: configuration issues are reported separately. A timeout mismatch
+   * between the plan/ledger and the effective game/session layer is a real
+   * finding (ok=false) but does not invalidate the behaviour and cost data,
+   * so behaviorAndCostOk and configurationConsistent are both exposed.
+   */
+  configurationIssues: string[];
+  behaviorAndCostOk: boolean;
+  configurationConsistent: boolean;
   stats: {
     mode: string | null;
     model: string | null;
@@ -839,8 +848,12 @@ function sameJson(a: unknown, b: unknown): boolean {
  */
 export function verifyBatch(batchDir: string): G07VerifyResult {
   const issues: string[] = [];
-  const check = (condition: boolean, message: string): void => {
-    if (!condition) issues.push(message);
+  const configurationIssues: string[] = [];
+  const check = (condition: boolean, message: string, kind?: 'configuration'): void => {
+    if (!condition) {
+      issues.push(message);
+      if (kind === 'configuration') configurationIssues.push(message);
+    }
   };
   const batch = readBatch(batchDir);
   const plan = batch.plan as (Record<string, unknown> & {
@@ -866,8 +879,16 @@ export function verifyBatch(batchDir: string): G07VerifyResult {
     blocked: batch.attempts.blocked.length,
     spent: batch.summary?.budget.spent ?? 0,
   };
-  if (plan === null) return { ok: false, issues: ['plan.json is missing'], stats };
-  if (batch.summary === null) return { ok: false, issues: ['summary.json is missing'], stats };
+  const result = (): G07VerifyResult => ({
+    ok: issues.length === 0,
+    issues,
+    configurationIssues,
+    behaviorAndCostOk: issues.length === configurationIssues.length,
+    configurationConsistent: configurationIssues.length === 0,
+    stats,
+  });
+  if (plan === null) { issues.push('plan.json is missing'); return result(); }
+  if (batch.summary === null) { issues.push('summary.json is missing'); return result(); }
 
   check(plan.plan.length === G07_HARD_CHAT_LIMIT, `plan must contain ${G07_HARD_CHAT_LIMIT} episodes, found ${plan.plan.length}`);
   check(sameJson(plan.plan, G07_PLAN), 'plan does not match the frozen 8-episode order');
@@ -933,6 +954,12 @@ export function verifyBatch(batchDir: string): G07VerifyResult {
   check(httpCount <= summary.budget.spent, `ledger: ${httpCount} HTTP exchanges recorded but only ${summary.budget.spent} slots were spent`);
   check(summary.budget.blocked === batch.attempts.blocked.length,
     `ledger: budget.blocked=${summary.budget.blocked} but ${batch.attempts.blocked.length} blocked records exist`);
+  // G07-R1: every ledger attempt begin must carry the planned timeout too.
+  for (const begin of batch.attempts.begins) {
+    check(begin.requestConfig.timeoutMs === plan.requestConfig.timeoutMs,
+      `attempt ${begin.attemptId}: ledger timeout ${begin.requestConfig.timeoutMs} ms differs from the planned ${plan.requestConfig.timeoutMs} ms`,
+      'configuration');
+  }
 
   for (const entry of G07_PLAN) {
     const status = batch.statuses.get(entry.episodeId) ?? null;
@@ -997,7 +1024,7 @@ export function verifyBatch(batchDir: string): G07VerifyResult {
   check(sameJson(summary.structuralGate, expectedGate), 'summary structural gate differs from the re-derived gate');
   check(expectedGate.ok, `structural gate failed: ${expectedGate.issues.join('; ')}`);
 
-  return { ok: issues.length === 0, issues, stats };
+  return { ok: issues.length === 0, issues, configurationIssues, behaviorAndCostOk: issues.length === configurationIssues.length, configurationConsistent: configurationIssues.length === 0, stats };
 }
 
 /** Structural only: the first S1 off/on pair must prove the wiring, not the behaviour. */
@@ -1050,7 +1077,7 @@ function verifyEpisode(
     mode: 'live' | 'fake';
   },
   batch: BatchFiles,
-  check: (condition: boolean, message: string) => void,
+  check: (condition: boolean, message: string, kind?: 'configuration') => void,
 ): void {
   const id = entry.episodeId;
   check(record.schema === G07_EPISODE_SCHEMA, `${id}: episode schema is unknown`);
@@ -1058,6 +1085,15 @@ function verifyEpisode(
   check(record.scenarioText === G07_SCENARIOS[entry.scenario], `${id}: scenario text was altered`);
   check(record.templateFingerprint === plan.templateFingerprint, `${id}: template fingerprint differs from plan.json`);
   check(sameJson(record.requestConfig, plan.requestConfig), `${id}: recorded request config differs from plan.json`);
+  // G07-R1: the snapshot carries the timeout the game layer actually used.
+  // It must match the planned/ledger value; a divergence (e.g. 15000 ms
+  // effective against a recorded 120000 ms) is a configuration finding.
+  check(record.snapshot.requestConfig.timeoutMs === plan.requestConfig.timeoutMs,
+    `${id}: snapshot timeout ${record.snapshot.requestConfig.timeoutMs} ms differs from the planned ${plan.requestConfig.timeoutMs} ms`,
+    'configuration');
+  check(record.snapshot.requestConfig.timeoutMs === record.requestConfig.timeoutMs,
+    `${id}: snapshot timeout ${record.snapshot.requestConfig.timeoutMs} ms differs from the episode ledger timeout ${record.requestConfig.timeoutMs} ms`,
+    'configuration');
   check(sameJson(record.initialState, G07_INITIAL_STATE), `${id}: initial state is not the frozen start`);
 
   // --- send invariants -------------------------------------------------

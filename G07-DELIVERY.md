@@ -113,7 +113,7 @@ node dist/scripts/eval-g07.js --verify --out artifacts/g07 --batch g07-live-2026
 | chat 请求数 | **8**（硬上限 8，不重置、不分批） |
 | 预检请求 | **2**（`/health`、`/v1/models`，只读，独立计数） |
 | tokens | **3750**（off 402×4=1608；on 486×2 + 585×2=2142；无缺失，未估算） |
-| 延迟 | `latencySum=65412ms`，单请求最长 `14172ms`，timeout 120000ms |
+| 延迟 | `latencySum=65412ms`，单请求最长 `14172ms`，timeout 记录 120000ms；**R1 更正：实际生效 15000ms**，见 §11 |
 | 每臂延迟 | off 19833ms（4 请求）；on 45579ms（4 请求） |
 | 失败/未知成本 | `unresolvedAttempts=0`、`httpAttempts=8`、`blocked=0` |
 | 重试 | 无（无隐式重试；失败即停语义已由 fake 500/timeout/预算测试覆盖） |
@@ -133,3 +133,24 @@ node dist/scripts/eval-g07.js --verify --out artifacts/g07 --batch g07-live-2026
 - bundle SHA256 与 `MANIFEST.sha256` SHA256：见 `handoff/20261102-g07-finalize/PACKAGE-SHA256.txt`；独立 clone 的 HEAD、manifest、全量测试与本批只读 verify 结果见同目录 `PACKAGE-README.txt`
 - 包内复跑脚本：`handoff/20261102-g07-finalize/bundle.sh`（`BATCH=g07-live-20261102-r1 bash ...`）
 - 发布：服务器不 push、不建 PR、不合并；由 Codex 从 bundle 本机发布
+
+## 11. G07-R1 超时更正（bounded rework，2026-11-03）
+
+**事实**：正式批 `g07-live-20261102-r1` 的 `plan.json`、episode 账本与 attempt begin 均记录 `timeoutMs=120000`，但游戏/session 层实际生效 `15000ms`（证据：`episodes/*.json` 的 `snapshot.requestConfig.timeoutMs=15000`，`ReactiveGame` 默认回落）。8 局全部受影响。
+
+**根因**：`runG07Batch` 将归一化后的 `timeoutMs`（默认 120000）传入 `requestConfigFor`，但调 `runEpisode` 时只展开 `{...options, requestConfig}`；CLI 省略 `--timeout` 时 `options.timeoutMs=undefined`，`createNeedsGame` 未收到值而回落 15000。
+
+**修复**（独立提交，`codex/g07-player-messages`）：
+
+- `scripts/eval-g07.ts`：`runEpisode` 调用改为 `{...options, timeoutMs, requestConfig}`，同一生效配置贯穿 plan/attempt/game/session；未改任何通用默认值
+- `scripts/g07-eval-lib.ts`：verifier 新增 ① 逐 episode `snapshot.requestConfig.timeoutMs` 与 plan、与 episode 账本的交叉核对；② 逐 attempt begin 的 ledger timeout 与 plan 交叉核对；③ 结果分类输出 `behaviorAndCostOk` 与 `configurationConsistent`（strict verify 对旧批 exit 1 属正确结果，无白名单）
+- `tests/g07-eval.test.ts` 新增 2 项：省略 `--timeout` 时 120000ms 到达 plan/episode/snapshot/attempt 全部层（fake 立即响应，不真等）；snapshot/plan timeout 分歧被归为 configuration issue 而 `behaviorAndCostOk=true`。全量测试 322/322（原 320 + 新 2）
+- 独立更正记录：`artifacts/g07/g07-live-20261102-r1.timeout-correction.json`；**旧批目录字节未改、未重跑**
+
+**行为/成本结论仍有效**：8/8 完成，最长请求 14172ms < 实际生效 15000ms，没有任何一局被较短超时截断；tokens（3750）与延迟（65412ms）数据不受影响。消息 on/off 动作无差异的结论不变；默认仍为 off。
+
+**更正后复验命令**（只读，预期 exit 1 + `behaviorAndCost=ok configuration=mismatch`，16 条 timeout issue）：
+
+```bash
+node dist/scripts/eval-g07.js --verify --out artifacts/g07 --batch g07-live-20261102-r1
+```
