@@ -1,0 +1,441 @@
+{
+  "schema": "frostecho.g08.eval.summary/1",
+  "costsSchema": "frostecho.g08.eval.costs/1",
+  "batch": "g08-closeout-live-20261103",
+  "createdAt": "2026-11-03T12:16:54.923Z",
+  "mode": "live",
+  "model": "qwen3.8-27b",
+  "version": {
+    "commit": "b56bd0dc9c91ddcabee3dd499ce00cf308b3f808",
+    "dirty": false,
+    "dirtyFiles": [],
+    "sourceFingerprint": "9e384c40dbaa67e94b1b421cf860c1bfeea20c9261ba2e7e9327be2c19d53e4d",
+    "promptFingerprint": "8d66afdf043633df7103189682fdd5b1647e293554bba761825529f1364c9ae2",
+    "node": "v22.20.0",
+    "platform": "linux"
+  },
+  "endpointHost": "127.0.0.1:18872",
+  "hardChatLimit": 8,
+  "gateSpent": 8,
+  "gateBlocked": 0,
+  "fatal": null,
+  "totals": {
+    "planned": 8,
+    "completed": 8,
+    "failed": 0,
+    "notRun": 0
+  },
+  "chatRequests": 8,
+  "cells": {
+    "legacy-off": {
+      "episodeId": "g08-r1-legacy-off",
+      "actionSet": "legacy",
+      "arm": "off",
+      "outcome": "completed",
+      "npcAction": "eat",
+      "npcAte": true,
+      "playerAte": false,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": 544,
+      "requests": 1,
+      "latencyMs": 32577,
+      "usageUnknown": false
+    },
+    "legacy-on": {
+      "episodeId": "g08-r1-legacy-on",
+      "actionSet": "legacy",
+      "arm": "on",
+      "outcome": "completed",
+      "npcAction": "eat",
+      "npcAte": true,
+      "playerAte": false,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": 814,
+      "requests": 1,
+      "latencyMs": 51966,
+      "usageUnknown": false
+    },
+    "timed_wait-off": {
+      "episodeId": "g08-r1-timed_wait-off",
+      "actionSet": "timed_wait",
+      "arm": "off",
+      "outcome": "completed",
+      "npcAction": "eat",
+      "npcAte": true,
+      "playerAte": false,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": 507,
+      "requests": 1,
+      "latencyMs": 21055,
+      "usageUnknown": false
+    },
+    "timed_wait-on": {
+      "episodeId": "g08-r1-timed_wait-on",
+      "actionSet": "timed_wait",
+      "arm": "on",
+      "outcome": "completed",
+      "npcAction": "eat",
+      "npcAte": true,
+      "playerAte": false,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": 803,
+      "requests": 1,
+      "latencyMs": 51264,
+      "usageUnknown": false
+    }
+  },
+  "episodes": [
+    {
+      "episodeId": "g08-r1-legacy-off",
+      "actionSet": "legacy",
+      "arm": "off",
+      "outcome": "completed",
+      "npcAction": "eat",
+      "npcAte": true,
+      "playerAte": false,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": 544,
+      "requests": 1,
+      "latencyMs": 32577,
+      "usageUnknown": false
+    },
+    {
+      "episodeId": "g08-r1-legacy-on",
+      "actionSet": "legacy",
+      "arm": "on",
+      "outcome": "completed",
+      "npcAction": "eat",
+      "npcAte": true,
+      "playerAte": false,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": 814,
+      "requests": 1,
+      "latencyMs": 51966,
+      "usageUnknown": false
+    },
+    {
+      "episodeId": "g08-r1-timed_wait-off",
+      "actionSet": "timed_wait",
+      "arm": "off",
+      "outcome": "completed",
+      "npcAction": "eat",
+      "npcAte": true,
+      "playerAte": false,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": 507,
+      "requests": 1,
+      "latencyMs": 21055,
+      "usageUnknown": false
+    },
+    {
+      "episodeId": "g08-r1-timed_wait-on",
+      "actionSet": "timed_wait",
+      "arm": "on",
+      "outcome": "completed",
+      "npcAction": "eat",
+      "npcAte": true,
+      "playerAte": false,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": 803,
+      "requests": 1,
+      "latencyMs": 51264,
+      "usageUnknown": false
+    },
+    {
+      "episodeId": "g08-r2-timed_wait-on",
+      "actionSet": "timed_wait",
+      "arm": "on",
+      "outcome": "completed",
+      "npcAction": "eat",
+      "npcAte": true,
+      "playerAte": false,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": 803,
+      "requests": 1,
+      "latencyMs": 47519,
+      "usageUnknown": false
+    },
+    {
+      "episodeId": "g08-r2-timed_wait-off",
+      "actionSet": "timed_wait",
+      "arm": "off",
+      "outcome": "completed",
+      "npcAction": "eat",
+      "npcAte": true,
+      "playerAte": false,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": 507,
+      "requests": 1,
+      "latencyMs": 18532,
+      "usageUnknown": false
+    },
+    {
+      "episodeId": "g08-r2-legacy-on",
+      "actionSet": "legacy",
+      "arm": "on",
+      "outcome": "completed",
+      "npcAction": "eat",
+      "npcAte": true,
+      "playerAte": false,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": 814,
+      "requests": 1,
+      "latencyMs": 52154,
+      "usageUnknown": false
+    },
+    {
+      "episodeId": "g08-r2-legacy-off",
+      "actionSet": "legacy",
+      "arm": "off",
+      "outcome": "completed",
+      "npcAction": "eat",
+      "npcAte": true,
+      "playerAte": false,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": 544,
+      "requests": 1,
+      "latencyMs": 24337,
+      "usageUnknown": false
+    }
+  ],
+  "tokens": [
+    {
+      "episodeId": "g08-r1-legacy-off",
+      "totalTokens": 544
+    },
+    {
+      "episodeId": "g08-r1-legacy-on",
+      "totalTokens": 814
+    },
+    {
+      "episodeId": "g08-r1-timed_wait-off",
+      "totalTokens": 507
+    },
+    {
+      "episodeId": "g08-r1-timed_wait-on",
+      "totalTokens": 803
+    },
+    {
+      "episodeId": "g08-r2-timed_wait-on",
+      "totalTokens": 803
+    },
+    {
+      "episodeId": "g08-r2-timed_wait-off",
+      "totalTokens": 507
+    },
+    {
+      "episodeId": "g08-r2-legacy-on",
+      "totalTokens": 814
+    },
+    {
+      "episodeId": "g08-r2-legacy-off",
+      "totalTokens": 544
+    }
+  ],
+  "costs": {
+    "schema": "frostecho.g08.eval.costs/1",
+    "counts": {
+      "planned": 8,
+      "completed": 8,
+      "failed": 0,
+      "notRun": 0,
+      "chatRequests": 8,
+      "spent": 8,
+      "blocked": 0,
+      "unresolved": 0,
+      "usageUnknown": 0
+    },
+    "knownTokenSum": 5336,
+    "usageUnknown": 0,
+    "episodes": [
+      {
+        "episodeId": "g08-r1-legacy-off",
+        "actionSet": "legacy",
+        "arm": "off",
+        "outcome": "completed",
+        "requests": 1,
+        "begins": 1,
+        "finishes": 1,
+        "totalTokens": 544,
+        "usageUnknown": false,
+        "latencyMs": 32577
+      },
+      {
+        "episodeId": "g08-r1-legacy-on",
+        "actionSet": "legacy",
+        "arm": "on",
+        "outcome": "completed",
+        "requests": 1,
+        "begins": 1,
+        "finishes": 1,
+        "totalTokens": 814,
+        "usageUnknown": false,
+        "latencyMs": 51966
+      },
+      {
+        "episodeId": "g08-r1-timed_wait-off",
+        "actionSet": "timed_wait",
+        "arm": "off",
+        "outcome": "completed",
+        "requests": 1,
+        "begins": 1,
+        "finishes": 1,
+        "totalTokens": 507,
+        "usageUnknown": false,
+        "latencyMs": 21055
+      },
+      {
+        "episodeId": "g08-r1-timed_wait-on",
+        "actionSet": "timed_wait",
+        "arm": "on",
+        "outcome": "completed",
+        "requests": 1,
+        "begins": 1,
+        "finishes": 1,
+        "totalTokens": 803,
+        "usageUnknown": false,
+        "latencyMs": 51264
+      },
+      {
+        "episodeId": "g08-r2-timed_wait-on",
+        "actionSet": "timed_wait",
+        "arm": "on",
+        "outcome": "completed",
+        "requests": 1,
+        "begins": 1,
+        "finishes": 1,
+        "totalTokens": 803,
+        "usageUnknown": false,
+        "latencyMs": 47519
+      },
+      {
+        "episodeId": "g08-r2-timed_wait-off",
+        "actionSet": "timed_wait",
+        "arm": "off",
+        "outcome": "completed",
+        "requests": 1,
+        "begins": 1,
+        "finishes": 1,
+        "totalTokens": 507,
+        "usageUnknown": false,
+        "latencyMs": 18532
+      },
+      {
+        "episodeId": "g08-r2-legacy-on",
+        "actionSet": "legacy",
+        "arm": "on",
+        "outcome": "completed",
+        "requests": 1,
+        "begins": 1,
+        "finishes": 1,
+        "totalTokens": 814,
+        "usageUnknown": false,
+        "latencyMs": 52154
+      },
+      {
+        "episodeId": "g08-r2-legacy-off",
+        "actionSet": "legacy",
+        "arm": "off",
+        "outcome": "completed",
+        "requests": 1,
+        "begins": 1,
+        "finishes": 1,
+        "totalTokens": 544,
+        "usageUnknown": false,
+        "latencyMs": 24337
+      }
+    ],
+    "cells": [
+      {
+        "cell": "legacy-off",
+        "episodes": [
+          "g08-r1-legacy-off",
+          "g08-r2-legacy-off"
+        ],
+        "requests": 2,
+        "totalTokens": 1088,
+        "usageUnknown": false,
+        "latencyMs": 56914
+      },
+      {
+        "cell": "legacy-on",
+        "episodes": [
+          "g08-r1-legacy-on",
+          "g08-r2-legacy-on"
+        ],
+        "requests": 2,
+        "totalTokens": 1628,
+        "usageUnknown": false,
+        "latencyMs": 104120
+      },
+      {
+        "cell": "timed_wait-off",
+        "episodes": [
+          "g08-r1-timed_wait-off",
+          "g08-r2-timed_wait-off"
+        ],
+        "requests": 2,
+        "totalTokens": 1014,
+        "usageUnknown": false,
+        "latencyMs": 39587
+      },
+      {
+        "cell": "timed_wait-on",
+        "episodes": [
+          "g08-r1-timed_wait-on",
+          "g08-r2-timed_wait-on"
+        ],
+        "requests": 2,
+        "totalTokens": 1606,
+        "usageUnknown": false,
+        "latencyMs": 98783
+      }
+    ],
+    "pairs": [
+      {
+        "pair": "legacy-r1",
+        "offEpisode": "g08-r1-legacy-off",
+        "onEpisode": "g08-r1-legacy-on",
+        "offTokens": 544,
+        "onTokens": 814,
+        "delta": 270
+      },
+      {
+        "pair": "timed_wait-r1",
+        "offEpisode": "g08-r1-timed_wait-off",
+        "onEpisode": "g08-r1-timed_wait-on",
+        "offTokens": 507,
+        "onTokens": 803,
+        "delta": 296
+      },
+      {
+        "pair": "legacy-r2",
+        "offEpisode": "g08-r2-legacy-off",
+        "onEpisode": "g08-r2-legacy-on",
+        "offTokens": 544,
+        "onTokens": 814,
+        "delta": 270
+      },
+      {
+        "pair": "timed_wait-r2",
+        "offEpisode": "g08-r2-timed_wait-off",
+        "onEpisode": "g08-r2-timed_wait-on",
+        "offTokens": 507,
+        "onTokens": 803,
+        "delta": 296
+      }
+    ]
+  }
+}
