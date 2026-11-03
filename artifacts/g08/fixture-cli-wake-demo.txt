@@ -1,0 +1,75 @@
+=== [1] new timed_wait game; npc_a decides wait (1 call), pump runs to idle with ZERO extra calls, then save ===
+{
+  "actionSet": "timed_wait",
+  "messages": "off",
+  "closed": false,
+  "interrupted": false,
+  "simTime": 0,
+  "actors": {
+    "npc_a": {
+      "state": "timed_wait",
+      "cycle": 1,
+      "providerCalls": 1
+    },
+    "npc_c": {
+      "state": "stopped",
+      "cycle": 1,
+      "providerCalls": 1
+    }
+  },
+  "paused": "npc_a->simTime 1",
+  "player": {
+    "location": "kitchen",
+    "hunger": 70
+  },
+  "food": {
+    "kitchen": 3,
+    "dorm": 0
+  },
+  "mailbox": {
+    "sender": "npc_b",
+    "messageSeq": 0,
+    "bindSeq": 0,
+    "pending": {},
+    "lastReceipt": null
+  },
+  "totalCalls": 0
+}
+saved /data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g08-play/wake-demo2.g08.json
+=== [2] NEW PROCESS: load (0 calls), advance one logical time step, the woken npc_a continues the SAME session and decides stop (2nd call) ===
+{
+  "actionSet": "timed_wait",
+  "messages": "off",
+  "closed": false,
+  "interrupted": false,
+  "simTime": 1,
+  "actors": {
+    "npc_a": {
+      "state": "stopped",
+      "cycle": 1,
+      "providerCalls": 2
+    },
+    "npc_c": {
+      "state": "stopped",
+      "cycle": 1,
+      "providerCalls": 1
+    }
+  },
+  "paused": "(none)",
+  "player": {
+    "location": "kitchen",
+    "hunger": 60
+  },
+  "food": {
+    "kitchen": 3,
+    "dorm": 0
+  },
+  "mailbox": {
+    "sender": "npc_b",
+    "messageSeq": 0,
+    "bindSeq": 0,
+    "pending": {},
+    "lastReceipt": null
+  },
+  "totalCalls": 2
+}
