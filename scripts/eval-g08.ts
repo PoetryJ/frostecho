@@ -551,7 +551,8 @@ async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const out = resolve(args.get('--out') ?? 'artifacts/g08');
   if (args.has('--verify')) {
-    const batchId = args.get('--verify');
+    // Accept both `--verify <batchId>` and the G07-style `--verify --batch <id>`.
+    const batchId = args.get('--verify') !== '' ? args.get('--verify') : args.get('--batch');
     if (batchId === undefined || batchId === '' || !BATCH_NAME_RE.test(batchId)) {
       console.error('--verify expects a batch id');
       process.exit(2);
