@@ -16,10 +16,16 @@ import {
 } from '../persistence/contracts';
 import { ReactiveGameImpl, CheckpointExportError } from './game';
 import { G04_SCHEMA, G05_SCHEMA, type ReactiveActorState, type ReactiveGame } from './contracts';
+import {
+  G08_GAME_SCHEMA, ACTION_SETS,
+  type ActionSet, type G08GameCheckpoint,
+} from '../temporal/contracts';
 
 const ACTOR_STATES: readonly ReactiveActorState[] = [
   'active', 'waiting', 'hungry', 'satisfied', 'stopped', 'failed', 'budget_exhausted',
 ];
+/** G08 adds the non-terminal timed_wait actor state; the G06 set stays frozen. */
+const ACTOR_STATES_G08: readonly ReactiveActorState[] = [...ACTOR_STATES, 'timed_wait'];
 
 interface CheckpointSource {
   checkpointData(): GameCheckpoint;
@@ -52,11 +58,33 @@ export function exportGameCheckpoint(game: unknown): Result<GameCheckpoint> {
 
 export function restoreNeedsGame(data: unknown, runtime: GameRestoreRuntime): Result<ReactiveGame> {
   if (!isPlainObject(data)) return checkpointFail('SCHEMA_MISMATCH', 'checkpoint must be a JSON object');
-  if (data.schema !== G06_CHECKPOINT_SCHEMA) {
+  const isG08 = data.schema === G08_GAME_SCHEMA;
+  if (data.schema !== G06_CHECKPOINT_SCHEMA && !isG08) {
     return checkpointFail('SCHEMA_MISMATCH', `schema ${JSON.stringify(data.schema)} is not ${G06_CHECKPOINT_SCHEMA}`);
   }
+  const actorStates = isG08 ? ACTOR_STATES_G08 : ACTOR_STATES;
   const d = data as unknown as GameCheckpoint;
+  const g08d = isG08 ? data as unknown as G08GameCheckpoint : null;
   const issues: string[] = [];
+  let g08ActionSet: ActionSet | undefined;
+  if (g08d !== null) {
+    if (g08d.actionSet === undefined || !ACTION_SETS.includes(g08d.actionSet)) {
+      issues.push(`actionSet must be one of ${ACTION_SETS.join('|')}`);
+    } else {
+      g08ActionSet = g08d.actionSet;
+    }
+    if (g08d.recordSchema !== G08_GAME_SCHEMA) issues.push(`recordSchema ${JSON.stringify(g08d.recordSchema)} is not ${G08_GAME_SCHEMA}`);
+    if (!isPlainObject(g08d.wakeAtSimTime)) {
+      issues.push('wakeAtSimTime must be an object keyed by actor');
+    } else {
+      for (const actorId of Array.isArray(g08d.actorIds) ? g08d.actorIds : []) {
+        const deadline = g08d.wakeAtSimTime[actorId];
+        if (deadline !== null && !isNonNegInt(deadline)) {
+          issues.push(`wakeAtSimTime[${actorId}] must be null or a non-negative integer`);
+        }
+      }
+    }
+  }
   if (typeof d.episodeId !== 'string' || d.episodeId.length === 0) issues.push('episodeId must be a non-empty string');
   if (!Array.isArray(d.actorIds) || d.actorIds.length === 0 || d.actorIds.some(a => typeof a !== 'string' || a.length === 0)) {
     issues.push('actorIds must be a non-empty string array');
@@ -67,7 +95,7 @@ export function restoreNeedsGame(data: unknown, runtime: GameRestoreRuntime): Re
   if (d.mode !== 'fixture' && d.mode !== 'live' && d.mode !== 'reference') issues.push(`unknown mode ${JSON.stringify(d.mode)}`);
   if (typeof d.thinking !== 'boolean') issues.push('thinking must be a boolean');
   if (d.needPolicy !== 'one-shot' && d.needPolicy !== 'recurring') issues.push('needPolicy must be one-shot or recurring');
-  if (d.recordSchema !== G04_SCHEMA && d.recordSchema !== G05_SCHEMA) issues.push(`unknown recordSchema ${JSON.stringify(d.recordSchema)}`);
+  if (g08d === null && d.recordSchema !== G04_SCHEMA && d.recordSchema !== G05_SCHEMA) issues.push(`unknown recordSchema ${JSON.stringify(d.recordSchema)}`);
   if (d.requestModel !== null && typeof d.requestModel !== 'string') issues.push('requestModel must be a string or null');
   if (typeof d.timeoutMs !== 'number' || !Number.isFinite(d.timeoutMs) || d.timeoutMs <= 0) issues.push('timeoutMs must be positive');
   if (typeof d.startedAt !== 'number' || !Number.isFinite(d.startedAt)) issues.push('startedAt must be a number');
@@ -92,7 +120,16 @@ export function restoreNeedsGame(data: unknown, runtime: GameRestoreRuntime): Re
   if (isPlainObject(d.states)) {
     for (const actorId of actorIds) {
       const state = d.states[actorId];
-      if (!ACTOR_STATES.includes(state as ReactiveActorState)) issues.push(`states[${actorId}] is not a known lifecycle state`);
+      if (!actorStates.includes(state as ReactiveActorState)) issues.push(`states[${actorId}] is not a known lifecycle state`);
+    }
+    if (g08d !== null && isPlainObject(g08d.wakeAtSimTime)) {
+      // The pause state and the deadline map must agree exactly.
+      for (const actorId of actorIds) {
+        const paused = d.states[actorId] === 'timed_wait';
+        const deadline = g08d.wakeAtSimTime[actorId];
+        if (paused && !isNonNegInt(deadline)) issues.push(`a timed_wait actor ${actorId} must carry a non-negative wakeAtSimTime`);
+        if (!paused && deadline !== null && deadline !== undefined) issues.push(`wakeAtSimTime[${actorId}] must be null unless the actor is timed_wait`);
+      }
     }
   }
   const logLength = isPlainObject(d.engine) && Array.isArray(d.engine.log) ? d.engine.log.length : null;
@@ -114,7 +151,7 @@ export function restoreNeedsGame(data: unknown, runtime: GameRestoreRuntime): Re
         if (!isNonNegInt(cycle.startLogCursor) || (logLength !== null && cycle.startLogCursor > logLength)) {
           issues.push(`${label}.startLogCursor is outside the saved log`);
         }
-        if (!ACTOR_STATES.includes(cycle.endState as ReactiveActorState)) issues.push(`${label}.endState unknown`);
+        if (!actorStates.includes(cycle.endState as ReactiveActorState)) issues.push(`${label}.endState unknown`);
         if (!Array.isArray(cycle.turns)) issues.push(`${label}.turns must be an array`);
         const session = cycle.session;
         if (!isPlainObject(session)) {
@@ -158,6 +195,7 @@ export function restoreNeedsGame(data: unknown, runtime: GameRestoreRuntime): Re
       now: runtime.now,
       scheduleTimeout: runtime.scheduleTimeout,
       onDeciding: runtime.onDeciding,
+      ...(g08ActionSet !== undefined ? { actionSet: g08ActionSet } : {}),
     });
     return checkpointOk(game);
   } catch (err) {
