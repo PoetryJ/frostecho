@@ -218,7 +218,8 @@ function providerFactory(args: Args, mailbox: Mailbox, counters: Record<string, 
   const env = config.mode === 'live' ? loadHttpConfigFromEnv() : null;
   return (actorId: string) => {
     const inner = env !== null
-      ? createHttpProvider({ url: env.url, model: config.requestModel!, apiKey: env.apiKey, enableThinking: true })
+      // G08 closeout: the SAVED config decides thinking for a resumed run.
+      ? createHttpProvider({ url: env.url, model: config.requestModel!, apiKey: env.apiKey, enableThinking: config.thinking })
       : scripted(actorId);
     if (args.messageMode !== 'on') return inner;
     return createMessageProvider(inner, mailbox, { enabled: true, actorId });
@@ -250,25 +251,81 @@ function printStatus(rt: Runtime, args: Args): void {
   }, null, 2));
 }
 
+/** Clamp a raw body excerpt so failure evidence stays bounded. */
+function clipText(value: unknown, max: number): unknown {
+  if (typeof value !== 'string') return value;
+  return value.length > max ? `${value.slice(0, max)}…[${value.length - max} chars omitted]` : value;
+}
+
+interface FailureContext {
+  args: Args;
+  config: G08EffectiveConfig | null;
+  game: { status(): unknown; snapshot(): unknown } | null;
+}
+
 /**
- * R1 finalize for transport failures: persistent evidence in an exclusive
+ * Finalize for transport failures: persistent evidence in an exclusive
  * directory (never the input slot, never a --save target), then exit 1.
+ *
+ * G08 closeout: the record now carries the AUTHORITATIVE game record, the
+ * per-turn session errors and the real transport cause (HTTP status + body
+ * excerpt), plus the effective configuration and action context — not just a
+ * general label. No credential is ever written (only the model name).
  */
-function writeRunFailure(args: Args, kind: string, detail: string): never {
+function writeRunFailure(ctx: FailureContext, kind: string, detail: string): never {
+  const { args } = ctx;
   const dir = join(resolve(args.root), 'failures', args.slot);
   mkdirSync(dir, { recursive: true });
   const stamp = new Date().toISOString().replace(/[:.]/g, '-');
   const file = join(dir, `${kind}-${stamp}.json`);
+  const status = ctx.game === null ? null : ctx.game.status();
+  const record = ctx.game === null ? null : ctx.game.snapshot();
+  const errors: Record<string, unknown>[] = [];
+  const cycles = (record as { cycles?: Record<string, { cycle: number; turns: { actorRound: number; status: string; step?: { error?: string; transport?: Record<string, unknown> } }[] }[]> } | null)?.cycles ?? {};
+  for (const [actorId, list] of Object.entries(cycles)) {
+    for (const cycle of list) {
+      for (const turn of cycle.turns ?? []) {
+        if (turn.step?.error === undefined) continue;
+        const transport = turn.step.transport;
+        errors.push({
+          actorId,
+          cycle: cycle.cycle,
+          round: turn.actorRound,
+          status: turn.status,
+          error: turn.step.error,
+          transport: transport === undefined ? null : {
+            status: transport.status ?? null,
+            error: transport.error ?? null,
+            latencyMs: transport.latencyMs ?? null,
+            bodyExcerpt: clipText(transport.responseContent, 2000),
+          },
+        });
+      }
+    }
+  }
   try {
     writeFileSync(file, JSON.stringify({
-      schema: 'frostecho.g08.run-failure/1',
+      schema: 'frostecho.g08.run-failure/2',
       slot: args.slot,
       kind,
       detail,
       wroteAt: new Date().toISOString(),
+      // What this process was actually configured to do.
+      config: ctx.config,
+      actionSet: args.actionSet,
+      messages: args.messageMode,
+      actions: { step: args.step, run: args.run, time: args.time, restock: args.restock, move: args.move },
+      // The authoritative failure state and every real cause.
+      status,
+      errors,
+      record,
     }, null, 2));
     console.error(`run failed: ${kind} — ${detail}`);
     console.error(`failure evidence: ${file}`);
+    for (const error of errors) {
+      const transport = error.transport as { status?: unknown } | null;
+      console.error(`  ${String(error.actorId)} cycle ${String(error.cycle)}: ${String(error.error)}${transport?.status === undefined || transport?.status === null ? '' : ` (HTTP ${String(transport.status)})`}`);
+    }
   } catch (err) {
     console.error(`run failed: ${kind} — ${detail} (writing the failure record also failed: ${err instanceof Error ? err.message : String(err)})`);
   }
@@ -286,13 +343,15 @@ async function main(): Promise<void> {
   const path = g08CheckpointPath(resolve(args.root), args.slot);
   const counters: Record<string, number> = {};
 
-  // The one effective configuration for this whole process.
-  const effectiveConfig = buildEffectiveConfig(args);
+  // The one effective configuration for this whole process. A new slot takes
+  // it from the options; a loaded slot takes the SAVED one (validated above).
+  let effectiveConfig: G08EffectiveConfig;
 
   let game: ReturnType<typeof createNeedsGame>;
   let mailbox: Mailbox;
 
   if (args.create) {
+    effectiveConfig = buildEffectiveConfig(args);
     if (existsSync(path)) fail(`slot exists: ${path}`);
     mailbox = createMailbox();
     game = createNeedsGame({
@@ -312,6 +371,10 @@ async function main(): Promise<void> {
     if (!loaded.ok) fail(`load failed: ${loaded.code} ${(loaded.issues ?? []).join('; ')}`);
     // Provider must match the saved runtime BEFORE any HTTP or world work.
     assertProviderMatchesSlot(loaded.value.envelope.effectiveConfig, args);
+    // G08 closeout: after validation the SAVED effectiveConfig is the single
+    // source — provider thinking, the restored timeout and the next save all
+    // come from it. New-game defaults are never reused on a load.
+    effectiveConfig = loaded.value.envelope.effectiveConfig;
     const factory = providerFactory(args, loaded.value.mailbox, counters, effectiveConfig);
     const restored = restoreG08Game(loaded.value, {
       providerFor: (actorId: string) => factory(actorId),
@@ -324,6 +387,8 @@ async function main(): Promise<void> {
   }
 
   const rt: Runtime = { game, mailbox };
+  // Every failure finalize can now see the configuration and the game.
+  const failureCtx: FailureContext = { args, config: effectiveConfig, game: rt.game };
   let acted = false;
 
   if (args.time !== null) {
@@ -355,13 +420,13 @@ async function main(): Promise<void> {
       const res = await rt.game.advance();
       if (res.kind === 'closed') { console.log('game closed'); break; }
       if (res.kind === 'interrupted') {
-        writeRunFailure(args, 'interrupted-step', `transport failure while stepping actor ${res.actorId}`);
+        writeRunFailure(failureCtx, 'interrupted-step', `transport failure while stepping actor ${res.actorId}`);
       }
       // A transport failure fails the session and flags the game; the step
       // itself still "completes" from the rotation's point of view.
       if (rt.game.status().interrupted) {
         const failed = Object.entries(rt.game.status().actors).find(([, a]) => a.state === 'failed');
-        writeRunFailure(args, 'interrupted-step', `transport failure while stepping ${failed?.[0] ?? 'an actor'}`);
+        writeRunFailure(failureCtx, 'interrupted-step', `transport failure while stepping ${failed?.[0] ?? 'an actor'}`);
       }
     }
     acted = true;
@@ -369,11 +434,11 @@ async function main(): Promise<void> {
   if (args.run) {
     const res = await rt.game.runUntilIdle();
     if (res.kind === 'interrupted') {
-      writeRunFailure(args, 'interrupted-run', `transport failure while running actor ${res.actorId}`);
+      writeRunFailure(failureCtx, 'interrupted-run', `transport failure while running actor ${res.actorId}`);
     }
     if (rt.game.status().interrupted) {
       const failed = Object.entries(rt.game.status().actors).find(([, a]) => a.state === 'failed');
-      writeRunFailure(args, 'interrupted-run', `transport failure while running ${failed?.[0] ?? 'an actor'}`);
+      writeRunFailure(failureCtx, 'interrupted-run', `transport failure while running ${failed?.[0] ?? 'an actor'}`);
     }
     acted = true;
   }
