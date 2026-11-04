@@ -496,6 +496,15 @@ export class ReactiveGameImpl implements ReactiveGame {
     return this.states[actorId] ?? 'stopped';
   }
 
+  /** G09: read-only session view (see ReactiveGame.sessionsOf). */
+  sessionsOf(): { actorId: string; cycle: number; session: AgentSession }[] {
+    const out: { actorId: string; cycle: number; session: AgentSession }[] = [];
+    for (const actorId of this.actorIds) {
+      for (const cycle of this.actorCycles(actorId)) out.push({ actorId, cycle: cycle.cycle, session: cycle.session });
+    }
+    return out;
+  }
+
   cyclesOf(actorId: string): number {
     return this.actorCycles(actorId).length;
   }

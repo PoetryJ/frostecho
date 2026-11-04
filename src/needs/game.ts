@@ -53,6 +53,8 @@ export interface NeedsGameOptions {
   onDeciding?: ReactiveGameOptions['onDeciding'];
   /** G08 (opt-in): capability axis forwarded to the reactive game. */
   actionSet?: ReactiveGameOptions['actionSet'];
+  /** G09 (opt-in): the frozen two-phase goal protocol forwarded to the game. */
+  goalProtocol?: ReactiveGameOptions['goalProtocol'];
 }
 
 export type NeedsGame = ReactiveGame & ReturnType<typeof createReactiveGame>;
@@ -75,6 +77,7 @@ export function createNeedsGame(options: NeedsGameOptions): NeedsGame {
     scheduleTimeout: options.scheduleTimeout,
     onDeciding: options.onDeciding,
     actionSet: options.actionSet,
+    goalProtocol: options.goalProtocol,
   });
   return game;
 }

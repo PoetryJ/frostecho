@@ -299,6 +299,12 @@ export interface ReactiveGame {
   notifyWorldChange(): void;
   actorStateOf(actorId: string): ReactiveActorState;
   cyclesOf(actorId: string): number;
+  /**
+   * G09: read-only view of the sessions this game holds (one per cycle).
+   * Used by the negotiation save to prove the slot and the sessions agree —
+   * never to drive a decision.
+   */
+  sessionsOf(): { actorId: string; cycle: number; session: AgentSession }[];
   status(): ReactiveStatus;
   snapshot(): ReactiveRecord;
   isClosed(): boolean;
