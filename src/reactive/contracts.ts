@@ -16,6 +16,8 @@ import type {
 } from '../agent/contracts';
 import { G08_GAME_SCHEMA, type ActionSet } from '../temporal/contracts';
 import type { Engine, LogEntry } from '../engine';
+import type { EnqueueResult, GoalRequestStore } from '../negotiation/requests';
+import type { GoalRequestSnapshot } from '../negotiation/contracts';
 import type { Location, WorldEvent, WorldState } from '../types';
 
 export const G04_SCHEMA = 'frostecho.g04.game/1' as const;
@@ -319,6 +321,10 @@ export interface ReactiveGame {
   getNeedPolicy(): NeedPolicy;
   /** G05: interactive switch (one-shot/recurring); affects future reconciles only. */
   setNeedPolicy(policy: NeedPolicy): void;
+  /** G09/G10: enqueue one host-generated request (never an NPC decision). */
+  submitGoalRequest(request: GoalRequestSnapshot): EnqueueResult;
+  /** G09/G10: the single authoritative request store (read-only view). */
+  goalRequests(): GoalRequestStore;
 }
 
 export interface SessionArgs {

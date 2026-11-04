@@ -257,7 +257,8 @@ export function expireRequestIfDue(request: GoalRequestSnapshot, simTime: number
 }
 
 export function cancelRequest(request: GoalRequestSnapshot, reason: string): GoalRequestSnapshot {
-  if (request.outcome !== 'pending' || request.status === 'cancelled') return request;
+  // A declined answer is a terminal game result, not an unfinished promise.
+  if (request.outcome !== 'pending' || request.status === 'cancelled' || request.status === 'declined') return request;
   return { ...request, status: 'cancelled', outcome: 'cancelled', outcomeReason: reason };
 }
 

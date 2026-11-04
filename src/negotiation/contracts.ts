@@ -21,7 +21,9 @@ export const G09_EPISODE_SCHEMA = 'frostecho.g09.episode/2';
 export const G09_PLAN_SCHEMA = 'frostecho.g09.plan/2';
 export const G09_SUMMARY_SCHEMA = 'frostecho.g09.summary/2';
 export const G09_SESSION_SCHEMA = 'frostecho.g09.session/2';
-export const G09_CHECKPOINT_SCHEMA = 'frostecho.g09.checkpoint/2';
+/** G10 adds optional application metadata (goalMode/providerKind/fixtureId). */
+export const G09_CHECKPOINT_SCHEMA = 'frostecho.g09.checkpoint/3';
+export const G09_CHECKPOINT_SCHEMA_V2 = 'frostecho.g09.checkpoint/2';
 export const G09_CAMPAIGN_SCHEMA = 'frostecho.g09.campaign/1';
 
 /* ------------------------------------------------------------------ */

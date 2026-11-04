@@ -1,0 +1,105 @@
+{
+  "repo": "/data3/DATA/project/project_meishijiang/FrostEcho",
+  "out": "/tmp/g10-restore-audit",
+  "node": "v20.18.0",
+  "realModelCalls": 0,
+  "networkCalls": 0,
+  "childProcesses": 11,
+  "cases": [
+    {
+      "name": "wait-fulfilled",
+      "pass": true,
+      "outcome": "fulfilled",
+      "fullCheckpointStepComparisons": [
+        {
+          "step": 0,
+          "op": "advance",
+          "equal": true,
+          "error": null
+        },
+        {
+          "step": 1,
+          "op": "advance",
+          "equal": true,
+          "error": null
+        },
+        {
+          "step": 2,
+          "op": "eat",
+          "equal": true,
+          "error": null
+        },
+        {
+          "step": 3,
+          "op": "time",
+          "equal": true,
+          "error": null
+        }
+      ],
+      "providerCalls": 2
+    },
+    {
+      "name": "wait-expired",
+      "pass": true,
+      "outcome": "expired",
+      "fullCheckpointStepComparisons": [
+        {
+          "step": 0,
+          "op": "advance",
+          "equal": true,
+          "error": null
+        },
+        {
+          "step": 1,
+          "op": "advance",
+          "equal": true,
+          "error": null
+        },
+        {
+          "step": 2,
+          "op": "time",
+          "equal": true,
+          "error": null
+        }
+      ],
+      "providerCalls": 2
+    },
+    {
+      "name": "stop-fulfilled",
+      "pass": true,
+      "outcome": "fulfilled",
+      "fullCheckpointStepComparisons": [
+        {
+          "step": 0,
+          "op": "advance",
+          "equal": true,
+          "error": null
+        },
+        {
+          "step": 1,
+          "op": "advance",
+          "equal": true,
+          "error": null
+        },
+        {
+          "step": 2,
+          "op": "eat",
+          "equal": true,
+          "error": null
+        },
+        {
+          "step": 3,
+          "op": "time",
+          "equal": true,
+          "error": null
+        }
+      ],
+      "providerCalls": 2
+    }
+  ],
+  "pass": true,
+  "excludedFields": [
+    "envelope.savedAtUtc"
+  ],
+  "clock": "Injected constant now=0 in both routes for wallclock metadata; Engine simTime remains authoritative"
+}

@@ -15,7 +15,7 @@ import type { ReactiveGame } from '../reactive/contracts';
 import type { G08CheckpointRuntime, G08EffectiveConfig, G08GameCheckpoint } from '../temporal/contracts';
 import { effectiveConfigIssues, effectiveConfigMatchesRecord } from '../temporal/checkpoint';
 import {
-  G09_CHECKPOINT_SCHEMA, GOAL_ARMS, G09_SATIETY_LEVELS,
+  G09_CHECKPOINT_SCHEMA, G09_CHECKPOINT_SCHEMA_V2, GOAL_ARMS, G09_SATIETY_LEVELS,
   type GoalArm, type GoalBinding, type SatietyLevel,
 } from './contracts';
 import { validateGoalRequestSnapshot, type GoalRequestStore } from './requests';
@@ -34,6 +34,10 @@ export interface G09Checkpoint {
   effectiveConfig: G08EffectiveConfig;
   game: G08GameCheckpoint;
   savedAtUtc: string;
+  /** G10 (v3): the game mode the slot was saved with; v2 slots are negotiated. */
+  goalMode?: 'legacy' | 'negotiated';
+  /** G10 (v3): application metadata (providerKind/fixtureId/...). Never a secret. */
+  app?: Record<string, unknown>;
 }
 
 export interface G09SnapshotState {
@@ -41,6 +45,9 @@ export interface G09SnapshotState {
   satiety: SatietyLevel;
   requests: GoalRequestStore;
   binding: GoalBinding | null;
+  /** G10: metadata written into the v3 envelope (absent for R1/R2 callers). */
+  goalMode?: 'legacy' | 'negotiated';
+  app?: Record<string, unknown>;
 }
 
 export interface LoadedG09Checkpoint { path: string; envelope: G09Checkpoint }
@@ -49,11 +56,11 @@ export function g09CheckpointPath(root: string, slot: string): string {
   return slotPath(root, slot, G09_FILE_SUFFIX);
 }
 
-export function validateG09Checkpoint(value: unknown): string[] {
+export function validateG09Checkpoint(value: unknown, schema: string = G09_CHECKPOINT_SCHEMA): string[] {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) return ['envelope must be an object'];
   const envelope = value as Partial<G09Checkpoint>;
   const issues: string[] = [];
-  if (envelope.schema !== G09_CHECKPOINT_SCHEMA) issues.push(`schema must be ${G09_CHECKPOINT_SCHEMA}`);
+  if (envelope.schema !== schema) issues.push(`schema must be ${schema}`);
   if (!GOAL_ARMS.includes(envelope.arm as GoalArm)) issues.push(`unknown arm ${JSON.stringify(envelope.arm)}`);
   if (!(G09_SATIETY_LEVELS as readonly number[]).includes(envelope.satiety as number)) issues.push(`unknown satiety ${JSON.stringify(envelope.satiety)}`);
   const store = envelope.requests;
@@ -75,6 +82,9 @@ export function validateG09Checkpoint(value: unknown): string[] {
   }
   issues.push(...effectiveConfigIssues(envelope.effectiveConfig));
   if (envelope.game === null || typeof envelope.game !== 'object') issues.push('game must be an object');
+  if (envelope.goalMode !== undefined && envelope.goalMode !== 'legacy' && envelope.goalMode !== 'negotiated') {
+    issues.push(`unknown goalMode ${JSON.stringify(envelope.goalMode)}`);
+  }
   return issues;
 }
 
@@ -118,6 +128,8 @@ export function saveG09Checkpoint(
     effectiveConfig,
     game: exported.value as unknown as G08GameCheckpoint,
     savedAtUtc: new Date().toISOString(),
+    goalMode: state.goalMode ?? 'negotiated',
+    ...(state.app === undefined ? {} : { app: state.app }),
   };
   const written = writeExclusiveSlot(root, slot, G09_FILE_SUFFIX, G09_CHECKPOINT_SCHEMA, envelope);
   if (!written.ok) return messageFail(written.code as 'INVALID_SNAPSHOT', ...(written.issues ?? []));
@@ -126,9 +138,16 @@ export function saveG09Checkpoint(
 
 export function loadG09Checkpoint(path: string): MessageResult<LoadedG09Checkpoint> {
   const absolute = resolvePath(path);
-  const read = readSlot<G09Checkpoint>(absolute, G09_CHECKPOINT_SCHEMA);
+  // v3 is the current writer; v2 slots stay readable (goalMode defaults to
+  // negotiated) so R1/R2 evidence and play slots are not invalidated.
+  let schema = G09_CHECKPOINT_SCHEMA;
+  let read = readSlot<G09Checkpoint>(absolute, schema);
+  if (!read.ok && read.code === 'SCHEMA_MISMATCH') {
+    schema = G09_CHECKPOINT_SCHEMA_V2;
+    read = readSlot<G09Checkpoint>(absolute, schema);
+  }
   if (!read.ok) return messageFail(read.code === 'SCHEMA_MISMATCH' ? 'SCHEMA_MISMATCH' : 'INVALID_SNAPSHOT', ...(read.issues ?? []));
-  const issues = validateG09Checkpoint(read.value);
+  const issues = validateG09Checkpoint(read.value, schema);
   if (issues.length > 0) return messageFail('SCHEMA_MISMATCH', ...issues);
   return messageOk({ path: absolute, envelope: read.value });
 }
@@ -154,7 +173,7 @@ export function restoreG09Game(
     ...runtime,
     actionSet: 'timed_wait',
     messageMode: 'off',
-    goalMode: 'negotiated',
+    goalMode: envelope.goalMode ?? 'negotiated',
     candidateSet: envelope.arm,
     playerId: runtime.playerId ?? 'npc_b',
   } as never);
