@@ -13,7 +13,8 @@ import { createGoalRequest } from '../negotiation/requests';
 import { EPISODE_CALL_LIMIT, SESSION_CALL_LIMIT } from '../reactive/contracts';
 import type {
   ApplicationController, ApplicationPorts, AppCommand, AppNpcView, AppRequestView, AppView,
-  ControllerCloseResult, ControllerDeps, ExecuteResult, GoalBinding, GoalRequestStore, NeedsGame,
+  ControllerCloseResult, ControllerDeps, ExecuteResult, FinalizationResult, GoalBinding,
+  GoalRequestStore, NeedsGame, SaveCode,
 } from './contracts';
 
 const TERMINAL = new Set(['goal_reached', 'stopped', 'failed', 'invalid_run', 'budget_exhausted', 'timeout', 'provider_error', 'request_expired', 'insufficient_budget']);
@@ -28,6 +29,8 @@ class ApplicationControllerImpl implements ApplicationController {
   private failed = false;
   private savedPath: string | null = null;
   private requestSeq = 0;
+  private finalized: Promise<FinalizationResult> | null = null;
+  private failureDetail: string | null = null;
 
   constructor(private readonly deps: ControllerDeps) {
     // A restored slot already holds host requests; never reuse their ordinal.
@@ -47,8 +50,9 @@ class ApplicationControllerImpl implements ApplicationController {
   async execute(command: AppCommand): Promise<ExecuteResult> {
     if (command.kind === 'help' || command.kind === 'status') return { ok: true, code: 'OK' };
     if (command.kind === 'quit') {
-      const closed = await this.close();
-      return { ok: closed.ok, code: closed.ok ? 'OK' : 'PROVIDER_ERROR', detail: closed.failed ? '运行期间已记录失败' : undefined };
+      // The ONE finalize (close + record + exit code) is driven by finalize();
+      // quit itself must not snapshot a half-closed state.
+      return { ok: true, code: 'OK', detail: this.failed ? '本次运行已记录失败；退出码非零，原因见 stderr' : undefined };
     }
     if (this.isClosed()) return { ok: false, code: 'CLOSED', detail: '本次运行已关闭' };
     switch (command.kind) {
@@ -158,23 +162,68 @@ class ApplicationControllerImpl implements ApplicationController {
   }
 
   private save(slot: string): ExecuteResult {
-    if (this.busy) return { ok: false, code: 'SAVE_BUSY', detail: '决策在途，本次不落半档' };
+    if (this.busy) return { ok: false, code: 'SAVE_BUSY', detail: '决策在途，本次不落半档', saveCode: 'SAVE_BUSY' };
     try {
       const saved = this.deps.ports.save(slot);
       if (saved.ok) {
         this.savedPath = saved.path;
-        return { ok: true, code: 'OK', detail: saved.path ?? undefined };
+        return { ok: true, code: 'OK', detail: saved.path ?? undefined, saveCode: 'OK' };
       }
+      if (saved.fatal) {
+        // A real write failure is durable: latch it so quit/EOF cannot turn
+        // this run into a success. Keep the original code and cause.
+        this.failed = true;
+        this.failureDetail = saved.cause ?? saved.issues.join('; ');
+        this.deps.ports.failure(new Error(`save ${saved.code}: ${this.failureDetail}`));
+        return { ok: false, code: 'PERSISTENCE_FAILED', detail: `${saved.code}: ${this.failureDetail}`, saveCode: saved.code };
+      }
+      // EXISTS / INVALID_SLOT / SAVE_BUSY are named, actionable refusals.
       return {
         ok: false,
         code: saved.code === 'SAVE_BUSY' ? 'SAVE_BUSY' : 'SAVE_FAILED',
-        detail: saved.issues.join('; '),
+        detail: `${saved.code}: ${saved.issues.join('; ')}`,
+        saveCode: saved.code,
       };
     } catch (error) {
       this.failed = true;
+      this.failureDetail = messageOf(error);
       this.deps.ports.failure(error);
       return { ok: false, code: 'PERSISTENCE_FAILED', detail: messageOf(error) };
     }
+  }
+
+  finalize(): Promise<FinalizationResult> {
+    if (this.finalized !== null) return this.finalized;
+    this.finalized = this.doFinalize();
+    return this.finalized;
+  }
+
+  private async doFinalize(): Promise<FinalizationResult> {
+    const beforeCloseView = this.view();
+    const errors: FinalizationResult['errors'] = [];
+    try {
+      await this.close();
+    } catch (error) {
+      this.failed = true;
+      errors.push({ code: 'CLOSE_FAILED', message: messageOf(error) });
+    }
+    let recordPath: string | null = null;
+    try {
+      const record = this.deps.ports.writeRunRecord(beforeCloseView);
+      if (record.ok) recordPath = record.path;
+      else {
+        this.failed = true;
+        errors.push({
+          code: 'PERSISTENCE_FAILED',
+          message: `${record.code}: ${record.cause ?? (record.issues.join('; ') || 'run record was not written')}`,
+        });
+      }
+    } catch (error) {
+      this.failed = true;
+      errors.push({ code: 'PERSISTENCE_FAILED', message: messageOf(error) });
+    }
+    const exitCode = this.failed ? 1 : 0;
+    return { ok: exitCode === 0, exitCode, recordPath, errors, beforeCloseView };
   }
 
   view(): AppView {
@@ -272,9 +321,10 @@ export function createApplicationController(deps: ControllerDeps): ApplicationCo
 /** Test-only convenience: an empty port set for controllers built by hand. */
 export function emptyPorts(): ApplicationPorts {
   return {
-    save: () => ({ ok: false, path: null, code: 'SAVE_FAILED', issues: ['no save adapter'] }),
+    save: () => ({ ok: false, path: null, code: 'INVALID_SNAPSHOT', fatal: false, issues: ['no save adapter'], cause: null }),
     failure: () => null,
     budget: () => null,
+    writeRunRecord: () => ({ ok: false, path: null, code: 'INTERNAL', cause: 'no run-record adapter', issues: [] }),
     now: () => Date.now(),
   };
 }

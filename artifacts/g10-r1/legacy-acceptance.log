@@ -1,0 +1,60 @@
+TAP version 13
+# Subtest: U1: every command parses at its boundary; invalid input never reaches the game
+ok 1 - U1: every command parses at its boundary; invalid input never reaches the game
+  ---
+  duration_ms: 1.82445
+  ...
+# Subtest: U2: step is at most one call, run N is at most N advances, reads are free
+ok 2 - U2: step is at most one call, run N is at most N advances, reads are free
+  ---
+  duration_ms: 7.613621
+  ...
+# Subtest: U2b: reentrant step is busy, save is SAVE_BUSY, close is idempotent
+ok 3 - U2b: reentrant step is busy, save is SAVE_BUSY, close is idempotent
+  ---
+  duration_ms: 1.576615
+  ...
+# Subtest: P1/P2/P3: the three scripted demos produce the contract outcomes with exactly two decisions
+ok 4 - P1/P2/P3: the three scripted demos produce the contract outcomes with exactly two decisions
+  ---
+  duration_ms: 639.395184
+  ...
+# Subtest: S1: three cut points survive a process exit and match the continuous run at every step
+ok 5 - S1: three cut points survive a process exit and match the continuous run at every step
+  ---
+  duration_ms: 585.053942
+  ...
+# Subtest: S2: a second save of the same slot is refused byte-for-byte; a load conflict exits 2
+ok 6 - S2: a second save of the same slot is refused byte-for-byte; a load conflict exits 2
+  ---
+  duration_ms: 539.66284
+  ...
+# Subtest: N1: default offline ignores env; the live path is real wire with the saved goal after a restore
+ok 7 - N1: default offline ignores env; the live path is real wire with the saved goal after a restore
+  ---
+  duration_ms: 705.338189
+  ...
+# Subtest: N2: a 500 stops at one POST with evidence; NO_FOOD keeps the session usable
+ok 8 - N2: a 500 stops at one POST with evidence; NO_FOOD keeps the session usable
+  ---
+  duration_ms: 451.676575
+  ...
+# Subtest: X1: quit and EOF each finalize once and never add a model call (all platforms)
+ok 9 - X1: quit and EOF each finalize once and never add a model call (all platforms)
+  ---
+  duration_ms: 377.892424
+  ...
+# Subtest: X1b: POSIX SIGINT finalizes once without a model call
+ok 10 - X1b: POSIX SIGINT finalizes once without a model call
+  ---
+  duration_ms: 212.844641
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3704.250438

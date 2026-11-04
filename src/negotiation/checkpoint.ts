@@ -88,36 +88,52 @@ export function validateG09Checkpoint(value: unknown, schema: string = G09_CHECK
   return issues;
 }
 
-export function saveG09Checkpoint(
+export type DetailedSaveCode =
+  | 'OK' | 'QUEUE_FULL' | 'EXISTS' | 'INVALID_SLOT' | 'SCHEMA_MISMATCH'
+  | 'INVALID_SNAPSHOT' | 'IO_ERROR' | 'INVALID_COMMAND';
+
+export interface DetailedSaveResult {
+  ok: boolean;
+  path: string | null;
+  code: DetailedSaveCode;
+  issues: string[];
+}
+
+/**
+ * G10-R1: the same save, but the slot layer's original code is preserved
+ * (EXISTS / INVALID_SLOT / IO_ERROR / QUEUE_FULL). The user-actionable
+ * refusals and a durable write failure must never collapse into one code.
+ */
+export function saveG09CheckpointDetailed(
   root: string,
   slot: string,
   game: unknown,
   state: G09SnapshotState,
   effectiveConfig: G08EffectiveConfig,
-): MessageResult<{ path: string }> {
+): DetailedSaveResult {
   const configIssues = effectiveConfigIssues(effectiveConfig);
-  if (configIssues.length > 0) return messageFail('INVALID_COMMAND', ...configIssues);
-  if (!GOAL_ARMS.includes(state.arm)) return messageFail('INVALID_COMMAND', `unknown arm ${JSON.stringify(state.arm)}`);
+  if (configIssues.length > 0) return { ok: false, path: null, code: 'INVALID_COMMAND', issues: [...configIssues] };
+  if (!GOAL_ARMS.includes(state.arm)) return { ok: false, path: null, code: 'INVALID_COMMAND', issues: [`unknown arm ${JSON.stringify(state.arm)}`] };
   if (!(G09_SATIETY_LEVELS as readonly number[]).includes(state.satiety)) {
-    return messageFail('INVALID_COMMAND', `unknown satiety ${JSON.stringify(state.satiety)}`);
+    return { ok: false, path: null, code: 'INVALID_COMMAND', issues: [`unknown satiety ${JSON.stringify(state.satiety)}`] };
   }
   for (const [id, request] of Object.entries(state.requests.requests)) {
     const validated = validateGoalRequestSnapshot(request);
-    if (!validated.ok) return messageFail('INVALID_SNAPSHOT', `request ${id}: ${validated.issues.join('; ')}`);
+    if (!validated.ok) return { ok: false, path: null, code: 'INVALID_SNAPSHOT', issues: [`request ${id}: ${validated.issues.join('; ')}`] };
   }
   if (state.binding !== null) {
     const request = state.requests.requests[state.binding.requestId];
-    if (request === undefined) return messageFail('INVALID_SNAPSHOT', 'the binding names an unknown request');
+    if (request === undefined) return { ok: false, path: null, code: 'INVALID_SNAPSHOT', issues: ['the binding names an unknown request'] };
     const issues = bindingIssues(state.binding, request);
-    if (issues.length > 0) return messageFail('INVALID_SNAPSHOT', ...issues);
+    if (issues.length > 0) return { ok: false, path: null, code: 'INVALID_SNAPSHOT', issues: [...issues] };
   }
   const exported = exportGameCheckpoint(game);
   if (!exported.ok) {
-    if (exported.code === 'SAVE_BUSY') return messageFail('QUEUE_FULL', 'a decision is in flight; save at a decision boundary only');
-    return messageFail(exported.code === 'SCHEMA_MISMATCH' ? 'SCHEMA_MISMATCH' : 'INVALID_SNAPSHOT', ...(exported.issues ?? []));
+    if (exported.code === 'SAVE_BUSY') return { ok: false, path: null, code: 'QUEUE_FULL', issues: ['a decision is in flight; save at a decision boundary only'] };
+    return { ok: false, path: null, code: exported.code === 'SCHEMA_MISMATCH' ? 'SCHEMA_MISMATCH' : 'INVALID_SNAPSHOT', issues: exported.issues ?? [] };
   }
   if (!effectiveConfigMatchesRecord(effectiveConfig, exported.value)) {
-    return messageFail('INVALID_COMMAND', 'the effectiveConfig disagrees with the game record; the game was built with a different runtime');
+    return { ok: false, path: null, code: 'INVALID_COMMAND', issues: ['the effectiveConfig disagrees with the game record; the game was built with a different runtime'] };
   }
   const envelope: G09Checkpoint = {
     schema: G09_CHECKPOINT_SCHEMA,
@@ -132,9 +148,31 @@ export function saveG09Checkpoint(
     ...(state.app === undefined ? {} : { app: state.app }),
   };
   const written = writeExclusiveSlot(root, slot, G09_FILE_SUFFIX, G09_CHECKPOINT_SCHEMA, envelope);
-  if (!written.ok) return messageFail(written.code as 'INVALID_SNAPSHOT', ...(written.issues ?? []));
-  return messageOk({ path: written.value.path });
+  if (!written.ok) {
+    const code: DetailedSaveCode = written.code === 'CHECKSUM_MISMATCH'
+      ? 'INVALID_SNAPSHOT'
+      : written.code as DetailedSaveCode;
+    return { ok: false, path: null, code, issues: written.issues ?? [] };
+  }
+  return { ok: true, path: written.value.path, code: 'OK', issues: [] };
 }
+
+/** MessageResult facade kept for every existing G09 caller. */
+export function saveG09Checkpoint(
+  root: string,
+  slot: string,
+  game: unknown,
+  state: G09SnapshotState,
+  effectiveConfig: G08EffectiveConfig,
+): MessageResult<{ path: string }> {
+  const detailed = saveG09CheckpointDetailed(root, slot, game, state, effectiveConfig);
+  if (detailed.ok) return messageOk({ path: detailed.path! });
+  if (detailed.code === 'QUEUE_FULL') return messageFail('QUEUE_FULL', ...detailed.issues);
+  if (detailed.code === 'INVALID_COMMAND') return messageFail('INVALID_COMMAND', ...detailed.issues);
+  if (detailed.code === 'SCHEMA_MISMATCH') return messageFail('SCHEMA_MISMATCH', ...detailed.issues);
+  return messageFail('INVALID_SNAPSHOT', ...detailed.issues);
+}
+
 
 export function loadG09Checkpoint(path: string): MessageResult<LoadedG09Checkpoint> {
   const absolute = resolvePath(path);

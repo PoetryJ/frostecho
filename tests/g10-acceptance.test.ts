@@ -210,7 +210,7 @@ test('P1/P2/P3: the three scripted demos produce the contract outcomes with exac
       assert.equal(result.code, 0, `${expected.name}: ${result.stderr}`);
       assert.match(result.stdout, /脚本演示/, 'the demo is labelled scripted');
       const record = runRecord(root).payload;
-      const view: AppView = record.view;
+      const view: AppView = record.beforeCloseView;
       assert.equal(view.scripted, true);
       assert.equal(view.fixtureId, expected.name);
       assert.equal(view.budget.episodeCalls, 2, `${expected.name}: exactly two scripted decisions`);
@@ -353,7 +353,7 @@ test('S2: a second save of the same slot is refused byte-for-byte; a load confli
     assert.equal(goalConflict.code, 2);
 
     const record = runRecord(root).payload;
-    assert.equal(record.view.budget.episodeCalls, 1, 'the failed load made no call');
+    assert.equal(record.beforeCloseView.budget.episodeCalls, 1, 'the failed load made no call');
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -496,19 +496,36 @@ test('N2: a 500 stops at one POST with evidence; NO_FOOD keeps the session usabl
 /* ------------------------------------------------------------------ */
 /* X1 — quit / EOF / SIGINT finalize once without new decisions        */
 /* ------------------------------------------------------------------ */
-test('X1: quit, EOF and SIGINT each finalize once and never add a model call', async () => {
+test('X1: quit and EOF each finalize once and never add a model call (all platforms)', async () => {
   const root = tempRoot('x1');
   try {
     const quit = await runCli(['--goals', 'negotiated', '--fixture', 'cooperate', '--root', join(root, 'quit'), '--slot', 'demo'],
       'request npc_a yield_once\nstep\nquit\n');
     assert.equal(quit.code, 0, quit.stderr);
-    assert.equal(runRecord(join(root, 'quit')).payload.view.budget.episodeCalls, 1);
+    assert.equal(runRecord(join(root, 'quit')).payload.beforeCloseView.budget.episodeCalls, 1);
 
     const eof = await runCli(['--goals', 'negotiated', '--fixture', 'cooperate', '--root', join(root, 'eof'), '--slot', 'demo'],
       'request npc_a yield_once\nstep\n');
     assert.equal(eof.code, 0, eof.stderr);
-    assert.equal(runRecord(join(root, 'eof')).payload.view.budget.episodeCalls, 1, 'the accepted command is not lost');
+    assert.equal(runRecord(join(root, 'eof')).payload.beforeCloseView.budget.episodeCalls, 1, 'the accepted command is not lost');
 
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+/**
+ * POSIX keeps a REAL SIGINT child test. On Windows child.kill('SIGINT') is a
+ * forced termination, not a terminal Ctrl+C: it is explicitly skipped, never
+ * treated as a pass. Real terminal Ctrl+C on Windows is NOT verified here.
+ */
+test('X1b: POSIX SIGINT finalizes once without a model call', {
+  skip: process.platform === 'win32'
+    ? 'Windows child.kill(SIGINT) is forced termination, not terminal Ctrl+C (unverified)'
+    : false,
+}, async () => {
+  const root = tempRoot('x1-sigint');
+  try {
     const hard = await new Promise<{ code: number | null }>((resolve, reject) => {
       const child = spawn(process.execPath, [CLI, '--goals', 'negotiated', '--fixture', 'cooperate', '--root', join(root, 'sigint'), '--slot', 'demo'], { cwd: ROOT });
       let stdout = '';
@@ -524,7 +541,7 @@ test('X1: quit, EOF and SIGINT each finalize once and never add a model call', a
       child.on('close', code => { clearTimeout(timer); clearInterval(poll); resolve({ code }); });
     });
     assert.equal(hard.code, 0, 'a clean SIGINT exits 0');
-    assert.equal(runRecord(join(root, 'sigint')).payload.view.budget.episodeCalls, 0);
+    assert.equal(runRecord(join(root, 'sigint')).payload.beforeCloseView.budget.episodeCalls, 0);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

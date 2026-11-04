@@ -25,6 +25,9 @@ export interface CampaignAttempt {
 
 export interface CampaignState {
   schema: typeof G09_CAMPAIGN_SCHEMA;
+  /** G10-R1: immutable ledger identity (absent on pre-R1 ledgers). */
+  ledgerId?: string;
+  /** Human-readable name; never a unique identity. */
   campaignId: string;
   limit: number;
   spent: number;
@@ -56,7 +59,8 @@ export function openCampaign(dir: string, limit: number, campaignId = 'g09-task'
     const path = campaignPath(dir);
     if (existsSync(path)) return loadCampaign(dir);
     const state: CampaignState = {
-      schema: G09_CAMPAIGN_SCHEMA, campaignId, limit, spent: 0, attempts: [], updatedAt: new Date().toISOString(),
+      schema: G09_CAMPAIGN_SCHEMA, campaignId, ledgerId: randomUUID(), limit, spent: 0,
+      attempts: [], updatedAt: new Date().toISOString(),
     };
     writeAtomic(path, state);
     return state;

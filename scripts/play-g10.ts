@@ -112,7 +112,7 @@ async function main(): Promise<number> {
     return 2;
   }
   if (args.help) { console.log(USAGE); return 0; }
-  if (args.fixture !== null && args.goals !== 'negotiated') {
+  if (args.loadPath === null && args.fixture !== null && args.goals !== 'negotiated') {
     console.error('--fixture requires --goals negotiated (the demo runs the two-phase protocol)');
     return 2;
   }
@@ -152,19 +152,8 @@ async function main(): Promise<number> {
   }
   print(renderStatus(controller.view()));
 
-  let finalized = false;
-  let exitCode = 0;
-  const finalize = async (): Promise<void> => {
-    if (finalized) return;
-    finalized = true;
-    // Snapshot the state the user last saw BEFORE close() (which cancels an
-    // unfinished request); the record is evidence of the run, not a new state.
-    const finalView = controller.view();
-    const closed = await controller.close();
-    try { runtime.writeRunRecord(finalView); } catch { /* the run record is evidence, never a decision */ }
-    exitCode = closed.failed ? 1 : 0;
-  };
-
+  // The ONE finalization lives in the controller: close, authoritative run
+  // record, exit code. quit/EOF/SIGINT all share its single promise.
   const rl = createInterface({ input: process.stdin, output: process.stdout, terminal: process.stdin.isTTY === true, prompt: 'g10> ' });
   if (process.stdin.isTTY === true) rl.prompt();
   let interrupted = false;
@@ -201,9 +190,14 @@ async function main(): Promise<number> {
     if (process.stdin.isTTY === true) rl.prompt();
   }
   if (interrupted) console.log('收到 SIGINT：本次运行收束一次。');
-  await finalize();
-  if (controller.hasFailed()) exitCode = 1;
-  return exitCode;
+  const final = await controller.finalize();
+  for (const error of final.errors) {
+    // The record could not be written (or close failed): the original cause
+    // is printed, the run is NOT reported as saved, and the exit stays 1.
+    console.error(`[finalize:${error.code}] ${error.message}`);
+  }
+  if (final.recordPath !== null) console.log(`运行记录 -> ${final.recordPath}`);
+  return final.exitCode;
 }
 
 main()

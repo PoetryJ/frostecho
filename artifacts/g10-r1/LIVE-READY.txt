@@ -1,0 +1,64 @@
+G10-R1 live-ready preparation (NOT authorized)
+================================================
+status: awaiting_owner_authorization
+proposedChatLimit: 16 (8 episodes x goal/action)
+authorizedChatLimit: 0
+automaticRetries: 0
+extraWaitContinuationCalls: 0
+realModelCallsMade: 0
+ledgerCreatedWithRealQuota: no (the rehearsal ledger is a local test ledger, 16/16 spent on the test-owned server)
+
+Frozen configuration (to be used only after an explicit owner authorization)
+---------------------------------------------------------------------------
+model: qwen3.8-27b
+thinking: true
+temperature: 0
+max_tokens: 1024
+stream: false
+timeout: 120000 ms
+endpoint: full /v1/chat/completions (model must be confirmed by GET /v1/models first)
+matrix (rep2 reversed):
+  1: 40/self_only, 40/choice, 60/self_only, 60/choice
+  2: 60/choice, 60/self_only, 40/choice, 40/self_only
+world: A at the cell satiety (40/60), B=40, C=70, kitchen food=1, recurring/event/timed_wait, actors [A,C]
+request: one frozen S1 for both arms; only candidateGoals differs; createdAt 0, expires 1
+structure gate: the FIRST PAIR (4 POST) must pass verify before the rest may run
+success: complete legal protocol + evidence chain; model cooperation is NOT required
+
+Commands
+--------
+Rehearsal (executed, zero real model; test-owned 127.0.0.1 server):
+  node scripts/g10-live-rehearse.mjs artifacts/g10-r1/rehearsal
+Verify (read-only):
+  node dist/scripts/eval-g09.js --verify --out artifacts/g10-r1/rehearsal/artifacts --batch loopback-live --campaign artifacts/g10-r1/rehearsal/campaign
+Plan regeneration:
+  node scripts/g10-live-plan.mjs artifacts/g10-r1
+Future AUTHORIZED run (do not run before an explicit authorization):
+  node dist/scripts/eval-g09.js --out DIR --batch NAME --campaign DIR --campaign-limit 16 --live --http URL --model qwen3.8-27b
+Future verify:
+  node dist/scripts/eval-g09.js --verify --out DIR --batch NAME --campaign DIR
+
+Evidence from the rehearsal (test-owned server, not a real model)
+-----------------------------------------------------------------
+posts: 16, episodes: 8, verify ok: true, recorded wire == captured wire: true
+ledger: 16/16 attempts, no retry; providerSource is recorded in rehearsal/report.json
+loopback is an address class, not proof of a fake model; the report names the test-owned server and the captured bodies.
+
+History (kept separate, NOT comparable)
+---------------------------------------
+label: out_of_contract
+oldChatRequests: 17
+knownTokens: 9970
+totalTokens: unknown
+
+Cost report template (after a future authorized run)
+----------------------------------------------------
+chatRequests / spentOfAuthorized / failed / cancelled / timedOut / unknownUsage /
+goalTokens / actionTokens / totalTokens / per-episode goal, acceptance, action, fulfilment,
+both actor states, latency, unknown usage.
+
+Not proven
+----------
+- Real model behaviour in this matrix; real-model wait continuation (not part of these 16 calls).
+- Windows terminal Ctrl+C (the Windows child.kill('SIGINT') path is force-termination, not Ctrl+C).
+- Long-term cooperation and complete original-game coverage.

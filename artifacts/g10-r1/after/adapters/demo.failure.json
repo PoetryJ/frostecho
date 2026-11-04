@@ -1,0 +1,54 @@
+{
+  "schema": "frostecho.g10.failure/1",
+  "at": "2026-11-04T11:43:51.194Z",
+  "reason": "npc_a: provider_error",
+  "meta": {
+    "schema": "frostecho.g10.app/2",
+    "episodeId": "demo",
+    "providerKind": "live",
+    "fixtureId": null,
+    "goalMode": "negotiated",
+    "candidateSet": "choice",
+    "satiety": 40,
+    "scripted": false,
+    "campaign": null
+  },
+  "config": {
+    "mode": "live",
+    "requestModel": "audit-model",
+    "thinking": true,
+    "timeoutMs": 120000
+  },
+  "phase": "goal_choice",
+  "sessionStatus": "provider_error",
+  "requests": {
+    "requests": {
+      "demo-req-1": {
+        "schema": "frostecho.g09.goal-request/2",
+        "requestId": "demo-req-1",
+        "episodeId": "demo",
+        "from": "player",
+        "to": "npc_a",
+        "kind": "yield_once",
+        "text": "请把最后一份食物留给我，你先不要吃。",
+        "options": [
+          "feed_self",
+          "yield_once"
+        ],
+        "createdAtSimTime": 0,
+        "expiresAtSimTime": 1,
+        "status": "pending",
+        "decision": null,
+        "acceptedAfterSeq": null,
+        "lastProcessedSeq": 0,
+        "outcome": "pending",
+        "outcomeReason": null
+      }
+    },
+    "processed": [
+      "demo-req-1"
+    ]
+  },
+  "transport": null,
+  "wire": []
+}

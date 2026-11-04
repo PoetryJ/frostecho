@@ -1,21 +1,18 @@
 /**
- * G10 worker C — provider, save, failure and budget adapters.
+ * G10-R1 — provider, save, failure, budget-binding and run-record adapters.
  *
- * Reuses the G09 checkpoint/atomic slot, the campaign ledger and the real
- * wire collector. It never creates a second domain state: the app metadata is
- * stored beside the authoritative envelope and restore rebuilds the game from
- * the envelope only. Offline is the default; `--live` must be explicit and is
- * only meant for a loopback fake in this task (no real budget is authorized).
+ * Owned by the main agent (single wiring point). A live slot is bound to its
+ * exact ledger BEFORE any provider is constructed; the run record is built
+ * from the authoritative game snapshot/checkpoint, never from the view.
  */
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, resolve } from 'node:path';
-import { writeExclusiveSlot } from '../persistence/atomic-slot';
 import { messageFail, messageOk, type MessageResult } from '../communication/contracts';
-import { G09_TIMEOUT_MS, type GoalChoiceId } from '../negotiation/contracts';
+import { G09_TIMEOUT_MS } from '../negotiation/contracts';
 import type { GoalProtocolOptions } from '../agent/contracts';
 import type { GoalRequestStore } from '../negotiation/requests';
 import {
-  loadG09Checkpoint, restoreG09Game, saveG09Checkpoint, type G09Checkpoint,
+  loadG09Checkpoint, restoreG09Game, saveG09CheckpointDetailed, type G09Checkpoint,
 } from '../negotiation/checkpoint';
 import { createHttpProvider } from '../agent/providers/http';
 import type { Provider, TransportRecord } from '../agent/contracts';
@@ -24,12 +21,18 @@ import { createNeedsGame, buildNeedsWorld, type NeedsGame } from '../needs/game'
 import { createWireCollector, wireUsage, type G09WireCapture } from '../agent/providers/wire';
 import {
   campaignCounts, finishCampaignChat, loadCampaign, openCampaign, reserveCampaignChat,
+  type CampaignState,
 } from '../eval/campaign-budget';
 import type { Location } from '../types';
 import {
-  G10_APP_SCHEMA, G10_FAILURE_SCHEMA, G10_RUN_SCHEMA,
-  type ApplicationPorts, type AppMeta, type AppView, type FixtureId, type GoalArm,
-  type ProviderKind, type SaveOutcome, type SatietyLevel,
+  campaignJsonPath, campaignSummary, canonicalLedgerLocator, createCampaignBinding, validateCampaignBinding,
+} from './budget-binding';
+import { saveOutcomeFromMessage, writeAuthoritativeRunRecord } from './persistence';
+import {
+  G10_APP_SCHEMA_V2, G10_FAILURE_SCHEMA,
+  type ApplicationPorts, type AppMeta, type AppView, type CampaignBinding, type FixtureId,
+  type GoalArm, type ProviderKind, type RunRecordLineage, type RunRecordWriteResult, type SaveOutcome,
+  type SatietyLevel, type WireRecordEntry,
 } from './contracts';
 
 export interface G10RuntimeOptions {
@@ -48,17 +51,7 @@ export interface G10RuntimeOptions {
   now?: () => number;
 }
 
-export interface G10WireRecord {
-  attemptId: string;
-  phase: 'goal' | 'action';
-  endpointClass: 'loopback' | 'remote';
-  requestBody: unknown;
-  requestBodyText: string;
-  status: number | null;
-  responseBody: string | null;
-  usage: { total_tokens: number | null; prompt_tokens: number | null; completion_tokens: number | null } | null;
-  error: string | null;
-}
+export type G10WireRecord = WireRecordEntry;
 
 export interface G10Runtime {
   game: NeedsGame;
@@ -68,9 +61,11 @@ export interface G10Runtime {
   root: string;
   slot: string;
   ports: ApplicationPorts;
-  wire(): G10WireRecord[];
-  writeRunRecord(view: AppView): string;
-  loadInfo: { path: string; calls: 0 } | null;
+  wire(): WireRecordEntry[];
+  /** The immutable binding written with the last save (null offline). */
+  campaignBinding(): CampaignBinding | null;
+  writeRunRecord(view: AppView): RunRecordWriteResult;
+  loadInfo: { path: string; calls: 0; parentSlot: string } | null;
 }
 
 const ACTOR_IDS = ['npc_a', 'npc_c'] as const;
@@ -111,6 +106,27 @@ function isLoopback(url: string): boolean {
   return endpointClassOf(url) === 'loopback';
 }
 
+function invalidRoot(root: string): string | null {
+  try {
+    const stat = statSync(resolve(root));
+    return stat.isDirectory() ? null : `--root ${JSON.stringify(resolve(root))} exists and is not a directory`;
+  } catch {
+    return null; // absent is fine: it will be created on the first write
+  }
+}
+
+function lineageOf(parentSlot: string | null, wire: WireRecordEntry[]): RunRecordLineage {
+  return {
+    baseCommit: process.env.FROSTECHO_COMMIT ?? null,
+    parentSlot,
+    attemptRange: {
+      first: wire.length === 0 ? null : wire[0]!.attemptId,
+      last: wire.length === 0 ? null : wire[wire.length - 1]!.attemptId,
+      count: wire.length,
+    },
+  };
+}
+
 /**
  * Build one runtime around the real createNeedsGame controller. Offline never
  * reads env: only an explicit `--live --http URL --model M --campaign DIR`
@@ -118,6 +134,8 @@ function isLoopback(url: string): boolean {
  */
 export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10Runtime> {
   const now = options.now ?? Date.now;
+  const rootProblem = invalidRoot(options.root);
+  if (rootProblem !== null) return messageFail('INVALID_COMMAND', rootProblem);
   const providerKind: ProviderKind = options.live ? 'live' : options.fixture !== null ? 'fixture' : 'reference';
   const scripted = providerKind !== 'live';
   const config: G08EffectiveConfig = {
@@ -140,7 +158,7 @@ export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10R
   }
 
   const meta: AppMeta = {
-    schema: G10_APP_SCHEMA,
+    schema: G10_APP_SCHEMA_V2,
     episodeId: options.slot,
     providerKind,
     fixtureId: options.fixture,
@@ -148,11 +166,14 @@ export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10R
     candidateSet: options.candidates,
     satiety: options.satiety,
     scripted,
+    campaign: null,
   };
 
-  const wire: G10WireRecord[] = [];
+  const wire: WireRecordEntry[] = [];
   let providerFor = (): Provider => (options.fixture !== null ? fixtureProvider(options.fixture) : referenceProvider());
-  let campaign: { limit: number; spent: number } | null = null;
+  let ledger: CampaignState | null = null;
+  let campaignJson: string | null = null;
+  let savedBinding: CampaignBinding | null = null;
 
   if (options.live) {
     const campaignDir = resolve(options.campaign!);
@@ -160,13 +181,12 @@ export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10R
       const opened = loadCampaign(campaignDir);
       const limit = options.campaignLimit ?? opened.limit;
       if (!Number.isInteger(limit) || limit < 0) return messageFail('INVALID_COMMAND', 'campaign limit must be a non-negative integer');
-      const state = options.campaignLimit === null ? opened : openCampaign(campaignDir, limit, opened.campaignId);
-      campaign = { limit: campaignCounts(state).limit, spent: campaignCounts(state).spent };
+      ledger = options.campaignLimit === null ? opened : openCampaign(campaignDir, limit, opened.campaignId);
     } catch {
       if (options.campaignLimit === null) return messageFail('INVALID_COMMAND', 'the campaign ledger does not exist; pass --campaign-limit to create it');
-      const state = openCampaign(campaignDir, options.campaignLimit, options.slot);
-      campaign = { limit: campaignCounts(state).limit, spent: campaignCounts(state).spent };
+      ledger = openCampaign(campaignDir, options.campaignLimit, options.slot);
     }
+    campaignJson = campaignJsonPath(campaignDir);
     const collector = createWireCollector(fetch);
     const inner = createHttpProvider({
       url: options.http,
@@ -179,22 +199,22 @@ export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10R
         const phase: 'goal' | 'action' = (input as { goalChoice?: unknown }).goalChoice !== undefined ? 'goal' : 'action';
         const reservation = reserveCampaignChat(campaignDir, { batch: options.slot, episodeId: meta.episodeId, phase });
         if (!reservation.ok) throw new Error(`campaign budget: ${reservation.reason}`);
-        campaign = campaignCounts(reservation.state);
+        ledger = reservation.state;
         try {
           const answer = await inner.decide(input, signal);
           const capture = collector.take();
           const usage = capture === null || capture.responseBody === null ? null : wireUsage(capture.responseBody);
-          wire.push(wireRecord(reservation.attemptId, phase, options.http, capture, usage, null));
+          wire.push(wireRecord(reservation.attemptId, phase, options.http, options.model, capture, usage, null));
           finishCampaignChat(campaignDir, reservation.attemptId, { outcome: 'success', totalTokens: usage?.total_tokens ?? null });
-          campaign = campaignCounts(loadCampaign(campaignDir));
+          ledger = loadCampaign(campaignDir);
           return answer;
         } catch (error) {
           const capture = collector.take();
           const usage = capture === null || capture.responseBody === null ? null : wireUsage(capture.responseBody);
           const message = error instanceof Error ? error.message : String(error);
-          wire.push(wireRecord(reservation.attemptId, phase, options.http, capture, usage, message));
+          wire.push(wireRecord(reservation.attemptId, phase, options.http, options.model, capture, usage, message));
           finishCampaignChat(campaignDir, reservation.attemptId, { outcome: message.includes('timeout') ? 'timeout' : 'provider_error', totalTokens: usage?.total_tokens ?? null });
-          campaign = campaignCounts(loadCampaign(campaignDir));
+          ledger = loadCampaign(campaignDir);
           throw error;
         }
       },
@@ -223,32 +243,50 @@ export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10R
     now,
   });
 
+  const runtimeRoot = resolve(options.root);
   return messageOk({
     game,
     store: game.goalRequests(),
     config,
     meta,
-    root: resolve(options.root),
+    root: runtimeRoot,
     slot: options.slot,
-    ports: createPorts(game, config, meta, resolve(options.root), options.slot, () => campaign, wire, now),
+    ports: createPorts({
+      game, config, meta, root: runtimeRoot, slot: options.slot,
+      ledger: () => ledger,
+      campaignJson: () => campaignJson,
+      onBinding: binding => { savedBinding = binding; },
+      binding: () => savedBinding,
+      wire,
+      now,
+      parentSlot: null,
+    }),
     wire: () => [...wire],
+    campaignBinding: () => savedBinding,
     writeRunRecord: (view: AppView) => writeRunRecord({
-      root: resolve(options.root), slot: options.slot, view, meta, config, campaign, wire,
+      game, store: game.goalRequests(), root: runtimeRoot, slot: options.slot, view, meta, config,
+      wire, parentSlot: null, ledger: ledger === null ? null : summaryOf(ledger), binding: savedBinding, now,
     }),
     loadInfo: null,
   });
 }
 
+function summaryOf(ledger: CampaignState): { limit: number; spent: number; known: number | null } {
+  return campaignSummary(ledger);
+}
+
 function wireRecord(
-  attemptId: string, phase: 'goal' | 'action', url: string,
+  attemptId: string, phase: 'goal' | 'action', url: string, model: string | null,
   capture: G09WireCapture | null,
-  usage: G10WireRecord['usage'],
+  usage: WireRecordEntry['usage'],
   error: string | null,
-): G10WireRecord {
+): WireRecordEntry {
   return {
     attemptId,
     phase,
     endpointClass: endpointClassOf(url),
+    providerSource: 'http',
+    model,
     requestBody: capture?.requestBody ?? null,
     requestBodyText: capture?.requestBodyText ?? '',
     status: capture?.status ?? null,
@@ -258,59 +296,129 @@ function wireRecord(
   };
 }
 
-function createPorts(
-  game: NeedsGame,
-  config: G08EffectiveConfig,
-  meta: AppMeta,
-  root: string,
-  slot: string,
-  campaign: () => { limit: number; spent: number } | null,
-  wire: G10WireRecord[],
-  now: () => number,
-): ApplicationPorts {
+function createPorts(input: {
+  game: NeedsGame;
+  config: G08EffectiveConfig;
+  meta: AppMeta;
+  root: string;
+  slot: string;
+  ledger: () => CampaignState | null;
+  campaignJson: () => string | null;
+  onBinding(binding: CampaignBinding | null): void;
+  binding: () => CampaignBinding | null;
+  wire: WireRecordEntry[];
+  now: () => number;
+  parentSlot: string | null;
+}): ApplicationPorts {
+  const { game, config, meta, root, slot, wire, now } = input;
   return {
     save(target: string): SaveOutcome {
+      // A live save is bound to the ledger's CURRENT immutable identity and
+      // spent history; the binding is written inside the same exclusive slot.
+      let metaToSave: AppMeta = { ...meta, schema: G10_APP_SCHEMA_V2, campaign: null };
+      if (meta.providerKind === 'live') {
+        const ledger = input.ledger();
+        const json = input.campaignJson();
+        if (ledger === null || json === null) {
+          return { ok: false, path: null, code: 'INTERNAL', fatal: true, issues: ['the live run has no campaign ledger'], cause: 'live run without a ledger' };
+        }
+        const bound = createCampaignBinding(ledger, json, now);
+        if (!bound.ok) {
+          return { ok: false, path: null, code: 'INVALID_SNAPSHOT', fatal: false, issues: bound.issues, cause: bound.issues.join('; ') };
+        }
+        metaToSave = { ...metaToSave, campaign: bound.binding };
+        input.onBinding(bound.binding);
+      }
       const session = game.sessionsOf().find(entry => entry.actorId === 'npc_a')?.session ?? null;
-      const saved = saveG09Checkpoint(root, target, game, {
+      const saved = saveG09CheckpointDetailed(root, target, game, {
         arm: meta.candidateSet,
         satiety: meta.satiety,
         requests: game.goalRequests(),
         binding: session?.goalBinding ?? null,
         goalMode: meta.goalMode,
-        app: { ...meta },
+        app: { ...metaToSave } as Record<string, unknown>,
       }, config);
-      if (saved.ok) return { ok: true, path: saved.value.path, code: 'OK', issues: [] };
-      const busy = saved.code === 'QUEUE_FULL';
-      return { ok: false, path: null, code: busy ? 'SAVE_BUSY' : 'SAVE_FAILED', issues: saved.issues ?? [] };
+      const outcome = saveOutcomeFromMessage(saved);
+      if (!outcome.ok && metaToSave.campaign !== null) input.onBinding(null);
+      return outcome;
     },
     failure(error: unknown): string | null {
-      const session = game.sessionsOf().find(entry => entry.actorId === 'npc_a')?.session ?? null;
-      const lastStep = session === null ? undefined : session.steps[session.steps.length - 1];
-      const transport: TransportRecord | undefined = lastStep?.transport;
-      const path = `${resolve(root, slot)}.failure.json`;
-      mkdirSync(dirname(path), { recursive: true });
-      writeFileSync(path, `${JSON.stringify({
-        schema: G10_FAILURE_SCHEMA,
-        at: new Date(now()).toISOString(),
-        reason: error instanceof Error ? error.message : String(error),
-        meta,
-        config,
-        phase: session?.phase ?? null,
-        sessionStatus: session?.status ?? null,
-        requests: game.goalRequests(),
-        transport: transport === undefined ? null : {
-          requestBody: transport.requestBody,
-          status: transport.status,
-          usage: transport.usage,
-          error: transport.error,
-        },
-        wire: [...wire],
-      }, null, 2)}\n`);
-      return path;
+      try {
+        const session = game.sessionsOf().find(entry => entry.actorId === 'npc_a')?.session ?? null;
+        const lastStep = session === null ? undefined : session.steps[session.steps.length - 1];
+        const transport: TransportRecord | undefined = lastStep?.transport;
+        const path = `${resolve(root, slot)}.failure.json`;
+        mkdirSync(dirname(path), { recursive: true });
+        writeFileSync(path, `${JSON.stringify({
+          schema: G10_FAILURE_SCHEMA,
+          at: new Date(now()).toISOString(),
+          reason: error instanceof Error ? error.message : String(error),
+          meta,
+          config,
+          phase: session?.phase ?? null,
+          sessionStatus: session?.status ?? null,
+          requests: game.goalRequests(),
+          transport: transport === undefined ? null : {
+            requestBody: transport.requestBody,
+            status: transport.status,
+            usage: transport.usage,
+            error: transport.error,
+          },
+          wire: [...wire],
+        }, null, 2)}\n`);
+        return path;
+      } catch {
+        // A bad root cannot hold evidence; the caller reports the original
+        // cause on stderr and the finalization stays nonzero. Never throw here.
+        return null;
+      }
     },
-    budget: campaign,
+    budget: () => (input.ledger() === null ? null : summaryOf(input.ledger()!)),
+    writeRunRecord(view: AppView): RunRecordWriteResult {
+      return writeRunRecord({
+        game, store: game.goalRequests(), root, slot, view, meta, config, wire,
+        parentSlot: input.parentSlot,
+        ledger: input.ledger() === null ? null : summaryOf(input.ledger()!),
+        binding: input.binding(),
+        now,
+      });
+    },
     now,
   };
+}
+
+function writeRunRecord(input: {
+  game: NeedsGame;
+  store: GoalRequestStore;
+  root: string;
+  slot: string;
+  view: AppView;
+  meta: AppMeta;
+  config: G08EffectiveConfig;
+  wire: WireRecordEntry[];
+  parentSlot: string | null;
+  ledger: { limit: number; spent: number; known: number | null } | null;
+  binding: CampaignBinding | null;
+  now: () => number;
+}): RunRecordWriteResult {
+  return writeAuthoritativeRunRecord({
+    root: input.root,
+    slot: input.slot,
+    game: input.game,
+    store: input.store,
+    meta: input.meta,
+    config: input.config,
+    beforeCloseView: input.view,
+    wire: input.wire,
+    lineage: lineageOf(input.parentSlot, input.wire),
+    campaign: input.ledger === null ? null : {
+      binding: input.binding,
+      limit: input.ledger.limit,
+      spent: input.ledger.spent,
+      known: input.ledger.known,
+    },
+    now: input.now,
+  });
 }
 
 export interface LoadG10Options {
@@ -328,9 +436,9 @@ export interface LoadG10Options {
 }
 
 /**
- * Rebuild a saved run from the envelope. A saved slot uses its SAVED mode,
- * model, provider kind and fixture; a conflicting flag is refused before any
- * provider call. Restore is pure data: zero calls, zero submit, no re-choice.
+ * Rebuild a saved run from the envelope. A live slot is validated against its
+ * SAVED ledger binding BEFORE any provider is constructed; a mismatch is a
+ * named refusal with zero POST and zero Engine.submit.
  */
 export function loadG10Runtime(path: string, options: LoadG10Options): MessageResult<G10Runtime> {
   const loaded = loadG09Checkpoint(path);
@@ -354,17 +462,33 @@ export function loadG10Runtime(path: string, options: LoadG10Options): MessageRe
   if (options.satiety !== undefined && options.satiety !== envelope.satiety) {
     return messageFail('INVALID_COMMAND', `satiety conflict: the slot was saved with ${envelope.satiety}`);
   }
-  if (savedMeta.providerKind === 'live' && (options.campaign === null || !isLoopback(options.http))) {
-    return messageFail('INVALID_COMMAND', 'a live slot needs its authorized campaign and a loopback endpoint in this task');
-  }
 
-  const wire: G10WireRecord[] = [];
-  let campaign: { limit: number; spent: number } | null = null;
+  const wire: WireRecordEntry[] = [];
+  let ledger: CampaignState | null = null;
+  let campaignJson: string | null = null;
+  let savedBinding: CampaignBinding | null = savedMeta.campaign ?? null;
   let providerFor = (): Provider => (savedMeta.fixtureId !== null ? fixtureProvider(savedMeta.fixtureId) : referenceProvider());
+
   if (savedMeta.providerKind === 'live') {
-    const campaignDir = resolve(options.campaign!);
-    try { campaign = campaignCounts(loadCampaign(campaignDir)); }
-    catch { return messageFail('INVALID_SNAPSHOT', 'the saved live run has no campaign ledger to resume'); }
+    if (options.campaign === null) return messageFail('INVALID_COMMAND', 'CAMPAIGN_BINDING_MISSING: a live slot needs its authorized campaign directory');
+    if (!isLoopback(options.http)) return messageFail('INVALID_COMMAND', 'this task authorizes loopback only; a remote endpoint needs a separately authorized budget');
+    if (savedBinding === null) {
+      return messageFail('INVALID_COMMAND', 'CAMPAIGN_BINDING_MISSING: this live slot was saved without a campaign binding; it cannot be attached to a ledger automatically');
+    }
+    if (options.campaignLimit !== null && options.campaignLimit !== savedBinding.limit) {
+      return messageFail('INVALID_COMMAND', `LEDGER_LIMIT_MISMATCH: the slot authorizes ${savedBinding.limit}, not ${options.campaignLimit}`);
+    }
+    const campaignDir = resolve(options.campaign);
+    campaignJson = campaignJsonPath(campaignDir);
+    try {
+      ledger = loadCampaign(campaignDir);
+    } catch (error) {
+      return messageFail('INVALID_COMMAND', `LEDGER_MISSING: ${error instanceof Error ? error.message : String(error)}`);
+    }
+    const check = validateCampaignBinding(savedBinding, ledger, campaignJson);
+    if (!check.ok) {
+      return messageFail('INVALID_COMMAND', `${check.code}: ${check.issues.join('; ')}`);
+    }
     const collector = createWireCollector(fetch);
     const inner = createHttpProvider({
       url: options.http, model: String(envelope.effectiveConfig.requestModel),
@@ -375,22 +499,22 @@ export function loadG10Runtime(path: string, options: LoadG10Options): MessageRe
         const phase: 'goal' | 'action' = (input as { goalChoice?: unknown }).goalChoice !== undefined ? 'goal' : 'action';
         const reservation = reserveCampaignChat(campaignDir, { batch: savedMeta.episodeId, episodeId: savedMeta.episodeId, phase });
         if (!reservation.ok) throw new Error(`campaign budget: ${reservation.reason}`);
-        campaign = campaignCounts(reservation.state);
+        ledger = reservation.state;
         try {
           const answer = await inner.decide(input, signal);
           const capture = collector.take();
           const usage = capture === null || capture.responseBody === null ? null : wireUsage(capture.responseBody);
-          wire.push(wireRecord(reservation.attemptId, phase, options.http, capture, usage, null));
+          wire.push(wireRecord(reservation.attemptId, phase, options.http, envelope.effectiveConfig.requestModel, capture, usage, null));
           finishCampaignChat(campaignDir, reservation.attemptId, { outcome: 'success', totalTokens: usage?.total_tokens ?? null });
-          campaign = campaignCounts(loadCampaign(campaignDir));
+          ledger = loadCampaign(campaignDir);
           return answer;
         } catch (error) {
           const capture = collector.take();
           const usage = capture === null || capture.responseBody === null ? null : wireUsage(capture.responseBody);
           const message = error instanceof Error ? error.message : String(error);
-          wire.push(wireRecord(reservation.attemptId, phase, options.http, capture, usage, message));
+          wire.push(wireRecord(reservation.attemptId, phase, options.http, envelope.effectiveConfig.requestModel, capture, usage, message));
           finishCampaignChat(campaignDir, reservation.attemptId, { outcome: message.includes('timeout') ? 'timeout' : 'provider_error', totalTokens: usage?.total_tokens ?? null });
-          campaign = campaignCounts(loadCampaign(campaignDir));
+          ledger = loadCampaign(campaignDir);
           throw error;
         }
       },
@@ -415,6 +539,7 @@ export function loadG10Runtime(path: string, options: LoadG10Options): MessageRe
   const game = restored.value.game as NeedsGame;
   const root = dirname(resolve(path));
   const slot = basename(resolve(path)).replace(/\.g09\.json$/, '');
+  const parentSlot = resolve(path);
   return messageOk({
     game,
     store: restored.value.store,
@@ -422,19 +547,32 @@ export function loadG10Runtime(path: string, options: LoadG10Options): MessageRe
     meta: savedMeta,
     root,
     slot,
-    ports: createPorts(game, envelope.effectiveConfig, savedMeta, root, slot, () => campaign, wire, options.now ?? Date.now),
-    wire: () => [...wire],
-    writeRunRecord: (view: AppView) => writeRunRecord({
-      root, slot, view, meta: savedMeta, config: envelope.effectiveConfig, campaign, wire,
+    ports: createPorts({
+      game, config: envelope.effectiveConfig, meta: savedMeta, root, slot,
+      ledger: () => ledger,
+      campaignJson: () => campaignJson,
+      onBinding: binding => { savedBinding = binding; },
+      binding: () => savedBinding,
+      wire,
+      now: options.now ?? Date.now,
+      parentSlot,
     }),
-    loadInfo: { path: resolve(path), calls: 0 },
+    wire: () => [...wire],
+    campaignBinding: () => savedBinding,
+    writeRunRecord: (view: AppView) => writeRunRecord({
+      game, store: restored.value.store, root, slot, view, meta: savedMeta,
+      config: envelope.effectiveConfig, wire, parentSlot,
+      ledger: ledger === null ? null : summaryOf(ledger),
+      binding: savedBinding, now: options.now ?? Date.now,
+    }),
+    loadInfo: { path: parentSlot, calls: 0, parentSlot },
   });
 }
 
 function appMetaOf(envelope: G09Checkpoint): AppMeta {
   const raw = envelope.app as Partial<AppMeta> | undefined;
   const fallback: AppMeta = {
-    schema: G10_APP_SCHEMA,
+    schema: G10_APP_SCHEMA_V2,
     episodeId: typeof (envelope.app as { episodeId?: unknown } | undefined)?.episodeId === 'string'
       ? String((envelope.app as { episodeId: string }).episodeId)
       : 'slot',
@@ -444,11 +582,13 @@ function appMetaOf(envelope: G09Checkpoint): AppMeta {
     candidateSet: envelope.arm,
     satiety: envelope.satiety,
     scripted: envelope.effectiveConfig.mode !== 'live',
+    campaign: null,
   };
-  if (raw === undefined || raw.schema !== G10_APP_SCHEMA) return fallback;
+  // /1 slots have no campaign binding; live ones are refused on load.
+  if (raw === undefined || (raw.schema !== G10_APP_SCHEMA_V2 && raw.schema !== 'frostecho.g10.app/1')) return fallback;
   const fixture = raw.fixtureId;
   return {
-    schema: G10_APP_SCHEMA,
+    schema: G10_APP_SCHEMA_V2,
     episodeId: typeof raw.episodeId === 'string' ? raw.episodeId : fallback.episodeId,
     providerKind: raw.providerKind === 'live' || raw.providerKind === 'fixture' ? raw.providerKind : 'reference',
     fixtureId: fixture === 'cooperate' || fixture === 'decline' || fixture === 'violate' ? fixture : null,
@@ -456,36 +596,12 @@ function appMetaOf(envelope: G09Checkpoint): AppMeta {
     candidateSet: raw.candidateSet === 'self_only' ? 'self_only' : 'choice',
     satiety: raw.satiety === 60 ? 60 : 40,
     scripted: raw.providerKind !== 'live',
+    campaign: raw.schema === G10_APP_SCHEMA_V2 ? (raw.campaign ?? null) : null,
   };
 }
 
-/** Quit writes ONE new run record; an existing run record is never overwritten. */
-export function writeRunRecord(input: {
-  root: string;
-  slot: string;
-  view: AppView;
-  meta: AppMeta;
-  config: G08EffectiveConfig;
-  campaign: { limit: number; spent: number } | null;
-  wire: G10WireRecord[];
-}): string {
-  const payload = {
-    schema: G10_RUN_SCHEMA,
-    at: new Date().toISOString(),
-    meta: input.meta,
-    config: input.config,
-    view: input.view,
-    campaign: input.campaign,
-    wire: input.wire,
-  };
-  for (let index = 1; index < 100; index += 1) {
-    const slot = index === 1 ? `${input.slot}-run` : `${input.slot}-run-${index}`;
-    const written = writeExclusiveSlot(input.root, slot, '.run.json', G10_RUN_SCHEMA, payload);
-    if (written.ok) return written.value.path;
-    if (written.code !== 'EXISTS') throw new Error(`cannot write the run record: ${written.code} ${(written.issues ?? []).join('; ')}`);
-  }
-  throw new Error('cannot allocate a run-record slot');
-}
+/** Exported for tests: the canonical ledger locator used by the binding. */
+export { canonicalLedgerLocator };
 
 /** Exported for the terminal: the scripted demo label (never "model behaviour"). */
 export function demoLabel(meta: AppMeta): string | null {
@@ -499,4 +615,4 @@ export function demoLabel(meta: AppMeta): string | null {
 }
 
 /** Re-exported for callers that only need the frozen two-phase prompt text. */
-export type { GoalChoiceId, GoalProtocolOptions, Location };
+export type { GoalProtocolOptions, Location };

@@ -35,7 +35,8 @@ export type GoalMode = 'legacy' | 'negotiated';
  * a deterministic demo script or the real model path.
  */
 export interface AppMeta {
-  schema: typeof G10_APP_SCHEMA;
+  /** /1 has no binding; /2 carries the immutable campaign authorization. */
+  schema: typeof G10_APP_SCHEMA | typeof G10_APP_SCHEMA_V2;
   episodeId: string;
   providerKind: ProviderKind;
   fixtureId: FixtureId | null;
@@ -43,6 +44,8 @@ export interface AppMeta {
   candidateSet: GoalArm;
   satiety: SatietyLevel;
   scripted: boolean;
+  /** Present for /2; null offline or when no authorization exists. */
+  campaign?: CampaignBinding | null;
 }
 
 export type AppCommand =
@@ -85,6 +88,8 @@ export interface ExecuteResult {
   detail?: string;
   /** For run/step/world commands: how many advances actually happened. */
   advanced?: number;
+  /** The typed save outcome (refusal vs durable failure), when a save ran. */
+  saveCode?: SaveCode;
 }
 
 export interface AppRequestView {
@@ -136,15 +141,129 @@ export interface AppView {
   busy: boolean;
 }
 
+/**
+ * Typed save result. A user-actionable refusal (slot exists, bad slot name,
+ * decision in flight) is NOT a durable failure and never latches the run as
+ * failed. A real IO failure keeps its original code/cause and MUST latch.
+ */
+export type SaveRejectCode = 'EXISTS' | 'INVALID_SLOT' | 'SCHEMA_MISMATCH' | 'SAVE_BUSY' | 'INVALID_SNAPSHOT';
+export type SaveFailureCode = 'IO_ERROR' | 'INTERNAL';
+export type SaveCode = 'OK' | SaveRejectCode | SaveFailureCode;
+
 export interface SaveOutcome {
   ok: boolean;
   path: string | null;
-  code: 'OK' | 'SAVE_BUSY' | 'SAVE_FAILED';
+  code: SaveCode;
+  /** True only for a durable/IO failure; a refusal is false. */
+  fatal: boolean;
+  issues: string[];
+  /** Original cause text (never dropped). */
+  cause: string | null;
+}
+
+/** The ONE finalization result; quit/EOF/SIGINT all share one promise. */
+export interface FinalizationResult {
+  ok: boolean;
+  exitCode: 0 | 1;
+  recordPath: string | null;
+  errors: { code: 'PERSISTENCE_FAILED' | 'CLOSE_FAILED'; message: string }[];
+  /** Explicitly the projection the user last saw, never the authority. */
+  beforeCloseView: AppView;
+}
+
+/* ------------------------------------------------------------------ */
+/* Authoritative run record and campaign binding (G10-R1 frozen shapes) */
+/* ------------------------------------------------------------------ */
+
+export const G10_RUN_SCHEMA_V2 = 'frostecho.g10.run/2' as const;
+export const G10_APP_SCHEMA_V2 = 'frostecho.g10.app/2' as const;
+export const G10_CAMPAIGN_BINDING_SCHEMA = 'frostecho.g10.campaign-binding/1' as const;
+
+/** One HTTP exchange of THIS process (never the whole history). */
+export interface WireRecordEntry {
+  attemptId: string;
+  phase: 'goal' | 'action';
+  /** Address class only; never proof that the peer is a fake model. */
+  endpointClass: 'loopback' | 'remote';
+  /** Where the provider came from (fixture | reference | http). */
+  providerSource: 'fixture' | 'reference' | 'http';
+  model: string | null;
+  status: number | null;
+  requestBody: unknown;
+  requestBodyText: string;
+  responseBody: string | null;
+  usage: { total_tokens: number | null; prompt_tokens: number | null; completion_tokens: number | null } | null;
+  error: string | null;
+}
+
+/**
+ * Immutable authorization identity saved with a live slot. It is an
+ * engineering guard against a different/rolled-back ledger, not a claim of
+ * resistance to arbitrary root tampering. A path or a limit number alone is
+ * never a ledger identity.
+ */
+export interface CampaignBinding {
+  schema: typeof G10_CAMPAIGN_BINDING_SCHEMA;
+  /** Stable identity of the ledger file (immutable once created). */
+  ledgerId: string;
+  /** Canonical absolute locator of campaign.json at save time. */
+  locator: string;
+  /** The authorized limit at save time (immutable for this slot). */
+  limit: number;
+  /** spent at save time; a restore may only see >= this value. */
+  spentFloor: number;
+  /** Ordered attempt ids at save time; a restore must see this exact prefix. */
+  usedPrefix: string[];
+  savedAtUtc: string;
+}
+
+export interface RunRecordLineage {
+  baseCommit: string | null;
+  /** The slot file this process resumed from, or null for a new run. */
+  parentSlot: string | null;
+  /** Attempt ids written by THIS process only. */
+  attemptRange: { first: string | null; last: string | null; count: number };
+}
+
+/** The authoritative half of the run record: re-executable, not a view. */
+export interface RunRecordAuthoritative {
+  snapshot: unknown;
+  checkpoint: unknown;
+  engine: { state: unknown; log: unknown[] };
+  commands: unknown[];
+  events: unknown[];
+  processed: string[];
+  requests: unknown;
+  budget: {
+    sessionLimit: number;
+    episodeLimit: number;
+    providerCalls: number;
+    episodeCalls: number;
+  };
+}
+
+export interface RunRecordPayloadV2 {
+  schema: typeof G10_RUN_SCHEMA_V2;
+  at: string;
+  lineage: RunRecordLineage;
+  meta: AppMeta;
+  config: unknown;
+  beforeCloseView: AppView;
+  authoritative: RunRecordAuthoritative;
+  wire: WireRecordEntry[];
+  campaign: { binding: CampaignBinding | null; limit: number; spent: number; known: number | null } | null;
+}
+
+export interface RunRecordWriteResult {
+  ok: boolean;
+  path: string | null;
+  code: SaveCode;
+  cause: string | null;
   issues: string[];
 }
 
 /**
- * Injected adapters (C). The core never touches fs/network directly.
+ * Injected adapters (C/A). The core never touches fs/network directly.
  * `save`/`failure`/`budget` are bound to the live game by the runtime.
  */
 export interface ApplicationPorts {
@@ -154,6 +273,8 @@ export interface ApplicationPorts {
   failure(error: unknown): string | null;
   /** The authorized campaign budget, or null when the run is offline. */
   budget(): { limit: number; spent: number } | null;
+  /** Exclusive authoritative run record; never overwrites a save slot. */
+  writeRunRecord(view: AppView): RunRecordWriteResult;
   now(): number;
 }
 
@@ -176,6 +297,11 @@ export interface ApplicationController {
   execute(command: AppCommand): Promise<ExecuteResult>;
   view(): AppView;
   close(): Promise<ControllerCloseResult>;
+  /**
+   * The ONE finalization: close, write the authoritative run record, and
+   * decide the exit code. Idempotent — every quit/EOF/signal shares it.
+   */
+  finalize(): Promise<FinalizationResult>;
   isClosed(): boolean;
   isBusy(): boolean;
   hasFailed(): boolean;
