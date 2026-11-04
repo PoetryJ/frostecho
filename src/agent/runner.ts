@@ -2,11 +2,41 @@ import { WorldState } from '../types';
 import {
   AgentAction, AgentSession, CommandIdScheme, DecideInput, DecidingPhase, DEFAULT_TIMEOUT_MS, GOAL_HUNGER_AT_LEAST, MAX_PROVIDER_CALLS,
   Provider, RunOptions, RunOutcome, RunResult, SessionStatus, StepAgentResult, StepFeedback, StepRecord,
-  SubmittedCommand,
+  SubmittedCommand, GoalProtocolOptions, GoalChoiceContext,
 } from './contracts';
 import { WAIT_SIM_STEPS, type ActionSet, type SessionWaitState } from '../temporal/contracts';
 import { observe } from './observation';
 import { parseAction } from './parser';
+import {
+  G09_BINDING_SCHEMA, goalChoiceLine, goalOptionsIssues, strictGoalChoice,
+  type GoalBinding,
+} from '../negotiation/contracts';
+
+/** Structural rules of a per-session goal protocol (frozen arm semantics). */
+export function goalProtocolIssues(protocol: GoalProtocolOptions): string[] {
+  const issues: string[] = [];
+  issues.push(...goalOptionsIssues(protocol.options));
+  if (protocol.arm !== 'self_only' && protocol.arm !== 'choice') issues.push(`unknown arm ${JSON.stringify(protocol.arm)}`);
+  if (!Number.isSafeInteger(protocol.deadlineAfterRound) || protocol.deadlineAfterRound < 1) {
+    issues.push('deadlineAfterRound must be an integer ≥ 1');
+  }
+  if (typeof protocol.playerId !== 'string' || protocol.playerId.length === 0) issues.push('playerId must be a non-empty string');
+  if (typeof protocol.text !== 'string' || protocol.text.length === 0) issues.push('text must be a non-empty string');
+  if (protocol.arm === 'self_only') {
+    if (protocol.requestId !== null) issues.push('the self_only arm carries no request id');
+    if (protocol.options.length !== 1 || protocol.options[0] !== 'feed_self') {
+      issues.push("the self_only arm offers exactly ['feed_self']");
+    }
+  } else {
+    if (typeof protocol.requestId !== 'string' || protocol.requestId.length === 0) {
+      issues.push('the choice arm must name its request id');
+    }
+    if (!protocol.options.includes('feed_self') || !protocol.options.includes('yield_once')) {
+      issues.push('the choice arm offers both goals');
+    }
+  }
+  return issues;
+}
 
 type CallResult =
   | { raw: string; ms: number }
@@ -34,6 +64,44 @@ function toCommand(commandId: string, actorId: string, action: Exclude<AgentActi
 function publicError(err: unknown): string {
   if (err instanceof Error && err.name === 'ProviderTransportError') return err.message;
   return 'provider error';
+}
+
+function safeSimTime(state: WorldState): number | null {
+  const simTime = state.simTime;
+  return typeof simTime === 'number' && Number.isSafeInteger(simTime) && simTime >= 0 ? simTime : null;
+}
+
+/**
+ * G09: build the frozen goal-choice context for the goal step. The player's
+ * satiety and simTime come from the authoritative world state; a world
+ * without either is a protocol failure, never a silent 0.
+ */
+function goalChoiceContext(
+  protocol: GoalProtocolOptions,
+  state: WorldState,
+): GoalChoiceContext | { failure: string } {
+  const simTime = safeSimTime(state);
+  if (simTime === null) return { failure: 'goal choice without a valid authoritative simTime' };
+  const player = state.npcs[protocol.playerId];
+  if (player === null || typeof player !== 'object' || typeof player.hunger !== 'number') {
+    return { failure: `goal choice needs the player ${protocol.playerId} in the world` };
+  }
+  return {
+    arm: protocol.arm,
+    requestId: protocol.requestId,
+    text: protocol.text,
+    options: protocol.options,
+    deadlineAfterRound: protocol.deadlineAfterRound,
+    playerId: protocol.playerId,
+    playerSatiety: player.hunger,
+    simTime,
+  };
+}
+
+/** The G09 binding records the episode it belongs to (runId `<episode>:<actor>:c<cycle>`). */
+function episodeIdOfRunId(runId: string): string {
+  const match = /^(.*):[^:]+:c\d+$/.exec(runId);
+  return match?.[1] ?? runId;
 }
 
 /**
@@ -145,12 +213,17 @@ class AgentSessionImpl implements AgentSession {
   wakeAtSimTime: number | null = null;
   /** True once resumeIfDue consumed the current wait (reset per accepted wait). */
   resumedOnce = false;
+  /** G09: the frozen goal protocol, or null for a plain action session. */
+  readonly goalProtocol: GoalProtocolOptions | null;
+  /** G09: the binding produced by the goal phase; a restored session never re-chooses. */
+  goalBinding: GoalBinding | null = null;
 
   constructor(options: RunOptions) {
     this.options = options;
     this.runId = options.runId;
     this.actorId = options.actorId;
     this.actionSet = options.actionSet ?? 'legacy';
+    this.goalProtocol = options.goalProtocol ?? null;
     this.now = options.now ?? Date.now;
     this.timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
     this.started = this.now();
@@ -163,6 +236,17 @@ class AgentSessionImpl implements AgentSession {
     if (typeof this.runId !== 'string' || this.runId.length === 0 || typeof this.actorId !== 'string' || this.actorId.length === 0) {
       this.failInvalid('runId and actorId must be non-empty strings');
       return;
+    }
+    if (this.goalProtocol !== null) {
+      const issues = goalProtocolIssues(this.goalProtocol);
+      if (issues.length > 0) {
+        this.failInvalid(`invalid goal protocol: ${issues.join('; ')}`);
+        return;
+      }
+      if (this.goalProtocol.playerId === this.actorId) {
+        this.failInvalid('invalid goal protocol: the player must differ from the deciding actor');
+        return;
+      }
     }
     try {
       observe(this.initialState, this.actorId);
@@ -211,6 +295,11 @@ class AgentSessionImpl implements AgentSession {
       providerCalls: this.providerCalls,
       resumedOnce: this.resumedOnce,
     };
+  }
+
+  /** G09: which phase the next step belongs to. */
+  get phase(): 'goal_choice' | 'action' {
+    return this.goalProtocol !== null && this.goalBinding === null ? 'goal_choice' : 'action';
   }
 
   result(): RunResult {
@@ -267,6 +356,15 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
       return { status: 'budget_exhausted', terminal: true, providerCalled: false };
     }
 
+    // G09: with the protocol enabled and undecided, this step is the goal
+    // phase — the budget must cover the protocol (this call + one action
+    // call), otherwise the session ends without spending anything.
+    const inGoalPhase = session.goalProtocol !== null && session.goalBinding === null;
+    if (inGoalPhase && session.providerCalls + 2 > MAX_PROVIDER_CALLS) {
+      finishTerminal(session, 'budget_exhausted', 'budget_exhausted');
+      return { status: 'budget_exhausted', terminal: true, providerCalled: false };
+    }
+
     const round = session.providerCalls + 1;
     session.round = round;
     const observation = observe(state, session.actorId);
@@ -275,11 +373,22 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
     const waiters = session.waiters.splice(0, session.waiters.length);
     for (const waiter of waiters) waiter(phase);
 
+    let goalContext: GoalChoiceContext | { failure: string } | null = null;
+    if (inGoalPhase && session.goalProtocol !== null) {
+      goalContext = goalChoiceContext(session.goalProtocol, state);
+      if ('failure' in goalContext) {
+        finishTerminal(session, 'invalid_run', 'invalid_run', goalContext.failure);
+        return { status: 'invalid_run', terminal: true, providerCalled: false };
+      }
+    }
+
     const input: DecideInput = {
       observation: structuredClone(observation),
       goal: { hungerAtLeast: GOAL_HUNGER_AT_LEAST },
       feedback: session.feedback ? { ...session.feedback } : null,
       ...(session.options.actionSet !== undefined ? { allowedActions: session.actionSet } : {}),
+      ...(inGoalPhase && goalContext !== null && !('failure' in goalContext) ? { goalChoice: goalContext } : {}),
+      ...(!inGoalPhase && session.goalBinding !== null ? { goalLine: goalChoiceLine(session.goalBinding) } : {}),
     };
     const done = takeDecision(
       session.options.provider,
@@ -300,12 +409,57 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
         observation: structuredClone(observation),
         raw: '',
         parse: { ok: false, error: decision.failure },
+        ...(inGoalPhase && session.goalProtocol !== null
+          ? { goal: { requestId: session.goalProtocol.requestId, goal: null, decidedRound: round, decidedAtSimTime: safeSimTime(state) ?? 0, parseOk: false } }
+          : {}),
         error: decision.message,
       }, transport);
       session.steps.push(step);
       const status: SessionStatus = decision.failure === 'timeout' ? 'timeout' : 'provider_error';
       finishTerminal(session, status, decision.failure, decision.message);
       return { status, terminal: true, providerCalled: true, step };
+    }
+
+    // G09 goal phase: the one legal answer is the frozen one-key object. A
+    // failing answer terminates the session — the protocol has no retry
+    // round, so nothing else may spend the remaining budget.
+    if (inGoalPhase && session.goalProtocol !== null) {
+      const protocol = session.goalProtocol;
+      const parse = strictGoalChoice(decision.raw, protocol.options);
+      const simTime = safeSimTime(state);
+      const decidedAtSimTime = typeof simTime === 'number' ? simTime : 0;
+      if (!parse.ok) {
+        const step = withTransport({
+          round,
+          observation: structuredClone(observation),
+          raw: decision.raw,
+          parse: { ok: false, error: `goal: ${parse.error}` },
+          goal: { requestId: protocol.requestId, goal: null, decidedRound: round, decidedAtSimTime, parseOk: false },
+          error: `invalid goal output: ${parse.error}`,
+        }, transport);
+        session.steps.push(step);
+        finishTerminal(session, 'invalid_run', 'invalid_run', `invalid goal output: ${parse.error}`);
+        return { status: 'invalid_run', terminal: true, providerCalled: true, step };
+      }
+      const binding: GoalBinding = {
+        schema: G09_BINDING_SCHEMA,
+        episodeId: episodeIdOfRunId(session.runId),
+        requestId: protocol.requestId,
+        goal: parse.goal,
+        decidedRound: round,
+        decidedAtSimTime,
+        raw: decision.raw,
+      };
+      session.goalBinding = binding;
+      const step = withTransport({
+        round,
+        observation: structuredClone(observation),
+        raw: decision.raw,
+        parse: { ok: false, error: 'goal phase: no action parsed' },
+        goal: { requestId: protocol.requestId, goal: parse.goal, decidedRound: round, decidedAtSimTime, parseOk: true },
+      }, transport);
+      session.steps.push(step);
+      return { status: 'ready', terminal: false, providerCalled: true, step };
     }
 
     const parse = parseAction(decision.raw, session.actionSet);
@@ -471,6 +625,8 @@ export function hydrateAgentSession(
     calls: { round: number; ms: number }[];
     /** G08: original wait deadline preserved verbatim; null unless waiting_time. */
     wakeAtSimTime?: number | null;
+    /** G09: the binding restored verbatim; the session never chooses again. */
+    goalBinding?: GoalBinding | null;
   },
 ): void {
   const impl = session as AgentSessionImpl;
@@ -488,6 +644,7 @@ export function hydrateAgentSession(
   mutable.initialState = state.initialState;
   mutable.eventsBefore = state.eventsBefore;
   mutable.started = state.started;
+  if (state.goalBinding !== undefined) impl.goalBinding = state.goalBinding;
   impl.calls.length = 0;
   impl.calls.push(...state.calls);
 }

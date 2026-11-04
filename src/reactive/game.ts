@@ -33,6 +33,7 @@ import {
   type GameCheckpoint, type GameCycleCheckpoint, type SessionCheckpoint,
 } from '../persistence/contracts';
 import { G08_GAME_SCHEMA, type ActionSet, type G08GameCheckpoint, type G08GameCycleCheckpoint } from '../temporal/contracts';
+import type { GoalProtocolOptions } from '../agent/contracts';
 
 interface CycleState {
   cycle: number;
@@ -183,6 +184,7 @@ export class ReactiveGameImpl implements ReactiveGame {
       commandIdFor: round => `${this.episodeId}:npc:${actorId}:${cycle}:${round}`,
       commandIdScheme: 'g06-episode-cycle',
       ...(this.actionSet !== undefined ? { actionSet: this.actionSet } : {}),
+      ...(this.options.goalProtocol !== undefined ? { goalProtocol: this.options.goalProtocol } : {}),
     });
     if (this.options.onDeciding) {
       const hook = this.options.onDeciding;
@@ -677,7 +679,8 @@ export class ReactiveGameImpl implements ReactiveGame {
     const cyclesG08: Record<string, G08GameCycleCheckpoint[]> = {};
     for (const actorId of this.actorIds) {
       cyclesG08[actorId] = this.actorCycles(actorId).map(cycle => {
-        const exported = exportSessionCheckpoint(cycle.session, g08 ? 'g08' : 'g06');
+        const sessionFormat = this.options.goalProtocol !== undefined ? 'g09' : (g08 ? 'g08' : 'g06');
+        const exported = exportSessionCheckpoint(cycle.session, sessionFormat);
         if (!exported.ok) {
           throw new CheckpointExportError(exported.code, exported.issues ?? []);
         }

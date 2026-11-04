@@ -12,7 +12,7 @@
  * AgentSession runner keep their G01..G03 behaviour.
  */
 import type {
-  AgentSession, Observation, Provider, SessionStatus, StepFeedback, StepRecord,
+  AgentSession, GoalProtocolOptions, Observation, Provider, SessionStatus, StepFeedback, StepRecord,
 } from '../agent/contracts';
 import { G08_GAME_SCHEMA, type ActionSet } from '../temporal/contracts';
 import type { Engine, LogEntry } from '../engine';
@@ -154,6 +154,12 @@ export interface ReactiveGameOptions {
    * Undefined keeps pre-G08 behaviour byte-identical.
    */
   actionSet?: ActionSet;
+  /**
+   * G09 (opt-in): every session of this game runs the frozen two-phase goal
+   * protocol (goal choice on the first provider call, then actions), and
+   * checkpoints export the G09 session format. Undefined keeps G08 exactly.
+   */
+  goalProtocol?: GoalProtocolOptions;
   /** Live model name for requestConfig even on zero-request trajectories. */
   requestModel?: string;
   timeoutMs?: number;

@@ -1,5 +1,9 @@
 import type { CommandResult, Location, WorldEvent, WorldState } from '../types';
 import type { ActionSet, SessionWaitState, WaitAction } from '../temporal/contracts';
+import {
+  G09_SESSION_SCHEMA,
+  type GoalArm, type GoalBinding, type GoalChoiceId,
+} from '../negotiation/contracts';
 
 /**
  * G01 closed loop. The model sees an Observation, the hunger goal, and the
@@ -62,6 +66,16 @@ export interface DecideInput {
    * prompt byte-identical and makes the parser reject wait.
    */
   allowedActions?: ActionSet;
+  /**
+   * G09 (opt-in): present on the goal-choice step. The renderer answers with
+   * the frozen goal prompt instead of an action prompt.
+   */
+  goalChoice?: GoalChoiceContext;
+  /**
+   * G09 (opt-in): the frozen binding line rendered into the action prompt
+   * once the goal phase has decided. Undefined keeps the prompt unchanged.
+   */
+  goalLine?: string;
 }
 
 /** Minimal message content exposed to the model: sender and text only. */
@@ -161,6 +175,13 @@ export interface RunOptions {
    */
   commandIdScheme?: 'run-round' | 'g06-episode-cycle';
   /**
+   * G09 (opt-in): enables the two-phase protocol in this session. The FIRST
+   * provider call renders the frozen goal-choice prompt instead of an action
+   * prompt; the parsed goal becomes the binding and is carried into every
+   * later action prompt. Both phases are charged to the same budget.
+   */
+  goalProtocol?: GoalProtocolOptions;
+  /**
    * Test hook for the decision timeout. Default is setTimeout.
    * The returned cancel runs when the call settles. Ordering tests fire `fn`
    * themselves instead of sleeping.
@@ -188,6 +209,12 @@ export interface StepRecord {
    * null when the budget took precedence (no recoverable deadline).
    */
   wait?: { wakeAtSimTime: number | null };
+  /**
+   * G09: present on the goal-choice step (the session's first provider call
+   * when the protocol is enabled). goal is null when the raw answer failed
+   * the strict parser — such a session is terminal invalid_run.
+   */
+  goal?: { requestId: string | null; goal: GoalChoiceId | null; decidedRound: number; decidedAtSimTime: number; parseOk: boolean };
   /** Parse error, engine rejection, timeout, or transport error. */
   error?: string;
   /** Present only for an HTTP provider call. Omitted by the reference policy. */
@@ -296,4 +323,45 @@ export interface AgentSession {
   exhaustBudget(detail: string): void;
   /** Deep-copied wait projection for records and checkpoints. */
   waitState(): SessionWaitState;
+  /**
+   * G09: the frozen goal protocol this session runs, or null for a plain
+   * action session. Set at creation and restored verbatim from a checkpoint.
+   */
+  readonly goalProtocol: GoalProtocolOptions | null;
+  /**
+   * G09: the binding this session's goal phase produced, or null while the
+   * protocol has not been decided. A restored session carries its binding —
+   * it never chooses again.
+   */
+  readonly goalBinding: GoalBinding | null;
+  /** G09: which phase the next step belongs to. */
+  readonly phase: 'goal_choice' | 'action';
+}
+
+/** G09: the frozen per-session goal protocol configuration. */
+export interface GoalProtocolOptions {
+  arm: GoalArm;
+  /** The structured request this session answers; null in the self_only arm. */
+  requestId: string | null;
+  text: string;
+  options: readonly GoalChoiceId[];
+  /** The goal decision must arrive on provider round ≤ this. */
+  deadlineAfterRound: number;
+  playerId: string;
+}
+
+/**
+ * G09: what the renderer needs beyond the plain observation. DecidedInput
+ * carries this on the goal step; the frozen prompt builder does the rest.
+ */
+export interface GoalChoiceContext extends GoalProtocolOptions {
+  playerSatiety: number;
+  simTime: number;
+}
+
+/** G09 session checkpoint: the G08 fields plus the protocol and the binding. */
+export interface G09SessionCheckpoint {
+  schema: typeof G09_SESSION_SCHEMA;
+  goalProtocol: GoalProtocolOptions;
+  goalBinding: GoalBinding | null;
 }

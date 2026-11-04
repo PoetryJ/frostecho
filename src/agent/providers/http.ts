@@ -1,5 +1,6 @@
 import { RULES } from '../../types';
 import { DecideInput, Provider, TransportRecord, UsageStats } from '../contracts';
+import { renderGoalChoicePrompt } from '../../negotiation/contracts';
 
 export const HTTP_ENV = {
   url: 'FROSTECHO_LLM_URL',
@@ -70,6 +71,25 @@ const MOVE_TARGETS = RULES.LOCATIONS.map(place => `"${place}"`).join('|');
  * pre-G08 prompt byte-identical.
  */
 export function renderDecidePrompt(input: DecideInput): string {
+  // G09 goal phase: the frozen structured-request prompt replaces the action
+  // prompt for this one provider call; the session continues as an action
+  // session afterwards.
+  if (input.goalChoice !== undefined) {
+    return renderGoalChoicePrompt({
+      actorId: input.observation.id,
+      location: input.observation.location,
+      simTime: input.goalChoice.simTime,
+      selfSatiety: input.observation.hunger,
+      playerId: input.goalChoice.playerId,
+      playerSatiety: input.goalChoice.playerSatiety,
+      foodKitchen: input.observation.foodHere,
+      arm: input.goalChoice.arm,
+      requestId: input.goalChoice.requestId,
+      text: input.goalChoice.text,
+      options: input.goalChoice.options,
+      deadlineAfterRound: input.goalChoice.deadlineAfterRound,
+    });
+  }
   if (input.allowedActions !== undefined) {
     return renderG08Prompt(input, input.allowedActions);
   }
@@ -88,6 +108,9 @@ export function renderDecidePrompt(input: DecideInput): string {
       `playerMessages: ${JSON.stringify(input.playerMessages)}`,
     );
   }
+  // G09 action phase: the frozen binding line from the goal phase. It is
+  // data about what THIS session declared, never a new rule.
+  if (input.goalLine !== undefined) lines.push(input.goalLine);
   lines.push(
     `goal: hunger >= ${input.goal.hungerAtLeast}`,
     `observation: ${JSON.stringify(input.observation)}`,
@@ -125,6 +148,9 @@ function renderG08Prompt(input: DecideInput, allowedActions: 'legacy' | 'timed_w
       `playerMessages: ${JSON.stringify(input.playerMessages)}`,
     );
   }
+  // G09 action phase: the frozen binding line from the goal phase. It is
+  // data about what THIS session declared, never a new rule.
+  if (input.goalLine !== undefined) lines.push(input.goalLine);
   lines.push(
     `goal: hunger >= ${input.goal.hungerAtLeast}`,
     `observation: ${JSON.stringify(input.observation)}`,

@@ -23,12 +23,17 @@ import {
   type ActionSet, type G08SessionCheckpoint,
 } from '../temporal/contracts';
 import {
-  createAgentSession, hydrateAgentSession,
+  createAgentSession, hydrateAgentSession, goalProtocolIssues,
 } from './runner';
 import {
   MAX_PROVIDER_CALLS,
-  type AgentSession, type RunOutcome, type SessionStatus, type StepFeedback,
+  type AgentSession, type GoalProtocolOptions, type RunOutcome, type SessionStatus, type StepFeedback,
 } from './contracts';
+import {
+  G09_BINDING_SCHEMA, G09_SESSION_SCHEMA, strictGoalChoice,
+  type GoalBinding,
+} from '../negotiation/contracts';
+import type { G09SessionCheckpoint } from './contracts';
 import type { WorldState } from '../types';
 
 /** Internal fields the export reads (AgentSessionImpl shape, duck-typed). */
@@ -86,7 +91,7 @@ export function parseG06RunId(runId: string, actorId: string): { episodeId: stri
 
 export function exportSessionCheckpoint(
   session: AgentSession,
-  format: 'g06' | 'g08' = 'g06',
+  format: 'g06' | 'g08' | 'g09' = 'g06',
 ): Result<SessionCheckpoint | G08SessionCheckpoint> {
   if (session.status === 'deciding') {
     return checkpointFail('SAVE_BUSY', 'session is deciding; checkpoint at a decision boundary only');
@@ -111,14 +116,22 @@ export function exportSessionCheckpoint(
     initialState: structuredClone(impl.initialState),
     eventsBefore: impl.eventsBefore,
   };
-  if (format === 'g08') {
+  if (format === 'g08' || format === 'g09') {
     // G08: every group (legacy included) saves the capability axis and the
     // wait deadline verbatim, so a paused session restores recoverable.
+    // G09: additionally the goal protocol and the binding — a restored
+    // session carries its binding and never chooses again.
+    const g09 = format === 'g09' ? {
+      schema: G09_SESSION_SCHEMA,
+      goalProtocol: structuredClone(impl.goalProtocol) as GoalProtocolOptions,
+      goalBinding: impl.goalBinding === null ? null : structuredClone(impl.goalBinding),
+    } : {};
     return checkpointOk({
       ...base,
-      schema: G08_SESSION_SCHEMA,
+      schema: format === 'g09' ? G09_SESSION_SCHEMA : G08_SESSION_SCHEMA,
       actionSet: impl.actionSet,
       wakeAtSimTime: impl.status === 'waiting_time' ? impl.wakeAtSimTime : null,
+      ...g09,
     } as G08SessionCheckpoint);
   }
   return checkpointOk({ ...base, schema: G06_SESSION_SCHEMA });
@@ -128,15 +141,48 @@ export function restoreAgentSession(data: unknown, runtime: SessionRestoreRuntim
   if (data === null || typeof data !== 'object' || Array.isArray(data)) {
     return checkpointFail('SCHEMA_MISMATCH', 'session checkpoint must be a JSON object');
   }
-  const d = data as Partial<SessionCheckpoint> & Partial<G08SessionCheckpoint>;
+  const d = data as Partial<SessionCheckpoint> & Partial<G08SessionCheckpoint> & Partial<G09SessionCheckpoint>;
   const isG08 = d.schema === G08_SESSION_SCHEMA;
-  if (d.schema !== G06_SESSION_SCHEMA && !isG08) {
+  const isG09 = d.schema === G09_SESSION_SCHEMA;
+  if (d.schema !== G06_SESSION_SCHEMA && !isG08 && !isG09) {
     return checkpointFail('SCHEMA_MISMATCH', `schema ${JSON.stringify(d.schema)} is not ${G06_SESSION_SCHEMA}`);
   }
   const issues: string[] = [];
   let actionSet: ActionSet | undefined;
   let wakeAtSimTime: number | null = null;
-  if (isG08) {
+  let goalProtocol: GoalProtocolOptions | undefined;
+  let goalBinding: GoalBinding | null | undefined;
+  if (isG09) {
+    // G09 sessions are G08-shaped (legacy axis) plus the goal protocol and
+    // the binding. Everything the next action step needs must come back from
+    // the checkpoint alone — restoring never re-chooses a goal.
+    const protocol = d.goalProtocol;
+    if (protocol === null || typeof protocol !== 'object' || Array.isArray(protocol)) {
+      issues.push('goalProtocol must be an object');
+    } else {
+      const protocolIssues = goalProtocolIssues(protocol);
+      if (protocolIssues.length > 0) issues.push(`goalProtocol: ${protocolIssues.join('; ')}`);
+      goalProtocol = protocol;
+    }
+    const binding = d.goalBinding;
+    if (binding === null || binding === undefined) {
+      goalBinding = binding ?? null;
+    } else if (typeof binding !== 'object' || Array.isArray(binding)
+      || binding.schema !== G09_BINDING_SCHEMA
+      || typeof binding.episodeId !== 'string' || binding.episodeId.length === 0
+      || typeof binding.raw !== 'string' || binding.raw.length === 0
+      || !Number.isSafeInteger(binding.decidedRound) || binding.decidedRound < 1
+      || !Number.isSafeInteger(binding.decidedAtSimTime) || binding.decidedAtSimTime < 0) {
+      issues.push('goalBinding must be null or a valid binding');
+    } else if (goalProtocol !== undefined) {
+      if (binding.requestId !== goalProtocol.requestId) issues.push('goalBinding.requestId does not match goalProtocol');
+      const parse = strictGoalChoice(binding.raw, goalProtocol.options);
+      if (!parse.ok || parse.goal !== binding.goal) issues.push('goalBinding.raw does not parse to the recorded goal');
+      if (binding.decidedRound > goalProtocol.deadlineAfterRound) issues.push('goalBinding decided after the deadline round');
+    }
+    goalBinding = d.goalBinding ?? null;
+  }
+  if (isG08 || isG09) {
     if (d.actionSet === undefined || !ACTION_SETS.includes(d.actionSet)) {
       issues.push(`actionSet must be one of ${ACTION_SETS.join('|')}`);
     } else {
@@ -240,6 +286,7 @@ export function restoreAgentSession(data: unknown, runtime: SessionRestoreRuntim
     commandIdFor: runtime.commandIdFor,
     commandIdScheme: checkpoint.commandIdScheme,
     ...(actionSet !== undefined ? { actionSet } : {}),
+    ...(goalProtocol !== undefined ? { goalProtocol: structuredClone(goalProtocol) } : {}),
   });
   if (session.status === 'invalid_run') {
     return checkpointFail('INVALID_CHECKPOINT', `actor ${checkpoint.actorId} is not present in the restored world`);
@@ -257,6 +304,7 @@ export function restoreAgentSession(data: unknown, runtime: SessionRestoreRuntim
     started: checkpoint.timing.started,
     calls: checkpoint.timing.calls.map(c => ({ round: c.round, ms: c.ms })),
     ...(isG08 ? { wakeAtSimTime } : {}),
+    ...(goalBinding !== undefined ? { goalBinding: goalBinding === null ? null : structuredClone(goalBinding) } : {}),
   });
   return checkpointOk(session);
 }
