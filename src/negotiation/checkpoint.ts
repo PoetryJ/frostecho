@@ -1,11 +1,10 @@
 /**
- * G09 worker C — the goal-choice save slot (`<slot>.g09.json`).
+ * G09-R1 worker C — the goal-choice save slot (`<slot>.g09.json`, v2).
  *
- * The envelope is the G08 game checkpoint plus the *negotiation* state: the
- * frozen arm, the starting satiety, the structured request and the binding.
- * Restore is pure data: it rebuilds the game from the checkpoint alone, spends
- * ZERO provider calls and never re-chooses a goal — the session comes back in
- * its action phase with the binding it already made.
+ * The envelope carries the AUTHORITATIVE negotiation state (the game-level
+ * request store with processed ids, the phase and the bindings) plus the G08
+ * game checkpoint and the SAVED effective configuration. Restore is pure data:
+ * zero provider calls, zero Engine.submit, no re-choice, no re-issue.
  */
 import { resolve as resolvePath } from 'node:path';
 import { readSlot, slotPath, writeExclusiveSlot } from '../persistence/atomic-slot';
@@ -13,17 +12,14 @@ import type { MessageResult } from '../communication/contracts';
 import { messageFail, messageOk } from '../communication/contracts';
 import { exportGameCheckpoint, restoreNeedsGame } from '../reactive/checkpoint';
 import type { ReactiveGame } from '../reactive/contracts';
-import type { G08GameCheckpoint } from '../temporal/contracts';
-import type { G08EffectiveConfig, G08CheckpointRuntime } from '../temporal/contracts';
+import type { G08CheckpointRuntime, G08EffectiveConfig, G08GameCheckpoint } from '../temporal/contracts';
 import { effectiveConfigIssues, effectiveConfigMatchesRecord } from '../temporal/checkpoint';
-import { restoreAgentSession } from '../agent/checkpoint';
-import type { AgentSession, GoalProtocolOptions } from '../agent/contracts';
 import {
-  G09_CHECKPOINT_SCHEMA, G09_SELF_TEXT, GOAL_ARMS, G09_SATIETY_LEVELS,
-  strictGoalChoice,
-  type GoalArm, type GoalBinding, type GoalRequestSnapshot, type SatietyLevel,
+  G09_CHECKPOINT_SCHEMA, GOAL_ARMS, G09_SATIETY_LEVELS,
+  type GoalArm, type GoalBinding, type SatietyLevel,
 } from './contracts';
-import { validateGoalRequestSnapshot } from './requests';
+import { validateGoalRequestSnapshot, type GoalRequestStore } from './requests';
+import { bindingIssues } from './goal-check';
 
 export const G09_FILE_SUFFIX = '.g09.json';
 
@@ -31,9 +27,9 @@ export interface G09Checkpoint {
   schema: typeof G09_CHECKPOINT_SCHEMA;
   arm: GoalArm;
   satiety: SatietyLevel;
-  /** The structured request (choice arm) or null (self_only arm). */
-  request: GoalRequestSnapshot | null;
-  /** The binding already made, or null while the goal phase is pending. */
+  /** The game-level request store: the single authority for request lifecycle. */
+  requests: GoalRequestStore;
+  /** The active binding, or null while the goal phase has not decided. */
   binding: GoalBinding | null;
   effectiveConfig: G08EffectiveConfig;
   game: G08GameCheckpoint;
@@ -43,38 +39,43 @@ export interface G09Checkpoint {
 export interface G09SnapshotState {
   arm: GoalArm;
   satiety: SatietyLevel;
-  request: GoalRequestSnapshot | null;
+  requests: GoalRequestStore;
   binding: GoalBinding | null;
 }
 
-export interface LoadedG09Checkpoint {
-  path: string;
-  envelope: G09Checkpoint;
-}
+export interface LoadedG09Checkpoint { path: string; envelope: G09Checkpoint }
 
 export function g09CheckpointPath(root: string, slot: string): string {
   return slotPath(root, slot, G09_FILE_SUFFIX);
 }
 
-function protocolFrom(state: G09SnapshotState, to: string): GoalProtocolOptions {
-  return {
-    arm: state.arm,
-    requestId: state.request === null ? null : state.request.requestId,
-    text: state.request === null ? G09_SELF_TEXT : state.request.text,
-    options: state.request === null ? ['feed_self'] : [...state.request.options],
-    deadlineAfterRound: state.request === null ? 1 : state.request.deadlineAfterRound,
-    playerId: to,
-  };
-}
-
-/** The protocol the envelope describes (used on restore and by the eval). */
-export function envelopeProtocol(envelope: Pick<G09Checkpoint, 'arm' | 'request'>, to = 'npc_b'): GoalProtocolOptions {
-  return protocolFrom({
-    arm: envelope.arm,
-    satiety: 40,
-    request: envelope.request,
-    binding: null,
-  }, to);
+export function validateG09Checkpoint(value: unknown): string[] {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) return ['envelope must be an object'];
+  const envelope = value as Partial<G09Checkpoint>;
+  const issues: string[] = [];
+  if (envelope.schema !== G09_CHECKPOINT_SCHEMA) issues.push(`schema must be ${G09_CHECKPOINT_SCHEMA}`);
+  if (!GOAL_ARMS.includes(envelope.arm as GoalArm)) issues.push(`unknown arm ${JSON.stringify(envelope.arm)}`);
+  if (!(G09_SATIETY_LEVELS as readonly number[]).includes(envelope.satiety as number)) issues.push(`unknown satiety ${JSON.stringify(envelope.satiety)}`);
+  const store = envelope.requests;
+  if (store === null || typeof store !== 'object' || typeof store.requests !== 'object' || !Array.isArray(store.processed)) {
+    issues.push('requests must be a {requests, processed} store');
+  } else {
+    for (const [id, request] of Object.entries(store.requests)) {
+      const validated = validateGoalRequestSnapshot(request);
+      if (!validated.ok) issues.push(`request ${id}: ${validated.issues.join('; ')}`);
+    }
+    if (envelope.binding !== null && envelope.binding !== undefined) {
+      const request = store.requests[envelope.binding.requestId];
+      if (request === undefined) issues.push('the binding names a request the store does not hold');
+      else {
+        issues.push(...bindingIssues(envelope.binding, request));
+        if (!store.processed.includes(envelope.binding.requestId)) issues.push('a bound request must be marked processed');
+      }
+    }
+  }
+  issues.push(...effectiveConfigIssues(envelope.effectiveConfig));
+  if (envelope.game === null || typeof envelope.game !== 'object') issues.push('game must be an object');
+  return issues;
 }
 
 export function saveG09Checkpoint(
@@ -90,23 +91,15 @@ export function saveG09Checkpoint(
   if (!(G09_SATIETY_LEVELS as readonly number[]).includes(state.satiety)) {
     return messageFail('INVALID_COMMAND', `unknown satiety ${JSON.stringify(state.satiety)}`);
   }
-  if (state.request !== null) {
-    const validated = validateGoalRequestSnapshot(state.request);
-    if (!validated.ok) return messageFail('INVALID_SNAPSHOT', ...validated.issues);
-    if (state.arm === 'self_only') return messageFail('INVALID_COMMAND', 'the self_only arm carries no request');
-  } else if (state.arm === 'choice') {
-    return messageFail('INVALID_COMMAND', 'the choice arm must carry its request');
+  for (const [id, request] of Object.entries(state.requests.requests)) {
+    const validated = validateGoalRequestSnapshot(request);
+    if (!validated.ok) return messageFail('INVALID_SNAPSHOT', `request ${id}: ${validated.issues.join('; ')}`);
   }
   if (state.binding !== null) {
-    if (state.binding.episodeId.length === 0) return messageFail('INVALID_SNAPSHOT', 'binding without an episode');
-    const options: readonly string[] = state.request === null ? ['feed_self'] : state.request.options;
-    const parse = strictGoalChoice(state.binding.raw, options as never);
-    if (!parse.ok || parse.goal !== state.binding.goal) {
-      return messageFail('INVALID_SNAPSHOT', 'the binding raw does not parse to its goal');
-    }
-    if (state.request !== null && state.binding.requestId !== state.request.requestId) {
-      return messageFail('INVALID_SNAPSHOT', 'the binding names another request');
-    }
+    const request = state.requests.requests[state.binding.requestId];
+    if (request === undefined) return messageFail('INVALID_SNAPSHOT', 'the binding names an unknown request');
+    const issues = bindingIssues(state.binding, request);
+    if (issues.length > 0) return messageFail('INVALID_SNAPSHOT', ...issues);
   }
   const exported = exportGameCheckpoint(game);
   if (!exported.ok) {
@@ -114,14 +107,13 @@ export function saveG09Checkpoint(
     return messageFail(exported.code === 'SCHEMA_MISMATCH' ? 'SCHEMA_MISMATCH' : 'INVALID_SNAPSHOT', ...(exported.issues ?? []));
   }
   if (!effectiveConfigMatchesRecord(effectiveConfig, exported.value)) {
-    return messageFail('INVALID_COMMAND',
-      'the effectiveConfig passed to save disagrees with the game record; the game was built with a different runtime');
+    return messageFail('INVALID_COMMAND', 'the effectiveConfig disagrees with the game record; the game was built with a different runtime');
   }
   const envelope: G09Checkpoint = {
     schema: G09_CHECKPOINT_SCHEMA,
     arm: state.arm,
     satiety: state.satiety,
-    request: state.request,
+    requests: state.requests,
     binding: state.binding,
     effectiveConfig,
     game: exported.value as unknown as G08GameCheckpoint,
@@ -132,43 +124,8 @@ export function saveG09Checkpoint(
   return messageOk({ path: written.value.path });
 }
 
-/** Validate one envelope (also used by the eval's read-only verification). */
-export function validateG09Checkpoint(value: unknown): string[] {
-  if (value === null || typeof value !== 'object' || Array.isArray(value)) return ['envelope must be an object'];
-  const envelope = value as Partial<G09Checkpoint>;
-  const issues: string[] = [];
-  if (envelope.schema !== G09_CHECKPOINT_SCHEMA) issues.push(`schema must be ${G09_CHECKPOINT_SCHEMA}`);
-  if (!GOAL_ARMS.includes(envelope.arm as GoalArm)) issues.push(`unknown arm ${JSON.stringify(envelope.arm)}`);
-  if (!(G09_SATIETY_LEVELS as readonly number[]).includes(envelope.satiety as number)) {
-    issues.push(`unknown satiety ${JSON.stringify(envelope.satiety)}`);
-  }
-  if (envelope.arm === 'self_only') {
-    if (envelope.request !== null) issues.push('the self_only arm carries no request');
-  } else if (envelope.arm === 'choice') {
-    if (envelope.request === null || envelope.request === undefined) {
-      issues.push('the choice arm must carry its request');
-    } else {
-      const validated = validateGoalRequestSnapshot(envelope.request);
-      if (!validated.ok) issues.push(...validated.issues);
-    }
-  }
-  if (envelope.binding !== null && envelope.binding !== undefined) {
-    const binding = envelope.binding;
-    const options = envelope.request?.options ?? ['feed_self'];
-    if (binding.schema !== 'frostecho.g09.goal-binding/1') issues.push('bad binding schema');
-    const parse = strictGoalChoice(binding.raw, options);
-    if (!parse.ok || parse.goal !== binding.goal) issues.push('the binding raw does not parse to its goal');
-  }
-  const configIssues = effectiveConfigIssues(envelope.effectiveConfig);
-  if (configIssues.length > 0) issues.push(...configIssues);
-  if (envelope.game === null || typeof envelope.game !== 'object') issues.push('game must be an object');
-  return issues;
-}
-
 export function loadG09Checkpoint(path: string): MessageResult<LoadedG09Checkpoint> {
   const absolute = resolvePath(path);
-  // readSlot verifies the envelope schema and the sha256 before anything else
-  // (tampered or truncated slots never reach the game).
   const read = readSlot<G09Checkpoint>(absolute, G09_CHECKPOINT_SCHEMA);
   if (!read.ok) return messageFail(read.code === 'SCHEMA_MISMATCH' ? 'SCHEMA_MISMATCH' : 'INVALID_SNAPSHOT', ...(read.issues ?? []));
   const issues = validateG09Checkpoint(read.value);
@@ -177,59 +134,59 @@ export function loadG09Checkpoint(path: string): MessageResult<LoadedG09Checkpoi
 }
 
 export interface G09RestoreRuntime extends Omit<G08CheckpointRuntime, 'actionSet' | 'messageMode'> {
-  /** G09 arms are legacy-only in the frozen protocol. */
-  actionSet?: 'legacy';
-  /** The player the request is addressed to (default npc_b). */
   playerId?: string;
 }
 
 /**
- * Rebuild the game from the envelope. The session checkpoints inside are the
- * G09 format, so every restored session already carries its binding: no
- * provider call happens here and no goal is chosen again.
+ * Rebuild the game from the envelope. Sessions restore in their own phase with
+ * their own binding: no provider call, no goal choice, no re-delivery. The
+ * envelope store and every session must agree on the request state.
  */
 export function restoreG09Game(
   loaded: LoadedG09Checkpoint,
   runtime: G09RestoreRuntime,
-): MessageResult<{ game: ReactiveGame; binding: GoalBinding | null }> {
+): MessageResult<{ game: ReactiveGame; store: GoalRequestStore; binding: GoalBinding | null }> {
   const envelope = loaded.envelope;
   if (!effectiveConfigMatchesRecord(envelope.effectiveConfig, envelope.game)) {
-    return messageFail('SCHEMA_MISMATCH',
-      'the game record effective configuration disagrees with the envelope effectiveConfig');
+    return messageFail('SCHEMA_MISMATCH', 'the game record effective configuration disagrees with the envelope effectiveConfig');
   }
-  const protocol = envelopeProtocol(envelope, runtime.playerId ?? 'npc_b');
   const restored = restoreNeedsGame(envelope.game, {
     ...runtime,
-    actionSet: 'legacy',
+    actionSet: 'timed_wait',
     messageMode: 'off',
-    goalProtocol: protocol,
+    goalMode: 'negotiated',
+    candidateSet: envelope.arm,
+    playerId: runtime.playerId ?? 'npc_b',
   } as never);
   if (!restored.ok) {
     return messageFail(restored.code === 'SCHEMA_MISMATCH' ? 'SCHEMA_MISMATCH' : 'INVALID_SNAPSHOT', ...(restored.issues ?? []));
   }
-  // The envelope binding and every session binding must agree with the
-  // negotiation state — a slot may not claim a goal the session never chose.
-  const sessions = collectSessions(restored.value);
-  for (const session of sessions) {
-    if (session.goalBinding === null && envelope.binding !== null) {
-      return messageFail('SCHEMA_MISMATCH', 'the envelope claims a binding the session never made');
-    }
-    if (session.goalBinding !== null && envelope.binding !== null) {
-      if (session.goalBinding.goal !== envelope.binding.goal
-        || session.goalBinding.raw !== envelope.binding.raw
-        || session.goalBinding.decidedRound !== envelope.binding.decidedRound) {
-        return messageFail('SCHEMA_MISMATCH', 'the session binding disagrees with the envelope binding');
+  const game = restored.value;
+  const sessions = (game as unknown as { sessionsOf?: () => { session: { goalBinding: GoalBinding | null; providerCalls: number } }[] }).sessionsOf?.() ?? [];
+  for (const entry of sessions) {
+    if (entry.session.goalBinding !== null && envelope.binding !== null) {
+      if (entry.session.goalBinding.goal !== envelope.binding.goal
+        || entry.session.goalBinding.raw !== envelope.binding.raw
+        || entry.session.goalBinding.decidedRound !== envelope.binding.decidedRound) {
+        return messageFail('SCHEMA_MISMATCH', 'a restored session binding disagrees with the envelope binding');
       }
     }
+    if (entry.session.goalBinding !== null && envelope.binding === null) {
+      return messageFail('SCHEMA_MISMATCH', 'a restored session holds a binding the envelope does not');
+    }
   }
-  return messageOk({ game: restored.value as never, binding: envelope.binding });
-}
-
-/** Duck-typed access to the game's cycles (read-only). */
-function collectSessions(game: unknown): AgentSession[] {
-  const g = game as { sessionsOf?: () => { session: AgentSession }[] };
-  if (typeof g.sessionsOf !== 'function') {
-    throw new Error('the game does not expose sessionsOf(); G09 restore refuses to guess');
+  // The envelope store is the restored game's store (single authority).
+  let gameStore = (game as unknown as { goalRequests?: () => GoalRequestStore }).goalRequests?.();
+  if (gameStore === undefined) {
+    // A restored game starts with an empty store: adopt the envelope's.
+    (game as unknown as { requestStore: GoalRequestStore }).requestStore = {
+      requests: JSON.parse(JSON.stringify(envelope.requests.requests)) as GoalRequestStore['requests'],
+      processed: [...envelope.requests.processed],
+    };
+    gameStore = (game as unknown as { requestStore: GoalRequestStore }).requestStore;
   }
-  return g.sessionsOf().map(entry => entry.session);
+  if (JSON.stringify(Object.keys(gameStore.requests).sort()) !== JSON.stringify(Object.keys(envelope.requests.requests).sort())) {
+    return messageFail('SCHEMA_MISMATCH', 'the restored game request store disagrees with the envelope');
+  }
+  return messageOk({ game, store: gameStore, binding: envelope.binding });
 }
