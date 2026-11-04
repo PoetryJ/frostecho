@@ -18,7 +18,7 @@ import { buildNeedsWorld } from '../src/needs/game';
 import { parseAction } from '../src/agent/parser';
 import type { GoalProtocolOptions } from '../src/agent/contracts';
 import {
-  G09_EPISODE_SCHEMA, G09_GOAL_DEADLINE_ROUND, G09_HARD_CHAT_LIMIT, G09_PLAN_SCHEMA,
+  G09_EPISODE_SCHEMA, G09_GOAL_DEADLINE_ROUND, G09_HARD_CHAT_LIMIT, G09_PLAN_SCHEMA, G09_TIMEOUT_MS,
   G09_REQUEST_TEXT, G09_SELF_TEXT, GOAL_ARMS, G09_SATIETY_LEVELS, fulfilmentVerdict,
   strictGoalChoice,
   type FulfillmentEvidence, type GoalArm, type GoalBinding, type GoalRequestSnapshot,
@@ -646,5 +646,5 @@ export function projectG09Summary(
   };
 }
 
-export { G09_SATIETY_LEVELS, GOAL_ARMS };
+export { G09_SATIETY_LEVELS, GOAL_ARMS, G09_TIMEOUT_MS };
 export type { GoalChoiceId };

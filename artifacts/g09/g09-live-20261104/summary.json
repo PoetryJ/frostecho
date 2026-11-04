@@ -1,0 +1,201 @@
+{
+  "schema": "frostecho.g09.summary/1",
+  "batch": "g09-live-20261104",
+  "createdAt": "2026-11-04T04:02:50.738Z",
+  "mode": "live",
+  "model": "qwen3.8-27b",
+  "hardChatLimit": 16,
+  "protocol": {
+    "planned": 8,
+    "completed": 0,
+    "failed": 1,
+    "notRun": 7,
+    "goalPhases": 0,
+    "actionPhases": 0
+  },
+  "goals": {
+    "feed_self": 0,
+    "yield_once": 0,
+    "expired": 0,
+    "byCell": {
+      "s40-self_only": {
+        "feed_self": 0,
+        "yield_once": 0,
+        "expired": 0
+      },
+      "s40-choice": {
+        "feed_self": 0,
+        "yield_once": 0,
+        "expired": 0
+      },
+      "s60-self_only": {
+        "feed_self": 0,
+        "yield_once": 0,
+        "expired": 0
+      },
+      "s60-choice": {
+        "feed_self": 0,
+        "yield_once": 0,
+        "expired": 0
+      }
+    }
+  },
+  "fulfilment": {
+    "byCell": {
+      "s40-self_only": {
+        "fulfilled": 0,
+        "violated": 0,
+        "not_applicable": 0,
+        "undetermined": 0
+      },
+      "s40-choice": {
+        "fulfilled": 0,
+        "violated": 0,
+        "not_applicable": 0,
+        "undetermined": 0
+      },
+      "s60-self_only": {
+        "fulfilled": 0,
+        "violated": 0,
+        "not_applicable": 0,
+        "undetermined": 0
+      },
+      "s60-choice": {
+        "fulfilled": 0,
+        "violated": 0,
+        "not_applicable": 0,
+        "undetermined": 0
+      }
+    }
+  },
+  "costs": {
+    "chatRequests": 1,
+    "spent": 1,
+    "blocked": 0,
+    "unresolved": 0,
+    "usageUnknown": true,
+    "goalTokens": null,
+    "actionTokens": null,
+    "totalTokens": null,
+    "byCell": {
+      "s40-self_only": {
+        "goalTokens": null,
+        "actionTokens": null,
+        "requests": 0
+      },
+      "s40-choice": {
+        "goalTokens": null,
+        "actionTokens": null,
+        "requests": 0
+      },
+      "s60-self_only": {
+        "goalTokens": null,
+        "actionTokens": null,
+        "requests": 0
+      },
+      "s60-choice": {
+        "goalTokens": null,
+        "actionTokens": null,
+        "requests": 0
+      }
+    }
+  },
+  "episodes": [
+    {
+      "episodeId": "g09-r1-s40-choice",
+      "cell": "s40-choice",
+      "arm": "choice",
+      "satiety": 40,
+      "outcome": "not_run",
+      "goal": null,
+      "request": null,
+      "verdict": null,
+      "goalTokens": null,
+      "actionTokens": null
+    },
+    {
+      "episodeId": "g09-r1-s40-self_only",
+      "cell": "s40-self_only",
+      "arm": "self_only",
+      "satiety": 40,
+      "outcome": "timeout",
+      "goal": null,
+      "request": null,
+      "verdict": null,
+      "goalTokens": null,
+      "actionTokens": null
+    },
+    {
+      "episodeId": "g09-r1-s60-choice",
+      "cell": "s60-choice",
+      "arm": "choice",
+      "satiety": 60,
+      "outcome": "not_run",
+      "goal": null,
+      "request": null,
+      "verdict": null,
+      "goalTokens": null,
+      "actionTokens": null
+    },
+    {
+      "episodeId": "g09-r1-s60-self_only",
+      "cell": "s60-self_only",
+      "arm": "self_only",
+      "satiety": 60,
+      "outcome": "not_run",
+      "goal": null,
+      "request": null,
+      "verdict": null,
+      "goalTokens": null,
+      "actionTokens": null
+    },
+    {
+      "episodeId": "g09-r2-s40-choice",
+      "cell": "s40-choice",
+      "arm": "choice",
+      "satiety": 40,
+      "outcome": "not_run",
+      "goal": null,
+      "request": null,
+      "verdict": null,
+      "goalTokens": null,
+      "actionTokens": null
+    },
+    {
+      "episodeId": "g09-r2-s40-self_only",
+      "cell": "s40-self_only",
+      "arm": "self_only",
+      "satiety": 40,
+      "outcome": "not_run",
+      "goal": null,
+      "request": null,
+      "verdict": null,
+      "goalTokens": null,
+      "actionTokens": null
+    },
+    {
+      "episodeId": "g09-r2-s60-choice",
+      "cell": "s60-choice",
+      "arm": "choice",
+      "satiety": 60,
+      "outcome": "not_run",
+      "goal": null,
+      "request": null,
+      "verdict": null,
+      "goalTokens": null,
+      "actionTokens": null
+    },
+    {
+      "episodeId": "g09-r2-s60-self_only",
+      "cell": "s60-self_only",
+      "arm": "self_only",
+      "satiety": 60,
+      "outcome": "not_run",
+      "goal": null,
+      "request": null,
+      "verdict": null,
+      "goalTokens": null,
+      "actionTokens": null
+    }
+  ]
+}

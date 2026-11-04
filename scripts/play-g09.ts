@@ -21,9 +21,8 @@ import { resolve } from 'node:path';
 import { createNeedsGame, buildNeedsWorld } from '../src/needs/game';
 import { createHttpProvider } from '../src/agent/providers/http';
 import type { G08EffectiveConfig } from '../src/temporal/contracts';
-import { DEFAULT_TIMEOUT_MS } from '../src/agent/contracts';
 import {
-  G09_REQUEST_TEXT, G09_SELF_TEXT, G09_GOAL_DEADLINE_ROUND,
+  G09_REQUEST_TEXT, G09_SELF_TEXT, G09_GOAL_DEADLINE_ROUND, G09_TIMEOUT_MS,
   type GoalArm, type GoalChoiceId, type GoalRequestSnapshot, type SatietyLevel,
 } from '../src/negotiation/contracts';
 import { createGoalRequest, decideGoalRequest } from '../src/negotiation/requests';
@@ -103,7 +102,7 @@ function effectiveConfig(args: Args): G08EffectiveConfig {
     mode,
     requestModel: args.model,
     thinking: true,
-    timeoutMs: DEFAULT_TIMEOUT_MS,
+    timeoutMs: G09_TIMEOUT_MS,
   };
   return config;
 }

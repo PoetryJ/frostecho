@@ -22,7 +22,6 @@ import { createHttpProvider } from '../src/agent/providers/http';
 import { parseAction } from '../src/agent/parser';
 import type { Provider } from '../src/agent/contracts';
 import type { G08EffectiveConfig } from '../src/temporal/contracts';
-import { DEFAULT_TIMEOUT_MS } from '../src/agent/contracts';
 import { buildNeedsWorld, createNeedsGame } from '../src/needs/game';
 import { createG09ReferenceProvider } from '../src/negotiation/reference';
 import {
@@ -32,7 +31,7 @@ import {
 import { createGoalRequest, decideGoalRequest } from '../src/negotiation/requests';
 import { checkGoalFulfilment } from '../src/negotiation/goal-check';
 import {
-  G09_CELLS, G09_NPC, G09_PLAYER, canonical, deriveG09, g09InitialState, g09Plan, g09Protocol,
+  G09_CELLS, G09_NPC, G09_PLAYER, G09_TIMEOUT_MS, canonical, deriveG09, g09InitialState, g09Plan, g09Protocol,
   projectG09Summary, readG09Batch, verifyG09Batch, verifyG09Prefix,
   type G09EpisodeRecord, type G09Exchange, type G09PlanEntry,
 } from './g09-eval-lib';
@@ -91,7 +90,7 @@ function config(args: Args): G08EffectiveConfig {
     mode: args.live ? 'live' : 'reference',
     requestModel: args.live ? args.model : args.model,
     thinking: true,
-    timeoutMs: DEFAULT_TIMEOUT_MS,
+    timeoutMs: G09_TIMEOUT_MS,
   };
 }
 

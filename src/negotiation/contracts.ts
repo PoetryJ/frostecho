@@ -49,6 +49,9 @@ export const G09_GOAL_DEADLINE_ROUND = 1;
 /** Whole-batch chat cap: 8 episodes × 2 phases (goal + action). */
 export const G09_HARD_CHAT_LIMIT = 16;
 
+/** The frozen client timeout of the experiment (package EXECUTION: 120000). */
+export const G09_TIMEOUT_MS = 120_000;
+
 /* ------------------------------------------------------------------ */
 /* Structured request state machine                                    */
 /* ------------------------------------------------------------------ */
