@@ -46,7 +46,15 @@ export type CheckpointErrorCode =
   /** Filesystem failure (read or write). */
   | 'IO_ERROR'
   /** Stored SHA256 does not match the payload. */
-  | 'CHECKSUM_MISMATCH';
+  | 'CHECKSUM_MISMATCH'
+  /** G08-R1: game/session actionSet disagreement on restore. */
+  | 'ACTION_SET_CONFLICT'
+  /** G08-R1: projected deadline disagrees with the session source of truth. */
+  | 'DEADLINE_CONFLICT'
+  /** G08-R1: actor lifecycle state disagrees with the session status. */
+  | 'SESSION_STATE_CONFLICT'
+  /** G08-R1: timed_wait requires a valid authoritative simTime. */
+  | 'MISSING_SIMTIME';
 
 export function checkpointOk<T>(value: T): Result<T> {
   return { ok: true, value };

@@ -19,6 +19,10 @@ import {
   type Result, type SessionCheckpoint, type SessionRestoreRuntime,
 } from '../persistence/contracts';
 import {
+  G08_SESSION_SCHEMA, ACTION_SETS,
+  type ActionSet, type G08SessionCheckpoint,
+} from '../temporal/contracts';
+import {
   createAgentSession, hydrateAgentSession,
 } from './runner';
 import {
@@ -41,6 +45,8 @@ interface SessionInternals extends AgentSession {
 const SESSION_STATUSES: readonly SessionStatus[] = [
   'ready', 'deciding', 'goal_reached', 'stopped', 'budget_exhausted', 'timeout', 'provider_error', 'invalid_run',
 ];
+/** G08 adds the non-terminal pause status; the legacy set stays frozen. */
+const SESSION_STATUSES_G08: readonly SessionStatus[] = [...SESSION_STATUSES, 'waiting_time'];
 const RUN_OUTCOMES: readonly RunOutcome[] = [
   'goal_reached', 'stopped', 'budget_exhausted', 'timeout', 'provider_error', 'invalid_run',
 ];
@@ -78,7 +84,10 @@ export function parseG06RunId(runId: string, actorId: string): { episodeId: stri
   return { episodeId, cycle: Number(cycleText) };
 }
 
-export function exportSessionCheckpoint(session: AgentSession): Result<SessionCheckpoint> {
+export function exportSessionCheckpoint(
+  session: AgentSession,
+  format: 'g06' | 'g08' = 'g06',
+): Result<SessionCheckpoint | G08SessionCheckpoint> {
   if (session.status === 'deciding') {
     return checkpointFail('SAVE_BUSY', 'session is deciding; checkpoint at a decision boundary only');
   }
@@ -86,8 +95,7 @@ export function exportSessionCheckpoint(session: AgentSession): Result<SessionCh
     return checkpointFail('INVALID_CHECKPOINT', 'session uses a custom commandId formula without a declared scheme; refusing to checkpoint');
   }
   const impl = session as SessionInternals;
-  return checkpointOk({
-    schema: G06_SESSION_SCHEMA,
+  const base = {
     runId: impl.runId,
     actorId: impl.actorId,
     round: impl.round,
@@ -102,25 +110,62 @@ export function exportSessionCheckpoint(session: AgentSession): Result<SessionCh
     ...(impl.explicitError !== undefined ? { explicitError: impl.explicitError } : {}),
     initialState: structuredClone(impl.initialState),
     eventsBefore: impl.eventsBefore,
-  });
+  };
+  if (format === 'g08') {
+    // G08: every group (legacy included) saves the capability axis and the
+    // wait deadline verbatim, so a paused session restores recoverable.
+    return checkpointOk({
+      ...base,
+      schema: G08_SESSION_SCHEMA,
+      actionSet: impl.actionSet,
+      wakeAtSimTime: impl.status === 'waiting_time' ? impl.wakeAtSimTime : null,
+    } as G08SessionCheckpoint);
+  }
+  return checkpointOk({ ...base, schema: G06_SESSION_SCHEMA });
 }
 
 export function restoreAgentSession(data: unknown, runtime: SessionRestoreRuntime): Result<AgentSession> {
   if (data === null || typeof data !== 'object' || Array.isArray(data)) {
     return checkpointFail('SCHEMA_MISMATCH', 'session checkpoint must be a JSON object');
   }
-  const d = data as Partial<SessionCheckpoint>;
-  if (d.schema !== G06_SESSION_SCHEMA) {
+  const d = data as Partial<SessionCheckpoint> & Partial<G08SessionCheckpoint>;
+  const isG08 = d.schema === G08_SESSION_SCHEMA;
+  if (d.schema !== G06_SESSION_SCHEMA && !isG08) {
     return checkpointFail('SCHEMA_MISMATCH', `schema ${JSON.stringify(d.schema)} is not ${G06_SESSION_SCHEMA}`);
   }
   const issues: string[] = [];
+  let actionSet: ActionSet | undefined;
+  let wakeAtSimTime: number | null = null;
+  if (isG08) {
+    if (d.actionSet === undefined || !ACTION_SETS.includes(d.actionSet)) {
+      issues.push(`actionSet must be one of ${ACTION_SETS.join('|')}`);
+    } else {
+      actionSet = d.actionSet;
+    }
+    // G08-R1: waiting_time exists ONLY on the timed_wait axis. A legacy
+    // session that claims a time pause is an impossible combination.
+    if (d.actionSet === 'legacy' && d.status === 'waiting_time') {
+      issues.push('a legacy session can never be waiting_time (wait is not in the legacy action set)');
+    }
+    if (d.status === 'waiting_time') {
+      if (!isNonNegInt(d.wakeAtSimTime)) {
+        issues.push('a waiting_time session must carry a non-negative integer wakeAtSimTime');
+      } else {
+        wakeAtSimTime = d.wakeAtSimTime;
+      }
+    } else if (d.wakeAtSimTime !== null && d.wakeAtSimTime !== undefined) {
+      issues.push('wakeAtSimTime must be null unless the status is waiting_time');
+    }
+  }
   if (typeof d.runId !== 'string' || d.runId.length === 0) issues.push('runId must be a non-empty string');
   if (typeof d.actorId !== 'string' || d.actorId.length === 0) issues.push('actorId must be a non-empty string');
   if (!isNonNegInt(d.round)) issues.push('round must be a non-negative integer');
   if (!isNonNegInt(d.providerCalls) || d.providerCalls > MAX_PROVIDER_CALLS) {
     issues.push(`providerCalls must be an integer in [0, ${MAX_PROVIDER_CALLS}]`);
   }
-  if (!SESSION_STATUSES.includes(d.status as SessionStatus)) issues.push(`unknown status ${JSON.stringify(d.status)}`);
+  if (!(isG08 ? SESSION_STATUSES_G08 : SESSION_STATUSES).includes(d.status as SessionStatus)) {
+    issues.push(`unknown status ${JSON.stringify(d.status)}`);
+  }
   else if (d.status === 'deciding') issues.push("status 'deciding' can never be serialized");
   if (d.terminalOutcome !== null && d.terminalOutcome !== undefined) {
     if (!RUN_OUTCOMES.includes(d.terminalOutcome)) issues.push(`unknown terminalOutcome ${JSON.stringify(d.terminalOutcome)}`);
@@ -194,6 +239,7 @@ export function restoreAgentSession(data: unknown, runtime: SessionRestoreRuntim
     scheduleTimeout: runtime.scheduleTimeout,
     commandIdFor: runtime.commandIdFor,
     commandIdScheme: checkpoint.commandIdScheme,
+    ...(actionSet !== undefined ? { actionSet } : {}),
   });
   if (session.status === 'invalid_run') {
     return checkpointFail('INVALID_CHECKPOINT', `actor ${checkpoint.actorId} is not present in the restored world`);
@@ -210,6 +256,7 @@ export function restoreAgentSession(data: unknown, runtime: SessionRestoreRuntim
     eventsBefore: checkpoint.eventsBefore,
     started: checkpoint.timing.started,
     calls: checkpoint.timing.calls.map(c => ({ round: c.round, ms: c.ms })),
+    ...(isG08 ? { wakeAtSimTime } : {}),
   });
   return checkpointOk(session);
 }

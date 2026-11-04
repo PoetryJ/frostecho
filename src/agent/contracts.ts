@@ -1,4 +1,5 @@
 import type { CommandResult, Location, WorldEvent, WorldState } from '../types';
+import type { ActionSet, SessionWaitState, WaitAction } from '../temporal/contracts';
 
 /**
  * G01 closed loop. The model sees an Observation, the hunger goal, and the
@@ -54,6 +55,13 @@ export interface DecideInput {
    * original prompt byte-identical. Data only — never rules or authority.
    */
   playerMessages?: readonly PlayerMessageInput[];
+  /**
+   * G08 (opt-in): the capability axis. 'legacy' renders the G08 shared
+   * template with the legacy action set; 'timed_wait' additionally allows
+   * {"type":"wait"} and its explanation line. Undefined keeps every pre-G08
+   * prompt byte-identical and makes the parser reject wait.
+   */
+  allowedActions?: ActionSet;
 }
 
 /** Minimal message content exposed to the model: sender and text only. */
@@ -92,11 +100,16 @@ export interface Provider {
   consumeTransport?(): TransportRecord | null;
 }
 
-/** The only three actions the parser can accept. */
+/**
+ * The actions the parser can accept. G08: with actionSet 'timed_wait' the
+ * parser additionally accepts exactly {"type":"wait"}; the legacy action set
+ * still accepts move/eat/stop only.
+ */
 export type AgentAction =
   | { type: 'move'; to: Location }
   | { type: 'eat' }
-  | { type: 'stop' };
+  | { type: 'stop' }
+  | WaitAction;
 
 export type ParseResult =
   | { ok: true; action: AgentAction }
@@ -125,6 +138,12 @@ export interface RunOptions {
   runId: string;
   /** Aborts the provider call. Default 15000. */
   timeoutMs?: number;
+  /**
+   * G08 (opt-in): the capability axis for this session. 'timed_wait' makes the
+   * parser accept {"type":"wait"} and the runner render the G08 prompt with
+   * the wait action. Undefined keeps the pre-G08 behaviour and prompt.
+   */
+  actionSet?: ActionSet;
   /**
    * Clock for timing stats only. Decisions, command ids, and submits do not
    * read the returned values. Default Date.now.
@@ -164,6 +183,11 @@ export interface StepRecord {
   /** Present only when a world command was submitted. Stop never sets this. */
   command?: SubmittedCommand;
   exec?: CommandResult;
+  /**
+   * G08: present on a wait step. wakeAtSimTime is the accepted deadline, or
+   * null when the budget took precedence (no recoverable deadline).
+   */
+  wait?: { wakeAtSimTime: number | null };
   /** Parse error, engine rejection, timeout, or transport error. */
   error?: string;
   /** Present only for an HTTP provider call. Omitted by the reference policy. */
@@ -207,7 +231,9 @@ export type SessionStatus =
   | 'budget_exhausted'
   | 'timeout'
   | 'provider_error'
-  | 'invalid_run';
+  | 'invalid_run'
+  /** G08: non-terminal. The session pauses until simTime reaches wakeAtSimTime. */
+  | 'waiting_time';
 
 /**
  * G06: which command-id formula this session uses. 'g06-episode-cycle' is
@@ -250,4 +276,24 @@ export interface AgentSession {
   whenDeciding(): Promise<DecidingPhase>;
   /** Terminal run record. Call it after status has left `ready` and `deciding`. */
   result(): RunResult;
+  /**
+   * G08 capability axis of this session. 'legacy' unless RunOptions opted in;
+   * every session exposes the same members so the scheduler never duck-types.
+   */
+  readonly actionSet: ActionSet;
+  /** Single wait deadline source; null unless status is 'waiting_time'. */
+  readonly wakeAtSimTime: number | null;
+  /**
+   * Resume only when waiting_time and nowSimTime >= wakeAtSimTime: back to
+   * ready, no provider call, no new cycle, round/feedback/budget kept.
+   * Exactly one resume per accepted wait.
+   */
+  resumeIfDue(nowSimTime: number): boolean;
+  /**
+   * Terminal budget_exhausted and deadline clear (the episode-level limit
+   * reached while paused). Terminal sessions never revive.
+   */
+  exhaustBudget(detail: string): void;
+  /** Deep-copied wait projection for records and checkpoints. */
+  waitState(): SessionWaitState;
 }

@@ -51,6 +51,8 @@ export interface NeedsGameOptions {
   now?: () => number;
   scheduleTimeout?: ReactiveGameOptions['scheduleTimeout'];
   onDeciding?: ReactiveGameOptions['onDeciding'];
+  /** G08 (opt-in): capability axis forwarded to the reactive game. */
+  actionSet?: ReactiveGameOptions['actionSet'];
 }
 
 export type NeedsGame = ReactiveGame & ReturnType<typeof createReactiveGame>;
@@ -72,6 +74,7 @@ export function createNeedsGame(options: NeedsGameOptions): NeedsGame {
     now: options.now,
     scheduleTimeout: options.scheduleTimeout,
     onDeciding: options.onDeciding,
+    actionSet: options.actionSet,
   });
   return game;
 }

@@ -4,6 +4,7 @@ import {
   Provider, RunOptions, RunOutcome, RunResult, SessionStatus, StepAgentResult, StepFeedback, StepRecord,
   SubmittedCommand,
 } from './contracts';
+import { WAIT_SIM_STEPS, type ActionSet, type SessionWaitState } from '../temporal/contracts';
 import { observe } from './observation';
 import { parseAction } from './parser';
 
@@ -25,7 +26,7 @@ function hungerOf(state: WorldState, actorId: string): number | undefined {
   return npc.hunger;
 }
 
-function toCommand(commandId: string, actorId: string, action: Exclude<AgentAction, { type: 'stop' }>): SubmittedCommand {
+function toCommand(commandId: string, actorId: string, action: Exclude<AgentAction, { type: 'stop' } | { type: 'wait' }>): SubmittedCommand {
   if (action.type === 'move') return { commandId, actorId, type: 'move', payload: { to: action.to } };
   return { commandId, actorId, type: 'eat', payload: {} };
 }
@@ -138,11 +139,18 @@ class AgentSessionImpl implements AgentSession {
   explicitError?: string;
   phaseInfo: DecidingPhase | null = null;
   readonly waiters: ((info: DecidingPhase) => void)[] = [];
+  /** G08 capability axis; 'legacy' unless RunOptions opted in. */
+  readonly actionSet: ActionSet;
+  /** Single wait deadline source; null unless status is 'waiting_time'. */
+  wakeAtSimTime: number | null = null;
+  /** True once resumeIfDue consumed the current wait (reset per accepted wait). */
+  resumedOnce = false;
 
   constructor(options: RunOptions) {
     this.options = options;
     this.runId = options.runId;
     this.actorId = options.actorId;
+    this.actionSet = options.actionSet ?? 'legacy';
     this.now = options.now ?? Date.now;
     this.timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
     this.started = this.now();
@@ -172,6 +180,37 @@ class AgentSessionImpl implements AgentSession {
   whenDeciding(): Promise<DecidingPhase> {
     if (this.status === 'deciding' && this.phaseInfo) return Promise.resolve(this.phaseInfo);
     return new Promise(resolve => { this.waiters.push(resolve); });
+  }
+
+  /** G08: resume only when due; exactly one resume per accepted wait. */
+  resumeIfDue(nowSimTime: number): boolean {
+    if (this.status !== 'waiting_time' || this.wakeAtSimTime === null) return false;
+    if (nowSimTime < this.wakeAtSimTime) return false;
+    this.status = 'ready';
+    this.wakeAtSimTime = null;
+    this.resumedOnce = true;
+    return true;
+  }
+
+  /** G08: terminal budget end for the episode-level limit; clears the deadline. */
+  exhaustBudget(detail: string): void {
+    if (this.status === 'waiting_time') {
+      this.wakeAtSimTime = null;
+    }
+    if (this.status === 'ready' || this.status === 'waiting_time') {
+      finishTerminal(this, 'budget_exhausted', 'budget_exhausted', detail);
+    }
+  }
+
+  /** G08: deep-copied wait projection for records and checkpoints. */
+  waitState(): SessionWaitState {
+    return {
+      actionSet: this.actionSet,
+      status: this.status,
+      wakeAtSimTime: this.wakeAtSimTime,
+      providerCalls: this.providerCalls,
+      resumedOnce: this.resumedOnce,
+    };
   }
 
   result(): RunResult {
@@ -240,6 +279,7 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
       observation: structuredClone(observation),
       goal: { hungerAtLeast: GOAL_HUNGER_AT_LEAST },
       feedback: session.feedback ? { ...session.feedback } : null,
+      ...(session.options.actionSet !== undefined ? { allowedActions: session.actionSet } : {}),
     };
     const done = takeDecision(
       session.options.provider,
@@ -268,7 +308,7 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
       return { status, terminal: true, providerCalled: true, step };
     }
 
-    const parse = parseAction(decision.raw);
+    const parse = parseAction(decision.raw, session.actionSet);
     if (!parse.ok) {
       const step = withTransport({
         round,
@@ -296,6 +336,45 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
       session.steps.push(step);
       finishTerminal(session, 'stopped', 'stopped');
       return { status: 'stopped', terminal: true, providerCalled: true, step };
+    }
+
+    if (parse.action.type === 'wait') {
+      // G08: the wait consumed this provider call. The deadline comes from the
+      // authoritative simTime; the budget takes precedence over pausing, so a
+      // wait on the last call ends budget_exhausted with no recoverable
+      // deadline. Round/feedback/cycle survive the pause untouched.
+      // G08-R1: a missing simTime is a protocol failure — never ?? 0.
+      const simTime = session.options.world.getState().simTime;
+      if (typeof simTime !== 'number' || !Number.isSafeInteger(simTime) || simTime < 0) {
+        const step = withTransport({
+          round,
+          observation: structuredClone(observation),
+          raw: decision.raw,
+          parse,
+        }, transport);
+        session.steps.push(step);
+        finishTerminal(session, 'invalid_run', 'invalid_run', 'timed_wait wait without a valid authoritative simTime');
+        return { status: 'invalid_run', terminal: true, providerCalled: true, step };
+      }
+      const budgetTerminated = session.providerCalls >= MAX_PROVIDER_CALLS;
+      const wakeAtSimTime = budgetTerminated ? null : simTime + WAIT_SIM_STEPS;
+      const step = withTransport({
+        round,
+        observation: structuredClone(observation),
+        raw: decision.raw,
+        parse,
+        wait: { wakeAtSimTime },
+      }, transport);
+      session.steps.push(step);
+      session.feedback = { round, kind: 'accepted', detail: 'wait' };
+      if (budgetTerminated) {
+        finishTerminal(session, 'budget_exhausted', 'budget_exhausted');
+        return { status: 'budget_exhausted', terminal: true, providerCalled: true, step };
+      }
+      session.status = 'waiting_time';
+      session.wakeAtSimTime = wakeAtSimTime;
+      session.resumedOnce = false;
+      return { status: 'waiting_time', terminal: false, providerCalled: true, step };
     }
 
     const command = toCommand(session.commandIdFor(round), session.actorId, parse.action);
@@ -346,6 +425,10 @@ export function stepAgent(session: AgentSession): Promise<StepAgentResult> {
   if (impl.status === 'deciding') {
     return Promise.resolve({ status: 'busy', terminal: false, providerCalled: false });
   }
+  if (impl.status === 'waiting_time') {
+    // G08: paused on logical time; stepping does not resume it.
+    return Promise.resolve({ status: 'waiting_time', terminal: false, providerCalled: false });
+  }
   if (impl.status !== 'ready') {
     return Promise.resolve({ status: impl.status, terminal: true, providerCalled: false });
   }
@@ -386,6 +469,8 @@ export function hydrateAgentSession(
     eventsBefore: number;
     started: number;
     calls: { round: number; ms: number }[];
+    /** G08: original wait deadline preserved verbatim; null unless waiting_time. */
+    wakeAtSimTime?: number | null;
   },
 ): void {
   const impl = session as AgentSessionImpl;
@@ -393,6 +478,8 @@ export function hydrateAgentSession(
   impl.feedback = state.feedback;
   impl.status = state.status;
   impl.providerCalls = state.providerCalls;
+  impl.wakeAtSimTime = state.status === 'waiting_time' ? (state.wakeAtSimTime ?? null) : null;
+  impl.resumedOnce = false;
   impl.steps.length = 0;
   impl.steps.push(...state.steps);
   impl.terminalOutcome = state.terminalOutcome;

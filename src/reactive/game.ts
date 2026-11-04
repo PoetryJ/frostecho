@@ -30,8 +30,9 @@ import { canWake, describeObservation, isTerminalStatus, isWaitingObservation } 
 import { exportSessionCheckpoint, restoreAgentSession } from '../agent/checkpoint';
 import {
   G06_CHECKPOINT_SCHEMA,
-  type GameCheckpoint, type GameCycleCheckpoint,
+  type GameCheckpoint, type GameCycleCheckpoint, type SessionCheckpoint,
 } from '../persistence/contracts';
+import { G08_GAME_SCHEMA, type ActionSet, type G08GameCheckpoint, type G08GameCycleCheckpoint } from '../temporal/contracts';
 
 interface CycleState {
   cycle: number;
@@ -69,7 +70,9 @@ export class ReactiveGameImpl implements ReactiveGame {
   readonly mode: ReactiveGameOptions['mode'];
   readonly thinking: boolean;
   private needPolicy: NeedPolicy;
-  private readonly recordSchema: typeof G04_SCHEMA | typeof G05_SCHEMA;
+  private readonly recordSchema: typeof G04_SCHEMA | typeof G05_SCHEMA | typeof G08_GAME_SCHEMA;
+  /** G08: capability axis; undefined keeps pre-G08 behaviour. */
+  readonly actionSet: ActionSet | undefined;
 
   private readonly states: Record<string, ReactiveActorState> = {};
   private readonly cycles: Record<string, CycleState[]> = {};
@@ -98,7 +101,17 @@ export class ReactiveGameImpl implements ReactiveGame {
     this.mode = options.mode;
     this.thinking = options.thinking;
     this.needPolicy = options.needPolicy ?? 'one-shot';
-    this.recordSchema = options.schemaVersion ?? G04_SCHEMA;
+    this.recordSchema = options.actionSet !== undefined ? G08_GAME_SCHEMA : (options.schemaVersion ?? G04_SCHEMA);
+    this.actionSet = options.actionSet;
+    // G08-R1: the timed_wait axis is meaningless without an authoritative
+    // clock. Refuse construction before any provider call; legacy worlds
+    // keep their pre-G08 freedom (no simTime requirement).
+    if (options.actionSet === 'timed_wait') {
+      const simTime = options.initialState.simTime;
+      if (typeof simTime !== 'number' || !Number.isSafeInteger(simTime) || simTime < 0) {
+        throw new Error('INVALID_INITIAL_STATE: actionSet timed_wait requires a non-negative integer initialState.simTime');
+      }
+    }
     this.nowFn = options.now ?? Date.now;
     this.startedAt = this.nowFn();
     this.initialState = structuredClone(options.initialState);
@@ -169,6 +182,7 @@ export class ReactiveGameImpl implements ReactiveGame {
       scheduleTimeout: this.options.scheduleTimeout,
       commandIdFor: round => `${this.episodeId}:npc:${actorId}:${cycle}:${round}`,
       commandIdScheme: 'g06-episode-cycle',
+      ...(this.actionSet !== undefined ? { actionSet: this.actionSet } : {}),
     });
     if (this.options.onDeciding) {
       const hook = this.options.onDeciding;
@@ -208,6 +222,16 @@ export class ReactiveGameImpl implements ReactiveGame {
     const feedback: StepFeedback | null = cycle.session.feedback ? { ...cycle.session.feedback } : null;
     try {
       const result = await stepAgent(cycle.session);
+      // G08-R1: the actor-level budget settles inside THIS advance. A wait
+      // returned on the actor's limit call must not publish a recoverable
+      // deadline — exhaust the session (clearing the deadline) BEFORE the
+      // turn is recorded, so the record, the cycle and the returned result
+      // all reflect the termination.
+      if (result.status === 'waiting_time' && this.callsOf(actorId) >= EPISODE_CALL_LIMIT) {
+        cycle.session.exhaustBudget(`per-actor budget ${EPISODE_CALL_LIMIT} exhausted on the wait call`);
+        result.status = 'budget_exhausted';
+        result.terminal = true;
+      }
       this.recordTurn(actorId, cycle, result, feedback, logBefore);
       this.afterStep(actorId, cycle, result);
       return {
@@ -240,6 +264,13 @@ export class ReactiveGameImpl implements ReactiveGame {
   }
 
   private afterStep(actorId: string, cycle: CycleState, result: StepAgentResult): void {
+    if (result.status === 'waiting_time') {
+      // G08: the session pauses on logical time. The cycle stays open (same
+      // session resumes at the deadline), no terminal state is assigned, and
+      // the round-robin simply skips this actor until the deadline passes.
+      this.transition(actorId, 'timed_wait', `wait: session paused until simTime ${cycle.session.wakeAtSimTime ?? '?'}`);
+      return;
+    }
     if (result.status === 'timeout' || result.status === 'provider_error') {
       this.interrupted = true;
       this.lastInterruptedActor = actorId;
@@ -296,6 +327,26 @@ export class ReactiveGameImpl implements ReactiveGame {
   reconcile(): void {
     for (const actorId of this.actorIds) {
       const lifecycle = this.states[actorId];
+      if (lifecycle === 'timed_wait') {
+        // G08: the episode budget binds even a paused session — reaching the
+        // actor limit while waiting ends the session with no recoverable
+        // deadline. Otherwise the actor resumes exactly once when the
+        // authoritative simTime reaches the deadline; the SAME cycle and
+        // session continue, no new cycle opens, no provider call is made.
+        const cycle = this.activeCycle(actorId);
+        if (cycle === null) continue;
+        if (this.callsOf(actorId) >= EPISODE_CALL_LIMIT) {
+          cycle.session.exhaustBudget(`per-actor budget ${EPISODE_CALL_LIMIT} exhausted while waiting for time`);
+          cycle.endState = 'budget_exhausted';
+          this.transition(actorId, 'budget_exhausted', `per-actor budget exhausted while waiting for time`);
+          continue;
+        }
+        const now = this.world.getState().simTime ?? 0;
+        if (cycle.session.resumeIfDue(now)) {
+          this.transition(actorId, 'active', `wait over: simTime ${now} reached the deadline`);
+        }
+        continue;
+      }
       if (lifecycle === 'satisfied') {
         if (this.needPolicy !== 'recurring') continue;
         if (this.callsOf(actorId) >= EPISODE_CALL_LIMIT) continue;
@@ -515,7 +566,18 @@ export class ReactiveGameImpl implements ReactiveGame {
       simTime: state.simTime ?? 0,
       commands: this.world.getLog().length,
       events: this.world.getEvents().length,
+      ...(this.actionSet !== undefined ? { actionSet: this.actionSet, wakeAtSimTime: this.wakeDeadlines() } : {}),
     };
+  }
+
+  /** G08: per-actor wait deadlines; null for actors without one. */
+  private wakeDeadlines(): Record<string, number | null> {
+    const out: Record<string, number | null> = {};
+    for (const actorId of this.actorIds) {
+      const cycle = this.activeCycle(actorId);
+      out[actorId] = cycle && cycle.session.status === 'waiting_time' ? cycle.session.wakeAtSimTime : null;
+    }
+    return out;
   }
 
   snapshot(): ReactiveRecord {
@@ -555,6 +617,12 @@ export class ReactiveGameImpl implements ReactiveGame {
       wakePolicy: this.wakePolicy,
       mode: this.mode,
       thinking: this.thinking,
+      // G08-R1: the record carries the same effective configuration the
+      // envelope saves — one source, cross-checked at save and restore.
+      ...(this.actionSet !== undefined ? {
+        requestModel: this.options.requestModel ?? null,
+        timeoutMs: this.timeoutMs,
+      } : {}),
       actorOrder: [...this.actorIds],
       initialState: this.initialState,
       finalState,
@@ -577,6 +645,7 @@ export class ReactiveGameImpl implements ReactiveGame {
       },
       timing: { totalMs: Math.max(0, this.nowFn() - this.startedAt) },
       needPolicy: this.needPolicy,
+      ...(this.actionSet !== undefined ? { actionSet: this.actionSet, wakeAtSimTime: this.wakeDeadlines() } : {}),
     } satisfies ReactiveRecord);
   }
 
@@ -602,15 +671,17 @@ export class ReactiveGameImpl implements ReactiveGame {
    * in-flight flag is included so a caller can never mistake a busy game for
    * a saveable one.
    */
-  checkpointData(): GameCheckpoint {
+  checkpointData(): GameCheckpoint | G08GameCheckpoint {
+    const g08 = this.actionSet !== undefined;
     const cycles: Record<string, GameCycleCheckpoint[]> = {};
+    const cyclesG08: Record<string, G08GameCycleCheckpoint[]> = {};
     for (const actorId of this.actorIds) {
-      cycles[actorId] = this.actorCycles(actorId).map(cycle => {
-        const exported = exportSessionCheckpoint(cycle.session);
+      cyclesG08[actorId] = this.actorCycles(actorId).map(cycle => {
+        const exported = exportSessionCheckpoint(cycle.session, g08 ? 'g08' : 'g06');
         if (!exported.ok) {
           throw new CheckpointExportError(exported.code, exported.issues ?? []);
         }
-        return {
+        const entry = {
           cycle: cycle.cycle,
           reason: cycle.reason,
           startLogCursor: cycle.startLogCursor,
@@ -618,17 +689,17 @@ export class ReactiveGameImpl implements ReactiveGame {
           turns: structuredClone(cycle.turns),
           session: exported.value,
         };
+        cycles[actorId] = (cycles[actorId] ?? []).concat(entry as unknown as GameCycleCheckpoint);
+        return entry as unknown as G08GameCycleCheckpoint;
       });
     }
-    return {
-      schema: G06_CHECKPOINT_SCHEMA,
+    const base = {
       episodeId: this.episodeId,
       actorIds: [...this.actorIds],
       wakePolicy: this.wakePolicy,
       mode: this.mode,
       thinking: this.thinking,
       needPolicy: this.needPolicy,
-      recordSchema: this.recordSchema,
       requestModel: this.options.requestModel ?? null,
       timeoutMs: this.timeoutMs,
       engine: this.world.save(),
@@ -648,6 +719,24 @@ export class ReactiveGameImpl implements ReactiveGame {
       idlePumps: structuredClone(this.idlePumps),
       cycles,
     };
+    if (g08) {
+      // G08: every group (legacy included) saves the capability axis, the
+      // timed_wait actor state and the per-actor deadlines.
+      return {
+        ...base,
+        cycles: cyclesG08,
+        schema: G08_GAME_SCHEMA,
+        actionSet: this.actionSet,
+        recordSchema: G08_GAME_SCHEMA,
+        states: base.states as Record<string, ReactiveActorState | 'timed_wait'>,
+        wakeAtSimTime: this.wakeDeadlines(),
+      };
+    }
+    return {
+      ...base,
+      schema: G06_CHECKPOINT_SCHEMA,
+      recordSchema: this.recordSchema as typeof G04_SCHEMA | typeof G05_SCHEMA,
+    };
   }
 
   /**
@@ -658,7 +747,8 @@ export class ReactiveGameImpl implements ReactiveGame {
    * resources (providers, clock, timer, hooks); all causal state comes from
    * the data.
    */
-  static restoreFromCheckpoint(data: GameCheckpoint, options: ReactiveGameOptions): ReactiveGameImpl {
+  static restoreFromCheckpoint(data: GameCheckpoint | G08GameCheckpoint, options: ReactiveGameOptions): ReactiveGameImpl {
+    const g08 = (data as G08GameCheckpoint).schema === G08_GAME_SCHEMA;
     const impl = Object.create(ReactiveGameImpl.prototype) as Record<string, unknown>;
     impl.options = options;
     impl.episodeId = data.episodeId;
@@ -668,6 +758,7 @@ export class ReactiveGameImpl implements ReactiveGame {
     impl.thinking = data.thinking;
     impl.needPolicy = data.needPolicy;
     impl.recordSchema = data.recordSchema;
+    impl.actionSet = g08 ? (data as G08GameCheckpoint).actionSet : undefined;
     impl.nowFn = options.now ?? Date.now;
     impl.startedAt = data.startedAt;
     impl.initialState = structuredClone(data.initialState);

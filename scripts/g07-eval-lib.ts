@@ -24,6 +24,7 @@ import type {
 import type { ReactiveRecord } from '../src/reactive/contracts';
 import { RULES, type Location, type WorldState } from '../src/types';
 import { canonical } from '../src/util';
+import type { ReexecutionInput } from './g08-evidence-contracts';
 
 export const G07_HARD_CHAT_LIMIT = 8;
 export const G07_TIMEOUT_MS = 120_000;
@@ -349,8 +350,12 @@ export function verifyPromptData(captures: readonly G07PromptCapture[]): string[
  * deep-copied, every recorded command is submitted in ledger order, and each
  * result, the committed events and the final state are compared with what the
  * record claims. A failed episode is re-executed too, when it has commands.
+ *
+ * G08 closeout: the input is narrowed to `plan.episodeId` + the replayable
+ * snapshot slice, so a G07 OR a G08 episode record can be passed structurally
+ * (no `as unknown as G07EpisodeRecord`). The function body is unchanged.
  */
-export function reexecuteCommands(record: G07EpisodeRecord): string[] {
+export function reexecuteCommands(record: ReexecutionInput): string[] {
   const id = record.plan.episodeId;
   const issues: string[] = [];
   let engine: Engine;
@@ -516,7 +521,9 @@ export type G07EpisodeOutcome =
   | 'completed'
   | 'transport_failure'
   | 'budget_blocked'
-  | 'protocol_failure';
+  | 'protocol_failure'
+  /** G08-R1: the decision parsed but was illegal for this experiment's axis. */
+  | 'invalid_output';
 
 export interface G07EpisodeRecord {
   schema: typeof G07_EPISODE_SCHEMA;
