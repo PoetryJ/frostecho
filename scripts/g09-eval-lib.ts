@@ -154,7 +154,7 @@ export interface G09HttpExchange {
   /** The exact outbound body (model, sampling, messages). */
   requestBody: unknown;
   /** The full response: status + body + usage. */
-  response: { status: number | null; body: string; usage: { total_tokens: number | null; prompt_tokens: number | null; completion_tokens: number | null } | null };
+  response: { status: number | null; body: string | null; usage: { total_tokens: number | null; prompt_tokens: number | null; completion_tokens: number | null } | null };
   /** The prompt actually rendered for this call. */
   prompt: string;
   /** sha256 of the prompt, for the source/prompt fingerprint. */
@@ -167,15 +167,18 @@ export interface G09HttpExchange {
 export interface G09WireCapture {
   requestBody: unknown;
   requestBodyText: string;
-  status: number;
-  responseBody: string;
+  /** null when no response arrived (abort/timeout); never invented. */
+  status: number | null;
+  /** null when no body arrived (abort/timeout); never invented. */
+  responseBody: string | null;
 }
 
 /**
  * The ONE boundary collector shared by the fake and live branches: it wraps
- * the fetch actually used for the call, saves the exact serialized request
- * body and the real response status/text (via clone), then hands the original
- * Response to the HTTP provider for parsing. Evidence is never reconstructed.
+ * the fetch actually used for the call. The exact serialized request body is
+ * saved BEFORE awaiting the response, so a timeout/abort still leaves the
+ * evidence of the ONE request that was really sent. The response status/text
+ * are filled in when it arrives (via clone); a missing response stays null.
  */
 export function createWireCollector(inner: typeof fetch): {
   fetchImpl: typeof fetch;
@@ -190,14 +193,15 @@ export function createWireCollector(inner: typeof fetch): {
     } catch {
       requestBody = { raw: text };
     }
+    const entry: G09WireCapture = { requestBody, requestBodyText: text, status: null, responseBody: null };
+    slot = entry;
     const response = await inner(input, init);
-    let responseBody = '';
+    entry.status = response.status;
     try {
-      responseBody = await response.clone().text();
+      entry.responseBody = await response.clone().text();
     } catch {
-      responseBody = '';
+      entry.responseBody = null;
     }
-    slot = { requestBody, requestBodyText: text, status: response.status, responseBody };
     return response;
   };
   return {
@@ -516,7 +520,7 @@ export function deriveG09(
       issues.push(...bindingIssues(record.binding, record.request));
       const parsed = strictGoalChoice(record.binding.raw, record.request.options);
       if (!parsed.ok) issues.push(`${id}: binding raw does not parse: ${parsed.error}`);
-      if (goalExchange !== undefined && goalExchange.response.body !== undefined) {
+      if (goalExchange !== undefined && goalExchange.response.body !== undefined && goalExchange.response.body !== null) {
         const content = responseContent(goalExchange);
         if (content !== record.binding.raw) issues.push(`${id}: the goal response content differs from the binding raw`);
       }
@@ -631,6 +635,7 @@ function addMaybe(total: number | null, value: number | null): number | null {
 }
 
 function responseContent(exchange: G09HttpExchange): string {
+  if (typeof exchange.response.body !== 'string') return '';
   try {
     const body = JSON.parse(exchange.response.body) as { choices?: { message?: { content?: unknown } }[] };
     const content = body.choices?.[0]?.message?.content;

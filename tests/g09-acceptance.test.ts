@@ -457,8 +457,8 @@ test('F5: eval --live records the REAL wire (8 episodes, 16 POST, verify green)'
     assert.equal(recorded.length, 16);
     for (const exchange of recorded) {
       assert.ok(JSON.stringify(exchange.requestBody).includes('messages'), 'the recorded body is the serialized request');
-      assert.ok(exchange.response.body.includes('extraWireMarker'), 'the raw response body is preserved');
-      assert.ok(exchange.response.body.includes('"id":"wire-'), 'response id preserved');
+      assert.ok(String(exchange.response.body).includes('extraWireMarker'), 'the raw response body is preserved');
+      assert.ok(String(exchange.response.body).includes('"id":"wire-'), 'response id preserved');
       assert.equal(exchange.response.usage.total_tokens, 14);
     }
     const verify = await runNode(join(ROOT, 'dist/scripts/eval-g09.js'), [
@@ -489,7 +489,7 @@ test('F5b: a 500 on the first call stops the batch, keeps the raw evidence, and 
     const first = JSON.parse(readFileSync(join(root, 'artifacts/loopback-500/episodes/g09-r1-s40-self_only.json'), 'utf8'));
     assert.equal(first.outcome, 'provider_error');
     assert.equal(first.http[0].response.status, 500);
-    assert.ok(first.http[0].response.body.includes('SERVER_BOOM'), 'the raw 500 body is kept');
+    assert.ok(String(first.http[0].response.body).includes('SERVER_BOOM'), 'the raw 500 body is kept');
     assert.equal(first.http[0].response.usage, null, 'missing usage stays null');
     const later = JSON.parse(readFileSync(join(root, 'artifacts/loopback-500/episodes/g09-r1-s40-choice.json'), 'utf8'));
     assert.equal(later.outcome, 'not_run');

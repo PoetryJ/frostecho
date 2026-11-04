@@ -339,8 +339,20 @@ class AgentSessionImpl implements AgentSession {
     const view = bound === null ? null : (this.options.goalHost?.outcome(bound.requestId) ?? null);
     const selected = view !== null && view.outcome === 'fulfilled';
     const goalReached = bound !== null ? selected : reached;
-    const outcome: RunOutcome = this.terminalOutcome ?? (reached ? 'goal_reached' : 'stopped');
-    const resolved: RunOutcome = outcome !== 'invalid_run' && reached ? 'goal_reached' : outcome;
+    // G10 P0a: one label, one truth. A bound yield promise is labelled by the
+    // AUTHORITATIVE request outcome — hunger never upgrades a violation, a
+    // timeout or an invalid run to goal_reached. Legacy sessions (no yield
+    // binding) keep the original hunger label, including stop-at-goal.
+    const terminal = this.terminalOutcome;
+    let resolved: RunOutcome;
+    if (bound !== null) {
+      if (selected) resolved = 'goal_reached';
+      else if (view !== null && view.outcome === 'violated') resolved = 'selected_goal_yield';
+      else resolved = terminal ?? 'stopped';
+    } else {
+      resolved = terminal ?? (reached ? 'goal_reached' : 'stopped');
+      if (resolved === 'stopped' && reached) resolved = 'goal_reached';
+    }
     const result: RunResult = {
       runId: this.runId,
       actorId: this.actorId,

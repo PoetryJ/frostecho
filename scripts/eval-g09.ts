@@ -192,7 +192,7 @@ async function runEpisode(entry: G09PlanEntry, rt: EpisodeRuntime): Promise<G09E
           transport = inner.consumeTransport?.() ?? null;
           const wire = collector.take();
           const elapsedMs = Date.now() - started;
-          const usage = wire === null ? null : wireUsage(wire.responseBody);
+          const usage = wire === null || wire.responseBody === null ? null : wireUsage(wire.responseBody);
           rt.store.writeJson(`attempts/${attemptId}.finish.json`, {
             attemptId, at: new Date().toISOString(), outcome: 'success',
             status: wire?.status ?? transport?.status ?? null, error: null,
@@ -205,7 +205,7 @@ async function runEpisode(entry: G09PlanEntry, rt: EpisodeRuntime): Promise<G09E
             requestBody: wire?.requestBody ?? {},
             response: {
               status: wire?.status ?? null,
-              body: wire?.responseBody ?? '',
+              body: wire?.responseBody ?? null,
               usage,
             },
             prompt, promptFingerprint: createHash('sha256').update(prompt).digest('hex'),
@@ -218,7 +218,7 @@ async function runEpisode(entry: G09PlanEntry, rt: EpisodeRuntime): Promise<G09E
           const wire = collector.take();
           const message = err instanceof Error ? err.message : String(err);
           const outcome = message.includes('timeout') ? 'timeout' : 'provider_error';
-          const usage = wire === null ? null : wireUsage(wire.responseBody);
+          const usage = wire === null || wire.responseBody === null ? null : wireUsage(wire.responseBody);
           rt.store.writeJson(`attempts/${attemptId}.finish.json`, {
             attemptId, at: new Date().toISOString(), outcome,
             status: wire?.status ?? transport?.status ?? null, error: message, usage: usage ?? transport?.usage ?? null, elapsedMs,
@@ -228,7 +228,7 @@ async function runEpisode(entry: G09PlanEntry, rt: EpisodeRuntime): Promise<G09E
           exchanges.push({
             phase, attemptId,
             requestBody: wire?.requestBody ?? {},
-            response: { status: wire?.status ?? null, body: wire?.responseBody ?? '', usage },
+            response: { status: wire?.status ?? null, body: wire?.responseBody ?? null, usage },
             prompt, promptFingerprint: createHash('sha256').update(prompt).digest('hex'),
             elapsedMs, error: message,
           });
@@ -349,6 +349,7 @@ async function runEpisode(entry: G09PlanEntry, rt: EpisodeRuntime): Promise<G09E
 }
 
 function responseContentOf(exchange: G09HttpExchange): string {
+  if (typeof exchange.response.body !== 'string') return '';
   try {
     const body = JSON.parse(exchange.response.body) as { choices?: { message?: { content?: unknown } }[] };
     const content = body.choices?.[0]?.message?.content;
