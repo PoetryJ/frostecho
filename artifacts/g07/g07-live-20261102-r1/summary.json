@@ -1,0 +1,404 @@
+{
+  "schema": "frostecho.g07.eval.summary/1",
+  "batch": "g07-live-20261102-r1",
+  "mode": "live",
+  "model": "qwen3.8-27b",
+  "version": {
+    "commit": "137fe7c5fda6263173eb4da50b535129ec0451cb",
+    "dirty": false,
+    "dirtyFiles": [],
+    "sourceFingerprint": "ecc0fce47cc2f138c647f069725e7466549bbe6b33f87e0e37dc01961b9866b6",
+    "promptFingerprint": "8d66afdf043633df7103189682fdd5b1647e293554bba761825529f1364c9ae2",
+    "node": "v20.18.0",
+    "platform": "linux"
+  },
+  "generatedAt": "2026-11-02T13:09:18.347Z",
+  "budget": {
+    "limit": 8,
+    "spent": 8,
+    "blocked": 0
+  },
+  "disk": {
+    "episodes": 8,
+    "statuses": 8,
+    "begins": 8,
+    "finishes": 8,
+    "blocked": 0
+  },
+  "totals": {
+    "planned": 8,
+    "completed": 8,
+    "failed": 0,
+    "notRun": 0
+  },
+  "arms": {
+    "off": {
+      "completed": 4,
+      "failed": 0,
+      "notRun": 0
+    },
+    "on": {
+      "completed": 4,
+      "failed": 0,
+      "notRun": 0
+    }
+  },
+  "scenarios": {
+    "s1": {
+      "completed": 4,
+      "failed": 0,
+      "notRun": 0
+    },
+    "s2": {
+      "completed": 4,
+      "failed": 0,
+      "notRun": 0
+    }
+  },
+  "structuralGate": {
+    "ok": true,
+    "checked": [
+      "g07-r1-s1-off",
+      "g07-r1-s1-on"
+    ],
+    "issues": []
+  },
+  "fatal": null,
+  "episodes": [
+    {
+      "index": 1,
+      "episodeId": "g07-r1-s1-off",
+      "scenario": "s1",
+      "arm": "off",
+      "rep": 1,
+      "status": "completed",
+      "outcome": "completed",
+      "action": {
+        "type": "eat"
+      },
+      "npcAte": true,
+      "foodAfterNpc": 0,
+      "playerEatOk": false,
+      "failure": null,
+      "tokens": 402,
+      "latencyMs": 4956
+    },
+    {
+      "index": 2,
+      "episodeId": "g07-r1-s1-on",
+      "scenario": "s1",
+      "arm": "on",
+      "rep": 1,
+      "status": "completed",
+      "outcome": "completed",
+      "action": {
+        "type": "eat"
+      },
+      "npcAte": true,
+      "foodAfterNpc": 0,
+      "playerEatOk": false,
+      "failure": null,
+      "tokens": 486,
+      "latencyMs": 8632
+    },
+    {
+      "index": 3,
+      "episodeId": "g07-r1-s2-off",
+      "scenario": "s2",
+      "arm": "off",
+      "rep": 1,
+      "status": "completed",
+      "outcome": "completed",
+      "action": {
+        "type": "eat"
+      },
+      "npcAte": true,
+      "foodAfterNpc": 0,
+      "playerEatOk": false,
+      "failure": null,
+      "tokens": 402,
+      "latencyMs": 4948
+    },
+    {
+      "index": 4,
+      "episodeId": "g07-r1-s2-on",
+      "scenario": "s2",
+      "arm": "on",
+      "rep": 1,
+      "status": "completed",
+      "outcome": "completed",
+      "action": {
+        "type": "eat"
+      },
+      "npcAte": true,
+      "foodAfterNpc": 0,
+      "playerEatOk": false,
+      "failure": null,
+      "tokens": 585,
+      "latencyMs": 14172
+    },
+    {
+      "index": 5,
+      "episodeId": "g07-r2-s1-on",
+      "scenario": "s1",
+      "arm": "on",
+      "rep": 2,
+      "status": "completed",
+      "outcome": "completed",
+      "action": {
+        "type": "eat"
+      },
+      "npcAte": true,
+      "foodAfterNpc": 0,
+      "playerEatOk": false,
+      "failure": null,
+      "tokens": 486,
+      "latencyMs": 8625
+    },
+    {
+      "index": 6,
+      "episodeId": "g07-r2-s1-off",
+      "scenario": "s1",
+      "arm": "off",
+      "rep": 2,
+      "status": "completed",
+      "outcome": "completed",
+      "action": {
+        "type": "eat"
+      },
+      "npcAte": true,
+      "foodAfterNpc": 0,
+      "playerEatOk": false,
+      "failure": null,
+      "tokens": 402,
+      "latencyMs": 4955
+    },
+    {
+      "index": 7,
+      "episodeId": "g07-r2-s2-on",
+      "scenario": "s2",
+      "arm": "on",
+      "rep": 2,
+      "status": "completed",
+      "outcome": "completed",
+      "action": {
+        "type": "eat"
+      },
+      "npcAte": true,
+      "foodAfterNpc": 0,
+      "playerEatOk": false,
+      "failure": null,
+      "tokens": 585,
+      "latencyMs": 14150
+    },
+    {
+      "index": 8,
+      "episodeId": "g07-r2-s2-off",
+      "scenario": "s2",
+      "arm": "off",
+      "rep": 2,
+      "status": "completed",
+      "outcome": "completed",
+      "action": {
+        "type": "eat"
+      },
+      "npcAte": true,
+      "foodAfterNpc": 0,
+      "playerEatOk": false,
+      "failure": null,
+      "tokens": 402,
+      "latencyMs": 4974
+    }
+  ],
+  "pairs": [
+    {
+      "pairId": "s1-r1",
+      "scenario": "s1",
+      "rep": 1,
+      "text": "请把最后一份食物留给我，你先不要吃。",
+      "complete": true,
+      "off": {
+        "episodeId": "g07-r1-s1-off",
+        "status": "completed",
+        "action": {
+          "type": "eat"
+        },
+        "npcAte": true,
+        "foodAfterNpc": 0,
+        "playerEatOk": false,
+        "npcHungerBefore": 40,
+        "npcHungerAfter": 70,
+        "playerHungerBefore": 40,
+        "playerHungerAfter": 40,
+        "tokens": 402,
+        "latencyMs": 4956
+      },
+      "on": {
+        "episodeId": "g07-r1-s1-on",
+        "status": "completed",
+        "action": {
+          "type": "eat"
+        },
+        "npcAte": true,
+        "foodAfterNpc": 0,
+        "playerEatOk": false,
+        "npcHungerBefore": 40,
+        "npcHungerAfter": 70,
+        "playerHungerBefore": 40,
+        "playerHungerAfter": 40,
+        "tokens": 486,
+        "latencyMs": 8632
+      },
+      "delta": {
+        "actionChanged": false,
+        "npcAteChanged": false,
+        "foodChanged": false,
+        "playerEatChanged": false,
+        "tokens": 84,
+        "latencyMs": 3676
+      }
+    },
+    {
+      "pairId": "s1-r2",
+      "scenario": "s1",
+      "rep": 2,
+      "text": "请把最后一份食物留给我，你先不要吃。",
+      "complete": true,
+      "off": {
+        "episodeId": "g07-r2-s1-off",
+        "status": "completed",
+        "action": {
+          "type": "eat"
+        },
+        "npcAte": true,
+        "foodAfterNpc": 0,
+        "playerEatOk": false,
+        "npcHungerBefore": 40,
+        "npcHungerAfter": 70,
+        "playerHungerBefore": 40,
+        "playerHungerAfter": 40,
+        "tokens": 402,
+        "latencyMs": 4955
+      },
+      "on": {
+        "episodeId": "g07-r2-s1-on",
+        "status": "completed",
+        "action": {
+          "type": "eat"
+        },
+        "npcAte": true,
+        "foodAfterNpc": 0,
+        "playerEatOk": false,
+        "npcHungerBefore": 40,
+        "npcHungerAfter": 70,
+        "playerHungerBefore": 40,
+        "playerHungerAfter": 40,
+        "tokens": 486,
+        "latencyMs": 8625
+      },
+      "delta": {
+        "actionChanged": false,
+        "npcAteChanged": false,
+        "foodChanged": false,
+        "playerEatChanged": false,
+        "tokens": 84,
+        "latencyMs": 3670
+      }
+    },
+    {
+      "pairId": "s2-r1",
+      "scenario": "s2",
+      "rep": 1,
+      "text": "请你先吃这一份食物，不用留给我。",
+      "complete": true,
+      "off": {
+        "episodeId": "g07-r1-s2-off",
+        "status": "completed",
+        "action": {
+          "type": "eat"
+        },
+        "npcAte": true,
+        "foodAfterNpc": 0,
+        "playerEatOk": false,
+        "npcHungerBefore": 40,
+        "npcHungerAfter": 70,
+        "playerHungerBefore": 40,
+        "playerHungerAfter": 40,
+        "tokens": 402,
+        "latencyMs": 4948
+      },
+      "on": {
+        "episodeId": "g07-r1-s2-on",
+        "status": "completed",
+        "action": {
+          "type": "eat"
+        },
+        "npcAte": true,
+        "foodAfterNpc": 0,
+        "playerEatOk": false,
+        "npcHungerBefore": 40,
+        "npcHungerAfter": 70,
+        "playerHungerBefore": 40,
+        "playerHungerAfter": 40,
+        "tokens": 585,
+        "latencyMs": 14172
+      },
+      "delta": {
+        "actionChanged": false,
+        "npcAteChanged": false,
+        "foodChanged": false,
+        "playerEatChanged": false,
+        "tokens": 183,
+        "latencyMs": 9224
+      }
+    },
+    {
+      "pairId": "s2-r2",
+      "scenario": "s2",
+      "rep": 2,
+      "text": "请你先吃这一份食物，不用留给我。",
+      "complete": true,
+      "off": {
+        "episodeId": "g07-r2-s2-off",
+        "status": "completed",
+        "action": {
+          "type": "eat"
+        },
+        "npcAte": true,
+        "foodAfterNpc": 0,
+        "playerEatOk": false,
+        "npcHungerBefore": 40,
+        "npcHungerAfter": 70,
+        "playerHungerBefore": 40,
+        "playerHungerAfter": 40,
+        "tokens": 402,
+        "latencyMs": 4974
+      },
+      "on": {
+        "episodeId": "g07-r2-s2-on",
+        "status": "completed",
+        "action": {
+          "type": "eat"
+        },
+        "npcAte": true,
+        "foodAfterNpc": 0,
+        "playerEatOk": false,
+        "npcHungerBefore": 40,
+        "npcHungerAfter": 70,
+        "playerHungerBefore": 40,
+        "playerHungerAfter": 40,
+        "tokens": 585,
+        "latencyMs": 14150
+      },
+      "delta": {
+        "actionChanged": false,
+        "npcAteChanged": false,
+        "foodChanged": false,
+        "playerEatChanged": false,
+        "tokens": 183,
+        "latencyMs": 9176
+      }
+    }
+  ],
+  "note": "One natural decision per episode on 8 fixed cases. A stop/move/eat is only an action type; it is not evidence that the NPC understood, refused or yielded. Not statistical significance."
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "frostecho.g07.timeout-correction/1",
+  "batch": "g07-live-20261102-r1",
+  "batchDir": "artifacts/g07/g07-live-20261102-r1",
+  "recordedTimeoutMs": {
+    "plan": 120000,
+    "episodeLedger": 120000,
+    "attemptBegins": 120000
+  },
+  "effectiveTimeoutMs": {
+    "gameSessionLayer": 15000,
+    "evidenceField": "episodes/*.json: snapshot.requestConfig.timeoutMs"
+  },
+  "affectedEpisodes": 8,
+  "rootCause": "runG07Batch normalized timeoutMs (default 120000) into requestConfigFor, but spread original options into runEpisode without the normalized value; createNeedsGame received timeoutMs:undefined and ReactiveGame fell back to 15000 ms",
+  "fix": "forward the normalized timeoutMs to runEpisode ({...options, timeoutMs, requestConfig}); verifier now cross-checks snapshot vs plan/ledger timeout per episode and per attempt begin; wiring regression proves an omitted --timeout still reaches every layer as 120000 ms",
+  "maxRequestLatencyMs": 14172,
+  "allEpisodesCompleted": true,
+  "behaviorAndCostValid": true,
+  "behaviorAndCostBasis": "8/8 completed, longest request 14172 ms < effective 15000 ms budget, no episode was cut by the shorter timeout; tokens and latency ledgers unchanged",
+  "configurationConsistent": false,
+  "oldEvidencePolicy": "original batch bytes unchanged, no live rerun, no whitelisting; the strengthened strict verify reports the mismatch with exit 1 and behaviorAndCost=ok configuration=mismatch",
+  "liveRerunNeeded": false,
+  "correctionCommitBranch": "codex/g07-player-messages",
+  "recordedAt": "2026-11-03T00:00:00Z"
+}

@@ -80,24 +80,16 @@ const USAGE = 'commands: step | run | status | world advance <1-120> | world res
 
 async function main(): Promise<void> {
   const options = parseArgs(process.argv.slice(2));
-  const timeoutMs = options.timeoutMs ?? liveTimeoutMs(process.env, LIVE_DECISION_TIMEOUT_MS);
-  const thinking = G04_THINKING;
-  let providerFor: (actorId: string) => Provider;
+  const cliTimeoutMs = options.timeoutMs ?? liveTimeoutMs(process.env, LIVE_DECISION_TIMEOUT_MS);
+  const cliThinking = G04_THINKING;
   const mode: 'reference' | 'live' = options.live ? 'live' : 'reference';
-  if (options.live) {
-    const config = loadHttpConfigFromEnv();
-    if (!config) {
-      console.error('live mode requires FROSTECHO_LLM_URL and FROSTECHO_LLM_MODEL in the environment');
-      process.exitCode = 2;
-      return;
-    }
-    providerFor = () => createHttpProvider({ ...config, enableThinking: thinking });
-  } else {
-    providerFor = () => createReferenceProvider();
-  }
+  let providerFor: (actorId: string) => Provider;
 
   let game: ReactiveGame;
   if (options.load !== undefined) {
+    // G06 correction: read and validate the saved mode/model BEFORE building
+    // any provider, so a mismatch makes zero HTTP requests. thinking and
+    // timeout come from the checkpoint's effective config, not from the CLI.
     const loaded = loadCheckpoint(options.load);
     if (!loaded.ok) {
       console.error(`[load rejected] ${loaded.code}: ${(loaded.issues ?? []).join('; ')}`);
@@ -110,6 +102,27 @@ async function main(): Promise<void> {
       process.exitCode = 2;
       return;
     }
+    if (checkpoint.mode === 'live') {
+      const config = loadHttpConfigFromEnv();
+      if (!config) {
+        console.error('[load rejected] MODEL_CONFLICT: a live checkpoint was saved with a model but FROSTECHO_LLM_URL / FROSTECHO_LLM_MODEL are not set');
+        process.exitCode = 2;
+        return;
+      }
+      if (typeof checkpoint.requestModel !== 'string' || checkpoint.requestModel.length === 0) {
+        console.error('[load rejected] MODEL_CONFLICT: live checkpoint does not record the model it was saved with');
+        process.exitCode = 2;
+        return;
+      }
+      if (checkpoint.requestModel !== config.model) {
+        console.error(`[load rejected] MODEL_CONFLICT: checkpoint model '${checkpoint.requestModel}' != environment model '${config.model}' (no request was sent)`);
+        process.exitCode = 2;
+        return;
+      }
+      providerFor = () => createHttpProvider({ ...config, enableThinking: checkpoint.thinking });
+    } else {
+      providerFor = () => createReferenceProvider();
+    }
     const restored = restoreNeedsGame(checkpoint, { providerFor });
     if (!restored.ok) {
       console.error(`[load rejected] ${restored.code}: ${(restored.issues ?? []).join('; ')}`);
@@ -117,8 +130,23 @@ async function main(): Promise<void> {
       return;
     }
     game = restored.value;
-    console.log(`G06 resumed ${checkpoint.episodeId} from ${options.load} (mode=${checkpoint.mode}, need=${checkpoint.needPolicy}) — no model call, no command replay`);
+    console.log(`G06 resumed ${checkpoint.episodeId} from ${options.load} (mode=${checkpoint.mode}, model=${checkpoint.requestModel ?? 'reference'}, thinking=${checkpoint.thinking}, timeout=${checkpoint.timeoutMs}ms, need=${checkpoint.needPolicy}) — no model call, no command replay`);
   } else {
+    // New live episodes record the actual model they used so a later load can
+    // refuse a different one instead of silently switching.
+    let requestModel: string | undefined;
+    if (mode === 'live') {
+      const config = loadHttpConfigFromEnv();
+      if (!config) {
+        console.error('live mode requires FROSTECHO_LLM_URL and FROSTECHO_LLM_MODEL in the environment');
+        process.exitCode = 2;
+        return;
+      }
+      requestModel = config.model;
+      providerFor = () => createHttpProvider({ ...config, enableThinking: cliThinking });
+    } else {
+      providerFor = () => createReferenceProvider();
+    }
     const actorIds = options.order === 'ac' ? ['npc_a', 'npc_c'] : ['npc_c', 'npc_a'];
     game = createNeedsGame({
       episodeId: options.episode,
@@ -126,11 +154,12 @@ async function main(): Promise<void> {
       actorIds,
       providerFor,
       mode,
-      thinking,
+      thinking: cliThinking,
       needPolicy: options.need,
-      timeoutMs,
+      timeoutMs: cliTimeoutMs,
+      requestModel,
     });
-    console.log(`G06 episode ${options.episode} (${mode}, need=${options.need}, order=${options.order})`);
+    console.log(`G06 episode ${options.episode} (${mode}, model=${requestModel ?? 'reference'}, need=${options.need}, order=${options.order})`);
   }
   console.log(USAGE);
 
@@ -170,6 +199,9 @@ async function main(): Promise<void> {
     else process.exitCode = 0;
     console.log(`[finalize ${reason}] exit=${String(process.exitCode)}`);
     rl.close();
+    // The state is already durable on disk; exit instead of lingering on the
+    // HTTP adapter's keep-alive sockets.
+    setImmediate(() => process.exit(process.exitCode ?? 0));
   };
 
   const drive = (): void => {
@@ -224,6 +256,9 @@ async function main(): Promise<void> {
       }
       const saved = saveCheckpoint(options.slots, slot, exported.value);
       if (!saved.ok) {
+        // EXISTS / SAVE_BUSY are ordinary operation rejections; an IO_ERROR
+        // means the save never reached disk and must fail the final exit code.
+        if (saved.code === 'IO_ERROR') fatal = true;
         console.log(`[save rejected] ${saved.code}: ${(saved.issues ?? []).join('; ')}`);
         rl.prompt();
         return;
