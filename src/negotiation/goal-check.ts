@@ -1,27 +1,30 @@
 /**
- * G09 worker A — authoritative fulfilment from the engine stream.
+ * G09-R1 worker A — authoritative fulfilment from the engine stream.
  *
- * The verdict NEVER reads a recorded flag: it re-derives what actually
- * happened from the command ledger (the same stream a fresh Engine
- * re-executes) and applies the frozen rule from the contracts. Acceptance is
- * not fulfilment — only the player's real eat result兑现 a yield_once.
+ * The evidence is bounded by the acceptance sequence: commands at or before
+ * it can never fulfil (or breach) the promise, and the outcome is folded in
+ * ORDER with each command's own authoritative simTime. An NPC eat first is
+ * violated immediately; a later player eat cannot repair it.
  */
 import {
   fulfilmentVerdict, strictGoalChoice,
-  type FulfillmentEvidence, type GoalBinding, type GoalFulfillment, type GoalRequestSnapshot,
+  type FulfillmentEvidence, type GoalBinding, type GoalFulfillment,
+  type GoalRequestSnapshot,
 } from './contracts';
+import { processAcceptedCommand, expireRequestIfDue, type AuthoritativeCommand } from './requests';
 
 export const G09_NPC_ACTOR = 'npc_a';
-export const G09_PLAYER_ACTOR = 'player';
+export const G09_PLAYER_ACTOR = 'npc_b';
 
-export interface GoalCheckCommand {
-  seq: number;
-  command: { commandId: string; actorId: string; type: string; payload?: unknown };
-  result?: { status?: string; reason?: string } | null;
+export interface GoalCheckCommand extends AuthoritativeCommand {
+  /** The authoritative simTime right after this command was submitted. */
+  atSimTime?: number;
 }
 
 export interface GoalCheckSnapshot {
   commands: readonly GoalCheckCommand[];
+  /** The engine's simTime after the whole ledger (never used to rewrite history). */
+  finalSimTime?: number;
 }
 
 function accepted(command: GoalCheckCommand): boolean {
@@ -29,29 +32,30 @@ function accepted(command: GoalCheckCommand): boolean {
 }
 
 /**
- * Derive the fulfilment evidence from the command ledger:
- *   npcAteBeforePlayer — an ACCEPTED npc eat that ran before the player's
- *                        attempt resolved (or with no player attempt at all)
- *   playerAte          — the player's single eat attempt was ACCEPTED
+ * Evidence for a yield promise, bounded by the acceptance seq:
+ *   npcAteBeforePlayer — an ACCEPTED npc eat AFTER acceptance and before the
+ *                        player's attempt resolved
+ *   playerAte          — the player's ACCEPTED eat after acceptance
  */
 export function deriveFulfilmentEvidence(
-  binding: Pick<GoalBinding, 'goal'>,
+  binding: Pick<GoalBinding, 'goal' | 'acceptedAfterSeq'>,
   snapshot: GoalCheckSnapshot,
   npcActorId: string = G09_NPC_ACTOR,
   playerActorId: string = G09_PLAYER_ACTOR,
 ): FulfillmentEvidence {
-  const commands = Array.isArray(snapshot.commands) ? snapshot.commands : [];
-  const npcEats = commands.filter(c => c?.command?.actorId === npcActorId && c.command.type === 'eat' && accepted(c));
-  const playerEats = commands.filter(c => c?.command?.actorId === playerActorId && c.command.type === 'eat');
+  const after = (Array.isArray(snapshot.commands) ? snapshot.commands : [])
+    .filter(command => Number.isSafeInteger(command?.seq) && command.seq > binding.acceptedAfterSeq)
+    .sort((a, b) => a.seq - b.seq);
+  const npcEats = after.filter(c => c.command.actorId === npcActorId && c.command.type === 'eat' && accepted(c));
+  const playerEats = after.filter(c => c.command.actorId === playerActorId && c.command.type === 'eat');
   const playerAte = playerEats.some(accepted);
   const playerSeq = playerEats.length > 0 ? Math.min(...playerEats.map(c => c.seq)) : null;
   const npcAteBeforePlayer = npcEats.some(c => playerSeq === null || c.seq < playerSeq);
   return { goal: binding.goal, npcAteBeforePlayer, playerAte };
 }
 
-/** Evidence + the frozen verdict rule in one step. */
 export function checkGoalFulfilment(
-  binding: Pick<GoalBinding, 'goal'>,
+  binding: Pick<GoalBinding, 'goal' | 'acceptedAfterSeq'>,
   snapshot: GoalCheckSnapshot,
   npcActorId: string = G09_NPC_ACTOR,
   playerActorId: string = G09_PLAYER_ACTOR,
@@ -61,42 +65,50 @@ export function checkGoalFulfilment(
 }
 
 /**
- * Cross-check a recorded binding against its request. The status must match
- * the goal (yield_once ⇔ accepted, feed_self ⇔ rejected), the decision must
- * have met the deadline, and the raw text must still parse to the same goal.
+ * Replay the authoritative command ledger into the accepted request, in
+ * order, using each command's own simTime, then apply the deadline. This is
+ * the single derivation the verifier and the runner must agree on.
  */
-export function bindingIssues(binding: GoalBinding, request: GoalRequestSnapshot | null): string[] {
-  const issues: string[] = [];
-  if (request === null) {
-    if (binding.requestId !== null) issues.push('the binding names a request but the episode holds none');
-    if (binding.goal !== 'feed_self') issues.push('a self_only binding may only declare feed_self');
-    return issues;
+export function replayRequestOutcome(
+  request: GoalRequestSnapshot,
+  binding: Pick<GoalBinding, 'acceptedAfterSeq' | 'expiresAtSimTime'> | null,
+  snapshot: GoalCheckSnapshot,
+): GoalRequestSnapshot {
+  let current = request;
+  const commands = (Array.isArray(snapshot.commands) ? snapshot.commands : [])
+    .filter(command => Number.isSafeInteger(command?.seq))
+    .sort((a, b) => a.seq - b.seq);
+  for (const command of commands) {
+    const simTime = typeof command.atSimTime === 'number' ? command.atSimTime : request.createdAtSimTime;
+    current = processAcceptedCommand(current, binding, command, simTime);
   }
+  const finalSimTime = snapshot.finalSimTime ?? request.createdAtSimTime;
+  return expireRequestIfDue(current, finalSimTime);
+}
+
+/**
+ * Cross-check a recorded binding against its request: acceptance status,
+ * original expiry carried verbatim, the seq boundary, and that the raw text
+ * still parses to the same goal.
+ */
+export function bindingIssues(binding: GoalBinding, request: GoalRequestSnapshot): string[] {
+  const issues: string[] = [];
   if (binding.requestId !== request.requestId) {
     issues.push(`the binding answers request ${JSON.stringify(binding.requestId)} but the episode holds ${JSON.stringify(request.requestId)}`);
     return issues;
   }
-  if (request.status === 'pending') issues.push('the request is still pending although a binding exists');
-  if (request.decision === null) {
-    issues.push('the decided request holds no decision');
-  } else {
-    if (request.decision.goal !== binding.goal) issues.push(`the request decision ${request.decision.goal} contradicts the binding ${binding.goal}`);
-    if (request.decision.round !== binding.decidedRound) issues.push('the request decision round contradicts the binding round');
-    const parse = strictGoalChoice(binding.raw, request.options);
-    if (!parse.ok) issues.push(`the binding raw does not parse: ${parse.error}`);
-    else if (parse.goal !== binding.goal) issues.push('the binding raw parses to a different goal');
-    if (binding.decidedRound > request.deadlineAfterRound) issues.push('the decision missed the deadline round');
+  if (request.status !== 'accepted') issues.push(`the request is ${request.status}, an active binding requires accepted`);
+  if (request.decision === null) issues.push('an accepted request holds no decision');
+  else {
+    if (request.decision.goal !== binding.goal) issues.push(`the decision ${request.decision.goal} contradicts the binding ${binding.goal}`);
+    if (request.decision.round !== binding.decidedRound) issues.push('the decision round contradicts the binding round');
+    if (request.decision.decidedAtSimTime !== binding.decidedAtSimTime) issues.push('the decision simTime contradicts the binding simTime');
   }
-  if (request.status === 'expired' && binding.goal !== undefined) {
-    // An expired request still records the late answer; the binding stands
-    // only as evidence, never as an acceptance.
-    if (request.decision?.goal === 'yield_once') issues.push('a late yield answer can never count as accepted');
-  }
-  if (request.status === 'accepted' && request.decision?.goal !== 'yield_once') {
-    issues.push('an accepted request must have decided yield_once');
-  }
-  if (request.status === 'rejected' && request.decision?.goal !== 'feed_self') {
-    issues.push('a rejected request must have decided feed_self');
-  }
+  const parse = strictGoalChoice(binding.raw, request.options);
+  if (!parse.ok) issues.push(`the binding raw does not parse: ${parse.error}`);
+  else if (parse.goal !== binding.goal) issues.push('the binding raw parses to a different goal');
+  if (binding.expiresAtSimTime !== request.expiresAtSimTime) issues.push('the binding must carry the request expiry verbatim');
+  if (binding.acceptedAfterSeq !== request.acceptedAfterSeq) issues.push('the binding must carry the request acceptance seq');
+  if (binding.decidedAtSimTime >= binding.expiresAtSimTime) issues.push('a binding can never be produced at or after the expiry');
   return issues;
 }
