@@ -88,6 +88,8 @@ export class Engine {
   getState(): WorldState { return deepClone(this.state); }
   getEvents(): WorldEvent[] { return deepClone(this.events); }
   getLog(): LogEntry[] { return deepClone(this.log); }
+  /** G09: ledger length without cloning (the acceptance seq boundary). */
+  logLength(): number { return this.log.length; }
   getInitialState(): WorldState { return deepClone(this.initial); }
 
   save(): SaveData {

@@ -55,6 +55,10 @@ export interface NeedsGameOptions {
   actionSet?: ReactiveGameOptions['actionSet'];
   /** G09 (opt-in): the frozen two-phase goal protocol forwarded to the game. */
   goalProtocol?: ReactiveGameOptions['goalProtocol'];
+  /** G09 (opt-in): game-level request consumption + candidate set. */
+  goalMode?: ReactiveGameOptions['goalMode'];
+  candidateSet?: ReactiveGameOptions['candidateSet'];
+  playerId?: ReactiveGameOptions['playerId'];
 }
 
 export type NeedsGame = ReactiveGame & ReturnType<typeof createReactiveGame>;
@@ -78,6 +82,9 @@ export function createNeedsGame(options: NeedsGameOptions): NeedsGame {
     onDeciding: options.onDeciding,
     actionSet: options.actionSet,
     goalProtocol: options.goalProtocol,
+    goalMode: options.goalMode,
+    candidateSet: options.candidateSet,
+    playerId: options.playerId,
   });
   return game;
 }

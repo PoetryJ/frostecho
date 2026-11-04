@@ -1,209 +1,193 @@
 /**
- * G09 worker B tests — the two-phase session (goal choice → action) inside
- * ONE session and ONE budget.
+ * G09-R1 worker B tests — the two-phase session against the corrected
+ * contract: logical-time receive points, insufficient budget without spend,
+ * the selected-yield goal, and one request consumed per game.
  */
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { Engine, initialWorld } from '../src';
-import type { WorldState } from '../src/types';
-import { createAgentSession, goalProtocolIssues, hydrateAgentSession, stepAgent } from '../src/agent/runner';
-import type { DecideInput, GoalProtocolOptions, StepRecord } from '../src/agent/contracts';
-import { exportSessionCheckpoint, restoreAgentSession } from '../src/agent/checkpoint';
-import type { Result } from '../src/persistence/contracts';
-import { G09_REQUEST_TEXT, G09_SESSION_SCHEMA, goalChoiceLine } from '../src/negotiation/contracts';
+import { Engine } from '../src/engine';
+import { buildNeedsWorld, createNeedsGame } from '../src/needs/game';
+import { createAgentSession, hydrateAgentSession, stepAgent } from '../src/agent/runner';
 import { observe } from '../src/agent/observation';
-import { countingWorld, scripted } from './agent-helpers';
+import { MAX_PROVIDER_CALLS, type AgentSession, type GoalProtocolOptions } from '../src/agent/contracts';
+import { G09_REQUEST_TEXT } from '../src/negotiation/contracts';
+import { createGoalRequest } from '../src/negotiation/requests';
 
-const unwrap = <T,>(r: Result<T>): T => {
-  if (!r.ok) throw new Error(`${r.code}: ${(r.issues ?? []).join('; ')}`);
-  return r.value;
-};
+function world(satiety = 40) {
+  return buildNeedsWorld({ actorIds: ['npc_a'], kitchenFood: 1, hunger: { npc_a: satiety, npc_b: 40, npc_c: 70 } });
+}
 
-function g09World(satiety: number, food = 1): { eng: Engine; state: WorldState } {
-  const state = initialWorld();
-  state.simTime = 0;
-  state.npcs.npc_a = { id: 'npc_a', location: 'kitchen', hunger: satiety };
-  state.npcs.npc_b = { id: 'npc_b', location: 'kitchen', hunger: 20 };
-  state.food = { dorm: 0, kitchen: food };
-  return { eng: new Engine(structuredClone(state)), state };
+function countingWorld(engine: Engine) {
+  let submits = 0;
+  return {
+    submits: () => submits,
+    getState: () => engine.getState(),
+    getEvents: () => engine.getEvents(),
+    submit: (command: unknown) => { submits += 1; return engine.submit(command); },
+    logLength: () => engine.logLength(),
+  };
+}
+
+function scripted(lines: string[]) {
+  let index = 0;
+  const seen: string[] = [];
+  const provider = {
+    async decide(input: { goalChoice?: unknown }) {
+      const line = lines[Math.min(index, lines.length - 1)]!;
+      index += 1;
+      seen.push(input.goalChoice === undefined ? 'action' : 'goal');
+      return line;
+    },
+  };
+  return { provider, seen, calls: () => index };
+}
+
+function advance(engine: Engine): void {
+  engine.submit({ commandId: 'world:1', actorId: 'world', type: 'advance_time', payload: { steps: 1 } });
+}
+
+function outcomeOf(session: AgentSession): string | null {
+  return (session as unknown as { terminalOutcome: string | null }).terminalOutcome;
 }
 
 function protocol(overrides: Partial<GoalProtocolOptions> = {}): GoalProtocolOptions {
   return {
-    arm: 'choice',
-    requestId: 'req-1',
-    text: G09_REQUEST_TEXT,
-    options: ['feed_self', 'yield_once'],
-    deadlineAfterRound: 1,
-    playerId: 'npc_b',
-    ...overrides,
+    arm: 'choice', requestId: 'req-1', text: G09_REQUEST_TEXT,
+    options: ['feed_self', 'yield_once'], expiresAtSimTime: 1, playerId: 'npc_b', ...overrides,
   };
 }
 
-function session(eng: Engine, provider: ReturnType<typeof scripted>['provider'], overrides: Partial<GoalProtocolOptions> = {}) {
-  return createAgentSession({
-    world: countingWorld(eng),
-    provider,
-    actorId: 'npc_a',
-    runId: 'g09-r1-s40-choice:npc_a:c1',
-    actionSet: 'legacy',
-    goalProtocol: protocol(overrides),
+test('goal then action in ONE session, each counted, action submits', async () => {
+  const engine = new Engine(world());
+  const worldPort = countingWorld(engine);
+  const script = scripted(['{"goal":"yield_once"}', '{"type":"eat"}']);
+  const session = createAgentSession({
+    world: worldPort as never, provider: script.provider as never, actorId: 'npc_a',
+    runId: 'ep:npc_a:c1', actionSet: 'timed_wait', goalProtocol: protocol(),
   });
-}
-
-test('the goal phase costs one call, submits nothing, and flips the phase', async () => {
-  const { eng } = g09World(40);
-  const seen: DecideInput[] = [];
-  const script = scripted(['{"goal":"yield_once"}', '{"type":"eat"}'], seen);
-  const world = countingWorld(eng);
-  const s = createAgentSession({
-    world, provider: script.provider, actorId: 'npc_a',
-    runId: 'g09-r1-s40-choice:npc_a:c1', actionSet: 'legacy', goalProtocol: protocol(),
-  });
-  assert.equal(s.phase, 'goal_choice');
-  const first = await stepAgent(s);
-  assert.equal(first.status, 'ready');
-  assert.equal(first.terminal, false);
-  assert.equal(first.providerCalled, true);
-  assert.equal(world.submits(), 0, 'the goal phase must not touch the world');
-  assert.equal(s.phase, 'action');
-  assert.equal(s.goalBinding?.goal, 'yield_once');
-  assert.equal(s.goalBinding?.requestId, 'req-1');
-  assert.equal(first.step?.goal?.parseOk, true);
-  assert.equal(first.step?.goal?.goal, 'yield_once');
-  // The frozen prompt was used, with the authoritative player satiety.
-  assert.ok(seen[0]?.goalChoice !== undefined);
-  assert.equal(seen[0]?.goalChoice?.arm, 'choice');
-  assert.equal(seen[0]?.goalChoice?.playerSatiety, 20);
-  assert.equal(seen[0]?.goalChoice?.simTime, 0);
-
-  const second = await stepAgent(s);
-  assert.equal(second.providerCalled, true);
-  assert.equal(world.submits(), 1, 'the action phase submits one command');
-  assert.equal(eng.getState().food.kitchen, 0, 'the action really changed the world');
-  // The action prompt carries the frozen binding line, not the goal prompt.
-  assert.equal(seen[1]?.goalLine, goalChoiceLine({ goal: 'yield_once', requestId: 'req-1' }));
-  assert.equal(seen[1]?.goalChoice, undefined);
+  assert.equal(session.phase, 'goal_choice');
+  const goal = await stepAgent(session);
+  assert.equal(goal.providerCalled, true);
+  assert.equal(goal.step?.goal?.goal, 'yield_once');
+  assert.equal(worldPort.submits(), 0, 'the goal decision is not a world command');
+  assert.equal(session.phase, 'action');
+  assert.equal(session.goalBinding?.expiresAtSimTime, 1);
+  const action = await stepAgent(session);
+  assert.equal(action.providerCalled, true);
+  assert.equal(script.calls(), 2);
+  assert.equal(worldPort.submits(), 1);
+  assert.equal(engine.getState().food?.kitchen, 0);
+  assert.equal(outcomeOf(session), 'selected_goal_yield');
 });
 
-test('the protocol needs two calls: a one-call-remaining session stops before spending', async () => {
-  const { eng } = g09World(40);
-  const script = scripted(['{"goal":"feed_self"}'], []);
-  const s = session(eng, script.provider);
-  const steps: StepRecord[] = [1, 2, 3, 4].map(round => ({
-    round, observation: observe(eng.getState(), 'npc_a'), raw: '{"type":"stop"}', parse: { ok: true, action: { type: 'stop' } },
-  }));
-  hydrateAgentSession(s, {
-    round: 4, feedback: null, status: 'ready', providerCalls: 4, steps,
-    terminalOutcome: null, initialState: eng.getState(), eventsBefore: 0, started: Date.now(), calls: [],
+test('a late goal answer is discarded: no binding, no submit, the call stays spent', async () => {
+  const engine = new Engine(world());
+  const worldPort = countingWorld(engine);
+  const script = scripted(['{"goal":"yield_once"}']);
+  const session = createAgentSession({
+    world: worldPort as never, provider: script.provider as never, actorId: 'npc_a',
+    runId: 'ep:npc_a:c1', actionSet: 'timed_wait', goalProtocol: protocol(),
   });
-  const result = await stepAgent(s);
-  assert.equal(result.status, 'budget_exhausted');
+  // Time moves past the expiry while the request is in flight.
+  advance(engine);
+  const goal = await stepAgent(session);
+  assert.equal(goal.providerCalled, true);
+  assert.equal(session.goalBinding, null, 'no active binding after the expiry');
+  assert.equal(session.status, 'failed');
+  assert.equal(outcomeOf(session), 'request_expired');
+  assert.equal(worldPort.submits(), 0);
+  assert.equal(worldPort.getState().food?.kitchen, 1, 'the world must not move');
+});
+
+test('a late yield action is discarded: no submit, no wait deadline', async () => {
+  const engine = new Engine(world());
+  const worldPort = countingWorld(engine);
+  const script = scripted(['{"goal":"yield_once"}', '{"type":"wait"}']);
+  const session = createAgentSession({
+    world: worldPort as never, provider: script.provider as never, actorId: 'npc_a',
+    runId: 'ep:npc_a:c1', actionSet: 'timed_wait', goalProtocol: protocol(),
+  });
+  await stepAgent(session);
+  advance(engine); // the request expires before the action answer lands
+  const action = await stepAgent(session);
+  assert.equal(action.providerCalled, true);
+  assert.equal(worldPort.submits(), 0, 'a late action submits nothing');
+  assert.equal(session.status, 'failed');
+  assert.equal(outcomeOf(session), 'request_expired');
+  assert.equal((session as unknown as { wakeAtSimTime: number | null }).wakeAtSimTime, null, 'no new wait deadline');
+});
+
+test('insufficient budget spends nothing and leaves the remaining call intact', async () => {
+  const engine = new Engine(world());
+  const worldPort = countingWorld(engine);
+  const script = scripted(['{"goal":"feed_self"}', '{"type":"eat"}']);
+  const session = createAgentSession({
+    world: worldPort as never, provider: script.provider as never, actorId: 'npc_a',
+    runId: 'ep:npc_a:c1', actionSet: 'timed_wait', goalProtocol: protocol(),
+  });
+  // Four calls already spent: one remains, the protocol needs two.
+  hydrateAgentSession(session, {
+    round: MAX_PROVIDER_CALLS - 1, feedback: null, status: 'ready',
+    providerCalls: MAX_PROVIDER_CALLS - 1, steps: [], terminalOutcome: null,
+    initialState: engine.getState(), eventsBefore: 0, started: Date.now(), calls: [],
+  } as never);
+  const result = await stepAgent(session);
   assert.equal(result.providerCalled, false);
-  assert.equal(script.calls(), 0, 'a protocol that cannot finish must not spend a call');
-  assert.equal(s.phase, 'goal_choice');
+  assert.equal(result.status, 'stopped');
+  assert.equal(outcomeOf(session), 'insufficient_budget');
+  assert.equal(session.providerCalls, MAX_PROVIDER_CALLS - 1, 'the remaining call is NOT consumed');
+  assert.equal(script.calls(), 0);
 });
 
-test('an invalid goal answer terminates the session without a retry', async () => {
-  const { eng } = g09World(40);
-  const seen: DecideInput[] = [];
-  const script = scripted(['{"type":"eat"}', '{"goal":"feed_self"}'], seen);
-  const world = countingWorld(eng);
-  const s = createAgentSession({
-    world, provider: script.provider, actorId: 'npc_a',
-    runId: 'g09-r1-s40-choice:npc_a:c1', actionSet: 'legacy', goalProtocol: protocol(),
+test('a new recurring cycle never re-asks the processed request', async () => {
+  const state = world(40);
+  const seen: string[] = [];
+  let index = 0;
+  const game = createNeedsGame({
+    episodeId: 'ep',
+    initialState: state,
+    actorIds: ['npc_a'],
+    providerFor: () => ({
+      async decide(input: { goalChoice?: unknown }) {
+        const isGoal = input.goalChoice !== undefined;
+        seen.push(isGoal ? 'goal' : 'action');
+        index += 1;
+        return isGoal ? '{"goal":"feed_self"}' : '{"type":"eat"}';
+      },
+    }),
+    mode: 'reference', thinking: true, needPolicy: 'recurring', timeoutMs: 1000,
+    actionSet: 'timed_wait', goalMode: 'negotiated', candidateSet: 'choice', playerId: 'npc_b',
   });
-  const result = await stepAgent(s);
-  assert.equal(result.status, 'invalid_run');
-  assert.equal(result.terminal, true);
-  assert.equal(result.providerCalled, true);
-  assert.equal(script.calls(), 1, 'no second chance in a two-phase budget');
-  assert.equal(world.submits(), 0);
-  assert.equal(s.goalBinding, null);
-  assert.equal(result.step?.goal?.parseOk, false);
-});
-
-test('the self_only arm may not be answered with yield_once or offer it', async () => {
-  const { eng } = g09World(40);
-  const script = scripted(['{"goal":"yield_once"}'], []);
-  const s = session(eng, script.provider, { arm: 'self_only', requestId: null, options: ['feed_self'], text: '本轮没有让食请求。' });
-  const result = await stepAgent(s);
-  assert.equal(result.status, 'invalid_run');
-  assert.equal(s.goalBinding, null);
-
-  // A protocol that offers yield in the self_only arm is refused at creation.
-  const bad = createAgentSession({
-    world: countingWorld(g09World(40).eng), provider: scripted(['{"goal":"feed_self"}']).provider,
-    actorId: 'npc_a', runId: 'e:npc_a:c1', actionSet: 'legacy',
-    goalProtocol: protocol({ arm: 'self_only', requestId: null, options: ['feed_self', 'yield_once'] }),
+  const built = createGoalRequest({
+    requestId: 'req-1', episodeId: 'ep', to: 'npc_a', text: G09_REQUEST_TEXT,
+    options: ['feed_self', 'yield_once'], createdAtSimTime: 0, arm: 'choice',
   });
-  assert.equal(bad.status, 'invalid_run');
-  assert.equal(bad.phase, 'goal_choice');
-
-  // The structural rules themselves:
-  assert.ok(goalProtocolIssues(protocol()).length === 0);
-  assert.ok(goalProtocolIssues(protocol({ arm: 'self_only' })).length > 0);
-  assert.ok(goalProtocolIssues(protocol({ requestId: null })).length > 0);
-  assert.ok(goalProtocolIssues(protocol({ deadlineAfterRound: 0 })).length > 0);
+  assert.ok(built.ok);
+  assert.equal((game as unknown as { submitGoalRequest(r: unknown): { ok: boolean } }).submitGoalRequest(built.value).ok, true);
+  await game.advance(); // goal
+  await game.advance(); // action
+  assert.deepEqual(seen, ['goal', 'action']);
+  const store = (game as unknown as { goalRequests(): { processed: string[] } }).goalRequests();
+  assert.deepEqual(store.processed, ['req-1']);
+  // Further cycles get no protocol for the same request.
+  await game.advance();
+  const sessions = game.sessionsOf();
+  assert.ok(sessions.every(entry => entry.session.goalProtocol === null || entry.session.goalDecision !== null));
+  assert.equal(seen.filter(kind => kind === 'goal').length, 1, 'the request is asked exactly once');
+  void index;
 });
 
-test('a restored session keeps its binding and never chooses again', async () => {
-  const { eng } = g09World(40);
-  const first = scripted(['{"goal":"yield_once"}', '{"type":"stop"}'], []);
-  const world = countingWorld(eng);
-  const s = createAgentSession({
-    world, provider: first.provider, actorId: 'npc_a',
-    runId: 'g09-r1-s40-choice:npc_a:c1', actionSet: 'legacy', goalProtocol: protocol(),
+test('the goal step observation is the frozen local one', async () => {
+  const engine = new Engine(world(60));
+  const script = scripted(['{"goal":"feed_self"}']);
+  const session = createAgentSession({
+    world: countingWorld(engine) as never, provider: script.provider as never, actorId: 'npc_a',
+    runId: 'ep:npc_a:c1', actionSet: 'timed_wait',
+    goalProtocol: protocol({ arm: 'self_only', options: ['feed_self'] }),
   });
-  await stepAgent(s);
-  const saved = unwrap(exportSessionCheckpoint(s, 'g09'));
-  assert.equal((saved as { schema: string }).schema, G09_SESSION_SCHEMA);
-  const savedTyped = saved as unknown as { goalProtocol: GoalProtocolOptions; goalBinding: { goal: string } | null };
-  assert.equal(savedTyped.goalBinding?.goal, 'yield_once');
-
-  const seen: DecideInput[] = [];
-  const second = scripted(['{"type":"eat"}'], seen);
-  const restored = unwrap(restoreAgentSession(structuredClone(saved), {
-    world: countingWorld(new Engine(structuredClone(eng.getState()))),
-    provider: second.provider,
-    commandIdFor: round => `g09-r1-s40-choice:npc_a:c1:${round}`,
-  }));
-  assert.equal(second.calls(), 0, 'restore spends nothing');
-  assert.equal(restored.phase, 'action');
-  assert.equal(restored.goalBinding?.goal, 'yield_once');
-  const result = await stepAgent(restored);
-  assert.equal(result.providerCalled, true);
-  assert.equal(second.calls(), 1);
-  assert.equal(seen[0]?.goalChoice, undefined, 'the restored session asks no goal');
-  assert.equal(seen[0]?.goalLine, goalChoiceLine({ goal: 'yield_once', requestId: 'req-1' }));
-});
-
-test('the g09 checkpoint refuses a tampered binding', () => {
-  const { eng } = g09World(40);
-  const s = session(eng, scripted(['{"goal":"feed_self"}']).provider);
-  const saved = unwrap(exportSessionCheckpoint(s, 'g09')) as unknown as Record<string, unknown>;
-  const runtime = {
-    world: countingWorld(eng), provider: scripted(['{"type":"stop"}']).provider,
-    commandIdFor: (round: number) => `g09-r1-s40-choice:npc_a:c1:${round}`,
-  };
-  // No binding yet: a valid checkpoint restores as goal_choice.
-  const pending = unwrap(restoreAgentSession(structuredClone(saved), runtime));
-  assert.equal(pending.phase, 'goal_choice');
-
-  // A binding whose raw does not parse to the recorded goal is refused.
-  const tampered = {
-    ...saved,
-    goalBinding: {
-      schema: 'frostecho.g09.goal-binding/1', episodeId: 'g09-r1-s40-choice', requestId: 'req-1',
-      goal: 'yield_once', decidedRound: 1, decidedAtSimTime: 0, raw: '{"goal":"feed_self"}',
-    },
-  };
-  const bad = restoreAgentSession(structuredClone(tampered), runtime);
-  assert.equal(bad.ok, false);
-  // A binding that names another request is refused too.
-  const mismatched = { ...tampered, goalBinding: { ...(tampered.goalBinding as object), requestId: 'other', raw: '{"goal":"yield_once"}' } };
-  assert.equal(restoreAgentSession(structuredClone(mismatched), runtime).ok, false);
-  // A binding decided past the deadline is refused.
-  const late = { ...tampered, goalBinding: { ...(tampered.goalBinding as object), decidedRound: 2, raw: '{"goal":"yield_once"}' } };
-  assert.equal(restoreAgentSession(structuredClone(late), runtime).ok, false);
+  const goal = await stepAgent(session);
+  assert.deepEqual(goal.step?.observation, observe(engine.getState(), 'npc_a'));
+  assert.equal(session.goalDecision?.goal, 'feed_self');
+  assert.equal(session.goalBinding, null, 'a control choice binds no yield promise');
+  void (session as AgentSession);
 });

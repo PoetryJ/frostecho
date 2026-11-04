@@ -34,6 +34,11 @@ import {
 } from '../persistence/contracts';
 import { G08_GAME_SCHEMA, type ActionSet, type G08GameCheckpoint, type G08GameCycleCheckpoint } from '../temporal/contracts';
 import type { GoalProtocolOptions } from '../agent/contracts';
+import {
+  createRequestStore, decideGoalRequest, enqueueGoalRequest, markRequestProcessed, pendingRequestFor,
+  type EnqueueResult, type GoalRequestStore,
+} from '../negotiation/requests';
+import { G09_ALLOWED_GOALS, type GoalRequestSnapshot } from '../negotiation/contracts';
 
 interface CycleState {
   cycle: number;
@@ -74,6 +79,11 @@ export class ReactiveGameImpl implements ReactiveGame {
   private readonly recordSchema: typeof G04_SCHEMA | typeof G05_SCHEMA | typeof G08_GAME_SCHEMA;
   /** G08: capability axis; undefined keeps pre-G08 behaviour. */
   readonly actionSet: ActionSet | undefined;
+  /** G09: 'legacy' keeps every pre-G09 behaviour; 'negotiated' consumes requests. */
+  readonly goalMode: 'legacy' | 'negotiated';
+  readonly candidateSet: 'self_only' | 'choice';
+  /** G09: ONE store per game — the single authority for request lifecycle. */
+  readonly requestStore: GoalRequestStore = createRequestStore();
 
   private readonly states: Record<string, ReactiveActorState> = {};
   private readonly cycles: Record<string, CycleState[]> = {};
@@ -104,6 +114,8 @@ export class ReactiveGameImpl implements ReactiveGame {
     this.needPolicy = options.needPolicy ?? 'one-shot';
     this.recordSchema = options.actionSet !== undefined ? G08_GAME_SCHEMA : (options.schemaVersion ?? G04_SCHEMA);
     this.actionSet = options.actionSet;
+    this.goalMode = options.goalMode ?? 'legacy';
+    this.candidateSet = options.candidateSet ?? 'choice';
     // G08-R1: the timed_wait axis is meaningless without an authoritative
     // clock. Refuse construction before any provider call; legacy worlds
     // keep their pre-G08 freedom (no simTime requirement).
@@ -169,10 +181,82 @@ export class ReactiveGameImpl implements ReactiveGame {
     this.states[actorId] = to;
   }
 
+  /** G09: the ground truth for request enqueueing (game level). */
+  submitGoalRequest(request: GoalRequestSnapshot): EnqueueResult {
+    const enqueued = enqueueGoalRequest(this.requestStore, request);
+    if (!enqueued.ok) return enqueued;
+    // Attach to the already-open, undecided session (cycles open eagerly).
+    if (this.goalMode === 'negotiated') {
+      const cycle = this.actorCycles(request.to).at(-1);
+      const session = cycle?.session;
+      if (session !== undefined && typeof session.attachGoalProtocol === 'function') {
+        const protocol: GoalProtocolOptions = {
+          arm: this.candidateSet,
+          requestId: request.requestId,
+          text: request.text,
+          options: G09_ALLOWED_GOALS[this.candidateSet],
+          expiresAtSimTime: request.expiresAtSimTime,
+          playerId: this.options.playerId ?? 'npc_b',
+          acceptedAfterSeq: this.world.logLength(),
+        };
+        if (session.attachGoalProtocol(protocol)) markRequestProcessed(this.requestStore, request.requestId);
+      }
+    }
+    return enqueued;
+  }
+
+  goalRequests(): GoalRequestStore {
+    return this.requestStore;
+  }
+
+  /** G09: apply the session's recorded decision to its pending request. */
+  private foldGoalDecision(session: AgentSession): void {
+    const decision = session.goalDecision;
+    if (decision === null) return;
+    const request = this.requestStore.requests[decision.requestId];
+    if (request === undefined || request.status !== 'pending') return;
+    const applied = decideGoalRequest({
+      request,
+      episodeId: request.episodeId,
+      raw: decision.raw,
+      round: decision.decidedRound,
+      decidedAtSimTime: decision.decidedAtSimTime,
+      currentSeq: decision.goal === 'yield_once'
+        ? (session.goalBinding?.acceptedAfterSeq ?? this.world.logLength())
+        : this.world.logLength(),
+    });
+    if (applied.ok) this.requestStore.requests[request.requestId] = applied.value.request;
+  }
+
+  /**
+   * G09: the protocol for THIS cycle. A request is consumed at most once:
+   * a new cycle finds only a still-pending, never-asked request, and no
+   * cycle re-asks a processed id.
+   */
+  private protocolFor(actorId: string): GoalProtocolOptions | null {
+    if (this.goalMode !== 'negotiated') return this.options.goalProtocol ?? null;
+    if (this.options.goalProtocol !== undefined) return this.options.goalProtocol;
+    const simTime = this.world.getState().simTime;
+    if (typeof simTime !== 'number' || !Number.isSafeInteger(simTime) || simTime < 0) return null;
+    const request = pendingRequestFor(this.requestStore, actorId, simTime);
+    if (request === null) return null;
+    markRequestProcessed(this.requestStore, request.requestId);
+    return {
+      arm: this.candidateSet,
+      requestId: request.requestId,
+      text: request.text,
+      options: G09_ALLOWED_GOALS[this.candidateSet],
+      expiresAtSimTime: request.expiresAtSimTime,
+      playerId: this.options.playerId ?? 'npc_b',
+      acceptedAfterSeq: typeof this.world.logLength === 'function' ? this.world.logLength() : this.world.getLog().length,
+    };
+  }
+
   private openCycle(actorId: string, reason: string): CycleState {
     const previous = this.activeCycle(actorId);
     if (previous && !TERMINAL_STATES.has(previous.endState)) previous.endState = this.states[actorId] ?? 'stopped';
     const cycle = (previous?.cycle ?? 0) + 1;
+    const protocol = this.protocolFor(actorId);
     const session = createAgentSession({
       world: this.world,
       provider: this.options.providerFor(actorId),
@@ -184,7 +268,7 @@ export class ReactiveGameImpl implements ReactiveGame {
       commandIdFor: round => `${this.episodeId}:npc:${actorId}:${cycle}:${round}`,
       commandIdScheme: 'g06-episode-cycle',
       ...(this.actionSet !== undefined ? { actionSet: this.actionSet } : {}),
-      ...(this.options.goalProtocol !== undefined ? { goalProtocol: this.options.goalProtocol } : {}),
+      ...(protocol !== null ? { goalProtocol: protocol } : {}),
     });
     if (this.options.onDeciding) {
       const hook = this.options.onDeciding;
@@ -224,6 +308,9 @@ export class ReactiveGameImpl implements ReactiveGame {
     const feedback: StepFeedback | null = cycle.session.feedback ? { ...cycle.session.feedback } : null;
     try {
       const result = await stepAgent(cycle.session);
+      // G09: the session's decision is folded into the GAME-level store the
+      // moment it exists — one authority, consumed once, never re-asked.
+      this.foldGoalDecision(cycle.session);
       // G08-R1: the actor-level budget settles inside THIS advance. A wait
       // returned on the actor's limit call must not publish a recoverable
       // deadline — exhaust the session (clearing the deadline) BEFORE the
@@ -688,7 +775,7 @@ export class ReactiveGameImpl implements ReactiveGame {
     const cyclesG08: Record<string, G08GameCycleCheckpoint[]> = {};
     for (const actorId of this.actorIds) {
       cyclesG08[actorId] = this.actorCycles(actorId).map(cycle => {
-        const sessionFormat = this.options.goalProtocol !== undefined ? 'g09' : (g08 ? 'g08' : 'g06');
+        const sessionFormat = (this.goalMode === 'negotiated' || this.options.goalProtocol !== undefined) ? 'g09' : (g08 ? 'g08' : 'g06');
         const exported = exportSessionCheckpoint(cycle.session, sessionFormat);
         if (!exported.ok) {
           throw new CheckpointExportError(exported.code, exported.issues ?? []);

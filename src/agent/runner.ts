@@ -1,6 +1,6 @@
 import { WorldState } from '../types';
 import {
-  AgentAction, AgentSession, CommandIdScheme, DecideInput, DecidingPhase, DEFAULT_TIMEOUT_MS, GOAL_HUNGER_AT_LEAST, MAX_PROVIDER_CALLS,
+  AgentAction, AgentSession, CommandIdScheme, DecideInput, DecidingPhase, DEFAULT_TIMEOUT_MS, GOAL_HUNGER_AT_LEAST, MAX_PROVIDER_CALLS, GoalDecisionRecord,
   Provider, RunOptions, RunOutcome, RunResult, SessionStatus, StepAgentResult, StepFeedback, StepRecord,
   SubmittedCommand, GoalProtocolOptions, GoalChoiceContext,
 } from './contracts';
@@ -17,23 +17,21 @@ export function goalProtocolIssues(protocol: GoalProtocolOptions): string[] {
   const issues: string[] = [];
   issues.push(...goalOptionsIssues(protocol.options));
   if (protocol.arm !== 'self_only' && protocol.arm !== 'choice') issues.push(`unknown arm ${JSON.stringify(protocol.arm)}`);
-  if (!Number.isSafeInteger(protocol.deadlineAfterRound) || protocol.deadlineAfterRound < 1) {
-    issues.push('deadlineAfterRound must be an integer ≥ 1');
+  if (!Number.isSafeInteger(protocol.expiresAtSimTime) || protocol.expiresAtSimTime < 1) {
+    issues.push('expiresAtSimTime must be an integer ≥ 1 (createdAtSimTime + 1)');
+  }
+  if (typeof protocol.requestId !== 'string' || protocol.requestId.length === 0) {
+    issues.push('requestId must be a non-empty host string');
   }
   if (typeof protocol.playerId !== 'string' || protocol.playerId.length === 0) issues.push('playerId must be a non-empty string');
   if (typeof protocol.text !== 'string' || protocol.text.length === 0) issues.push('text must be a non-empty string');
+  // BOTH arms carry the SAME player request; only the candidates differ.
   if (protocol.arm === 'self_only') {
-    if (protocol.requestId !== null) issues.push('the self_only arm carries no request id');
     if (protocol.options.length !== 1 || protocol.options[0] !== 'feed_self') {
-      issues.push("the self_only arm offers exactly ['feed_self']");
+      issues.push("the self_only control arm offers exactly ['feed_self']");
     }
-  } else {
-    if (typeof protocol.requestId !== 'string' || protocol.requestId.length === 0) {
-      issues.push('the choice arm must name its request id');
-    }
-    if (!protocol.options.includes('feed_self') || !protocol.options.includes('yield_once')) {
-      issues.push('the choice arm offers both goals');
-    }
+  } else if (!protocol.options.includes('feed_self') || !protocol.options.includes('yield_once')) {
+    issues.push('the choice arm offers both goals');
   }
   return issues;
 }
@@ -66,6 +64,18 @@ function publicError(err: unknown): string {
   return 'provider error';
 }
 
+/** G09: the authoritative acceptance boundary — the command ledger tail. */
+function currentSeq(session: AgentSessionImpl): number {
+  const port = session.options.world;
+  if (typeof port.logLength === 'function') return port.logLength();
+  let max = 0;
+  for (const step of session.steps) {
+    const seq = step.exec?.seq;
+    if (typeof seq === 'number' && seq > max) max = seq;
+  }
+  return max;
+}
+
 function safeSimTime(state: WorldState): number | null {
   const simTime = state.simTime;
   return typeof simTime === 'number' && Number.isSafeInteger(simTime) && simTime >= 0 ? simTime : null;
@@ -82,8 +92,7 @@ function goalChoiceContext(
 ): GoalChoiceContext | { failure: string } {
   const simTime = safeSimTime(state);
   if (simTime === null) return { failure: 'goal choice without a valid authoritative simTime' };
-  const player = state.npcs[protocol.playerId];
-  if (player === null || typeof player !== 'object' || typeof player.hunger !== 'number') {
+  if (state.npcs[protocol.playerId] === undefined) {
     return { failure: `goal choice needs the player ${protocol.playerId} in the world` };
   }
   return {
@@ -91,9 +100,8 @@ function goalChoiceContext(
     requestId: protocol.requestId,
     text: protocol.text,
     options: protocol.options,
-    deadlineAfterRound: protocol.deadlineAfterRound,
+    expiresAtSimTime: protocol.expiresAtSimTime,
     playerId: protocol.playerId,
-    playerSatiety: player.hunger,
     simTime,
   };
 }
@@ -214,9 +222,11 @@ class AgentSessionImpl implements AgentSession {
   /** True once resumeIfDue consumed the current wait (reset per accepted wait). */
   resumedOnce = false;
   /** G09: the frozen goal protocol, or null for a plain action session. */
-  readonly goalProtocol: GoalProtocolOptions | null;
+  goalProtocol: GoalProtocolOptions | null;
   /** G09: the binding produced by the goal phase; a restored session never re-chooses. */
   goalBinding: GoalBinding | null = null;
+  /** G09: the recorded decision — feed_self closes the phase without a binding. */
+  goalDecision: GoalDecisionRecord | null = null;
 
   constructor(options: RunOptions) {
     this.options = options;
@@ -297,9 +307,22 @@ class AgentSessionImpl implements AgentSession {
     };
   }
 
+  /**
+   * G09: attach the protocol at the natural decision point. A game opens its
+   * cycles eagerly, so the request may arrive just before the first call; if
+   * the session has not decided or called yet the protocol is accepted, and
+   * nothing is ever re-attached.
+   */
+  attachGoalProtocol(protocol: GoalProtocolOptions): boolean {
+    if (this.goalProtocol !== null || this.goalDecision !== null || this.providerCalls > 0) return false;
+    if (goalProtocolIssues(protocol).length > 0) return false;
+    this.goalProtocol = protocol;
+    return true;
+  }
+
   /** G09: which phase the next step belongs to. */
   get phase(): 'goal_choice' | 'action' {
-    return this.goalProtocol !== null && this.goalBinding === null ? 'goal_choice' : 'action';
+    return this.goalProtocol !== null && this.goalDecision === null ? 'goal_choice' : 'action';
   }
 
   result(): RunResult {
@@ -347,7 +370,10 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
   try {
     const state = structuredClone(session.options.world.getState());
     const hunger = hungerOf(state, session.actorId);
-    if (hunger !== undefined && hunger >= GOAL_HUNGER_AT_LEAST) {
+    // G09: with yield_once selected the session's temporary goal is the
+    // request, not its own hunger — the hunger target comes back afterwards.
+    const yieldBound = session.goalBinding !== null && session.goalBinding.goal === 'yield_once';
+    if (!yieldBound && hunger !== undefined && hunger >= GOAL_HUNGER_AT_LEAST) {
       finishTerminal(session, 'goal_reached', 'goal_reached');
       return { status: 'goal_reached', terminal: true, providerCalled: false };
     }
@@ -359,10 +385,13 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
     // G09: with the protocol enabled and undecided, this step is the goal
     // phase — the budget must cover the protocol (this call + one action
     // call), otherwise the session ends without spending anything.
-    const inGoalPhase = session.goalProtocol !== null && session.goalBinding === null;
+    const inGoalPhase = session.goalProtocol !== null && session.goalDecision === null;
     if (inGoalPhase && session.providerCalls + 2 > MAX_PROVIDER_CALLS) {
-      finishTerminal(session, 'budget_exhausted', 'budget_exhausted');
-      return { status: 'budget_exhausted', terminal: true, providerCalled: false };
+      // The two-phase protocol needs both calls. One remaining call is NOT
+      // exhausted and NOT spent: the session ends, the budget stays intact.
+      finishTerminal(session, 'stopped', 'insufficient_budget',
+        `insufficient budget: ${MAX_PROVIDER_CALLS - session.providerCalls} call(s) remain, the protocol needs 2`);
+      return { status: 'stopped', terminal: true, providerCalled: false };
     }
 
     const round = session.providerCalls + 1;
@@ -388,7 +417,9 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
       feedback: session.feedback ? { ...session.feedback } : null,
       ...(session.options.actionSet !== undefined ? { allowedActions: session.actionSet } : {}),
       ...(inGoalPhase && goalContext !== null && !('failure' in goalContext) ? { goalChoice: goalContext } : {}),
-      ...(!inGoalPhase && session.goalBinding !== null ? { goalLine: goalChoiceLine(session.goalBinding) } : {}),
+      ...(!inGoalPhase && session.goalDecision !== null
+        ? { goalLine: goalChoiceLine({ goal: session.goalDecision.goal, requestId: session.goalDecision.requestId }) }
+        : {}),
     };
     const done = takeDecision(
       session.options.provider,
@@ -425,6 +456,22 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
     // round, so nothing else may spend the remaining budget.
     if (inGoalPhase && session.goalProtocol !== null) {
       const protocol = session.goalProtocol;
+      // Re-read the authoritative time at the RECEIVE point: a late answer
+      // is discarded, no binding is produced, and the call stays spent.
+      const receiveSimTime = safeSimTime(state);
+      if (receiveSimTime !== null && receiveSimTime >= protocol.expiresAtSimTime) {
+        const step = withTransport({
+          round,
+          observation: structuredClone(observation),
+          raw: decision.raw,
+          parse: { ok: false, error: 'late goal answer: the request expired' },
+          goal: { requestId: protocol.requestId, goal: null, decidedRound: round, decidedAtSimTime: receiveSimTime, parseOk: false },
+          error: 'request expired before the goal answer',
+        }, transport);
+        session.steps.push(step);
+        finishTerminal(session, 'failed', 'request_expired', 'request expired before the goal answer');
+        return { status: 'failed', terminal: true, providerCalled: true, step };
+      }
       const parse = strictGoalChoice(decision.raw, protocol.options);
       const simTime = safeSimTime(state);
       const decidedAtSimTime = typeof simTime === 'number' ? simTime : 0;
@@ -441,6 +488,24 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
         finishTerminal(session, 'invalid_run', 'invalid_run', `invalid goal output: ${parse.error}`);
         return { status: 'invalid_run', terminal: true, providerCalled: true, step };
       }
+      session.goalDecision = {
+        requestId: protocol.requestId,
+        goal: parse.goal,
+        decidedRound: round,
+        decidedAtSimTime,
+        raw: decision.raw,
+      };
+      if (parse.goal === 'feed_self') {
+        const selfStep = withTransport({
+          round,
+          observation: structuredClone(observation),
+          raw: decision.raw,
+          parse: { ok: false, error: 'goal phase: feed_self chosen' },
+          goal: { requestId: protocol.requestId, goal: 'feed_self', decidedRound: round, decidedAtSimTime, parseOk: true },
+        }, transport);
+        session.steps.push(selfStep);
+        return { status: 'ready', terminal: false, providerCalled: true, step: selfStep };
+      }
       const binding: GoalBinding = {
         schema: G09_BINDING_SCHEMA,
         episodeId: episodeIdOfRunId(session.runId),
@@ -448,6 +513,8 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
         goal: parse.goal,
         decidedRound: round,
         decidedAtSimTime,
+        expiresAtSimTime: protocol.expiresAtSimTime,
+        acceptedAfterSeq: protocol.acceptedAfterSeq ?? currentSeq(session),
         raw: decision.raw,
       };
       session.goalBinding = binding;
@@ -460,6 +527,24 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
       }, transport);
       session.steps.push(step);
       return { status: 'ready', terminal: false, providerCalled: true, step };
+    }
+
+    // G09: a yield promise that already expired must discard a late action:
+    // no Engine submit, no new wait deadline, the call stays spent.
+    if (yieldBound && session.goalBinding !== null) {
+      const receiveSimTime = safeSimTime(state);
+      if (receiveSimTime !== null && receiveSimTime >= session.goalBinding.expiresAtSimTime) {
+        const lateStep = withTransport({
+          round,
+          observation: structuredClone(observation),
+          raw: decision.raw,
+          parse: { ok: false, error: 'late action answer: the request expired' },
+          error: 'request expired before the action answer',
+        }, transport);
+        session.steps.push(lateStep);
+        finishTerminal(session, 'failed', 'request_expired', 'request expired before the action answer');
+        return { status: 'failed', terminal: true, providerCalled: true, step: lateStep };
+      }
     }
 
     const parse = parseAction(decision.raw, session.actionSet);
@@ -553,6 +638,12 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
     }
     session.steps.push(step);
 
+    // G09: the yield action closes the protocol; fulfilment is judged from
+    // the authoritative commands, never from the NPC's own hunger.
+    if (yieldBound) {
+      finishTerminal(session, 'stopped', 'selected_goal_yield');
+      return { status: 'stopped', terminal: true, providerCalled: true, step };
+    }
     const after = hungerOf(session.options.world.getState(), session.actorId);
     if (after !== undefined && after >= GOAL_HUNGER_AT_LEAST) {
       finishTerminal(session, 'goal_reached', 'goal_reached');
@@ -627,6 +718,7 @@ export function hydrateAgentSession(
     wakeAtSimTime?: number | null;
     /** G09: the binding restored verbatim; the session never chooses again. */
     goalBinding?: GoalBinding | null;
+    goalDecision?: GoalDecisionRecord | null;
   },
 ): void {
   const impl = session as AgentSessionImpl;
@@ -645,6 +737,7 @@ export function hydrateAgentSession(
   mutable.eventsBefore = state.eventsBefore;
   mutable.started = state.started;
   if (state.goalBinding !== undefined) impl.goalBinding = state.goalBinding;
+  if (state.goalDecision !== undefined) impl.goalDecision = state.goalDecision;
   impl.calls.length = 0;
   impl.calls.push(...state.calls);
 }

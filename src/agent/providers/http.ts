@@ -80,14 +80,9 @@ export function renderDecidePrompt(input: DecideInput): string {
       location: input.observation.location,
       simTime: input.goalChoice.simTime,
       selfSatiety: input.observation.hunger,
-      playerId: input.goalChoice.playerId,
-      playerSatiety: input.goalChoice.playerSatiety,
       foodKitchen: input.observation.foodHere,
-      arm: input.goalChoice.arm,
-      requestId: input.goalChoice.requestId,
       text: input.goalChoice.text,
       options: input.goalChoice.options,
-      deadlineAfterRound: input.goalChoice.deadlineAfterRound,
     });
   }
   if (input.allowedActions !== undefined) {

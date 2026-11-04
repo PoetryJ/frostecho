@@ -154,6 +154,12 @@ export interface ReactiveGameOptions {
    * Undefined keeps pre-G08 behaviour byte-identical.
    */
   actionSet?: ActionSet;
+  /** G09 (opt-in): 'negotiated' consumes game-level requests; default legacy. */
+  goalMode?: 'legacy' | 'negotiated';
+  /** G09: which candidate goal set the model sees (the only arm variable). */
+  candidateSet?: 'self_only' | 'choice';
+  /** G09: the passive player the structured request comes from. */
+  playerId?: string;
   /**
    * G09 (opt-in): every session of this game runs the frozen two-phase goal
    * protocol (goal choice on the first provider call, then actions), and

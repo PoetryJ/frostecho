@@ -123,8 +123,9 @@ export function exportSessionCheckpoint(
     // session carries its binding and never chooses again.
     const g09 = format === 'g09' ? {
       schema: G09_SESSION_SCHEMA,
-      goalProtocol: structuredClone(impl.goalProtocol) as GoalProtocolOptions,
+      goalProtocol: impl.goalProtocol === null ? null : (structuredClone(impl.goalProtocol) as GoalProtocolOptions),
       goalBinding: impl.goalBinding === null ? null : structuredClone(impl.goalBinding),
+      goalDecision: impl.goalDecision === null ? null : structuredClone(impl.goalDecision),
     } : {};
     return checkpointOk({
       ...base,
@@ -157,8 +158,11 @@ export function restoreAgentSession(data: unknown, runtime: SessionRestoreRuntim
     // the binding. Everything the next action step needs must come back from
     // the checkpoint alone — restoring never re-chooses a goal.
     const protocol = d.goalProtocol;
-    if (protocol === null || typeof protocol !== 'object' || Array.isArray(protocol)) {
-      issues.push('goalProtocol must be an object');
+    if (protocol === null) {
+      // A G09 game may hold a session without a protocol (e.g. npc_c).
+      goalProtocol = undefined;
+    } else if (typeof protocol !== 'object' || Array.isArray(protocol)) {
+      issues.push('goalProtocol must be an object or null');
     } else {
       const protocolIssues = goalProtocolIssues(protocol);
       if (protocolIssues.length > 0) issues.push(`goalProtocol: ${protocolIssues.join('; ')}`);
@@ -178,7 +182,8 @@ export function restoreAgentSession(data: unknown, runtime: SessionRestoreRuntim
       if (binding.requestId !== goalProtocol.requestId) issues.push('goalBinding.requestId does not match goalProtocol');
       const parse = strictGoalChoice(binding.raw, goalProtocol.options);
       if (!parse.ok || parse.goal !== binding.goal) issues.push('goalBinding.raw does not parse to the recorded goal');
-      if (binding.decidedRound > goalProtocol.deadlineAfterRound) issues.push('goalBinding decided after the deadline round');
+      if (binding.expiresAtSimTime !== goalProtocol.expiresAtSimTime) issues.push('goalBinding must carry the request expiry');
+      if (binding.decidedAtSimTime >= binding.expiresAtSimTime) issues.push('a binding can never be produced at or after the expiry');
     }
     goalBinding = d.goalBinding ?? null;
   }
@@ -305,6 +310,7 @@ export function restoreAgentSession(data: unknown, runtime: SessionRestoreRuntim
     calls: checkpoint.timing.calls.map(c => ({ round: c.round, ms: c.ms })),
     ...(isG08 ? { wakeAtSimTime } : {}),
     ...(goalBinding !== undefined ? { goalBinding: goalBinding === null ? null : structuredClone(goalBinding) } : {}),
+    ...(d.goalDecision !== undefined ? { goalDecision: d.goalDecision === null ? null : structuredClone(d.goalDecision) } : {}),
   });
   return checkpointOk(session);
 }

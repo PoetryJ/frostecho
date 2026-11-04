@@ -137,6 +137,8 @@ export interface WorldPort {
   getState(): WorldState;
   submit(command: unknown): CommandResult;
   getEvents(): WorldEvent[];
+  /** G09: authoritative command-ledger length (the acceptance seq boundary). */
+  logLength?(): number;
 }
 
 export type SubmittedCommand =
@@ -227,7 +229,15 @@ export type RunOutcome =
   | 'budget_exhausted'
   | 'timeout'
   | 'provider_error'
-  | 'invalid_run';
+  | 'invalid_run'
+  /** G09: the protocol needs two calls but fewer remain — nothing was spent. */
+  | 'insufficient_budget'
+  /** G09: the request expired before the answer arrived; the answer was dropped. */
+  | 'request_expired'
+  /** G09: the selected yield goal ran its course (fulfilment is judged outside). */
+  | 'selected_goal_yield'
+  /** G09: a committed provider call failed after the item was recorded. */
+  | 'failed';
 
 /** Separate from the deterministic record. Not passed to the provider. */
 export interface RunTiming {
@@ -259,6 +269,8 @@ export type SessionStatus =
   | 'timeout'
   | 'provider_error'
   | 'invalid_run'
+  /** G09: a committed call produced a state the protocol cannot accept. */
+  | 'failed'
   /** G08: non-terminal. The session pauses until simTime reaches wakeAtSimTime. */
   | 'waiting_time';
 
@@ -328,6 +340,8 @@ export interface AgentSession {
    * action session. Set at creation and restored verbatim from a checkpoint.
    */
   readonly goalProtocol: GoalProtocolOptions | null;
+  /** G09: attach the protocol before the first call (false when already used). */
+  attachGoalProtocol?(protocol: GoalProtocolOptions): boolean;
   /**
    * G09: the binding this session's goal phase produced, or null while the
    * protocol has not been decided. A restored session carries its binding —
@@ -336,18 +350,26 @@ export interface AgentSession {
   readonly goalBinding: GoalBinding | null;
   /** G09: which phase the next step belongs to. */
   readonly phase: 'goal_choice' | 'action';
+  /**
+   * G09: the goal decision this session made (feed_self or yield_once). A
+   * feed_self decision is a legal choice, not a failure: it still closes the
+   * goal phase so the same session never asks again.
+   */
+  readonly goalDecision: GoalDecisionRecord | null;
 }
 
 /** G09: the frozen per-session goal protocol configuration. */
 export interface GoalProtocolOptions {
   arm: GoalArm;
-  /** The structured request this session answers; null in the self_only arm. */
-  requestId: string | null;
+  /** The structured request this session answers (host-only). */
+  requestId: string;
   text: string;
   options: readonly GoalChoiceId[];
-  /** The goal decision must arrive on provider round ≤ this. */
-  deadlineAfterRound: number;
+  /** Engine logical time at which the request expires (createdAt + 1). */
+  expiresAtSimTime: number;
   playerId: string;
+  /** The command seq already applied when the request was accepted. */
+  acceptedAfterSeq?: number;
 }
 
 /**
@@ -355,8 +377,16 @@ export interface GoalProtocolOptions {
  * carries this on the goal step; the frozen prompt builder does the rest.
  */
 export interface GoalChoiceContext extends GoalProtocolOptions {
-  playerSatiety: number;
   simTime: number;
+}
+
+/** G09: the recorded goal decision (both goals, host side only). */
+export interface GoalDecisionRecord {
+  requestId: string;
+  goal: GoalChoiceId;
+  decidedRound: number;
+  decidedAtSimTime: number;
+  raw: string;
 }
 
 /** G09 session checkpoint: the G08 fields plus the protocol and the binding. */
@@ -364,4 +394,5 @@ export interface G09SessionCheckpoint {
   schema: typeof G09_SESSION_SCHEMA;
   goalProtocol: GoalProtocolOptions;
   goalBinding: GoalBinding | null;
+  goalDecision: GoalDecisionRecord | null;
 }
