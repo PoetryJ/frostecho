@@ -53,8 +53,10 @@ export function deriveFulfilmentEvidence(
 export function checkGoalFulfilment(
   binding: Pick<GoalBinding, 'goal'>,
   snapshot: GoalCheckSnapshot,
+  npcActorId: string = G09_NPC_ACTOR,
+  playerActorId: string = G09_PLAYER_ACTOR,
 ): GoalFulfillment {
-  const evidence = deriveFulfilmentEvidence(binding, snapshot);
+  const evidence = deriveFulfilmentEvidence(binding, snapshot, npcActorId, playerActorId);
   return { verdict: fulfilmentVerdict(evidence), evidence };
 }
 
