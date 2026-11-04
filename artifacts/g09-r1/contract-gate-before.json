@@ -1,0 +1,87 @@
+{
+  "schema": "frostecho.pm.g09-contract-gate/1",
+  "repo": "/data3/DATA/project/project_meishijiang/FrostEcho",
+  "realModelCalls": 0,
+  "passed": 2,
+  "failed": 14,
+  "cases": [
+    {
+      "name": "exact matrix and reversed rep2",
+      "pass": false,
+      "error": "Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  [\n    [\n      1,\n      40,\n      'self_only'\n...\n      2,\n+     40,\n+     'self_only'\n+   ],\n+   [\n+     2,\n+     40,\n-     60,\n      'choice'\n    ],\n    [\n      2,\n      60,\n...\n      2,\n+     60,\n-     40,\n      'choice'\n    ],\n-   [\n-     2,\n-     40,\n-     'self_only'\n-   ]\n  ]\n"
+    },
+    {
+      "name": "both arms have host request IDs",
+      "pass": false,
+      "error": "g09-r1-s40-self_only"
+    },
+    {
+      "name": "frozen world H40",
+      "pass": false,
+      "error": "Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  {\n    food: {\n      dorm: 0,\n      kitchen: 1\n    },\n...\n      npc_b: {\n+       hunger: 20,\n-       hunger: 40,\n        id: 'npc_b',\n        location: 'kitchen'\n      },\n      npc_c: {\n+       hunger: 40,\n-       hunger: 70,\n        id: 'npc_c',\n        location: 'kitchen'\n      }\n    },\n    simTime: 0,\n"
+    },
+    {
+      "name": "frozen world H60",
+      "pass": false,
+      "error": "Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  {\n    food: {\n      dorm: 0,\n      kitchen: 1\n    },\n...\n      npc_b: {\n+       hunger: 20,\n-       hunger: 40,\n        id: 'npc_b',\n        location: 'kitchen'\n      },\n      npc_c: {\n+       hunger: 40,\n-       hunger: 70,\n        id: 'npc_c',\n        location: 'kitchen'\n      }\n    },\n    simTime: 0,\n"
+    },
+    {
+      "name": "same S1 and correct candidates self_only",
+      "pass": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '本轮没有让食请求。请声明你自己本轮的目标。'\n- '请把最后一份食物留给我，你先不要吃。'\n"
+    },
+    {
+      "name": "same S1 and correct candidates choice",
+      "pass": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '请把这份食物让给我。'\n- '请把最后一份食物留给我，你先不要吃。'\n     ^\n"
+    },
+    {
+      "name": "shared runtime factory preserves recurring/event/timed_wait",
+      "pass": false,
+      "error": "Export g09RuntimeConfig from the real shared factory used by eval and CLI\n+ actual - expected\n\n+ 'undefined'\n- 'function'\n"
+    },
+    {
+      "name": "S1 literal unchanged",
+      "pass": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '请把这份食物让给我。'\n- '请把最后一份食物留给我，你先不要吃。'\n     ^\n"
+    },
+    {
+      "name": "one common goal template except candidate data",
+      "pass": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n  '你是 npc_a，位于kitchen。当前逻辑时间 0。\\n' +\n    '你的饱食度：40。玩家 npc_b 的饱食度：13。厨房剩余食物：1。\\n' +\n+   '请把最后一份食物留给我，你先不要吃。\\n' +\n-   '玩家请求（请求编号 HOST_SECRET_choice_H40）：“请把最后一份食物留给我，你先不要吃。”\\n' +\n-   '接受请回复 {\"goal\":\"yield_once\"}（把这份食物让给玩家），拒绝请回复 {\"goal\":\"feed_self\"}（自己吃）。第 1 轮内必须答复。\\n' +\n    'candidateGoals: <DATA>\\n' +\n    '请只回复一个 JSON 对象，不要输出任何其他内容。'\n"
+    },
+    {
+      "name": "other NPC satiety does not enter the prompt",
+      "pass": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n  '你是 npc_a，位于kitchen。当前逻辑时间 0。\\n' +\n+   '你的饱食度：40。玩家 npc_b 的饱食度：13。厨房剩余食物：1。\\n' +\n-   '你的饱食度：40。玩家 npc_b 的饱食度：98。厨房剩余食物：1。\\n' +\n    '玩家请求（请求编号 HOST_SECRET_choice_H40）：“请把最后一份食物留给我，你先不要吃。”\\n' +\n    '接受请回复 {\"goal\":\"yield_once\"}（把这份食物让给玩家），拒绝请回复 {\"goal\":\"feed_self\"}（自己吃）。第 1 轮内必须答复。\\n' +\n    'allowedGoals: [\"feed_self\",\"yield_once\"]\\n' +\n    '请只回复一个 JSON 对象，不要输出任何其他内容。'\n"
+    },
+    {
+      "name": "host IDs and group labels do not enter model input",
+      "pass": false,
+      "error": "The expression evaluated to a falsy value:\n\n  assert.ok(!prompt.includes('HOST_SECRET_') && !prompt.includes('HOST_EPISODE_'))\n"
+    },
+    {
+      "name": "request uses logical-time deadline, not decision round",
+      "pass": false,
+      "error": "Expected values to be strictly equal:\n\nundefined !== 1\n"
+    },
+    {
+      "name": "at expiry no accepted binding can be produced",
+      "pass": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'accepted'\n- 'expired'\n"
+    },
+    {
+      "name": "NPC eating first cannot be repaired by later player eat",
+      "pass": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'fulfilled'\n- 'violated'\n"
+    },
+    {
+      "name": "actual player success without earlier NPC eat remains fulfilled",
+      "pass": true
+    },
+    {
+      "name": "no network calls",
+      "pass": true
+    }
+  ]
+}
