@@ -199,6 +199,7 @@ async function main(): Promise<void> {
   if (!loaded.ok) fail(`cannot load: ${loaded.issues?.join('; ')}`);
   const saved = loaded.value.envelope;
   args.failureBase = resolve(args.loadPath!).replace(/\.g09\.json$/, '.failure.json');
+  args.root = dirname(resolve(args.loadPath!));
   args.candidates = saved.arm;
   args.satiety = saved.satiety;
   if (args.model !== null && saved.effectiveConfig.requestModel !== args.model) {
@@ -229,7 +230,7 @@ async function runActions(
   store: GoalRequestStore | null,
   config: G08EffectiveConfig,
 ): Promise<void> {
-  if (args.statusOnly) { printStatus(args.slot, game, store); return; }
+  if (args.statusOnly && !args.save && args.saveAs === null) { printStatus(args.slot, game, store); return; }
   try {
     if (args.step) await game.advance();
     if (args.eat) {
