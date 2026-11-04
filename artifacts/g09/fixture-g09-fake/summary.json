@@ -1,0 +1,201 @@
+{
+  "schema": "frostecho.g09.summary/1",
+  "batch": "fixture-g09-fake",
+  "createdAt": "2026-11-04T04:02:09.395Z",
+  "mode": "fake",
+  "model": null,
+  "hardChatLimit": 16,
+  "protocol": {
+    "planned": 8,
+    "completed": 8,
+    "failed": 0,
+    "notRun": 0,
+    "goalPhases": 8,
+    "actionPhases": 8
+  },
+  "goals": {
+    "feed_self": 4,
+    "yield_once": 4,
+    "expired": 0,
+    "byCell": {
+      "s40-self_only": {
+        "feed_self": 2,
+        "yield_once": 0,
+        "expired": 0
+      },
+      "s40-choice": {
+        "feed_self": 0,
+        "yield_once": 2,
+        "expired": 0
+      },
+      "s60-self_only": {
+        "feed_self": 2,
+        "yield_once": 0,
+        "expired": 0
+      },
+      "s60-choice": {
+        "feed_self": 0,
+        "yield_once": 2,
+        "expired": 0
+      }
+    }
+  },
+  "fulfilment": {
+    "byCell": {
+      "s40-self_only": {
+        "fulfilled": 0,
+        "violated": 0,
+        "not_applicable": 2,
+        "undetermined": 0
+      },
+      "s40-choice": {
+        "fulfilled": 0,
+        "violated": 2,
+        "not_applicable": 0,
+        "undetermined": 0
+      },
+      "s60-self_only": {
+        "fulfilled": 0,
+        "violated": 0,
+        "not_applicable": 2,
+        "undetermined": 0
+      },
+      "s60-choice": {
+        "fulfilled": 0,
+        "violated": 2,
+        "not_applicable": 0,
+        "undetermined": 0
+      }
+    }
+  },
+  "costs": {
+    "chatRequests": 16,
+    "spent": 16,
+    "blocked": 0,
+    "unresolved": 0,
+    "usageUnknown": false,
+    "goalTokens": 480,
+    "actionTokens": 480,
+    "totalTokens": 960,
+    "byCell": {
+      "s40-self_only": {
+        "goalTokens": 120,
+        "actionTokens": 120,
+        "requests": 4
+      },
+      "s40-choice": {
+        "goalTokens": 120,
+        "actionTokens": 120,
+        "requests": 4
+      },
+      "s60-self_only": {
+        "goalTokens": 120,
+        "actionTokens": 120,
+        "requests": 4
+      },
+      "s60-choice": {
+        "goalTokens": 120,
+        "actionTokens": 120,
+        "requests": 4
+      }
+    }
+  },
+  "episodes": [
+    {
+      "episodeId": "g09-r1-s40-choice",
+      "cell": "s40-choice",
+      "arm": "choice",
+      "satiety": 40,
+      "outcome": "completed",
+      "goal": "yield_once",
+      "request": "accepted",
+      "verdict": "violated",
+      "goalTokens": 60,
+      "actionTokens": 60
+    },
+    {
+      "episodeId": "g09-r1-s40-self_only",
+      "cell": "s40-self_only",
+      "arm": "self_only",
+      "satiety": 40,
+      "outcome": "completed",
+      "goal": "feed_self",
+      "request": null,
+      "verdict": "not_applicable",
+      "goalTokens": 60,
+      "actionTokens": 60
+    },
+    {
+      "episodeId": "g09-r1-s60-choice",
+      "cell": "s60-choice",
+      "arm": "choice",
+      "satiety": 60,
+      "outcome": "completed",
+      "goal": "yield_once",
+      "request": "accepted",
+      "verdict": "violated",
+      "goalTokens": 60,
+      "actionTokens": 60
+    },
+    {
+      "episodeId": "g09-r1-s60-self_only",
+      "cell": "s60-self_only",
+      "arm": "self_only",
+      "satiety": 60,
+      "outcome": "completed",
+      "goal": "feed_self",
+      "request": null,
+      "verdict": "not_applicable",
+      "goalTokens": 60,
+      "actionTokens": 60
+    },
+    {
+      "episodeId": "g09-r2-s40-choice",
+      "cell": "s40-choice",
+      "arm": "choice",
+      "satiety": 40,
+      "outcome": "completed",
+      "goal": "yield_once",
+      "request": "accepted",
+      "verdict": "violated",
+      "goalTokens": 60,
+      "actionTokens": 60
+    },
+    {
+      "episodeId": "g09-r2-s40-self_only",
+      "cell": "s40-self_only",
+      "arm": "self_only",
+      "satiety": 40,
+      "outcome": "completed",
+      "goal": "feed_self",
+      "request": null,
+      "verdict": "not_applicable",
+      "goalTokens": 60,
+      "actionTokens": 60
+    },
+    {
+      "episodeId": "g09-r2-s60-choice",
+      "cell": "s60-choice",
+      "arm": "choice",
+      "satiety": 60,
+      "outcome": "completed",
+      "goal": "yield_once",
+      "request": "accepted",
+      "verdict": "violated",
+      "goalTokens": 60,
+      "actionTokens": 60
+    },
+    {
+      "episodeId": "g09-r2-s60-self_only",
+      "cell": "s60-self_only",
+      "arm": "self_only",
+      "satiety": 60,
+      "outcome": "completed",
+      "goal": "feed_self",
+      "request": null,
+      "verdict": "not_applicable",
+      "goalTokens": 60,
+      "actionTokens": 60
+    }
+  ]
+}
