@@ -10,6 +10,7 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { runG08Batch, type G08RunOptions } from '../scripts/eval-g08';
 import { deriveLedgerCosts } from '../scripts/g08-evidence-cost';
+import { verifyG08Batch } from '../scripts/g08-eval-lib';
 
 function tempRoot(): string {
   return mkdtempSync(join(tmpdir(), 'frostecho-g08-cost-'));
@@ -152,6 +153,34 @@ test('the hard chat budget cannot be exceeded by the ledger', async () => {
     const derivation = deriveLedgerCosts(dir);
     assert.ok(derivation.issues.some(issue => issue.includes('over the frozen budget')), derivation.issues.join('; '));
     assert.equal(derivation.counts.chatRequests, 9);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('spent charges begins conservatively; an unresolved begin keeps usage unknown', async () => {
+  const root = tempRoot();
+  try {
+    const dir = await seedBatch(root);
+    // 8 begins / 7 finishes: drop the finish of one named attempt.
+    const record = JSON.parse(readFileSync(join(dir, 'episodes', 'g08-r1-legacy-off.json'), 'utf8')) as {
+      attempts: { attemptId: string }[];
+    };
+    const attemptId = record.attempts[0]!.attemptId;
+    rmSync(join(dir, 'attempts', `${attemptId}.finish.json`));
+    const derivation = deriveLedgerCosts(dir);
+    assert.equal(derivation.counts.chatRequests, 8);
+    assert.equal(derivation.counts.spent, 8, 'spent must charge begins, not finishes');
+    assert.equal(derivation.counts.unresolved, 1);
+    const episode = derivation.episodes.find(cost => cost.episodeId === 'g08-r1-legacy-off');
+    assert.ok(episode !== undefined);
+    assert.equal(episode.finishes, 0);
+    assert.equal(episode.totalTokens, null, 'an unresolved attempt cannot report a known token total');
+    assert.equal(episode.usageUnknown, true);
+    assert.ok(derivation.issues.some(issue => issue.includes('without a finish record')), derivation.issues.join('; '));
+    // The tampered batch must fail the read-only verification.
+    const verify = verifyG08Batch(dir);
+    assert.equal(verify.ok, false);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

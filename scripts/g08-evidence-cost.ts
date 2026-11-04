@@ -184,12 +184,17 @@ export function deriveLedgerCosts(batchDir: string): LedgerDerivation {
 
     const http = Array.isArray(record.http) ? record.http : [];
     const tokenValues = http.map(exchange => responseTokens(exchange?.response?.raw));
-    const usageUnknown = tokenValues.some(value => value === null);
-    const totalTokens = tokenValues.length === 0 ? 0 : sumOrUnknown(tokenValues);
 
     const attemptIds = (Array.isArray(record.attempts) ? record.attempts : [])
       .map(attempt => attempt?.attemptId)
       .filter((value): value is string => typeof value === 'string');
+    const episodeFinishes = attemptIds.map(attemptId => finishes.get(attemptId) ?? null);
+    const finishStates = episodeFinishes.filter((finish): finish is RawAttemptFinish => finish !== null);
+    // A begin without a finish spent its chat call but its outcome is unknown:
+    // charge the begin conservatively and keep the usage explicitly unknown.
+    const anyUnresolved = finishStates.length !== attemptIds.length;
+    const usageUnknown = anyUnresolved || tokenValues.some(value => value === null);
+    const totalTokens = anyUnresolved ? null : (tokenValues.length === 0 ? 0 : sumOrUnknown(tokenValues));
     // The record must name exactly the begins the ledger holds for it.
     for (const attemptId of attemptIds) {
       if (!begins.has(attemptId)) issues.push(`${id}: the episode record names attempt ${attemptId}, the ledger has no begin for it`);
@@ -203,7 +208,6 @@ export function deriveLedgerCosts(batchDir: string): LedgerDerivation {
         issues.push(`${id}: the ledger has attempt ${attemptId} for this episode but the episode record does not name it`);
       }
     }
-    const episodeFinishes = attemptIds.map(attemptId => finishes.get(attemptId) ?? null);
     const latencies = episodeFinishes.map(finish => (finish !== null && typeof finish.elapsedMs === 'number' ? finish.elapsedMs : null));
     const latencyMs = latencies.length === 0 ? null : sumOrUnknown(latencies);
     // A finished attempt's own usage must agree with the raw response body.
@@ -218,7 +222,6 @@ export function deriveLedgerCosts(batchDir: string): LedgerDerivation {
     if (http.length !== attemptIds.length) {
       issues.push(`${id}: the record holds ${http.length} HTTP exchange(s) but ${attemptIds.length} attempt(s)`);
     }
-    const finishStates = episodeFinishes.filter((finish): finish is RawAttemptFinish => finish !== null);
     if (record.outcome === 'completed' && finishStates.some(finish => finish.outcome !== 'success')) {
       issues.push(`${id}: a completed episode holds an attempt that did not succeed`);
     }
@@ -252,8 +255,10 @@ export function deriveLedgerCosts(batchDir: string): LedgerDerivation {
   const completed = perEpisode.filter(cost => cost.outcome === 'completed').length;
   const notRun = perEpisode.filter(cost => cost.outcome === 'not_run').length;
   const failed = perEpisode.length - completed - notRun;
-  // Every begin is one chat request; each completed episode spends exactly one.
-  const spent = perEpisode.reduce((sum, cost) => sum + cost.finishes, 0);
+  // Every begin is one spent chat call. An attempt that began but never
+  // finished still consumed the call, so spent charges begins (conservative)
+  // and finishes only ever mean completion.
+  const spent = perEpisode.reduce((sum, cost) => sum + cost.begins, 0);
   const counts: LedgerCounts = {
     planned: planned.length,
     completed,
