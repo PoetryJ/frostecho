@@ -163,6 +163,72 @@ export interface G09HttpExchange {
   error: string | null;
 }
 
+/** One real wire exchange captured at the fetch boundary. */
+export interface G09WireCapture {
+  requestBody: unknown;
+  requestBodyText: string;
+  status: number;
+  responseBody: string;
+}
+
+/**
+ * The ONE boundary collector shared by the fake and live branches: it wraps
+ * the fetch actually used for the call, saves the exact serialized request
+ * body and the real response status/text (via clone), then hands the original
+ * Response to the HTTP provider for parsing. Evidence is never reconstructed.
+ */
+export function createWireCollector(inner: typeof fetch): {
+  fetchImpl: typeof fetch;
+  take(): G09WireCapture | null;
+} {
+  let slot: G09WireCapture | null = null;
+  const fetchImpl: typeof fetch = async (input, init) => {
+    const text = typeof init?.body === 'string' ? init.body : '';
+    let requestBody: unknown = {};
+    try {
+      requestBody = text ? JSON.parse(text) : {};
+    } catch {
+      requestBody = { raw: text };
+    }
+    const response = await inner(input, init);
+    let responseBody = '';
+    try {
+      responseBody = await response.clone().text();
+    } catch {
+      responseBody = '';
+    }
+    slot = { requestBody, requestBodyText: text, status: response.status, responseBody };
+    return response;
+  };
+  return {
+    fetchImpl,
+    take: () => {
+      const current = slot;
+      slot = null;
+      return current;
+    },
+  };
+}
+
+/** Usage parsed from the REAL body; null when absent/unparseable (never invented). */
+export function wireUsage(body: string): { total_tokens: number | null; prompt_tokens: number | null; completion_tokens: number | null } | null {
+  try {
+    const parsed = JSON.parse(body) as { usage?: Record<string, unknown> };
+    const usage = parsed.usage;
+    if (usage === null || typeof usage !== 'object' || Array.isArray(usage)) return null;
+    const num = (value: unknown): number | null => (typeof value === 'number' && Number.isFinite(value) ? value : null);
+    const stats = {
+      total_tokens: num(usage.total_tokens),
+      prompt_tokens: num(usage.prompt_tokens),
+      completion_tokens: num(usage.completion_tokens),
+    };
+    if (stats.total_tokens === null && stats.prompt_tokens === null && stats.completion_tokens === null) return null;
+    return stats;
+  } catch {
+    return null;
+  }
+}
+
 export interface G09EpisodeRecord {
   schema: typeof G09_EPISODE_SCHEMA;
   episodeId: string;

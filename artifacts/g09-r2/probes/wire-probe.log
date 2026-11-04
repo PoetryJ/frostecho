@@ -1,0 +1,46 @@
+{
+  "repo": "/data3/DATA/project/project_meishijiang/FrostEcho",
+  "out": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g09-r2/probes/wire",
+  "realModelCalls": 0,
+  "loopbackPosts": 16,
+  "exit": 0,
+  "signal": null,
+  "first": {
+    "wireRequest": {
+      "model": "pm-loopback-model",
+      "temperature": 0,
+      "max_tokens": 1024,
+      "stream": false,
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": "你是 npc_a，位于kitchen。当前逻辑时间 0。\n你的饱食度：40。你所在位置的剩余食物：1。\n玩家说：“请把最后一份食物留给我，你先不要吃。”\n请从候选目标中选择一个，只回复一个 JSON 对象，不要输出任何其他内容。\ncandidateGoals: [\"feed_self\"]"
+        }
+      ]
+    },
+    "recordedRequest": {
+      "model": "pm-loopback-model",
+      "temperature": 0,
+      "max_tokens": 1024,
+      "stream": false,
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": "你是 npc_a，位于kitchen。当前逻辑时间 0。\n你的饱食度：40。你所在位置的剩余食物：1。\n玩家说：“请把最后一份食物留给我，你先不要吃。”\n请从候选目标中选择一个，只回复一个 JSON 对象，不要输出任何其他内容。\ncandidateGoals: [\"feed_self\"]"
+        }
+      ]
+    },
+    "requestEqual": true,
+    "wireResponse": "{\"id\":\"wire-1\",\"object\":\"chat.completion\",\"model\":\"pm-loopback-model\",\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"goal\\\":\\\"feed_self\\\"}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":3,\"total_tokens\":14},\"extraWireMarker\":\"must-be-preserved\"}",
+    "recordedResponse": "{\"id\":\"wire-1\",\"object\":\"chat.completion\",\"model\":\"pm-loopback-model\",\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"goal\\\":\\\"feed_self\\\"}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":3,\"total_tokens\":14},\"extraWireMarker\":\"must-be-preserved\"}",
+    "responseEqual": true
+  },
+  "stdout": "preflight /health status=200 ok=true\npreflight /v1/models status=200 ok=true\nCOMPLETED g09-r1-s40-self_only goal=- verdict=- outcome=-\nCOMPLETED g09-r1-s40-choice goal=- verdict=- outcome=-\nstructural gate ok=true\nCOMPLETED g09-r1-s60-self_only goal=- verdict=- outcome=-\nCOMPLETED g09-r1-s60-choice goal=- verdict=- outcome=-\nCOMPLETED g09-r2-s60-choice goal=- verdict=- outcome=-\nCOMPLETED g09-r2-s60-self_only goal=- verdict=- outcome=-\nCOMPLETED g09-r2-s40-choice goal=- verdict=- outcome=-\nCOMPLETED g09-r2-s40-self_only goal=- verdict=- outcome=-\ncompleted=8 failed=0 notRun=0 chats=16/16 campaign=16/16\nbatch -> /data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g09-r2/probes/wire/artifacts/loopback-live-path\nverify loopback-live-path: ok=true complete=true evidenceOk=true\n  goals={\"feed_self\":8,\"yield_once\":0,\"byCell\":{\"s40-self_only\":{\"feed_self\":2,\"yield_once\":0},\"s40-choice\":{\"feed_self\":2,\"yield_once\":0},\"s60-self_only\":{\"feed_self\":2,\"yield_once\":0},\"s60-choice\":{\"feed_self\":2,\"yield_once\":0}}}\n  fulfilment={\"byCell\":{\"s40-self_only\":{\"fulfilled\":0,\"violated\":0,\"not_applicable\":0,\"undetermined\":0},\"s40-choice\":{\"fulfilled\":0,\"violated\":0,\"not_applicable\":0,\"undetermined\":0},\"s60-self_only\":{\"fulfilled\":0,\"violated\":0,\"not_applicable\":0,\"undetermined\":0},\"s60-choice\":{\"fulfilled\":0,\"violated\":0,\"not_applicable\":0,\"undetermined\":0}}}\n  costs goal=112 action=112 total=224\n  g09-r1-s40-choice: completed goal=- request=declined verdict=-\n  g09-r1-s40-self_only: completed goal=- request=declined verdict=-\n  g09-r1-s60-choice: completed goal=- request=declined verdict=-\n  g09-r1-s60-self_only: completed goal=- request=declined verdict=-\n  g09-r2-s40-choice: completed goal=- request=declined verdict=-\n  g09-r2-s40-self_only: completed goal=- request=declined verdict=-\n  g09-r2-s60-choice: completed goal=- request=declined verdict=-\n  g09-r2-s60-self_only: completed goal=- request=declined verdict=-\n",
+  "stderr": ""
+}

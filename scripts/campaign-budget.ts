@@ -43,16 +43,24 @@ function campaignPath(dir: string): string {
   return join(resolve(dir), FILE);
 }
 
-/** Create the campaign on first use; an existing one is preserved verbatim. */
+/**
+ * Create the campaign on first use; an existing one is preserved verbatim.
+ * The check-and-create happens INSIDE the same lock reserve/finish use: a
+ * rename is atomic replacement, not exclusive creation, so two first opens
+ * outside the lock would both "succeed" and one would overwrite the other.
+ */
 export function openCampaign(dir: string, limit: number, campaignId = 'g09-task'): CampaignState {
+  if (!Number.isInteger(limit) || limit < 0) throw new Error('campaign limit must be a non-negative integer');
   mkdirSync(resolve(dir), { recursive: true });
-  const path = campaignPath(dir);
-  if (existsSync(path)) return loadCampaign(dir);
-  const state: CampaignState = {
-    schema: G09_CAMPAIGN_SCHEMA, campaignId, limit, spent: 0, attempts: [], updatedAt: new Date().toISOString(),
-  };
-  writeAtomic(path, state);
-  return state;
+  return withLock(dir, () => {
+    const path = campaignPath(dir);
+    if (existsSync(path)) return loadCampaign(dir);
+    const state: CampaignState = {
+      schema: G09_CAMPAIGN_SCHEMA, campaignId, limit, spent: 0, attempts: [], updatedAt: new Date().toISOString(),
+    };
+    writeAtomic(path, state);
+    return state;
+  });
 }
 
 export function loadCampaign(dir: string): CampaignState {

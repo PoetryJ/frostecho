@@ -72,6 +72,8 @@ async function main() {
         actorId: 'npc_a',
         outcome: 'provider_error',
         goalReached: false,
+        hungerNeedSatisfied: false,
+        selectedGoalReached: false,
         providerCalls: 0,
         steps: [],
         initialState: world.getInitialState(),

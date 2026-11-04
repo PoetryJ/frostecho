@@ -2,7 +2,7 @@ import type { CommandResult, Location, WorldEvent, WorldState } from '../types';
 import type { ActionSet, SessionWaitState, WaitAction } from '../temporal/contracts';
 import {
   G09_SESSION_SCHEMA,
-  type GoalArm, type GoalBinding, type GoalChoiceId,
+  type GoalArm, type GoalBinding, type GoalChoiceId, type GoalOutcome, type GoalRequestStatus,
 } from '../negotiation/contracts';
 
 /**
@@ -195,6 +195,13 @@ export interface RunOptions {
    * Player commands issued here still submit against the world after the call returns.
    */
   onDeciding?(info: { round: number; observation: Observation }): void | Promise<void>;
+  /**
+   * G09 (opt-in): the authoritative request-store bridge. At the receive point
+   * the session re-reads the CURRENT world and the CURRENT request — never a
+   * pre-await snapshot and never the attach-time seq. Without a host the
+   * session falls back to the world's own clock (unit-test sessions).
+   */
+  goalHost?: GoalHostPort;
 }
 
 export interface StepRecord {
@@ -249,8 +256,16 @@ export interface RunResult {
   runId: string;
   actorId: string;
   outcome: RunOutcome;
-  /** True only when the authoritative final hunger is >= 70. A model stop is not enough. */
+  /**
+   * The SELECTED goal's authoritative result: for a bound yield_once promise
+   * that is the request outcome (fulfilled), never the NPC's own hunger; for
+   * every other session it stays the original hunger rule (>= 70).
+   */
   goalReached: boolean;
+  /** True only when the authoritative final hunger is >= 70 (independent axis). */
+  hungerNeedSatisfied: boolean;
+  /** True only when the bound yield request's outcome is fulfilled. */
+  selectedGoalReached: boolean;
   providerCalls: number;
   steps: StepRecord[];
   initialState: WorldState;
@@ -395,4 +410,36 @@ export interface G09SessionCheckpoint {
   goalProtocol: GoalProtocolOptions;
   goalBinding: GoalBinding | null;
   goalDecision: GoalDecisionRecord | null;
+}
+
+/** G09: the authoritative request as the session must see it at a receive point. */
+export interface GoalRequestView {
+  requestId: string;
+  status: GoalRequestStatus;
+  outcome: GoalOutcome;
+  expiresAtSimTime: number;
+  acceptedAfterSeq: number | null;
+}
+
+/**
+ * G09: the host's request-store bridge. Every method reads the CURRENT
+ * authoritative state; nothing is cached from attach time. The game folds its
+ * command ledger into the store before answering.
+ */
+export interface GoalHostPort {
+  /**
+   * Fold the authoritative ledger tail into the request store, expire what is
+   * due at the current simTime, then return the request as of NOW.
+   */
+  refresh(requestId: string): GoalRequestView | null;
+  /** Fold the ledger tail only (no expiry sweep), after an ordinary command. */
+  fold(): void;
+  /**
+   * Record the session's answer at the receive point: the acceptance seq is
+   * the caller's currentSeq (the world's log length at response arrival), not
+   * the attach-time seq. Returns the binding when the store accepted it.
+   */
+  accept(decision: GoalDecisionRecord, currentSeq: number, simTime: number): GoalBinding | null;
+  /** The selected goal's current request view (result()), or null when unknown. */
+  outcome(requestId: string): GoalRequestView | null;
 }

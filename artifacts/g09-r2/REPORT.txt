@@ -1,0 +1,19 @@
+G09-R2 runtime closeout — evidence index
+base 18dc9ce, branch codex/g09-r2-runtime, real model calls 0.
+
+tests.log            458/458 full suite (442 prior + 16 new independent acceptance cases).
+acceptance.log       16/16 cases F1a-F2d-F7b: F1 in-flight deadline/acceptance seq; F2 fulfil/violate/refuse/close;
+                     F3 three cut points across node processes; F4 CLI --time; F5 real --live wire on loopback
+                     (8 episodes/16 POST, verify ok) + 500 failure evidence; F6 first-open race/8-way/restart;
+                     F7 six short sequences, each path judged by the contract first, then compared.
+contract-gate.json   16/16 (independent PM gate, 0 network attempts).
+golden.json          12/12 (independent G05 golden, 0 remote calls).
+g08-closeout-verify.log  G08 old live evidence re-verified read-only, ok (bytes unchanged).
+probes/core-after.json  9/9 assertions (was 7 fail before the fix).
+probes/wire/results.json 16 POST, exit 0, recorded request/response byte-equal to the real wire.
+
+Note: the shipped probes/cli-budget-probe.cjs cannot report its first-open race: its fast child is
+started and awaited before the barrier is released, so a correct mutual-exclusion lock makes that
+child time out by construction and the harness then JSON-parses an empty stdout. F6 is asserted by
+the independent acceptance case F6a with a non-deadlocking barrier (slow holds the lock, fast must
+fail explicitly, disk keeps exactly one grant).

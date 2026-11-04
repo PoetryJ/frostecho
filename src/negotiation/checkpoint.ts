@@ -175,17 +175,18 @@ export function restoreG09Game(
       return messageFail('SCHEMA_MISMATCH', 'a restored session holds a binding the envelope does not');
     }
   }
-  // The envelope store is the restored game's store (single authority).
+  // The envelope store is the restored game's store (single authority). A
+  // G09 game checkpoint carries it; a pre-G09 slot is adopted verbatim.
   let gameStore = (game as unknown as { goalRequests?: () => GoalRequestStore }).goalRequests?.();
-  if (gameStore === undefined) {
-    // A restored game starts with an empty store: adopt the envelope's.
+  if (gameStore === undefined || Object.keys(gameStore.requests).length === 0) {
     (game as unknown as { requestStore: GoalRequestStore }).requestStore = {
       requests: JSON.parse(JSON.stringify(envelope.requests.requests)) as GoalRequestStore['requests'],
       processed: [...envelope.requests.processed],
     };
     gameStore = (game as unknown as { requestStore: GoalRequestStore }).requestStore;
   }
-  if (JSON.stringify(Object.keys(gameStore.requests).sort()) !== JSON.stringify(Object.keys(envelope.requests.requests).sort())) {
+  if (JSON.stringify(gameStore.requests) !== JSON.stringify(envelope.requests.requests)
+    || JSON.stringify([...gameStore.processed].sort()) !== JSON.stringify([...envelope.requests.processed].sort())) {
     return messageFail('SCHEMA_MISMATCH', 'the restored game request store disagrees with the envelope');
   }
   return messageOk({ game, store: gameStore, binding: envelope.binding });

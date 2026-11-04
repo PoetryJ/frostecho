@@ -330,13 +330,24 @@ class AgentSessionImpl implements AgentSession {
     const events = structuredClone(this.options.world.getEvents()).slice(this.eventsBefore);
     const hunger = hungerOf(finalState, this.actorId);
     const reached = hunger !== undefined && hunger >= GOAL_HUNGER_AT_LEAST;
+    // G09: the selected yield goal is judged by the AUTHORITATIVE request
+    // outcome; the hunger need is a separate axis. Without a yield binding the
+    // original hunger rule still decides goalReached.
+    const bound = this.goalBinding !== null && this.goalBinding.goal === 'yield_once'
+      ? this.goalBinding
+      : null;
+    const view = bound === null ? null : (this.options.goalHost?.outcome(bound.requestId) ?? null);
+    const selected = view !== null && view.outcome === 'fulfilled';
+    const goalReached = bound !== null ? selected : reached;
     const outcome: RunOutcome = this.terminalOutcome ?? (reached ? 'goal_reached' : 'stopped');
     const resolved: RunOutcome = outcome !== 'invalid_run' && reached ? 'goal_reached' : outcome;
     const result: RunResult = {
       runId: this.runId,
       actorId: this.actorId,
       outcome: resolved,
-      goalReached: outcome === 'invalid_run' ? false : reached,
+      goalReached: this.terminalOutcome === 'invalid_run' ? false : goalReached,
+      hungerNeedSatisfied: reached,
+      selectedGoalReached: selected,
       providerCalls: this.providerCalls,
       steps: this.steps,
       initialState: this.initialState,
@@ -456,16 +467,22 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
     // round, so nothing else may spend the remaining budget.
     if (inGoalPhase && session.goalProtocol !== null) {
       const protocol = session.goalProtocol;
-      // Re-read the authoritative time at the RECEIVE point: a late answer
-      // is discarded, no binding is produced, and the call stays spent.
-      const receiveSimTime = safeSimTime(state);
-      if (receiveSimTime !== null && receiveSimTime >= protocol.expiresAtSimTime) {
+      // Re-read the AUTHORITATIVE receive point — a fresh world state and the
+      // CURRENT request, never the pre-await snapshot and never the attach-time
+      // seq. A late or already-resolved answer is discarded: no binding, no
+      // submit, the call stays spent.
+      const receiveState = session.options.world.getState();
+      const receiveSimTime = safeSimTime(receiveState);
+      const requestView = session.options.goalHost?.refresh(protocol.requestId) ?? null;
+      const expiredBeforeAnswer = (receiveSimTime !== null && receiveSimTime >= protocol.expiresAtSimTime)
+        || (requestView !== null && requestView.status !== 'pending');
+      if (expiredBeforeAnswer) {
         const step = withTransport({
           round,
           observation: structuredClone(observation),
           raw: decision.raw,
           parse: { ok: false, error: 'late goal answer: the request expired' },
-          goal: { requestId: protocol.requestId, goal: null, decidedRound: round, decidedAtSimTime: receiveSimTime, parseOk: false },
+          goal: { requestId: protocol.requestId, goal: null, decidedRound: round, decidedAtSimTime: receiveSimTime ?? 0, parseOk: false },
           error: 'request expired before the goal answer',
         }, transport);
         session.steps.push(step);
@@ -473,8 +490,7 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
         return { status: 'failed', terminal: true, providerCalled: true, step };
       }
       const parse = strictGoalChoice(decision.raw, protocol.options);
-      const simTime = safeSimTime(state);
-      const decidedAtSimTime = typeof simTime === 'number' ? simTime : 0;
+      const decidedAtSimTime = receiveSimTime ?? 0;
       if (!parse.ok) {
         const step = withTransport({
           round,
@@ -496,6 +512,9 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
         raw: decision.raw,
       };
       if (parse.goal === 'feed_self') {
+        // The decline is still recorded in the ONE authoritative store.
+        const acceptedSeq = currentSeq(session);
+        session.options.goalHost?.accept(session.goalDecision, acceptedSeq, decidedAtSimTime);
         const selfStep = withTransport({
           round,
           observation: structuredClone(observation),
@@ -506,7 +525,11 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
         session.steps.push(selfStep);
         return { status: 'ready', terminal: false, providerCalled: true, step: selfStep };
       }
-      const binding: GoalBinding = {
+      // The acceptance boundary is the world's ledger length AT RESPONSE
+      // ARRIVAL — never the seq captured when the protocol was attached.
+      const acceptedSeq = currentSeq(session);
+      const hostBinding = session.options.goalHost?.accept(session.goalDecision, acceptedSeq, decidedAtSimTime) ?? null;
+      const binding: GoalBinding = hostBinding ?? {
         schema: G09_BINDING_SCHEMA,
         episodeId: episodeIdOfRunId(session.runId),
         requestId: protocol.requestId,
@@ -514,7 +537,7 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
         decidedRound: round,
         decidedAtSimTime,
         expiresAtSimTime: protocol.expiresAtSimTime,
-        acceptedAfterSeq: protocol.acceptedAfterSeq ?? currentSeq(session),
+        acceptedAfterSeq: acceptedSeq,
         raw: decision.raw,
       };
       session.goalBinding = binding;
@@ -532,17 +555,24 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
     // G09: a yield promise that already expired must discard a late action:
     // no Engine submit, no new wait deadline, the call stays spent.
     if (yieldBound && session.goalBinding !== null) {
-      const receiveSimTime = safeSimTime(state);
-      if (receiveSimTime !== null && receiveSimTime >= session.goalBinding.expiresAtSimTime) {
+      // Re-read the receive point: the request may have expired or already
+      // been fulfilled (the player ate while the answer was in flight). Either
+      // way the late answer is discarded — no submit, no new wait deadline.
+      const receiveState = session.options.world.getState();
+      const receiveSimTime = safeSimTime(receiveState);
+      const view = session.options.goalHost?.refresh(session.goalBinding.requestId) ?? null;
+      const ended = (receiveSimTime !== null && receiveSimTime >= session.goalBinding.expiresAtSimTime)
+        || (view !== null && (view.status !== 'accepted' || view.outcome !== 'pending'));
+      if (ended) {
         const lateStep = withTransport({
           round,
           observation: structuredClone(observation),
           raw: decision.raw,
-          parse: { ok: false, error: 'late action answer: the request expired' },
-          error: 'request expired before the action answer',
+          parse: { ok: false, error: 'late action answer: the request is no longer open' },
+          error: 'the request ended before the action answer',
         }, transport);
         session.steps.push(lateStep);
-        finishTerminal(session, 'failed', 'request_expired', 'request expired before the action answer');
+        finishTerminal(session, 'failed', 'request_expired', 'the request ended before the action answer');
         return { status: 'failed', terminal: true, providerCalled: true, step: lateStep };
       }
     }

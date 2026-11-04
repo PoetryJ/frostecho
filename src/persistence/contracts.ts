@@ -15,8 +15,9 @@
  * no request in flight (SAVE_BUSY otherwise).
  */
 import type {
-  AgentSession, Observation, Provider, RunOutcome, SessionStatus, StepFeedback, StepRecord, WorldPort,
+  AgentSession, GoalHostPort, Observation, Provider, RunOutcome, SessionStatus, StepFeedback, StepRecord, WorldPort,
 } from '../agent/contracts';
+import type { GoalRequestStore } from '../negotiation/requests';
 import type { SaveData } from '../engine';
 import type {
   GameMode, NeedPolicy, ReactiveActorState, ReactiveDecidingInfo, ReactiveGame, ReactiveIdlePumps, ReactiveTransition,
@@ -108,6 +109,8 @@ export interface SessionRestoreRuntime {
   commandIdFor(round: number): string;
   now?: () => number;
   scheduleTimeout?(fn: () => void, ms: number): { cancel(): void };
+  /** G09: the host request-store bridge restored sessions must keep using. */
+  goalHost?: GoalHostPort;
 }
 
 /* ------------------------------------------------------------------ */
@@ -157,6 +160,17 @@ export interface GameCheckpoint {
   totalCalls: number;
   idlePumps: ReactiveIdlePumps;
   cycles: Record<string, GameCycleCheckpoint[]>;
+  /* G09 (optional; absent on pre-G09 saves, which restore unchanged). */
+  /** 'negotiated' makes the restored game keep consuming requests. */
+  goalMode?: 'legacy' | 'negotiated';
+  /** The candidate arm the game was built with. */
+  candidateSet?: 'self_only' | 'choice';
+  /** The passive player the structured requests come from. */
+  playerId?: string;
+  /** The game-level request store: ONE authority across save/restore. */
+  requestStore?: GoalRequestStore;
+  /** Log entries already folded into the request store. */
+  foldCursor?: number;
 }
 
 export interface GameRestoreRuntime {
@@ -165,6 +179,10 @@ export interface GameRestoreRuntime {
   now?: () => number;
   scheduleTimeout?(fn: () => void, ms: number): { cancel(): void };
   onDeciding?(info: ReactiveDecidingInfo): void | Promise<void>;
+  /* G09: only a fallback for pre-G09 saves; the data wins when present. */
+  goalMode?: 'legacy' | 'negotiated';
+  candidateSet?: 'self_only' | 'choice';
+  playerId?: string;
 }
 
 /* ------------------------------------------------------------------ */

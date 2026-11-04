@@ -115,6 +115,23 @@ export function restoreNeedsGame(data: unknown, runtime: GameRestoreRuntime): Re
   if (!isNonNegInt(d.totalCalls)) issues.push('totalCalls must be a non-negative integer');
   if (!isPlainObject(d.idlePumps) || !isNonNegInt(d.idlePumps.pumps)) issues.push('idlePumps must be an object with pumps');
   if (!isPlainObject(d.cycles)) issues.push('cycles must be an object');
+  // G09 (optional): when present the negotiation state must be well-formed and
+  // must agree with the saved ledger.
+  if (d.goalMode !== undefined && d.goalMode !== 'legacy' && d.goalMode !== 'negotiated') {
+    issues.push(`unknown goalMode ${JSON.stringify(d.goalMode)}`);
+  }
+  if (d.candidateSet !== undefined && d.candidateSet !== 'self_only' && d.candidateSet !== 'choice') {
+    issues.push(`unknown candidateSet ${JSON.stringify(d.candidateSet)}`);
+  }
+  if (d.playerId !== undefined && (typeof d.playerId !== 'string' || d.playerId.length === 0)) {
+    issues.push('playerId must be a non-empty string when present');
+  }
+  if (d.requestStore !== undefined) {
+    if (!isPlainObject(d.requestStore) || !isPlainObject(d.requestStore.requests) || !Array.isArray(d.requestStore.processed)) {
+      issues.push('requestStore must be a {requests, processed} store');
+    }
+    if (d.foldCursor !== undefined && !isNonNegInt(d.foldCursor)) issues.push('foldCursor must be a non-negative integer');
+  }
 
   let sessionCalls = 0;
   if (isPlainObject(d.states)) {
@@ -262,6 +279,11 @@ export function restoreNeedsGame(data: unknown, runtime: GameRestoreRuntime): Re
       scheduleTimeout: runtime.scheduleTimeout,
       onDeciding: runtime.onDeciding,
       ...(g08ActionSet !== undefined ? { actionSet: g08ActionSet } : {}),
+      // G09: the saved data wins inside restoreFromCheckpoint; the runtime
+      // values are only a fallback for pre-G09 saves.
+      ...(runtime.goalMode !== undefined ? { goalMode: runtime.goalMode } : {}),
+      ...(runtime.candidateSet !== undefined ? { candidateSet: runtime.candidateSet } : {}),
+      ...(runtime.playerId !== undefined ? { playerId: runtime.playerId } : {}),
     });
     return checkpointOk(game);
   } catch (err) {

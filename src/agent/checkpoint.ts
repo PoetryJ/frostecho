@@ -55,6 +55,10 @@ const SESSION_STATUSES_G08: readonly SessionStatus[] = [...SESSION_STATUSES, 'wa
 const RUN_OUTCOMES: readonly RunOutcome[] = [
   'goal_reached', 'stopped', 'budget_exhausted', 'timeout', 'provider_error', 'invalid_run',
 ];
+/** G09 adds its own terminal outcomes and the paused status (G08-shaped). */
+const RUN_OUTCOMES_G09: readonly RunOutcome[] = [
+  ...RUN_OUTCOMES, 'insufficient_budget', 'request_expired', 'selected_goal_yield', 'failed',
+];
 const FEEDBACK_KINDS: readonly StepFeedback['kind'][] = ['accepted', 'rejected', 'invalid_output'];
 
 function isNonNegInt(value: unknown): value is number {
@@ -214,12 +218,13 @@ export function restoreAgentSession(data: unknown, runtime: SessionRestoreRuntim
   if (!isNonNegInt(d.providerCalls) || d.providerCalls > MAX_PROVIDER_CALLS) {
     issues.push(`providerCalls must be an integer in [0, ${MAX_PROVIDER_CALLS}]`);
   }
-  if (!(isG08 ? SESSION_STATUSES_G08 : SESSION_STATUSES).includes(d.status as SessionStatus)) {
+  if (!((isG08 || isG09) ? SESSION_STATUSES_G08 : SESSION_STATUSES).includes(d.status as SessionStatus)) {
     issues.push(`unknown status ${JSON.stringify(d.status)}`);
   }
   else if (d.status === 'deciding') issues.push("status 'deciding' can never be serialized");
   if (d.terminalOutcome !== null && d.terminalOutcome !== undefined) {
-    if (!RUN_OUTCOMES.includes(d.terminalOutcome)) issues.push(`unknown terminalOutcome ${JSON.stringify(d.terminalOutcome)}`);
+    const outcomes = isG09 ? RUN_OUTCOMES_G09 : RUN_OUTCOMES;
+    if (!outcomes.includes(d.terminalOutcome)) issues.push(`unknown terminalOutcome ${JSON.stringify(d.terminalOutcome)}`);
   }
   if (d.terminalOutcome === undefined) issues.push('terminalOutcome must be present (null allowed)');
   if (d.commandIdScheme !== 'run-round' && d.commandIdScheme !== 'g06-episode-cycle') {
@@ -292,6 +297,7 @@ export function restoreAgentSession(data: unknown, runtime: SessionRestoreRuntim
     commandIdScheme: checkpoint.commandIdScheme,
     ...(actionSet !== undefined ? { actionSet } : {}),
     ...(goalProtocol !== undefined ? { goalProtocol: structuredClone(goalProtocol) } : {}),
+    ...(runtime.goalHost !== undefined ? { goalHost: runtime.goalHost } : {}),
   });
   if (session.status === 'invalid_run') {
     return checkpointFail('INVALID_CHECKPOINT', `actor ${checkpoint.actorId} is not present in the restored world`);
@@ -308,7 +314,7 @@ export function restoreAgentSession(data: unknown, runtime: SessionRestoreRuntim
     eventsBefore: checkpoint.eventsBefore,
     started: checkpoint.timing.started,
     calls: checkpoint.timing.calls.map(c => ({ round: c.round, ms: c.ms })),
-    ...(isG08 ? { wakeAtSimTime } : {}),
+    ...(isG08 || isG09 ? { wakeAtSimTime } : {}),
     ...(goalBinding !== undefined ? { goalBinding: goalBinding === null ? null : structuredClone(goalBinding) } : {}),
     ...(d.goalDecision !== undefined ? { goalDecision: d.goalDecision === null ? null : structuredClone(d.goalDecision) } : {}),
   });

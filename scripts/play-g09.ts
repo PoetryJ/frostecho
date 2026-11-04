@@ -238,9 +238,9 @@ async function runActions(
       console.log(`player eat -> ${JSON.stringify(eat)}`);
     }
     if (args.time !== null) {
-      const advanced = (game as unknown as { advance_time?: (n: number) => unknown }).advance_time;
-      if (typeof advanced !== 'function') fail('this game has no advance_time entry');
-      console.log(`time -> ${JSON.stringify(advanced.call(game, args.time))}`);
+      const advanced = game.worldAdvanceTime(args.time);
+      console.log(`time -> ${JSON.stringify(advanced)}`);
+      if (!advanced.ok) fail(`time advance failed: ${advanced.error}`);
     }
   } catch (error) {
     // A transport failure is recorded next to the slot, never as a success.
@@ -277,13 +277,17 @@ async function runActions(
 
   if (args.step || args.eat || args.time !== null) printStatus(args.slot, game, store);
 
-  // The goal evaluator is exposed so a play session can report the selected goal.
+  // The goal evaluator is exposed so a play session can report the two axes
+  // separately: the selected goal (the request) and the underlying hunger need.
   const session = game.sessionsOf()[0]?.session;
   if (session !== undefined && store !== null) {
     const binding = session.goalBinding;
+    const state = game.world.getState();
     if (binding !== null) {
-      const evaluation = evaluateGoal(binding, game.world.getState() as never, binding.goal === 'yield_once' ? 'npc_a' : 'npc_a', store.requests[binding.requestId] ?? null);
+      const evaluation = evaluateGoal(binding, state as never, binding.goal === 'yield_once' ? 'npc_a' : 'npc_a', store.requests[binding.requestId] ?? null);
       console.log(`selected goal: ${binding.goal} achieved=${evaluation.achieved} basis=${evaluation.basis} (${evaluation.detail})`);
+      const hunger = state.npcs['npc_a']?.hunger ?? 0;
+      console.log(`hunger goal: achieved=${hunger >= 70} hunger=${hunger} (independent of the selected goal)`);
     }
   }
 

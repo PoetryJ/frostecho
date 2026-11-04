@@ -11,7 +11,10 @@
  * which re-reads each waiting actor's own observation. There is no polling.
  */
 import { createAgentSession, stepAgent } from '../agent/runner';
-import { GOAL_HUNGER_AT_LEAST, type AgentSession, type Observation, type SessionStatus, type StepAgentResult, type StepFeedback } from '../agent/contracts';
+import {
+  GOAL_HUNGER_AT_LEAST, type AgentSession, type GoalHostPort, type GoalRequestView,
+  type Observation, type SessionStatus, type StepAgentResult, type StepFeedback,
+} from '../agent/contracts';
 import { observe } from '../agent/observation';
 import { Engine, replay } from '../engine';
 import type { LogEntry } from '../engine';
@@ -35,10 +38,22 @@ import {
 import { G08_GAME_SCHEMA, type ActionSet, type G08GameCheckpoint, type G08GameCycleCheckpoint } from '../temporal/contracts';
 import type { GoalProtocolOptions } from '../agent/contracts';
 import {
-  createRequestStore, decideGoalRequest, enqueueGoalRequest, markRequestProcessed, pendingRequestFor,
+  cancelRequest, createRequestStore, decideGoalRequest, enqueueGoalRequest, expireRequestIfDue,
+  markRequestProcessed, pendingRequestFor, processAcceptedCommand,
   type EnqueueResult, type GoalRequestStore,
 } from '../negotiation/requests';
-import { G09_ALLOWED_GOALS, type GoalRequestSnapshot } from '../negotiation/contracts';
+import { evaluateGoal } from '../negotiation/requests';
+import { G09_ALLOWED_GOALS, type GoalOutcome, type GoalRequestSnapshot, type GoalRequestStatus } from '../negotiation/contracts';
+
+function requestViewOf(request: GoalRequestSnapshot): GoalRequestView {
+  return {
+    requestId: request.requestId,
+    status: request.status as GoalRequestStatus,
+    outcome: request.outcome as GoalOutcome,
+    expiresAtSimTime: request.expiresAtSimTime,
+    acceptedAfterSeq: request.acceptedAfterSeq,
+  };
+}
 
 interface CycleState {
   cycle: number;
@@ -84,6 +99,10 @@ export class ReactiveGameImpl implements ReactiveGame {
   readonly candidateSet: 'self_only' | 'choice';
   /** G09: ONE store per game — the single authority for request lifecycle. */
   readonly requestStore: GoalRequestStore = createRequestStore();
+  /** G09: the passive player the structured requests come from. */
+  readonly playerId: string;
+  /** G09: how many authoritative log entries are already folded into the store. */
+  foldCursor = 0;
 
   private readonly states: Record<string, ReactiveActorState> = {};
   private readonly cycles: Record<string, CycleState[]> = {};
@@ -116,6 +135,7 @@ export class ReactiveGameImpl implements ReactiveGame {
     this.actionSet = options.actionSet;
     this.goalMode = options.goalMode ?? 'legacy';
     this.candidateSet = options.candidateSet ?? 'choice';
+    this.playerId = options.playerId ?? PLAYER_ACTOR_ID;
     // G08-R1: the timed_wait axis is meaningless without an authoritative
     // clock. Refuse construction before any provider call; legacy worlds
     // keep their pre-G08 freedom (no simTime requirement).
@@ -185,7 +205,8 @@ export class ReactiveGameImpl implements ReactiveGame {
   submitGoalRequest(request: GoalRequestSnapshot): EnqueueResult {
     const enqueued = enqueueGoalRequest(this.requestStore, request);
     if (!enqueued.ok) return enqueued;
-    // Attach to the already-open, undecided session (cycles open eagerly).
+    // Attach to the already-open, undecided session (cycles open eagerly). The
+    // acceptance seq is NOT fixed here: it is taken at response arrival.
     if (this.goalMode === 'negotiated') {
       const cycle = this.actorCycles(request.to).at(-1);
       const session = cycle?.session;
@@ -196,8 +217,7 @@ export class ReactiveGameImpl implements ReactiveGame {
           text: request.text,
           options: G09_ALLOWED_GOALS[this.candidateSet],
           expiresAtSimTime: request.expiresAtSimTime,
-          playerId: this.options.playerId ?? 'npc_b',
-          acceptedAfterSeq: this.world.logLength(),
+          playerId: this.playerId,
         };
         if (session.attachGoalProtocol(protocol)) markRequestProcessed(this.requestStore, request.requestId);
       }
@@ -209,23 +229,83 @@ export class ReactiveGameImpl implements ReactiveGame {
     return this.requestStore;
   }
 
-  /** G09: apply the session's recorded decision to its pending request. */
-  private foldGoalDecision(session: AgentSession): void {
-    const decision = session.goalDecision;
-    if (decision === null) return;
-    const request = this.requestStore.requests[decision.requestId];
-    if (request === undefined || request.status !== 'pending') return;
-    const applied = decideGoalRequest({
-      request,
-      episodeId: request.episodeId,
-      raw: decision.raw,
-      round: decision.decidedRound,
-      decidedAtSimTime: decision.decidedAtSimTime,
-      currentSeq: decision.goal === 'yield_once'
-        ? (session.goalBinding?.acceptedAfterSeq ?? this.world.logLength())
-        : this.world.logLength(),
-    });
-    if (applied.ok) this.requestStore.requests[request.requestId] = applied.value.request;
+  /**
+   * G09: fold every authoritative command AFTER the cursor into every
+   * still-open accepted request, in seq order. The store is one authority;
+   * player/NPC/world commands all pass through here.
+   */
+  private foldRequests(): void {
+    const log = this.world.getLog();
+    if (this.foldCursor >= log.length) {
+      this.foldCursor = log.length;
+      return;
+    }
+    const simTime = this.world.getState().simTime ?? 0;
+    const open = Object.values(this.requestStore.requests)
+      .filter(request => request.status === 'accepted' && request.outcome === 'pending');
+    for (let index = this.foldCursor; index < log.length; index += 1) {
+      const entry = log[index]!;
+      for (const snapshot of open) {
+        const current = this.requestStore.requests[snapshot.requestId];
+        if (current === undefined || current.status !== 'accepted' || current.outcome !== 'pending') continue;
+        this.requestStore.requests[current.requestId] = processAcceptedCommand(
+          current,
+          { acceptedAfterSeq: current.acceptedAfterSeq ?? 0, expiresAtSimTime: current.expiresAtSimTime },
+          entry,
+          simTime,
+        );
+      }
+    }
+    this.foldCursor = log.length;
+  }
+
+  /** G09: logical-time expiry sweep (idempotent; terminal outcomes never revive). */
+  private expireRequests(): void {
+    const simTime = this.world.getState().simTime ?? 0;
+    for (const [id, request] of Object.entries(this.requestStore.requests)) {
+      const next = expireRequestIfDue(request, simTime);
+      if (next !== request) this.requestStore.requests[id] = next;
+    }
+  }
+
+  /** G09: fold + expire after any authoritative world input. */
+  private settleRequests(): void {
+    this.foldRequests();
+    this.expireRequests();
+  }
+
+  /**
+   * G09: the session-side bridge. The session re-reads the CURRENT request at
+   * each receive point; the game owns the authoritative fold and acceptance.
+   */
+  private goalHost(): GoalHostPort {
+    return {
+      refresh: requestId => {
+        this.settleRequests();
+        const request = this.requestStore.requests[requestId];
+        return request === undefined ? null : requestViewOf(request);
+      },
+      fold: () => { this.foldRequests(); },
+      accept: (decision, currentSeq, simTime) => {
+        const request = this.requestStore.requests[decision.requestId];
+        if (request === undefined) return null;
+        const applied = decideGoalRequest({
+          request,
+          episodeId: request.episodeId,
+          raw: decision.raw,
+          round: decision.decidedRound,
+          decidedAtSimTime: simTime,
+          currentSeq,
+        });
+        if (!applied.ok) return null;
+        this.requestStore.requests[request.requestId] = applied.value.request;
+        return applied.value.binding;
+      },
+      outcome: requestId => {
+        const request = this.requestStore.requests[requestId];
+        return request === undefined ? null : requestViewOf(request);
+      },
+    };
   }
 
   /**
@@ -247,8 +327,7 @@ export class ReactiveGameImpl implements ReactiveGame {
       text: request.text,
       options: G09_ALLOWED_GOALS[this.candidateSet],
       expiresAtSimTime: request.expiresAtSimTime,
-      playerId: this.options.playerId ?? 'npc_b',
-      acceptedAfterSeq: typeof this.world.logLength === 'function' ? this.world.logLength() : this.world.getLog().length,
+      playerId: this.playerId,
     };
   }
 
@@ -269,6 +348,7 @@ export class ReactiveGameImpl implements ReactiveGame {
       commandIdScheme: 'g06-episode-cycle',
       ...(this.actionSet !== undefined ? { actionSet: this.actionSet } : {}),
       ...(protocol !== null ? { goalProtocol: protocol } : {}),
+      goalHost: this.goalHost(),
     });
     if (this.options.onDeciding) {
       const hook = this.options.onDeciding;
@@ -308,9 +388,9 @@ export class ReactiveGameImpl implements ReactiveGame {
     const feedback: StepFeedback | null = cycle.session.feedback ? { ...cycle.session.feedback } : null;
     try {
       const result = await stepAgent(cycle.session);
-      // G09: the session's decision is folded into the GAME-level store the
-      // moment it exists — one authority, consumed once, never re-asked.
-      this.foldGoalDecision(cycle.session);
+      // G09: every command this step submitted is folded into the ONE store,
+      // in seq order. The session records its answer through the same bridge.
+      this.settleRequests();
       // G08-R1: the actor-level budget settles inside THIS advance. A wait
       // returned on the actor's limit call must not publish a recoverable
       // deadline — exhaust the session (clearing the deadline) BEFORE the
@@ -519,6 +599,12 @@ export class ReactiveGameImpl implements ReactiveGame {
     // in-flight step to finish its own bookkeeping (the runner's own timeout
     // bounds it). Idempotent: a repeated close adds no request and no wait.
     this.closed = true;
+    // G09: an unfinished promise cannot outlive the game that owns it. The
+    // cancellation is a terminal, idempotent outcome.
+    for (const [id, request] of Object.entries(this.requestStore.requests)) {
+      const next = cancelRequest(request, 'the game closed before the request was fulfilled');
+      if (next !== request) this.requestStore.requests[id] = next;
+    }
     while (this.busy) await new Promise<void>(resolve => setTimeout(resolve, 5));
   }
 
@@ -533,6 +619,9 @@ export class ReactiveGameImpl implements ReactiveGame {
       ? { commandId, actorId: PLAYER_ACTOR_ID, type: 'move' as const, payload: { to: parsed.to as Location } }
       : { commandId, actorId: PLAYER_ACTOR_ID, type: 'eat' as const, payload: {} };
     const exec = this.world.submit(structuredClone(command));
+    // G09: the player's command is authoritative input — fold it NOW so an
+    // in-flight answer sees the new request state at its receive point.
+    this.settleRequests();
     this.reconcile();
     return exec.status === 'accepted' ? { ok: true, detail: commandId } : { ok: false, detail: exec.reason ?? exec.status };
   }
@@ -543,6 +632,7 @@ export class ReactiveGameImpl implements ReactiveGame {
     const command = { commandId: id, actorId: WORLD_ACTOR_ID, type: 'restock' as const, payload: { location, amount } };
     if (this.closed) return { ok: false, command, exec: { status: 'rejected', reason: 'closed', eventIds: [] }, error: 'game is closed' };
     const exec = this.world.submit(structuredClone(command));
+    this.settleRequests();
     this.reconcile();
     return exec.status === 'accepted'
       ? { ok: true, command, exec: { status: exec.status, eventIds: [...exec.eventIds] } }
@@ -571,6 +661,8 @@ export class ReactiveGameImpl implements ReactiveGame {
       return { ok: false, command, error: `${exec.reason ?? exec.status}${exec.detail ? `: ${exec.detail}` : ''}` };
     }
     const after = this.world.getState().simTime ?? 0;
+    // The clock itself is authoritative input: expire what the deadline says.
+    this.settleRequests();
     this.reconcile();
     return { ok: true, command, before, after };
   }
@@ -698,11 +790,18 @@ export class ReactiveGameImpl implements ReactiveGame {
       const live = this.activeCycle(actorId);
       if (live && !TERMINAL_STATES.has(live.endState)) live.endState = this.states[actorId];
       const hunger = finalState.npcs[actorId]?.hunger;
+      const hungerSatisfied = typeof hunger === 'number' && hunger >= GOAL_HUNGER_AT_LEAST;
+      // G09: a bound yield goal is judged by the authoritative request outcome,
+      // never by the actor's own hunger (it may still be 40 on fulfilment).
+      const binding = this.activeCycle(actorId)?.session.goalBinding ?? null;
+      const evaluated = binding === null || binding.goal !== 'yield_once'
+        ? null
+        : evaluateGoal(binding, finalState as never, actorId, this.requestStore.requests[binding.requestId] ?? null);
       actors[actorId] = {
         state: this.states[actorId],
         cycles: list.length,
         providerCalls: this.callsOf(actorId),
-        goalReached: typeof hunger === 'number' && hunger >= GOAL_HUNGER_AT_LEAST,
+        goalReached: evaluated !== null ? evaluated.achieved : hungerSatisfied,
       };
       if (!TERMINAL_STATES.has(this.states[actorId])) allTerminal = false;
     }
@@ -775,7 +874,10 @@ export class ReactiveGameImpl implements ReactiveGame {
     const cyclesG08: Record<string, G08GameCycleCheckpoint[]> = {};
     for (const actorId of this.actorIds) {
       cyclesG08[actorId] = this.actorCycles(actorId).map(cycle => {
-        const sessionFormat = (this.goalMode === 'negotiated' || this.options.goalProtocol !== undefined) ? 'g09' : (g08 ? 'g08' : 'g06');
+        const negotiated = this.goalMode === 'negotiated'
+          || this.options.goalProtocol !== undefined
+          || Object.keys(this.requestStore.requests).length > 0;
+        const sessionFormat = negotiated ? 'g09' : (g08 ? 'g08' : 'g06');
         const exported = exportSessionCheckpoint(cycle.session, sessionFormat);
         if (!exported.ok) {
           throw new CheckpointExportError(exported.code, exported.issues ?? []);
@@ -817,6 +919,13 @@ export class ReactiveGameImpl implements ReactiveGame {
       totalCalls: this.totalCalls,
       idlePumps: structuredClone(this.idlePumps),
       cycles,
+      // G09: the negotiation state travels with the game checkpoint so a
+      // restored game keeps consuming requests and re-saves in g09 format.
+      goalMode: this.goalMode,
+      candidateSet: this.candidateSet,
+      playerId: this.playerId,
+      requestStore: structuredClone(this.requestStore),
+      foldCursor: this.foldCursor,
     };
     if (g08) {
       // G08: every group (legacy included) saves the capability axis, the
@@ -858,6 +967,15 @@ export class ReactiveGameImpl implements ReactiveGame {
     impl.needPolicy = data.needPolicy;
     impl.recordSchema = data.recordSchema;
     impl.actionSet = g08 ? (data as G08GameCheckpoint).actionSet : undefined;
+    // G09: the negotiation state is causal, not runtime configuration — it
+    // comes from the data alone. A pre-G09 save restores as a legacy game.
+    impl.goalMode = data.goalMode ?? 'legacy';
+    impl.candidateSet = data.candidateSet ?? 'choice';
+    impl.playerId = data.playerId ?? options.playerId ?? PLAYER_ACTOR_ID;
+    impl.requestStore = data.requestStore === undefined
+      ? createRequestStore()
+      : structuredClone(data.requestStore);
+    impl.foldCursor = data.foldCursor ?? (Array.isArray(data.engine?.log) ? data.engine.log.length : 0);
     impl.nowFn = options.now ?? Date.now;
     impl.startedAt = data.startedAt;
     impl.initialState = structuredClone(data.initialState);
@@ -877,6 +995,9 @@ export class ReactiveGameImpl implements ReactiveGame {
     impl.idlePumps = structuredClone(data.idlePumps);
     const cycles: Record<string, CycleState[]> = {};
     for (const actorId of data.actorIds) cycles[actorId] = [];
+    // The same bridge the live game exposes: restored sessions keep folding
+    // into the restored store at their own receive points.
+    const host = (impl as unknown as ReactiveGameImpl).goalHost();
     for (const actorId of data.actorIds) {
       for (const saved of data.cycles[actorId] ?? []) {
         const restored = restoreAgentSession(saved.session, {
@@ -885,6 +1006,7 @@ export class ReactiveGameImpl implements ReactiveGame {
           commandIdFor: round => `${data.episodeId}:npc:${actorId}:${saved.cycle}:${round}`,
           now: options.now,
           scheduleTimeout: options.scheduleTimeout,
+          goalHost: host,
         });
         if (!restored.ok) {
           throw new CheckpointExportError(restored.code, restored.issues ?? [`session ${saved.session.runId}`]);

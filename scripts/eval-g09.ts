@@ -23,8 +23,8 @@ import {
 import { createGoalRequest, decideGoalRequest } from '../src/negotiation/requests';
 import { checkGoalFulfilment, replayRequestOutcome } from '../src/negotiation/goal-check';
 import {
-  G09_NPC, G09_PLAYER, G09_CELLS, canonical, deriveG09, frozenPlanEntries, g09InitialState, g09Plan,
-  g09Protocol, g09RuntimeConfig, projectG09Summary, readG09Batch, verifyG09Batch, verifyG09Prefix,
+  G09_NPC, G09_PLAYER, G09_CELLS, canonical, createWireCollector, deriveG09, frozenPlanEntries, g09InitialState,
+  g09Plan, g09Protocol, g09RuntimeConfig, projectG09Summary, readG09Batch, verifyG09Batch, verifyG09Prefix, wireUsage,
   type G09EpisodeRecord, type G09HttpExchange, type G09PlanEntry,
 } from './g09-eval-lib';
 import {
@@ -150,14 +150,15 @@ async function runEpisode(entry: G09PlanEntry, rt: EpisodeRuntime): Promise<G09E
   let request: GoalRequestSnapshot = requestBuilt.value;
 
   const fake = rt.args.live ? null : fakeResponder(rt.args);
-  const inner = rt.args.live
-    ? createHttpProvider({
-      url: rt.args.http, model: String(rt.config.requestModel), enableThinking: rt.config.thinking,
-    })
-    : createHttpProvider({
-      url: 'http://fake.local/v1/chat/completions', model: 'fake-model',
-      enableThinking: rt.config.thinking, fetchImpl: fake!.fetchImpl,
-    });
+  // ONE collection chain for both branches: the provider always goes through
+  // the wrapped fetch, so the recorded body/status/text are the real wire.
+  const collector = createWireCollector(rt.args.live ? fetch : fake!.fetchImpl);
+  const inner = createHttpProvider({
+    url: rt.args.live ? rt.args.http : 'http://fake.local/v1/chat/completions',
+    model: rt.args.live ? String(rt.config.requestModel) : 'fake-model',
+    enableThinking: rt.config.thinking,
+    fetchImpl: collector.fetchImpl,
+  });
 
   const providerFor = (): Provider => {
     let transport: TransportRecord | null = null;
@@ -189,18 +190,24 @@ async function runEpisode(entry: G09PlanEntry, rt: EpisodeRuntime): Promise<G09E
         try {
           const raw = await inner.decide(input, signal as AbortSignal);
           transport = inner.consumeTransport?.() ?? null;
+          const wire = collector.take();
           const elapsedMs = Date.now() - started;
+          const usage = wire === null ? null : wireUsage(wire.responseBody);
           rt.store.writeJson(`attempts/${attemptId}.finish.json`, {
             attemptId, at: new Date().toISOString(), outcome: 'success',
-            status: transport?.status ?? null, error: null,
-            usage: transport?.usage ?? null, elapsedMs,
+            status: wire?.status ?? transport?.status ?? null, error: null,
+            usage: usage ?? transport?.usage ?? null, elapsedMs,
           });
           attempts.push({ attemptId, outcome: 'success' });
-          finishCampaignChat(rt.campaignDir, attemptId, { outcome: 'success', totalTokens: transport?.usage?.total_tokens ?? null });
+          finishCampaignChat(rt.campaignDir, attemptId, { outcome: 'success', totalTokens: usage?.total_tokens ?? null });
           exchanges.push({
             phase, attemptId,
-            requestBody: fake === null ? { prompt, model: requestConfig.model, temperature: 0, max_tokens: 1024, stream: false, enableThinking: rt.config.thinking } : fake.last.body,
-            response: { status: transport?.status ?? null, body: fake === null ? JSON.stringify({ content: raw }) : fake.last.text, usage: transport?.usage ?? null },
+            requestBody: wire?.requestBody ?? {},
+            response: {
+              status: wire?.status ?? null,
+              body: wire?.responseBody ?? '',
+              usage,
+            },
             prompt, promptFingerprint: createHash('sha256').update(prompt).digest('hex'),
             elapsedMs, error: null,
           });
@@ -208,18 +215,20 @@ async function runEpisode(entry: G09PlanEntry, rt: EpisodeRuntime): Promise<G09E
         } catch (err) {
           const elapsedMs = Date.now() - started;
           transport = inner.consumeTransport?.() ?? null;
+          const wire = collector.take();
           const message = err instanceof Error ? err.message : String(err);
           const outcome = message.includes('timeout') ? 'timeout' : 'provider_error';
+          const usage = wire === null ? null : wireUsage(wire.responseBody);
           rt.store.writeJson(`attempts/${attemptId}.finish.json`, {
             attemptId, at: new Date().toISOString(), outcome,
-            status: transport?.status ?? null, error: message, usage: transport?.usage ?? null, elapsedMs,
+            status: wire?.status ?? transport?.status ?? null, error: message, usage: usage ?? transport?.usage ?? null, elapsedMs,
           });
           attempts.push({ attemptId, outcome });
-          finishCampaignChat(rt.campaignDir, attemptId, { outcome, totalTokens: transport?.usage?.total_tokens ?? null });
+          finishCampaignChat(rt.campaignDir, attemptId, { outcome, totalTokens: usage?.total_tokens ?? null });
           exchanges.push({
             phase, attemptId,
-            requestBody: fake === null ? { prompt, model: requestConfig.model } : fake.last.body,
-            response: { status: transport?.status ?? null, body: fake === null ? '' : fake.last.text, usage: transport?.usage ?? null },
+            requestBody: wire?.requestBody ?? {},
+            response: { status: wire?.status ?? null, body: wire?.responseBody ?? '', usage },
             prompt, promptFingerprint: createHash('sha256').update(prompt).digest('hex'),
             elapsedMs, error: message,
           });
