@@ -27,7 +27,7 @@ import {
   G09_NPC, G09_PLAYER, G09_CELLS, canonical, createWireCollector, deriveG09, frozenPlanEntries, g09InitialState,
   g09Plan, g09Protocol, g09RuntimeConfig, projectG09Summary, readG09Batch, verifyG09Batch, verifyG09Prefix, wireUsage,
   classifyHttpExchange,
-  type G09EpisodeRecord, type G09HttpExchange, type G09Outcome, type G09PlanEntry,
+  type G09EpisodeRecord, type G09ExchangeKind, type G09HttpExchange, type G09Outcome, type G09PlanEntry,
 } from './g09-eval-lib';
 import {
   campaignCounts, finishCampaignChat, loadCampaign, openCampaign, reserveCampaignChat,
@@ -386,10 +386,12 @@ async function runEpisode(entry: G09PlanEntry, rt: EpisodeRuntime): Promise<G09E
 }
 
 /** Wire classification → episode outcome (never a silent `completed`). */
-function mapExchangeKind(kind: 'ok' | 'http_error' | 'invalid_response_json' | 'output_truncated' | 'empty_output' | 'no_exchange'): G09Outcome {
+function mapExchangeKind(kind: G09ExchangeKind): G09Outcome {
   switch (kind) {
     case 'output_truncated': return 'output_truncated';
     case 'empty_output': return 'empty_output';
+    case 'timeout': return 'timeout';
+    case 'provider_error': return 'provider_error';
     case 'http_error': return 'provider_error';
     case 'invalid_response_json': return 'provider_error';
     default: return 'invalid_run';

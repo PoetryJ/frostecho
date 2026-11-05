@@ -420,6 +420,8 @@ export type G09ExchangeKind =
   | 'invalid_response_json'
   | 'output_truncated'
   | 'empty_output'
+  | 'timeout'
+  | 'provider_error'
   | 'no_exchange';
 
 export interface G09ExchangeClassification {
@@ -456,10 +458,15 @@ export function classifyHttpExchange(exchange: G09HttpExchange | undefined): G09
     parsed = body;
   }
   if (body === null || body === undefined) {
-    // No body at all: an HTTP failure if a status says so, else an empty read.
-    return status !== null && (status < 200 || status >= 300)
-      ? { kind: 'http_error', httpStatus: status, finishReason: null, content: '' }
-      : { kind: 'empty_output', httpStatus: status, finishReason: null, content: '' };
+    // No body at all: an HTTP failure if a status says so; without any status
+    // the call was aborted (the frozen 120s bound), never an empty answer.
+    if (status !== null && (status < 200 || status >= 300)) {
+      return { kind: 'http_error', httpStatus: status, finishReason: null, content: '' };
+    }
+    if (status === null) {
+      return { kind: /abort|timeout/i.test(exchange.error ?? '') ? 'timeout' : 'provider_error', httpStatus: null, finishReason: null, content: '' };
+    }
+    return { kind: 'empty_output', httpStatus: status, finishReason: null, content: '' };
   }
   if (parseFailed) return { kind: 'invalid_response_json', httpStatus: status, finishReason: null, content: '' };
   const choice = (parsed as { choices?: { finish_reason?: unknown; message?: { content?: unknown } }[] } | null)?.choices?.[0];
@@ -502,6 +509,7 @@ function mapExchangeFailure(kind: G09ExchangeKind): G09Outcome {
   switch (kind) {
     case 'output_truncated': return 'output_truncated';
     case 'empty_output': return 'empty_output';
+    case 'timeout': return 'timeout';
     case 'http_error': return 'provider_error';
     case 'invalid_response_json': return 'provider_error';
     default: return 'invalid_run';
