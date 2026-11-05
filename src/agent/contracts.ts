@@ -398,7 +398,26 @@ export interface AgentSession {
    * goal phase so the same session never asks again.
    */
   readonly goalDecision: GoalDecisionRecord | null;
+  /**
+   * G11: read-only classification of the bound yield promise against the
+   * AUTHORITATIVE request (never the local hunger). Zero provider calls.
+   */
+  goalSettlement(): GoalSettlementState;
+  /**
+   * G11: settle an ENDED yield promise with zero provider calls — clears the
+   * wait deadline, ends this session as stopped and never re-asks the old
+   * goal. Returns false while the promise is still pending (or for a plain
+   * session), true when the session is settled (idempotent).
+   */
+  settleEndedGoal(): boolean;
 }
+
+/**
+ * G11: what the authoritative request says about a bound yield promise.
+ * 'pending' means the promise is still live and the ordinary wait/decision
+ * rules apply; the other three are terminal and must never be re-asked.
+ */
+export type GoalSettlementState = 'not_applicable' | 'pending' | 'fulfilled' | 'expired' | 'violated';
 
 /** G09: the frozen per-session goal protocol configuration. */
 export interface GoalProtocolOptions {

@@ -2,7 +2,7 @@ import { WorldState } from '../types';
 import {
   ActiveGoal, AgentAction, AgentSession, CommandIdScheme, DecideInput, DecidingPhase, DEFAULT_TIMEOUT_MS, GOAL_HUNGER_AT_LEAST, MAX_PROVIDER_CALLS, GoalDecisionRecord,
   Provider, RunOptions, RunOutcome, RunResult, SessionStatus, StepAgentResult, StepFeedback, StepRecord,
-  SubmittedCommand, GoalProtocolOptions, GoalChoiceContext,
+  SubmittedCommand, GoalProtocolOptions, GoalChoiceContext, GoalSettlementState,
 } from './contracts';
 import { WAIT_SIM_STEPS, type ActionSet, type SessionWaitState } from '../temporal/contracts';
 import { observe } from './observation';
@@ -242,6 +242,8 @@ class AgentSessionImpl implements AgentSession {
   goalBinding: GoalBinding | null = null;
   /** G09: the recorded decision — feed_self closes the phase without a binding. */
   goalDecision: GoalDecisionRecord | null = null;
+  /** G11: the terminal authoritative outcome of a settled yield promise. */
+  settledGoal: 'fulfilled' | 'expired' | 'violated' | null = null;
 
   constructor(options: RunOptions) {
     this.options = options;
@@ -289,6 +291,46 @@ class AgentSessionImpl implements AgentSession {
   whenDeciding(): Promise<DecidingPhase> {
     if (this.status === 'deciding' && this.phaseInfo) return Promise.resolve(this.phaseInfo);
     return new Promise(resolve => { this.waiters.push(resolve); });
+  }
+
+  /**
+   * G11: classify the bound yield promise from the AUTHORITATIVE request.
+   * Pure read of the host store — no fold, no provider call, no state change.
+   */
+  goalSettlement(): GoalSettlementState {
+    const binding = this.goalBinding;
+    if (binding === null || binding.goal !== 'yield_once') return 'not_applicable';
+    if (this.settledGoal !== null) return this.settledGoal;
+    const view = this.options.goalHost?.outcome(binding.requestId) ?? null;
+    if (view === null) return 'pending';
+    return view.outcome === 'fulfilled' || view.outcome === 'expired' || view.outcome === 'violated'
+      ? view.outcome
+      : 'pending';
+  }
+
+  /**
+   * G11: settle an ENDED yield promise with ZERO provider calls.
+   *
+   * The settlement decision comes from the request store, never from hunger: a
+   * fulfilled promise stays fulfilled even if this actor is still hungry, and
+   * an expired one is never rewritten. The old session ends as `stopped` with
+   * its binding and history intact; opening the next (ordinary) cycle is the
+   * game's job, not this session's.
+   */
+  settleEndedGoal(): boolean {
+    const binding = this.goalBinding;
+    if (binding === null || binding.goal !== 'yield_once') return false;
+    if (this.settledGoal !== null) return true;
+    if (this.status !== 'waiting_time' && this.status !== 'ready') return false;
+    // Refresh the AUTHORITATIVE request at the settlement point: a player eat
+    // or a time step that ended the promise is folded here, deterministically.
+    const view = this.options.goalHost?.refresh(binding.requestId) ?? null;
+    const outcome = view === null ? 'pending' : view.outcome;
+    if (outcome !== 'fulfilled' && outcome !== 'expired' && outcome !== 'violated') return false;
+    this.settledGoal = outcome;
+    this.wakeAtSimTime = null;
+    finishTerminal(this, 'stopped', 'stopped', `yield goal settled: ${outcome}`);
+    return true;
   }
 
   /** G08: resume only when due; exactly one resume per accepted wait. */
@@ -411,6 +453,13 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
     // G09: with yield_once selected the session's temporary goal is the
     // request, not its own hunger — the hunger target comes back afterwards.
     const yieldBound = session.goalBinding !== null && session.goalBinding.goal === 'yield_once';
+    // G11: a yield promise whose authoritative request already ENDED must never
+    // be re-asked. Settle with zero calls, before any budget reserve and before
+    // the prompt is built — this is the last line of defence behind the game's
+    // own handoff, and it also covers direct session stepping.
+    if (yieldBound && session.settleEndedGoal()) {
+      return { status: 'stopped', terminal: true, providerCalled: false };
+    }
     if (!yieldBound && hunger !== undefined && hunger >= GOAL_HUNGER_AT_LEAST) {
       finishTerminal(session, 'goal_reached', 'goal_reached');
       return { status: 'goal_reached', terminal: true, providerCalled: false };

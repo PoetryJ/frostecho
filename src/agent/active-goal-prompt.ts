@@ -12,7 +12,7 @@
 import type { ActiveGoal } from './contracts';
 
 /** Bumped when the rendered statement changes; the plan records it. */
-export const ACTIVE_GOAL_PROMPT_VERSION = 'g10-action-contract/1';
+export const ACTIVE_GOAL_PROMPT_VERSION = 'g11-needs-resume/1';
 
 export function activeGoalStatement(goal: ActiveGoal): string[] {
   if (goal.kind === 'feed_self') {
@@ -24,6 +24,9 @@ export function activeGoalStatement(goal: ActiveGoal): string[] {
   return [
     `activeGoal: ${JSON.stringify(goal)}`,
     'Your ONLY current goal is this agreement with the player: keep the food available to the player until the request expires, and the agreement is fulfilled only if the player actually eats before the deadline (logical time expiresAtSimTime).',
-    "Your own hunger is background state, not this session's goal. Eating the food yourself, or leaving the kitchen before the player eats, breaks the agreement.",
+    // G11: the authoritative contract has exactly ONE violation — the NPC
+    // eating before the player does. Moving is legal and never a violation;
+    // the old sentence claimed a rule the engine does not have.
+    "Your own hunger is background state, not this session's goal. Eating the food yourself before the player eats breaks the agreement; moving elsewhere does not.",
   ];
 }
