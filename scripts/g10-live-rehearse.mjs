@@ -8,17 +8,34 @@
  * captured wire with the records and the frozen config. No 18872, no real
  * model, no new campaign with real quota outside the rehearsal directory.
  *
+ * The output directory is created EXCLUSIVELY (non-recursive mkdir): an
+ * existing directory — including the default path — is refused with exit 2,
+ * never deleted, never overwritten. Every rehearsal uses a NEW directory.
+ *
  * Usage: node scripts/g10-live-rehearse.mjs [outDir]
  */
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
-import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
 
 const repo = resolve('.');
 const out = resolve(process.argv[2] ?? 'artifacts/g10-r1/rehearsal');
-rmSync(out, { recursive: true, force: true });
-mkdirSync(out, { recursive: true });
+// Parents may be created recursively, but the output itself must be an
+// ATOMIC exclusive create. EEXIST means old evidence lives there: refuse
+// BEFORE the server or any campaign directory is created.
+mkdirSync(dirname(out), { recursive: true });
+try {
+  mkdirSync(out);
+} catch (error) {
+  if (error instanceof Error && error.code === 'EEXIST') {
+    console.error(`refusing to overwrite the existing rehearsal output directory: ${out}`);
+    console.error('previous rehearsal evidence is immutable; pass a NEW directory path');
+    process.exit(2);
+  }
+  console.error(`cannot create the rehearsal output directory ${out}: ${error instanceof Error ? error.message : String(error)}`);
+  process.exit(1);
+}
 
 const wire = [];
 const server = createServer((req, res) => {
