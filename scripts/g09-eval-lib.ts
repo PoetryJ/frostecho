@@ -14,7 +14,7 @@ import { parseAction } from '../src/agent/parser';
 import type { WorldState } from '../src/types';
 import type { GoalProtocolOptions } from '../src/agent/contracts';
 import {
-  G09_ALLOWED_GOALS, G09_EPISODE_SCHEMA, G09_HARD_CHAT_LIMIT, G09_PLAN_SCHEMA,
+  G09_ALLOWED_GOALS, G09_EPISODE_SCHEMA, G09_EPISODE_SCHEMA_V2, G09_HARD_CHAT_LIMIT, G09_PLAN_SCHEMA,
   G09_REQUEST_TEXT, G09_TIMEOUT_MS, G09_GOAL_MODE, G09_SATIETY_LEVELS,
   fulfilmentVerdict, strictGoalChoice,
   type FulfillmentEvidence, type GoalArm, type GoalBinding, type GoalRequestSnapshot,
@@ -23,6 +23,9 @@ import {
 import { bindingIssues, replayRequestOutcome } from '../src/negotiation/goal-check';
 import { validateGoalRequestSnapshot } from '../src/negotiation/requests';
 import { reexecuteCommands } from './g07-eval-lib';
+
+/** G10: /3 adds derived per-episode fields, known subtotals and the world axis. */
+export const G09_SUMMARY_SCHEMA = 'frostecho.g09.summary/3';
 
 export const G09_NPC = 'npc_a';
 export const G09_PLAYER = 'npc_b';
@@ -165,13 +168,31 @@ export interface G09HttpExchange {
 
 export { createWireCollector, wireUsage, type G09WireCapture } from '../src/agent/providers/wire';
 
+/**
+ * G10: the truthful outcome vocabulary. `completed` means BOTH protocol
+ * phases were legally served by the wire; a failed action phase can never be
+ * recorded as completed, and the derived value (never the recorded one) is
+ * what the verifier counts.
+ */
+export type G09Outcome =
+  | 'completed'
+  | 'invalid_action'
+  | 'output_truncated'
+  | 'empty_output'
+  | 'invalid_run'
+  | 'insufficient_budget'
+  | 'timeout'
+  | 'provider_error'
+  | 'request_expired'
+  | 'not_run';
+
 export interface G09EpisodeRecord {
   schema: typeof G09_EPISODE_SCHEMA;
   episodeId: string;
   cell: string;
   satiety: SatietyLevel;
   arm: GoalArm;
-  outcome: 'completed' | 'invalid_run' | 'insufficient_budget' | 'timeout' | 'provider_error' | 'request_expired' | 'not_run';
+  outcome: G09Outcome;
   request: GoalRequestSnapshot | null;
   binding: GoalBinding | null;
   goal: { round: number; raw: string | null; parseOk: boolean; error: string | null };
@@ -195,18 +216,50 @@ export interface G09Summary {
   hardChatLimit: number;
   protocol: { planned: number; completed: number; failed: number; notRun: number; goalPhases: number; actionPhases: number };
   goals: { feed_self: number; yield_once: number; byCell: Record<string, Record<string, number>> };
-  fulfilment: { byCell: Record<string, Record<string, number>> };
-  costs: {
-    chatRequests: number; spent: number; blocked: number; unresolved: number; usageUnknown: boolean;
-    goalTokens: number | null; actionTokens: number | null; totalTokens: number | null;
-    campaignLimit: number; campaignSpent: number;
-    byCell: Record<string, { goalTokens: number | null; actionTokens: number | null; requests: number }>;
+  fulfilment: {
+    /** Protocol-valid episodes only (an invalid action never counts). */
+    byCell: Record<string, Record<string, number>>;
+    /** World facts of EVERY bound episode, independent of protocol validity. */
+    world: Record<string, number>;
   };
-  episodes: {
-    episodeId: string; cell: string; arm: string; satiety: number; outcome: string;
-    goal: string | null; request: string | null; verdict: string | null;
-    goalTokens: number | null; actionTokens: number | null;
-  }[];
+  costs: {
+    chatRequests: number; spent: number; blocked: number; unresolved: number;
+    /**
+     * True only when an ACTUALLY ATTEMPTED phase has no usage (or never
+     * finished). Phases that were never sent (not_run) cost 0 and are NOT
+     * unknown.
+     */
+    usageUnknown: boolean;
+    goalTokens: number | null; actionTokens: number | null; totalTokens: number | null;
+    /** Always computable: the sum over phases whose usage is known. */
+    knownGoalTokens: number; knownActionTokens: number; knownTotalTokens: number;
+    unknownPhases: number; notRunPhases: number;
+    campaignLimit: number; campaignSpent: number;
+    byCell: Record<string, {
+      goalTokens: number | null; actionTokens: number | null; requests: number;
+      knownGoalTokens: number; knownActionTokens: number; unknownPhases: number;
+    }>;
+  };
+  episodes: G09DerivedEpisode[];
+}
+
+/** One episode as DERIVED from raw materials, never from its own claims. */
+export interface G09DerivedEpisode {
+  episodeId: string; cell: string; arm: string; satiety: number;
+  /** Derived protocol outcome. */
+  outcome: G09Outcome;
+  /** What the record claimed (a mismatch is a verification issue). */
+  recordedOutcome: string;
+  goal: string | null;
+  goalParseOk: boolean;
+  request: string | null;
+  verdict: string | null;
+  /** Both phases legally served by the wire. */
+  protocolValid: boolean;
+  goalKind: string;
+  actionKind: string;
+  goalTokens: number | null;
+  actionTokens: number | null;
 }
 
 /* ------------------------------------------------------------------ */
@@ -259,7 +312,8 @@ export interface G09Ledger {
   blocked: number;
   unresolved: number;
   usageUnknown: boolean;
-  knownTokenSum: number | null;
+  /** Sum over attempts whose usage is known (always computable). */
+  knownTokenSum: number;
   beginsById: Map<string, { attemptId: string; episodeId: string; requestConfig: Record<string, unknown> | null }>;
   finishesById: Map<string, { outcome: string; totalTokens: number | null; status: number | null }>;
   blockedIds: string[];
@@ -341,7 +395,7 @@ export function deriveG09Ledger(batchDir: string, episodes: G09EpisodeRecord[]):
   const unresolved = [...beginsById.keys()].filter(id => !finishesById.has(id)).length;
   const tokenValues = [...finishesById.values()].map(finish => finish.usage?.total_tokens ?? null);
   const usageUnknown = unresolved > 0 || tokenValues.some(value => value === null);
-  const knownTokenSum: number | null = usageUnknown ? null : tokenValues.reduce<number>((sum, value) => sum + (value ?? 0), 0);
+  const knownTokenSum = tokenValues.reduce<number>((sum, value) => sum + (value ?? 0), 0);
   return {
     issues, begins: beginsById.size, finishes: finishesById.size, blocked: blockedIds.length,
     unresolved, usageUnknown, knownTokenSum,
@@ -349,6 +403,76 @@ export function deriveG09Ledger(batchDir: string, episodes: G09EpisodeRecord[]):
     finishesById: new Map([...finishesById].map(([id, finish]) => [id, { outcome: finish.outcome, totalTokens: finish.usage?.total_tokens ?? null, status: finish.status }])),
     blockedIds,
   };
+}
+
+/* ------------------------------------------------------------------ */
+/* Exchange classification (G10)                                       */
+/* ------------------------------------------------------------------ */
+
+/**
+ * What the WIRE said, independent of what the record claims. `ok` means the
+ * body carried a non-empty final content on a normal finish; the strict
+ * parsers still decide whether that text is a legal goal/action.
+ */
+export type G09ExchangeKind =
+  | 'ok'
+  | 'http_error'
+  | 'invalid_response_json'
+  | 'output_truncated'
+  | 'empty_output'
+  | 'no_exchange';
+
+export interface G09ExchangeClassification {
+  kind: G09ExchangeKind;
+  httpStatus: number | null;
+  finishReason: string | null;
+  content: string;
+}
+
+const REASONING_TYPES = new Set(['reasoning', 'thinking', 'reasoning_text', 'redacted_reasoning']);
+
+function contentOfMessage(raw: unknown): string {
+  if (typeof raw === 'string') return raw;
+  if (!Array.isArray(raw)) return '';
+  return raw.map(part => {
+    if (typeof part === 'string') return part;
+    if (!part || typeof part !== 'object') return '';
+    const type = (part as { type?: unknown }).type;
+    if (typeof type === 'string' && REASONING_TYPES.has(type)) return '';
+    const text = (part as { text?: unknown }).text;
+    return typeof text === 'string' ? text : '';
+  }).join('');
+}
+
+export function classifyHttpExchange(exchange: G09HttpExchange | undefined): G09ExchangeClassification {
+  if (exchange === undefined) return { kind: 'no_exchange', httpStatus: null, finishReason: null, content: '' };
+  const status = exchange.response.status;
+  const body = exchange.response.body;
+  let parsed: unknown;
+  let parseFailed = false;
+  if (typeof body === 'string') {
+    try { parsed = JSON.parse(body); } catch { parseFailed = true; }
+  } else if (body !== null && body !== undefined) {
+    parsed = body;
+  }
+  if (body === null || body === undefined) {
+    // No body at all: an HTTP failure if a status says so, else an empty read.
+    return status !== null && (status < 200 || status >= 300)
+      ? { kind: 'http_error', httpStatus: status, finishReason: null, content: '' }
+      : { kind: 'empty_output', httpStatus: status, finishReason: null, content: '' };
+  }
+  if (parseFailed) return { kind: 'invalid_response_json', httpStatus: status, finishReason: null, content: '' };
+  const choice = (parsed as { choices?: { finish_reason?: unknown; message?: { content?: unknown } }[] } | null)?.choices?.[0];
+  const finishReason = typeof choice?.finish_reason === 'string' ? choice.finish_reason : null;
+  const content = contentOfMessage(choice?.message?.content);
+  if (status !== null && (status < 200 || status >= 300)) {
+    return { kind: 'http_error', httpStatus: status, finishReason, content };
+  }
+  // An exhausted generation budget is OUTPUT_TRUNCATED even when the text
+  // happens to look like complete JSON; it is never executed.
+  if (finishReason === 'length') return { kind: 'output_truncated', httpStatus: status, finishReason, content };
+  if (content.length === 0) return { kind: 'empty_output', httpStatus: status, finishReason, content };
+  return { kind: 'ok', httpStatus: status, finishReason, content };
 }
 
 /* ------------------------------------------------------------------ */
@@ -364,9 +488,123 @@ export interface G09Derivation {
   episodes: G09Summary['episodes'];
 }
 
+/**
+ * Tokens of ONE actually-attempted phase. A phase that was never sent (the
+ * episode is not_run) has no exchange: it is not a cost and NOT unknown —
+ * the caller simply does not include it.
+ */
 function tokensOf(exchange: G09HttpExchange | undefined): number | null {
-  if (exchange === undefined || exchange.response.usage === null) return null;
-  return exchange.response.usage.total_tokens;
+  if (exchange === undefined) return null;
+  return exchange.response.usage?.total_tokens ?? null;
+}
+
+function mapExchangeFailure(kind: G09ExchangeKind): G09Outcome {
+  switch (kind) {
+    case 'output_truncated': return 'output_truncated';
+    case 'empty_output': return 'empty_output';
+    case 'http_error': return 'provider_error';
+    case 'invalid_response_json': return 'provider_error';
+    default: return 'invalid_run';
+  }
+}
+
+/**
+ * G10: derive ONE episode from the wire + strict parsers + the request
+ * ledger, never from the record's own outcome/parseOk claims. Protocol
+ * completion and world fulfilment are separate axes.
+ */
+function deriveEpisodeStatus(record: G09EpisodeRecord, entry: G09PlanEntry): { derived: G09DerivedEpisode; issues: string[] } {
+  const issues: string[] = [];
+  const id = record.episodeId;
+  const goalExchange = record.http?.find(exchange => exchange.phase === 'goal');
+  const actionExchange = record.http?.find(exchange => exchange.phase === 'action');
+  const goalClass = classifyHttpExchange(goalExchange);
+  const actionClass = classifyHttpExchange(actionExchange);
+  const goalParsed = goalExchange === undefined
+    ? { ok: false as const, error: 'no goal call' }
+    : strictGoalChoice(goalClass.content, G09_ALLOWED_GOALS[entry.arm]);
+  const actionParsed = actionExchange === undefined
+    ? { ok: false as const, error: 'no action call' }
+    : parseAction(actionClass.content, 'timed_wait');
+  const goalOk = goalClass.kind === 'ok' && goalParsed.ok;
+  const actionOk = actionClass.kind === 'ok' && actionParsed.ok;
+  // A late answer is an authoritative fact recorded by the runner (no submit,
+  // the call stays spent); raw text alone cannot tell lateness apart.
+  const late = /expired|not open|ended before/i.test(record.failure ?? '');
+  let outcome: G09Outcome;
+  if (goalExchange === undefined && actionExchange === undefined) outcome = 'not_run';
+  else if (!goalOk) outcome = goalClass.kind === 'ok' ? 'invalid_run' : mapExchangeFailure(goalClass.kind);
+  else if (!actionOk) outcome = actionClass.kind === 'ok' ? 'invalid_action' : mapExchangeFailure(actionClass.kind);
+  else if (late) outcome = 'request_expired';
+  else outcome = 'completed';
+
+  if (record.outcome !== outcome) {
+    issues.push(`${id}: the recorded outcome ${record.outcome} disagrees with the derived ${outcome}`);
+  }
+  if (outcome === 'completed' && (record.http?.length ?? 0) !== 2) {
+    issues.push(`${id}: a completed episode must hold exactly 2 exchanges, found ${record.http?.length ?? 0}`);
+  }
+  // Goal parse claims must match the strict parse of the WIRE content. A /2
+  // record used `binding !== null` as its claim; that documented legacy
+  // semantics is checked as such instead of being reported as a failure.
+  const legacyEpisode = (record as { schema?: unknown }).schema === G09_EPISODE_SCHEMA_V2;
+  if (record.outcome !== 'not_run') {
+    if (legacyEpisode) {
+      if (record.goal.parseOk !== (record.binding !== null)) {
+        issues.push(`${id}: the legacy goal.parseOk ${record.goal.parseOk} disagrees with its binding state`);
+      }
+    } else if (record.goal.parseOk !== goalParsed.ok) {
+      issues.push(`${id}: the recorded goal.parseOk ${record.goal.parseOk} disagrees with the strict parse ${goalParsed.ok}`);
+    }
+  }
+  if (record.goal.raw !== null && goalExchange !== undefined && goalClass.kind === 'ok' && record.goal.raw !== goalClass.content) {
+    issues.push(`${id}: the recorded goal raw differs from the wire content`);
+  }
+  if (actionExchange !== undefined && record.outcome !== 'not_run') {
+    const recordedType = record.action.type;
+    const parsedType = actionParsed.ok ? actionParsed.action.type : null;
+    if (record.action.parseOk !== actionParsed.ok) {
+      issues.push(`${id}: the recorded action.parseOk ${record.action.parseOk} disagrees with the strict parse ${actionParsed.ok}`);
+    }
+    if (recordedType !== parsedType) {
+      issues.push(`${id}: the recorded action type ${String(recordedType)} disagrees with the parsed ${String(parsedType)}`);
+    }
+    if (record.action.raw !== actionClass.content && actionClass.kind === 'ok') {
+      issues.push(`${id}: the recorded action raw differs from the wire content`);
+    }
+  }
+  // Token claims must equal the wire usage of the same attempt.
+  const goalTokens = tokensOf(goalExchange);
+  const actionTokens = tokensOf(actionExchange);
+  if (goalExchange !== undefined && record.tokens.goal !== goalTokens) {
+    issues.push(`${id}: the recorded goal tokens ${String(record.tokens.goal)} disagree with the wire ${String(goalTokens)}`);
+  }
+  if (actionExchange !== undefined && record.tokens.action !== actionTokens) {
+    issues.push(`${id}: the recorded action tokens ${String(record.tokens.action)} disagree with the wire ${String(actionTokens)}`);
+  }
+  // Binding coherence: yield_once completes with a binding; feed_self never does.
+  if (goalParsed.ok) {
+    if (goalParsed.goal === 'yield_once' && outcome === 'completed' && record.binding === null) {
+      issues.push(`${id}: a completed yield_once protocol must carry a binding`);
+    }
+    if (goalParsed.goal === 'feed_self' && record.binding !== null) {
+      issues.push(`${id}: a feed_self decision must not carry a yield binding`);
+    }
+  }
+  return {
+    issues,
+    derived: {
+      episodeId: id, cell: record.cell, arm: record.arm, satiety: record.satiety,
+      outcome, recordedOutcome: record.outcome,
+      goal: goalParsed.ok ? goalParsed.goal : null,
+      goalParseOk: goalParsed.ok,
+      request: record.request === null ? null : record.request.status,
+      verdict: record.fulfilment === null ? null : record.fulfilment.verdict,
+      protocolValid: outcome === 'completed',
+      goalKind: goalClass.kind, actionKind: actionClass.kind,
+      goalTokens, actionTokens,
+    },
+  };
 }
 
 function sumOrNull(values: (number | null)[]): number | null {
@@ -388,15 +626,24 @@ export function deriveG09(
   const issues: string[] = [...batch.problems];
   const protocol = { planned: frozen.length, completed: 0, failed: 0, notRun: 0, goalPhases: 0, actionPhases: 0 };
   const goals = { feed_self: 0, yield_once: 0, byCell: {} as Record<string, Record<string, number>> };
-  const fulfilment: G09Summary['fulfilment'] = { byCell: {} };
+  const fulfilment: G09Summary['fulfilment'] = {
+    byCell: {},
+    world: { fulfilled: 0, violated: 0, not_applicable: 0, undetermined: 0 },
+  };
   const byCell: G09Summary['costs']['byCell'] = {};
   for (const cell of G09_CELLS) {
     goals.byCell[cell.cell] = { feed_self: 0, yield_once: 0 };
     fulfilment.byCell[cell.cell] = { fulfilled: 0, violated: 0, not_applicable: 0, undetermined: 0 };
-    byCell[cell.cell] = { goalTokens: 0, actionTokens: 0, requests: 0 };
+    byCell[cell.cell] = { goalTokens: 0, actionTokens: 0, requests: 0, knownGoalTokens: 0, knownActionTokens: 0, unknownPhases: 0 };
   }
   const episodes: G09Summary['episodes'] = [];
   const seen = new Set<string>();
+  // Phase-level cost accumulators: only ACTUALLY ATTEMPTED phases count.
+  let knownGoal = 0;
+  let knownAction = 0;
+  let unknownGoalPhases = 0;
+  let unknownActionPhases = 0;
+  let notRunPhases = 0;
 
   for (const record of batch.episodes) {
     const id = record.episodeId;
@@ -407,11 +654,26 @@ export function deriveG09(
     if (record.cell !== entry.cell || record.satiety !== entry.satiety || record.arm !== entry.arm) {
       issues.push(`${id}: the record axes ${record.cell}/${record.satiety}/${record.arm} disagree with the frozen plan`);
     }
-    if (record.outcome === 'not_run') {
+
+    const status = deriveEpisodeStatus(record, entry);
+    issues.push(...status.issues);
+    const derived = status.derived;
+    episodes.push(derived);
+
+    // Protocol counting comes from the DERIVED outcome, never the recorded one.
+    if (derived.outcome === 'not_run') {
       protocol.notRun += 1;
-      episodes.push({ episodeId: id, cell: record.cell, arm: record.arm, satiety: record.satiety, outcome: 'not_run', goal: null, request: null, verdict: null, goalTokens: null, actionTokens: null });
+      notRunPhases += 2;
+      // A not_run slot claims nothing: no world, no request, no fulfilment.
       continue;
     }
+    protocol.failed += derived.outcome === 'completed' ? 0 : 1;
+    if (derived.outcome === 'completed') protocol.completed += 1;
+    const goalExchange = record.http?.find(exchange => exchange.phase === 'goal');
+    const actionExchange = record.http?.find(exchange => exchange.phase === 'action');
+    if (goalExchange !== undefined) protocol.goalPhases += 1;
+    if (actionExchange !== undefined) protocol.actionPhases += 1;
+
     // The frozen world must be exactly the cell's world (compared to the contract).
     if (canonical(record.snapshot?.initialState) !== canonical(g09InitialState(entry.satiety))) {
       issues.push(`${id}: the initial state is not the frozen ${entry.cell} world`);
@@ -419,20 +681,7 @@ export function deriveG09(
     if (canonical(record.runtime) !== canonical(g09RuntimeConfig())) {
       issues.push(`${id}: the runtime is not the frozen recurring/event/timed_wait [A,C] configuration`);
     }
-    const goalExchange = record.http?.find(exchange => exchange.phase === 'goal');
-    const actionExchange = record.http?.find(exchange => exchange.phase === 'action');
-    if (record.outcome === 'completed') {
-      protocol.completed += 1;
-      protocol.goalPhases += 1;
-      protocol.actionPhases += 1;
-      if (goalExchange === undefined || actionExchange === undefined) issues.push(`${id}: a completed episode must hold both a goal and an action exchange`);
-      if ((record.http?.length ?? 0) !== 2) issues.push(`${id}: a completed episode must hold exactly 2 exchanges, found ${record.http?.length ?? 0}`);
-    } else {
-      protocol.failed += 1;
-      if (goalExchange !== undefined) protocol.goalPhases += 1;
-      if (actionExchange !== undefined) protocol.actionPhases += 1;
-    }
-    // The prompt must be byte-identical across arms except the candidate line.
+    // The goal prompt must be the frozen template (the goal phase is unchanged).
     if (goalExchange !== undefined) {
       const normalised = goalExchange.prompt.replace(/^candidateGoals: .*$/m, 'candidateGoals: <DATA>');
       const expected = renderFrozenGoalPrompt(record.arm, record.satiety);
@@ -448,30 +697,26 @@ export function deriveG09(
       if (canonical(record.request.options) !== canonical(G09_ALLOWED_GOALS[entry.arm])) issues.push(`${id}: the request candidates are not the ${entry.arm} set`);
       if (record.request.expiresAtSimTime !== record.request.createdAtSimTime + 1) issues.push(`${id}: the request expiry is not createdAt+1`);
     }
+    // Goal selection is counted from the STRICT PARSE, not from the binding:
+    // a legally chosen feed_self has no binding and is still a valid choice.
+    if (derived.goalParseOk && (derived.goal === 'feed_self' || derived.goal === 'yield_once')) {
+      const chosen: 'feed_self' | 'yield_once' = derived.goal;
+      goals[chosen] += 1;
+      goals.byCell[entry.cell]![chosen] = (goals.byCell[entry.cell]![chosen] ?? 0) + 1;
+    }
     if (record.binding !== null && record.request !== null) {
       issues.push(...bindingIssues(record.binding, record.request));
       const parsed = strictGoalChoice(record.binding.raw, record.request.options);
       if (!parsed.ok) issues.push(`${id}: binding raw does not parse: ${parsed.error}`);
       if (goalExchange !== undefined && goalExchange.response.body !== undefined && goalExchange.response.body !== null) {
-        const content = responseContent(goalExchange);
+        const content = classifyHttpExchange(goalExchange).content;
         if (content !== record.binding.raw) issues.push(`${id}: the goal response content differs from the binding raw`);
       }
-      goals[record.binding.goal] += 1;
-      goals.byCell[entry.cell]![record.binding.goal] = (goals.byCell[entry.cell]![record.binding.goal] ?? 0) + 1;
-    } else if (record.outcome === 'completed') {
-      // A declined feed_self is a legal completed control episode.
+    } else if (derived.goalParseOk && derived.goal === 'feed_self') {
+      // A declined feed_self is a legal control decision without a binding.
       if (record.request === null || record.request.status !== 'declined') {
-        issues.push(`${id}: a completed episode must carry an accepted binding or a declined request`);
-      } else {
-        goals.feed_self += 1;
-        goals.byCell[entry.cell]!.feed_self = (goals.byCell[entry.cell]!.feed_self ?? 0) + 1;
+        issues.push(`${id}: a feed_self decision must be recorded as a declined request`);
       }
-    }
-    // Action phase: legal legacy/timed_wait action that produced the ledger.
-    if (actionExchange !== undefined) {
-      const parsed = parseAction(responseContent(actionExchange), 'timed_wait');
-      if (!parsed.ok) issues.push(`${id}: the action answer is not a legal timed_wait action: ${parsed.error}`);
-      else if (record.action?.parseOk !== true || record.action.type !== parsed.action.type) issues.push(`${id}: the recorded action does not match the parsed answer`);
     }
     // Re-execute the ledger on a fresh Engine.
     if (record.snapshot !== undefined) {
@@ -479,46 +724,57 @@ export function deriveG09(
     } else {
       issues.push(`${id}: no snapshot to re-execute`);
     }
-    // Fulfilment: replay the request through the authoritative commands.
-    if (record.outcome === 'completed' && record.binding !== null && record.request !== null) {
+    // World facts: replay the request through the authoritative commands.
+    // They are kept for EVERY bound episode, but only a protocol-valid
+    // episode enters the byCell comparison table.
+    if (record.binding !== null && record.request !== null && record.snapshot !== undefined) {
       const replayed = replayRequestOutcome(record.request, record.binding, {
         commands: record.snapshot.commands as never,
         finalSimTime: record.snapshot.finalState?.simTime,
       });
-      if (record.fulfilment === null) issues.push(`${id}: a completed episode must record its fulfilment`);
-      else {
+      const expectedVerdict = record.binding.goal !== 'yield_once'
+        ? 'not_applicable'
+        : fulfilmentVerdict({ goal: 'yield_once', npcAteBeforePlayer: replayed.outcome === 'violated', playerAte: replayed.outcome === 'fulfilled' });
+      if (record.fulfilment === null) {
+        issues.push(`${id}: a bound episode must record its fulfilment`);
+      } else {
         if (record.fulfilment.outcome !== replayed.outcome) {
           issues.push(`${id}: the recorded request outcome ${record.fulfilment.outcome} disagrees with the replayed ${replayed.outcome}`);
         }
-        const expectedVerdict = record.binding.goal !== 'yield_once'
-          ? 'not_applicable'
-          : fulfilmentVerdict({ goal: 'yield_once', npcAteBeforePlayer: replayed.outcome === 'violated', playerAte: replayed.outcome === 'fulfilled' });
         if (record.fulfilment.verdict !== expectedVerdict) {
           issues.push(`${id}: the recorded verdict ${record.fulfilment.verdict} disagrees with ${expectedVerdict}`);
         }
-        if (record.binding.goal === 'yield_once') {
-          const bucket = fulfilment.byCell[entry.cell]!;
-          bucket[expectedVerdict] = (bucket[expectedVerdict] ?? 0) + 1;
-        }
+      }
+      fulfilment.world[expectedVerdict] = (fulfilment.world[expectedVerdict] ?? 0) + 1;
+      if (derived.protocolValid && record.binding.goal === 'yield_once') {
+        const bucket = fulfilment.byCell[entry.cell]!;
+        bucket[expectedVerdict] = (bucket[expectedVerdict] ?? 0) + 1;
       }
     }
-    const goalTokens = tokensOf(goalExchange);
-    const actionTokens = tokensOf(actionExchange);
-    if (goalExchange !== undefined) byCell[entry.cell]!.goalTokens = addMaybe(byCell[entry.cell]!.goalTokens, goalTokens);
-    if (actionExchange !== undefined) byCell[entry.cell]!.actionTokens = addMaybe(byCell[entry.cell]!.actionTokens, actionTokens);
-    byCell[entry.cell]!.requests += record.http?.length ?? 0;
-    episodes.push({
-      episodeId: id, cell: record.cell, arm: record.arm, satiety: record.satiety, outcome: record.outcome,
-      goal: record.binding === null ? null : record.binding.goal,
-      request: record.request === null ? null : record.request.status,
-      verdict: record.fulfilment === null ? null : record.fulfilment.verdict,
-      goalTokens, actionTokens,
-    });
+    // Cost: only the phases that were actually sent are counted.
+    const cellCost = byCell[entry.cell]!;
+    if (derived.goalTokens === null && goalExchange !== undefined) {
+      unknownGoalPhases += 1;
+      cellCost.unknownPhases += 1;
+    } else if (derived.goalTokens !== null) {
+      knownGoal += derived.goalTokens;
+      cellCost.knownGoalTokens += derived.goalTokens;
+    }
+    if (derived.actionTokens === null && actionExchange !== undefined) {
+      unknownActionPhases += 1;
+      cellCost.unknownPhases += 1;
+    } else if (derived.actionTokens !== null) {
+      knownAction += derived.actionTokens;
+      cellCost.knownActionTokens += derived.actionTokens;
+    }
+    cellCost.requests += record.http?.length ?? 0;
+    if (derived.goalTokens !== null) cellCost.goalTokens = (cellCost.goalTokens as number) + derived.goalTokens;
+    if (derived.actionTokens !== null) cellCost.actionTokens = (cellCost.actionTokens as number) + derived.actionTokens;
   }
 
   if (scope === 'complete') {
     for (const entry of frozen) {
-      if (!seen.has(entry.episodeId) && !batch.episodes.some(record => record.outcome === 'not_run' && record.episodeId === entry.episodeId)) {
+      if (!seen.has(entry.episodeId) && !batch.episodes.some(record => record.episodeId === entry.episodeId)) {
         issues.push(`${entry.episodeId}: the plan slot has no record at all`);
       }
     }
@@ -538,43 +794,46 @@ export function deriveG09(
   if (ledger.begins > G09_HARD_CHAT_LIMIT) issues.push(`the batch spent ${ledger.begins} chat requests, more than the frozen ${G09_HARD_CHAT_LIMIT}`);
   if (campaign.spent > campaign.limit) issues.push(`the campaign spent ${campaign.spent} chat requests, more than its limit ${campaign.limit}`);
 
-  const goalTokenValues = batch.episodes.map(record => tokensOf(record.http?.find(e => e.phase === 'goal')));
-  const actionTokenValues = batch.episodes.map(record => tokensOf(record.http?.find(e => e.phase === 'action')));
+  const usageUnknown = ledger.usageUnknown || unknownGoalPhases > 0 || unknownActionPhases > 0;
+  const knownTotal = knownGoal + knownAction;
+  for (const cell of G09_CELLS) {
+    const cellCost = byCell[cell.cell]!;
+    if (cellCost.unknownPhases > 0) {
+      const hasUnknownGoal = batch.episodes
+        .filter(record => record.cell === cell.cell)
+        .some(record => {
+          const exchange = record.http?.find(e => e.phase === 'goal');
+          return exchange !== undefined && tokensOf(exchange) === null;
+        });
+      const hasUnknownAction = batch.episodes
+        .filter(record => record.cell === cell.cell)
+        .some(record => {
+          const exchange = record.http?.find(e => e.phase === 'action');
+          return exchange !== undefined && tokensOf(exchange) === null;
+        });
+      if (hasUnknownGoal) cellCost.goalTokens = null;
+      if (hasUnknownAction) cellCost.actionTokens = null;
+    }
+  }
   const costs: G09Summary['costs'] = {
     chatRequests: ledger.begins,
     spent: ledger.begins,
     blocked: ledger.blocked,
     unresolved: ledger.unresolved,
-    usageUnknown: ledger.usageUnknown,
-    goalTokens: sumOrNull(goalTokenValues),
-    actionTokens: sumOrNull(actionTokenValues),
-    totalTokens: ledger.knownTokenSum,
+    usageUnknown,
+    goalTokens: unknownGoalPhases > 0 ? null : knownGoal,
+    actionTokens: unknownActionPhases > 0 ? null : knownAction,
+    totalTokens: usageUnknown ? null : knownTotal,
+    knownGoalTokens: knownGoal,
+    knownActionTokens: knownAction,
+    knownTotalTokens: knownTotal,
+    unknownPhases: unknownGoalPhases + unknownActionPhases,
+    notRunPhases,
     campaignLimit: campaign.limit,
     campaignSpent: campaign.spent,
     byCell,
   };
-  for (const cell of G09_CELLS) {
-    const inCell = batch.episodes.filter(record => record.cell === cell.cell);
-    if (inCell.some(record => tokensOf(record.http?.find(e => e.phase === 'goal')) === null)) byCell[cell.cell]!.goalTokens = null;
-    if (inCell.some(record => tokensOf(record.http?.find(e => e.phase === 'action')) === null)) byCell[cell.cell]!.actionTokens = null;
-  }
   return { issues, protocol, goals, fulfilment, costs, episodes };
-}
-
-function addMaybe(total: number | null, value: number | null): number | null {
-  if (total === null || value === null) return null;
-  return total + value;
-}
-
-function responseContent(exchange: G09HttpExchange): string {
-  if (typeof exchange.response.body !== 'string') return '';
-  try {
-    const body = JSON.parse(exchange.response.body) as { choices?: { message?: { content?: unknown } }[] };
-    const content = body.choices?.[0]?.message?.content;
-    return typeof content === 'string' ? content : '';
-  } catch {
-    return '';
-  }
 }
 
 /** The frozen goal prompt for an arm (candidate line normalised to <DATA>). */
@@ -622,8 +881,10 @@ function verify(batchDir: string, campaign: { limit: number; spent: number }, sc
   const frozen = frozenPlanEntries();
   const derivation = deriveG09(batch, frozen, campaign, scope);
   const issues = [...derivation.issues];
-  const recorded = batch.episodes.filter(record => record.outcome !== 'not_run').length;
-  const complete = recorded === frozen.length && batch.episodes.every(record => record.outcome === 'completed');
+  // Completeness is derived: a recorded `completed` with a failed phase is
+  // NOT a completion, and a tampered claim is already an issue.
+  const recorded = derivation.episodes.filter(episode => episode.outcome !== 'not_run').length;
+  const complete = recorded === frozen.length && derivation.episodes.every(episode => episode.outcome === 'completed');
   if (scope === 'complete') {
     if (batch.summary === null) {
       issues.push('summary.json is missing: a complete batch must publish its own derivation');
@@ -633,14 +894,13 @@ function verify(batchDir: string, campaign: { limit: number; spent: number }, sc
     if (!complete) issues.push(`the batch is not complete: ${recorded}/${frozen.length} episodes ran`);
   } else {
     const pair = frozen.slice(0, 2).map(entry => entry.episodeId);
-    const pairRecords = batch.episodes.filter(record => pair.includes(record.episodeId));
-    if (pairRecords.length !== 2) issues.push(`the structural gate needs both first-pair episodes (${pair.join(', ')})`);
-    for (const record of pairRecords) {
-      if (record.outcome !== 'completed') issues.push(`${record.episodeId}: the structural gate requires a completed episode`);
-      if ((record.http?.length ?? 0) !== 2) issues.push(`${record.episodeId}: the structural gate requires exactly two exchanges`);
-      if (record.request === null || record.request.status === 'pending') {
-        issues.push(`${record.episodeId}: the structural gate requires a decided request`);
-      }
+    const pairDerived = derivation.episodes.filter(episode => pair.includes(episode.episodeId));
+    if (pairDerived.length !== 2) issues.push(`the structural gate needs both first-pair episodes (${pair.join(', ')})`);
+    for (const episode of pairDerived) {
+      // G10: the gate uses the DERIVED protocol outcome, never the record's claim.
+      if (episode.outcome !== 'completed') issues.push(`${episode.episodeId}: the structural gate requires a legally completed episode (derived ${episode.outcome})`);
+      if (episode.goalKind !== 'ok' || episode.actionKind !== 'ok') issues.push(`${episode.episodeId}: the structural gate requires usable goal and action exchanges`);
+      if (episode.goalParseOk !== true) issues.push(`${episode.episodeId}: the structural gate requires a legally parsed goal answer`);
     }
   }
   const structural = issues.filter(issue => !issue.startsWith('summary.'));
@@ -650,6 +910,41 @@ function verify(batchDir: string, campaign: { limit: number; spent: number }, sc
 }
 
 /** The summary must equal the projection; a self-declared summary never wins. */
+/**
+ * G10: summaries written before the action-contract round (schema /2) are
+ * compared through a projection of the SAME derivation, so a legacy batch can
+ * still verify ok while a rewritten/back-filled summary stays rejected.
+ */
+function legacyProjection(derivation: G09Derivation): Record<string, unknown> {
+  return {
+    protocol: derivation.protocol,
+    goals: derivation.goals,
+    fulfilment: { byCell: derivation.fulfilment.byCell },
+    costs: {
+      chatRequests: derivation.costs.chatRequests,
+      spent: derivation.costs.spent,
+      blocked: derivation.costs.blocked,
+      unresolved: derivation.costs.unresolved,
+      usageUnknown: derivation.costs.usageUnknown,
+      goalTokens: derivation.costs.goalTokens,
+      actionTokens: derivation.costs.actionTokens,
+      totalTokens: derivation.costs.totalTokens,
+      campaignLimit: derivation.costs.campaignLimit,
+      campaignSpent: derivation.costs.campaignSpent,
+      byCell: Object.fromEntries(Object.entries(derivation.costs.byCell).map(([cell, value]) => [
+        cell, { goalTokens: value.goalTokens, actionTokens: value.actionTokens, requests: value.requests },
+      ])),
+    },
+    episodes: derivation.episodes.map(episode => ({
+      episodeId: episode.episodeId, cell: episode.cell, arm: episode.arm, satiety: episode.satiety,
+      // /2 carried `goal` from the BINDING (null for a legal feed_self).
+      outcome: episode.outcome, goal: episode.goal === 'feed_self' ? null : episode.goal,
+      request: episode.request, verdict: episode.verdict,
+      goalTokens: episode.goalTokens, actionTokens: episode.actionTokens,
+    })),
+  };
+}
+
 export function compareG09Summary(summary: G09Summary, derivation: G09Derivation, plan: G09Plan | null): string[] {
   const issues: string[] = [];
   const check = (label: string, actual: unknown, derived: unknown): void => {
@@ -657,12 +952,25 @@ export function compareG09Summary(summary: G09Summary, derivation: G09Derivation
       issues.push(`summary.${label}: recorded ${JSON.stringify(actual)} but the contract derives ${JSON.stringify(derived)}`);
     }
   };
+  const schema = (summary as { schema?: unknown }).schema;
+  if (schema !== G09_SUMMARY_SCHEMA && schema !== 'frostecho.g09.summary/2') {
+    issues.push(`summary.schema: ${JSON.stringify(schema)} is not a known summary schema`);
+    return issues;
+  }
   check('hardChatLimit', summary.hardChatLimit, G09_HARD_CHAT_LIMIT);
-  check('protocol', summary.protocol, derivation.protocol);
-  check('goals', summary.goals, derivation.goals);
-  check('fulfilment', summary.fulfilment, derivation.fulfilment);
-  check('costs', summary.costs, derivation.costs);
-  check('episodes', summary.episodes, derivation.episodes);
+  if (schema === G09_SUMMARY_SCHEMA) {
+    check('protocol', summary.protocol, derivation.protocol);
+    check('goals', summary.goals, derivation.goals);
+    check('fulfilment', summary.fulfilment, derivation.fulfilment);
+    check('costs', summary.costs, derivation.costs);
+    check('episodes', summary.episodes, derivation.episodes);
+  } else {
+    // A /2 summary is compared on exactly the fields it was allowed to carry.
+    const legacy = legacyProjection(derivation);
+    for (const key of ['protocol', 'goals', 'fulfilment', 'costs', 'episodes'] as const) {
+      check(key, (summary as unknown as Record<string, unknown>)[key], legacy[key]);
+    }
+  }
   if (plan !== null && summary.batch !== plan.batch) issues.push('summary.batch disagrees with the plan batch');
   return issues;
 }
@@ -671,7 +979,7 @@ export function projectG09Summary(
   batch: string, mode: 'live' | 'fake', model: string | null, derivation: G09Derivation,
 ): G09Summary {
   return {
-    schema: 'frostecho.g09.summary/2',
+    schema: G09_SUMMARY_SCHEMA,
     batch,
     createdAt: new Date().toISOString(),
     mode,
