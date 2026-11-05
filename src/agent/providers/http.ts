@@ -1,6 +1,8 @@
+import { createHash } from 'node:crypto';
 import { RULES } from '../../types';
 import { DecideInput, Provider, TransportRecord, UsageStats } from '../contracts';
 import { renderGoalChoicePrompt } from '../../negotiation/contracts';
+import { ACTIVE_GOAL_PROMPT_VERSION, activeGoalStatement } from '../active-goal-prompt';
 
 export const HTTP_ENV = {
   url: 'FROSTECHO_LLM_URL',
@@ -46,12 +48,25 @@ export function enableThinkingFromEnv(env: NodeJS.ProcessEnv = process.env): boo
   return HTTP_SAMPLING.chat_template_kwargs.enable_thinking;
 }
 
+/**
+ * G10 classification codes carried on the transport error and record. The
+ * HTTP status and the raw body are kept verbatim either way: a 200 with an
+ * exhausted generation budget is NOT a network failure.
+ */
+export type ProviderErrorCode =
+  | 'OUTPUT_TRUNCATED'
+  | 'EMPTY_FINAL_OUTPUT'
+  | 'MISSING_CONTENT'
+  | 'INVALID_RESPONSE_JSON';
+
 export class ProviderTransportError extends Error {
   readonly status?: number;
-  constructor(message: string, status?: number) {
+  readonly code?: ProviderErrorCode;
+  constructor(message: string, status?: number, code?: ProviderErrorCode) {
     super(message);
     this.name = 'ProviderTransportError';
     this.status = status;
+    this.code = code;
   }
 }
 
@@ -103,11 +118,16 @@ export function renderDecidePrompt(input: DecideInput): string {
       `playerMessages: ${JSON.stringify(input.playerMessages)}`,
     );
   }
-  // G09 action phase: the frozen binding line from the goal phase. It is
-  // data about what THIS session declared, never a new rule.
-  if (input.goalLine !== undefined) lines.push(input.goalLine);
+  // G10 action phase: the STRUCTURED active goal is the only current goal.
+  // The historical goalLine stays supported for callers that still pass it.
+  if (input.activeGoal !== undefined) lines.push(...activeGoalStatement(input.activeGoal));
+  else if (input.goalLine !== undefined) lines.push(input.goalLine);
+  // G10: with a yield_once agreement the hunger target is background state,
+  // never a second goal line; feed_self keeps its satiety target.
+  if (input.activeGoal === undefined || input.activeGoal.kind === 'feed_self') {
+    lines.push(`goal: hunger >= ${input.goal.hungerAtLeast}`);
+  }
   lines.push(
-    `goal: hunger >= ${input.goal.hungerAtLeast}`,
     `observation: ${JSON.stringify(input.observation)}`,
     `feedback: ${JSON.stringify(input.feedback)}`,
   );
@@ -143,16 +163,36 @@ function renderG08Prompt(input: DecideInput, allowedActions: 'legacy' | 'timed_w
       `playerMessages: ${JSON.stringify(input.playerMessages)}`,
     );
   }
-  // G09 action phase: the frozen binding line from the goal phase. It is
-  // data about what THIS session declared, never a new rule.
-  if (input.goalLine !== undefined) lines.push(input.goalLine);
+  // G10 action phase: the STRUCTURED active goal is the only current goal.
+  if (input.activeGoal !== undefined) lines.push(...activeGoalStatement(input.activeGoal));
+  else if (input.goalLine !== undefined) lines.push(input.goalLine);
+  if (input.activeGoal === undefined || input.activeGoal.kind === 'feed_self') {
+    lines.push(`goal: hunger >= ${input.goal.hungerAtLeast}`);
+  }
   lines.push(
-    `goal: hunger >= ${input.goal.hungerAtLeast}`,
     `observation: ${JSON.stringify(input.observation)}`,
     `feedback: ${JSON.stringify(input.feedback)}`,
   );
   return lines.join('\n');
 }
+
+/**
+ * Fingerprint of the action template WITH the structured active goal: a
+ * canonical yield_once prompt is rendered and hashed. The plan records the
+ * version and this hash before the batch runs.
+ */
+export function activeGoalPromptFingerprint(): string {
+  const sentinel: DecideInput = {
+    observation: { id: 'npc_a', location: 'kitchen', hunger: 40, foodHere: 1, reachable: ['dorm'] },
+    goal: { hungerAtLeast: 70 },
+    feedback: null,
+    allowedActions: 'timed_wait',
+    activeGoal: { kind: 'yield_once', requestId: 'sentinel-req', expiresAtSimTime: 1 },
+  };
+  return createHash('sha256').update(renderDecidePrompt(sentinel)).digest('hex');
+}
+
+export { ACTIVE_GOAL_PROMPT_VERSION };
 
 /** Missing URL or model → null. A blank API key is treated as omitted. */
 export function loadHttpConfigFromEnv(env: NodeJS.ProcessEnv = process.env): HttpProviderConfig | null {
@@ -189,17 +229,34 @@ function textFromContent(content: unknown): string | undefined {
 /**
  * Action text is choices[0].message.content only.
  * reasoning, reasoning_content, and thinking are not actions, even when content is empty.
+ * G10: an empty final content on a NORMAL finish is EMPTY_FINAL_OUTPUT; a
+ * structurally missing content object is MISSING_CONTENT. Both keep the raw
+ * body, the HTTP status and the usage on the record.
  */
 function messageContent(body: unknown): string {
-  if (!body || typeof body !== 'object') throw new ProviderTransportError('missing message content');
+  if (!body || typeof body !== 'object') throw new ProviderTransportError('missing message content', undefined, 'MISSING_CONTENT');
   const choices = (body as { choices?: unknown }).choices;
-  if (!Array.isArray(choices) || choices.length === 0) throw new ProviderTransportError('missing message content');
+  if (!Array.isArray(choices) || choices.length === 0) throw new ProviderTransportError('missing message content', undefined, 'MISSING_CONTENT');
   const message = (choices[0] as { message?: unknown } | undefined)?.message;
-  if (!message || typeof message !== 'object') throw new ProviderTransportError('missing message content');
-  if (!Object.hasOwn(message, 'content')) throw new ProviderTransportError('missing message content');
+  if (!message || typeof message !== 'object') throw new ProviderTransportError('missing message content', undefined, 'MISSING_CONTENT');
+  if (!Object.hasOwn(message, 'content')) throw new ProviderTransportError('missing message content', undefined, 'MISSING_CONTENT');
   const text = textFromContent((message as { content?: unknown }).content);
-  if (text === undefined) throw new ProviderTransportError('missing message content');
+  // Both a NULL content and an empty STRING are an empty final output on a
+  // normal finish; the historical message text for null is kept verbatim.
+  if (text === undefined) throw new ProviderTransportError('missing message content', undefined, 'EMPTY_FINAL_OUTPUT');
+  if (text.length === 0) {
+    throw new ProviderTransportError('no final message content (empty final output)', undefined, 'EMPTY_FINAL_OUTPUT');
+  }
   return text;
+}
+
+/** The raw wire finish_reason of the first choice, verbatim (null when absent). */
+function finishReasonOf(body: unknown): string | null {
+  if (!body || typeof body !== 'object') return null;
+  const choices = (body as { choices?: unknown }).choices;
+  if (!Array.isArray(choices) || choices.length === 0) return null;
+  const reason = (choices[0] as { finish_reason?: unknown } | undefined)?.finish_reason;
+  return typeof reason === 'string' ? reason : null;
 }
 
 function scrubText(value: string, secrets: string[]): string {
@@ -355,14 +412,29 @@ export function createHttpProvider(config: HttpProviderConfig): Provider {
           parsed = rawText ? JSON.parse(rawText) : null;
         } catch {
           record.responseContent = scrub(rawText, secrets);
+          record.classification = 'INVALID_RESPONSE_JSON';
           record.error = 'invalid response json';
-          throw new ProviderTransportError('invalid response json');
+          throw new ProviderTransportError('invalid response json', res.status, 'INVALID_RESPONSE_JSON');
         }
         record.responseContent = scrub(parsed, secrets);
         record.usage = readUsage(parsed);
+        const finishReason = finishReasonOf(parsed);
+        record.finishReason = finishReason;
+        // G10: an exhausted generation budget is OUTPUT_TRUNCATED even when the
+        // truncated text happens to look like a complete JSON object. It is
+        // never executed; the HTTP 200, the body and the usage stay recorded.
+        if (finishReason === 'length') {
+          record.classification = 'OUTPUT_TRUNCATED';
+          const err = new ProviderTransportError('output truncated: finish_reason=length', res.status, 'OUTPUT_TRUNCATED');
+          record.error = err.message;
+          throw err;
+        }
         try {
-          return messageContent(parsed);
+          const text = messageContent(parsed);
+          record.classification = null;
+          return text;
         } catch (err) {
+          record.classification = err instanceof ProviderTransportError ? err.code ?? null : null;
           record.error = err instanceof Error ? err.message : 'missing message content';
           throw err;
         }

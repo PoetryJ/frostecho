@@ -76,7 +76,25 @@ export interface DecideInput {
    * once the goal phase has decided. Undefined keeps the prompt unchanged.
    */
   goalLine?: string;
+  /**
+   * G10 (opt-in): the STRUCTURED active goal of this action session, derived
+   * from the authoritative goal decision and the request contract — never
+   * from the goal-phase prompt text. When present it is the ONLY current
+   * goal rendered into the action prompt (the historical `goal: hunger >= n`
+   * line is replaced for yield_once and kept for feed_self).
+   */
+  activeGoal?: ActiveGoal;
 }
+
+/**
+ * G10: the action phase's structured current goal.
+ * - feed_self: the request was declined; the session keeps its hunger target.
+ * - yield_once: the agreement is the goal; it is fulfilled only when the
+ *   player actually eats before expiresAtSimTime.
+ */
+export type ActiveGoal =
+  | { kind: 'feed_self'; hungerAtLeast: number }
+  | { kind: 'yield_once'; requestId: string; expiresAtSimTime: number };
 
 /** Minimal message content exposed to the model: sender and text only. */
 export interface PlayerMessageInput {
@@ -102,6 +120,15 @@ export interface TransportRecord {
   usage: UsageStats | null;
   latencyMs: number;
   error: string | null;
+  /** G10: the raw wire finish_reason (stop|length|null|...), kept verbatim. */
+  finishReason?: string | null;
+  /**
+   * G10: the response classification, when the body could be inspected:
+   * OUTPUT_TRUNCATED (finish_reason=length — never executed even if the text
+   * looks like JSON), EMPTY_FINAL_OUTPUT, MISSING_CONTENT,
+   * INVALID_RESPONSE_JSON. Absent on transport failures (status is kept).
+   */
+  classification?: string | null;
 }
 
 export interface Provider {

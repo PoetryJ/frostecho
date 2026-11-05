@@ -1,6 +1,6 @@
 import { WorldState } from '../types';
 import {
-  AgentAction, AgentSession, CommandIdScheme, DecideInput, DecidingPhase, DEFAULT_TIMEOUT_MS, GOAL_HUNGER_AT_LEAST, MAX_PROVIDER_CALLS, GoalDecisionRecord,
+  ActiveGoal, AgentAction, AgentSession, CommandIdScheme, DecideInput, DecidingPhase, DEFAULT_TIMEOUT_MS, GOAL_HUNGER_AT_LEAST, MAX_PROVIDER_CALLS, GoalDecisionRecord,
   Provider, RunOptions, RunOutcome, RunResult, SessionStatus, StepAgentResult, StepFeedback, StepRecord,
   SubmittedCommand, GoalProtocolOptions, GoalChoiceContext,
 } from './contracts';
@@ -104,6 +104,21 @@ function goalChoiceContext(
     playerId: protocol.playerId,
     simTime,
   };
+}
+
+/**
+ * G10: the action phase's structured active goal, rebuilt from the
+ * AUTHORITATIVE decision and the request deadline — never from the goal
+ * prompt text. A restored session rebuilds it from the restored binding, so
+ * recovery costs no extra provider call.
+ */
+function activeGoalOf(session: AgentSessionImpl): ActiveGoal | null {
+  const decision = session.goalDecision;
+  if (decision === null) return null;
+  if (decision.goal === 'feed_self') return { kind: 'feed_self', hungerAtLeast: GOAL_HUNGER_AT_LEAST };
+  const expires = session.goalBinding?.expiresAtSimTime ?? session.goalProtocol?.expiresAtSimTime;
+  if (typeof expires !== 'number' || !Number.isSafeInteger(expires) || expires < 0) return null;
+  return { kind: 'yield_once', requestId: decision.requestId, expiresAtSimTime: expires };
 }
 
 /** The G09 binding records the episode it belongs to (runId `<episode>:<actor>:c<cycle>`). */
@@ -440,8 +455,13 @@ async function executeStep(session: AgentSessionImpl): Promise<StepAgentResult> 
       feedback: session.feedback ? { ...session.feedback } : null,
       ...(session.options.actionSet !== undefined ? { allowedActions: session.actionSet } : {}),
       ...(inGoalPhase && goalContext !== null && !('failure' in goalContext) ? { goalChoice: goalContext } : {}),
+      // G10: the action phase renders the STRUCTURED decision, so the two
+      // phases cannot disagree. The legacy line stays as a fallback only for
+      // a session whose authoritative deadline is missing (never a normal run).
       ...(!inGoalPhase && session.goalDecision !== null
-        ? { goalLine: goalChoiceLine({ goal: session.goalDecision.goal, requestId: session.goalDecision.requestId }) }
+        ? (activeGoalOf(session) !== null
+          ? { activeGoal: activeGoalOf(session)! }
+          : { goalLine: goalChoiceLine({ goal: session.goalDecision.goal, requestId: session.goalDecision.requestId }) })
         : {}),
     };
     const done = takeDecision(

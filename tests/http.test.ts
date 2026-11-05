@@ -385,7 +385,13 @@ test('reasoning fields are not actions; only message content is returned', async
       choices: [{ message: { content: '', reasoning_content: '{"type":"eat"}' } }],
     }), { status: 200 }),
   });
-  assert.equal(await emptyContent.decide(sample(), new AbortController().signal), '');
+  // G10: an empty final content on a normal finish is classified at the
+  // provider (EMPTY_FINAL_OUTPUT) instead of being returned as ''.
+  await assert.rejects(() => emptyContent.decide(sample(), new AbortController().signal), (err: Error & { code?: string }) => {
+    assert.equal(err.message, 'no final message content (empty final output)');
+    assert.equal(err.code, 'EMPTY_FINAL_OUTPUT');
+    return true;
+  });
 
   const mixedParts = createHttpProvider({
     url: 'http://example.test/v1/chat/completions',

@@ -438,7 +438,9 @@ test('N1: default offline ignores env; the live path is real wire with the saved
     assert.equal(restored.code, 0, restored.stderr);
     assert.equal(server.posts.length, 2, 'the load itself made no call');
     const actionPrompt = String((JSON.parse(server.posts[1]!.body) as { messages: { content: string }[] }).messages[0]!.content);
-    assert.ok(actionPrompt.includes('你已选择的目标：yield_once'), 'the action prompt keeps the saved goal');
+    // G10: the structured active goal replaces the old free-text goal line.
+    assert.ok(actionPrompt.includes('activeGoal: {"kind":"yield_once"'), 'the action prompt keeps the saved goal');
+    assert.ok(!/^goal: hunger/m.test(actionPrompt), 'yield_once must not render a second satiety goal');
     assert.ok(!actionPrompt.includes('candidateGoals:'), 'the goal is not re-asked');
 
     const createdRecord = runRecord(liveRoot, 'demo').payload;

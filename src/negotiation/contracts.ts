@@ -17,7 +17,14 @@
  */
 export const G09_REQUEST_SCHEMA = 'frostecho.g09.goal-request/2';
 export const G09_BINDING_SCHEMA = 'frostecho.g09.goal-binding/2';
-export const G09_EPISODE_SCHEMA = 'frostecho.g09.episode/2';
+/**
+ * /3 (G10): goal.parseOk is the STRICT parse of the wire answer (a legal
+ * feed_self is true without a binding); /2 records used `binding !== null`,
+ * which is documented and still readable.
+ */
+export const G09_EPISODE_SCHEMA = 'frostecho.g09.episode/3';
+/** The pre-G10 episode schema, still readable for legacy batches. */
+export const G09_EPISODE_SCHEMA_V2 = 'frostecho.g09.episode/2';
 export const G09_PLAN_SCHEMA = 'frostecho.g09.plan/2';
 export const G09_SUMMARY_SCHEMA = 'frostecho.g09.summary/2';
 export const G09_SESSION_SCHEMA = 'frostecho.g09.session/2';

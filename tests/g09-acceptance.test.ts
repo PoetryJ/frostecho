@@ -361,7 +361,10 @@ test('F3: save at three cut points, load in another process, and keep the same y
     const loadedChosen = await cli(['--load', '--path', savedSlot(root, 'chosen'), '--live', '--http', http.url, '--model', 'loopback-model', '--step', '--save-as', 'chosen-again']);
     assert.equal(loadedChosen.code, 0, loadedChosen.stderr);
     const actionPrompt = http.prompts[http.prompts.length - 1]!;
-    assert.ok(actionPrompt.includes('你已选择的目标：yield_once'), 'the restored action prompt keeps the yield goal');
+    // G10: the action prompt carries the STRUCTURED active goal (not the old
+    // free-text goal line), and never a second hunger goal for yield_once.
+    assert.ok(actionPrompt.includes('activeGoal: {"kind":"yield_once"'), 'the restored action prompt keeps the yield goal');
+    assert.ok(!/^goal: hunger/m.test(actionPrompt), 'yield_once must not render a second satiety goal');
     assert.ok(!actionPrompt.includes('candidateGoals:'), 'the goal is never re-asked');
 
     // The original slot bytes never change; the re-saved session keeps the
