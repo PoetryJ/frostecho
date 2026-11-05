@@ -15,7 +15,7 @@ import type { NeedsGame } from '../needs/game';
 import type { GoalRequestStore } from '../negotiation/requests';
 import {
   G10_RUN_SCHEMA_V2,
-  type AppMeta, type AppView, type CampaignBinding, type RunRecordLineage,
+  type AppMeta, type AppView, type CampaignBinding, type FailureEvidence, type RunRecordLineage,
   type RunRecordPayloadV2, type RunRecordWriteResult, type SaveCode, type SaveOutcome, type WireRecordEntry,
 } from './contracts';
 
@@ -51,6 +51,8 @@ export interface RunRecordInput {
   wire: WireRecordEntry[];
   lineage: RunRecordLineage;
   campaign: { binding: CampaignBinding | null; limit: number; spent: number; known: number | null } | null;
+  /** Failures latched during THIS run; omitted from the payload when empty. */
+  failures?: FailureEvidence[];
   now: () => number;
 }
 
@@ -91,6 +93,9 @@ export function buildRunRecordPayload(input: RunRecordInput): RunRecordPayloadV2
     },
     wire: input.wire,
     campaign: input.campaign,
+    // run/2 compatible addition: the field exists ONLY when a failure was
+    // latched, so every no-failure record stays byte-identical to /2.
+    ...(input.failures !== undefined && input.failures.length > 0 ? { failures: input.failures } : {}),
   };
 }
 

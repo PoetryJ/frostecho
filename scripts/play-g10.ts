@@ -191,6 +191,12 @@ async function main(): Promise<number> {
   }
   if (interrupted) console.log('收到 SIGINT：本次运行收束一次。');
   const final = await controller.finalize();
+  // Every failure latched during the run reaches stderr at least once, with
+  // its ORIGINAL cause — even when the final record write later succeeded
+  // (e.g. a transient IO fault that recovered before EOF).
+  for (const failure of final.failures) {
+    console.error(`[run:${failure.code}] ${failure.message}${failure.evidencePath === null ? '（失败证据未落盘）' : `（证据：${failure.evidencePath}）`}`);
+  }
   for (const error of final.errors) {
     // The record could not be written (or close failed): the original cause
     // is printed, the run is NOT reported as saved, and the exit stays 1.

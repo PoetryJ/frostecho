@@ -30,9 +30,9 @@ import {
 import { saveOutcomeFromMessage, writeAuthoritativeRunRecord } from './persistence';
 import {
   G10_APP_SCHEMA_V2, G10_FAILURE_SCHEMA,
-  type ApplicationPorts, type AppMeta, type AppView, type CampaignBinding, type FixtureId,
-  type GoalArm, type ProviderKind, type RunRecordLineage, type RunRecordWriteResult, type SaveOutcome,
-  type SatietyLevel, type WireRecordEntry,
+  type ApplicationPorts, type AppMeta, type AppView, type CampaignBinding, type FailureEvidence,
+  type FixtureId, type GoalArm, type ProviderKind, type RunRecordLineage, type RunRecordWriteResult,
+  type SaveOutcome, type SatietyLevel, type WireRecordEntry,
 } from './contracts';
 
 export interface G10RuntimeOptions {
@@ -64,7 +64,7 @@ export interface G10Runtime {
   wire(): WireRecordEntry[];
   /** The immutable binding written with the last save (null offline). */
   campaignBinding(): CampaignBinding | null;
-  writeRunRecord(view: AppView): RunRecordWriteResult;
+  writeRunRecord(view: AppView, failures?: FailureEvidence[]): RunRecordWriteResult;
   loadInfo: { path: string; calls: 0; parentSlot: string } | null;
 }
 
@@ -263,9 +263,9 @@ export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10R
     }),
     wire: () => [...wire],
     campaignBinding: () => savedBinding,
-    writeRunRecord: (view: AppView) => writeRunRecord({
+    writeRunRecord: (view: AppView, failures?: FailureEvidence[]) => writeRunRecord({
       game, store: game.goalRequests(), root: runtimeRoot, slot: options.slot, view, meta, config,
-      wire, parentSlot: null, ledger: ledger === null ? null : summaryOf(ledger), binding: savedBinding, now,
+      wire, parentSlot: null, ledger: ledger === null ? null : summaryOf(ledger), binding: savedBinding, now, failures,
     }),
     loadInfo: null,
   });
@@ -374,13 +374,14 @@ function createPorts(input: {
       }
     },
     budget: () => (input.ledger() === null ? null : summaryOf(input.ledger()!)),
-    writeRunRecord(view: AppView): RunRecordWriteResult {
+    writeRunRecord(view: AppView, failures?: FailureEvidence[]): RunRecordWriteResult {
       return writeRunRecord({
         game, store: game.goalRequests(), root, slot, view, meta, config, wire,
         parentSlot: input.parentSlot,
         ledger: input.ledger() === null ? null : summaryOf(input.ledger()!),
         binding: input.binding(),
         now,
+        failures,
       });
     },
     now,
@@ -400,6 +401,7 @@ function writeRunRecord(input: {
   ledger: { limit: number; spent: number; known: number | null } | null;
   binding: CampaignBinding | null;
   now: () => number;
+  failures?: FailureEvidence[];
 }): RunRecordWriteResult {
   return writeAuthoritativeRunRecord({
     root: input.root,
@@ -418,6 +420,7 @@ function writeRunRecord(input: {
       known: input.ledger.known,
     },
     now: input.now,
+    failures: input.failures,
   });
 }
 
@@ -559,11 +562,11 @@ export function loadG10Runtime(path: string, options: LoadG10Options): MessageRe
     }),
     wire: () => [...wire],
     campaignBinding: () => savedBinding,
-    writeRunRecord: (view: AppView) => writeRunRecord({
+    writeRunRecord: (view: AppView, failures?: FailureEvidence[]) => writeRunRecord({
       game, store: restored.value.store, root, slot, view, meta: savedMeta,
       config: envelope.effectiveConfig, wire, parentSlot,
       ledger: ledger === null ? null : summaryOf(ledger),
-      binding: savedBinding, now: options.now ?? Date.now,
+      binding: savedBinding, now: options.now ?? Date.now, failures,
     }),
     loadInfo: { path: parentSlot, calls: 0, parentSlot },
   });

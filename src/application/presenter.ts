@@ -75,11 +75,17 @@ export function renderExecute(result: ExecuteResult, view: AppView): string[] {
     WORLD_REJECTED: '世界拒绝（正常游戏结果）',
     SAVE_BUSY: 'SAVE_BUSY：决策在途，本次不落档',
     SAVE_FAILED: '存档失败',
-    PROVIDER_ERROR: 'Provider 失败：已记录证据，退出码将为非零',
-    PERSISTENCE_FAILED: '持久化失败：已记录证据',
+    PROVIDER_ERROR: 'Provider 失败：退出码将为非零',
+    PERSISTENCE_FAILED: '持久化失败：退出码将为非零',
     BAD_INPUT: '输入不合法',
   };
   lines.push(`[${labels[result.code] ?? result.code}]${result.detail === undefined ? '' : ` ${result.detail}`}`);
+  // Never claim an evidence file was saved unless one actually landed.
+  if (!result.ok && (result.code === 'PROVIDER_ERROR' || result.code === 'PERSISTENCE_FAILED')) {
+    lines.push(result.evidencePath != null
+      ? `  失败证据已记录：${result.evidencePath}`
+      : '  失败证据未能落盘；原始原因见 stderr，退出码非零');
+  }
   return lines;
 }
 

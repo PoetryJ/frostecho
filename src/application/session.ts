@@ -13,8 +13,8 @@ import { createGoalRequest } from '../negotiation/requests';
 import { EPISODE_CALL_LIMIT, SESSION_CALL_LIMIT } from '../reactive/contracts';
 import type {
   ApplicationController, ApplicationPorts, AppCommand, AppNpcView, AppRequestView, AppView,
-  ControllerCloseResult, ControllerDeps, ExecuteResult, FinalizationResult, GoalBinding,
-  GoalRequestStore, NeedsGame, SaveCode,
+  ControllerCloseResult, ControllerDeps, ExecuteResult, FailureEvidence, FinalizationResult,
+  GoalBinding, GoalRequestStore, NeedsGame, SaveCode,
 } from './contracts';
 
 const TERMINAL = new Set(['goal_reached', 'stopped', 'failed', 'invalid_run', 'budget_exhausted', 'timeout', 'provider_error', 'request_expired', 'insufficient_budget']);
@@ -31,6 +31,8 @@ class ApplicationControllerImpl implements ApplicationController {
   private requestSeq = 0;
   private finalized: Promise<FinalizationResult> | null = null;
   private failureDetail: string | null = null;
+  /** Every latched failure of THIS run, in order (memory first, then disk). */
+  private failures: FailureEvidence[] = [];
 
   constructor(private readonly deps: ControllerDeps) {
     // A restored slot already holds host requests; never reuse their ordinal.
@@ -38,6 +40,24 @@ class ApplicationControllerImpl implements ApplicationController {
   }
 
   private get game(): NeedsGame { return this.deps.game; }
+
+  /**
+   * Latch a failure in memory FIRST (original cause, no disk claim), then
+   * try to persist the evidence file; the returned path (or null) is kept
+   * verbatim so nothing later claims a write that never happened.
+   */
+  private latchFailure(code: string, message: string, error: unknown): string | null {
+    const entry: FailureEvidence = { code, message, evidencePath: null };
+    this.failures.push(entry);
+    let evidencePath: string | null = null;
+    try {
+      evidencePath = this.deps.ports.failure(error);
+    } catch {
+      evidencePath = null; // the evidence adapter itself never throws; belt and braces
+    }
+    entry.evidencePath = evidencePath;
+    return evidencePath;
+  }
 
   isClosed(): boolean { return this.closed || this.game.isClosed(); }
 
@@ -103,8 +123,9 @@ class ApplicationControllerImpl implements ApplicationController {
             // The game latched a provider failure. It is a FAILURE (nonzero
             // exit + evidence), never a normal game result.
             this.failed = true;
-            this.deps.ports.failure(new Error(`${outcome.actorId}: ${status}`));
-            return { ok: false, code: 'PROVIDER_ERROR', advanced: 1, detail: status };
+            const cause = new Error(`${outcome.actorId}: ${status}`);
+            const evidencePath = this.latchFailure('PROVIDER_ERROR', `${outcome.actorId}: ${status}`, cause);
+            return { ok: false, code: 'PROVIDER_ERROR', advanced: 1, detail: status, evidencePath };
           }
           return { ok: true, code: 'OK', advanced: 1, detail: `${outcome.actorId} cycle=${outcome.cycle} ${status}` };
         }
@@ -119,8 +140,8 @@ class ApplicationControllerImpl implements ApplicationController {
       }
     } catch (error) {
       this.failed = true;
-      this.deps.ports.failure(error);
-      return { ok: false, code: 'PROVIDER_ERROR', advanced: 0, detail: messageOf(error) };
+      const evidencePath = this.latchFailure('PROVIDER_ERROR', messageOf(error), error);
+      return { ok: false, code: 'PROVIDER_ERROR', advanced: 0, detail: messageOf(error), evidencePath };
     } finally {
       this.busy = false;
     }
@@ -174,8 +195,9 @@ class ApplicationControllerImpl implements ApplicationController {
         // this run into a success. Keep the original code and cause.
         this.failed = true;
         this.failureDetail = saved.cause ?? saved.issues.join('; ');
-        this.deps.ports.failure(new Error(`save ${saved.code}: ${this.failureDetail}`));
-        return { ok: false, code: 'PERSISTENCE_FAILED', detail: `${saved.code}: ${this.failureDetail}`, saveCode: saved.code };
+        const message = `save ${saved.code}: ${this.failureDetail}`;
+        const evidencePath = this.latchFailure(saved.code, message, new Error(message));
+        return { ok: false, code: 'PERSISTENCE_FAILED', detail: message, saveCode: saved.code, evidencePath };
       }
       // EXISTS / INVALID_SLOT / SAVE_BUSY are named, actionable refusals.
       return {
@@ -187,8 +209,8 @@ class ApplicationControllerImpl implements ApplicationController {
     } catch (error) {
       this.failed = true;
       this.failureDetail = messageOf(error);
-      this.deps.ports.failure(error);
-      return { ok: false, code: 'PERSISTENCE_FAILED', detail: messageOf(error) };
+      const evidencePath = this.latchFailure('INTERNAL', this.failureDetail, error);
+      return { ok: false, code: 'PERSISTENCE_FAILED', detail: this.failureDetail, evidencePath };
     }
   }
 
@@ -209,7 +231,9 @@ class ApplicationControllerImpl implements ApplicationController {
     }
     let recordPath: string | null = null;
     try {
-      const record = this.deps.ports.writeRunRecord(beforeCloseView);
+      // The run record carries THIS run's latched failures (original causes)
+      // whenever the final write is possible at all.
+      const record = this.deps.ports.writeRunRecord(beforeCloseView, [...this.failures]);
       if (record.ok) recordPath = record.path;
       else {
         this.failed = true;
@@ -223,7 +247,7 @@ class ApplicationControllerImpl implements ApplicationController {
       errors.push({ code: 'PERSISTENCE_FAILED', message: messageOf(error) });
     }
     const exitCode = this.failed ? 1 : 0;
-    return { ok: exitCode === 0, exitCode, recordPath, errors, beforeCloseView };
+    return { ok: exitCode === 0, exitCode, recordPath, errors, failures: [...this.failures], beforeCloseView };
   }
 
   view(): AppView {
@@ -294,7 +318,7 @@ class ApplicationControllerImpl implements ApplicationController {
       await this.game.close();
     } catch (error) {
       this.failed = true;
-      this.deps.ports.failure(error);
+      this.latchFailure('CLOSE_FAILED', messageOf(error), error);
     }
     return { ok: !this.failed, failed: this.failed };
   }
@@ -324,7 +348,7 @@ export function emptyPorts(): ApplicationPorts {
     save: () => ({ ok: false, path: null, code: 'INVALID_SNAPSHOT', fatal: false, issues: ['no save adapter'], cause: null }),
     failure: () => null,
     budget: () => null,
-    writeRunRecord: () => ({ ok: false, path: null, code: 'INTERNAL', cause: 'no run-record adapter', issues: [] }),
+    writeRunRecord: (_view: AppView, _failures?: FailureEvidence[]) => ({ ok: false, path: null, code: 'INTERNAL', cause: 'no run-record adapter', issues: [] }),
     now: () => Date.now(),
   };
 }

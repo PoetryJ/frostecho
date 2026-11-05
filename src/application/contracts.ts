@@ -82,6 +82,17 @@ export type AppCode =
   | 'PROVIDER_ERROR'
   | 'PERSISTENCE_FAILED';
 
+/**
+ * The frozen minimal failure record (G10 closeout). `message` keeps the
+ * ORIGINAL cause text; `evidencePath` is non-null only when the failure
+ * evidence file actually landed on disk (a refused write keeps null).
+ */
+export interface FailureEvidence {
+  code: string;
+  message: string;
+  evidencePath: string | null;
+}
+
 export interface ExecuteResult {
   ok: boolean;
   code: AppCode;
@@ -90,6 +101,8 @@ export interface ExecuteResult {
   advanced?: number;
   /** The typed save outcome (refusal vs durable failure), when a save ran. */
   saveCode?: SaveCode;
+  /** Where the failure evidence landed, or null when nothing was written. */
+  evidencePath?: string | null;
 }
 
 export interface AppRequestView {
@@ -167,6 +180,8 @@ export interface FinalizationResult {
   exitCode: 0 | 1;
   recordPath: string | null;
   errors: { code: 'PERSISTENCE_FAILED' | 'CLOSE_FAILED'; message: string }[];
+  /** Every failure latched during THIS run, in order (never only the last). */
+  failures: FailureEvidence[];
   /** Explicitly the projection the user last saw, never the authority. */
   beforeCloseView: AppView;
 }
@@ -252,6 +267,8 @@ export interface RunRecordPayloadV2 {
   authoritative: RunRecordAuthoritative;
   wire: WireRecordEntry[];
   campaign: { binding: CampaignBinding | null; limit: number; spent: number; known: number | null } | null;
+  /** run/2 compatible addition: present only when failures were latched. */
+  failures?: FailureEvidence[];
 }
 
 export interface RunRecordWriteResult {
@@ -274,7 +291,7 @@ export interface ApplicationPorts {
   /** The authorized campaign budget, or null when the run is offline. */
   budget(): { limit: number; spent: number } | null;
   /** Exclusive authoritative run record; never overwrites a save slot. */
-  writeRunRecord(view: AppView): RunRecordWriteResult;
+  writeRunRecord(view: AppView, failures?: FailureEvidence[]): RunRecordWriteResult;
   now(): number;
 }
 
