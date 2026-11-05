@@ -405,13 +405,21 @@ test('F4: --time advances the authoritative clock, expires the open request, and
     assert.equal(sessionPayload(waiting).wakeAtSimTime, 1);
     const callsBefore = sessionPayload(waiting).providerCalls;
 
+    // G11: at the deadline the expired promise is settled with ZERO calls and a
+    // NEW ordinary cycle may become the active session. "Time spends no model
+    // call" is therefore measured on the wire, not on the active session slot.
+    const promptsBeforeTime = http.prompts.length;
     const timed = await cli(['--load', '--path', savedSlot(root, 'f4-waiting'), '--live', '--http', http.url, '--model', 'loopback-model', '--time', '1', '--save-as', 'f4-awake']);
     assert.equal(timed.code, 0, timed.stderr);
     assert.match(timed.stdout, /selected goal: yield_once/);
     assert.match(timed.stdout, /hunger goal: achieved=false hunger=30/);
     const awake = envelope(savedSlot(root, 'f4-awake'));
     assert.equal(awake.game.engine.state.simTime, 1);
-    assert.equal(sessionPayload(awake).providerCalls, callsBefore, 'time spends no model call');
+    assert.equal(http.prompts.length, promptsBeforeTime, 'time spends no model call');
+    // The old promise session never spends another call: its own count is kept.
+    const sessionCalls = (payload: { game?: { cycles?: Record<string, { session?: { providerCalls?: number } }[]> } }, actor: string): number =>
+      (payload.game?.cycles?.[actor] ?? []).reduce((sum, cycle) => sum + (cycle.session?.providerCalls ?? 0), 0);
+    assert.equal(sessionCalls(awake, 'npc_a'), callsBefore, 'the settled promise session keeps its calls');
     const request = awake.requests.requests['f4-req-1'];
     assert.equal(request.outcome, 'expired');
     assert.equal(request.expiresAtSimTime, 1, 'the expiry is never extended');

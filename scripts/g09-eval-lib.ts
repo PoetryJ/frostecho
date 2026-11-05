@@ -510,6 +510,9 @@ function mapExchangeFailure(kind: G09ExchangeKind): G09Outcome {
     case 'output_truncated': return 'output_truncated';
     case 'empty_output': return 'empty_output';
     case 'timeout': return 'timeout';
+    // G11 fix: a connection refusal with no status/body is a provider failure,
+    // not an invalid run; timeout/empty_output/truncated keep their own labels.
+    case 'provider_error': return 'provider_error';
     case 'http_error': return 'provider_error';
     case 'invalid_response_json': return 'provider_error';
     default: return 'invalid_run';
