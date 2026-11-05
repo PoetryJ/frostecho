@@ -40,7 +40,9 @@ const ROOT = process.cwd();
 const EVAL = join(ROOT, 'dist/scripts/eval-g09.js');
 const OLD_BATCH = join(ROOT, 'artifacts/g10-live/g10-live-20261105-r1');
 const OLD_CAMPAIGN = join(ROOT, 'artifacts/g10-live/campaign-g10-approved16');
-const OLD_ATT4_BEGIN = join(ROOT, 'handoff/20261105-g10-action-contract/review/response-review/g10-live-20261105-r1/attempts/att-0004.begin.json');
+// The att-4 evidence lives INSIDE the committed batch, so the test also runs
+// in a clean clone that carries no handoff package.
+const OLD_ATT4_BEGIN = join(OLD_BATCH, 'attempts/att-0004.begin.json');
 
 const OBSERVATION = { id: 'npc_a', location: 'kitchen' as const, hunger: 40, foodHere: 1, reachable: ['dorm' as const] };
 const BASE_INPUT: DecideInput = {
