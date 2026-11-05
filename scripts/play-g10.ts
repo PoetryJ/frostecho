@@ -18,11 +18,12 @@ import { createApplicationController } from '../src/application/session';
 import {
   renderExecute, renderHelp, renderStatus, renderWelcome,
 } from '../src/application/presenter';
+import { fixtureNeedsNegotiation, isFixtureId } from '../src/application/contracts';
 import type { ApplicationController, FixtureId, GoalArm, SatietyLevel } from '../src/application/contracts';
 
 const USAGE = `Usage:
   npm run play:g10 -- [--goals legacy|negotiated] [--candidates self_only|choice]
-                       [--satiety 40|60] [--fixture cooperate|decline|violate]
+                       [--satiety 40|60] [--hunger 0..100] [--fixture cooperate|decline|violate|w0|w1|w2]
                        [--root DIR] [--slot NAME]
                        [--live --http URL --model M --campaign DIR [--campaign-limit N]]
   npm run play:g10 -- --load FILE [--live --http URL --model M --campaign DIR]
@@ -34,7 +35,7 @@ authorized campaign.`;
 
 interface Args {
   root: string; slot: string; goals: 'legacy' | 'negotiated'; candidates: GoalArm;
-  satiety: SatietyLevel; fixture: FixtureId | null; live: boolean;
+  satiety: SatietyLevel; startHunger: number | null; fixture: FixtureId | null; live: boolean;
   http: string; model: string | null; campaign: string | null; campaignLimit: number | null;
   loadPath: string | null; help: boolean;
   goalsSet: boolean; candidatesSet: boolean; satietySet: boolean;
@@ -43,7 +44,7 @@ interface Args {
 function parseArgs(argv: string[]): Args {
   const args: Args = {
     root: 'artifacts/g10-play', slot: 'play', goals: 'legacy', candidates: 'choice',
-    satiety: 40, fixture: null, live: false, http: '', model: null,
+    satiety: 40, startHunger: null, fixture: null, live: false, http: '', model: null,
     campaign: null, campaignLimit: null, loadPath: null, help: false,
     goalsSet: false, candidatesSet: false, satietySet: false,
   };
@@ -75,10 +76,19 @@ function parseArgs(argv: string[]): Args {
       }
       case '--fixture': {
         const value = argv[++i];
-        if (value !== 'cooperate' && value !== 'decline' && value !== 'violate') {
-          throw new Error('--fixture must be cooperate|decline|violate');
+        if (value === undefined || !isFixtureId(value)) {
+          throw new Error('--fixture must be cooperate|decline|violate|w0|w1|w2');
         }
         args.fixture = value;
+        break;
+      }
+      case '--hunger': {
+        // G11 demo input: an explicit npc_a starting satiety (0..100).
+        const value = Number(argv[++i] ?? '');
+        if (!Number.isInteger(value) || value < 0 || value > 100) {
+          throw new Error('--hunger must be an integer 0..100');
+        }
+        args.startHunger = value;
         break;
       }
       case '--live': args.live = true; break;
@@ -112,8 +122,8 @@ async function main(): Promise<number> {
     return 2;
   }
   if (args.help) { console.log(USAGE); return 0; }
-  if (args.loadPath === null && args.fixture !== null && args.goals !== 'negotiated') {
-    console.error('--fixture requires --goals negotiated (the demo runs the two-phase protocol)');
+  if (args.loadPath === null && args.fixture !== null && fixtureNeedsNegotiation(args.fixture) && args.goals !== 'negotiated') {
+    console.error(`--fixture ${args.fixture} requires --goals negotiated (that demo runs the two-phase protocol)`);
     return 2;
   }
   if (args.live && (args.http.length === 0 || args.model === null)) {
@@ -124,7 +134,8 @@ async function main(): Promise<number> {
   const built = args.loadPath === null
     ? createG10Runtime({
       root: args.root, slot: args.slot, goals: args.goals, candidates: args.candidates,
-      satiety: args.satiety, fixture: args.fixture, live: args.live, http: args.http,
+      satiety: args.satiety, ...(args.startHunger !== null ? { startHunger: args.startHunger } : {}),
+      fixture: args.fixture, live: args.live, http: args.http,
       model: args.model, campaign: args.campaign, campaignLimit: args.campaignLimit,
     })
     : loadG10Runtime(args.loadPath, {
@@ -133,6 +144,7 @@ async function main(): Promise<number> {
       goals: args.goalsSet ? args.goals : undefined,
       candidates: args.candidatesSet ? args.candidates : undefined,
       satiety: args.satietySet ? args.satiety : undefined,
+      ...(args.startHunger !== null ? { startHunger: args.startHunger } : {}),
     });
   if (!built.ok) {
     console.error(`cannot start: ${(built.issues ?? []).join('; ')}`);

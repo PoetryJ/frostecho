@@ -29,11 +29,17 @@ import {
 } from './budget-binding';
 import { saveOutcomeFromMessage, writeAuthoritativeRunRecord } from './persistence';
 import {
+  fixtureNeedsNegotiation, isFixtureId,
   G10_APP_SCHEMA_V2, G10_FAILURE_SCHEMA,
   type ApplicationPorts, type AppMeta, type AppView, type CampaignBinding, type FailureEvidence,
   type FixtureId, type GoalArm, type ProviderKind, type RunRecordLineage, type RunRecordWriteResult,
   type SaveOutcome, type SatietyLevel, type WireRecordEntry,
 } from './contracts';
+
+/** G11 demo fixtures run the recurring/timed_wait configuration. */
+function isG11Demo(fixture: FixtureId | null): boolean {
+  return fixture === 'w0' || fixture === 'w1' || fixture === 'w2';
+}
 
 export interface G10RuntimeOptions {
   root: string;
@@ -41,6 +47,8 @@ export interface G10RuntimeOptions {
   goals: 'legacy' | 'negotiated';
   candidates: GoalArm;
   satiety: SatietyLevel;
+  /** G11 demo input: explicit starting hunger for npc_a (0..100). */
+  startHunger?: number;
   fixture: FixtureId | null;
   live: boolean;
   http: string;
@@ -79,15 +87,32 @@ function endpointClassOf(url: string): 'loopback' | 'remote' {
   }
 }
 
-/** The three scripted demos are TEST providers; never production policy. */
+/**
+ * The scripted demos are TEST providers; never production policy.
+ *
+ * G11 fixtures are purely INPUT-DRIVEN (no hidden call cursor), so a restored
+ * session reproduces the same answers:
+ *  - w0: the first call of a cycle (empty feedback) waits, then the ordinary
+ *    reference eat. No goal phase ever runs.
+ *  - w1/w2: the goal phase yields; while the active goal is the yield promise
+ *    the action is wait; once ordinary needs are back the reference eat runs.
+ *    The player's input (eat or not) decides fulfilled vs expired — the
+ *    fixture itself is identical, so each trajectory stays honest.
+ */
 export function fixtureProvider(fixture: FixtureId): Provider {
   return {
-    async decide(input: { goalChoice?: unknown }) {
+    async decide(input: { goalChoice?: unknown; feedback?: unknown; activeGoal?: { kind?: string } }) {
       const goal = input.goalChoice !== undefined;
       switch (fixture) {
         case 'cooperate': return goal ? '{"goal":"yield_once"}' : '{"type":"wait"}';
         case 'decline': return goal ? '{"goal":"feed_self"}' : '{"type":"eat"}';
         case 'violate': return goal ? '{"goal":"yield_once"}' : '{"type":"eat"}';
+        case 'w0': return input.feedback === null || input.feedback === undefined ? '{"type":"wait"}' : '{"type":"eat"}';
+        case 'w1':
+        case 'w2': {
+          if (goal) return '{"goal":"yield_once"}';
+          return input.activeGoal?.kind === 'yield_once' ? '{"type":"wait"}' : '{"type":"eat"}';
+        }
       }
     },
   };
@@ -153,8 +178,11 @@ export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10R
   if (options.live && !isLoopback(options.http)) {
     return messageFail('INVALID_COMMAND', 'this task authorizes loopback only; a remote endpoint needs a separately authorized budget');
   }
-  if (options.fixture !== null && (options.goals !== 'negotiated' || options.live)) {
-    return messageFail('INVALID_COMMAND', '--fixture requires --goals negotiated and cannot be combined with --live');
+  if (options.fixture !== null && options.live) {
+    return messageFail('INVALID_COMMAND', '--fixture cannot be combined with --live');
+  }
+  if (options.fixture !== null && fixtureNeedsNegotiation(options.fixture) && options.goals !== 'negotiated') {
+    return messageFail('INVALID_COMMAND', `--fixture ${options.fixture} requires --goals negotiated`);
   }
 
   const meta: AppMeta = {
@@ -165,6 +193,7 @@ export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10R
     goalMode: options.goals,
     candidateSet: options.candidates,
     satiety: options.satiety,
+    ...(options.startHunger !== undefined && options.startHunger !== options.satiety ? { startHunger: options.startHunger } : {}),
     scripted,
     campaign: null,
   };
@@ -224,7 +253,7 @@ export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10R
   const initialState = buildNeedsWorld({
     actorIds: [...ACTOR_IDS],
     kitchenFood: 1,
-    hunger: { npc_a: options.satiety, npc_b: 40, npc_c: 70 },
+    hunger: { npc_a: options.startHunger ?? options.satiety, npc_b: 40, npc_c: 70 },
   });
   const game = createNeedsGame({
     episodeId: options.slot,
@@ -233,10 +262,13 @@ export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10R
     providerFor: () => providerFor(),
     mode: config.mode,
     thinking: config.thinking,
-    needPolicy: options.goals === 'negotiated' ? 'recurring' : 'one-shot',
+    // G11 demos run the recurring/timed_wait configuration even without a
+    // negotiated request (W0 is an ordinary wait), exactly as the contract
+    // freezes it; the G09/G10 matrix semantics are untouched.
+    needPolicy: options.goals === 'negotiated' || isG11Demo(options.fixture) ? 'recurring' : 'one-shot',
     requestModel: config.requestModel ?? undefined,
     timeoutMs: config.timeoutMs,
-    actionSet: options.goals === 'negotiated' ? 'timed_wait' : 'legacy',
+    actionSet: options.goals === 'negotiated' || isG11Demo(options.fixture) ? 'timed_wait' : 'legacy',
     goalMode: options.goals,
     candidateSet: options.candidates,
     playerId: 'npc_b',
@@ -435,6 +467,8 @@ export interface LoadG10Options {
   goals?: 'legacy' | 'negotiated';
   candidates?: GoalArm;
   satiety?: SatietyLevel;
+  /** G11 demo input; only an explicitly passed value is compared. */
+  startHunger?: number;
   now?: () => number;
 }
 
@@ -464,6 +498,9 @@ export function loadG10Runtime(path: string, options: LoadG10Options): MessageRe
   }
   if (options.satiety !== undefined && options.satiety !== envelope.satiety) {
     return messageFail('INVALID_COMMAND', `satiety conflict: the slot was saved with ${envelope.satiety}`);
+  }
+  if (options.startHunger !== undefined && options.startHunger !== (savedMeta.startHunger ?? envelope.satiety)) {
+    return messageFail('INVALID_COMMAND', `start-hunger conflict: the slot was saved with ${savedMeta.startHunger ?? envelope.satiety}`);
   }
 
   const wire: WireRecordEntry[] = [];
@@ -594,7 +631,7 @@ function appMetaOf(envelope: G09Checkpoint): AppMeta {
     schema: G10_APP_SCHEMA_V2,
     episodeId: typeof raw.episodeId === 'string' ? raw.episodeId : fallback.episodeId,
     providerKind: raw.providerKind === 'live' || raw.providerKind === 'fixture' ? raw.providerKind : 'reference',
-    fixtureId: fixture === 'cooperate' || fixture === 'decline' || fixture === 'violate' ? fixture : null,
+    fixtureId: typeof fixture === 'string' && isFixtureId(fixture) ? fixture : null,
     goalMode: raw.goalMode === 'legacy' ? 'legacy' : 'negotiated',
     candidateSet: raw.candidateSet === 'self_only' ? 'self_only' : 'choice',
     satiety: raw.satiety === 60 ? 60 : 40,
@@ -613,6 +650,9 @@ export function demoLabel(meta: AppMeta): string | null {
     cooperate: '合作（脚本演示：选择 yield_once 并 wait）',
     decline: '拒绝（脚本演示：选择 feed_self 并 eat）',
     violate: '违约（脚本演示：选择 yield_once 却 eat）',
+    w0: 'W0 普通等待（脚本演示：先 wait，到期后同 cycle 继续吃）',
+    w1: 'W1 让食履约后（脚本演示：yield+wait，玩家吃到后恢复自己的饱食需求）',
+    w2: 'W2 让食到期后（脚本演示：yield+wait，玩家没吃，到期后恢复自己的饱食需求）',
   };
   return names[meta.fixtureId];
 }

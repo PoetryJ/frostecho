@@ -25,7 +25,25 @@ export const TIME_MAX = 10;
 export const RESTOCK_MIN = 1;
 export const RESTOCK_MAX = 10;
 
-export type FixtureId = 'cooperate' | 'decline' | 'violate';
+export type FixtureId = 'cooperate' | 'decline' | 'violate' | 'w0' | 'w1' | 'w2';
+
+/**
+ * G11: the offline demo fixtures. w1/w2 need the negotiated protocol (they run
+ * a yield promise); w0 is the ordinary-wait trajectory and needs no request.
+ * They stay separate ids so the records/labels cannot be confused with the
+ * three G09 demos, whose semantics are frozen.
+ */
+export const G11_FIXTURES: readonly FixtureId[] = ['w0', 'w1', 'w2'];
+export const G09_FIXTURES: readonly FixtureId[] = ['cooperate', 'decline', 'violate'];
+
+export function isFixtureId(value: string): value is FixtureId {
+  return (G09_FIXTURES as readonly string[]).includes(value) || (G11_FIXTURES as readonly string[]).includes(value);
+}
+
+/** w1/w2 run the two-phase protocol; w0 and the G09 demos keep their own rules. */
+export function fixtureNeedsNegotiation(fixture: FixtureId): boolean {
+  return fixture === 'cooperate' || fixture === 'decline' || fixture === 'violate' || fixture === 'w1' || fixture === 'w2';
+}
 export type ProviderKind = 'reference' | 'fixture' | 'live';
 export type GoalMode = 'legacy' | 'negotiated';
 
@@ -43,6 +61,12 @@ export interface AppMeta {
   goalMode: GoalMode;
   candidateSet: GoalArm;
   satiety: SatietyLevel;
+  /**
+   * G11 demo input: an explicit starting hunger for npc_a (0..100), recorded
+   * only when it differs from `satiety`. Absent in every pre-G11 slot, so old
+   * envelopes stay byte-identical and load unchanged.
+   */
+  startHunger?: number;
   scripted: boolean;
   /** Present for /2; null offline or when no authorization exists. */
   campaign?: CampaignBinding | null;
