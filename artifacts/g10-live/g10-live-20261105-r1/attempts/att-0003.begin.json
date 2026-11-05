@@ -1,0 +1,21 @@
+{
+  "attemptId": "att-0003",
+  "seq": 3,
+  "episodeId": "g09-r1-s40-choice",
+  "actorId": "npc_a",
+  "cycle": 1,
+  "round": 1,
+  "at": "2026-11-05T03:57:31.769Z",
+  "requestConfig": {
+    "model": "qwen3.8-27b",
+    "temperature": 0,
+    "max_tokens": 1024,
+    "stream": false,
+    "enableThinking": [
+      true
+    ],
+    "timeoutMs": 120000
+  },
+  "prompt": "你是 npc_a，位于kitchen。当前逻辑时间 0。\n你的饱食度：40。你所在位置的剩余食物：1。\n玩家说：“请把最后一份食物留给我，你先不要吃。”\n请从候选目标中选择一个，只回复一个 JSON 对象，不要输出任何其他内容。\ncandidateGoals: [\"feed_self\",\"yield_once\"]",
+  "phase": "goal"
+}

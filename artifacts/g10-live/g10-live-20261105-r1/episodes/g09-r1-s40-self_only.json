@@ -1,0 +1,254 @@
+{
+  "schema": "frostecho.g09.episode/2",
+  "episodeId": "g09-r1-s40-self_only",
+  "cell": "s40-self_only",
+  "satiety": 40,
+  "arm": "self_only",
+  "outcome": "completed",
+  "request": {
+    "schema": "frostecho.g09.goal-request/2",
+    "requestId": "g09-r1-s40-self_only-req-1",
+    "episodeId": "g09-r1-s40-self_only",
+    "from": "player",
+    "to": "npc_a",
+    "kind": "yield_once",
+    "text": "请把最后一份食物留给我，你先不要吃。",
+    "options": [
+      "feed_self"
+    ],
+    "createdAtSimTime": 0,
+    "expiresAtSimTime": 1,
+    "status": "declined",
+    "decision": {
+      "goal": "feed_self",
+      "round": 1,
+      "decidedAtSimTime": 0,
+      "raw": "\n\n{\"goal\":\"feed_self\"}"
+    },
+    "acceptedAfterSeq": null,
+    "lastProcessedSeq": 0,
+    "outcome": "pending",
+    "outcomeReason": null
+  },
+  "binding": null,
+  "goal": {
+    "round": 1,
+    "raw": "\n\n{\"goal\":\"feed_self\"}",
+    "parseOk": false,
+    "error": "no goal binding"
+  },
+  "action": {
+    "round": 2,
+    "raw": "\n\n{\"type\":\"eat\"}",
+    "parseOk": true,
+    "type": "eat",
+    "error": null
+  },
+  "fulfilment": null,
+  "playerEat": {
+    "ok": false,
+    "detail": "NO_FOOD"
+  },
+  "http": [
+    {
+      "phase": "goal",
+      "attemptId": "att-0001",
+      "requestBody": {
+        "model": "qwen3.8-27b",
+        "temperature": 0,
+        "max_tokens": 1024,
+        "stream": false,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "你是 npc_a，位于kitchen。当前逻辑时间 0。\n你的饱食度：40。你所在位置的剩余食物：1。\n玩家说：“请把最后一份食物留给我，你先不要吃。”\n请从候选目标中选择一个，只回复一个 JSON 对象，不要输出任何其他内容。\ncandidateGoals: [\"feed_self\"]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "body": "{\"id\":\"chatcmpl-b9e5b049fe608867\",\"object\":\"chat.completion\",\"created\":1793850989,\"model\":\"qwen3.8-27b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\\n\\n{\\\"goal\\\":\\\"feed_self\\\"}\",\"refusal\":null,\"annotations\":null,\"audio\":null,\"function_call\":null,\"reasoning\":\"We need answer user's request. Need produce final only JSON object. Need choose from candidateGoals: [\\\"feed_self\\\"]. User says player asks leave last food, don't eat. But candidate only feed_self. Need likely choose feed_self? But maybe NPC should obey? The instruction: \\\"请从候选目标中选择一个，只回复一个 JSON 对象\\\". Candidate goals only feed_self. So must output {\\\"goal\\\":\\\"feed_self\\\"} maybe. Need ensure no other content. Consider if should choose none? Not allowed. So final JSON.\\n\"},\"logprobs\":null,\"finish_reason\":\"stop\",\"stop_reason\":null,\"token_ids\":null,\"routed_experts\":null}],\"service_tier\":null,\"system_fingerprint\":\"vllm-0.32.0-tp4-042ad0af\",\"usage\":{\"prompt_tokens\":125,\"total_tokens\":243,\"completion_tokens\":118,\"prompt_tokens_details\":null,\"completion_tokens_details\":{\"reasoning_tokens\":109}},\"prompt_logprobs\":null,\"prompt_token_ids\":null,\"prompt_text\":null,\"kv_transfer_params\":null,\"ec_transfer_params\":null,\"metrics\":null}",
+        "usage": {
+          "total_tokens": 243,
+          "prompt_tokens": 125,
+          "completion_tokens": 118
+        }
+      },
+      "prompt": "你是 npc_a，位于kitchen。当前逻辑时间 0。\n你的饱食度：40。你所在位置的剩余食物：1。\n玩家说：“请把最后一份食物留给我，你先不要吃。”\n请从候选目标中选择一个，只回复一个 JSON 对象，不要输出任何其他内容。\ncandidateGoals: [\"feed_self\"]",
+      "promptFingerprint": "3b464f909d313c63a2e5bb7050c32f68face1d2b0c6462c64b42ab97d5f9f1b4",
+      "elapsedMs": 14992,
+      "error": null
+    },
+    {
+      "phase": "action",
+      "attemptId": "att-0002",
+      "requestBody": {
+        "model": "qwen3.8-27b",
+        "temperature": 0,
+        "max_tokens": 1024,
+        "stream": false,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "Reply with one JSON object and no other text.\nallowedActions: [\"move\",\"eat\",\"stop\",\"wait\"]\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\n\"stop\" ends your current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows the outer restock-wait and new-cycle rules.\n\"wait\" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {\"type\":\"wait\"} only when allowedActions includes \"wait\".\n你已选择的目标：feed_self（先满足自己的饱食）。\ngoal: hunger >= 70\nobservation: {\"id\":\"npc_a\",\"location\":\"kitchen\",\"hunger\":40,\"foodHere\":1,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "body": "{\"id\":\"chatcmpl-97fcc4a36226998d\",\"object\":\"chat.completion\",\"created\":1793851006,\"model\":\"qwen3.8-27b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\\n\\n{\\\"type\\\":\\\"eat\\\"}\",\"refusal\":null,\"annotations\":null,\"audio\":null,\"function_call\":null,\"reasoning\":\"We need answer user's request. Need output one JSON object and no other text. Need choose action. User says allowedActions: [\\\"move\\\",\\\"eat\\\",\\\"stop\\\",\\\"wait\\\"]. Do not set actorId or commandId. World changes only through Engine.submit. hunger is satiety higher fuller. Eat only in kitchen. Each eat consumes 1 food restores 30 hunger clamped 0..100. Observation includes only this actor, food at current location, reachable places. Distant food, other NPCs, global log omitted. stop ends current session; with food present it also ends pursuit this cycle. In empty kitchen stop still follows outer restock-wait and new-cycle rules. wait pauses current session for one logical time step, then resumes automatically; wait does not eat, move, or change world. You may output {\\\"type\\\":\\\"wait\\\"} only when allowedActions includes wait.\\nChosen goal: feed_self (satisfy own satiety). goal: hunger >= 70.\\nObservation: id npc_a, location kitchen, hunger 40, foodHere 1, reachable dorm kitchen. feedback null.\\nNeed output JSON object likely action. Need infer format. They say allowedActions: [\\\"move\\\",\\\"eat\\\",\\\"stop\\\",\\\"wait\\\"]. You may output {\\\"type\\\":\\\"wait\\\"} only when allowedActions includes wait. So likely output {\\\"type\\\":\\\"eat\\\"}? Need maybe include target? For move maybe destination. For eat no args. Since in kitchen, foodHere 1, hunger 40, goal >=70. Eat consumes 1 food restores 30 -> 70 exactly. So eat is optimal. Need one JSON object no other text. Could be {\\\"type\\\":\\\"eat\\\"}. Ensure no actorId/commandId. final only JSON.\\n\"},\"logprobs\":null,\"finish_reason\":\"stop\",\"stop_reason\":null,\"token_ids\":null,\"routed_experts\":null}],\"service_tier\":null,\"system_fingerprint\":\"vllm-0.32.0-tp4-042ad0af\",\"usage\":{\"prompt_tokens\":311,\"total_tokens\":681,\"completion_tokens\":370,\"prompt_tokens_details\":null,\"completion_tokens_details\":{\"reasoning_tokens\":362}},\"prompt_logprobs\":null,\"prompt_token_ids\":null,\"prompt_text\":null,\"kv_transfer_params\":null,\"ec_transfer_params\":null,\"metrics\":null}",
+        "usage": {
+          "total_tokens": 681,
+          "prompt_tokens": 311,
+          "completion_tokens": 370
+        }
+      },
+      "prompt": "Reply with one JSON object and no other text.\nallowedActions: [\"move\",\"eat\",\"stop\",\"wait\"]\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\n\"stop\" ends your current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows the outer restock-wait and new-cycle rules.\n\"wait\" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {\"type\":\"wait\"} only when allowedActions includes \"wait\".\n你已选择的目标：feed_self（先满足自己的饱食）。\ngoal: hunger >= 70\nobservation: {\"id\":\"npc_a\",\"location\":\"kitchen\",\"hunger\":40,\"foodHere\":1,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null",
+      "promptFingerprint": "4f051abcebaa6c611d775020c7d932f9fbc6f993f5b6d0cffe84cab9407945f5",
+      "elapsedMs": 43979,
+      "error": null
+    }
+  ],
+  "attempts": [
+    {
+      "attemptId": "att-0001",
+      "outcome": "success"
+    },
+    {
+      "attemptId": "att-0002",
+      "outcome": "success"
+    }
+  ],
+  "tokens": {
+    "goal": 243,
+    "action": 681,
+    "total": 924
+  },
+  "snapshot": {
+    "initialState": {
+      "tick": 0,
+      "simTime": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_c": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 70
+        }
+      },
+      "food": {
+        "kitchen": 1,
+        "dorm": 0
+      }
+    },
+    "commands": [
+      {
+        "seq": 1,
+        "command": {
+          "commandId": "g09-r1-s40-self_only:npc:npc_a:1:2",
+          "actorId": "npc_a",
+          "type": "eat",
+          "payload": {}
+        },
+        "result": {
+          "commandId": "g09-r1-s40-self_only:npc:npc_a:1:2",
+          "seq": 1,
+          "status": "accepted",
+          "eventIds": [
+            "e1",
+            "e2"
+          ]
+        }
+      },
+      {
+        "seq": 2,
+        "command": {
+          "commandId": "g09-r1-s40-self_only:player:npc_b:1",
+          "actorId": "npc_b",
+          "type": "eat",
+          "payload": {}
+        },
+        "result": {
+          "commandId": "g09-r1-s40-self_only:player:npc_b:1",
+          "seq": 2,
+          "status": "rejected",
+          "reason": "NO_FOOD",
+          "detail": "kitchen food=0",
+          "eventIds": []
+        }
+      }
+    ],
+    "events": [
+      {
+        "type": "FoodConsumed",
+        "location": "kitchen",
+        "amount": 1,
+        "before": 1,
+        "after": 0,
+        "eventId": "e1",
+        "seq": 1,
+        "commandId": "g09-r1-s40-self_only:npc:npc_a:1:2"
+      },
+      {
+        "type": "HungerChanged",
+        "npcId": "npc_a",
+        "before": 40,
+        "after": 70,
+        "eventId": "e2",
+        "seq": 1,
+        "commandId": "g09-r1-s40-self_only:npc:npc_a:1:2"
+      }
+    ],
+    "finalState": {
+      "tick": 1,
+      "simTime": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 70
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_c": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 70
+        }
+      },
+      "food": {
+        "kitchen": 0,
+        "dorm": 0
+      }
+    }
+  },
+  "runtime": {
+    "actorIds": [
+      "npc_a",
+      "npc_c"
+    ],
+    "needPolicy": "recurring",
+    "policy": "event",
+    "actionSet": "timed_wait",
+    "goalMode": "negotiated"
+  },
+  "failure": null
+}
