@@ -10,14 +10,15 @@
  */
 import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
+import { execSync } from 'node:child_process';
 import { createBatchStore, type BatchStore } from '../src/eval/store';
-import { createHttpProvider, renderDecidePrompt } from '../src/agent/providers/http';
+import { ACTIVE_GOAL_PROMPT_VERSION, activeGoalPromptFingerprint, createHttpProvider, renderDecidePrompt } from '../src/agent/providers/http';
 import type { Provider, DecideInput, TransportRecord } from '../src/agent/contracts';
 import { parseAction } from '../src/agent/parser';
 import type { G08EffectiveConfig } from '../src/temporal/contracts';
 import { buildNeedsWorld, createNeedsGame } from '../src/needs/game';
 import {
-  G09_ALLOWED_GOALS, G09_HARD_CHAT_LIMIT, G09_REQUEST_TEXT, G09_TIMEOUT_MS,
+  G09_ALLOWED_GOALS, G09_EPISODE_SCHEMA, G09_HARD_CHAT_LIMIT, G09_REQUEST_TEXT, G09_TIMEOUT_MS, strictGoalChoice,
   type GoalRequestSnapshot,
 } from '../src/negotiation/contracts';
 import { createGoalRequest, decideGoalRequest } from '../src/negotiation/requests';
@@ -25,7 +26,8 @@ import { checkGoalFulfilment, replayRequestOutcome } from '../src/negotiation/go
 import {
   G09_NPC, G09_PLAYER, G09_CELLS, canonical, createWireCollector, deriveG09, frozenPlanEntries, g09InitialState,
   g09Plan, g09Protocol, g09RuntimeConfig, projectG09Summary, readG09Batch, verifyG09Batch, verifyG09Prefix, wireUsage,
-  type G09EpisodeRecord, type G09HttpExchange, type G09PlanEntry,
+  classifyHttpExchange,
+  type G09EpisodeRecord, type G09HttpExchange, type G09Outcome, type G09PlanEntry,
 } from './g09-eval-lib';
 import {
   campaignCounts, finishCampaignChat, loadCampaign, openCampaign, reserveCampaignChat,
@@ -221,7 +223,12 @@ async function runEpisode(entry: G09PlanEntry, rt: EpisodeRuntime): Promise<G09E
           const usage = wire === null || wire.responseBody === null ? null : wireUsage(wire.responseBody);
           rt.store.writeJson(`attempts/${attemptId}.finish.json`, {
             attemptId, at: new Date().toISOString(), outcome,
-            status: wire?.status ?? transport?.status ?? null, error: message, usage: usage ?? transport?.usage ?? null, elapsedMs,
+            status: wire?.status ?? transport?.status ?? null, error: message,
+            // G10: the wire classification travels with the attempt, so the
+            // truncated/empty distinction survives independently of the text.
+            classification: transport?.classification ?? null,
+            finishReason: transport?.finishReason ?? null,
+            usage: usage ?? transport?.usage ?? null, elapsedMs,
           });
           attempts.push({ attemptId, outcome });
           finishCampaignChat(rt.campaignDir, attemptId, { outcome, totalTokens: usage?.total_tokens ?? null });
@@ -262,33 +269,56 @@ async function runEpisode(entry: G09PlanEntry, rt: EpisodeRuntime): Promise<G09E
   const enqueued = controller.submitGoalRequest(request);
   if (!enqueued.ok) throw new Error(`cannot enqueue the request: ${(enqueued.issues ?? []).join('; ')}`);
 
-  let outcome: G09EpisodeRecord['outcome'] = 'completed';
+  // G10: a phase is a success only when the WIRE served usable content AND
+  // the strict parser accepted it AND the session actually processed it. The
+  // mere existence of a POST is NOT a completed phase.
+  let outcome: G09Outcome = 'not_run';
   let failure: string | null = null;
   let playerEat: G09EpisodeRecord['playerEat'] = null;
 
   const stepSession = () => game.sessionsOf().find(entry2 => entry2.actorId === G09_NPC)?.session ?? null;
+  const exchangeOf = (phase: 'goal' | 'action'): G09HttpExchange | undefined => exchanges.find(exchange => exchange.phase === phase);
 
   // Phase 1 — goal choice. The GAME store is the authority: the session's
   // decision is folded into it at the decision point.
   await game.advance();
-  const session = stepSession();
   const storeRef = (game as unknown as { goalRequests(): { requests: Record<string, GoalRequestSnapshot> } }).goalRequests();
   request = storeRef.requests[entry.requestId] ?? request;
-  const binding = session?.goalBinding ?? null;
-  const decided = request.status === 'accepted' || request.status === 'declined';
-  if (!decided) {
-    outcome = request.status === 'expired' ? 'request_expired' : mapFailure(session?.status);
-    failure = `goal phase ended: ${request.status} (${session?.status ?? 'no session'})`;
+  const binding = stepSession()?.goalBinding ?? null;
+  const goalClass = classifyHttpExchange(exchangeOf('goal'));
+  const goalParsed = strictGoalChoice(goalClass.content, G09_ALLOWED_GOALS[entry.arm]);
+  const goalOk = goalClass.kind === 'ok' && goalParsed.ok;
+
+  if (!goalOk) {
+    outcome = goalClass.kind === 'ok' ? 'invalid_run' : mapExchangeKind(goalClass.kind);
+    failure = `goal phase failed: ${goalClass.kind}${goalClass.finishReason === null ? '' : ` (finish_reason=${goalClass.finishReason})`}${goalParsed.ok ? '' : ` / ${goalParsed.error}`}`;
   } else {
     // Phase 2 — the action, same session and budget. A declined (feed_self)
     // request still runs the ordinary hunger goal and is NOT blocked.
     await game.advance();
     const after = stepSession();
-    const actionCalled = exchanges.some(exchange => exchange.phase === 'action');
-    if (!actionCalled) {
-      outcome = mapFailure(after?.status);
-      failure = `action phase ended: ${after?.status ?? 'no session'}`;
+    const actionClass = classifyHttpExchange(exchangeOf('action'));
+    const actionParsed = actionClass.kind === 'ok'
+      ? parseAction(actionClass.content, 'timed_wait')
+      : { ok: false as const, error: actionClass.kind };
+    const terminal = after === null ? null : after.result().outcome;
+    if (exchangeOf('action') === undefined) {
+      outcome = mapTerminal(terminal, after?.status);
+      failure = `action phase was never called (${after?.status ?? 'no session'})`;
+    } else if (actionClass.kind !== 'ok') {
+      outcome = mapExchangeKind(actionClass.kind);
+      failure = `action phase failed: ${actionClass.kind}${actionClass.finishReason === null ? '' : ` (finish_reason=${actionClass.finishReason})`}`;
+    } else if (!actionParsed.ok) {
+      outcome = 'invalid_action';
+      failure = `action answer is not a legal timed_wait action: ${actionParsed.error}`;
+    } else if (terminal !== null && terminal !== 'stopped' && terminal !== 'selected_goal_yield' && terminal !== 'goal_reached') {
+      // A legally parsed action that the session DISCARDED (late/expired
+      // answer, budget) is not a completion either.
+      outcome = mapTerminal(terminal, after?.status);
+      failure = `action phase was discarded: ${terminal}`;
     } else {
+      outcome = 'completed';
+      // The scripted player eat runs ONLY after a legal, processed action.
       const eat = game.playerLine('player eat');
       playerEat = { ok: eat.ok, detail: eat.detail ?? null };
     }
@@ -306,8 +336,18 @@ async function runEpisode(entry: G09PlanEntry, rt: EpisodeRuntime): Promise<G09E
 
   const goalExchange = exchanges.find(exchange => exchange.phase === 'goal');
   const actionExchange = exchanges.find(exchange => exchange.phase === 'action');
+  const goalClassFinal = classifyHttpExchange(goalExchange);
+  const actionClassFinal = classifyHttpExchange(actionExchange);
+  const goalParsedFinal = goalExchange === undefined
+    ? { ok: false as const, error: 'no goal call' }
+    : strictGoalChoice(goalClassFinal.content, G09_ALLOWED_GOALS[entry.arm]);
+  const actionParsedFinal = actionExchange === undefined
+    ? { ok: false as const, error: 'no action call' }
+    : parseAction(actionClassFinal.content, 'timed_wait');
+  const goalTokens = goalExchange?.response.usage?.total_tokens ?? null;
+  const actionTokens = actionExchange?.response.usage?.total_tokens ?? null;
   return {
-    schema: 'frostecho.g09.episode/2',
+    schema: G09_EPISODE_SCHEMA,
     episodeId: entry.episodeId,
     cell: entry.cell,
     satiety: entry.satiety,
@@ -316,31 +356,28 @@ async function runEpisode(entry: G09PlanEntry, rt: EpisodeRuntime): Promise<G09E
     request,
     binding,
     goal: {
+      // The strict parse of the WIRE answer, not `binding !== null`: a legal
+      // feed_self parses ok and carries no binding.
       round: binding?.decidedRound ?? 1,
-      raw: goalExchange === undefined ? null : responseContentOf(goalExchange),
-      parseOk: binding !== null,
-      error: binding === null ? (failure ?? 'no goal binding') : null,
+      raw: goalExchange === undefined ? null : goalClassFinal.content,
+      parseOk: goalParsedFinal.ok,
+      error: goalParsedFinal.ok ? null : `goal: ${goalParsedFinal.error}`,
     },
-    action: (() => {
-      if (actionExchange === undefined) return { round: null, raw: null, parseOk: false, type: null, error: 'no action call' };
-      const content = responseContentOf(actionExchange);
-      const parsed = parseAction(content, 'timed_wait');
-      return {
-        round: 2, raw: content, parseOk: parsed.ok,
-        type: parsed.ok ? parsed.action.type : null,
-        error: parsed.ok ? null : parsed.error,
-      };
-    })(),
+    action: {
+      round: actionExchange === undefined ? null : 2,
+      raw: actionExchange === undefined ? null : actionClassFinal.content,
+      parseOk: actionParsedFinal.ok,
+      type: actionParsedFinal.ok ? actionParsedFinal.action.type : null,
+      error: actionParsedFinal.ok ? null : actionParsedFinal.error,
+    },
     fulfilment: fulfilment === null ? null : { verdict: fulfilment.verdict, evidence: fulfilment.evidence, outcome: request.outcome, reason: request.outcomeReason },
     playerEat,
     http: exchanges,
     attempts,
     tokens: {
-      goal: goalExchange?.response.usage?.total_tokens ?? null,
-      action: actionExchange?.response.usage?.total_tokens ?? null,
-      total: goalExchange !== undefined && actionExchange !== undefined
-        ? (goalExchange.response.usage?.total_tokens ?? 0) + (actionExchange.response.usage?.total_tokens ?? 0)
-        : null,
+      goal: goalTokens,
+      action: actionTokens,
+      total: goalTokens !== null && actionTokens !== null ? goalTokens + actionTokens : null,
     },
     snapshot: { initialState: snapshot.initialState, commands: snapshot.commands, events: snapshot.events, finalState: snapshot.finalState },
     runtime,
@@ -348,26 +385,35 @@ async function runEpisode(entry: G09PlanEntry, rt: EpisodeRuntime): Promise<G09E
   };
 }
 
-function responseContentOf(exchange: G09HttpExchange): string {
-  if (typeof exchange.response.body !== 'string') return '';
-  try {
-    const body = JSON.parse(exchange.response.body) as { choices?: { message?: { content?: unknown } }[] };
-    const content = body.choices?.[0]?.message?.content;
-    return typeof content === 'string' ? content : '';
-  } catch {
-    return '';
+/** Wire classification → episode outcome (never a silent `completed`). */
+function mapExchangeKind(kind: 'ok' | 'http_error' | 'invalid_response_json' | 'output_truncated' | 'empty_output' | 'no_exchange'): G09Outcome {
+  switch (kind) {
+    case 'output_truncated': return 'output_truncated';
+    case 'empty_output': return 'empty_output';
+    case 'http_error': return 'provider_error';
+    case 'invalid_response_json': return 'provider_error';
+    default: return 'invalid_run';
   }
 }
 
-function mapFailure(status: string | undefined): G09EpisodeRecord['outcome'] {
-  switch (status) {
-    case 'budget_exhausted': return 'insufficient_budget';
+/** Session terminal outcome → episode outcome, for a discarded/failed phase. */
+function mapTerminal(terminal: string | null, status: string | undefined): G09Outcome {
+  switch (terminal) {
+    case 'request_expired': return 'request_expired';
+    case 'selected_goal_yield': return 'request_expired';
     case 'insufficient_budget': return 'insufficient_budget';
+    case 'budget_exhausted': return 'insufficient_budget';
     case 'timeout': return 'timeout';
     case 'provider_error': return 'provider_error';
-    case 'request_expired': return 'request_expired';
-    case 'stopped': return 'request_expired';
-    default: return 'invalid_run';
+    case 'failed': return 'provider_error';
+    default:
+      switch (status) {
+        case 'timeout': return 'timeout';
+        case 'provider_error': return 'provider_error';
+        case 'invalid_run': return 'invalid_run';
+        case 'budget_exhausted': return 'insufficient_budget';
+        default: return 'invalid_run';
+      }
   }
 }
 
@@ -397,6 +443,15 @@ async function run(args: Args): Promise<number> {
     cells: G09_CELLS,
     frozen: { source: 'spec-lock', matrix: plan.plan.map(entry => [entry.rep, entry.satiety, entry.arm]) },
     initialStates: Object.fromEntries(G09_CELLS.map(cell => [cell.cell, g09InitialState(cell.satiety)])),
+    // G10: the action-template version and the exact rendered-template hash
+    // are frozen into the plan BEFORE the batch runs, together with the source
+    // commit that produced this binary.
+    actionContract: {
+      version: ACTIVE_GOAL_PROMPT_VERSION,
+      promptFingerprint: activeGoalPromptFingerprint(),
+      reportSchema: 'g10-action-contract/1',
+    },
+    source: sourceIdentity(),
   });
 
   const rt: EpisodeRuntime = { store, args, config: cfg, campaignDir, batch: args.batch };
@@ -443,6 +498,18 @@ async function run(args: Args): Promise<number> {
   return verify.runSucceeded ? 0 : 1;
 }
 
+function sourceIdentity(): { commit: string | null; branch: string | null } {
+  try {
+    const run = (cmd: string): string | null => {
+      const out = execSync(cmd, { encoding: 'utf8' }).trim();
+      return out.length > 0 ? out : null;
+    };
+    return { commit: run('git rev-parse HEAD'), branch: run('git rev-parse --abbrev-ref HEAD') };
+  } catch {
+    return { commit: null, branch: null };
+  }
+}
+
 function existsSyncCampaign(dir: string): boolean {
   try {
     loadCampaign(dir);
@@ -455,7 +522,7 @@ function existsSyncCampaign(dir: string): boolean {
 function notRunRecord(entry: G09PlanEntry): G09EpisodeRecord {
   const initial = g09InitialState(entry.satiety);
   return {
-    schema: 'frostecho.g09.episode/2',
+    schema: G09_EPISODE_SCHEMA,
     episodeId: entry.episodeId, cell: entry.cell, satiety: entry.satiety, arm: entry.arm,
     outcome: 'not_run', request: null, binding: null,
     goal: { round: 1, raw: null, parseOk: false, error: null },
