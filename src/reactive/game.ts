@@ -511,6 +511,17 @@ export class ReactiveGameImpl implements ReactiveGame {
           continue;
         }
         const now = this.world.getState().simTime ?? 0;
+        // G11: only a DUE wait is settled; before the deadline the pause holds.
+        const deadline = cycle.session.wakeAtSimTime;
+        if (deadline !== null && now >= deadline) {
+          // The negotiated yield promise is settled from the AUTHORITATIVE
+          // request (zero provider calls). While it is still pending the
+          // ordinary wait/decision rules apply and nothing is invented.
+          if (cycle.session.settleEndedGoal()) {
+            this.handoffAfterYield(actorId, cycle);
+            continue;
+          }
+        }
         if (cycle.session.resumeIfDue(now)) {
           this.transition(actorId, 'active', `wait over: simTime ${now} reached the deadline`);
         }
@@ -540,6 +551,57 @@ export class ReactiveGameImpl implements ReactiveGame {
       if (!canWake(observation)) continue;
       this.openCycle(actorId, `wake: own observation has food (${describeObservation(observation)})`);
     }
+  }
+
+  /**
+   * G11: after a due wait whose yield promise ended, hand control back to the
+   * ordinary need — but ONLY for the frozen continuation eligibility, and only
+   * once (the caller is a synchronous reconcile branch; a second reconcile
+   * finds the actor active/terminal and does nothing).
+   *
+   * The old cycle keeps its own goal, binding, reason and recorded request
+   * outcome: settlement never rewrites the request and never calls it
+   * "satisfied". A fresh cycle is opened with ordinary semantics; the consumed
+   * request cannot attach to it.
+   */
+  private handoffAfterYield(actorId: string, cycle: CycleState): void {
+    const outcome = cycle.session.goalSettlement();
+    // The old negotiation cycle ends here: its own reason records the settled
+    // outcome, its end state is 'stopped' (never 'satisfied').
+    cycle.reason = `${cycle.reason} | yield goal settled: ${outcome}`;
+    cycle.endState = 'stopped';
+    const hunger = this.world.getState().npcs[actorId]?.hunger;
+    if (!this.continuationAllowed(actorId, outcome)) {
+      this.transition(actorId, 'stopped', `wait over: yield goal settled ${outcome}; no automatic continuation`);
+      return;
+    }
+    if (typeof hunger !== 'number' || hunger >= GOAL_HUNGER_AT_LEAST) {
+      // Authoritative satiety pre-check: nothing left to do, zero calls.
+      this.transition(actorId, 'satisfied', `wait over: yield goal settled ${outcome}; hunger ${hunger} >= ${GOAL_HUNGER_AT_LEAST}, no provider call`);
+      return;
+    }
+    // Restore the still-unmet need in a NEW ordinary cycle (own command ids,
+    // cumulative budget, same rotation). This is not the G05 "hungry again"
+    // rule: that threshold (<= 40 after a satisfied cycle) is unchanged.
+    this.openCycle(actorId, `resume unmet need after yield goal settled ${outcome}: hunger ${hunger} < ${GOAL_HUNGER_AT_LEAST}`);
+  }
+
+  /**
+   * G11: the frozen continuation eligibility. Only a fulfilled/expired yield
+   * promise under recurring needs, in a live game with actor (and, when
+   * present, external/campaign) budget left may hand back to ordinary needs.
+   * Stops, failures, closes, budget ends and violations never resurrect.
+   */
+  private continuationAllowed(actorId: string, outcome: string): boolean {
+    if (outcome !== 'fulfilled' && outcome !== 'expired') return false;
+    if (this.needPolicy !== 'recurring') return false;
+    if (this.closed || this.interrupted) return false;
+    const lifecycle = this.states[actorId];
+    // 'closed' is not an actor state: a closed game is caught above.
+    if (lifecycle === 'failed' || lifecycle === 'budget_exhausted') return false;
+    if (this.callsOf(actorId) >= EPISODE_CALL_LIMIT) return false;
+    if (this.options.externalBudget !== undefined && !this.options.externalBudget(actorId)) return false;
+    return true;
   }
 
   /* ---------------------------------------------------------------- */

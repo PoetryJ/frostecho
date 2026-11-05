@@ -59,6 +59,8 @@ export interface NeedsGameOptions {
   goalMode?: ReactiveGameOptions['goalMode'];
   candidateSet?: ReactiveGameOptions['candidateSet'];
   playerId?: ReactiveGameOptions['playerId'];
+  /** G11: external (campaign) budget gate consulted before a continuation. */
+  externalBudget?: ReactiveGameOptions['externalBudget'];
 }
 
 export type NeedsGame = ReactiveGame & ReturnType<typeof createReactiveGame>;
@@ -85,6 +87,7 @@ export function createNeedsGame(options: NeedsGameOptions): NeedsGame {
     goalMode: options.goalMode,
     candidateSet: options.candidateSet,
     playerId: options.playerId,
+    externalBudget: options.externalBudget,
   });
   return game;
 }

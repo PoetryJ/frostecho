@@ -168,6 +168,12 @@ export interface ReactiveGameOptions {
    * checkpoints export the G09 session format. Undefined keeps G08 exactly.
    */
   goalProtocol?: GoalProtocolOptions;
+  /**
+   * G11: extra budget gate consulted BEFORE the automatic continuation cycle
+   * is opened (e.g. a campaign ledger with no chats left). Default: unlimited.
+   * It is never consulted for anything else and never creates a ledger.
+   */
+  externalBudget?(actorId: string): boolean;
   /** Live model name for requestConfig even on zero-request trajectories. */
   requestModel?: string;
   timeoutMs?: number;
