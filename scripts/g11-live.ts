@@ -11,37 +11,91 @@
  *   prepare  write batch/plan.json exclusively (refuses an existing plan)
  *   prefix   one scene: request -> step(goal) -> step(action=wait) -> save -> quit
  *   suffix   a NEW process: load the pre-close slot -> world inputs -> 2 steps
- *   run      orchestrator: precheck GET, then serial W1/W2 prefix+suffix children
- *   verify   read-only derivation from the disk records (run slots, campaign)
+ *   run      orchestrator: preflight -> exclusive start -> serial W1/W2 children
+ *   verify   read-only derivation through worker A's verifier (no writes)
+ *
+ * One-shot orchestration (run): every invocation takes its OWN exclusive
+ * preflight record (GET /health + GET /v1/models, no chat request). A batch may
+ * start exactly once: run-start.json is created with `wx` and any earlier start
+ * marker or spent attempt refuses before the network. plan.json and the
+ * historical offline-ready.json are never rewritten.
+ *
+ * Watchdog: each phase may legally wait 2 x the single-request timeout plus a
+ * settle margin, so the kill deadline is DERIVED (2 x 120000 + 30000 = 270000
+ * in production) instead of the old fixed 180000 that beheaded a legal phase.
  *
  * Exit codes
- *   0  both goal paths truly triggered AND authoritative results reached
- *   1  not_triggered / goal_not_reached / budget_exhausted / technical failure
- *   2  config or same-name-dir error, ZERO POST spent
- *   3  offline_ready: the service precheck failed (no POST beyond the GET)
+ *   0  both goal paths truly triggered AND worker A's gate is ok
+ *   1  not_triggered / goal_not_reached / technical failure / evidence gate closed
+ *   2  config, same-name-dir, already-started or already-charged, ZERO POST
+ *   3  offline_ready: the two preflight GETs failed (no POST beyond them)
  *
  * Budget: every provider call still goes through the campaign reserve; this
  * driver only refuses to START a step when the scene already used its share
  * (maxPostsPerScene) or the campaign is exhausted.
  */
-import { spawn } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
-import { basename, dirname, join, resolve } from 'node:path';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
 import { createG10Runtime, loadG10Runtime, type G10Runtime } from '../src/application/adapters';
 import { createApplicationController } from '../src/application/session';
 import { parseInput } from '../src/application/commands';
 import type { AppCommand, ApplicationController, AppView } from '../src/application/contracts';
 import { ACTIVE_GOAL_PROMPT_VERSION } from '../src/agent/active-goal-prompt';
+import { HTTP_SAMPLING } from '../src/agent/providers/http';
 import { campaignCounts, loadCampaign } from '../src/eval/campaign-budget';
 import { campaignJsonPath } from '../src/application/budget-binding';
+import { HEALTH_TIMEOUT_MS, checkLlmHealth } from '../src/eval/health';
+import { G09_TIMEOUT_MS } from '../src/negotiation/contracts';
+import { G11_SCENES, g11Ok, type G11VerifyResult } from './g11-live-contracts';
+import { verifyG11Batch } from './g11-live-verify';
 
 const PLAN_SCHEMA = 'frostecho.g11-live.plan/1';
 const SCENE_SCHEMA = 'frostecho.g11-live.scene/1';
+const PREFLIGHT_SCHEMA = 'frostecho.g11-live.preflight/1';
+const RUN_START_SCHEMA = 'frostecho.g11-live.run-start/1';
 const SCENES = ['W1', 'W2'] as const;
 type Scene = (typeof SCENES)[number];
 /** Slot/directory names are lowercased: the save-slot regex rejects capitals. */
 const sceneDir = (scene: Scene): string => scene.toLowerCase();
+/** Each phase sends at most goal+action; the suffix sends the two resumed eats. */
+const REQUESTS_PER_PHASE = 2;
+/** Production settle margin on top of the legal per-request budget. */
+const WATCHDOG_SETTLE_MS = 30_000;
+
+/**
+ * The per-phase kill deadline is DERIVED from the frozen per-request timeout.
+ * Tests inject shorter values through the two env knobs; production leaves them
+ * unset, so the deadline is exactly 2 x 120000 + 30000. The effective values are
+ * written into run-start.json so any deviation is auditable.
+ */
+interface Watchdog {
+  requestMs: number;
+  settleMs: number;
+  requestsPerPhase: number;
+  phaseMs: number;
+  source: 'default' | 'injected';
+}
+
+function positiveInt(raw: string | undefined, fallback: number): number {
+  const text = raw?.trim() ?? '';
+  if (text.length === 0) return fallback;
+  const value = Number(text);
+  return Number.isInteger(value) && value > 0 ? value : fallback;
+}
+
+function watchdogOf(env: NodeJS.ProcessEnv): Watchdog {
+  const requestMs = positiveInt(env.FROSTECHO_G11_REQUEST_TIMEOUT_MS, G09_TIMEOUT_MS);
+  const settleMs = positiveInt(env.FROSTECHO_G11_WATCHDOG_SETTLE_MS, WATCHDOG_SETTLE_MS);
+  return {
+    requestMs,
+    settleMs,
+    requestsPerPhase: REQUESTS_PER_PHASE,
+    phaseMs: REQUESTS_PER_PHASE * requestMs + settleMs,
+    source: requestMs === G09_TIMEOUT_MS && settleMs === WATCHDOG_SETTLE_MS ? 'default' : 'injected',
+  };
+}
 
 interface Plan {
   schema: typeof PLAN_SCHEMA;
@@ -71,12 +125,12 @@ function fail(message: string): never {
 
 function usage(message: string | null): never {
   if (message !== null) console.error(message);
-  console.error('usage: g11-live <prepare|prefix|suffix|run|verify> --batch DIR --campaign DIR --http URL --model M [--limit N]');
+  console.error('usage: g11-live <prepare|prefix|suffix|run|verify> --batch DIR --campaign DIR --http URL --model M [--limit N] [--out FILE]');
   process.exit(2);
 }
 
-function parseCli(argv: string[]): { mode: string; batch: string; campaign: string; http: string; model: string; limit: number; scene: Scene | null } {
-  const out = { mode: argv[0] ?? '', batch: '', campaign: '', http: '', model: '', limit: 8, scene: null as Scene | null };
+function parseCli(argv: string[]): { mode: string; batch: string; campaign: string; http: string; model: string; limit: number; out: string | null; scene: Scene | null } {
+  const out = { mode: argv[0] ?? '', batch: '', campaign: '', http: '', model: '', limit: 8, out: null as string | null, scene: null as Scene | null };
   for (let index = 1; index < argv.length; index += 2) {
     const flag = argv[index]!;
     const value = argv[index + 1] ?? '';
@@ -84,6 +138,7 @@ function parseCli(argv: string[]): { mode: string; batch: string; campaign: stri
     else if (flag === '--campaign') out.campaign = value;
     else if (flag === '--http') out.http = value;
     else if (flag === '--model') out.model = value;
+    else if (flag === '--out') out.out = value.length === 0 ? null : value;
     else if (flag === '--scene') {
       if (value !== 'W1' && value !== 'W2') usage(`--scene must be W1 or W2, got ${JSON.stringify(value)}`);
       out.scene = value;
@@ -225,10 +280,141 @@ function budgetGuard(campaignDir: string, sceneStartSpent: number, maxPostsPerSc
 }
 
 /* ------------------------------------------------------------------ */
+/* preflight and the one-shot start marker                             */
+/* ------------------------------------------------------------------ */
+
+/** `wx` creation, numbered: concurrent invocations never overwrite one record. */
+function writeExclusive(dir: string, prefix: string, payload: unknown): string {
+  const text = `${JSON.stringify(payload, null, 2)}\n`;
+  for (let sequence = 1; sequence <= 999; sequence += 1) {
+    const path = join(dir, `${prefix}-${String(sequence).padStart(3, '0')}.json`);
+    try {
+      writeFileSync(path, text, { flag: 'wx' });
+      return path;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
+    }
+  }
+  throw new Error(`no free exclusive ${prefix} record name in ${dir}`);
+}
+
+interface PreflightReport {
+  schema: typeof PREFLIGHT_SCHEMA;
+  at: string;
+  batchDir: string;
+  campaignDir: string;
+  http: string;
+  model: string;
+  health: { url: string; status: number | null; ok: boolean; error: string | null };
+  models: { path: string; status: number | null; ok: boolean; modelMatch: boolean; served: string[]; error: string | null };
+  chatRequests: 0;
+  gets: 2;
+  ok: boolean;
+}
+
+/**
+ * Two GETs and nothing else: /health must answer 2xx AND /v1/models must list
+ * the frozen model. No chat request, no ledger, no provider is created here.
+ */
+async function preflight(plan: Plan): Promise<PreflightReport> {
+  const at = new Date().toISOString();
+  const origin = new URL(plan.service.http).origin;
+  const healthUrl = `${origin}/health`;
+  let status: number | null = null;
+  let healthOk = false;
+  let healthError: string | null = null;
+  try {
+    const response = await fetch(healthUrl, { method: 'GET', signal: AbortSignal.timeout(HEALTH_TIMEOUT_MS) });
+    status = response.status;
+    healthOk = response.ok;
+    if (!response.ok) healthError = `http ${String(response.status)}`;
+    else await response.text();
+  } catch (error) {
+    healthError = error instanceof Error ? error.message : String(error);
+  }
+  const models = await checkLlmHealth({ url: plan.service.http, model: plan.service.model }, { timeoutMs: HEALTH_TIMEOUT_MS });
+  return {
+    schema: PREFLIGHT_SCHEMA,
+    at,
+    batchDir: plan.batchDir,
+    campaignDir: plan.campaignDir,
+    http: plan.service.http,
+    model: plan.service.model,
+    health: { url: healthUrl, status, ok: healthOk, error: healthError },
+    models: {
+      path: models.modelsUrlPath,
+      status: models.status,
+      ok: models.ok,
+      modelMatch: models.modelMatch,
+      served: models.models,
+      error: models.error,
+    },
+    chatRequests: 0,
+    gets: 2,
+    ok: healthOk && models.ok,
+  };
+}
+
+function codeHead(): string | null {
+  try {
+    return execFileSync('git', ['rev-parse', 'HEAD'], { cwd: process.cwd(), encoding: 'utf8' }).trim() || null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The batch may start exactly once across processes: `wx` on run-start.json.
+ * The record freezes the actual code HEAD, the original plan bytes and every
+ * effective setting, so a later reader can prove what was authorized.
+ */
+function writeRunStart(plan: Plan, preflightPath: string, watchdog: Watchdog, spentBefore: number): string {
+  const planPath = join(plan.batchDir, 'plan.json');
+  const record = {
+    schema: RUN_START_SCHEMA,
+    at: new Date().toISOString(),
+    batchDir: plan.batchDir,
+    campaignDir: plan.campaignDir,
+    codeHead: codeHead(),
+    planPath,
+    planSha256: sha256(planPath).hash,
+    planBytes: sha256(planPath).bytes,
+    preflightPath,
+    authorization: plan.authorization,
+    effective: {
+      http: plan.service.http,
+      model: plan.service.model,
+      promptVersion: plan.promptVersion,
+      config: plan.config,
+      sampling: {
+        temperature: HTTP_SAMPLING.temperature,
+        maxTokens: HTTP_SAMPLING.max_tokens,
+        stream: HTTP_SAMPLING.stream,
+        thinking: true,
+      },
+      requestTimeoutMs: watchdog.requestMs,
+      watchdog: { requestsPerPhase: watchdog.requestsPerPhase, settleMs: watchdog.settleMs, phaseMs: watchdog.phaseMs, source: watchdog.source },
+    },
+    sceneOrder: [...SCENES],
+    campaignSpentBefore: spentBefore,
+  };
+  const path = join(plan.batchDir, 'run-start.json');
+  writeFileSync(path, `${JSON.stringify(record, null, 2)}\n`, { flag: 'wx' });
+  return path;
+}
+
+/* ------------------------------------------------------------------ */
 /* prefix: request -> goal step -> wait step -> save -> quit           */
 /* ------------------------------------------------------------------ */
 
 async function cmdPrefix(plan: Plan, scene: Scene): Promise<number> {
+  // A phase may only run under the one-shot start marker written by `run`; a
+  // hand-invoked phase must not be able to spend outside the frozen batch start.
+  const startPath = join(plan.batchDir, 'run-start.json');
+  if (!existsSync(startPath)) {
+    emit({ mode: 'prefix', scene, classification: 'config_error', reasons: [`no run-start marker at ${startPath}: only run mode may start a scene`] });
+    return 2;
+  }
   const root = join(plan.batchDir, sceneDir(scene));
   const slot = `${sceneDir(scene)}-prefix`;
   const ledgerExists = existsSync(campaignJsonPath(plan.campaignDir));
@@ -345,6 +531,11 @@ async function cmdPrefix(plan: Plan, scene: Scene): Promise<number> {
 /* ------------------------------------------------------------------ */
 
 async function cmdSuffix(plan: Plan, scene: Scene): Promise<number> {
+  const startPath = join(plan.batchDir, 'run-start.json');
+  if (!existsSync(startPath)) {
+    emit({ mode: 'suffix', scene, classification: 'config_error', reasons: [`no run-start marker at ${startPath}: only run mode may continue a scene`] });
+    return 2;
+  }
   const slotPath = join(plan.batchDir, sceneDir(scene), `${sceneDir(scene)}-wait.g09.json`);
   if (!existsSync(slotPath)) {
     emit({ mode: 'suffix', scene, classification: 'config_error', reasons: [`no pre-close slot at ${slotPath}`] });
@@ -491,19 +682,51 @@ async function cmdSuffix(plan: Plan, scene: Scene): Promise<number> {
 /* run: the serial orchestrator (the ONLY mode the main agent runs)    */
 /* ------------------------------------------------------------------ */
 
-interface ChildOutcome { code: number | null; stdout: string; stderr: string }
+interface ChildOutcome {
+  code: number | null;
+  signal: NodeJS.Signals | null;
+  killedByWatchdog: boolean;
+  watchdogMs: number;
+  spawnError: string | null;
+  stdout: string;
+  stderr: string;
+}
 
-function runChild(mode: 'prefix' | 'suffix', scene: Scene, plan: Plan): Promise<ChildOutcome> {
+/**
+ * One child phase. The kill deadline is DERIVED (2 legal requests + settle),
+ * never a fixed 180s: two 100s requests are legal and must survive. On a kill
+ * the child's already-written records and its exit facts are kept, and the
+ * caller stops the batch — nothing is retried.
+ */
+function runChild(mode: 'prefix' | 'suffix', scene: Scene, plan: Plan, watchdog: Watchdog): Promise<ChildOutcome> {
   const self = join(__dirname, 'g11-live.js');
   const child = spawn(process.execPath, [self, mode, '--scene', scene, '--batch', plan.batchDir, '--campaign', plan.campaignDir, '--http', plan.service.http, '--model', plan.service.model], { cwd: process.cwd() });
   let stdout = '';
   let stderr = '';
+  let killedByWatchdog = false;
+  let spawnError: string | null = null;
   child.stdout.on('data', chunk => { stdout += String(chunk); });
   child.stderr.on('data', chunk => { stderr += String(chunk); });
-  const timer = setTimeout(() => child.kill('SIGKILL'), 180_000);
+  child.on('error', error => { spawnError = error instanceof Error ? error.message : String(error); });
+  const timer = setTimeout(() => { killedByWatchdog = true; child.kill('SIGKILL'); }, watchdog.phaseMs);
   return new Promise(resolve => {
-    child.on('close', code => { clearTimeout(timer); resolve({ code, stdout, stderr }); });
+    child.on('close', (code, signal) => {
+      clearTimeout(timer);
+      resolve({ code, signal, killedByWatchdog, watchdogMs: watchdog.phaseMs, spawnError, stdout, stderr });
+    });
   });
+}
+
+/** Exit facts are part of the evidence: a killed or unparseable child still names why. */
+function childExit(outcome: ChildOutcome): Record<string, unknown> {
+  return {
+    code: outcome.code,
+    signal: outcome.signal,
+    killedByWatchdog: outcome.killedByWatchdog,
+    watchdogMs: outcome.watchdogMs,
+    spawnError: outcome.spawnError,
+    stderrTail: outcome.stderr.slice(-600),
+  };
 }
 
 function childJson(outcome: ChildOutcome): Record<string, unknown> {
@@ -514,56 +737,122 @@ function childJson(outcome: ChildOutcome): Record<string, unknown> {
       if (parsed.mode !== undefined) return parsed;
     } catch { /* keep scanning */ }
   }
-  return { classification: 'unknown', reasons: [`child produced no JSON; exit ${String(outcome.code)}; stderr tail: ${outcome.stderr.slice(-400)}`], raw: outcome.stdout.slice(-600) };
+  const cause = outcome.killedByWatchdog
+    ? `phase killed by the derived watchdog after ${String(outcome.watchdogMs)}ms`
+    : `child produced no JSON; exit ${String(outcome.code)} signal ${String(outcome.signal)}`;
+  return {
+    classification: 'technical_failure',
+    reasons: [`${cause}${outcome.spawnError === null ? '' : `; spawn ${outcome.spawnError}`}; stderr tail: ${outcome.stderr.slice(-400)}`],
+    raw: outcome.stdout.slice(-600),
+  };
 }
 
 async function cmdRun(plan: Plan): Promise<number> {
+  const watchdog = watchdogOf(process.env);
+  // One shot across processes. The marker is created with `wx` only AFTER the
+  // preflight; an existing marker or any already-charged attempt refuses here,
+  // before the network, so a crash or a second shell cannot double-start.
+  if (existsSync(join(plan.batchDir, 'run-start.json'))) {
+    fail(`run-start.json already exists in ${plan.batchDir}: this batch was already started (no re-spend)`);
+  }
+  const spentBefore = spentOf(plan.campaignDir);
+  if (spentBefore > 0) fail(`campaign ${plan.campaignDir} already spent ${String(spentBefore)} attempts: refusing a second start`);
+  /** No ledger yet means provably zero spent (the guard above closed the rest). */
+  const chargedSoFar = spentBefore < 0 ? 0 : spentBefore;
   for (const scene of SCENES) {
     if (existsSync(join(plan.batchDir, `scene-${scene}.json`))) {
       fail(`scene-${scene}.json already exists: this batch was already run (no re-spend)`);
     }
   }
-  // Service precheck: ONE GET, counted separately, no smoke chat.
-  let precheck = 'ok';
-  try {
-    const origin = new URL(plan.service.http).origin;
-    const response = await fetch(`${origin}/v1/models`, { signal: AbortSignal.timeout(5_000) });
-    if (!response.ok) precheck = `HTTP ${String(response.status)}`;
-  } catch (error) {
-    precheck = error instanceof Error ? error.message : String(error);
-  }
-  if (precheck !== 'ok') {
-    const path = join(plan.batchDir, 'offline-ready.json');
-    writeFileSync(path, `${JSON.stringify({ schema: 'frostecho.g11-live.offline-ready/1', at: new Date().toISOString(), reason: precheck }, null, 2)}\n`);
-    emit({ mode: 'run', classification: 'offline_ready', reasons: [precheck], path });
+
+  // Every invocation keeps its OWN exclusive preflight record; the historical
+  // plan.json and offline-ready.json bytes are never rewritten.
+  const report = await preflight(plan);
+  const preflightPath = writeExclusive(plan.batchDir, 'preflight', report);
+  if (!report.ok) {
+    const reasons = [
+      report.health.ok ? null : `GET ${report.health.url}: ${report.health.error ?? 'failed'}`,
+      report.models.ok ? null : `GET ${report.models.path}: ${report.models.error ?? 'failed'}`,
+    ].filter((reason): reason is string => reason !== null);
+    emit({ mode: 'run', classification: 'offline_ready', reasons, preflightPath, gets: report.gets, chatRequests: 0, posts: 0 });
     return 3;
   }
 
+  try {
+    writeRunStart(plan, preflightPath, watchdog, chargedSoFar);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'EEXIST') {
+      fail(`${join(plan.batchDir, 'run-start.json')} appeared concurrently: another process owns this start (no re-spend)`);
+    }
+    throw error;
+  }
+
   let exit = 0;
-  const summary: Record<string, unknown> = { mode: 'run', precheckGet: 1, scenes: {} as Record<string, unknown> };
+  const summary: Record<string, unknown> = {
+    mode: 'run',
+    preflightPath,
+    preflightGets: report.gets,
+    watchdog: { requestMs: watchdog.requestMs, settleMs: watchdog.settleMs, phaseMs: watchdog.phaseMs, source: watchdog.source },
+    scenes: {} as Record<string, unknown>,
+  };
+  const writeScene = (scene: Scene, sceneSummary: Record<string, unknown>): void => {
+    (summary.scenes as Record<string, unknown>)[scene] = sceneSummary;
+    writeFileSync(join(plan.batchDir, `scene-${scene}.json`), `${JSON.stringify({ schema: SCENE_SCHEMA, at: new Date().toISOString(), ...sceneSummary }, null, 2)}\n`);
+  };
+  /** One exit path: the batch-level code must agree with the evidence gate. */
+  const finish = (code: number): number => {
+    let gate: G11VerifyResult | null = null;
+    try {
+      gate = verifyG11Batch({ batchDir: plan.batchDir, campaignDir: plan.campaignDir, model: plan.service.model });
+    } catch (error) {
+      summary.verifyError = error instanceof Error ? error.message : String(error);
+    }
+    if (gate !== null) {
+      summary.verify = {
+        schema: gate.schema,
+        evidenceOk: gate.evidenceOk,
+        complete: gate.complete,
+        ok: gate.ok,
+        classification: gate.classification,
+        issues: gate.issues,
+        expectations: gate.expectations,
+        costs: gate.costs,
+      };
+      if (code === 0 && !g11Ok(gate)) {
+        summary.overall = 'evidence_gate_closed';
+        emit(summary);
+        return 1;
+      }
+    }
+    emit(summary);
+    return code;
+  };
+
   for (const scene of SCENES) {
-    const prefixOutcome = await runChild('prefix', scene, plan);
+    const prefixOutcome = await runChild('prefix', scene, plan, watchdog);
     const prefix = childJson(prefixOutcome);
-    const sceneSummary: Record<string, unknown> = { prefix, suffix: null, overall: 'not_run' };
+    const sceneSummary: Record<string, unknown> = {
+      prefix,
+      suffix: null,
+      overall: 'not_run',
+      exit: { prefix: childExit(prefixOutcome), suffix: null as Record<string, unknown> | null },
+    };
     if (prefixOutcome.code === 2) {
       // A child config error (same-name dir, bad baseline, bad plan) is exit 2
       // at the batch level too, with ZERO posts spent.
       sceneSummary.overall = String(prefix.classification ?? 'config_error');
-      (summary.scenes as Record<string, unknown>)[scene] = sceneSummary;
-      writeFileSync(join(plan.batchDir, `scene-${scene}.json`), `${JSON.stringify({ schema: SCENE_SCHEMA, at: new Date().toISOString(), ...sceneSummary }, null, 2)}\n`);
-      emit(summary);
-      return 2;
+      writeScene(scene, sceneSummary);
+      return finish(2);
     }
     if (prefixOutcome.code === 0 && prefix.classification === 'goal_triggered') {
-      const suffixOutcome = await runChild('suffix', scene, plan);
+      const suffixOutcome = await runChild('suffix', scene, plan, watchdog);
       const suffix = childJson(suffixOutcome);
       sceneSummary.suffix = suffix;
+      (sceneSummary.exit as Record<string, unknown>).suffix = childExit(suffixOutcome);
       if (suffixOutcome.code === 2) {
         sceneSummary.overall = String(suffix.classification ?? 'config_error');
-        (summary.scenes as Record<string, unknown>)[scene] = sceneSummary;
-        writeFileSync(join(plan.batchDir, `scene-${scene}.json`), `${JSON.stringify({ schema: SCENE_SCHEMA, at: new Date().toISOString(), ...sceneSummary }, null, 2)}\n`);
-        emit(summary);
-        return 2;
+        writeScene(scene, sceneSummary);
+        return finish(2);
       }
       sceneSummary.overall = suffixOutcome.code === 0 && (suffix.classification === 'fulfilled' || suffix.classification === 'expired')
         ? 'success'
@@ -573,157 +862,48 @@ async function cmdRun(plan: Plan): Promise<number> {
       sceneSummary.overall = String(prefix.classification ?? 'technical_failure');
       exit = 1;
     }
-    (summary.scenes as Record<string, unknown>)[scene] = sceneSummary;
-    writeFileSync(join(plan.batchDir, `scene-${scene}.json`), `${JSON.stringify({ schema: SCENE_SCHEMA, at: new Date().toISOString(), ...sceneSummary }, null, 2)}\n`);
+    writeScene(scene, sceneSummary);
     if (exit !== 0) {
       // Any scene failure stops the batch: later scenes stay not_run, zero cost.
-      emit(summary);
-      return exit;
+      return finish(exit);
     }
   }
-  emit(summary);
-  return exit;
+  return finish(exit);
 }
 
 /* ------------------------------------------------------------------ */
 /* verify: read-only derivation from the disk records                  */
 /* ------------------------------------------------------------------ */
 
-interface WireLike { attemptId: string; phase: string; status: number | null; usage: { total_tokens: number | null } | null }
-interface RecordLike {
-  path: string;
-  slot: string;
-  scene: Scene;
-  lineage: { baseCommit: string | null; parentSlot: string | null };
-  wire: WireLike[];
-  meta: { episodeId: string; providerKind: string; model: string | null };
-  campaign: { campaignId: string; jsonPath: string; spentBefore: number; spentAfter: number; limit: number } | null;
-}
-
-function readRecord(path: string, scene: Scene): RecordLike | { error: string } {
-  try {
-    const raw = JSON.parse(readFileSync(path, 'utf8')) as {
-      payload: { lineage: RecordLike['lineage']; wire: WireLike[]; meta: RecordLike['meta']; campaign: RecordLike['campaign'] };
-    };
-    return { path, scene, slot: basename(path).replace(/\.run\.json$/, ''), lineage: raw.payload.lineage, wire: raw.payload.wire ?? [], meta: raw.payload.meta, campaign: raw.payload.campaign };
-  } catch (error) {
-    return { error: `${path}: ${error instanceof Error ? error.message : String(error)}` };
-  }
-}
-
-function cmdVerify(plan: Plan): number {
-  const problems: string[] = [];
-  const ledgerPath = campaignJsonPath(plan.campaignDir);
-  const ledger = JSON.parse(readFileSync(ledgerPath, 'utf8')) as {
-    limit: number; spent: number;
-    attempts: { attemptId: string; batch: string; episodeId: string; totalTokens: number | null; state: string }[];
-  };
-  const records: RecordLike[] = [];
-  for (const scene of SCENES) {
-    const dir = join(plan.batchDir, sceneDir(scene));
-    if (!existsSync(dir)) continue;
-    for (const name of readdirSync(dir).filter(name => name.endsWith('.run.json')).sort()) {
-      const record = readRecord(join(dir, name), scene);
-      if ('error' in record) problems.push(record.error);
-      else records.push(record);
-    }
-  }
-
-  // 1. Every reserve became exactly one wire record; no attempt counted twice.
-  const wireIds = records.flatMap(record => record.wire.map(entry => entry.attemptId));
-  const ledgerIds = ledger.attempts.map(attempt => attempt.attemptId);
-  const duplicateWire = wireIds.filter((id, index) => wireIds.indexOf(id) !== index);
-  if (duplicateWire.length > 0) problems.push(`wire attemptIds counted more than once: ${[...new Set(duplicateWire)].join(', ')}`);
-  const missingWire = ledgerIds.filter(id => !wireIds.includes(id));
-  if (missingWire.length > 0) problems.push(`ledger attempts with no wire record: ${missingWire.join(', ')}`);
-  const orphanWire = wireIds.filter(id => !ledgerIds.includes(id));
-  if (orphanWire.length > 0) problems.push(`wire records absent from the ledger: ${orphanWire.join(', ')}`);
-  if (ledger.spent !== ledgerIds.length) problems.push(`ledger spent ${ledger.spent} but ${ledgerIds.length} attempts exist`);
-
-  // 2. Cost aggregated by UNIQUE attemptId, once; ANY missing usage keeps the
-  // grand total unknown (null) — an incomplete total is never reported as a
-  // confident number (same invariant as src/needs/metrics.ts).
-  const costByAttempt = new Map<string, number | null>();
-  for (const attempt of ledger.attempts) costByAttempt.set(attempt.attemptId, attempt.totalTokens);
-  const usageNull: string[] = [];
-  let totalCost = 0;
-  for (const [id, tokens] of costByAttempt) {
-    if (tokens === null || tokens === undefined) usageNull.push(id);
-    else totalCost += tokens;
-  }
-  const uniqueCost: number | null = usageNull.length === 0 ? totalCost : null;
-  const wireUsageMismatch = records.flatMap(record => record.wire.filter(entry => {
-    const ledgerTokens = costByAttempt.get(entry.attemptId) ?? null;
-    const wireTokens = entry.usage?.total_tokens ?? null;
-    return ledgerTokens !== wireTokens;
-  }));
-  if (wireUsageMismatch.length > 0) problems.push(`wire usage differs from the ledger for ${wireUsageMismatch.map(entry => entry.attemptId).join(', ')}`);
-
-  // 3. Lineage: the suffix restored from the pre-close slot of ITS scene.
-  for (const record of records) {
-    const isSuffix = record.slot.endsWith('-wait-run');
-    if (isSuffix) {
-      const expected = join(plan.batchDir, sceneDir(record.scene), `${sceneDir(record.scene)}-wait.g09.json`);
-      if (record.lineage.parentSlot !== expected) problems.push(`${record.slot}: parentSlot ${record.lineage.parentSlot} != ${expected}`);
-      if (!existsSync(expected)) problems.push(`${record.slot}: parent slot ${expected} is missing`);
-    } else if (record.lineage.parentSlot !== null) {
-      problems.push(`${record.slot}: prefix parentSlot ${record.lineage.parentSlot} should be null`);
-    }
-  }
-
-  // 4. Per-scene POST share and the campaign ceiling.
-  const perScene = new Map<string, number>();
-  for (const scene of SCENES) perScene.set(scene, records.filter(record => record.scene === scene).reduce((sum, record) => sum + record.wire.length, 0));
-  for (const [scene, posts] of perScene) {
-    if (posts > plan.authorization.maxPostsPerScene) problems.push(`${scene}: ${posts} posts > share ${plan.authorization.maxPostsPerScene}`);
-  }
-  if (wireIds.length > plan.authorization.totalPosts) problems.push(`${wireIds.length} total posts > authorization ${plan.authorization.totalPosts}`);
-  if (ledger.limit !== plan.authorization.totalPosts) problems.push(`ledger limit ${ledger.limit} != plan ${plan.authorization.totalPosts}`);
-
-  // 5. Slots: recorded hashes still match the files on disk.
-  for (const scene of SCENES) {
-    const scenePath = join(plan.batchDir, `scene-${scene}.json`);
-    if (!existsSync(scenePath)) continue;
-    const sceneJson = JSON.parse(readFileSync(scenePath, 'utf8')) as { prefix: { slotPath: string | null; slotSha256: string | null }; suffix: { slotSha256: string | null } | null };
-    const recorded = sceneJson.prefix.slotSha256 ?? sceneJson.suffix?.slotSha256 ?? null;
-    const slotPath = sceneJson.prefix.slotPath;
-    if (recorded === null || slotPath === null) { problems.push(`scene-${scene}: no slot hash recorded`); continue; }
-    if (!existsSync(slotPath)) { problems.push(`scene-${scene}: slot ${slotPath} is missing`); continue; }
-    const current = sha256(slotPath);
-    if (current.hash !== recorded) problems.push(`scene-${scene}: slot hash ${current.hash.slice(0, 12)} != recorded ${recorded.slice(0, 12)}`);
-  }
-
-  // 6. Scenes after a stop stay not_run at ZERO cost.
-  const sceneOrder: Scene[] = [...SCENES];
-  const stopped = sceneOrder.find(scene => {
-    const path = join(plan.batchDir, `scene-${scene}.json`);
-    return existsSync(path) && (JSON.parse(readFileSync(path, 'utf8')) as { overall: string }).overall !== 'success';
+/**
+ * Verify is worker A's read-only derivation: no HTTP, no ledger creation and no
+ * file writes unless the caller passes --out (used to store the handoff copy).
+ * Exit 0 only when the ONE gate holds: evidenceOk && complete.
+ */
+function cmdVerify(plan: Plan, batchDir: string, campaignDir: string, out: string | null): number {
+  // The EVIDENCE ROOTS are what the caller names, never the paths recorded in
+  // plan.json: a copy that was moved must be verified where it now lives, not
+  // silently re-verified at its origin.
+  const result = verifyG11Batch({
+    batchDir,
+    campaignDir,
+    model: plan.service.model,
   });
-  if (stopped !== undefined) {
-    const index = sceneOrder.indexOf(stopped);
-    for (const later of sceneOrder.slice(index + 1)) {
-      const posts = perScene.get(later) ?? 0;
-      if (posts !== 0) problems.push(`${later}: ran ${posts} posts although ${stopped} already failed`);
-    }
+  if (out !== null) {
+    const target = resolve(out);
+    mkdirSync(dirname(target), { recursive: true });
+    writeFileSync(target, `${JSON.stringify(result, null, 2)}\n`);
   }
-
-  const classification = SCENES.map(scene => {
-    const path = join(plan.batchDir, `scene-${scene}.json`);
-    const json = existsSync(path) ? (JSON.parse(readFileSync(path, 'utf8')) as { overall: string; prefix: { classification: string; modelChoice: { goal: string | null; action: string | null } } | null; suffix: { classification: string } | null }) : null;
-    return { scene, overall: json?.overall ?? 'not_run', prefix: json?.prefix?.classification ?? '-', suffix: json?.suffix?.classification ?? '-', posts: perScene.get(scene) ?? 0, modelGoal: json?.prefix?.modelChoice?.goal ?? null };
-  });
-  const report = {
-    schema: 'frostecho.g11-live.verify/1',
-    at: new Date().toISOString(),
-    ledger: { limit: ledger.limit, spent: ledger.spent, attempts: ledgerIds.length, uniqueCost, usageNull: usageNull.length },
-    posts: { total: wireIds.length, perScene: Object.fromEntries(perScene) },
-    classification,
-    problems,
-  };
-  writeFileSync(join(plan.batchDir, 'verify.json'), `${JSON.stringify(report, null, 2)}\n`);
-  console.table(classification);
-  console.log(JSON.stringify({ mode: 'verify', problems, ledger: report.ledger }));
-  return problems.length === 0 ? 0 : 1;
+  console.table(result.scenes.map(scene => ({
+    scene: scene.scene, status: scene.status, posts: scene.posts, outcome: scene.outcome,
+    prefix: scene.prefix, suffix: scene.suffix, slotHashOk: scene.slotHashOk,
+  })));
+  emit({ ...result });
+  if (!g11Ok(result)) {
+    for (const issue of result.issues.slice(0, 20)) console.error(issue);
+    return 1;
+  }
+  return 0;
 }
 
 /* ------------------------------------------------------------------ */
@@ -733,10 +913,8 @@ function cmdVerify(plan: Plan): number {
 async function main(argv: string[]): Promise<number> {
   const args = parseCli(argv);
   if (args.mode === 'prepare') return cmdPrepare(args.batch, args.campaign, args.http, args.model, args.limit);
-  if (args.mode === 'verify') {
-    if (!existsSync(args.batch)) fail(`no batch dir ${args.batch}`);
-    return cmdVerify(readPlan(args.batch));
-  }
+  if (!existsSync(args.batch)) fail(`no batch dir ${args.batch}`);
+  if (args.mode === 'verify') return cmdVerify(readPlan(args.batch), args.batch, args.campaign, args.out);
   const plan = readPlan(args.batch);
   if (resolve(args.campaign) !== resolve(plan.campaignDir)) fail(`--campaign ${args.campaign} differs from the plan ${plan.campaignDir}`);
   if (args.mode === 'prefix') return cmdPrefix(plan, args.scene!);

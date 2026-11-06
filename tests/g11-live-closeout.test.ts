@@ -21,12 +21,13 @@
  */
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
-import { cpSync, existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { createServer, type Server } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { createNeedsGame, buildNeedsWorld, type NeedsGame } from '../src/needs/game';
+import { slotChecksum } from '../src/persistence/atomic-slot';
 import { createGoalRequest } from '../src/negotiation/requests';
 import { G09_REQUEST_TEXT } from '../src/negotiation/contracts';
 import type { DecideInput } from '../src/agent/contracts';
@@ -38,6 +39,8 @@ import type { ApplicationController, AppCommand } from '../src/application/contr
 const DRIVER = join(process.cwd(), 'dist/scripts/g11-live.js');
 const PLAY = join(process.cwd(), 'dist/scripts/play-g10.js');
 /** Shared by the funded test and the tamper test (tests run in file order). */
+type AnyJson = Record<string, any>;
+
 let fundedBatch: string | null = null;
 let fundedCampaign: string | null = null;
 
@@ -299,14 +302,29 @@ test('a funded campaign completes W1 and W2 exactly: 8 posts, restore free, veri
     // The restore itself is free and the waits are free: only 4 posts per scene.
     const w1Wire = server.posts.slice(0, 4).map(post => post.answer);
     assert.deepEqual(w1Wire, ['{"goal":"yield_once"}', '{"type":"wait"}', '{"type":"eat"}', '{"type":"eat"}'], 'W1 wire: goal, wait, eat, eat');
-    const verified = await cli(DRIVER, ['verify', '--batch', batch, '--campaign', campaign, '--http', server.url, '--model', 'qwen3.8-27b']);
+    // verify is read-only: it writes nothing into the batch. --out stores the
+    // handoff copy outside the evidence roots, which is what makes "verify
+    // changes no byte" checkable (see the hash-invariance test).
+    const verifyOut = join(batch, '..', 'verify-out', 'verify.json');
+    const verified = await cli(DRIVER, ['verify', '--batch', batch, '--campaign', campaign, '--out', verifyOut]);
     assert.equal(verified.code, 0, `verify found problems: ${verified.stdout.slice(-400)}`);
-    const report = readJson(join(batch, 'verify.json')) as { problems: string[]; ledger: { spent: number; attempts: number; uniqueCost: number | null; usageNull: number }; posts: { total: number; perScene: Record<string, number> } };
-    assert.deepEqual(report.problems, []);
-    assert.equal(report.ledger.spent, 8);
-    assert.equal(report.ledger.attempts, 8);
-    assert.equal(report.ledger.uniqueCost, 960, '8 x 120 tokens aggregated once by unique attemptId');
-    assert.equal(report.ledger.usageNull, 0);
+    assert.equal(existsSync(join(batch, 'verify.json')), false, 'verify must not write batch/verify.json');
+    const report = readJson(verifyOut) as {
+      issues: string[];
+      evidenceOk: boolean;
+      complete: boolean;
+      ok: boolean;
+      costs: { spent: number; attempts: number; totalTokens: number | null; unknownUsage: string[] };
+      posts: { total: number; perScene: Record<string, number> };
+    };
+    assert.deepEqual(report.issues, []);
+    assert.equal(report.evidenceOk, true);
+    assert.equal(report.complete, true);
+    assert.equal(report.ok, true);
+    assert.equal(report.costs.spent, 8);
+    assert.equal(report.costs.attempts, 8);
+    assert.equal(report.costs.totalTokens, 960, '8 x 120 tokens aggregated once by unique attemptId');
+    assert.deepEqual(report.costs.unknownUsage, []);
     assert.equal(report.posts.total, 8);
     assert.deepEqual(report.posts.perScene, { W1: 4, W2: 4 });
   } finally {
@@ -403,106 +421,195 @@ test('verify detects ledger tampering, forged lineage and slot rewrites', async 
   const base = mkdtempSync(join(tmpdir(), 'fe-g11-tamper-'));
   const batch = join(base, 'batch');
   const campaign = join(base, 'campaign');
-  cpSync(fundedBatch!, batch, { recursive: true });
-  cpSync(fundedCampaign!, campaign, { recursive: true });
-  const planPath = join(batch, 'plan.json');
-  const plan = readJson(planPath) as { campaignDir: string; batchDir: string };
-  writeFileSync(planPath, JSON.stringify({ ...plan, campaignDir: campaign, batchDir: batch }, null, 2));
-  // Lineage is recorded with ABSOLUTE slot paths: rebase the copy so the clean
-  // baseline verifies (the forged-parentSlot tamper below still gets caught).
-  const rebase = (): void => {
-    for (const dir of ['w1', 'w2']) {
-      for (const name of readdirSync(join(batch, dir)).filter(n => n.endsWith('.run.json'))) {
-        const path = join(batch, dir, name);
-        const raw = readFileSync(path, 'utf8').split(fundedBatch!).join(batch);
-        writeFileSync(path, raw);
-      }
-    }
-    for (const scene of ['W1', 'W2']) {
-      const path = join(batch, `scene-${scene}.json`);
-      if (existsSync(path)) {
-        const raw = readFileSync(path, 'utf8').split(fundedBatch!).join(batch);
-        writeFileSync(path, raw);
-      }
-    }
-    writeFileSync(planPath, JSON.stringify({ ...plan, campaignDir: campaign, batchDir: batch }, null, 2));
+  const reportPath = join(base, 'report', 'verify.json');
+  const pristine = (): void => {
+    rmSync(batch, { recursive: true, force: true });
+    rmSync(campaign, { recursive: true, force: true });
+    cpSync(fundedBatch!, batch, { recursive: true });
+    cpSync(fundedCampaign!, campaign, { recursive: true });
   };
-  const verifyArgs = ['verify', '--batch', batch, '--campaign', campaign, '--http', 'http://127.0.0.1:1', '--model', 'x'];
-
-  // Baseline: the untouched, REBASED copy still verifies clean.
-  rebase();
+  pristine();
+  const verifyArgs = ['verify', '--batch', batch, '--campaign', campaign, '--out', reportPath];
+  /**
+   * The copy keeps the ORIGINAL absolute paths inside every record. That is
+   * legal evidence: worker A compares slots and the campaign locator by their
+   * path TAIL, so a relocated copy still verifies. Nothing is text-edited,
+   * which is also why the old Windows trap (JSON stores `C:\\tmp\\...` while the
+   * test compared a single-backslash string, so the rewrite silently did
+   * nothing AND broke the envelope hash) cannot come back here.
+   */
   const clean = await cli(DRIVER, verifyArgs);
-  assert.equal(clean.code, 0, `clean copy should verify: ${clean.stdout.slice(-300)}`);
+  assert.equal(clean.code, 0, `a relocated copy must verify byte-identically: ${clean.stdout.slice(-500)}`);
 
   const problemsOf = async (): Promise<string> => {
-    const report = readJson(join(batch, 'verify.json')) as { problems: string[] };
-    return report.problems.join(' | ');
+    const report = readJson(reportPath) as { issues: string[] };
+    return report.issues.join(' | ');
   };
-  const restoreAll = () => {
-    cpSync(fundedBatch!, batch, { recursive: true, force: true });
-    cpSync(fundedCampaign!, campaign, { recursive: true, force: true });
-    rebase();
+  /**
+   * Semantic tampering: edit the payload AND re-sign the envelope with the
+   * same slotChecksum the store uses, so the checksum cannot be the catcher.
+   * Whatever fires now is a real semantic check.
+   */
+  const resign = (path: string, edit: (payload: AnyJson) => void): void => {
+    const envelope = readJson(path) as { sha256: string; payload: AnyJson };
+    edit(envelope.payload);
+    writeFileSync(path, `${JSON.stringify({ ...envelope, sha256: slotChecksum(envelope.payload) }, null, 2)}\n`);
+  };
+  const expectIssue = async (pattern: RegExp, why: string): Promise<void> => {
+    const checked = await cli(DRIVER, verifyArgs);
+    assert.equal(checked.code, 1, `${why}: verify must fail (stdout ${checked.stdout.slice(-300)})`);
+    assert.match(await problemsOf(), pattern, why);
   };
 
-  // 1. Ledger tampering: spent is inflated without a matching attempt.
+  // 1. Integrity: the ledger inflates spent without a matching attempt.
   const ledgerPath = join(campaign, 'campaign.json');
   const ledger = readJson(ledgerPath) as { spent: number };
   writeFileSync(ledgerPath, JSON.stringify({ ...ledger, spent: ledger.spent + 1 }, null, 2));
-  let checked = await cli(DRIVER, verifyArgs);
-  assert.equal(checked.code, 1);
-  assert.match(await problemsOf(), /ledger spent/);
-  restoreAll();
+  await expectIssue(/ledger spent/, 'an inflated ledger spend must be caught by the ledger recount');
+  pristine();
 
-  // 2. Forged lineage: a suffix record pretends a different parent slot.
-  const recordPath = join(batch, 'w1', 'w1-wait-run.run.json');
-  const record = readJson(recordPath) as { payload: { lineage: { parentSlot: string } } };
-  writeFileSync(recordPath, JSON.stringify({ ...record, payload: { ...record.payload, lineage: { ...record.payload.lineage, parentSlot: '/tmp/forged.g09.json' } } }, null, 2));
-  checked = await cli(DRIVER, verifyArgs);
-  assert.equal(checked.code, 1);
-  assert.match(await problemsOf(), /parentSlot/);
-  restoreAll();
+  // 2. Lineage: a suffix record claims a parent slot it never restored.
+  const waitRecord = join(batch, 'w1', 'w1-wait-run.run.json');
+  resign(waitRecord, payload => {
+    (payload.lineage as AnyJson).parentSlot = '/tmp/forged.g09.json';
+  });
+  await expectIssue(/parentSlot/, 'a forged parentSlot must be caught even with a valid checksum');
+  pristine();
 
-  // 3. Slot rewrite: the on-disk slot no longer matches the recorded hash.
+  // 3. Slot rewrite: the bytes on disk no longer match the hash in the scene file.
   const slotPath = join(batch, 'w1', 'w1-wait.g09.json');
   writeFileSync(slotPath, `${readFileSync(slotPath, 'utf8')} `);
-  checked = await cli(DRIVER, verifyArgs);
-  assert.equal(checked.code, 1);
-  assert.match(await problemsOf(), /slot hash/);
-  restoreAll();
+  await expectIssue(/slot bytes hash does not match the scene record/, 'a rewritten slot must be caught by the byte hash');
+  pristine();
 
-  // 4. AttemptId forgery: a wire record renames its attempt, so the ledger
-  //    attempt loses its wire record and an orphan appears.
-  const firstRecordPath = join(batch, 'w1', 'w1-prefix-run.run.json');
-  const firstRecord = readJson(firstRecordPath) as { payload: { wire: { attemptId: string; usage: { total_tokens: number } | null }[] } };
-  const originalWire = JSON.parse(JSON.stringify(firstRecord.payload.wire)) as typeof firstRecord.payload.wire;
-  firstRecord.payload.wire[0]!.attemptId = 'att-forged';
-  writeFileSync(firstRecordPath, JSON.stringify(firstRecord, null, 2));
-  checked = await cli(DRIVER, verifyArgs);
-  assert.equal(checked.code, 1);
-  assert.match(await problemsOf(), /wire records absent from the ledger|ledger attempts with no wire record/);
-  restoreAll();
+  // 4. AttemptId forgery: the wire names an attempt the ledger never charged.
+  const prefixRecord = join(batch, 'w1', 'w1-prefix-run.run.json');
+  const originalWire = (readJson(prefixRecord) as { payload: { wire: { attemptId: string }[] } }).payload.wire.map(entry => entry.attemptId);
+  resign(prefixRecord, payload => {
+    (payload.wire as { attemptId: string }[])[0]!.attemptId = 'att-forged';
+  });
+  await expectIssue(/att-forged is not in the campaign ledger/, 'a forged attemptId must not match any charged attempt');
+  pristine();
 
-  // 5. Cost tampering: the ledger totalTokens no longer matches the wire usage.
-  const ledgerAll = readJson(ledgerPath) as { spent: number; attempts: { attemptId: string; totalTokens: number | null; state: string; batch: string; episodeId: string }[] };
-  const firstId = originalWire[0]!.attemptId;
-  const inflated = ledgerAll.attempts.map(attempt => attempt.attemptId === firstId ? { ...attempt, totalTokens: attempt.totalTokens! + 1 } : attempt);
+  // 5. Cost tampering: the ledger total no longer equals the wire usage.
+  const ledgerAll = readJson(ledgerPath) as { attempts: { attemptId: string; totalTokens: number | null }[] };
+  const firstId = originalWire[0]!;
+  const inflated = ledgerAll.attempts.map(attempt => attempt.attemptId === firstId ? { ...attempt, totalTokens: (attempt.totalTokens ?? 0) + 1 } : attempt);
   writeFileSync(ledgerPath, JSON.stringify({ ...ledgerAll, attempts: inflated }, null, 2));
-  checked = await cli(DRIVER, verifyArgs);
-  assert.equal(checked.code, 1);
-  assert.match(await problemsOf(), /wire usage differs from the ledger/);
-  restoreAll();
+  await expectIssue(/wire tokens \d+ != ledger \d+/, 'the ledger total must equal the recorded wire usage');
+  pristine();
 
-  // 6. A MISSING usage is honest accounting, not tampering: null on BOTH sides
-  //    verifies clean, counts usageNull and keeps the grand total unknown.
-  const nulled = ledgerAll.attempts.map(attempt => attempt.attemptId === firstId ? { ...attempt, totalTokens: null } : attempt);
-  writeFileSync(ledgerPath, JSON.stringify({ ...ledgerAll, attempts: nulled }, null, 2));
-  const nulledRecord = readJson(firstRecordPath) as { payload: { wire: { attemptId: string; usage: { total_tokens: number } | null }[] } };
-  nulledRecord.payload.wire[0]!.usage = null;
-  writeFileSync(firstRecordPath, JSON.stringify(nulledRecord, null, 2));
+  // 6. Semantic re-derivation: the recorded end state is impossible.
+  const suffixRecord = join(batch, 'w1', 'w1-wait-run.run.json');
+  resign(suffixRecord, payload => {
+    (((payload.authoritative as AnyJson).snapshot as AnyJson).finalState as AnyJson).npcs = { npc_a: { hunger: 999 } };
+  });
+  await expectIssue(/npc_a hunger 999 != 90/, 'a hand-edited final state must be caught by re-derivation');
+  pristine();
+
+  // 7. The raw model text is re-parsed, not trusted: the body still parses as a
+  //    chat completion, but its answer is now a stop and cannot be the recorded eat.
+  resign(suffixRecord, payload => {
+    const wire = payload.wire as { responseBody: string }[];
+    const body = JSON.parse(wire[0]!.responseBody) as { choices: { message: { content: string } }[] };
+    body.choices[0]!.message.content = '{"type":"stop"}';
+    wire[0]!.responseBody = JSON.stringify(body);
+  });
+  await expectIssue(/is not the eat|is not the recorded eat/, 'the raw response must be re-parsed strictly');
+  pristine();
+
+  // 8. Command provenance: dropping the model-driven commands changes the count.
+  resign(suffixRecord, payload => {
+    ((payload.authoritative as AnyJson).snapshot as AnyJson).commands = [];
+  });
+  await expectIssue(/model-driven commands for/, 'commands must be replayed and counted against the wire');
+  pristine();
+
+  // 9. Omission: a missing scene is not evidence of success, it is incomplete.
+  rmSync(join(batch, 'w2'), { recursive: true, force: true });
+  rmSync(join(batch, 'scene-W2.json'), { force: true });
+  const omitted = await cli(DRIVER, verifyArgs);
+  assert.equal(omitted.code, 1, 'a missing scene must close the gate');
+  const omittedReport = readJson(reportPath) as { complete: boolean; evidenceOk: boolean; classification: string; scenes: { scene: string; status: string }[] };
+  assert.equal(omittedReport.complete, false, 'a scene with no records cannot complete the batch');
+  // W2 was charged in the ledger but its records are gone: omission of CHARGED
+  // work is an inconsistency, never a silent not_run.
+  assert.equal(omittedReport.scenes.find(scene => scene.scene === 'W2')?.status, 'inconsistent');
+  assert.equal(omittedReport.classification, 'inconsistent');
+  pristine();
+
+  // 10. A MISSING usage is honest accounting, not tampering: null on BOTH sides
+  //     still verifies, and the grand total stays unknown instead of partial.
+  const nulledLedger = (readJson(ledgerPath) as { attempts: { attemptId: string; totalTokens: number | null }[] });
+  writeFileSync(ledgerPath, JSON.stringify({
+    ...nulledLedger,
+    attempts: nulledLedger.attempts.map(attempt => attempt.attemptId === firstId ? { ...attempt, totalTokens: null } : attempt),
+  }, null, 2));
+  resign(prefixRecord, payload => {
+    (payload.wire as { usage: unknown }[])[0]!.usage = null;
+  });
   const nullVerified = await cli(DRIVER, verifyArgs);
-  assert.equal(nullVerified.code, 0, `null usage should still verify: ${nullVerified.stdout.slice(-300)}`);
-  const nullReport = readJson(join(batch, 'verify.json')) as { problems: string[]; ledger: { uniqueCost: number | null; usageNull: number } };
-  assert.deepEqual(nullReport.problems, []);
-  assert.equal(nullReport.ledger.usageNull, 1);
-  assert.equal(nullReport.ledger.uniqueCost, null, 'an incomplete total is reported as unknown, never as a partial sum');
+  assert.equal(nullVerified.code, 0, `null usage on both sides should still verify: ${nullVerified.stdout.slice(-300)}`);
+  const nullReport = readJson(reportPath) as { issues: string[]; costs: { totalTokens: number | null; unknownUsage: string[] } };
+  assert.deepEqual(nullReport.issues, []);
+  assert.equal(nullReport.costs.unknownUsage.length, 1);
+  assert.equal(nullReport.costs.totalTokens, null, 'an incomplete total is reported as unknown, never as a partial sum');
+});
+
+test('a scene that DECLARES its failure is evidence-ok but never complete', async () => {
+  assert.notEqual(fundedBatch, null, 'the funded test must run first (file order)');
+  const base = mkdtempSync(join(tmpdir(), 'fe-g11-declared-'));
+  const batch = join(base, 'batch');
+  const campaign = join(base, 'campaign');
+  cpSync(fundedBatch!, batch, { recursive: true });
+  cpSync(fundedCampaign!, campaign, { recursive: true });
+
+  // W2's action timed out: no response body, no wait slot, no suffix, no binding.
+  const prefixPath = join(batch, 'w2', 'w2-prefix-run.run.json');
+  const envelope = readJson(prefixPath) as { sha256: string; payload: AnyJson };
+  const wire = envelope.payload.wire as AnyJson[];
+  const failedId = String(wire[1]!.attemptId);
+  wire[1]!.status = null;
+  wire[1]!.responseBody = null;
+  wire[1]!.usage = null;
+  wire[1]!.error = 'timeout';
+  envelope.payload.campaign = { ...(envelope.payload.campaign as AnyJson), binding: null };
+  writeFileSync(prefixPath, JSON.stringify({ ...envelope, sha256: slotChecksum(envelope.payload) }));
+  rmSync(join(batch, 'w2', 'w2-wait-run.run.json'), { force: true });
+  rmSync(join(batch, 'w2', 'w2-wait.g09.json'), { force: true });
+
+  const ledgerPath = join(campaign, 'campaign.json');
+  const ledger = readJson(ledgerPath) as { attempts: AnyJson[] };
+  writeFileSync(ledgerPath, JSON.stringify({
+    ...ledger,
+    attempts: ledger.attempts.map(attempt => attempt.attemptId === failedId
+      ? { ...attempt, state: 'finished', outcome: 'provider_error', totalTokens: null }
+      : attempt),
+  }, null, 2));
+
+  const scenePath = join(batch, 'scene-W2.json');
+  const scene = readJson(scenePath) as AnyJson;
+  writeFileSync(scenePath, JSON.stringify({
+    ...scene,
+    overall: 'technical_failure',
+    prefix: { ...(scene.prefix as AnyJson), classification: 'technical_failure' },
+    suffix: null,
+  }, null, 2));
+
+  const out = join(base, 'verify.json');
+  const verified = await cli(DRIVER, ['verify', '--batch', batch, '--campaign', campaign, '--out', out]);
+  assert.equal(verified.code, 1, 'an honestly failed scene is not a completion');
+  const report = readJson(out) as {
+    evidenceOk: boolean; complete: boolean; ok: boolean; classification: string;
+    issues: string[]; expectations: string[]; scenes: { scene: string; status: string }[];
+  };
+  assert.deepEqual(report.issues, [], 'a declared failure is not corrupted evidence');
+  assert.equal(report.evidenceOk, true);
+  assert.equal(report.complete, false, 'the gate stays closed');
+  assert.equal(report.ok, false);
+  assert.equal(report.classification, 'incomplete');
+  assert.equal(report.scenes.find(entry => entry.scene === 'W2')?.status, 'incomplete');
+  const expected = report.expectations.join(' | ');
+  assert.match(expected, /did not finish/);
+  assert.match(expected, /technical_failure/);
 });
