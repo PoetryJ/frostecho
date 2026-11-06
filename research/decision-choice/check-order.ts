@@ -8,6 +8,9 @@
  * invariants that must hold BEFORE anyone is allowed to spend a real call:
  *
  *   a1  swapping the order does not change the ID -> target mapping
+ *   a5  the PRODUCTION parser (strictGoalChoice) is the thing that binds a raw
+ *       answer to a goal, and the production threshold is GOAL_HUNGER_AT_LEAST
+ *       (70) — 90 is the observed terminal state, not the threshold
  *   a2  the prompt leaks no future outcome and no hidden NPC state
  *   a3  the render is byte-reproducible
  *   a4  the reverse order is the exact reversal and every other line is identical
@@ -21,7 +24,8 @@
 import { createHash } from 'node:crypto';
 import { renderDecidePrompt } from '../../src/agent/providers/http';
 import type { DecideInput } from '../../src/agent/contracts';
-import { G09_ALLOWED_GOALS, G09_REQUEST_TEXT, type GoalChoiceId } from '../../src/negotiation/contracts';
+import { G09_ALLOWED_GOALS, G09_REQUEST_TEXT, strictGoalChoice, type GoalChoiceId } from '../../src/negotiation/contracts';
+import { GOAL_HUNGER_AT_LEAST } from '../../src/agent/contracts';
 import type { Location } from '../../src/types';
 
 const ACTOR = 'npc_a';
@@ -81,7 +85,9 @@ const inputFor = (context: Context, options: readonly GoalChoiceId[]): DecideInp
     foodHere: context.foodHere,
     reachable: context.reachable,
   },
-  goal: { hungerAtLeast: 90 },
+  // The PRODUCTION threshold is GOAL_HUNGER_AT_LEAST (70). 90 is the observed
+  // terminal satiety after two +30 eats, not the decision threshold.
+  goal: { hungerAtLeast: GOAL_HUNGER_AT_LEAST },
   feedback: null,
   goalChoice: {
     simTime: 1,
@@ -174,6 +180,26 @@ function main(): number {
       const left = withoutCandidateLine(forward);
       const right = withoutCandidateLine(reverse);
       if (JSON.stringify(left) !== JSON.stringify(right)) throw new Error('a non-candidate line changed with the order');
+    });
+
+    check(`${context.id}: a5 the PRODUCTION parser binds the raw answer to the goal id`, () => {
+      // The mapping that matters is the one production uses, not a local table.
+      for (const candidate of FORWARD) {
+        const parsed = strictGoalChoice(JSON.stringify({ goal: candidate }), FORWARD as readonly GoalChoiceId[]);
+        if (!parsed.ok) throw new Error(`production parser rejected a legal answer ${candidate}: ${parsed.error}`);
+        if (parsed.goal !== candidate) throw new Error(`production parser mapped ${candidate} to ${String(parsed.goal)}`);
+      }
+      const rejected = [
+        '{"goal":"feed_self","goal":"feed_self"}',
+        '{"goal":"feed_self","note":"x"}',
+        '{"goal":"not_a_goal"}',
+        '{"goal":1}',
+        'yield_once',
+        '{"target":"feed_self"}',
+      ];
+      for (const raw of rejected) {
+        if (strictGoalChoice(raw, FORWARD as readonly GoalChoiceId[]).ok) throw new Error(`production parser accepted ${raw}`);
+      }
     });
 
     console.log(`     forward sha256 ${sha256(forward).slice(0, 16)}  reverse sha256 ${sha256(reverse).slice(0, 16)}`);

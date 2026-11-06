@@ -499,12 +499,14 @@ test('verify detects ledger tampering, forged lineage and slot rewrites', async 
   await expectIssue(/wire tokens \d+ != ledger \d+/, 'the ledger total must equal the recorded wire usage');
   pristine();
 
-  // 6. Semantic re-derivation: the recorded end state is impossible.
+  // 6. Semantic re-derivation: the recorded end state is impossible. The world
+  //    is REPLAYED on a fresh Engine, so a hand-edited final state is caught by
+  //    the re-execution itself, not by a hard-coded satiety constant.
   const suffixRecord = join(batch, 'w1', 'w1-wait-run.run.json');
   resign(suffixRecord, payload => {
     (((payload.authoritative as AnyJson).snapshot as AnyJson).finalState as AnyJson).npcs = { npc_a: { hunger: 999 } };
   });
-  await expectIssue(/npc_a hunger 999 != 90/, 'a hand-edited final state must be caught by re-derivation');
+  await expectIssue(/different final state|re-execut/i, 'a hand-edited final state must be caught by re-derivation');
   pristine();
 
   // 7. The raw model text is re-parsed, not trusted: the body still parses as a
@@ -575,17 +577,25 @@ test('a scene that DECLARES its failure is evidence-ok but never complete', asyn
   wire[1]!.error = 'timeout';
   envelope.payload.campaign = { ...(envelope.payload.campaign as AnyJson), binding: null };
   writeFileSync(prefixPath, JSON.stringify({ ...envelope, sha256: slotChecksum(envelope.payload) }));
+  // Read what the suffix charged BEFORE deleting its record.
+  const suffixRange = ((readJson(join(batch, 'w2', 'w2-wait-run.run.json')) as AnyJson).payload.lineage as AnyJson).attemptRange as { first: string; last: string };
   rmSync(join(batch, 'w2', 'w2-wait-run.run.json'), { force: true });
   rmSync(join(batch, 'w2', 'w2-wait.g09.json'), { force: true });
 
   const ledgerPath = join(campaign, 'campaign.json');
-  const ledger = readJson(ledgerPath) as { attempts: AnyJson[] };
-  writeFileSync(ledgerPath, JSON.stringify({
-    ...ledger,
-    attempts: ledger.attempts.map(attempt => attempt.attemptId === failedId
+  const ledger = readJson(ledgerPath) as { attempts: AnyJson[]; spent: number };
+  // A run that never reached W2's suffix never charged for it, so the two
+  // suffix attempts are dropped: leaving charged-but-wireless entries would be
+  // a real contradiction, which is exactly what the verifier must reject.
+  const dropped = new Set(ledger.attempts
+    .filter(attempt => String(attempt.attemptId) >= String(suffixRange.first) && String(attempt.attemptId) <= String(suffixRange.last))
+    .map(attempt => String(attempt.attemptId)));
+  const kept = ledger.attempts
+    .filter(attempt => !dropped.has(String(attempt.attemptId)))
+    .map(attempt => attempt.attemptId === failedId
       ? { ...attempt, state: 'finished', outcome: 'provider_error', totalTokens: null }
-      : attempt),
-  }, null, 2));
+      : attempt);
+  writeFileSync(ledgerPath, JSON.stringify({ ...ledger, attempts: kept, spent: kept.length }, null, 2));
 
   const scenePath = join(batch, 'scene-W2.json');
   const scene = readJson(scenePath) as AnyJson;
@@ -610,6 +620,7 @@ test('a scene that DECLARES its failure is evidence-ok but never complete', asyn
   assert.equal(report.classification, 'incomplete');
   assert.equal(report.scenes.find(entry => entry.scene === 'W2')?.status, 'incomplete');
   const expected = report.expectations.join(' | ');
-  assert.match(expected, /did not finish/);
-  assert.match(expected, /technical_failure/);
+  assert.match(expected, /did not finish/, 'the aborted request is an unmet outcome, not corruption');
+  assert.match(expected, /w2-wait-run\.run\.json|has no suffix|pre-close slot/, 'the suffix that never ran is an expectation');
+  assert.equal(report.expectations.some(entry => entry.includes('the scene file hides')), false);
 });

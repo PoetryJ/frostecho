@@ -54,9 +54,14 @@ NpcState 的 hunger 与 kitchen 食物都是公开观察，两个候选都是**�
 | 文件 | 作用 |
 | --- | --- |
 | `candidates.md` | 4 个可从旧合同重现的 goal 上下文 + 正/反序候选 + 合法性依据 |
-| `experiments.md` | 两个互相独立的候选实验（位置对照、格式约束） |
+| `experiments.md` | 优先级与候选实验（**格式约束 B 臂已撤回**；延迟先导优先） |
+| `latency/` | thinking on/off 延迟先导：真实输入 `inputs/Y.json`、`N.json`、`plan.json`、`service-identity.json` |
 | `check-order.ts` | 零调用自检：交换顺序不改变 ID→目标映射、不泄漏、可复现、确为逆序 |
 | `STATUS.md` | 零调用声明、已核实事实、实际执行的命令与真实输出、未证明项 |
+
+> **2026-11-06 更正**：生产目标阈值是 `GOAL_HUNGER_AT_LEAST = 70`；90 只是观测终态。
+> ctx-*hunger90 已降级为边界样本。原“JSON 后允许 `#` 说明”的格式约束设计已撤回。
+> 详见 `handoff/20261106-g11-verify-latency/CORRECTION.md`。
 
 ## 运行自检（不写 dist、不碰 artifacts）
 
@@ -69,5 +74,5 @@ node_modules/.bin/tsc research/decision-choice/check-order.ts \
 node /tmp/dd/research/decision-choice/check-order.js
 ```
 
-预期：`summary: 16 check(s) passed, 0 failed`，退出码 0，且打印
+预期：`summary: 20 check(s) passed, 0 failed`（a5 为生产解析 `strictGoalChoice` 的接受/拒绝集），退出码 0，且打印
 `authorizedCalls=0 proposedCalls=8 — no POST, no provider, no socket`。

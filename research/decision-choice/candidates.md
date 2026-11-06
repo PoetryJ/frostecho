@@ -3,6 +3,9 @@
 所有上下文只使用**决策时可见**的观察字段，不含未来结果、不含其他 NPC 的属性，
 因此可以用旧合同的既有接口原样重建（`check-order.ts` 就是这么做的）。
 
+> **更正（2026-11-06）**：以上下文必须能由**真实入口**产生（`createApplicationController` → `DecideInput`）；
+> 手工构造的观察只能证明 prompt 可渲染，不证明运行时会发出 goal 请求。阈值见 `GOAL_HUNGER_AT_LEAST = 70`。
+
 ## 决策时可见字段（全部来自现有接口）
 
 | 字段 | 来源 | 说明 |
@@ -58,12 +61,14 @@ candidateGoals: ["feed_self","yield_once"]        <- 唯一随顺序变化的行
 - 为什么合法：`foodHere` 只报当前位置，宿舍必然为 0；这是 G09 真实开局常见状态。
 - 正序 / 反序：同 C1。
 
-### C4 `ctx-kitchen-food-hunger90`
+### C4 `ctx-kitchen-food-hunger90`（边界样本，ID 保持不变）
 
 - 观察：`location=kitchen, hunger=90, foodHere=1, reachable=[dorm,kitchen]`
-- 为什么合法：hunger 已达目标阈值（90，见 `tests/g11-live-closeout.test.ts` 的终态断言），
-  "最大化饱食"不再能解释选择，两个候选的收益差异最小化——**若顺序在这里改变答案，
-  就不能用"任务难度"解释**。
+- 更正（2026-11-06）：生产目标阈值是 `GOAL_HUNGER_AT_LEAST = 70`（`src/agent/contracts.ts:16`）；
+  旧稿把 **90 当阈值**是倒推错误——90 是“衰减到 30 后两次 +30 吃饭”的**观测终态**。
+- 因此本上下文降级为**边界样本**：hunger=90 远高于阈值 70，"最大化饱食"已不能解释选择；
+  但它只能用于预检/边界说明，**不能冒充自然 goal 选择样本**。
+- ID 保持 `ctx-kitchen-food-hunger90`（稳定 ID 不改），其“合法性”论证改为边界论证。
 - 正序 / 反序：同 C1。
 
 ## 顺序呈现的平衡

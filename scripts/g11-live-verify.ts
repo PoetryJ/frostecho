@@ -13,11 +13,13 @@
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { isDeepStrictEqual } from 'node:util';
 import { readRunRecord } from '../src/application/persistence';
 import { slotChecksum } from '../src/persistence/atomic-slot';
 import { campaignJsonPath } from '../src/application/budget-binding';
 import { RULES } from '../src/types';
 import { reexecuteCommands } from './g07-eval-lib';
+import type { ReexecutionInput } from './g08-evidence-contracts';
 import {
   G11_SCENES,
   G11_VERIFY_SCHEMA,
@@ -116,6 +118,10 @@ export interface RecordPayload {
   };
   authoritative: {
     snapshot: SnapshotLike;
+    /** The record's own copies of what the snapshot replays; they must agree. */
+    commands?: unknown;
+    events?: unknown;
+    engine?: { state?: unknown; log?: unknown };
     requests: Record<string, RequestLike>;
     processed: string[];
     budget: { sessionLimit: number; episodeLimit: number; providerCalls: number; episodeCalls: number };
@@ -304,24 +310,61 @@ function checkWire(record: RecordPayload, label: string, ledger: Map<string, Led
 }
 
 /**
- * Integrity vs expectation. A scene that DECLARES it did not succeed is allowed
- * to lack the success shape (no suffix record, no final state, no binding): that
- * is an `expectation` that turned out false, not corrupted evidence. A scene
- * that CLAIMS success is held to every check as an integrity problem, which is
- * what keeps the tamper cases caught.
+ * Integrity vs expectation, and they are ORTHOGONAL to the completion verdict.
+ *
+ * `issues` = the bytes contradict themselves or the ledger: a re-execution that
+ * disagrees with the recorded world, a record that disagrees with its snapshot,
+ * a wire/ledger mismatch, a broken hash, an unparseable answer, a plan/schema
+ * violation. These ALWAYS close `evidenceOk`, whatever a scene label says.
+ *
+ * `expectations` = the success shape that was never produced (a suffix the run
+ * never reached, a wait slot it never saved, a binding a failed request never
+ * created) or a contract outcome that did not happen. They never close
+ * `evidenceOk`; they DO close `complete`.
+ *
+ * A label can therefore neither hide a contradiction (issues are unconditional)
+ * nor manufacture a success (complete is derived from the records).
  */
 interface Sink {
   issues: string[];
   expectations: string[];
 }
 
+/**
+ * The world is RE-EXECUTED, never trusted. A fresh Engine replays the recorded
+ * command ledger from the recorded initial state and must reproduce every
+ * result, every event and the final world; the record's own top-level copies
+ * must also agree with the snapshot they claim to summarise. This runs for
+ * every readable record, whatever the scene label says.
+ */
+function checkReexecution(payload: RecordPayload, label: string, issues: string[]): void {
+  const a = payload.authoritative;
+  if (!isDeepStrictEqual(a.commands, a.snapshot.commands)) issues.push(`${label}: authoritative.commands differs from snapshot.commands`);
+  if (!isDeepStrictEqual(a.events, a.snapshot.events)) issues.push(`${label}: authoritative.events differs from snapshot.events`);
+  if (a.engine !== undefined) {
+    if (!isDeepStrictEqual(a.engine.state, a.snapshot.finalState)) issues.push(`${label}: authoritative.engine.state differs from snapshot.finalState`);
+    if (!isDeepStrictEqual(a.engine.log, a.snapshot.commands)) issues.push(`${label}: authoritative.engine.log differs from snapshot.commands`);
+  }
+  let replay: string[];
+  try {
+    replay = reexecuteCommands({
+      plan: { episodeId: payload.meta.episodeId },
+      snapshot: a.snapshot as unknown as ReexecutionInput['snapshot'],
+    });
+  } catch (error) {
+    issues.push(`${label}: re-execution could not run: ${error instanceof Error ? error.message : String(error)}`);
+    return;
+  }
+  for (const message of replay) issues.push(`${label}: ${message}`);
+}
+
 /** Prefix: goal wire binds the request; action wire must be a legal wait. */
-function verifyPrefix(record: RecordPayload, scene: G11Scene, ctx: VerifyCtx, ledger: Map<string, LedgerAttempt>, sink: Sink, failed: string[], claims: boolean): void {
+function verifyPrefix(record: RecordPayload, scene: G11Scene, ctx: VerifyCtx, ledger: Map<string, LedgerAttempt>, sink: Sink, failed: string[], slotPresent: boolean): void {
   const label = `${scene}/prefix`;
-  /** Every remaining `issues.push` below is an INTEGRITY check. */
   const issues = sink.issues;
   const push = (message: string): void => { issues.push(message); };
-  const expect = (message: string): void => { (claims ? issues : sink.expectations).push(message); };
+  /** Wait-state facts exist only when the phase actually saved its slot. */
+  const expectProduced = (message: string): void => { (slotPresent ? issues : sink.expectations).push(message); };
   if (record.meta.providerKind !== 'live') issues.push(`${label}: providerKind ${record.meta.providerKind} is not live`);
   if (record.config.requestModel !== ctx.model) issues.push(`${label}: config requestModel ${String(record.config.requestModel)} != plan`);
   if (record.config.thinking !== true) issues.push(`${label}: thinking is not true`);
@@ -363,29 +406,30 @@ function verifyPrefix(record: RecordPayload, scene: G11Scene, ctx: VerifyCtx, le
   const npcA = isNpc(record, 'npc_a');
   if (npcA === null) issues.push(`${label}: beforeCloseView has no npc_a`);
   else {
-    if (npcA.status !== 'waiting_time' || npcA.wakeAtSimTime !== 1) expect(`${label}: npc_a ${npcA.status} wake ${String(npcA.wakeAtSimTime)}, expected waiting_time wake 1`);
-    if (npcA.providerCalls !== 2) expect(`${label}: npc_a providerCalls ${npcA.providerCalls} != 2 (a re-ask would raise it)`);
-    if (npcA.selectedGoal !== 'yield_once' || npcA.selectedGoalBasis !== 'session_binding') expect(`${label}: goal ${String(npcA.selectedGoal)} (${npcA.selectedGoalBasis}) is not the bound yield`);
+    if (npcA.status !== 'waiting_time' || npcA.wakeAtSimTime !== 1) expectProduced(`${label}: npc_a ${npcA.status} wake ${String(npcA.wakeAtSimTime)}, expected waiting_time wake 1`);
+    if (npcA.providerCalls !== 2) issues.push(`${label}: npc_a providerCalls ${npcA.providerCalls} != 2 (a re-ask would raise it)`);
+    if (npcA.selectedGoal !== 'yield_once' || npcA.selectedGoalBasis !== 'session_binding') issues.push(`${label}: goal ${String(npcA.selectedGoal)} (${npcA.selectedGoalBasis}) is not the bound yield`);
     const seen = npcA.request;
-    if (seen === null || seen.status !== 'accepted' || seen.outcome !== 'pending') expect(`${label}: the seen request is ${JSON.stringify(seen)}, expected accepted/pending`);
+    if (seen === null || seen.status !== 'accepted' || seen.outcome !== 'pending') issues.push(`${label}: the seen request is ${JSON.stringify(seen)}, expected accepted/pending`);
   }
   if (record.authoritative.processed.length !== 1 || record.authoritative.processed[0] !== requestIds[0]) {
-    expect(`${label}: processed ${JSON.stringify(record.authoritative.processed)} does not match the single request`);
+    issues.push(`${label}: processed ${JSON.stringify(record.authoritative.processed)} does not match the single request`);
   }
   if (request !== undefined) {
-    if (request.status !== 'cancelled' || request.outcome !== 'cancelled') expect(`${label}: quit must leave the request cancelled, got ${request.status}/${request.outcome}`);
-    if (typeof request.outcomeReason !== 'string' || !request.outcomeReason.includes('closed')) expect(`${label}: cancelled reason ${JSON.stringify(request.outcomeReason)} does not say the game closed`);
+    if (request.status !== 'cancelled' || request.outcome !== 'cancelled') issues.push(`${label}: quit must leave the request cancelled, got ${request.status}/${request.outcome}`);
+    if (typeof request.outcomeReason !== 'string' || !request.outcomeReason.includes('closed')) issues.push(`${label}: cancelled reason ${JSON.stringify(request.outcomeReason)} does not say the game closed`);
   }
-  if (record.authoritative.budget.episodeCalls !== 2) expect(`${label}: episodeCalls ${record.authoritative.budget.episodeCalls} != 2`);
-  checkCampaign(record, label, ctx, sink, claims);
+  if (record.authoritative.budget.episodeCalls !== 2) issues.push(`${label}: episodeCalls ${record.authoritative.budget.episodeCalls} != 2`);
+  checkCampaign(record, label, ctx, sink);
   checkWire(record, label, ledger, ctx.model, sink.issues, failed);
+  checkReexecution(record, label, sink.issues);
 }
 
 /** The recorded campaign binding must be this ledger and its spent must reach the batch. */
-function checkCampaign(record: RecordPayload, label: string, ctx: VerifyCtx, sink: Sink, claims: boolean): void {
-  const expect = (message: string): void => { (claims ? sink.issues : sink.expectations).push(message); };
+function checkCampaign(record: RecordPayload, label: string, ctx: VerifyCtx, sink: Sink): void {
   if (record.campaign === null) {
-    expect(`${label}: no campaign binding recorded`);
+    // A phase that never reserved anything has no campaign record at all.
+    sink.expectations.push(`${label}: no campaign binding recorded`);
     return;
   }
   // A charged step that failed before the binding existed records campaign
@@ -393,7 +437,9 @@ function checkCampaign(record: RecordPayload, label: string, ctx: VerifyCtx, sin
   // answer for a failure it is supposed to describe.
   const binding = record.campaign.binding as { locator?: unknown } | null;
   if (binding === null || typeof binding.locator !== 'string') {
-    expect(`${label}: campaign record has no binding locator`);
+    // The binding is created only when a request is actually reserved; a step
+    // that died before that never produced one.
+    sink.expectations.push(`${label}: campaign record has no binding locator`);
   } else if (!binding.locator.replace(/\\/g, '/').endsWith('/campaign.json')) {
     sink.issues.push(`${label}: binding locator ${binding.locator} is not a campaign ledger`);
   }
@@ -403,12 +449,12 @@ function checkCampaign(record: RecordPayload, label: string, ctx: VerifyCtx, sin
 }
 
 /** Suffix: two continuation eats, the authoritative outcome, the whole scene world. */
-function verifySuffix(record: RecordPayload, scene: G11Scene, ctx: VerifyCtx, ledger: Map<string, LedgerAttempt>, sink: Sink, failed: string[], claims: boolean): void {
+function verifySuffix(record: RecordPayload, scene: G11Scene, ctx: VerifyCtx, ledger: Map<string, LedgerAttempt>, sink: Sink, failed: string[]): void {
   const label = `${scene}/suffix`;
-  /** Every remaining `issues.push` below is an INTEGRITY check. */
   const issues = sink.issues;
   const push = (message: string): void => { issues.push(message); };
-  const expect = (message: string): void => { (claims ? issues : sink.expectations).push(message); };
+  /** Contract outcomes of a phase that DID run: unmet expectation, not corruption. */
+  const expect = (message: string): void => { sink.expectations.push(message); };
   if (record.meta.providerKind !== 'live') issues.push(`${label}: providerKind ${record.meta.providerKind} is not live`);
   if (record.config.requestModel !== ctx.model) issues.push(`${label}: config requestModel ${String(record.config.requestModel)} != plan`);
   if (record.config.timeoutMs !== 120000) issues.push(`${label}: single-request timeout ${String(record.config.timeoutMs)} != 120000`);
@@ -471,8 +517,9 @@ function verifySuffix(record: RecordPayload, scene: G11Scene, ctx: VerifyCtx, le
   if (final.simTime !== 1) expect(`${label}: simTime ${String(final.simTime)} != 1`);
   if (record.authoritative.budget.providerCalls !== 4) expect(`${label}: providerCalls ${record.authoritative.budget.providerCalls} != 4`);
   if (record.authoritative.budget.episodeCalls !== 4) expect(`${label}: episodeCalls ${record.authoritative.budget.episodeCalls} != 4`);
-  checkCampaign(record, label, ctx, sink, claims);
+  checkCampaign(record, label, ctx, sink);
   checkWire(record, label, ledger, ctx.model, issues, failed);
+  checkReexecution(record, label, issues);
 }
 
 function emptyReports(): G11SceneReport[] {
@@ -566,53 +613,64 @@ export function verifyG11Batch(input: G11VerifyInput): G11VerifyResult {
 
   const perScene: Record<G11Scene, number> = { W1: 0, W2: 0 };
   const sceneOf = new Map<string, G11Scene>();
+  const wireCounts = new Map<string, number>();
+  const sceneSuccess: Record<G11Scene, boolean> = { W1: false, W2: false };
   const reports: G11SceneReport[] = [];
   for (const scene of G11_SCENES) {
     const issuesBefore = issues.length;
+    const expectationsBefore = expectations.length;
+    const failedBefore = failed.length;
     const dir = join(input.batchDir, sceneDirOf(scene));
     const prefixPath = join(dir, `${sceneDirOf(scene)}-prefix-run.run.json`);
     const suffixPath = join(dir, `${sceneDirOf(scene)}-wait-run.run.json`);
     const slotPath = join(dir, `${sceneDirOf(scene)}-wait.g09.json`);
+    const slotPresent = existsSync(slotPath);
+    const charged = ledger.attempts.filter(attempt => String(attempt.batch).startsWith(scene)).length;
+    const expectedSuffix = scene === 'W1' ? 'fulfilled' : 'expired';
     let prefixOk = false;
     let suffixOk = false;
     let outcome: string | null = null;
     let slotHashOk: boolean | null = null;
-    // `claims` = does this scene assert it succeeded? A declared failure may
-    // legitimately lack the success shape; a declared success may not.
-    const scenePathEarly = join(input.batchDir, `scene-${scene}.json`);
-    const sceneFileEarly = parseJsonFile<{ overall: string }>(scenePathEarly);
-    const charged = [...byId.values()].filter(attempt => String(attempt.batch).startsWith(scene)).length;
-    const claims = sceneFileEarly.ok ? sceneFileEarly.value.overall === 'success' : charged > 0;
-    const lose = (message: string): void => { (claims ? issues : expectations).push(message); };
+
+    // A MISSING record is only tolerable when nothing was ever charged for it;
+    // a charged phase with no record on disk is lost evidence, not a failure.
     const prefix = recordOf(prefixPath);
-    if (!prefix.ok) lose(prefix.error);
+    if (!prefix.ok) (charged > 0 ? issues : expectations).push(prefix.error);
     else {
-      verifyPrefix(prefix.value, scene, ctx, byId, sink, failed, claims);
+      verifyPrefix(prefix.value, scene, ctx, byId, sink, failed, slotPresent);
       prefixOk = true;
     }
     const suffix = recordOf(suffixPath);
-    if (!suffix.ok) lose(suffix.error);
+    if (!suffix.ok) (prefixOk || charged === 0 ? expectations : issues).push(suffix.error);
     else {
-      verifySuffix(suffix.value, scene, ctx, byId, sink, failed, claims);
+      verifySuffix(suffix.value, scene, ctx, byId, sink, failed);
       suffixOk = true;
       const ids = Object.keys(suffix.value.authoritative.requests);
       outcome = ids.length === 1 ? suffix.value.authoritative.requests[ids[0]!]!.outcome : null;
     }
     perScene[scene] = (prefix.ok ? prefix.value.wire.length : 0) + (suffix.ok ? suffix.value.wire.length : 0);
 
-    if (!existsSync(slotPath)) lose(`${scene}: pre-close slot ${slotPath} is missing`);
+    // The wait slot is a produced artefact: a phase that never saved one simply
+    // did not reach that point.
+    if (!slotPresent) expectations.push(`${scene}: pre-close slot ${slotPath} is missing`);
+
     const scenePath = join(input.batchDir, `scene-${scene}.json`);
     const sceneFile = parseJsonFile<{ schema: string; overall: string; prefix: { slotSha256: string | null; classification: string }; suffix: { classification: string; slotSha256: string | null } | null }>(scenePath);
     if (!sceneFile.ok) issues.push(sceneFile.error);
     else {
       const value = sceneFile.value;
+      const dataOk = issues.length === issuesBefore && expectations.length === expectationsBefore && failed.length === failedBefore;
+      const derived = prefixOk && suffixOk && outcome === expectedSuffix && dataOk;
       if (value.schema !== SCENE_SCHEMA) issues.push(`${scene}: scene file schema ${value.schema} != ${SCENE_SCHEMA}`);
-      if (value.overall !== 'success') lose(`${scene}: scene overall ${JSON.stringify(value.overall)} is not success`);
-      if (value.prefix.classification !== 'goal_triggered') lose(`${scene}: prefix classification ${value.prefix.classification} != goal_triggered`);
-      const expectedSuffix = scene === 'W1' ? 'fulfilled' : 'expired';
-      if (value.suffix === null) lose(`${scene}: scene file has no suffix`);
-      else {
-        if (value.suffix.classification !== expectedSuffix) lose(`${scene}: suffix classification ${value.suffix.classification} != ${expectedSuffix}`);
+      // The label is a claim about the data, never a replacement for it.
+      if (value.overall === 'success' && !derived) issues.push(`${scene}: the scene file claims success but the records do not prove it`);
+      if (value.overall !== 'success' && derived) issues.push(`${scene}: the scene file hides a proven success behind ${JSON.stringify(value.overall)}`);
+      if (value.prefix.classification === 'goal_triggered' && !prefixOk) issues.push(`${scene}: the scene file claims a triggered goal with no prefix record`);
+      if (value.suffix === null && suffixOk) issues.push(`${scene}: the scene file drops a suffix that exists on disk`);
+      if (value.suffix !== null && outcome !== null && value.suffix.classification !== outcome) {
+        issues.push(`${scene}: scene suffix classification ${value.suffix.classification} != the recorded outcome ${outcome}`);
+      }
+      if (value.suffix !== null) {
         const expectedHash = value.suffix.slotSha256;
         if (typeof expectedHash !== 'string' || expectedHash.length === 0) issues.push(`${scene}: scene file records no suffix slot hash`);
         else if (existsSync(slotPath)) {
@@ -628,25 +686,60 @@ export function verifyG11Batch(input: G11VerifyInput): G11VerifyResult {
         }
       }
     }
+
+    // Success is DERIVED from the records, not read from the label.
+    sceneSuccess[scene] = prefixOk && suffixOk && outcome === expectedSuffix
+      && issues.length === issuesBefore
+      && expectations.length === expectationsBefore
+      && failed.length === failedBefore;
+
     reports.push({
       scene,
-      status: issues.length > issuesBefore ? 'inconsistent' : prefixOk && suffixOk ? 'complete' : 'incomplete',
+      status: issues.length > issuesBefore ? 'inconsistent' : sceneSuccess[scene] ? 'complete' : 'incomplete',
       posts: perScene[scene],
       outcome,
       prefix: prefixOk ? 'verified' : 'invalid',
       suffix: suffixOk ? 'verified' : 'invalid',
       slotHashOk,
     });
-    for (const record of [prefix, suffix]) if (record.ok) for (const entry of record.value.wire) sceneOf.set(entry.attemptId, scene);
+    for (const record of [prefix, suffix]) {
+      if (!record.ok) continue;
+      for (const entry of record.value.wire) {
+        sceneOf.set(entry.attemptId, scene);
+        wireCounts.set(entry.attemptId, (wireCounts.get(entry.attemptId) ?? 0) + 1);
+      }
+    }
   }
   for (const cost of byAttempt) cost.scene = sceneOf.get(cost.attemptId) ?? null;
 
-  // `expectations` never close the evidence gate: they are success-shape
-  // absences of a scene that honestly declared it did not succeed.
+  // Bidirectional ledger <-> wire identity, counted from THIS process's records
+  // only (restored history is never charged twice).
+  for (const [attemptId, count] of wireCounts) {
+    if (count !== 1) issues.push(`${attemptId}: ${count} wire entries for one charged attempt`);
+    if (!byId.has(attemptId)) issues.push(`${attemptId}: wire entry has no campaign attempt`);
+  }
+  const unresolved: string[] = [];
+  for (const attempt of ledger.attempts) {
+    if (attempt.state !== 'finished') {
+      unresolved.push(`${attempt.attemptId}: ${attempt.state}/${String(attempt.outcome ?? null)}`);
+      continue;
+    }
+    const count = wireCounts.get(attempt.attemptId) ?? 0;
+    if (count !== 1) issues.push(`${attempt.attemptId}: finished in the ledger with ${count} wire entries`);
+  }
+  if (ledger.spent > ledger.limit) issues.push(`campaign spent ${ledger.spent} exceeds its own limit ${ledger.limit}`);
+  if (ledger.spent > ctx.totalPosts) issues.push(`campaign spent ${ledger.spent} exceeds the frozen authorization ${ctx.totalPosts}`);
+  for (const scene of G11_SCENES) {
+    if (perScene[scene] > SCENE_SHARE) issues.push(`${scene}: ${perScene[scene]} posts exceed the per-scene share ${SCENE_SHARE}`);
+  }
+
   const evidenceOk = issues.length === 0;
-  const complete = evidenceOk && failed.length === 0 && reports.every(report => report.status === 'complete');
-  // A wire entry that did not finish is an OUTCOME fact, not corrupted evidence.
+  // Outcome facts are reported with the expectations, never as corrupt evidence.
   expectations.push(...failed);
+  const complete = evidenceOk
+    && expectations.length === 0
+    && unresolved.length === 0
+    && G11_SCENES.every(scene => sceneSuccess[scene]);
   const classification: G11VerifyResult['classification'] = complete ? 'complete' : evidenceOk ? 'incomplete' : 'inconsistent';
   return finish(classification, evidenceOk, complete, reports, {
     limit: ledger.limit,
@@ -657,3 +750,4 @@ export function verifyG11Batch(input: G11VerifyInput): G11VerifyResult {
     byAttempt,
   }, { total: perScene.W1 + perScene.W2, perScene });
 }
+
