@@ -259,18 +259,34 @@ class ApplicationControllerImpl implements ApplicationController {
       const session = entry.session;
       const binding: GoalBinding | null = session.goalBinding;
       const own = Object.values(store.requests).filter(candidate => candidate.to === entry.actorId);
+      // G11-live: `request` keeps its role as this actor's REQUEST view — the
+      // bound request, or the most recent own one as independent HISTORY.
       const request = binding !== null ? (store.requests[binding.requestId] ?? null) : (own.at(-1) ?? null);
       const result = session.result();
+      // G11-live: the CURRENT goal comes from THIS session only — its binding,
+      // or its own binding-less feed_self decision. An ordinary cycle that
+      // never chose a goal never pours the historical request back in — it
+      // shows the current hunger need instead.
+      const goalChoicePending = session.phase === 'goal_choice';
+      const ownFeedSelf = session.goalDecision !== null && session.goalDecision.goal === 'feed_self';
+      const basis: AppNpcView['selectedGoalBasis'] = binding !== null || ownFeedSelf
+        ? 'session_binding'
+        : goalChoicePending
+          ? 'goal_choice_pending'
+          : 'ordinary_hunger_need';
       return {
         actorId: entry.actorId,
         cycle: entry.cycle,
         phase: session.phase,
         status: session.status,
         providerCalls: session.providerCalls,
-        selectedGoal: binding?.goal ?? request?.decision?.goal ?? null,
-        selectedGoalAchieved: binding?.goal === 'feed_self' || (binding === null && request?.decision?.goal === 'feed_self')
+        selectedGoal: binding?.goal ?? (ownFeedSelf ? 'feed_self' : null),
+        selectedGoalBasis: basis,
+        selectedGoalAchieved: binding === null
           ? result.hungerNeedSatisfied
-          : result.selectedGoalReached,
+          : binding.goal === 'feed_self'
+            ? result.hungerNeedSatisfied
+            : result.selectedGoalReached,
         selectedGoalReached: result.selectedGoalReached,
         hungerNeedSatisfied: result.hungerNeedSatisfied,
         sessionOutcome: TERMINAL.has(session.status) ? result.outcome : null,

@@ -183,6 +183,12 @@ export interface GameRestoreRuntime {
   goalMode?: 'legacy' | 'negotiated';
   candidateSet?: 'self_only' | 'choice';
   playerId?: string;
+  /**
+   * G11-live: external (campaign) budget gate, consulted before a restored
+   * game opens a continuation cycle. A RUNTIME dependency — never serialized
+   * into the checkpoint. Reads the authoritative persistent ledger itself.
+   */
+  externalBudget?(actorId: string): boolean;
 }
 
 /* ------------------------------------------------------------------ */

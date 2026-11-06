@@ -417,7 +417,13 @@ export interface AgentSession {
  * 'pending' means the promise is still live and the ordinary wait/decision
  * rules apply; the other three are terminal and must never be re-asked.
  */
-export type GoalSettlementState = 'not_applicable' | 'pending' | 'fulfilled' | 'expired' | 'violated';
+/**
+ * G11-live: EVERY terminal authoritative outcome is settled with zero calls —
+ * failed (the promise became impossible: the player moved away, the resource
+ * was taken) and cancelled (the owning game closed) included. Continuation
+ * eligibility is decided separately by the game and keeps excluding them.
+ */
+export type GoalSettlementState = 'not_applicable' | 'pending' | 'fulfilled' | 'expired' | 'violated' | 'failed' | 'cancelled';
 
 /** G09: the frozen per-session goal protocol configuration. */
 export interface GoalProtocolOptions {

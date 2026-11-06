@@ -147,7 +147,16 @@ export interface AppNpcView {
   phase: 'goal_choice' | 'action';
   status: SessionStatus | 'none';
   providerCalls: number;
+  /** The CURRENT session's own goal: its binding only, never a historical request. */
   selectedGoal: GoalChoiceId | null;
+  /**
+   * What the selected-goal line is based on. 'session_binding': this session
+   * chose this goal. 'goal_choice_pending': the goal phase is open but no
+   * binding exists yet. 'ordinary_hunger_need': an ordinary cycle that never
+   * chose a goal — its line shows the CURRENT hunger need and never claims the
+   * model selected a goal again (the old request stays visible in `request`).
+   */
+  selectedGoalBasis: 'session_binding' | 'goal_choice_pending' | 'ordinary_hunger_need';
   /** The selected goal's own result: yield by the request, feed_self by hunger. */
   selectedGoalAchieved: boolean;
   selectedGoalReached: boolean;

@@ -25,16 +25,27 @@ function requestLine(request: AppRequestView | null): string {
     case 'fulfilled': return `${base} — 请求已履约：玩家已吃到`;
     case 'violated': return `${base} — 请求违约：接受后自己先吃`;
     case 'expired': return `${base} — 请求已到期，未履约`;
+    case 'failed': return `${base} — 请求失败：履约条件已不可能（如玩家离开厨房/食物被取走）`;
     case 'cancelled': return `${base} — 请求已取消`;
     default: return base;
   }
 }
 
 function goalLines(npc: AppNpcView): string[] {
-  const selected = npc.selectedGoal === null ? '未选择' : npc.selectedGoal;
-  const basis = npc.selectedGoal === 'feed_self' ? '（按饱食判定）' : '';
+  // G11-live: the selected-goal line reports THIS session's own choice. An
+  // ordinary cycle never claims the model selected a goal again — it shows the
+  // current hunger need, and the historical request stays on its own line.
+  let selectedLine: string;
+  if (npc.selectedGoalBasis === 'session_binding' && npc.selectedGoal !== null) {
+    const basis = npc.selectedGoal === 'feed_self' ? '（按饱食判定）' : '（本session选定）';
+    selectedLine = `  选定目标=${npc.selectedGoal} ${npc.selectedGoalAchieved ? '已达成' : '未达成'}${basis}`;
+  } else if (npc.selectedGoalBasis === 'goal_choice_pending') {
+    selectedLine = '  选定目标=待选择（目标阶段未完成）';
+  } else {
+    selectedLine = `  选定目标=饱食需求（普通cycle；未重新选择目标） ${npc.selectedGoalAchieved ? '已达成' : '未达成'}（按饱食判定）`;
+  }
   return [
-    `  选定目标=${selected} ${npc.selectedGoal === null ? '' : npc.selectedGoalAchieved ? '已达成' : '未达成'}${basis}`,
+    selectedLine,
     `  饱食目标=${npc.hungerNeedSatisfied ? '已满足' : '未满足'}（独立于选定目标）`,
     `  wait截止=${npc.wakeAtSimTime ?? '-'}`,
     `  ${requestLine(npc.request)}`,

@@ -243,7 +243,7 @@ class AgentSessionImpl implements AgentSession {
   /** G09: the recorded decision — feed_self closes the phase without a binding. */
   goalDecision: GoalDecisionRecord | null = null;
   /** G11: the terminal authoritative outcome of a settled yield promise. */
-  settledGoal: 'fulfilled' | 'expired' | 'violated' | null = null;
+  settledGoal: 'fulfilled' | 'expired' | 'violated' | 'failed' | 'cancelled' | null = null;
 
   constructor(options: RunOptions) {
     this.options = options;
@@ -303,7 +303,10 @@ class AgentSessionImpl implements AgentSession {
     if (this.settledGoal !== null) return this.settledGoal;
     const view = this.options.goalHost?.outcome(binding.requestId) ?? null;
     if (view === null) return 'pending';
+    // G11-live: failed/cancelled are terminal outcomes of the AUTHORITATIVE
+    // request too — a settlement never hangs on them.
     return view.outcome === 'fulfilled' || view.outcome === 'expired' || view.outcome === 'violated'
+      || view.outcome === 'failed' || view.outcome === 'cancelled'
       ? view.outcome
       : 'pending';
   }
@@ -326,7 +329,11 @@ class AgentSessionImpl implements AgentSession {
     // or a time step that ended the promise is folded here, deterministically.
     const view = this.options.goalHost?.refresh(binding.requestId) ?? null;
     const outcome = view === null ? 'pending' : view.outcome;
-    if (outcome !== 'fulfilled' && outcome !== 'expired' && outcome !== 'violated') return false;
+    // G11-live: failed/cancelled settle as well — zero calls, old goal closed,
+    // request outcome preserved; whether anything continues is the game's call.
+    const terminal = outcome === 'fulfilled' || outcome === 'expired' || outcome === 'violated'
+      || outcome === 'failed' || outcome === 'cancelled';
+    if (!terminal) return false;
     this.settledGoal = outcome;
     this.wakeAtSimTime = null;
     finishTerminal(this, 'stopped', 'stopped', `yield goal settled: ${outcome}`);

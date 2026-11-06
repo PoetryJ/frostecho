@@ -203,6 +203,8 @@ export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10R
   let ledger: CampaignState | null = null;
   let campaignJson: string | null = null;
   let savedBinding: CampaignBinding | null = null;
+  /** G11-live: continuation budget gate (live only); injected, never serialized. */
+  let externalBudget: ((actorId: string) => boolean) | undefined;
 
   if (options.live) {
     const campaignDir = resolve(options.campaign!);
@@ -216,6 +218,9 @@ export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10R
       ledger = openCampaign(campaignDir, options.campaignLimit, options.slot);
     }
     campaignJson = campaignJsonPath(campaignDir);
+    // G11-live: consult the AUTHORITATIVE persistent ledger before a
+    // continuation cycle opens; the reserve above stays the hard limit.
+    externalBudget = makeCampaignBudgetGate(campaignDir);
     const collector = createWireCollector(fetch);
     const inner = createHttpProvider({
       url: options.http,
@@ -273,6 +278,7 @@ export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10R
     candidateSet: options.candidates,
     playerId: 'npc_b',
     now,
+    ...(externalBudget !== undefined ? { externalBudget } : {}),
   });
 
   const runtimeRoot = resolve(options.root);
@@ -305,6 +311,23 @@ export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10R
 
 function summaryOf(ledger: CampaignState): { limit: number; spent: number; known: number | null } {
   return campaignSummary(ledger);
+}
+
+/**
+ * G11-live: the external campaign budget gate consulted BEFORE a continuation
+ * cycle opens (the per-call reserve stays the hard limit). Reads the
+ * AUTHORITATIVE persistent ledger fresh on every call — never a stale memory
+ * copy — and a read failure fails CLOSED: no continuation, no provider call.
+ */
+function makeCampaignBudgetGate(campaignDir: string): (actorId: string) => boolean {
+  return _actorId => {
+    try {
+      const current = loadCampaign(campaignDir);
+      return current.spent < current.limit;
+    } catch {
+      return false;
+    }
+  };
 }
 
 function wireRecord(
@@ -508,6 +531,8 @@ export function loadG10Runtime(path: string, options: LoadG10Options): MessageRe
   let campaignJson: string | null = null;
   let savedBinding: CampaignBinding | null = savedMeta.campaign ?? null;
   let providerFor = (): Provider => (savedMeta.fixtureId !== null ? fixtureProvider(savedMeta.fixtureId) : referenceProvider());
+  /** G11-live: continuation budget gate (live only); injected, never serialized. */
+  let externalBudget: ((actorId: string) => boolean) | undefined;
 
   if (savedMeta.providerKind === 'live') {
     if (options.campaign === null) return messageFail('INVALID_COMMAND', 'CAMPAIGN_BINDING_MISSING: a live slot needs its authorized campaign directory');
@@ -529,6 +554,9 @@ export function loadG10Runtime(path: string, options: LoadG10Options): MessageRe
     if (!check.ok) {
       return messageFail('INVALID_COMMAND', `${check.code}: ${check.issues.join('; ')}`);
     }
+    // G11-live: the restored game consults the SAME authoritative ledger before
+    // a continuation cycle opens — same identity/path/limit as the slot binding.
+    externalBudget = makeCampaignBudgetGate(campaignDir);
     const collector = createWireCollector(fetch);
     const inner = createHttpProvider({
       url: options.http, model: String(envelope.effectiveConfig.requestModel),
@@ -574,6 +602,8 @@ export function loadG10Runtime(path: string, options: LoadG10Options): MessageRe
     },
     now: options.now ?? Date.now,
     playerId: 'npc_b',
+    // G11-live: same authoritative campaign gate as the fresh path.
+    ...(externalBudget !== undefined ? { externalBudget } : {}),
   });
   if (!restored.ok) return messageFail(restored.code === 'SCHEMA_MISMATCH' ? 'SCHEMA_MISMATCH' : 'INVALID_SNAPSHOT', ...(restored.issues ?? []));
   const game = restored.value.game as NeedsGame;

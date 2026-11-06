@@ -284,6 +284,10 @@ export function restoreNeedsGame(data: unknown, runtime: GameRestoreRuntime): Re
       ...(runtime.goalMode !== undefined ? { goalMode: runtime.goalMode } : {}),
       ...(runtime.candidateSet !== undefined ? { candidateSet: runtime.candidateSet } : {}),
       ...(runtime.playerId !== undefined ? { playerId: runtime.playerId } : {}),
+      // G11-live: the external campaign budget gate is a RUNTIME dependency —
+      // injected by the loader, never serialized into the checkpoint, so a
+      // restored game re-consults the authoritative ledger on continuation.
+      ...(runtime.externalBudget !== undefined ? { externalBudget: runtime.externalBudget } : {}),
     });
     return checkpointOk(game);
   } catch (err) {
