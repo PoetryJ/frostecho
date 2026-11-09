@@ -4,16 +4,17 @@
 未安装依赖、未改生产默认配置、未重启服务。`proposedCalls = 8`（thinking on/off 延迟先导，
 已落成可执行离线包）。候选位置/结构约束两个旧提案**暂缓**。
 
-## 2026-11-09 先导状态（owner 已授权，仍为 0 POST）
+## 2026-11-09 先导执行结果（真实 8/8）
 
-- 负责人授权本先导最多 8 次真实 POST（`handoff/20261106-g11-latency-pilot/AUTHORIZATION.json`）；
-  旧 W1/W2 批剩 2 次不可用。
-- `minimal-fix.patch` 已套用并提交在 `codex/g11-latency-pilot`；离线门控见
-  `handoff/20261106-g11-latency-pilot/B-ACCEPTANCE.md`。
-- 预检 `GET http://127.0.0.1:18872/health` = **connection refused**；`/v1/models` 无响应，
-  无 vLLM 进程。按协议**不重启服务、不换端点**，停止在 `offline_ready`。
-- 因此本批真实 POST **0/8**，账本未创建，`artifacts/g11-latency/g11-latency-20261106-r1`
-  未创建（避免留下半成品目录）。
+- 负责人授权最多 8 次；服务恢复后预检 `/health`、`/v1/models` 200，model=qwen3.8-27b，
+  config/tokenizer 哈希与冻结值一致。
+- 唯一一次 run：**8/8** POST 全 200、finish=stop、0 timeout、0 unknown；4/4 配对，
+  动作 4/4 相同（Y=wait、N=eat）。
+- 耗时：off 3705/732 ms（Y）、382/378 ms（N）；on 21718/21719 ms（Y）、11826/11770 ms（N）。
+- Token：已知 3816（off 1254 / on 2562），reasoning on 1152 / off 0。
+- 产物：`artifacts/g11-latency/g11-latency-20261106-r1`；逐条重建见
+  `handoff/20261106-g11-latency-pilot/D-LIVE-ANALYSIS.md`。
+- 每格仅 2 次：不给 p95/质量/因果结论；`temperature=0` 非位级确定；单步合法 ≠ 整局成功。
 
 ## 本轮更正（见 `handoff/20261106-g11-verify-latency/CORRECTION.md`）
 
@@ -49,7 +50,7 @@ node /tmp/dd/research/decision-choice/check-order.js
 
 ## 未证明项
 
-1. thinking 关闭后的**决策质量与端到端延迟**：未测（本批 0/8；预检时服务连接被拒，未创建账本）。
+1. thinking 关闭后的**决策质量与端到端延迟**：仅 2 个历史输入 × 2 次；其它上下文与整局质量未测（8/8 已用，不补跑）。
 2. 服务是否把 shared GPU / 长思考当作唯一根因：**未证明**；日志只能说明执行期持续解码。
 3. att-0006 的真实 token 数：未知，且不可补估。
 4. 结构化输出（JSON schema / choice）在本模型上的端到端可用性：未实测。

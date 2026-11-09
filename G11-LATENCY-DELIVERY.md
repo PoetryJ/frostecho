@@ -1,42 +1,43 @@
-# G11 延迟先导交付（2026-11-09）— `offline_ready`
+# G11 延迟先导交付（2026-11-09）— 8/8 已完成
 
-源码提交 `5a7f5d0`（分支 `codex/g11-latency-pilot`，基线 `0f9143d`）。
-包内文件：`handoff/20261106-g11-latency-pilot/`（bundle、证据 tar、DELIVERY-SHA256SUMS.txt、
-PLAN-8CALLS.txt、B-ACCEPTANCE.md、D-ANALYSIS.md、BUILD-IDENTITY.txt、evidence/）。
+源码提交 `5a7f5d0`（补丁）+ `3ad74dc`（离线交付）；真实运行在 HEAD `3ad74dc`、`src/scripts/tests` 干净时执行。
+运行产物：`artifacts/g11-latency/g11-latency-20261106-r1`（唯一目录，未删未改名）。
+包内：`handoff/20261106-g11-latency-pilot/`（bundle、证据 tar、DELIVERY-SHA256SUMS.txt、live-summary.json、
+PLAN-8CALLS.txt、B-ACCEPTANCE.md、D-ANALYSIS.md、D-LIVE-ANALYSIS.md、BUILD-IDENTITY.txt、evidence/）。
 
 ## 汇报（8 行）
 
-1. 测试：定向 15/15，全量 549/549（0 fail / 0 skip），`g11-demo` exit 0。
-2. 旧批只读核验：exit 1，`evidenceOk=true / complete=false / issues=[]`，源哈希未变。
-3. 真实 POST：**0/8**（未花费）；预检 `GET /health`、`/v1/models` 均 connection refused。
-4. 配对：**0/4**（8 条全部 `not_run`），无可报告的延迟/动作差异。
-5. 成本：已知 token 0、未知 0、未运行 8；账本未创建，旧批剩余 2 次未使用。
-6. 停止原因：服务不可达；按协议不重启服务、不换端点，交 `offline_ready`。
-7. 固定目录 `artifacts/g11-latency/g11-latency-20261106-r1` 未创建（避免半成品，不删除/不改名）。
-8. 局限：`temperature=0` 不保证位级一致；0 调用下不能声称任何 on/off 效应或 p95。
+1. 测试：定向 15/15、全量 549/549（0 fail/0 skip）、`g11-demo` exit 0、旧批只读 verify exit 1（evidenceOk=true/complete=false）。
+2. 预检：`/health`、`/v1/models` 均 200，model=qwen3.8-27b，config/tokenizer 哈希与冻结值一致。
+3. 真实 POST：**8/8**，全部 HTTP 200、finish=stop、timeout 0、unknown usage 0。
+4. 配对：**4/4 完整配对**；动作 4/4 相同（Y#1/Y#2=wait，N#1/N#2=eat）。
+5. 耗时：off 3705/732 ms（Y）、382/378 ms（N）；on 21718/21719 ms（Y）、11826/11770 ms（N）。
+6. Token：off 1254、on 2562，已知合计 **3816**（无未知）；reasoning on 1152、off 0。
+7. 成本：账本 8/8，无失败/重试/补批；旧批剩 2 次未用；未提交任何游戏世界命令。
+8. 局限：每格仅 2 次，不给 p95/长期质量/因果根因；单步合法 ≠ 整局成功；temperature=0 非位级确定。
 
 ## 原始证据
 
 | 证据 | 文件 |
 | --- | --- |
-| 补丁/定向测试 | `evidence/b-independent-targeted.log`、`B-ACCEPTANCE.md` |
-| 全量测试（549） | `evidence/full-test.log` |
-| 离线演示 | `evidence/g11-demo.log` |
-| 旧批只读核验 | `evidence/old-batch-verify.log`、`evidence/source-hashes.txt` |
-| 报告计算 fake 验证 | `evidence/d-fake-check.log`、`D-ANALYSIS.md` |
-| 服务预检（0 POST） | `evidence/preflight-20261109.log` |
-| 构建/运行身份 | `BUILD-IDENTITY.txt`（HEAD、干净源码、node 20.18.0、tsc 5.9.3、dist/lock 哈希） |
+| 8 次原始 attempt（请求/响应/usage/hash） | `artifacts/.../attempts/att-0001..0008.json` |
+| 账本与运行起点 | `artifacts/.../campaign/campaign.json`、`run-start.json` |
+| 预检（0 POST） | `artifacts/.../preflight.json`、`preflight-health.*`、`preflight-models.*` |
+| 工具汇总 | `handoff/.../live-summary.json` |
+| D 独立逐条重建 | `handoff/.../D-LIVE-ANALYSIS.md` |
+| 离线门控 | `handoff/.../B-ACCEPTANCE.md`、`evidence/full-test.log`、`evidence/g11-demo.log`、`evidence/old-batch-verify.log` |
+| 身份 | `handoff/.../BUILD-IDENTITY.txt`、`run-start.json`（HEAD 3ad74dc、干净） |
 
-## 复跑（离线，零 POST）
+## 复跑/阅读命令
 
 ```bash
 export PATH=/root/.workbuddy/binaries/node/versions/20.18.0/bin:$PATH
 cd /data3/DATA/project/project_meishijiang/FrostEcho
-npm run build && node --test dist/tests/g11-verify-latency.test.js
-node scripts/g11-demo.mjs
-node dist/scripts/g11-live.js verify --batch artifacts/g11-live/g11-live-20261105-r1 \
-  --campaign artifacts/g11-live/campaign-approved8 --http x --model x   # expect exit 1
+node dist/scripts/g11-latency-probe.js summarize \
+  --dir artifacts/g11-latency/g11-latency-20261106-r1 \
+  --out /tmp/recheck-summary.json        # 只读重算，不发送请求
 ```
 
-真实 8 次仍待服务在同一端点恢复后、由负责人确认再执行（`PLAN-8CALLS.txt`）；
-本包不重启服务、不 push、不 merge、不进入 G12。
+离线门控可复跑：`npm run build`、`node --test dist/tests/g11-verify-latency.test.js`、
+`node scripts/g11-demo.mjs`、旧批 `g11-live.js verify`（预期 exit 1）。
+本包不 push/merge、不进入 G12；剩余行为判断留给 Codex 验收与负责人。
