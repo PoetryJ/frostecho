@@ -1,0 +1,440 @@
+{
+  "schema": "frostecho.jev02.audit/1",
+  "at": "2026-11-09T19:21:21+08:00",
+  "checks": [
+    {
+      "check": "lock-hash",
+      "ok": true,
+      "detail": "lock changed"
+    },
+    {
+      "check": "gold-sha",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "data-splits",
+      "ok": true,
+      "detail": {
+        "train": 1024,
+        "dev": 128,
+        "cal": 512
+      }
+    },
+    {
+      "check": "test-cases",
+      "ok": true,
+      "detail": 256
+    },
+    {
+      "check": "test-families",
+      "ok": true,
+      "detail": 32
+    },
+    {
+      "check": "test-balance",
+      "ok": true,
+      "detail": {
+        "PLAYER_FIRST": 64,
+        "NPC_FIRST": 64,
+        "NO_PRIORITY_REQUEST": 64,
+        "NEEDS_CLARIFICATION": 64
+      }
+    },
+    {
+      "check": "test-inputs-unlabelled",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "test-inputs-sha",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "ledger-unique",
+      "ok": true,
+      "detail": "duplicate reservation"
+    },
+    {
+      "check": "ledger-cap",
+      "ok": true,
+      "detail": 9129
+    },
+    {
+      "check": "generation-cap",
+      "ok": true,
+      "detail": 1026
+    },
+    {
+      "check": "ledger-reserved-finished",
+      "ok": true,
+      "detail": "finish without reserve"
+    },
+    {
+      "check": "token-cap",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "p0-position",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "p0-injection-charged",
+      "ok": true,
+      "detail": {
+        "schema": "frostecho.jev02.p0-injection/1",
+        "at": "2026-11-09T19:19:29+08:00",
+        "forwardSucceeded": true,
+        "headRaised": true,
+        "reserved": 9129,
+        "failed": 3,
+        "charged": true,
+        "injectionJobId": "injection-forward-ok-head-throws"
+      }
+    },
+    {
+      "check": "features-train-bytes",
+      "ok": true,
+      "detail": "npz changed"
+    },
+    {
+      "check": "features-dev-bytes",
+      "ok": true,
+      "detail": "npz changed"
+    },
+    {
+      "check": "features-cal-bytes",
+      "ok": true,
+      "detail": "npz changed"
+    },
+    {
+      "check": "features-test-bytes",
+      "ok": true,
+      "detail": "npz changed"
+    },
+    {
+      "check": "features-train-4x",
+      "ok": true,
+      "detail": 4096
+    },
+    {
+      "check": "training-6",
+      "ok": true,
+      "detail": 6
+    },
+    {
+      "check": "run-M1-17",
+      "ok": true,
+      "detail": "missing"
+    },
+    {
+      "check": "ckpt-M1-17-best.pt",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "ckpt-M1-17-last.pt",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "params-M1-17",
+      "ok": true,
+      "detail": 5120
+    },
+    {
+      "check": "grad-M1-17",
+      "ok": true,
+      "detail": [
+        "w"
+      ]
+    },
+    {
+      "check": "run-M1-29",
+      "ok": true,
+      "detail": "missing"
+    },
+    {
+      "check": "ckpt-M1-29-best.pt",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "ckpt-M1-29-last.pt",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "params-M1-29",
+      "ok": true,
+      "detail": 5120
+    },
+    {
+      "check": "grad-M1-29",
+      "ok": true,
+      "detail": [
+        "w"
+      ]
+    },
+    {
+      "check": "run-M1-43",
+      "ok": true,
+      "detail": "missing"
+    },
+    {
+      "check": "ckpt-M1-43-best.pt",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "ckpt-M1-43-last.pt",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "params-M1-43",
+      "ok": true,
+      "detail": 5120
+    },
+    {
+      "check": "grad-M1-43",
+      "ok": true,
+      "detail": [
+        "w"
+      ]
+    },
+    {
+      "check": "run-M2-17",
+      "ok": true,
+      "detail": "missing"
+    },
+    {
+      "check": "ckpt-M2-17-best.pt",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "ckpt-M2-17-last.pt",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "params-M2-17",
+      "ok": true,
+      "detail": 5120
+    },
+    {
+      "check": "grad-M2-17",
+      "ok": true,
+      "detail": [
+        "w"
+      ]
+    },
+    {
+      "check": "run-M2-29",
+      "ok": true,
+      "detail": "missing"
+    },
+    {
+      "check": "ckpt-M2-29-best.pt",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "ckpt-M2-29-last.pt",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "params-M2-29",
+      "ok": true,
+      "detail": 5120
+    },
+    {
+      "check": "grad-M2-29",
+      "ok": true,
+      "detail": [
+        "w"
+      ]
+    },
+    {
+      "check": "run-M2-43",
+      "ok": true,
+      "detail": "missing"
+    },
+    {
+      "check": "ckpt-M2-43-best.pt",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "ckpt-M2-43-last.pt",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "params-M2-43",
+      "ok": true,
+      "detail": 5120
+    },
+    {
+      "check": "grad-M2-43",
+      "ok": true,
+      "detail": [
+        "w"
+      ]
+    },
+    {
+      "check": "prediction-hashes",
+      "ok": true,
+      "detail": "predictions changed after unseal"
+    },
+    {
+      "check": "pred-cover-M1",
+      "ok": true,
+      "detail": 1024
+    },
+    {
+      "check": "pred-probs-M1",
+      "ok": true,
+      "detail": 0
+    },
+    {
+      "check": "pred-cover-M2",
+      "ok": true,
+      "detail": 1024
+    },
+    {
+      "check": "pred-probs-M2",
+      "ok": true,
+      "detail": 0
+    },
+    {
+      "check": "pred-cover-json",
+      "ok": true,
+      "detail": 1024
+    },
+    {
+      "check": "pred-probs-json",
+      "ok": true,
+      "detail": 0
+    },
+    {
+      "check": "pred-cover-label_logits",
+      "ok": true,
+      "detail": 1024
+    },
+    {
+      "check": "pred-probs-label_logits",
+      "ok": true,
+      "detail": 0
+    },
+    {
+      "check": "pred-cover-old_h0",
+      "ok": true,
+      "detail": 1024
+    },
+    {
+      "check": "pred-probs-old_h0",
+      "ok": true,
+      "detail": 0
+    },
+    {
+      "check": "pred-cover-rules",
+      "ok": true,
+      "detail": 1024
+    },
+    {
+      "check": "pred-probs-rules",
+      "ok": true,
+      "detail": 0
+    },
+    {
+      "check": "recompute-M1",
+      "ok": true,
+      "detail": "860 vs 860"
+    },
+    {
+      "check": "recompute-M2",
+      "ok": true,
+      "detail": "860 vs 860"
+    },
+    {
+      "check": "recompute-json",
+      "ok": true,
+      "detail": "773 vs 773"
+    },
+    {
+      "check": "recompute-label_logits",
+      "ok": true,
+      "detail": "556 vs 556"
+    },
+    {
+      "check": "recompute-old_h0",
+      "ok": true,
+      "detail": "400 vs 400"
+    },
+    {
+      "check": "recompute-rules",
+      "ok": true,
+      "detail": "392 vs 392"
+    },
+    {
+      "check": "nll-finite-M1",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "nll-finite-M2",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "nll-finite-label_logits",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "nll-finite-old_h0",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "latency-json",
+      "ok": true,
+      "detail": 32
+    },
+    {
+      "check": "latency-label_logits",
+      "ok": true,
+      "detail": 32
+    },
+    {
+      "check": "latency-old_h0",
+      "ok": true,
+      "detail": 32
+    },
+    {
+      "check": "latency-M1",
+      "ok": true,
+      "detail": 32
+    },
+    {
+      "check": "latency-M2",
+      "ok": true,
+      "detail": 32
+    },
+    {
+      "check": "old-gold-present",
+      "ok": true,
+      "detail": "old tree untouched by this run (read-only check)"
+    }
+  ],
+  "issues": [],
+  "ok": true,
+  "passed": 80,
+  "total": 80
+}
