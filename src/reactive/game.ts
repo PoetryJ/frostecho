@@ -90,6 +90,8 @@ export class ReactiveGameImpl implements ReactiveGame {
   readonly wakePolicy: ReactiveGameOptions['wakePolicy'];
   readonly mode: ReactiveGameOptions['mode'];
   readonly thinking: boolean;
+  /** Opt-in action-phase override; undefined keeps the historical single value. */
+  readonly actionThinking: boolean | undefined;
   private needPolicy: NeedPolicy;
   private readonly recordSchema: typeof G04_SCHEMA | typeof G05_SCHEMA | typeof G08_GAME_SCHEMA;
   /** G08: capability axis; undefined keeps pre-G08 behaviour. */
@@ -130,6 +132,7 @@ export class ReactiveGameImpl implements ReactiveGame {
     this.wakePolicy = options.wakePolicy;
     this.mode = options.mode;
     this.thinking = options.thinking;
+    this.actionThinking = options.actionThinking;
     this.needPolicy = options.needPolicy ?? 'one-shot';
     this.recordSchema = options.actionSet !== undefined ? G08_GAME_SCHEMA : (options.schemaVersion ?? G04_SCHEMA);
     this.actionSet = options.actionSet;
@@ -876,6 +879,9 @@ export class ReactiveGameImpl implements ReactiveGame {
       wakePolicy: this.wakePolicy,
       mode: this.mode,
       thinking: this.thinking,
+      // Only an explicit experiment override is serialized; old records keep
+      // exactly their original key set.
+      ...(this.actionThinking !== undefined ? { actionThinking: this.actionThinking } : {}),
       // G08-R1: the record carries the same effective configuration the
       // envelope saves — one source, cross-checked at save and restore.
       ...(this.actionSet !== undefined ? {
@@ -899,7 +905,9 @@ export class ReactiveGameImpl implements ReactiveGame {
         temperature: HTTP_SAMPLING.temperature,
         max_tokens: HTTP_SAMPLING.max_tokens,
         stream: HTTP_SAMPLING.stream,
-        enableThinking: [this.thinking],
+        // The values the two phases actually allowed, deduplicated: mixed is
+        // [true,false]; the old single-value shape is unchanged when unset.
+        enableThinking: [...new Set([this.thinking, ...(this.actionThinking !== undefined ? [this.actionThinking] : [])])],
         timeoutMs: this.timeoutMs,
       },
       timing: { totalMs: Math.max(0, this.nowFn() - this.startedAt) },
@@ -962,6 +970,7 @@ export class ReactiveGameImpl implements ReactiveGame {
       wakePolicy: this.wakePolicy,
       mode: this.mode,
       thinking: this.thinking,
+      ...(this.actionThinking !== undefined ? { actionThinking: this.actionThinking } : {}),
       needPolicy: this.needPolicy,
       requestModel: this.options.requestModel ?? null,
       timeoutMs: this.timeoutMs,
@@ -1026,6 +1035,7 @@ export class ReactiveGameImpl implements ReactiveGame {
     impl.wakePolicy = data.wakePolicy;
     impl.mode = data.mode;
     impl.thinking = data.thinking;
+    impl.actionThinking = data.actionThinking;
     impl.needPolicy = data.needPolicy;
     impl.recordSchema = data.recordSchema;
     impl.actionSet = g08 ? (data as G08GameCheckpoint).actionSet : undefined;

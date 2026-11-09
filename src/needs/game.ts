@@ -44,6 +44,8 @@ export interface NeedsGameOptions {
   providerFor: ReactiveGameOptions['providerFor'];
   mode: GameMode;
   thinking?: boolean;
+  /** Opt-in action-phase override; absent inherits `thinking`. */
+  actionThinking?: boolean;
   needPolicy: NeedPolicy;
   timeoutMs?: number;
   /** Live model name recorded even when a trajectory makes zero requests. */
@@ -74,6 +76,7 @@ export function createNeedsGame(options: NeedsGameOptions): NeedsGame {
     providerFor: options.providerFor,
     mode: options.mode,
     thinking: options.thinking ?? true,
+    ...(options.actionThinking !== undefined ? { actionThinking: options.actionThinking } : {}),
     wakePolicy: 'event',
     needPolicy: options.needPolicy,
     schemaVersion: 'frostecho.g05.game/2',

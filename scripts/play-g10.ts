@@ -26,6 +26,7 @@ const USAGE = `Usage:
                        [--satiety 40|60] [--hunger 0..100] [--fixture cooperate|decline|violate|w0|w1|w2]
                        [--root DIR] [--slot NAME]
                        [--live --http URL --model M --campaign DIR [--campaign-limit N]]
+                       [--action-thinking on|off]
   npm run play:g10 -- --load FILE [--live --http URL --model M --campaign DIR]
 
 Default: offline reference, --goals legacy. --fixture requires --goals negotiated
@@ -39,6 +40,8 @@ interface Args {
   http: string; model: string | null; campaign: string | null; campaignLimit: number | null;
   loadPath: string | null; help: boolean;
   goalsSet: boolean; candidatesSet: boolean; satietySet: boolean;
+  /** null = flag absent: fresh keeps the default, load adopts the slot. */
+  actionThinking: boolean | null;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -47,6 +50,7 @@ function parseArgs(argv: string[]): Args {
     satiety: 40, startHunger: null, fixture: null, live: false, http: '', model: null,
     campaign: null, campaignLimit: null, loadPath: null, help: false,
     goalsSet: false, candidatesSet: false, satietySet: false,
+    actionThinking: null,
   };
   for (let i = 0; i < argv.length; i += 1) {
     const flag = argv[i];
@@ -101,6 +105,12 @@ function parseArgs(argv: string[]): Args {
         args.campaignLimit = value;
         break;
       }
+      case '--action-thinking': {
+        const value = argv[++i];
+        if (value !== 'on' && value !== 'off') throw new Error('--action-thinking must be on|off');
+        args.actionThinking = value === 'on';
+        break;
+      }
       case '--load': args.loadPath = argv[++i] ?? null; break;
       case '--help': case '-h': args.help = true; break;
       default: throw new Error(`unknown argument ${JSON.stringify(flag)}\n${USAGE}`);
@@ -137,10 +147,12 @@ async function main(): Promise<number> {
       satiety: args.satiety, ...(args.startHunger !== null ? { startHunger: args.startHunger } : {}),
       fixture: args.fixture, live: args.live, http: args.http,
       model: args.model, campaign: args.campaign, campaignLimit: args.campaignLimit,
+      ...(args.actionThinking !== null ? { actionThinking: args.actionThinking } : {}),
     })
     : loadG10Runtime(args.loadPath, {
       live: args.live, model: args.model, fixture: args.fixture, http: args.http,
       campaign: args.campaign, campaignLimit: args.campaignLimit,
+      ...(args.actionThinking !== null ? { actionThinking: args.actionThinking } : {}),
       goals: args.goalsSet ? args.goals : undefined,
       candidates: args.candidatesSet ? args.candidates : undefined,
       satiety: args.satietySet ? args.satiety : undefined,

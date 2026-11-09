@@ -19,6 +19,7 @@ import type { Provider, TransportRecord } from '../agent/contracts';
 import type { G08EffectiveConfig } from '../temporal/contracts';
 import { createNeedsGame, buildNeedsWorld, type NeedsGame } from '../needs/game';
 import { createWireCollector, wireUsage, type G09WireCapture } from '../agent/providers/wire';
+import { thinkingForPhase } from './thinking';
 import {
   campaignCounts, finishCampaignChat, loadCampaign, openCampaign, reserveCampaignChat,
   type CampaignState,
@@ -56,6 +57,8 @@ export interface G10RuntimeOptions {
   /** Explicit authorized campaign directory; required for --live, unused offline. */
   campaign: string | null;
   campaignLimit: number | null;
+  /** Opt-in action-phase thinking; absent inherits `thinking` (true). */
+  actionThinking?: boolean;
   now?: () => number;
 }
 
@@ -167,6 +170,9 @@ export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10R
     mode: options.live ? 'live' : 'reference',
     requestModel: options.live ? options.model : null,
     thinking: true,
+    // Only an explicit experiment override is serialized; absent keeps the
+    // slot/record key set exactly as before.
+    ...(options.actionThinking !== undefined ? { actionThinking: options.actionThinking } : {}),
     timeoutMs: G09_TIMEOUT_MS,
   };
   if (options.live && (options.model === null || options.model.length === 0)) {
@@ -222,18 +228,29 @@ export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10R
     // continuation cycle opens; the reserve above stays the hard limit.
     externalBudget = makeCampaignBudgetGate(campaignDir);
     const collector = createWireCollector(fetch);
-    const inner = createHttpProvider({
-      url: options.http,
-      model: String(options.model),
-      enableThinking: config.thinking,
-      fetchImpl: collector.fetchImpl,
-    });
+    // One HTTP provider per distinct thinking value; both share the SAME wire
+    // collector, budget reserve and ledger, so a phase still costs exactly one
+    // call and the evidence is unchanged by the extra provider object.
+    const providers = new Map<boolean, Provider>();
+    const providerForThinking = (enableThinking: boolean): Provider => {
+      const existing = providers.get(enableThinking);
+      if (existing !== undefined) return existing;
+      const created = createHttpProvider({
+        url: options.http,
+        model: String(options.model),
+        enableThinking,
+        fetchImpl: collector.fetchImpl,
+      });
+      providers.set(enableThinking, created);
+      return created;
+    };
     providerFor = () => ({
       async decide(input, signal) {
         const phase: 'goal' | 'action' = (input as { goalChoice?: unknown }).goalChoice !== undefined ? 'goal' : 'action';
         const reservation = reserveCampaignChat(campaignDir, { batch: options.slot, episodeId: meta.episodeId, phase });
         if (!reservation.ok) throw new Error(`campaign budget: ${reservation.reason}`);
         ledger = reservation.state;
+        const inner = providerForThinking(thinkingForPhase(input, config));
         try {
           const answer = await inner.decide(input, signal);
           const capture = collector.take();
@@ -267,6 +284,7 @@ export function createG10Runtime(options: G10RuntimeOptions): MessageResult<G10R
     providerFor: () => providerFor(),
     mode: config.mode,
     thinking: config.thinking,
+    ...(config.actionThinking !== undefined ? { actionThinking: config.actionThinking } : {}),
     // G11 demos run the recurring/timed_wait configuration even without a
     // negotiated request (W0 is an ordinary wait), exactly as the contract
     // freezes it; the G09/G10 matrix semantics are untouched.
@@ -492,6 +510,8 @@ export interface LoadG10Options {
   satiety?: SatietyLevel;
   /** G11 demo input; only an explicitly passed value is compared. */
   startHunger?: number;
+  /** Only when the user EXPLICITLY passed the flag; a conflict is refused. */
+  actionThinking?: boolean;
   now?: () => number;
 }
 
@@ -509,6 +529,16 @@ export function loadG10Runtime(path: string, options: LoadG10Options): MessageRe
   if (savedMeta.providerKind !== 'live' && options.live) return messageFail('INVALID_COMMAND', 'mode conflict: the slot is an offline slot');
   if (options.live && envelope.effectiveConfig.requestModel !== options.model) {
     return messageFail('INVALID_COMMAND', `model conflict: the slot was saved with ${JSON.stringify(envelope.effectiveConfig.requestModel)}`);
+  }
+  // An explicit action-thinking flag must agree with the EFFECTIVE value the
+  // slot was saved with; absent means "adopt the slot". Refuse before any
+  // provider exists: zero POST, zero writes to the original slot.
+  if (options.actionThinking !== undefined) {
+    const savedActionThinking = envelope.effectiveConfig.actionThinking ?? envelope.effectiveConfig.thinking;
+    if (options.actionThinking !== savedActionThinking) {
+      return messageFail('INVALID_COMMAND',
+        `action-thinking conflict: the slot was saved with ${String(savedActionThinking)}, not ${String(options.actionThinking)}`);
+    }
   }
   if (options.fixture !== null && options.fixture !== savedMeta.fixtureId) {
     return messageFail('INVALID_COMMAND', `fixture conflict: the slot was saved with ${JSON.stringify(savedMeta.fixtureId)}`);
@@ -558,16 +588,28 @@ export function loadG10Runtime(path: string, options: LoadG10Options): MessageRe
     // a continuation cycle opens — same identity/path/limit as the slot binding.
     externalBudget = makeCampaignBudgetGate(campaignDir);
     const collector = createWireCollector(fetch);
-    const inner = createHttpProvider({
-      url: options.http, model: String(envelope.effectiveConfig.requestModel),
-      enableThinking: envelope.effectiveConfig.thinking, fetchImpl: collector.fetchImpl,
-    });
+    // The restored runtime picks its provider from the SLOT's effective
+    // configuration, so a saved actionThinking=false survives the process
+    // boundary and never falls back to the goal value.
+    const savedConfig = envelope.effectiveConfig;
+    const providers = new Map<boolean, Provider>();
+    const providerForThinking = (enableThinking: boolean): Provider => {
+      const existing = providers.get(enableThinking);
+      if (existing !== undefined) return existing;
+      const created = createHttpProvider({
+        url: options.http, model: String(savedConfig.requestModel),
+        enableThinking, fetchImpl: collector.fetchImpl,
+      });
+      providers.set(enableThinking, created);
+      return created;
+    };
     providerFor = () => ({
       async decide(input, signal) {
         const phase: 'goal' | 'action' = (input as { goalChoice?: unknown }).goalChoice !== undefined ? 'goal' : 'action';
         const reservation = reserveCampaignChat(campaignDir, { batch: savedMeta.episodeId, episodeId: savedMeta.episodeId, phase });
         if (!reservation.ok) throw new Error(`campaign budget: ${reservation.reason}`);
         ledger = reservation.state;
+        const inner = providerForThinking(thinkingForPhase(input, savedConfig));
         try {
           const answer = await inner.decide(input, signal);
           const capture = collector.take();

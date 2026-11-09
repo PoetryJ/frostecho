@@ -44,13 +44,21 @@ export interface VerifyCtx {
   batchDir: string;
   campaignDir: string;
   totalPosts: number;
+  /** Frozen plan override: absent means the goal value for every phase. */
+  actionThinking?: boolean;
 }
+
+/** The phase is the system's, so the expected switch follows it, not a label. */
+const expectedThinking = (phase: string, ctx: VerifyCtx): boolean =>
+  phase === 'goal' ? FROZEN.thinking : (ctx.actionThinking ?? FROZEN.thinking);
 
 export interface PlanFile {
   schema: string;
   campaignDir: string;
   batchDir: string;
   service: { http: string; model: string };
+  /** Opt-in action-phase override frozen by prepare; absent = historical on/on. */
+  actionThinking?: boolean;
   authorization: { totalPosts: number; maxPostsPerScene: number; scenes: string[] };
   config?: Record<string, unknown>;
 }
@@ -110,7 +118,7 @@ export interface SnapshotLike {
 export interface RecordPayload {
   lineage: { baseCommit: string | null; parentSlot: string | null; attemptRange: { first: string; last: string; count: number } };
   meta: { episodeId: string; providerKind: string; model: string | null };
-  config: { mode: string; requestModel: string | null; thinking: boolean; timeoutMs: number };
+  config: { mode: string; requestModel: string | null; thinking: boolean; actionThinking?: boolean; timeoutMs: number };
   beforeCloseView: {
     simTime: number;
     budget: { episodeCalls: number; providerCalls: number };
@@ -224,7 +232,7 @@ export function strictGoal(text: string, options: readonly string[]): Read<strin
 }
 
 /** Frozen sampling envelope, checked per attempt from the recorded request body. */
-function checkFrozenBody(body: unknown, model: string, label: string, issues: string[]): void {
+function checkFrozenBody(body: unknown, model: string, label: string, thinking: boolean, issues: string[]): void {
   if (body === null || typeof body !== 'object' || Array.isArray(body)) {
     issues.push(`${label}: request body is not an object`);
     return;
@@ -235,7 +243,7 @@ function checkFrozenBody(body: unknown, model: string, label: string, issues: st
   if (record.max_tokens !== FROZEN.maxTokens) issues.push(`${label}: max_tokens ${String(record.max_tokens)} != ${FROZEN.maxTokens}`);
   if (record.stream !== FROZEN.stream) issues.push(`${label}: stream ${String(record.stream)} != ${FROZEN.stream}`);
   const kwargs = record.chat_template_kwargs as { enable_thinking?: unknown } | undefined;
-  if (!kwargs || kwargs.enable_thinking !== FROZEN.thinking) issues.push(`${label}: enable_thinking is not ${FROZEN.thinking}`);
+  if (!kwargs || kwargs.enable_thinking !== thinking) issues.push(`${label}: enable_thinking is not ${thinking}`);
   const messages = record.messages;
   if (!Array.isArray(messages) || messages.length !== 1) issues.push(`${label}: the prompt must be exactly one message`);
   else {
@@ -280,7 +288,21 @@ const sameSlot = (recorded: string | null, batchDir: string, scene: G11Scene): b
 const isNpc = (payload: RecordPayload, actorId: string): RecordPayload['beforeCloseView']['npcs'][number] | null =>
   payload.beforeCloseView.npcs.find(npc => npc.actorId === actorId) ?? null;
 
-function checkWire(record: RecordPayload, label: string, ledger: Map<string, LedgerAttempt>, model: string, issues: string[], failed: string[]): void {
+/** Record/slot config must agree with the plan, not merely carry a label. */
+function checkPhaseConfig(
+  config: { thinking?: unknown; actionThinking?: unknown },
+  ctx: VerifyCtx, label: string, issues: string[],
+): void {
+  if (config.thinking !== FROZEN.thinking) issues.push(`${label}: thinking is not ${FROZEN.thinking}`);
+  const recorded = config.actionThinking;
+  if (ctx.actionThinking === undefined) {
+    if (recorded !== undefined) issues.push(`${label}: actionThinking ${JSON.stringify(recorded)} is present but the plan freezes none`);
+  } else if (recorded !== ctx.actionThinking) {
+    issues.push(`${label}: actionThinking ${JSON.stringify(recorded ?? null)} != plan ${String(ctx.actionThinking)}`);
+  }
+}
+
+function checkWire(record: RecordPayload, label: string, ledger: Map<string, LedgerAttempt>, ctx: VerifyCtx, issues: string[], failed: string[]): void {
   if (!Array.isArray(record.wire) || record.wire.length === 0) {
     issues.push(`${label}: wire is empty`);
     return;
@@ -298,7 +320,7 @@ function checkWire(record: RecordPayload, label: string, ledger: Map<string, Led
     const wireTokens = entry.usage?.total_tokens ?? null;
     if (ledgerTokens !== wireTokens) issues.push(`${label}: ${entry.attemptId} wire tokens ${String(wireTokens)} != ledger ${String(ledgerTokens)}`);
     if (entry.status === null || entry.error !== null) failed.push(`${label}: ${entry.attemptId} did not finish (${entry.error ?? 'no status'})`);
-    checkFrozenBody(entry.requestBody, model, `${label} ${entry.attemptId}`, issues);
+    checkFrozenBody(entry.requestBody, ctx.model, `${label} ${entry.attemptId}`, expectedThinking(entry.phase, ctx), issues);
   }
   const ids = record.wire.map(entry => entry.attemptId);
   const first = ids[0] ?? '';
@@ -367,7 +389,7 @@ function verifyPrefix(record: RecordPayload, scene: G11Scene, ctx: VerifyCtx, le
   const expectProduced = (message: string): void => { (slotPresent ? issues : sink.expectations).push(message); };
   if (record.meta.providerKind !== 'live') issues.push(`${label}: providerKind ${record.meta.providerKind} is not live`);
   if (record.config.requestModel !== ctx.model) issues.push(`${label}: config requestModel ${String(record.config.requestModel)} != plan`);
-  if (record.config.thinking !== true) issues.push(`${label}: thinking is not true`);
+  checkPhaseConfig(record.config, ctx, label, issues);
   if (record.config.timeoutMs !== 120000) issues.push(`${label}: single-request timeout ${String(record.config.timeoutMs)} != 120000`);
   if (record.lineage.parentSlot !== null) issues.push(`${label}: parentSlot must be null, got ${String(record.lineage.parentSlot)}`);
   if (record.wire.length !== 2) issues.push(`${label}: expected 2 posts (goal+action), got ${record.wire.length}`);
@@ -421,7 +443,7 @@ function verifyPrefix(record: RecordPayload, scene: G11Scene, ctx: VerifyCtx, le
   }
   if (record.authoritative.budget.episodeCalls !== 2) issues.push(`${label}: episodeCalls ${record.authoritative.budget.episodeCalls} != 2`);
   checkCampaign(record, label, ctx, sink);
-  checkWire(record, label, ledger, ctx.model, sink.issues, failed);
+  checkWire(record, label, ledger, ctx, sink.issues, failed);
   checkReexecution(record, label, sink.issues);
 }
 
@@ -457,6 +479,7 @@ function verifySuffix(record: RecordPayload, scene: G11Scene, ctx: VerifyCtx, le
   const expect = (message: string): void => { sink.expectations.push(message); };
   if (record.meta.providerKind !== 'live') issues.push(`${label}: providerKind ${record.meta.providerKind} is not live`);
   if (record.config.requestModel !== ctx.model) issues.push(`${label}: config requestModel ${String(record.config.requestModel)} != plan`);
+  checkPhaseConfig(record.config, ctx, label, issues);
   if (record.config.timeoutMs !== 120000) issues.push(`${label}: single-request timeout ${String(record.config.timeoutMs)} != 120000`);
   const slotPath = join(ctx.batchDir, sceneDirOf(scene), `${sceneDirOf(scene)}-wait.g09.json`);
   if (!sameSlot(record.lineage.parentSlot, ctx.batchDir, scene)) issues.push(`${label}: parentSlot ${String(record.lineage.parentSlot)} != ${slotPath}`);
@@ -518,7 +541,7 @@ function verifySuffix(record: RecordPayload, scene: G11Scene, ctx: VerifyCtx, le
   if (record.authoritative.budget.providerCalls !== 4) expect(`${label}: providerCalls ${record.authoritative.budget.providerCalls} != 4`);
   if (record.authoritative.budget.episodeCalls !== 4) expect(`${label}: episodeCalls ${record.authoritative.budget.episodeCalls} != 4`);
   checkCampaign(record, label, ctx, sink);
-  checkWire(record, label, ledger, ctx.model, issues, failed);
+  checkWire(record, label, ledger, ctx, issues, failed);
   checkReexecution(record, label, issues);
 }
 
@@ -577,9 +600,16 @@ export function verifyG11Batch(input: G11VerifyInput): G11VerifyResult {
   const plan = planRead.value;
   if (plan.schema !== PLAN_SCHEMA) issues.push(`plan schema ${JSON.stringify(plan.schema)} is not ${PLAN_SCHEMA}`);
   if (plan.service.model !== input.model) issues.push(`verify --model ${JSON.stringify(input.model)} != plan ${JSON.stringify(plan.service.model)}`);
+  if (plan.actionThinking !== undefined && typeof plan.actionThinking !== 'boolean') {
+    issues.push(`plan actionThinking ${JSON.stringify(plan.actionThinking)} is not a boolean`);
+  }
   if (plan.authorization.totalPosts !== 8) issues.push(`plan totalPosts ${plan.authorization.totalPosts} != 8`);
   if (plan.authorization.maxPostsPerScene !== SCENE_SHARE) issues.push(`plan maxPostsPerScene ${plan.authorization.maxPostsPerScene} != ${SCENE_SHARE}`);
-  const ctx: VerifyCtx = { model: input.model, batchDir: input.batchDir, campaignDir: input.campaignDir, totalPosts: plan.authorization.totalPosts };
+  const ctx: VerifyCtx = {
+    model: input.model, batchDir: input.batchDir, campaignDir: input.campaignDir,
+    totalPosts: plan.authorization.totalPosts,
+    ...(plan.actionThinking !== undefined ? { actionThinking: plan.actionThinking } : {}),
+  };
 
   const ledgerPath = campaignJsonPath(input.campaignDir);
   const hasSceneFiles = G11_SCENES.some(scene => existsSync(join(input.batchDir, `scene-${scene}.json`)));
@@ -680,6 +710,20 @@ export function verifyG11Batch(input: G11VerifyInput): G11VerifyResult {
             const bytesHash = createHash('sha256').update(readFileSync(slotPath)).digest('hex');
             const payloadOk = slot.value.payload !== undefined && slot.value.sha256 !== undefined && slotChecksum(slot.value.payload) === slot.value.sha256;
             slotHashOk = payloadOk && bytesHash === expectedHash;
+            // The slot itself must carry the frozen phase configuration, and
+            // its embedded game must not contradict the envelope.
+            const payload = slot.value.payload as {
+              effectiveConfig?: { requestModel?: unknown; thinking?: unknown; actionThinking?: unknown; timeoutMs?: unknown };
+              game?: { actionThinking?: unknown };
+            } | undefined;
+            if (payload !== undefined && payload.effectiveConfig !== undefined) {
+              checkPhaseConfig(payload.effectiveConfig, ctx, `${scene}: slot effectiveConfig`, issues);
+              if (payload.effectiveConfig.requestModel !== ctx.model) issues.push(`${scene}: slot requestModel ${String(payload.effectiveConfig.requestModel)} != plan`);
+              if (payload.effectiveConfig.timeoutMs !== 120000) issues.push(`${scene}: slot timeout ${String(payload.effectiveConfig.timeoutMs)} != 120000`);
+            }
+            if (payload?.game !== undefined && (payload.game.actionThinking ?? null) !== (ctx.actionThinking ?? null)) {
+              issues.push(`${scene}: slot game actionThinking ${JSON.stringify(payload.game.actionThinking ?? null)} != plan ${JSON.stringify(ctx.actionThinking ?? null)}`);
+            }
             if (!payloadOk) issues.push(`${scene}: slot payload checksum does not match its envelope`);
             else if (!slotHashOk) issues.push(`${scene}: slot bytes hash does not match the scene record`);
           }

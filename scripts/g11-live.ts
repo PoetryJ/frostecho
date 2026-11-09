@@ -103,6 +103,8 @@ interface Plan {
   sourceCommit: string | null;
   promptVersion: string;
   config: { goals: 'negotiated'; candidates: 'choice'; satiety: 40; needPolicy: 'recurring'; actionSet: 'timed_wait' };
+  /** Opt-in, frozen at prepare; absent keeps every old plan's on/on bytes. */
+  actionThinking?: boolean;
   authorization: { totalPosts: number; maxPostsPerScene: number; scenes: readonly Scene[] };
   service: { http: string; model: string };
   campaignDir: string;
@@ -125,12 +127,12 @@ function fail(message: string): never {
 
 function usage(message: string | null): never {
   if (message !== null) console.error(message);
-  console.error('usage: g11-live <prepare|prefix|suffix|run|verify> --batch DIR --campaign DIR --http URL --model M [--limit N] [--out FILE]');
+  console.error('usage: g11-live <prepare|prefix|suffix|run|verify> --batch DIR --campaign DIR --http URL --model M [--limit N] [--out FILE] [--action-thinking on|off]');
   process.exit(2);
 }
 
-function parseCli(argv: string[]): { mode: string; batch: string; campaign: string; http: string; model: string; limit: number; out: string | null; scene: Scene | null } {
-  const out = { mode: argv[0] ?? '', batch: '', campaign: '', http: '', model: '', limit: 8, out: null as string | null, scene: null as Scene | null };
+function parseCli(argv: string[]): { mode: string; batch: string; campaign: string; http: string; model: string; limit: number; out: string | null; scene: Scene | null; actionThinking: boolean | undefined } {
+  const out = { mode: argv[0] ?? '', batch: '', campaign: '', http: '', model: '', limit: 8, out: null as string | null, scene: null as Scene | null, actionThinking: undefined as boolean | undefined };
   for (let index = 1; index < argv.length; index += 2) {
     const flag = argv[index]!;
     const value = argv[index + 1] ?? '';
@@ -146,6 +148,9 @@ function parseCli(argv: string[]): { mode: string; batch: string; campaign: stri
       const parsed = Number(value);
       if (!Number.isInteger(parsed) || parsed < 1) usage('--limit must be a positive integer');
       out.limit = parsed;
+    } else if (flag === '--action-thinking') {
+      if (value !== 'on' && value !== 'off') usage(`--action-thinking must be on|off, got ${JSON.stringify(value)}`);
+      out.actionThinking = value === 'on';
     } else usage(`unknown argument ${JSON.stringify(flag)}`);
   }
   if (out.batch.length === 0 || out.campaign.length === 0) usage('--batch and --campaign are required');
@@ -215,7 +220,7 @@ function emit(payload: Record<string, unknown>): void {
 /* prepare                                                             */
 /* ------------------------------------------------------------------ */
 
-function cmdPrepare(batchDir: string, campaignDir: string, http: string, model: string, limit: number): number {
+function cmdPrepare(batchDir: string, campaignDir: string, http: string, model: string, limit: number, actionThinking: boolean | undefined): number {
   const planPath = join(batchDir, 'plan.json');
   if (existsSync(planPath)) fail(`plan already exists at ${planPath}; a re-run would spend real budget`);
   if (existsSync(join(batchDir, 'W1')) || existsSync(join(batchDir, 'W2'))) {
@@ -228,6 +233,9 @@ function cmdPrepare(batchDir: string, campaignDir: string, http: string, model: 
     sourceCommit: commit,
     promptVersion: ACTIVE_GOAL_PROMPT_VERSION,
     config: { goals: 'negotiated', candidates: 'choice', satiety: 40, needPolicy: 'recurring', actionSet: 'timed_wait' },
+    // Serialized only when the experiment asked for it; an absent key means
+    // "goal value for every phase", exactly like every historical plan.
+    ...(actionThinking !== undefined ? { actionThinking } : {}),
     authorization: { totalPosts: limit, maxPostsPerScene: Math.min(4, limit), scenes: [...SCENES] },
     service: { http, model },
     campaignDir: resolve(campaignDir),
@@ -235,7 +243,10 @@ function cmdPrepare(batchDir: string, campaignDir: string, http: string, model: 
   };
   mkdirSync(batchDir, { recursive: true });
   writeFileSync(planPath, `${JSON.stringify(plan, null, 2)}\n`, { flag: 'wx' });
-  emit({ mode: 'prepare', planPath, sourceCommit: commit, promptVersion: plan.promptVersion, limit });
+  emit({
+    mode: 'prepare', planPath, sourceCommit: commit, promptVersion: plan.promptVersion, limit,
+    ...(plan.actionThinking !== undefined ? { actionThinking: plan.actionThinking } : {}),
+  });
   return 0;
 }
 
@@ -391,6 +402,7 @@ function writeRunStart(plan: Plan, preflightPath: string, watchdog: Watchdog, sp
         maxTokens: HTTP_SAMPLING.max_tokens,
         stream: HTTP_SAMPLING.stream,
         thinking: true,
+        ...(plan.actionThinking !== undefined ? { actionThinking: plan.actionThinking } : {}),
       },
       requestTimeoutMs: watchdog.requestMs,
       watchdog: { requestsPerPhase: watchdog.requestsPerPhase, settleMs: watchdog.settleMs, phaseMs: watchdog.phaseMs, source: watchdog.source },
@@ -422,6 +434,7 @@ async function cmdPrefix(plan: Plan, scene: Scene): Promise<number> {
     root, slot, goals: plan.config.goals, candidates: plan.config.candidates, satiety: plan.config.satiety,
     fixture: null, live: true, http: plan.service.http, model: plan.service.model,
     campaign: plan.campaignDir, campaignLimit: ledgerExists ? null : plan.authorization.totalPosts,
+    ...(plan.actionThinking !== undefined ? { actionThinking: plan.actionThinking } : {}),
   });
   if (!built.ok) {
     emit({ mode: 'prefix', scene, classification: 'config_error', reasons: built.issues ?? [] });
@@ -544,6 +557,9 @@ async function cmdSuffix(plan: Plan, scene: Scene): Promise<number> {
   const built = loadG10Runtime(slotPath, {
     live: true, model: plan.service.model, fixture: null,
     http: plan.service.http, campaign: plan.campaignDir, campaignLimit: null,
+    // Explicit only when the plan freezes it: a mismatch with the saved slot
+    // is refused with zero POST and zero writes to the original slot.
+    ...(plan.actionThinking !== undefined ? { actionThinking: plan.actionThinking } : {}),
   });
   if (!built.ok) {
     emit({ mode: 'suffix', scene, classification: 'config_error', reasons: built.issues ?? [] });
@@ -912,7 +928,10 @@ function cmdVerify(plan: Plan, batchDir: string, campaignDir: string, out: strin
 
 async function main(argv: string[]): Promise<number> {
   const args = parseCli(argv);
-  if (args.mode === 'prepare') return cmdPrepare(args.batch, args.campaign, args.http, args.model, args.limit);
+  if (args.mode !== 'prepare' && args.actionThinking !== undefined) {
+    usage('--action-thinking is frozen by prepare; run/prefix/suffix must use the plan');
+  }
+  if (args.mode === 'prepare') return cmdPrepare(args.batch, args.campaign, args.http, args.model, args.limit, args.actionThinking);
   if (!existsSync(args.batch)) fail(`no batch dir ${args.batch}`);
   if (args.mode === 'verify') return cmdVerify(readPlan(args.batch), args.batch, args.campaign, args.out);
   const plan = readPlan(args.batch);

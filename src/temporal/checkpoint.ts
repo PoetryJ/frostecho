@@ -188,6 +188,9 @@ export function effectiveConfigIssues(config: unknown): string[] {
   if (typeof c.thinking !== 'boolean') {
     issues.push(`effectiveConfig.thinking must be a boolean, got ${JSON.stringify(c.thinking ?? null)}`);
   }
+  if (c.actionThinking !== undefined && typeof c.actionThinking !== 'boolean') {
+    issues.push(`effectiveConfig.actionThinking must be a boolean when present, got ${JSON.stringify(c.actionThinking)}`);
+  }
   if (typeof c.timeoutMs !== 'number' || !Number.isSafeInteger(c.timeoutMs) || c.timeoutMs <= 0) {
     issues.push(`effectiveConfig.timeoutMs must be a positive integer, got ${JSON.stringify(c.timeoutMs ?? null)}`);
   }
@@ -202,8 +205,12 @@ export function effectiveConfigIssues(config: unknown): string[] {
 export function effectiveConfigMatchesRecord(config: G08EffectiveConfig, record: unknown): boolean {
   if (typeof record !== 'object' || record === null) return false;
   const r = record as Record<string, unknown>;
+  // Absent is a value too: an old record/config pair (both undefined) matches,
+  // while a new explicit override must appear on both sides.
+  const sameActionThinking = (r.actionThinking ?? null) === (config.actionThinking ?? null);
   return r.mode === config.mode
     && r.thinking === config.thinking
+    && sameActionThinking
     && (r.requestModel ?? null) === config.requestModel
     && r.timeoutMs === config.timeoutMs;
 }

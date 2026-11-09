@@ -94,6 +94,7 @@ export function restoreNeedsGame(data: unknown, runtime: GameRestoreRuntime): Re
   if (d.wakePolicy !== 'legacy' && d.wakePolicy !== 'event') issues.push(`unknown wakePolicy ${JSON.stringify(d.wakePolicy)}`);
   if (d.mode !== 'fixture' && d.mode !== 'live' && d.mode !== 'reference') issues.push(`unknown mode ${JSON.stringify(d.mode)}`);
   if (typeof d.thinking !== 'boolean') issues.push('thinking must be a boolean');
+  if (d.actionThinking !== undefined && typeof d.actionThinking !== 'boolean') issues.push('actionThinking must be a boolean when present');
   if (d.needPolicy !== 'one-shot' && d.needPolicy !== 'recurring') issues.push('needPolicy must be one-shot or recurring');
   if (g08d === null && d.recordSchema !== G04_SCHEMA && d.recordSchema !== G05_SCHEMA) issues.push(`unknown recordSchema ${JSON.stringify(d.recordSchema)}`);
   if (d.requestModel !== null && typeof d.requestModel !== 'string') issues.push('requestModel must be a string or null');
@@ -270,6 +271,7 @@ export function restoreNeedsGame(data: unknown, runtime: GameRestoreRuntime): Re
       wakePolicy: d.wakePolicy,
       mode: d.mode,
       thinking: d.thinking,
+      ...(d.actionThinking !== undefined ? { actionThinking: d.actionThinking } : {}),
       needPolicy: d.needPolicy,
       schemaVersion: d.recordSchema,
       requestModel: d.requestModel ?? undefined,
