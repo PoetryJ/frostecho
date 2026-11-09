@@ -19,7 +19,8 @@
   stream false/timeout 120000/默认 effort 全部逐字冻结，由 `buildPair()` 的差分断言守护。
 - 因变量只限：格式合法率（严格解析）、动作、每请求 latency、prompt/completion/reasoning tokens、
   known/unknown usage。**性能与正确率需另行实测**；单步合法 ≠ 整局成功。
-- 失败即停：首个传输错误/非 200/超时/不可解析即停，其余 `not_run`，无隐式重试。
+- 失败即停：仅首个传输错误/非 200/超时/严格动作解析失败即停，其余 `not_run`，无隐式重试。
+- **缺 `usage` 不是即停条件**：该条记为 unknown，已知 usage 小计保留、`total=null`，计划继续执行。
 - 门禁：`authorizedCalls = 0`、未带 `--authorized`、或运行时源码未提交 → `exit 2` + 0 请求。
 
 ## 优先级 2（暂缓）：候选呈现顺序对照

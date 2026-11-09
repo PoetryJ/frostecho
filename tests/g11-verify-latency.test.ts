@@ -46,7 +46,7 @@ function cli(entry: string, args: string[]): Promise<CliRun> {
 }
 
 interface FakeServer { url: string; posts: AnyJson[]; close(): Promise<void> }
-interface FakeOptions { failFirstWith?: number; omitUsage?: boolean; answer?: string }
+interface FakeOptions { failFirstWith?: number; omitUsage?: boolean; omitUsageAt?: number; answer?: string }
 
 async function fakeOpenAi(options: FakeOptions = {}): Promise<FakeServer> {
   const posts: AnyJson[] = [];
@@ -72,7 +72,7 @@ async function fakeOpenAi(options: FakeOptions = {}): Promise<FakeServer> {
       response.end(JSON.stringify({
         id: `chatcmpl-lat-${String(posts.length)}`, object: 'chat.completion', created: 1, model: MODEL,
         choices: [{ index: 0, message: { role: 'assistant', content: answer }, finish_reason: 'stop' }],
-        ...(options.omitUsage === true ? {} : { usage: { prompt_tokens: 393, completion_tokens: 40, total_tokens: 433, completion_tokens_details: { reasoning_tokens: 30 } } }),
+        ...(options.omitUsage === true || posts.length === options.omitUsageAt ? {} : { usage: { prompt_tokens: 393, completion_tokens: 40, total_tokens: 433, completion_tokens_details: { reasoning_tokens: 30 } } }),
       }));
     });
   });
@@ -326,8 +326,91 @@ test('a missing usage is reported as unknown, never estimated', async () => {
     assert.equal(summarized.code, 0);
     const data = readJson(join(dir, 'summary.json')) as AnyJson;
     assert.equal(data.tokens.total, null);
-    assert.equal(data.tokens.known, null);
+    assert.equal(data.tokens.known, 0);
     assert.equal((data.tokens.unknown as string[]).length, 8);
+  } finally {
+    await server.close();
+  }
+});
+
+test('mixed usage preserves the known subtotal and identifies every attempt', async () => {
+  const server = await fakeOpenAi({ omitUsageAt: 2 });
+  try {
+    const dir = await toolPlan(server, 8);
+    assert.equal((await cli(PROBE, ['run', '--dir', dir, '--authorized', '--test-loopback'])).code, 0);
+    assert.equal((await cli(PROBE, ['summarize', '--dir', dir])).code, 0);
+    const data = readJson(join(dir, 'summary.json'));
+    assert.equal(data.tokens.known, 7 * 433);
+    assert.equal(data.tokens.total, null);
+    assert.deepEqual(data.tokens.unknown, ['att-0002']);
+    assert.deepEqual(data.rows.map((row: AnyJson) => row.attemptId),
+      Array.from({ length: 8 }, (_, index) => `att-${String(index + 1).padStart(4, '0')}`));
+  } finally {
+    await server.close();
+  }
+});
+
+test('a zero-authorized plan with the flag creates no run artifacts and sends nothing', async () => {
+  const server = await fakeOpenAi();
+  try {
+    const dir = await toolPlan(server, 0);
+    assert.equal((await cli(PROBE, ['run', '--dir', dir, '--authorized', '--test-loopback'])).code, 2);
+    assert.equal(server.posts.length, 0);
+    assert.equal(existsSync(join(dir, 'run-start.json')), false);
+    assert.equal(existsSync(join(dir, 'campaign')), false);
+    assert.equal(existsSync(join(dir, 'attempts')), false);
+  } finally {
+    await server.close();
+  }
+});
+
+test('run validates the fixed input, schema, matrix and budget before spending', async () => {
+  const server = await fakeOpenAi();
+  try {
+    const mutations: [string, (plan: AnyJson) => void][] = [
+      ['schema', plan => { plan.schema = 'another-schema'; }],
+      ['budget', plan => { plan.authorizedCalls = 9; plan.limits.total = 9; }],
+      ['proposed calls', plan => { plan.proposedCalls = 9; }],
+      ['matrix order', plan => { [plan.matrix[0], plan.matrix[1]] = [plan.matrix[1], plan.matrix[0]]; }],
+      ['timeout', plan => { plan.freeze.timeoutMs = 120001; }],
+      ['model', plan => { plan.model = 'different-model'; }],
+      ['max_tokens', plan => { plan.inputs[0].body.max_tokens = 512; }],
+      ['rehashed body', plan => { plan.inputs[0].body.messages[0].content += 'edited'; plan.inputs[0].bodySha256 = sha256(JSON.stringify(plan.inputs[0].body)); }],
+      ['input count', plan => { plan.inputs.push(plan.inputs[0]); }],
+      ['source identity', plan => { plan.inputs[0].source.attemptId = 'att-0003'; }],
+    ];
+    for (const [name, mutate] of mutations) {
+      const dir = await toolPlan(server, 8);
+      const plan = readJson(join(dir, 'plan.json'));
+      mutate(plan);
+      writeFileSync(join(dir, 'plan.json'), JSON.stringify(plan));
+      const run = await cli(PROBE, ['run', '--dir', dir, '--authorized', '--test-loopback']);
+      assert.equal(run.code, 2, `${name}: ${run.stdout} ${run.stderr}`);
+      assert.match(run.stdout, /invalid_plan/);
+      assert.equal(existsSync(join(dir, 'run-start.json')), false, name);
+      assert.equal(existsSync(join(dir, 'campaign')), false, name);
+    }
+    assert.equal(server.posts.length, 0, 'all rejected plans send zero requests');
+  } finally {
+    await server.close();
+  }
+});
+
+test('only the explicit fake loopback can shorten the frozen timeout', async () => {
+  const server = await fakeOpenAi();
+  try {
+    const dir = await toolPlan(server, 8);
+    const plan = readJson(join(dir, 'plan.json'));
+    plan.freeze.timeoutMs = 10000;
+    writeFileSync(join(dir, 'plan.json'), JSON.stringify(plan));
+    const refused = await cli(PROBE, ['run', '--dir', dir, '--authorized']);
+    assert.equal(refused.code, 2);
+    assert.match(refused.stdout, /invalid_plan/);
+    assert.equal(server.posts.length, 0);
+    assert.equal(existsSync(join(dir, 'run-start.json')), false);
+    assert.equal((await cli(PROBE, ['run', '--dir', dir, '--authorized', '--test-loopback'])).code, 0);
+    assert.equal(server.posts.length, 8);
+    assert.equal(server.posts.every(body => body.max_tokens === 1024), true);
   } finally {
     await server.close();
   }

@@ -26,6 +26,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { isDeepStrictEqual } from 'node:util';
 import { openCampaign, reserveCampaignChat, finishCampaignChat, loadCampaign } from '../src/eval/campaign-budget';
 import { strictG11Action } from './g11-live-verify';
 
@@ -232,6 +233,57 @@ export function isTestLoopback(url: string): boolean {
   }
 }
 
+/** The identities below are the reviewed att-0002/att-0003 requests. */
+const FROZEN_INPUTS = [
+  { inputId: 'Y', bodySha256: 'c9dc5449d5f7bee4935203e9be9dd7134786247555f9066a61140493a1f515be',
+    promptSha256: '530fa0b3a2763578432bd0b7e76eee8ab2f72b77ead2ee29935c132b592273ae',
+    source: { path: 'artifacts/g11-live/g11-live-20261105-r1/w1/w1-prefix-run.run.json',
+      sha256: '738275e8ae1c92bec82f2dac69860b8ec126782e219fe933e9f7451d18f53e89', attemptId: 'att-0002', phase: 'action' } },
+  { inputId: 'N', bodySha256: '78c3ea73f39baeb215ef4e973a612e1db0f23be44d95fc8af94a68b4e090e09f',
+    promptSha256: '7da5399104d6ca82e4ec2b61950b61a1802504546fc4811521dca8015c32ce71',
+    source: { path: 'artifacts/g11-live/g11-live-20261105-r1/w1/w1-wait-run.run.json',
+      sha256: '9ed53e6c7a1818c4e9321bb5cf07263f3f79054ce315e9e93c130e65852f93d2', attemptId: 'att-0003', phase: 'action' } },
+] as const;
+
+/** Fail closed before creating the ledger or reserving any of the eight calls. */
+export function validateFrozenPlan(plan: LatencyPlan, testLoopback = false): string[] {
+  const reasons: string[] = [];
+  if (plan === null || typeof plan !== 'object') return ['plan must be an object'];
+  if (plan.schema !== PLAN_SCHEMA) reasons.push('plan schema differs from the frozen schema');
+  if (plan.model !== FREEZE.model) reasons.push('plan model differs from the frozen model');
+  if (plan.proposedCalls !== 8 || (plan.authorizedCalls !== 0 && plan.authorizedCalls !== 8)) {
+    reasons.push('the probe has exactly eight proposed calls and accepts only zero or eight authorized calls');
+  }
+  if (!isDeepStrictEqual(plan.limits, { perArm: 4, total: plan.authorizedCalls })) {
+    reasons.push('plan limits differ from the frozen four-per-arm, eight-total budget');
+  }
+  const timeoutMs = plan.freeze?.timeoutMs;
+  const testTimeout = testLoopback && Number.isInteger(timeoutMs) && timeoutMs > 0 && timeoutMs <= FREEZE.timeoutMs;
+  const expectedFreeze = { temperature: FREEZE.temperature, maxTokens: FREEZE.maxTokens,
+    stream: FREEZE.stream, timeoutMs: testTimeout ? timeoutMs : FREEZE.timeoutMs };
+  if (!isDeepStrictEqual(plan.freeze, expectedFreeze)) reasons.push('plan freeze differs from temperature 0, maxTokens 1024, stream false, timeout 120000');
+  if (!isDeepStrictEqual(plan.matrix, buildMatrix(['Y', 'N']))) reasons.push('plan matrix differs from the frozen eight-request order');
+  if (!Array.isArray(plan.inputs) || plan.inputs.length !== 2) {
+    reasons.push('plan must contain exactly the frozen Y and N inputs');
+    return reasons;
+  }
+  for (const [index, expected] of FROZEN_INPUTS.entries()) {
+    const input = plan.inputs[index];
+    if (input === null || typeof input !== 'object' || input.inputId !== expected.inputId) {
+      reasons.push(`input ${String(index)} differs from frozen ${expected.inputId}`);
+      continue;
+    }
+    const bodyText = JSON.stringify(input.body);
+    if (typeof bodyText !== 'string' || sha256(bodyText) !== expected.bodySha256 || input.bodySha256 !== expected.bodySha256) {
+      reasons.push(`${expected.inputId}: body/hash differs from the recorded request`);
+    }
+    if (input.promptSha256 !== expected.promptSha256 || !isDeepStrictEqual(input.source, expected.source)) {
+      reasons.push(`${expected.inputId}: source identity differs from the recorded request`);
+    }
+  }
+  return reasons;
+}
+
 const dirOf = (args: Map<string, string>): string => {
   const dir = args.get('--dir') ?? '';
   if (dir.length === 0) fail('--dir is required');
@@ -315,6 +367,11 @@ async function cmdRun(args: Map<string, string>): Promise<number> {
   // refused. `--fixture` is offline by construction; `--test-loopback` may only
   // reach 127.0.0.1 on a port OTHER than the frozen service port 18872.
   const loopbackProbe = args.has('--test-loopback') && isTestLoopback(plan.http);
+  const invalidPlan = validateFrozenPlan(plan, loopbackProbe);
+  if (invalidPlan.length > 0) {
+    emit({ mode: 'run', classification: 'invalid_plan', reasons: invalidPlan, posts: 0 });
+    return 2;
+  }
   if (fixture === null) {
     const identity = codeIdentity(process.cwd());
     if (identity.dirty && !loopbackProbe) {
@@ -442,6 +499,7 @@ function cmdSummarize(args: Map<string, string>): number {
       index: item.index,
       pairId: item.pairId,
       arm: item.arm,
+      attemptId: attempt?.attemptId ?? null,
       status: attempt === undefined ? 'not_run' : attempt.parse.ok ? 'ok' : attempt.timeout ? 'timeout' : 'failed',
       action: attempt?.parse.action ?? null,
       latencyMs: attempt?.latencyMs ?? null,
@@ -478,7 +536,7 @@ function cmdSummarize(args: Map<string, string>): number {
   const timeouts = attempts.filter(attempt => attempt.timeout);
   const unknown = attempts.filter(attempt => attempt.usage.total === null).map(attempt => attempt.attemptId);
   const knownTokens = attempts.reduce((sum, attempt) => sum + (attempt.usage.total ?? 0), 0);
-  // A single unknown usage makes the known subtotal meaningless: report null.
+  // Keep the known subtotal even when another charged attempt has unknown usage.
   const knownComplete = attempts.length > 0 && unknown.length === 0;
   const summary = {
     schema: SUMMARY_SCHEMA,
@@ -495,17 +553,17 @@ function cmdSummarize(args: Map<string, string>): number {
       notRun: rows.filter(row => row.status === 'not_run').length,
       usablePairs: pairs.filter(pair => pair.usable === true).length,
     },
-    // A timeout is a RIGHT-CENSORED observation: it is an upper-bound event, not
+    // A timeout is a RIGHT-CENSORED observation: it is a lower-bound event, not
     // a completed 120s sample, so it never enters the latency mean.
     tokens: {
-      known: knownComplete ? knownTokens : null,
+      known: knownTokens,
       unknown,
-      total: knownComplete && attempts.length === completed.length ? knownTokens : null,
+      total: knownComplete ? knownTokens : null,
     },
     caveats: [
       'a timeout is recorded as a client deadline hit, not as a completed sample',
       'only pairs with both arms complete and parsed contribute a delta',
-      'one repetition per cell: no p95 or variance claim is made',
+      'two repetitions per cell: no p95 or variance claim is made',
       'a legal single-step action is not whole-episode success; wait is not the only correct answer',
     ],
   };

@@ -43,7 +43,7 @@ candidateGoals: ["feed_self","yield_once"]        <- 唯一随顺序变化的行
 ### C1 `ctx-kitchen-food-hunger40`
 
 - 观察：`location=kitchen, hunger=40, foodHere=1, reachable=[dorm,kitchen]`
-- 为什么合法：厨房有食物且饥饿低于目标阈值（`hungerAtLeast=90`），
+- 为什么合法：厨房有食物且饥饿低于目标阈值（`hungerAtLeast=70`，见 `GOAL_HUNGER_AT_LEAST`），
   `EAT_FOOD_COST=1`、`EAT_HUNGER_RESTORE=30`（`src/types.ts:4-5`）使"吃一份"有确定收益，
   与"让给玩家"构成真实张力。
 - 正序 `["feed_self","yield_once"]` / 反序 `["yield_once","feed_self"]`
