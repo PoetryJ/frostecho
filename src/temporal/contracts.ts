@@ -167,7 +167,14 @@ export interface G08GameCheckpoint extends Omit<GameCheckpoint, 'schema' | 'reco
 export interface G08EffectiveConfig {
   mode: 'reference' | 'live';
   requestModel: string | null;
+  /** Goal/default phase thinking. The historical key; its meaning is unchanged. */
   thinking: boolean;
+  /**
+   * G11 action-off (opt-in, optional): thinking for the ACTION phase only.
+   * Absent means "inherit `thinking`", so every old slot/record keeps its
+   * original meaning and is never rewritten with a new field.
+   */
+  actionThinking?: boolean;
   /** Positive; live saves the actually wired timeout. */
   timeoutMs: number;
 }

@@ -144,6 +144,8 @@ export interface ReactiveGameOptions {
   mode: GameMode;
   /** Recorded configuration; live G04 runs fixed true. */
   thinking: boolean;
+  /** Opt-in action-phase override; absent inherits `thinking` (old bytes). */
+  actionThinking?: boolean;
   wakePolicy: WakePolicy;
   /** G05: need reactivation policy; default 'one-shot' (G04 semantics). */
   needPolicy?: NeedPolicy;
@@ -251,6 +253,8 @@ export interface ReactiveRecord {
   wakePolicy: WakePolicy;
   mode: GameMode;
   thinking: boolean;
+  /** Opt-in action-phase override; serialized only when explicitly set. */
+  actionThinking?: boolean;
   actorOrder: string[];
   initialState: WorldState;
   finalState: WorldState;

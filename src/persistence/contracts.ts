@@ -135,6 +135,8 @@ export interface GameCheckpoint {
   wakePolicy: WakePolicy;
   mode: GameMode;
   thinking: boolean;
+  /** Opt-in action-phase override; absent keeps every old checkpoint's meaning. */
+  actionThinking?: boolean;
   needPolicy: NeedPolicy;
   recordSchema: 'frostecho.g04.game/1' | 'frostecho.g05.game/2';
   requestModel: string | null;
