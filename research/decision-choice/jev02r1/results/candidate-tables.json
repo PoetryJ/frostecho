@@ -1,0 +1,3279 @@
+{
+  "schema": "frostecho.jev02r1.candidate-tables/1",
+  "at": "2026-11-10T12:51:34+08:00",
+  "note": "cal-policy only; four orders are presentations of the same base case",
+  "arms": {
+    "single_pass@T1": {
+      "temperature": 1.0,
+      "tables": [
+        {
+          "tau": 0.5,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 125,
+              "errors": 11,
+              "coverage": 0.976562,
+              "risk": 0.088,
+              "riskDenominator": 125,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 124,
+              "errors": 20,
+              "coverage": 0.96875,
+              "risk": 0.16129,
+              "riskDenominator": 124,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 123,
+              "errors": 43,
+              "coverage": 0.960938,
+              "risk": 0.349593,
+              "riskDenominator": 123,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 126,
+              "errors": 16,
+              "coverage": 0.984375,
+              "risk": 0.126984,
+              "riskDenominator": 126,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.972656,
+          "pooled": {
+            "accepted": 498,
+            "errors": 90,
+            "risk": 0.180723,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: risk 0.0880 > 0.05",
+              "1: risk 0.1613 > 0.05",
+              "2: risk 0.3496 > 0.05",
+              "3: risk 0.1270 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 32,
+              "NPC_FIRST": 31,
+              "NO_PRIORITY_REQUEST": 32,
+              "NEEDS_CLARIFICATION": 30
+            },
+            "1": {
+              "PLAYER_FIRST": 33,
+              "NPC_FIRST": 30,
+              "NO_PRIORITY_REQUEST": 32,
+              "NEEDS_CLARIFICATION": 29
+            },
+            "2": {
+              "PLAYER_FIRST": 32,
+              "NPC_FIRST": 29,
+              "NO_PRIORITY_REQUEST": 32,
+              "NEEDS_CLARIFICATION": 30
+            },
+            "3": {
+              "PLAYER_FIRST": 33,
+              "NPC_FIRST": 32,
+              "NO_PRIORITY_REQUEST": 31,
+              "NEEDS_CLARIFICATION": 30
+            }
+          }
+        },
+        {
+          "tau": 0.6,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 120,
+              "errors": 10,
+              "coverage": 0.9375,
+              "risk": 0.083333,
+              "riskDenominator": 120,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 115,
+              "errors": 17,
+              "coverage": 0.898438,
+              "risk": 0.147826,
+              "riskDenominator": 115,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 118,
+              "errors": 39,
+              "coverage": 0.921875,
+              "risk": 0.330508,
+              "riskDenominator": 118,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 119,
+              "errors": 13,
+              "coverage": 0.929688,
+              "risk": 0.109244,
+              "riskDenominator": 119,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.921875,
+          "pooled": {
+            "accepted": 472,
+            "errors": 79,
+            "risk": 0.167373,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: risk 0.0833 > 0.05",
+              "1: risk 0.1478 > 0.05",
+              "2: risk 0.3305 > 0.05",
+              "3: risk 0.1092 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 31,
+              "NPC_FIRST": 29,
+              "NO_PRIORITY_REQUEST": 30,
+              "NEEDS_CLARIFICATION": 30
+            },
+            "1": {
+              "PLAYER_FIRST": 33,
+              "NPC_FIRST": 25,
+              "NO_PRIORITY_REQUEST": 31,
+              "NEEDS_CLARIFICATION": 26
+            },
+            "2": {
+              "PLAYER_FIRST": 31,
+              "NPC_FIRST": 26,
+              "NO_PRIORITY_REQUEST": 32,
+              "NEEDS_CLARIFICATION": 29
+            },
+            "3": {
+              "PLAYER_FIRST": 32,
+              "NPC_FIRST": 31,
+              "NO_PRIORITY_REQUEST": 28,
+              "NEEDS_CLARIFICATION": 28
+            }
+          }
+        },
+        {
+          "tau": 0.7,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 116,
+              "errors": 8,
+              "coverage": 0.90625,
+              "risk": 0.068966,
+              "riskDenominator": 116,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 106,
+              "errors": 11,
+              "coverage": 0.828125,
+              "risk": 0.103774,
+              "riskDenominator": 106,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 112,
+              "errors": 36,
+              "coverage": 0.875,
+              "risk": 0.321429,
+              "riskDenominator": 112,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 111,
+              "errors": 9,
+              "coverage": 0.867188,
+              "risk": 0.081081,
+              "riskDenominator": 111,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.869141,
+          "pooled": {
+            "accepted": 445,
+            "errors": 64,
+            "risk": 0.14382,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: risk 0.0690 > 0.05",
+              "1: risk 0.1038 > 0.05",
+              "2: risk 0.3214 > 0.05",
+              "3: risk 0.0811 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 29,
+              "NPC_FIRST": 28,
+              "NO_PRIORITY_REQUEST": 30,
+              "NEEDS_CLARIFICATION": 29
+            },
+            "1": {
+              "PLAYER_FIRST": 33,
+              "NPC_FIRST": 23,
+              "NO_PRIORITY_REQUEST": 29,
+              "NEEDS_CLARIFICATION": 21
+            },
+            "2": {
+              "PLAYER_FIRST": 28,
+              "NPC_FIRST": 24,
+              "NO_PRIORITY_REQUEST": 32,
+              "NEEDS_CLARIFICATION": 28
+            },
+            "3": {
+              "PLAYER_FIRST": 31,
+              "NPC_FIRST": 30,
+              "NO_PRIORITY_REQUEST": 25,
+              "NEEDS_CLARIFICATION": 25
+            }
+          }
+        },
+        {
+          "tau": 0.8,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 111,
+              "errors": 6,
+              "coverage": 0.867188,
+              "risk": 0.054054,
+              "riskDenominator": 111,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 93,
+              "errors": 6,
+              "coverage": 0.726562,
+              "risk": 0.064516,
+              "riskDenominator": 93,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 106,
+              "errors": 32,
+              "coverage": 0.828125,
+              "risk": 0.301887,
+              "riskDenominator": 106,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 100,
+              "errors": 5,
+              "coverage": 0.78125,
+              "risk": 0.05,
+              "riskDenominator": 100,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.800781,
+          "pooled": {
+            "accepted": 410,
+            "errors": 49,
+            "risk": 0.119512,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: risk 0.0541 > 0.05",
+              "1: risk 0.0645 > 0.05",
+              "2: risk 0.3019 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 27,
+              "NPC_FIRST": 27,
+              "NO_PRIORITY_REQUEST": 29,
+              "NEEDS_CLARIFICATION": 28
+            },
+            "1": {
+              "PLAYER_FIRST": 32,
+              "NPC_FIRST": 21,
+              "NO_PRIORITY_REQUEST": 26,
+              "NEEDS_CLARIFICATION": 14
+            },
+            "2": {
+              "PLAYER_FIRST": 27,
+              "NPC_FIRST": 22,
+              "NO_PRIORITY_REQUEST": 31,
+              "NEEDS_CLARIFICATION": 26
+            },
+            "3": {
+              "PLAYER_FIRST": 29,
+              "NPC_FIRST": 30,
+              "NO_PRIORITY_REQUEST": 24,
+              "NEEDS_CLARIFICATION": 17
+            }
+          }
+        },
+        {
+          "tau": 0.85,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 104,
+              "errors": 4,
+              "coverage": 0.8125,
+              "risk": 0.038462,
+              "riskDenominator": 104,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 89,
+              "errors": 4,
+              "coverage": 0.695312,
+              "risk": 0.044944,
+              "riskDenominator": 89,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 98,
+              "errors": 27,
+              "coverage": 0.765625,
+              "risk": 0.27551,
+              "riskDenominator": 98,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 95,
+              "errors": 3,
+              "coverage": 0.742188,
+              "risk": 0.031579,
+              "riskDenominator": 95,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.753906,
+          "pooled": {
+            "accepted": 386,
+            "errors": 38,
+            "risk": 0.098446,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: risk 0.2755 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 27,
+              "NPC_FIRST": 25,
+              "NO_PRIORITY_REQUEST": 28,
+              "NEEDS_CLARIFICATION": 24
+            },
+            "1": {
+              "PLAYER_FIRST": 32,
+              "NPC_FIRST": 21,
+              "NO_PRIORITY_REQUEST": 24,
+              "NEEDS_CLARIFICATION": 12
+            },
+            "2": {
+              "PLAYER_FIRST": 26,
+              "NPC_FIRST": 21,
+              "NO_PRIORITY_REQUEST": 30,
+              "NEEDS_CLARIFICATION": 21
+            },
+            "3": {
+              "PLAYER_FIRST": 27,
+              "NPC_FIRST": 29,
+              "NO_PRIORITY_REQUEST": 22,
+              "NEEDS_CLARIFICATION": 17
+            }
+          }
+        },
+        {
+          "tau": 0.9,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 100,
+              "errors": 4,
+              "coverage": 0.78125,
+              "risk": 0.04,
+              "riskDenominator": 100,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 86,
+              "errors": 3,
+              "coverage": 0.671875,
+              "risk": 0.034884,
+              "riskDenominator": 86,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 90,
+              "errors": 25,
+              "coverage": 0.703125,
+              "risk": 0.277778,
+              "riskDenominator": 90,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 93,
+              "errors": 3,
+              "coverage": 0.726562,
+              "risk": 0.032258,
+              "riskDenominator": 93,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.720703,
+          "pooled": {
+            "accepted": 369,
+            "errors": 35,
+            "risk": 0.094851,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: risk 0.2778 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 25,
+              "NPC_FIRST": 25,
+              "NO_PRIORITY_REQUEST": 28,
+              "NEEDS_CLARIFICATION": 22
+            },
+            "1": {
+              "PLAYER_FIRST": 32,
+              "NPC_FIRST": 20,
+              "NO_PRIORITY_REQUEST": 23,
+              "NEEDS_CLARIFICATION": 11
+            },
+            "2": {
+              "PLAYER_FIRST": 23,
+              "NPC_FIRST": 19,
+              "NO_PRIORITY_REQUEST": 29,
+              "NEEDS_CLARIFICATION": 19
+            },
+            "3": {
+              "PLAYER_FIRST": 25,
+              "NPC_FIRST": 29,
+              "NO_PRIORITY_REQUEST": 22,
+              "NEEDS_CLARIFICATION": 17
+            }
+          }
+        },
+        {
+          "tau": 0.925,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 97,
+              "errors": 2,
+              "coverage": 0.757812,
+              "risk": 0.020619,
+              "riskDenominator": 97,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 82,
+              "errors": 3,
+              "coverage": 0.640625,
+              "risk": 0.036585,
+              "riskDenominator": 82,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 85,
+              "errors": 23,
+              "coverage": 0.664062,
+              "risk": 0.270588,
+              "riskDenominator": 85,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 89,
+              "errors": 3,
+              "coverage": 0.695312,
+              "risk": 0.033708,
+              "riskDenominator": 89,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.689453,
+          "pooled": {
+            "accepted": 353,
+            "errors": 31,
+            "risk": 0.087819,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: risk 0.2706 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 24,
+              "NPC_FIRST": 25,
+              "NO_PRIORITY_REQUEST": 27,
+              "NEEDS_CLARIFICATION": 21
+            },
+            "1": {
+              "PLAYER_FIRST": 31,
+              "NPC_FIRST": 19,
+              "NO_PRIORITY_REQUEST": 21,
+              "NEEDS_CLARIFICATION": 11
+            },
+            "2": {
+              "PLAYER_FIRST": 22,
+              "NPC_FIRST": 17,
+              "NO_PRIORITY_REQUEST": 28,
+              "NEEDS_CLARIFICATION": 18
+            },
+            "3": {
+              "PLAYER_FIRST": 25,
+              "NPC_FIRST": 29,
+              "NO_PRIORITY_REQUEST": 19,
+              "NEEDS_CLARIFICATION": 16
+            }
+          }
+        },
+        {
+          "tau": 0.95,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 93,
+              "errors": 2,
+              "coverage": 0.726562,
+              "risk": 0.021505,
+              "riskDenominator": 93,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 82,
+              "errors": 3,
+              "coverage": 0.640625,
+              "risk": 0.036585,
+              "riskDenominator": 82,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 80,
+              "errors": 20,
+              "coverage": 0.625,
+              "risk": 0.25,
+              "riskDenominator": 80,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 81,
+              "errors": 3,
+              "coverage": 0.632812,
+              "risk": 0.037037,
+              "riskDenominator": 81,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.65625,
+          "pooled": {
+            "accepted": 336,
+            "errors": 28,
+            "risk": 0.083333,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: risk 0.2500 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 23,
+              "NPC_FIRST": 24,
+              "NO_PRIORITY_REQUEST": 27,
+              "NEEDS_CLARIFICATION": 19
+            },
+            "1": {
+              "PLAYER_FIRST": 31,
+              "NPC_FIRST": 19,
+              "NO_PRIORITY_REQUEST": 21,
+              "NEEDS_CLARIFICATION": 11
+            },
+            "2": {
+              "PLAYER_FIRST": 20,
+              "NPC_FIRST": 15,
+              "NO_PRIORITY_REQUEST": 28,
+              "NEEDS_CLARIFICATION": 17
+            },
+            "3": {
+              "PLAYER_FIRST": 24,
+              "NPC_FIRST": 29,
+              "NO_PRIORITY_REQUEST": 15,
+              "NEEDS_CLARIFICATION": 13
+            }
+          }
+        },
+        {
+          "tau": 0.975,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 86,
+              "errors": 2,
+              "coverage": 0.671875,
+              "risk": 0.023256,
+              "riskDenominator": 86,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 74,
+              "errors": 1,
+              "coverage": 0.578125,
+              "risk": 0.013514,
+              "riskDenominator": 74,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 70,
+              "errors": 16,
+              "coverage": 0.546875,
+              "risk": 0.228571,
+              "riskDenominator": 70,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 75,
+              "errors": 3,
+              "coverage": 0.585938,
+              "risk": 0.04,
+              "riskDenominator": 75,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.595703,
+          "pooled": {
+            "accepted": 305,
+            "errors": 22,
+            "risk": 0.072131,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: risk 0.2286 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 19,
+              "NPC_FIRST": 22,
+              "NO_PRIORITY_REQUEST": 27,
+              "NEEDS_CLARIFICATION": 18
+            },
+            "1": {
+              "PLAYER_FIRST": 31,
+              "NPC_FIRST": 18,
+              "NO_PRIORITY_REQUEST": 18,
+              "NEEDS_CLARIFICATION": 7
+            },
+            "2": {
+              "PLAYER_FIRST": 19,
+              "NPC_FIRST": 13,
+              "NO_PRIORITY_REQUEST": 26,
+              "NEEDS_CLARIFICATION": 12
+            },
+            "3": {
+              "PLAYER_FIRST": 22,
+              "NPC_FIRST": 28,
+              "NO_PRIORITY_REQUEST": 13,
+              "NEEDS_CLARIFICATION": 12
+            }
+          }
+        },
+        {
+          "tau": 0.99,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 75,
+              "errors": 0,
+              "coverage": 0.585938,
+              "risk": 0.0,
+              "riskDenominator": 75,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 62,
+              "errors": 1,
+              "coverage": 0.484375,
+              "risk": 0.016129,
+              "riskDenominator": 62,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 59,
+              "errors": 10,
+              "coverage": 0.460938,
+              "risk": 0.169492,
+              "riskDenominator": 59,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 59,
+              "errors": 1,
+              "coverage": 0.460938,
+              "risk": 0.016949,
+              "riskDenominator": 59,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.498047,
+          "pooled": {
+            "accepted": 255,
+            "errors": 12,
+            "risk": 0.047059,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "1: accepted 3 NEEDS_CLARIFICATION bases < 5",
+              "2: risk 0.1695 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 16,
+              "NPC_FIRST": 20,
+              "NO_PRIORITY_REQUEST": 25,
+              "NEEDS_CLARIFICATION": 14
+            },
+            "1": {
+              "PLAYER_FIRST": 31,
+              "NPC_FIRST": 16,
+              "NO_PRIORITY_REQUEST": 12,
+              "NEEDS_CLARIFICATION": 3
+            },
+            "2": {
+              "PLAYER_FIRST": 17,
+              "NPC_FIRST": 10,
+              "NO_PRIORITY_REQUEST": 25,
+              "NEEDS_CLARIFICATION": 7
+            },
+            "3": {
+              "PLAYER_FIRST": 17,
+              "NPC_FIRST": 26,
+              "NO_PRIORITY_REQUEST": 8,
+              "NEEDS_CLARIFICATION": 8
+            }
+          }
+        },
+        {
+          "tau": 0.995,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 68,
+              "errors": 0,
+              "coverage": 0.53125,
+              "risk": 0.0,
+              "riskDenominator": 68,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 56,
+              "errors": 1,
+              "coverage": 0.4375,
+              "risk": 0.017857,
+              "riskDenominator": 56,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 49,
+              "errors": 6,
+              "coverage": 0.382812,
+              "risk": 0.122449,
+              "riskDenominator": 49,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 53,
+              "errors": 1,
+              "coverage": 0.414062,
+              "risk": 0.018868,
+              "riskDenominator": 53,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.441406,
+          "pooled": {
+            "accepted": 226,
+            "errors": 8,
+            "risk": 0.035398,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "1: accepted 2 NEEDS_CLARIFICATION bases < 5",
+              "2: risk 0.1224 > 0.05",
+              "2: accepted 49 < 50 bases",
+              "2: accepted 3 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 14,
+              "NPC_FIRST": 19,
+              "NO_PRIORITY_REQUEST": 22,
+              "NEEDS_CLARIFICATION": 13
+            },
+            "1": {
+              "PLAYER_FIRST": 31,
+              "NPC_FIRST": 16,
+              "NO_PRIORITY_REQUEST": 7,
+              "NEEDS_CLARIFICATION": 2
+            },
+            "2": {
+              "PLAYER_FIRST": 14,
+              "NPC_FIRST": 7,
+              "NO_PRIORITY_REQUEST": 25,
+              "NEEDS_CLARIFICATION": 3
+            },
+            "3": {
+              "PLAYER_FIRST": 16,
+              "NPC_FIRST": 25,
+              "NO_PRIORITY_REQUEST": 6,
+              "NEEDS_CLARIFICATION": 6
+            }
+          }
+        }
+      ]
+    },
+    "reverse_pair_consensus@T1": {
+      "temperature": 1.0,
+      "tables": [
+        {
+          "tau": 0.5,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 99,
+              "errors": 2,
+              "coverage": 0.773438,
+              "risk": 0.020202,
+              "riskDenominator": 99,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 77,
+              "errors": 5,
+              "coverage": 0.601562,
+              "risk": 0.064935,
+              "riskDenominator": 77,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.6875,
+          "pooled": {
+            "accepted": 176,
+            "errors": 7,
+            "risk": 0.039773,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: risk 0.0649 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 30,
+              "NPC_FIRST": 24,
+              "NO_PRIORITY_REQUEST": 31,
+              "NEEDS_CLARIFICATION": 14
+            },
+            "2": {
+              "PLAYER_FIRST": 23,
+              "NPC_FIRST": 21,
+              "NO_PRIORITY_REQUEST": 24,
+              "NEEDS_CLARIFICATION": 9
+            }
+          }
+        },
+        {
+          "tau": 0.6,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 88,
+              "errors": 1,
+              "coverage": 0.6875,
+              "risk": 0.011364,
+              "riskDenominator": 88,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 73,
+              "errors": 5,
+              "coverage": 0.570312,
+              "risk": 0.068493,
+              "riskDenominator": 73,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.628906,
+          "pooled": {
+            "accepted": 161,
+            "errors": 6,
+            "risk": 0.037267,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: risk 0.0685 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 29,
+              "NPC_FIRST": 18,
+              "NO_PRIORITY_REQUEST": 28,
+              "NEEDS_CLARIFICATION": 13
+            },
+            "2": {
+              "PLAYER_FIRST": 23,
+              "NPC_FIRST": 20,
+              "NO_PRIORITY_REQUEST": 22,
+              "NEEDS_CLARIFICATION": 8
+            }
+          }
+        },
+        {
+          "tau": 0.7,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 82,
+              "errors": 0,
+              "coverage": 0.640625,
+              "risk": 0.0,
+              "riskDenominator": 82,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 68,
+              "errors": 4,
+              "coverage": 0.53125,
+              "risk": 0.058824,
+              "riskDenominator": 68,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.585938,
+          "pooled": {
+            "accepted": 150,
+            "errors": 4,
+            "risk": 0.026667,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: risk 0.0588 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 27,
+              "NPC_FIRST": 17,
+              "NO_PRIORITY_REQUEST": 27,
+              "NEEDS_CLARIFICATION": 11
+            },
+            "2": {
+              "PLAYER_FIRST": 20,
+              "NPC_FIRST": 19,
+              "NO_PRIORITY_REQUEST": 22,
+              "NEEDS_CLARIFICATION": 7
+            }
+          }
+        },
+        {
+          "tau": 0.8,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 74,
+              "errors": 0,
+              "coverage": 0.578125,
+              "risk": 0.0,
+              "riskDenominator": 74,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 61,
+              "errors": 0,
+              "coverage": 0.476562,
+              "risk": 0.0,
+              "riskDenominator": 61,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.527343,
+          "pooled": {
+            "accepted": 135,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: accepted 3 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 26,
+              "NPC_FIRST": 16,
+              "NO_PRIORITY_REQUEST": 23,
+              "NEEDS_CLARIFICATION": 9
+            },
+            "2": {
+              "PLAYER_FIRST": 20,
+              "NPC_FIRST": 17,
+              "NO_PRIORITY_REQUEST": 21,
+              "NEEDS_CLARIFICATION": 3
+            }
+          }
+        },
+        {
+          "tau": 0.85,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 71,
+              "errors": 0,
+              "coverage": 0.554688,
+              "risk": 0.0,
+              "riskDenominator": 71,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 57,
+              "errors": 0,
+              "coverage": 0.445312,
+              "risk": 0.0,
+              "riskDenominator": 57,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.5,
+          "pooled": {
+            "accepted": 128,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: accepted 3 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 26,
+              "NPC_FIRST": 15,
+              "NO_PRIORITY_REQUEST": 22,
+              "NEEDS_CLARIFICATION": 8
+            },
+            "2": {
+              "PLAYER_FIRST": 19,
+              "NPC_FIRST": 15,
+              "NO_PRIORITY_REQUEST": 20,
+              "NEEDS_CLARIFICATION": 3
+            }
+          }
+        },
+        {
+          "tau": 0.9,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 67,
+              "errors": 0,
+              "coverage": 0.523438,
+              "risk": 0.0,
+              "riskDenominator": 67,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 50,
+              "errors": 0,
+              "coverage": 0.390625,
+              "risk": 0.0,
+              "riskDenominator": 50,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.457031,
+          "pooled": {
+            "accepted": 117,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: accepted 2 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 24,
+              "NPC_FIRST": 15,
+              "NO_PRIORITY_REQUEST": 21,
+              "NEEDS_CLARIFICATION": 7
+            },
+            "2": {
+              "PLAYER_FIRST": 16,
+              "NPC_FIRST": 13,
+              "NO_PRIORITY_REQUEST": 19,
+              "NEEDS_CLARIFICATION": 2
+            }
+          }
+        },
+        {
+          "tau": 0.925,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 62,
+              "errors": 0,
+              "coverage": 0.484375,
+              "risk": 0.0,
+              "riskDenominator": 62,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 46,
+              "errors": 0,
+              "coverage": 0.359375,
+              "risk": 0.0,
+              "riskDenominator": 46,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.421875,
+          "pooled": {
+            "accepted": 108,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: accepted 46 < 50 bases",
+              "2: accepted 2 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 23,
+              "NPC_FIRST": 14,
+              "NO_PRIORITY_REQUEST": 18,
+              "NEEDS_CLARIFICATION": 7
+            },
+            "2": {
+              "PLAYER_FIRST": 15,
+              "NPC_FIRST": 12,
+              "NO_PRIORITY_REQUEST": 17,
+              "NEEDS_CLARIFICATION": 2
+            }
+          }
+        },
+        {
+          "tau": 0.95,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 60,
+              "errors": 0,
+              "coverage": 0.46875,
+              "risk": 0.0,
+              "riskDenominator": 60,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 39,
+              "errors": 0,
+              "coverage": 0.304688,
+              "risk": 0.0,
+              "riskDenominator": 39,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.386719,
+          "pooled": {
+            "accepted": 99,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: accepted 39 < 50 bases",
+              "2: accepted 1 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 22,
+              "NPC_FIRST": 13,
+              "NO_PRIORITY_REQUEST": 18,
+              "NEEDS_CLARIFICATION": 7
+            },
+            "2": {
+              "PLAYER_FIRST": 14,
+              "NPC_FIRST": 11,
+              "NO_PRIORITY_REQUEST": 13,
+              "NEEDS_CLARIFICATION": 1
+            }
+          }
+        },
+        {
+          "tau": 0.975,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 50,
+              "errors": 0,
+              "coverage": 0.390625,
+              "risk": 0.0,
+              "riskDenominator": 50,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 32,
+              "errors": 0,
+              "coverage": 0.25,
+              "risk": 0.0,
+              "riskDenominator": 32,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.320312,
+          "pooled": {
+            "accepted": 82,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: accepted 4 NEEDS_CLARIFICATION bases < 5",
+              "2: accepted 32 < 50 bases",
+              "2: accepted 0 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 18,
+              "NPC_FIRST": 12,
+              "NO_PRIORITY_REQUEST": 16,
+              "NEEDS_CLARIFICATION": 4
+            },
+            "2": {
+              "PLAYER_FIRST": 12,
+              "NPC_FIRST": 10,
+              "NO_PRIORITY_REQUEST": 10,
+              "NEEDS_CLARIFICATION": 0
+            }
+          }
+        },
+        {
+          "tau": 0.99,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 35,
+              "errors": 0,
+              "coverage": 0.273438,
+              "risk": 0.0,
+              "riskDenominator": 35,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 22,
+              "errors": 0,
+              "coverage": 0.171875,
+              "risk": 0.0,
+              "riskDenominator": 22,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.222657,
+          "pooled": {
+            "accepted": 57,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: accepted 35 < 50 bases",
+              "0: accepted 0 NEEDS_CLARIFICATION bases < 5",
+              "2: accepted 22 < 50 bases",
+              "2: accepted 0 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 15,
+              "NPC_FIRST": 11,
+              "NO_PRIORITY_REQUEST": 9,
+              "NEEDS_CLARIFICATION": 0
+            },
+            "2": {
+              "PLAYER_FIRST": 9,
+              "NPC_FIRST": 7,
+              "NO_PRIORITY_REQUEST": 6,
+              "NEEDS_CLARIFICATION": 0
+            }
+          }
+        },
+        {
+          "tau": 0.995,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 28,
+              "errors": 0,
+              "coverage": 0.21875,
+              "risk": 0.0,
+              "riskDenominator": 28,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 17,
+              "errors": 0,
+              "coverage": 0.132812,
+              "risk": 0.0,
+              "riskDenominator": 17,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.175781,
+          "pooled": {
+            "accepted": 45,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: accepted 28 < 50 bases",
+              "0: accepted 0 NEEDS_CLARIFICATION bases < 5",
+              "2: accepted 17 < 50 bases",
+              "2: accepted 4 NO_PRIORITY_REQUEST bases < 5",
+              "2: accepted 0 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 13,
+              "NPC_FIRST": 10,
+              "NO_PRIORITY_REQUEST": 5,
+              "NEEDS_CLARIFICATION": 0
+            },
+            "2": {
+              "PLAYER_FIRST": 8,
+              "NPC_FIRST": 5,
+              "NO_PRIORITY_REQUEST": 4,
+              "NEEDS_CLARIFICATION": 0
+            }
+          }
+        }
+      ]
+    },
+    "single_pass@TFit": {
+      "temperature": 2.0186162197192403,
+      "tables": [
+        {
+          "tau": 0.5,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 118,
+              "errors": 8,
+              "coverage": 0.921875,
+              "risk": 0.067797,
+              "riskDenominator": 118,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 111,
+              "errors": 15,
+              "coverage": 0.867188,
+              "risk": 0.135135,
+              "riskDenominator": 111,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 117,
+              "errors": 38,
+              "coverage": 0.914062,
+              "risk": 0.324786,
+              "riskDenominator": 117,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 120,
+              "errors": 13,
+              "coverage": 0.9375,
+              "risk": 0.108333,
+              "riskDenominator": 120,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.910156,
+          "pooled": {
+            "accepted": 466,
+            "errors": 74,
+            "risk": 0.158798,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: risk 0.0678 > 0.05",
+              "1: risk 0.1351 > 0.05",
+              "2: risk 0.3248 > 0.05",
+              "3: risk 0.1083 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 30,
+              "NPC_FIRST": 28,
+              "NO_PRIORITY_REQUEST": 31,
+              "NEEDS_CLARIFICATION": 29
+            },
+            "1": {
+              "PLAYER_FIRST": 33,
+              "NPC_FIRST": 24,
+              "NO_PRIORITY_REQUEST": 31,
+              "NEEDS_CLARIFICATION": 23
+            },
+            "2": {
+              "PLAYER_FIRST": 31,
+              "NPC_FIRST": 25,
+              "NO_PRIORITY_REQUEST": 32,
+              "NEEDS_CLARIFICATION": 29
+            },
+            "3": {
+              "PLAYER_FIRST": 32,
+              "NPC_FIRST": 31,
+              "NO_PRIORITY_REQUEST": 29,
+              "NEEDS_CLARIFICATION": 28
+            }
+          }
+        },
+        {
+          "tau": 0.6,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 112,
+              "errors": 7,
+              "coverage": 0.875,
+              "risk": 0.0625,
+              "riskDenominator": 112,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 95,
+              "errors": 5,
+              "coverage": 0.742188,
+              "risk": 0.052632,
+              "riskDenominator": 95,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 107,
+              "errors": 34,
+              "coverage": 0.835938,
+              "risk": 0.317757,
+              "riskDenominator": 107,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 104,
+              "errors": 5,
+              "coverage": 0.8125,
+              "risk": 0.048077,
+              "riskDenominator": 104,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.816407,
+          "pooled": {
+            "accepted": 418,
+            "errors": 51,
+            "risk": 0.12201,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: risk 0.0625 > 0.05",
+              "1: risk 0.0526 > 0.05",
+              "2: risk 0.3178 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 27,
+              "NPC_FIRST": 27,
+              "NO_PRIORITY_REQUEST": 29,
+              "NEEDS_CLARIFICATION": 29
+            },
+            "1": {
+              "PLAYER_FIRST": 32,
+              "NPC_FIRST": 21,
+              "NO_PRIORITY_REQUEST": 27,
+              "NEEDS_CLARIFICATION": 15
+            },
+            "2": {
+              "PLAYER_FIRST": 28,
+              "NPC_FIRST": 21,
+              "NO_PRIORITY_REQUEST": 32,
+              "NEEDS_CLARIFICATION": 26
+            },
+            "3": {
+              "PLAYER_FIRST": 30,
+              "NPC_FIRST": 30,
+              "NO_PRIORITY_REQUEST": 25,
+              "NEEDS_CLARIFICATION": 19
+            }
+          }
+        },
+        {
+          "tau": 0.7,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 101,
+              "errors": 4,
+              "coverage": 0.789062,
+              "risk": 0.039604,
+              "riskDenominator": 101,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 85,
+              "errors": 3,
+              "coverage": 0.664062,
+              "risk": 0.035294,
+              "riskDenominator": 85,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 93,
+              "errors": 25,
+              "coverage": 0.726562,
+              "risk": 0.268817,
+              "riskDenominator": 93,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 95,
+              "errors": 3,
+              "coverage": 0.742188,
+              "risk": 0.031579,
+              "riskDenominator": 95,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.730469,
+          "pooled": {
+            "accepted": 374,
+            "errors": 35,
+            "risk": 0.093583,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: risk 0.2688 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 24,
+              "NPC_FIRST": 25,
+              "NO_PRIORITY_REQUEST": 28,
+              "NEEDS_CLARIFICATION": 24
+            },
+            "1": {
+              "PLAYER_FIRST": 32,
+              "NPC_FIRST": 19,
+              "NO_PRIORITY_REQUEST": 23,
+              "NEEDS_CLARIFICATION": 11
+            },
+            "2": {
+              "PLAYER_FIRST": 25,
+              "NPC_FIRST": 18,
+              "NO_PRIORITY_REQUEST": 30,
+              "NEEDS_CLARIFICATION": 20
+            },
+            "3": {
+              "PLAYER_FIRST": 27,
+              "NPC_FIRST": 29,
+              "NO_PRIORITY_REQUEST": 22,
+              "NEEDS_CLARIFICATION": 17
+            }
+          }
+        },
+        {
+          "tau": 0.8,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 90,
+              "errors": 2,
+              "coverage": 0.703125,
+              "risk": 0.022222,
+              "riskDenominator": 90,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 75,
+              "errors": 1,
+              "coverage": 0.585938,
+              "risk": 0.013333,
+              "riskDenominator": 75,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 77,
+              "errors": 18,
+              "coverage": 0.601562,
+              "risk": 0.233766,
+              "riskDenominator": 77,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 78,
+              "errors": 3,
+              "coverage": 0.609375,
+              "risk": 0.038462,
+              "riskDenominator": 78,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.625,
+          "pooled": {
+            "accepted": 320,
+            "errors": 24,
+            "risk": 0.075,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: risk 0.2338 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 21,
+              "NPC_FIRST": 23,
+              "NO_PRIORITY_REQUEST": 27,
+              "NEEDS_CLARIFICATION": 19
+            },
+            "1": {
+              "PLAYER_FIRST": 31,
+              "NPC_FIRST": 17,
+              "NO_PRIORITY_REQUEST": 19,
+              "NEEDS_CLARIFICATION": 8
+            },
+            "2": {
+              "PLAYER_FIRST": 20,
+              "NPC_FIRST": 14,
+              "NO_PRIORITY_REQUEST": 27,
+              "NEEDS_CLARIFICATION": 16
+            },
+            "3": {
+              "PLAYER_FIRST": 23,
+              "NPC_FIRST": 28,
+              "NO_PRIORITY_REQUEST": 14,
+              "NEEDS_CLARIFICATION": 13
+            }
+          }
+        },
+        {
+          "tau": 0.85,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 81,
+              "errors": 2,
+              "coverage": 0.632812,
+              "risk": 0.024691,
+              "riskDenominator": 81,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 72,
+              "errors": 1,
+              "coverage": 0.5625,
+              "risk": 0.013889,
+              "riskDenominator": 72,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 67,
+              "errors": 13,
+              "coverage": 0.523438,
+              "risk": 0.19403,
+              "riskDenominator": 67,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 67,
+              "errors": 2,
+              "coverage": 0.523438,
+              "risk": 0.029851,
+              "riskDenominator": 67,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.560547,
+          "pooled": {
+            "accepted": 287,
+            "errors": 18,
+            "risk": 0.062718,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: risk 0.1940 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 16,
+              "NPC_FIRST": 20,
+              "NO_PRIORITY_REQUEST": 27,
+              "NEEDS_CLARIFICATION": 18
+            },
+            "1": {
+              "PLAYER_FIRST": 31,
+              "NPC_FIRST": 17,
+              "NO_PRIORITY_REQUEST": 17,
+              "NEEDS_CLARIFICATION": 7
+            },
+            "2": {
+              "PLAYER_FIRST": 18,
+              "NPC_FIRST": 13,
+              "NO_PRIORITY_REQUEST": 26,
+              "NEEDS_CLARIFICATION": 10
+            },
+            "3": {
+              "PLAYER_FIRST": 18,
+              "NPC_FIRST": 28,
+              "NO_PRIORITY_REQUEST": 11,
+              "NEEDS_CLARIFICATION": 10
+            }
+          }
+        },
+        {
+          "tau": 0.9,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 68,
+              "errors": 0,
+              "coverage": 0.53125,
+              "risk": 0.0,
+              "riskDenominator": 68,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 59,
+              "errors": 1,
+              "coverage": 0.460938,
+              "risk": 0.016949,
+              "riskDenominator": 59,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 54,
+              "errors": 8,
+              "coverage": 0.421875,
+              "risk": 0.148148,
+              "riskDenominator": 54,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 54,
+              "errors": 1,
+              "coverage": 0.421875,
+              "risk": 0.018519,
+              "riskDenominator": 54,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.458985,
+          "pooled": {
+            "accepted": 235,
+            "errors": 10,
+            "risk": 0.042553,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "1: accepted 3 NEEDS_CLARIFICATION bases < 5",
+              "2: risk 0.1481 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 14,
+              "NPC_FIRST": 18,
+              "NO_PRIORITY_REQUEST": 23,
+              "NEEDS_CLARIFICATION": 13
+            },
+            "1": {
+              "PLAYER_FIRST": 31,
+              "NPC_FIRST": 16,
+              "NO_PRIORITY_REQUEST": 9,
+              "NEEDS_CLARIFICATION": 3
+            },
+            "2": {
+              "PLAYER_FIRST": 16,
+              "NPC_FIRST": 8,
+              "NO_PRIORITY_REQUEST": 25,
+              "NEEDS_CLARIFICATION": 5
+            },
+            "3": {
+              "PLAYER_FIRST": 17,
+              "NPC_FIRST": 24,
+              "NO_PRIORITY_REQUEST": 6,
+              "NEEDS_CLARIFICATION": 7
+            }
+          }
+        },
+        {
+          "tau": 0.925,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 63,
+              "errors": 0,
+              "coverage": 0.492188,
+              "risk": 0.0,
+              "riskDenominator": 63,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 54,
+              "errors": 1,
+              "coverage": 0.421875,
+              "risk": 0.018519,
+              "riskDenominator": 54,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 48,
+              "errors": 7,
+              "coverage": 0.375,
+              "risk": 0.145833,
+              "riskDenominator": 48,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 50,
+              "errors": 1,
+              "coverage": 0.390625,
+              "risk": 0.02,
+              "riskDenominator": 50,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.419922,
+          "pooled": {
+            "accepted": 215,
+            "errors": 9,
+            "risk": 0.04186,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "1: accepted 2 NEEDS_CLARIFICATION bases < 5",
+              "2: risk 0.1458 > 0.05",
+              "2: accepted 48 < 50 bases",
+              "2: accepted 4 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 13,
+              "NPC_FIRST": 17,
+              "NO_PRIORITY_REQUEST": 21,
+              "NEEDS_CLARIFICATION": 12
+            },
+            "1": {
+              "PLAYER_FIRST": 31,
+              "NPC_FIRST": 14,
+              "NO_PRIORITY_REQUEST": 7,
+              "NEEDS_CLARIFICATION": 2
+            },
+            "2": {
+              "PLAYER_FIRST": 14,
+              "NPC_FIRST": 6,
+              "NO_PRIORITY_REQUEST": 24,
+              "NEEDS_CLARIFICATION": 4
+            },
+            "3": {
+              "PLAYER_FIRST": 14,
+              "NPC_FIRST": 23,
+              "NO_PRIORITY_REQUEST": 6,
+              "NEEDS_CLARIFICATION": 7
+            }
+          }
+        },
+        {
+          "tau": 0.95,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 52,
+              "errors": 0,
+              "coverage": 0.40625,
+              "risk": 0.0,
+              "riskDenominator": 52,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 44,
+              "errors": 0,
+              "coverage": 0.34375,
+              "risk": 0.0,
+              "riskDenominator": 44,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 40,
+              "errors": 5,
+              "coverage": 0.3125,
+              "risk": 0.125,
+              "riskDenominator": 40,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 39,
+              "errors": 1,
+              "coverage": 0.304688,
+              "risk": 0.025641,
+              "riskDenominator": 39,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.341797,
+          "pooled": {
+            "accepted": 175,
+            "errors": 6,
+            "risk": 0.034286,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "1: accepted 44 < 50 bases",
+              "1: accepted 3 NO_PRIORITY_REQUEST bases < 5",
+              "1: accepted 0 NEEDS_CLARIFICATION bases < 5",
+              "2: risk 0.1250 > 0.05",
+              "2: accepted 40 < 50 bases",
+              "2: accepted 2 NEEDS_CLARIFICATION bases < 5",
+              "3: accepted 39 < 50 bases"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 10,
+              "NPC_FIRST": 14,
+              "NO_PRIORITY_REQUEST": 18,
+              "NEEDS_CLARIFICATION": 10
+            },
+            "1": {
+              "PLAYER_FIRST": 30,
+              "NPC_FIRST": 11,
+              "NO_PRIORITY_REQUEST": 3,
+              "NEEDS_CLARIFICATION": 0
+            },
+            "2": {
+              "PLAYER_FIRST": 12,
+              "NPC_FIRST": 6,
+              "NO_PRIORITY_REQUEST": 20,
+              "NEEDS_CLARIFICATION": 2
+            },
+            "3": {
+              "PLAYER_FIRST": 10,
+              "NPC_FIRST": 19,
+              "NO_PRIORITY_REQUEST": 5,
+              "NEEDS_CLARIFICATION": 5
+            }
+          }
+        },
+        {
+          "tau": 0.975,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 35,
+              "errors": 0,
+              "coverage": 0.273438,
+              "risk": 0.0,
+              "riskDenominator": 35,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 34,
+              "errors": 0,
+              "coverage": 0.265625,
+              "risk": 0.0,
+              "riskDenominator": 34,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 23,
+              "errors": 2,
+              "coverage": 0.179688,
+              "risk": 0.086957,
+              "riskDenominator": 23,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 25,
+              "errors": 1,
+              "coverage": 0.195312,
+              "risk": 0.04,
+              "riskDenominator": 25,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.228516,
+          "pooled": {
+            "accepted": 117,
+            "errors": 3,
+            "risk": 0.025641,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: accepted 35 < 50 bases",
+              "1: accepted 34 < 50 bases",
+              "1: accepted 1 NO_PRIORITY_REQUEST bases < 5",
+              "1: accepted 0 NEEDS_CLARIFICATION bases < 5",
+              "2: risk 0.0870 > 0.05",
+              "2: accepted 23 < 50 bases",
+              "2: accepted 3 NPC_FIRST bases < 5",
+              "2: accepted 1 NEEDS_CLARIFICATION bases < 5",
+              "3: accepted 25 < 50 bases",
+              "3: accepted 1 NO_PRIORITY_REQUEST bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 9,
+              "NPC_FIRST": 9,
+              "NO_PRIORITY_REQUEST": 10,
+              "NEEDS_CLARIFICATION": 7
+            },
+            "1": {
+              "PLAYER_FIRST": 26,
+              "NPC_FIRST": 7,
+              "NO_PRIORITY_REQUEST": 1,
+              "NEEDS_CLARIFICATION": 0
+            },
+            "2": {
+              "PLAYER_FIRST": 7,
+              "NPC_FIRST": 3,
+              "NO_PRIORITY_REQUEST": 12,
+              "NEEDS_CLARIFICATION": 1
+            },
+            "3": {
+              "PLAYER_FIRST": 7,
+              "NPC_FIRST": 12,
+              "NO_PRIORITY_REQUEST": 1,
+              "NEEDS_CLARIFICATION": 5
+            }
+          }
+        },
+        {
+          "tau": 0.99,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 15,
+              "errors": 0,
+              "coverage": 0.117188,
+              "risk": 0.0,
+              "riskDenominator": 15,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 25,
+              "errors": 0,
+              "coverage": 0.195312,
+              "risk": 0.0,
+              "riskDenominator": 25,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 11,
+              "errors": 1,
+              "coverage": 0.085938,
+              "risk": 0.090909,
+              "riskDenominator": 11,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 10,
+              "errors": 0,
+              "coverage": 0.078125,
+              "risk": 0.0,
+              "riskDenominator": 10,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.119141,
+          "pooled": {
+            "accepted": 61,
+            "errors": 1,
+            "risk": 0.016393,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: accepted 15 < 50 bases",
+              "0: accepted 4 PLAYER_FIRST bases < 5",
+              "0: accepted 4 NPC_FIRST bases < 5",
+              "0: accepted 4 NO_PRIORITY_REQUEST bases < 5",
+              "0: accepted 3 NEEDS_CLARIFICATION bases < 5",
+              "1: accepted 25 < 50 bases",
+              "1: accepted 3 NPC_FIRST bases < 5",
+              "1: accepted 0 NO_PRIORITY_REQUEST bases < 5",
+              "1: accepted 0 NEEDS_CLARIFICATION bases < 5",
+              "2: risk 0.0909 > 0.05",
+              "2: accepted 11 < 50 bases",
+              "2: accepted 2 NPC_FIRST bases < 5",
+              "2: accepted 3 NO_PRIORITY_REQUEST bases < 5",
+              "2: accepted 0 NEEDS_CLARIFICATION bases < 5",
+              "3: accepted 10 < 50 bases",
+              "3: accepted 4 PLAYER_FIRST bases < 5",
+              "3: accepted 2 NPC_FIRST bases < 5",
+              "3: accepted 1 NO_PRIORITY_REQUEST bases < 5",
+              "3: accepted 3 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 4,
+              "NPC_FIRST": 4,
+              "NO_PRIORITY_REQUEST": 4,
+              "NEEDS_CLARIFICATION": 3
+            },
+            "1": {
+              "PLAYER_FIRST": 22,
+              "NPC_FIRST": 3,
+              "NO_PRIORITY_REQUEST": 0,
+              "NEEDS_CLARIFICATION": 0
+            },
+            "2": {
+              "PLAYER_FIRST": 6,
+              "NPC_FIRST": 2,
+              "NO_PRIORITY_REQUEST": 3,
+              "NEEDS_CLARIFICATION": 0
+            },
+            "3": {
+              "PLAYER_FIRST": 4,
+              "NPC_FIRST": 2,
+              "NO_PRIORITY_REQUEST": 1,
+              "NEEDS_CLARIFICATION": 3
+            }
+          }
+        },
+        {
+          "tau": 0.995,
+          "method": "single_pass",
+          "supported": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 9,
+              "errors": 0,
+              "coverage": 0.070312,
+              "risk": 0.0,
+              "riskDenominator": 9,
+              "disagreements": 0
+            },
+            "1": {
+              "bases": 128,
+              "accepted": 18,
+              "errors": 0,
+              "coverage": 0.140625,
+              "risk": 0.0,
+              "riskDenominator": 18,
+              "disagreements": 0
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 5,
+              "errors": 0,
+              "coverage": 0.039062,
+              "risk": 0.0,
+              "riskDenominator": 5,
+              "disagreements": 0
+            },
+            "3": {
+              "bases": 128,
+              "accepted": 6,
+              "errors": 0,
+              "coverage": 0.046875,
+              "risk": 0.0,
+              "riskDenominator": 6,
+              "disagreements": 0
+            }
+          },
+          "meanCoverage": 0.074218,
+          "pooled": {
+            "accepted": 38,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 512
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: accepted 9 < 50 bases",
+              "0: accepted 3 PLAYER_FIRST bases < 5",
+              "0: accepted 1 NPC_FIRST bases < 5",
+              "0: accepted 3 NO_PRIORITY_REQUEST bases < 5",
+              "0: accepted 2 NEEDS_CLARIFICATION bases < 5",
+              "1: accepted 18 < 50 bases",
+              "1: accepted 2 NPC_FIRST bases < 5",
+              "1: accepted 0 NO_PRIORITY_REQUEST bases < 5",
+              "1: accepted 0 NEEDS_CLARIFICATION bases < 5",
+              "2: accepted 5 < 50 bases",
+              "2: accepted 4 PLAYER_FIRST bases < 5",
+              "2: accepted 0 NPC_FIRST bases < 5",
+              "2: accepted 1 NO_PRIORITY_REQUEST bases < 5",
+              "2: accepted 0 NEEDS_CLARIFICATION bases < 5",
+              "3: accepted 6 < 50 bases",
+              "3: accepted 3 PLAYER_FIRST bases < 5",
+              "3: accepted 1 NPC_FIRST bases < 5",
+              "3: accepted 0 NO_PRIORITY_REQUEST bases < 5",
+              "3: accepted 2 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 3,
+              "NPC_FIRST": 1,
+              "NO_PRIORITY_REQUEST": 3,
+              "NEEDS_CLARIFICATION": 2
+            },
+            "1": {
+              "PLAYER_FIRST": 16,
+              "NPC_FIRST": 2,
+              "NO_PRIORITY_REQUEST": 0,
+              "NEEDS_CLARIFICATION": 0
+            },
+            "2": {
+              "PLAYER_FIRST": 4,
+              "NPC_FIRST": 0,
+              "NO_PRIORITY_REQUEST": 1,
+              "NEEDS_CLARIFICATION": 0
+            },
+            "3": {
+              "PLAYER_FIRST": 3,
+              "NPC_FIRST": 1,
+              "NO_PRIORITY_REQUEST": 0,
+              "NEEDS_CLARIFICATION": 2
+            }
+          }
+        }
+      ]
+    },
+    "reverse_pair_consensus@TFit": {
+      "temperature": 2.0186162197192403,
+      "tables": [
+        {
+          "tau": 0.5,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 85,
+              "errors": 0,
+              "coverage": 0.664062,
+              "risk": 0.0,
+              "riskDenominator": 85,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 73,
+              "errors": 4,
+              "coverage": 0.570312,
+              "risk": 0.054795,
+              "riskDenominator": 73,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.617187,
+          "pooled": {
+            "accepted": 158,
+            "errors": 4,
+            "risk": 0.025316,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: risk 0.0548 > 0.05"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 28,
+              "NPC_FIRST": 17,
+              "NO_PRIORITY_REQUEST": 29,
+              "NEEDS_CLARIFICATION": 11
+            },
+            "2": {
+              "PLAYER_FIRST": 23,
+              "NPC_FIRST": 20,
+              "NO_PRIORITY_REQUEST": 22,
+              "NEEDS_CLARIFICATION": 8
+            }
+          }
+        },
+        {
+          "tau": 0.6,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 76,
+              "errors": 0,
+              "coverage": 0.59375,
+              "risk": 0.0,
+              "riskDenominator": 76,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 62,
+              "errors": 1,
+              "coverage": 0.484375,
+              "risk": 0.016129,
+              "riskDenominator": 62,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.539062,
+          "pooled": {
+            "accepted": 138,
+            "errors": 1,
+            "risk": 0.007246,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: accepted 4 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 26,
+              "NPC_FIRST": 16,
+              "NO_PRIORITY_REQUEST": 24,
+              "NEEDS_CLARIFICATION": 10
+            },
+            "2": {
+              "PLAYER_FIRST": 20,
+              "NPC_FIRST": 16,
+              "NO_PRIORITY_REQUEST": 22,
+              "NEEDS_CLARIFICATION": 4
+            }
+          }
+        },
+        {
+          "tau": 0.7,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 65,
+              "errors": 0,
+              "coverage": 0.507812,
+              "risk": 0.0,
+              "riskDenominator": 65,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 55,
+              "errors": 0,
+              "coverage": 0.429688,
+              "risk": 0.0,
+              "riskDenominator": 55,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.46875,
+          "pooled": {
+            "accepted": 120,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: accepted 3 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 23,
+              "NPC_FIRST": 14,
+              "NO_PRIORITY_REQUEST": 21,
+              "NEEDS_CLARIFICATION": 7
+            },
+            "2": {
+              "PLAYER_FIRST": 19,
+              "NPC_FIRST": 13,
+              "NO_PRIORITY_REQUEST": 20,
+              "NEEDS_CLARIFICATION": 3
+            }
+          }
+        },
+        {
+          "tau": 0.8,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 55,
+              "errors": 0,
+              "coverage": 0.429688,
+              "risk": 0.0,
+              "riskDenominator": 55,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 36,
+              "errors": 0,
+              "coverage": 0.28125,
+              "risk": 0.0,
+              "riskDenominator": 36,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.355469,
+          "pooled": {
+            "accepted": 91,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "2: accepted 36 < 50 bases",
+              "2: accepted 1 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 20,
+              "NPC_FIRST": 12,
+              "NO_PRIORITY_REQUEST": 17,
+              "NEEDS_CLARIFICATION": 6
+            },
+            "2": {
+              "PLAYER_FIRST": 13,
+              "NPC_FIRST": 11,
+              "NO_PRIORITY_REQUEST": 11,
+              "NEEDS_CLARIFICATION": 1
+            }
+          }
+        },
+        {
+          "tau": 0.85,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 46,
+              "errors": 0,
+              "coverage": 0.359375,
+              "risk": 0.0,
+              "riskDenominator": 46,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 29,
+              "errors": 0,
+              "coverage": 0.226562,
+              "risk": 0.0,
+              "riskDenominator": 29,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.292969,
+          "pooled": {
+            "accepted": 75,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: accepted 46 < 50 bases",
+              "0: accepted 4 NEEDS_CLARIFICATION bases < 5",
+              "2: accepted 29 < 50 bases",
+              "2: accepted 0 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 15,
+              "NPC_FIRST": 12,
+              "NO_PRIORITY_REQUEST": 15,
+              "NEEDS_CLARIFICATION": 4
+            },
+            "2": {
+              "PLAYER_FIRST": 11,
+              "NPC_FIRST": 10,
+              "NO_PRIORITY_REQUEST": 8,
+              "NEEDS_CLARIFICATION": 0
+            }
+          }
+        },
+        {
+          "tau": 0.9,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 30,
+              "errors": 0,
+              "coverage": 0.234375,
+              "risk": 0.0,
+              "riskDenominator": 30,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 18,
+              "errors": 0,
+              "coverage": 0.140625,
+              "risk": 0.0,
+              "riskDenominator": 18,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.1875,
+          "pooled": {
+            "accepted": 48,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: accepted 30 < 50 bases",
+              "0: accepted 0 NEEDS_CLARIFICATION bases < 5",
+              "2: accepted 18 < 50 bases",
+              "2: accepted 4 NO_PRIORITY_REQUEST bases < 5",
+              "2: accepted 0 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 13,
+              "NPC_FIRST": 10,
+              "NO_PRIORITY_REQUEST": 7,
+              "NEEDS_CLARIFICATION": 0
+            },
+            "2": {
+              "PLAYER_FIRST": 8,
+              "NPC_FIRST": 6,
+              "NO_PRIORITY_REQUEST": 4,
+              "NEEDS_CLARIFICATION": 0
+            }
+          }
+        },
+        {
+          "tau": 0.925,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 26,
+              "errors": 0,
+              "coverage": 0.203125,
+              "risk": 0.0,
+              "riskDenominator": 26,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 15,
+              "errors": 0,
+              "coverage": 0.117188,
+              "risk": 0.0,
+              "riskDenominator": 15,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.160157,
+          "pooled": {
+            "accepted": 41,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: accepted 26 < 50 bases",
+              "0: accepted 0 NEEDS_CLARIFICATION bases < 5",
+              "2: accepted 15 < 50 bases",
+              "2: accepted 4 NPC_FIRST bases < 5",
+              "2: accepted 4 NO_PRIORITY_REQUEST bases < 5",
+              "2: accepted 0 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 12,
+              "NPC_FIRST": 9,
+              "NO_PRIORITY_REQUEST": 5,
+              "NEEDS_CLARIFICATION": 0
+            },
+            "2": {
+              "PLAYER_FIRST": 7,
+              "NPC_FIRST": 4,
+              "NO_PRIORITY_REQUEST": 4,
+              "NEEDS_CLARIFICATION": 0
+            }
+          }
+        },
+        {
+          "tau": 0.95,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 17,
+              "errors": 0,
+              "coverage": 0.132812,
+              "risk": 0.0,
+              "riskDenominator": 17,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 11,
+              "errors": 0,
+              "coverage": 0.085938,
+              "risk": 0.0,
+              "riskDenominator": 11,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.109375,
+          "pooled": {
+            "accepted": 28,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: accepted 17 < 50 bases",
+              "0: accepted 2 NO_PRIORITY_REQUEST bases < 5",
+              "0: accepted 0 NEEDS_CLARIFICATION bases < 5",
+              "2: accepted 11 < 50 bases",
+              "2: accepted 4 PLAYER_FIRST bases < 5",
+              "2: accepted 4 NPC_FIRST bases < 5",
+              "2: accepted 3 NO_PRIORITY_REQUEST bases < 5",
+              "2: accepted 0 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 10,
+              "NPC_FIRST": 5,
+              "NO_PRIORITY_REQUEST": 2,
+              "NEEDS_CLARIFICATION": 0
+            },
+            "2": {
+              "PLAYER_FIRST": 4,
+              "NPC_FIRST": 4,
+              "NO_PRIORITY_REQUEST": 3,
+              "NEEDS_CLARIFICATION": 0
+            }
+          }
+        },
+        {
+          "tau": 0.975,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 9,
+              "errors": 0,
+              "coverage": 0.070312,
+              "risk": 0.0,
+              "riskDenominator": 9,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 2,
+              "errors": 0,
+              "coverage": 0.015625,
+              "risk": 0.0,
+              "riskDenominator": 2,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.042968,
+          "pooled": {
+            "accepted": 11,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: accepted 9 < 50 bases",
+              "0: accepted 1 NPC_FIRST bases < 5",
+              "0: accepted 0 NO_PRIORITY_REQUEST bases < 5",
+              "0: accepted 0 NEEDS_CLARIFICATION bases < 5",
+              "2: accepted 2 < 50 bases",
+              "2: accepted 2 PLAYER_FIRST bases < 5",
+              "2: accepted 0 NPC_FIRST bases < 5",
+              "2: accepted 0 NO_PRIORITY_REQUEST bases < 5",
+              "2: accepted 0 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 8,
+              "NPC_FIRST": 1,
+              "NO_PRIORITY_REQUEST": 0,
+              "NEEDS_CLARIFICATION": 0
+            },
+            "2": {
+              "PLAYER_FIRST": 2,
+              "NPC_FIRST": 0,
+              "NO_PRIORITY_REQUEST": 0,
+              "NEEDS_CLARIFICATION": 0
+            }
+          }
+        },
+        {
+          "tau": 0.99,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 4,
+              "errors": 0,
+              "coverage": 0.03125,
+              "risk": 0.0,
+              "riskDenominator": 4,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 1,
+              "errors": 0,
+              "coverage": 0.007812,
+              "risk": 0.0,
+              "riskDenominator": 1,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.019531,
+          "pooled": {
+            "accepted": 5,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: accepted 4 < 50 bases",
+              "0: accepted 3 PLAYER_FIRST bases < 5",
+              "0: accepted 1 NPC_FIRST bases < 5",
+              "0: accepted 0 NO_PRIORITY_REQUEST bases < 5",
+              "0: accepted 0 NEEDS_CLARIFICATION bases < 5",
+              "2: accepted 1 < 50 bases",
+              "2: accepted 1 PLAYER_FIRST bases < 5",
+              "2: accepted 0 NPC_FIRST bases < 5",
+              "2: accepted 0 NO_PRIORITY_REQUEST bases < 5",
+              "2: accepted 0 NEEDS_CLARIFICATION bases < 5"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 3,
+              "NPC_FIRST": 1,
+              "NO_PRIORITY_REQUEST": 0,
+              "NEEDS_CLARIFICATION": 0
+            },
+            "2": {
+              "PLAYER_FIRST": 1,
+              "NPC_FIRST": 0,
+              "NO_PRIORITY_REQUEST": 0,
+              "NEEDS_CLARIFICATION": 0
+            }
+          }
+        },
+        {
+          "tau": 0.995,
+          "method": "reverse_pair_consensus",
+          "supported": [
+            "0",
+            "2"
+          ],
+          "perSupported": {
+            "0": {
+              "bases": 128,
+              "accepted": 1,
+              "errors": 0,
+              "coverage": 0.007812,
+              "risk": 0.0,
+              "riskDenominator": 1,
+              "disagreements": 26
+            },
+            "2": {
+              "bases": 128,
+              "accepted": 0,
+              "errors": 0,
+              "coverage": 0.0,
+              "risk": null,
+              "riskDenominator": 0,
+              "disagreements": 48
+            }
+          },
+          "meanCoverage": 0.003906,
+          "pooled": {
+            "accepted": 1,
+            "errors": 0,
+            "risk": 0.0,
+            "n": 256
+          },
+          "gate": {
+            "passes": false,
+            "failures": [
+              "0: accepted 1 < 50 bases",
+              "0: accepted 1 PLAYER_FIRST bases < 5",
+              "0: accepted 0 NPC_FIRST bases < 5",
+              "0: accepted 0 NO_PRIORITY_REQUEST bases < 5",
+              "0: accepted 0 NEEDS_CLARIFICATION bases < 5",
+              "2: zero acceptance (risk is null, not 0)"
+            ]
+          },
+          "acceptedPerClass": {
+            "0": {
+              "PLAYER_FIRST": 1,
+              "NPC_FIRST": 0,
+              "NO_PRIORITY_REQUEST": 0,
+              "NEEDS_CLARIFICATION": 0
+            },
+            "2": {
+              "PLAYER_FIRST": 0,
+              "NPC_FIRST": 0,
+              "NO_PRIORITY_REQUEST": 0,
+              "NEEDS_CLARIFICATION": 0
+            }
+          }
+        }
+      ]
+    }
+  }
+}

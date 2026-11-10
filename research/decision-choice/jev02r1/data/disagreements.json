@@ -1,0 +1,108 @@
+{
+  "schema": "frostecho.jev02r1.adjudication/1",
+  "at": "2026-11-10T11:57:06+08:00",
+  "reviewer": "four independent agent sessions, contract + unlabelled input only",
+  "splits": {
+    "cal-temperature": {
+      "n": 128,
+      "agree": 127,
+      "disagree": 1,
+      "rate": 0.992188,
+      "confusion": {
+        "NEEDS_CLARIFICATION->NPC_FIRST": 1
+      }
+    },
+    "cal-policy": {
+      "n": 128,
+      "agree": 127,
+      "disagree": 1,
+      "rate": 0.992188,
+      "confusion": {
+        "NEEDS_CLARIFICATION->PLAYER_FIRST": 1
+      }
+    },
+    "test": {
+      "n": 256,
+      "agree": 253,
+      "disagree": 3,
+      "rate": 0.988281,
+      "confusion": {
+        "NEEDS_CLARIFICATION->NO_PRIORITY_REQUEST": 2,
+        "NEEDS_CLARIFICATION->NPC_FIRST": 1
+      }
+    }
+  },
+  "overall": {
+    "n": 512,
+    "agree": 507,
+    "disagree": 5,
+    "rate": 0.990234
+  },
+  "disagreements": [
+    {
+      "caseId": "r1-calT-0072",
+      "family": "calT-09-寺庙斋堂",
+      "author": "NEEDS_CLARIFICATION",
+      "reviewer": "NPC_FIRST",
+      "reviewerReason": "自己随后，让长者先",
+      "authorReason": "玩家在明确'谁先吃'的提问下仍未指定任何人，优先权未定。",
+      "final": "NPC_FIRST",
+      "resolution": "adjudicated",
+      "rationale": "收话人明确是老义工（他提问），只有两人在场且斋堂规矩就是长者先；'按规矩来，我跟着'唯一指向老义工先吃、玩家随后，不构成未定。盲标方读法成立，采纳。",
+      "context": "老义工问玩家和他谁先吃，玩家摆着碗筷。",
+      "playerText": "按规矩来吧，我跟着。"
+    },
+    {
+      "caseId": "r1-calP-0119",
+      "family": "calP-15-地铁口早餐摊",
+      "author": "NEEDS_CLARIFICATION",
+      "reviewer": "PLAYER_FIRST",
+      "reviewerReason": "自请先给自己",
+      "authorReason": "两位收话候选并存，指向不明。",
+      "final": "PLAYER_FIRST",
+      "resolution": "adjudicated",
+      "rationale": "'先给我吧'的方向是玩家自己优先，不依赖收话人是谁；R1 的收话人明确要求只用于 NPC_FIRST（需要指定受益的NPC）。方向单值，采纳盲标读法。",
+      "context": "摊主和排队的姑娘都在摊前，玩家举着钱站在中间。",
+      "playerText": "先给我吧，我赶时间。"
+    },
+    {
+      "caseId": "r1-test-0087",
+      "family": "test-11-相亲餐厅",
+      "author": "NEEDS_CLARIFICATION",
+      "reviewer": "NO_PRIORITY_REQUEST",
+      "reviewerReason": "先点菜非先吃",
+      "authorReason": "两位收话候选并存，指向不明。",
+      "final": "NO_PRIORITY_REQUEST",
+      "resolution": "adjudicated",
+      "rationale": "'先点吧'指先点菜，不是谁先吃；菜单语境里没有吃食先后安排。采纳盲标读法。",
+      "context": "服务员和对方都站在桌边，玩家拿着菜单。",
+      "playerText": "先点吧，我不挑。"
+    },
+    {
+      "caseId": "r1-test-0127",
+      "family": "test-16-化妆间盒饭",
+      "author": "NEEDS_CLARIFICATION",
+      "reviewer": "NO_PRIORITY_REQUEST",
+      "reviewerReason": "只劝趁热吃无先后安排",
+      "authorReason": "两位NPC在场且无指向，收话人不明确。",
+      "final": "NEEDS_CLARIFICATION",
+      "resolution": "adjudicated",
+      "rationale": "'趁热吃'的受益方向是他人，但化妆师与服装师两人都在场，未确定把先吃让给谁；NPC_FIRST 需要指定收话人，故维持澄清。作者读法成立，不采纳盲标。",
+      "context": "化妆师和服装师都在房间里，玩家端着两份盒饭。",
+      "playerText": "趁热吃，都热着。"
+    },
+    {
+      "caseId": "r1-test-0212",
+      "family": "test-26-义工斋饭",
+      "author": "NEEDS_CLARIFICATION",
+      "reviewer": "NPC_FIRST",
+      "reviewerReason": "依规矩自认后吃",
+      "authorReason": "玩家在明确'谁先吃'的提问下仍未指定任何人，优先权未定。",
+      "final": "NPC_FIRST",
+      "resolution": "adjudicated",
+      "rationale": "与 calT-0072 同构：收话人明确、过堂规矩唯一指向长者先，'我跟着'即玩家随后。采纳盲标读法。",
+      "context": "老居士问玩家和他谁先吃，玩家摆着碗筷。",
+      "playerText": "按规矩来，我跟着。"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "schema": "frostecho.jev02r1.decision/1",
+  "decision": "unavailable",
+  "candidateId": null,
+  "reason": "policy_invalid",
+  "score": null,
+  "gating": null,
+  "policyValid": false,
+  "method": "reverse_pair_consensus",
+  "temperature": 2.0186162197192403,
+  "tau": null,
+  "displayOrder": {
+    "0": [
+      "PLAYER_FIRST",
+      "NPC_FIRST",
+      "NO_PRIORITY_REQUEST",
+      "NEEDS_CLARIFICATION"
+    ],
+    "1": [
+      "NEEDS_CLARIFICATION",
+      "NO_PRIORITY_REQUEST",
+      "NPC_FIRST",
+      "PLAYER_FIRST"
+    ]
+  },
+  "forwardCalls": 2,
+  "timings": [
+    {
+      "order": 0,
+      "ms": 957.023,
+      "tokensIn": 115
+    },
+    {
+      "order": 1,
+      "ms": 230.475,
+      "tokensIn": 115
+    }
+  ],
+  "policySha256": "801ef394bf9a66fe5184645c42ef464be52e536100c5d00dc04404a830e3ddb1",
+  "headTensorSha256": "5cda925fe9ae691ca31078db32eaee01305e351792940d34592ab093e29d172b",
+  "modelSha256": "86dad37e99839d662f00fcbd4fad76ac0b357ebcf275f0e10b5d1eb469d97973",
+  "probabilities": {
+    "0": {
+      "PLAYER_FIRST": 0.14445870574348116,
+      "NPC_FIRST": 0.050108743784738785,
+      "NO_PRIORITY_REQUEST": 0.23385249420524917,
+      "NEEDS_CLARIFICATION": 0.5715800562665309
+    },
+    "1": {
+      "NEEDS_CLARIFICATION": 0.013070938775479357,
+      "NO_PRIORITY_REQUEST": 0.027036419135388415,
+      "NPC_FIRST": 0.0027878729806362448,
+      "PLAYER_FIRST": 0.9571047691084961
+    }
+  },
+  "researchOnly": "raw scores; not an accepted decision"
+}
