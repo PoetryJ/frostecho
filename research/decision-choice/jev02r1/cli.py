@@ -27,6 +27,8 @@ def main(argv: list[str]) -> int:
                         help="single_pass: the one presentation to forward")
     parser.add_argument("--pair", default=None,
                         help="reverse_pair_consensus: the two orders to forward, e.g. 0,1")
+    parser.add_argument("--device", default="cuda:0",
+                        help="device for the head and the read-out tensor; validated before load")
     parser.add_argument("--raw-scores", action="store_true",
                         help="research output; not an accepted decision")
     args = parser.parse_args(argv)
@@ -81,8 +83,38 @@ def main(argv: list[str]) -> int:
     from heads.train import load_head
     from r1ledger import Ledger
 
-    head, _ = load_head(Path(policy["head"]["path"]), device="cuda:0")
-    model = LocalQwen()
+    # Explicit device boundary: the caller names it, we validate it against what
+    # is actually visible, and the production path refuses to silently fall back
+    # to CPU. Tests inject --device cpu together with a CPU backend.
+    try:
+        device = torch.device(args.device)
+    except (RuntimeError, ValueError) as error:
+        print(json.dumps({"error": "bad_device", "detail": str(error)}), file=sys.stderr)
+        return 2
+    if device.type == "cuda":
+        if not torch.cuda.is_available():
+            print(json.dumps({"error": "device_unavailable",
+                              "detail": f"{args.device} requested but no CUDA device is visible"}),
+                  file=sys.stderr)
+            return 2
+        if device.index is not None and device.index >= torch.cuda.device_count():
+            print(json.dumps({"error": "device_unavailable",
+                              "detail": f"{args.device} requested but only "
+                                        f"{torch.cuda.device_count()} devices are visible"}),
+                  file=sys.stderr)
+            return 2
+    elif device.type != "cpu":
+        print(json.dumps({"error": "bad_device", "detail": str(device)}), file=sys.stderr)
+        return 2
+
+    head, _ = load_head(Path(policy["head"]["path"]), device=str(device))
+    head.to(device)
+    try:
+        model = LocalQwen(device=str(device))
+    except TypeError:
+        # backends that pin their own device keep working, but then the payload
+        # check below still refuses a tensor that lands somewhere else
+        model = LocalQwen()
     ledger = Ledger(R.EVIDENCE / "jobs.jsonl")
     case = {"visibleInput": {"context": args.context, "playerText": args.player}}
 
@@ -101,9 +133,12 @@ def main(argv: list[str]) -> int:
             raise
         ledger.finish(job, prefill=1, decode=0, tokens_in=feature["tokensIn"], tokens_out=0,
                       seconds=time.time() - tick)
+        tensor = feature["cand"].float().unsqueeze(0)
+        if tensor.device.type != device.type and device.type == "cuda":
+            raise RuntimeError(f"backend returned {tensor.device} but the boundary is {device}")
+        tensor = tensor.to(device)
         with torch.no_grad():
-            logits[index] = [float(value) for value in
-                             head(feature["cand"].float().unsqueeze(0).cuda())[0].cpu()]
+            logits[index] = [float(value) for value in head(tensor)[0].cpu()]
         timings.append({"order": index, "ms": round((time.time() - tick) * 1000, 3),
                         "tokensIn": feature["tokensIn"]})
 
@@ -125,6 +160,7 @@ def main(argv: list[str]) -> int:
         "tau": policy["tau"],
         "displayOrder": {str(index): list(R.ORDERS[index]) for index in orders},
         "presentation": orders,
+        "device": str(device),
         "forwardCalls": len(orders),
         "timings": timings,
         "policySha256": R.sha256_file(Path(args.policy)),

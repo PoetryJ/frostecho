@@ -10,6 +10,7 @@ over a collision.
 from __future__ import annotations
 
 import hashlib
+import itertools
 import json
 import sys
 from pathlib import Path
@@ -79,6 +80,7 @@ def expand(split: str) -> list[dict]:
                     "author": "integrator prose from worker A move skeleton" if split != "test"
                               else "integrator prose from worker D test design",
                     "scene": group["scene"],
+                    "sourceTemplateId": f"scene:{group['scene']}",
                     "context": f"{group['base']}{clause}",
                     "playerText": player,
                     "labelId": label,
@@ -125,10 +127,9 @@ def main() -> int:
                 failures.append(f"scene {scene!r} appears in {scenes[scene]} and {split}")
             scenes[scene] = split
 
-    for left in ("train", "dev"):
-        for right in ("dev", "test"):
-            if left >= right:
-                continue
+    checked_pairs = 0
+    for left, right in itertools.combinations(R.SPLITS, 2):
+            checked_pairs += 1
             overlap = set(groups_by_split[left]) & set(groups_by_split[right])
             if overlap:
                 failures.append(f"group overlap {left}/{right}: {sorted(overlap)[:2]}")
@@ -136,6 +137,8 @@ def main() -> int:
                             & {row["playerText"] for row in everything[right]})
             if text_overlap:
                 failures.append(f"{left}/{right} share {len(text_overlap)} player texts")
+    if checked_pairs != 3:
+        failures.append(f"only {checked_pairs} split pairs were checked, expected 3")
 
     if failures:
         print(json.dumps({"failures": failures}, ensure_ascii=False, indent=1))

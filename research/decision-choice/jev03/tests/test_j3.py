@@ -221,7 +221,10 @@ class CliWiringTest(unittest.TestCase):
 
         class FakeHead:
             def __call__(self, tensor):
-                return torch.tensor([[0.1, 0.2, 0.3, 0.4]])
+                return tensor.new_tensor([[0.1, 0.2, 0.3, 0.4]])
+
+            def to(self, device):
+                return self
 
         class FakeModel:
             load_seconds = 0.0
@@ -286,7 +289,7 @@ class CliWiringTest(unittest.TestCase):
         forwards = []
         code, payload = self._run(self._policy("single_pass", True, 0.2),
                                   ["--policy", "p", "--context", "c", "--player", "p",
-                                   "--order", "2"], forwards)
+                                   "--order", "2", "--device", "cpu"], forwards)
         self.assertEqual(code, 0)
         self.assertEqual(forwards, [2])
         self.assertEqual(payload["forwardCalls"], 1)
@@ -295,7 +298,7 @@ class CliWiringTest(unittest.TestCase):
         forwards = []
         code, payload = self._run(self._policy("reverse_pair_consensus", True, 0.05),
                                   ["--policy", "p", "--context", "c", "--player", "p",
-                                   "--pair", "0,1"], forwards)
+                                   "--pair", "0,1", "--device", "cpu"], forwards)
         self.assertEqual(code, 0)
         self.assertEqual(forwards, [0, 1])
         self.assertEqual(payload["forwardCalls"], 2)
@@ -304,7 +307,7 @@ class CliWiringTest(unittest.TestCase):
         forwards = []
         code, payload = self._run(self._policy("single_pass", False, None),
                                   ["--policy", "p", "--context", "c", "--player", "p",
-                                   "--order", "0"], forwards)
+                                   "--order", "0", "--device", "cpu"], forwards)
         self.assertEqual(code, 0)
         self.assertEqual(forwards, [])
         self.assertEqual(payload["decision"], "unavailable")
@@ -313,11 +316,12 @@ class CliWiringTest(unittest.TestCase):
         forwards = []
         code, _ = self._run(self._policy("single_pass", True, 0.2),
                             ["--policy", "p", "--context", "c", "--player", "p",
-                             "--order", "0", "--pair", "0,1"], forwards)
+                             "--order", "0", "--pair", "0,1", "--device", "cpu"], forwards)
         self.assertEqual(code, 2)
         self.assertEqual(forwards, [])
         code, _ = self._run(self._policy("single_pass", True, 0.2),
-                            ["--policy", "p", "--context", "c", "--player", "p"], forwards)
+                            ["--policy", "p", "--context", "c", "--player", "p",
+                             "--device", "cpu"], forwards)
         self.assertEqual(code, 2)
         self.assertEqual(forwards, [])
 
