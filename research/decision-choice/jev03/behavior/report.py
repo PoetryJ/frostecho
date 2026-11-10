@@ -74,7 +74,7 @@ def pair_metrics(rows: list[dict], pairs: dict) -> dict:
     for pair_id, pair in pairs.items():
         members = pair["members"]
         a, b = members
-        both_ok = all(all(by_case[a["caseId"]]) and all(by_case[b["caseId"]]))
+        both_ok = bool(all(by_case[a["caseId"]]) and all(by_case[b["caseId"]]))
         both[pair["relation"]].append(both_ok)
         per_cap[pair["capability"]]["pairs"] += 1
         per_cap[pair["capability"]]["bothCorrect"] += int(both_ok)
@@ -130,7 +130,7 @@ def main(argv: list[str]) -> int:
 
     metrics = {"schema": "frostecho.jev03r1.metrics/1", "at": R3.now_iso(), "arms": {}}
     for arm in R3.ARMS:
-        rows = [row for row in scores if row["arm"] == arm]
+        rows = [dict(row, labelId=gold[row["caseId"]]) for row in scores if row["arm"] == arm]
         block = summarise(rows)
         block["pairs"] = pair_metrics(rows, pairs)
         block["targets"] = {"worstOrder": block["worstOrder"] >= targets["worstOrder"],
@@ -204,4 +204,4 @@ def main(argv: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(main(sys.argv[1:]))

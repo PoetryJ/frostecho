@@ -42,6 +42,17 @@ def main() -> int:
     binding = CacheBinding.build("behavior", rows, tokens, renders, cache, head_shas())
     R3.write_json(HERE / "results" / "cache-binding.json", binding.payload)
     R3.write_jsonls = None
+    generations = []
+    for row in rows:
+        key = store.key(input_list_sha([row]), row["order"], "generate")
+        payload = store.read_result(store.job_id(key))
+        generations.append({"caseId": row["caseId"], "order": row["order"],
+                            "rawText": payload["rawText"], "newTokens": payload["newTokens"],
+                            "tokensIn": payload["tokensIn"]})
+    digest_gen = R3.write_jsonl(HERE / "results" / "generations.jsonl", generations)
+    R3.write_json(HERE / "results" / "generations-meta.json",
+                  {"schema": "frostecho.jev03r1.json/1", "at": R3.now_iso(),
+                   "rows": len(generations), "sha256": digest_gen})
     R3.write_jsonl(HERE / "results" / "presentations.jsonl",
                    [{"caseId": row["caseId"], "order": row["order"],
                      "inputListSha": input_list_sha([row]), "tokenHash": token,

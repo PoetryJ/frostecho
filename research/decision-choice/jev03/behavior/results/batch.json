@@ -1,0 +1,74 @@
+{
+  "at": "2026-11-10T17:38:51+08:00",
+  "blockedAttempts": 1,
+  "blockedPaths": [
+    "/data3/DATA/project/project_meishijiang/FrostEcho-jev03-r1-behavior/research/decision-choice/jev03/behavior/gold.json"
+  ],
+  "campaign": "jev03r1-behavior-a1",
+  "caps": {
+    "generation_jobs": 776,
+    "model_jobs": 1552,
+    "per_gpu_gib": 24,
+    "window_seconds": 7200
+  },
+  "device": "cuda:0",
+  "goldSealControl": "blocked:GoldBlocked",
+  "gpuPeakGiB": {
+    "0": 13.11,
+    "1": 14.98,
+    "2": 15.0,
+    "3": 7.4
+  },
+  "headShas": {
+    "C": "7b6a490b3dd5eaeceb2693ccfaa26473e8a2b157597fad1c0d729419fde48695",
+    "M0": "5cda925fe9ae691ca31078db32eaee01305e351792940d34592ab093e29d172b",
+    "Q": "cc369dbf164534444b05218879a1eaf285b99de81bcdb01266ef48d2fab8ab75"
+  },
+  "loadSeconds": 12.632,
+  "plan": {
+    "backbone": "/data2/model_weights/Qwen3.8-27B bf16 batch1 single process 4 GPUs",
+    "campaign": "jev03r1-behavior-a1",
+    "features": 768,
+    "generationOps": 768,
+    "generations": 768,
+    "heads": {
+      "C": "jev03 C-seed43",
+      "M0": "frozen jev02 M1",
+      "Q": "jev03 Q-seed17"
+    },
+    "modelOps": 768,
+    "protocolSha": "9e80fabc99d7a16873e5621c4cd2595d12d8df04f3f82e949c586257aeebee19",
+    "renderer": "jev02/render.py (jev02r1.prompt/1 + jev02r1.candidates/1)",
+    "warmupForward": 8,
+    "warmupGenerate": 8,
+    "windowSeconds": 7200
+  },
+  "schema": "frostecho.jev03r1.batch/1",
+  "summary": {
+    "campaign": "jev03r1-behavior-a1",
+    "caps": {
+      "generation_jobs": 776,
+      "model_jobs": 1552,
+      "per_gpu_gib": 24,
+      "window_seconds": 7200
+    },
+    "complete": true,
+    "decodeCalls": 0,
+    "finished": 1552,
+    "generationJobs": 776,
+    "measuredFinish": 0,
+    "operations": {
+      "forward": 776,
+      "generate": 776
+    },
+    "prefillCalls": 0,
+    "reserved": 1552,
+    "results": 1552,
+    "schema": "frostecho.jev03r1.jobstore-summary/1",
+    "tokensIn": 0,
+    "tokensOut": 0,
+    "unknownCostFinish": 1552,
+    "windowSeconds": 0.0
+  },
+  "wallSeconds": 1410.97
+}

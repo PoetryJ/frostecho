@@ -36,6 +36,7 @@ PLAN_KEYS = {"campaign", "modelOps", "generationOps", "features", "generations",
              "warmupForward", "warmupGenerate", "windowSeconds", "protocolSha",
              "heads", "renderer", "backbone"}
 REQUIRED_OVERRIDES = ("model_jobs", "generation_jobs", "window_seconds")
+ALLOWED_CAPS = set(REQUIRED_OVERRIDES) | {"per_gpu_gib"}
 
 
 class PlanError(RuntimeError):
@@ -84,8 +85,8 @@ class Plan:
             raise PlanError(f"missing plan keys {sorted(missing)}")
         self.payload = dict(payload)
         self.caps = dict(caps)
-        if set(self.caps) - set(REQUIRED_OVERRIDES):
-            raise PlanError(f"unexpected cap keys {sorted(set(self.caps) - set(REQUIRED_OVERRIDES))}")
+        if set(self.caps) - ALLOWED_CAPS:
+            raise PlanError(f"unexpected cap keys {sorted(set(self.caps) - ALLOWED_CAPS)}")
         for key in REQUIRED_OVERRIDES:
             if key not in self.caps:
                 raise PlanError(f"cap {key} must be given explicitly, never inherited")
