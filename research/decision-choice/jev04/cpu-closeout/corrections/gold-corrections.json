@@ -1,0 +1,99 @@
+{
+  "schema": "frostecho.jev04.gold-corrections/1",
+  "source": "research/decision-choice/jev03/behavior/cases.jsonl",
+  "sourceCases": 192,
+  "count": 5,
+  "note": "Only derived corrections. Old JEV-01/02/03/03R1 gold and results stay byte-identical.",
+  "corrections": [
+    {
+      "schema": "frostecho.jev04.gold-correction/1",
+      "caseId": "b-0186",
+      "pairId": "pF4-13",
+      "member": "A",
+      "relation": "flip",
+      "capability": "F4",
+      "oldGold": "NPC_FIRST",
+      "correctedGold": "PLAYER_FIRST",
+      "rule": "F4.carrier:A",
+      "derivation": "约定承载者='陪着客人说话的人'=对面(NPC)，承载者后吃 => 玩家先吃。旧标把'后吃'错误地赋给玩家，承载者反向。",
+      "evidence": {
+        "context": "开饭前定好：陪着客人说话的人后吃。对面在陪客，玩家只是路过帮忙。",
+        "playerText": "照约定办。",
+        "evidenceSha256": "38d2a5dd180ee4d43b27f36b18d91276a7640dfeda8d62eed18f4bbf7ff9ac86"
+      },
+      "effect": "sensitivity-only; JEV-03 gold/predictions/ledger are not modified"
+    },
+    {
+      "schema": "frostecho.jev04.gold-correction/1",
+      "caseId": "b-0149",
+      "pairId": "pF4-13",
+      "member": "B",
+      "relation": "flip",
+      "capability": "F4",
+      "oldGold": "PLAYER_FIRST",
+      "correctedGold": "NPC_FIRST",
+      "rule": "F4.carrier:B",
+      "derivation": "约定承载者='只是路过帮忙的人'=玩家，承载者后吃 => NPC 先吃。旧标把'后吃'错误地赋给 NPC，承载者反向。",
+      "evidence": {
+        "context": "开饭前定好：只是路过帮忙的人后吃。对面在陪客，玩家只是路过帮忙。",
+        "playerText": "照约定办。",
+        "evidenceSha256": "a20904ce0a2bf13809be08332f85965a2541813661f45a726415e1ac21dc812f"
+      },
+      "effect": "sensitivity-only; JEV-03 gold/predictions/ledger are not modified"
+    },
+    {
+      "schema": "frostecho.jev04.gold-correction/1",
+      "caseId": "b-0056",
+      "pairId": "pF4-14",
+      "member": "A",
+      "relation": "flip",
+      "capability": "F4",
+      "oldGold": "NPC_FIRST",
+      "correctedGold": "PLAYER_FIRST",
+      "rule": "F4.predicate:no-work",
+      "derivation": "约定='手上没活的人先吃'；对面有活、玩家闲着 => 玩家先吃。旧标把'先吃'赋给有活的一方，谓词反向。",
+      "evidence": {
+        "context": "先说定：今天手上没活的人先吃。对面手上有活，玩家闲着。",
+        "playerText": "按先头讲好的。",
+        "evidenceSha256": "806f7d8e95f7746ff188f5a7acdf9a71aef910d5c3bd2f9e399d9bf43980c5f3"
+      },
+      "effect": "sensitivity-only; JEV-03 gold/predictions/ledger are not modified"
+    },
+    {
+      "schema": "frostecho.jev04.gold-correction/1",
+      "caseId": "b-0155",
+      "pairId": "pF4-14",
+      "member": "B",
+      "relation": "flip",
+      "capability": "F4",
+      "oldGold": "PLAYER_FIRST",
+      "correctedGold": "NPC_FIRST",
+      "rule": "F4.predicate:has-work",
+      "derivation": "约定='手上有活的人先吃'；对面有活、玩家闲着 => NPC 先吃。旧标把'先吃'赋给闲着的一方，谓词反向。",
+      "evidence": {
+        "context": "先说定：今天手上有活的人先吃。对面手上有活，玩家闲着。",
+        "playerText": "按先头讲好的。",
+        "evidenceSha256": "f2e8cc732df2af08064fa1b3ce041caa8812dfafbcfc5d071efa017379480bb0"
+      },
+      "effect": "sensitivity-only; JEV-03 gold/predictions/ledger are not modified"
+    },
+    {
+      "schema": "frostecho.jev04.gold-correction/1",
+      "caseId": "b-0006",
+      "pairId": "pI1-14",
+      "member": "B",
+      "relation": "invariant",
+      "capability": "I1",
+      "oldGold": "NEEDS_CLARIFICATION",
+      "correctedGold": "NPC_FIRST",
+      "rule": "I1.unique-addressee",
+      "derivation": "值班室只有楼管(NPC)与玩家，收话人唯一；'你先吃吧，我查完这页名单再吃'= 让 NPC 先吃、说者自陈延后 => NPC_FIRST。缺少多人/指代歧义，不构成 NC。",
+      "evidence": {
+        "context": "宿舍值班室就楼管和玩家，桌上一袋橘子。",
+        "playerText": "你先吃吧，我查完这页名单再吃。",
+        "evidenceSha256": "d88f140e83bc9cdd135c7fe14cf36d7349dcc79b3923e6d69ce3847e8874e194"
+      },
+      "effect": "sensitivity-only; JEV-03 gold/predictions/ledger are not modified"
+    }
+  ]
+}
