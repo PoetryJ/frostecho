@@ -1,0 +1,81 @@
+{
+  "schema": "frostecho.acceptance-summary/1",
+  "mode": "fixture-reference (not a live-model claim)",
+  "at": "2026-11-10T12:00:52.446Z",
+  "passed": 13,
+  "failed": 0,
+  "blocked": 1,
+  "results": [
+    {
+      "name": "unit-tests",
+      "ok": true,
+      "detail": "files=80 pass=602 fail=0"
+    },
+    {
+      "name": "unit-tests-g11",
+      "ok": false,
+      "blocked": true,
+      "detail": "3 tests need untracked artifacts/g11-live run files that are absent at baseline 3758cb4"
+    },
+    {
+      "name": "fixture-8x4-seed-a",
+      "ok": true,
+      "detail": "ending=survived alive=8 replay=true invariants=true 3ms"
+    },
+    {
+      "name": "fixture-8x4-seed-b",
+      "ok": true,
+      "detail": "ending=survived alive=8 replay=true invariants=true 1ms"
+    },
+    {
+      "name": "fixture-8x4-seed-c",
+      "ok": true,
+      "detail": "ending=survived alive=8 replay=true invariants=true 1ms"
+    },
+    {
+      "name": "fixture-16x4-seed-a",
+      "ok": true,
+      "detail": "ending=survived alive=16 replay=true invariants=true 2ms"
+    },
+    {
+      "name": "fixture-16x4-seed-b",
+      "ok": true,
+      "detail": "ending=survived alive=16 replay=true invariants=true 1ms"
+    },
+    {
+      "name": "fixture-16x4-seed-c",
+      "ok": true,
+      "detail": "ending=survived alive=16 replay=true invariants=true 1ms"
+    },
+    {
+      "name": "fixture-32x30-seed-a",
+      "ok": true,
+      "detail": "ending=survived alive=32 replay=true invariants=true 62ms"
+    },
+    {
+      "name": "fixture-32x30-seed-b",
+      "ok": true,
+      "detail": "ending=survived alive=32 replay=true invariants=true 51ms"
+    },
+    {
+      "name": "fixture-32x30-seed-c",
+      "ok": true,
+      "detail": "ending=survived alive=32 replay=true invariants=true 50ms"
+    },
+    {
+      "name": "memory-cross-process",
+      "ok": true,
+      "detail": "A=cancelled B=active afterTalk=cancelled planA=invalidated"
+    },
+    {
+      "name": "memory-restore-hash",
+      "ok": true,
+      "detail": "c00bad576c80 == c00bad576c80"
+    },
+    {
+      "name": "play-trace",
+      "ok": true,
+      "detail": "decisions=32 events=92 unbound=0 alive=8 promiseActed=true"
+    }
+  ]
+}

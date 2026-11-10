@@ -51,6 +51,9 @@ export interface ChoiceRequest {
   goals: unknown;
   candidates: Candidate[];
   candidateSetHash: string;
+  /** Binds this request, its cache entry and its calibration to one memory state. */
+  memorySnapshotHash?: string;
+  memoryPolicyVersion?: string;
 }
 
 export interface CandidateScore {
@@ -197,6 +200,8 @@ export interface RequestInput {
   relationships?: unknown;
   goals?: unknown;
   candidates: Candidate[];
+  memorySnapshotHash?: string;
+  memoryPolicyVersion?: string;
 }
 
 /** Build a request and compute its hash from the exact candidate content. */
@@ -227,6 +232,8 @@ export function makeChoiceRequest(input: RequestInput): ChoiceRequest {
     goals: input.goals ?? [],
     candidates,
     candidateSetHash: candidateSetHash(candidates),
+    ...(input.memorySnapshotHash === undefined ? {} : { memorySnapshotHash: input.memorySnapshotHash }),
+    ...(input.memoryPolicyVersion === undefined ? {} : { memoryPolicyVersion: input.memoryPolicyVersion }),
   };
 }
 
@@ -276,6 +283,7 @@ export function makeChoiceResult(input: ResultInput): ChoiceResult {
       ...(score.probability === undefined ? {} : { probability: score.probability }) });
   }
   if (input.disposition === 'accept') {
+    if (request.candidates.length === 0) fail('empty_candidate_set', 'an empty candidate set cannot be accepted');
     if (scores.length !== request.candidates.length) fail('incomplete_scores', 'accept needs a score for every candidate');
     if (!input.selectedId || !candidates.has(input.selectedId)) {
       fail('unbound_selection', 'accept requires selectedId from the request candidate set');
@@ -284,7 +292,7 @@ export function makeChoiceResult(input: ResultInput): ChoiceResult {
     fail('selection_on_abstain', 'abstain/unavailable must not select a candidate');
   }
   const probabilities = scores.map(score => score.probability);
-  if (probabilities.every(value => value !== undefined)) {
+  if (probabilities.length > 0 && probabilities.every(value => value !== undefined)) {
     const sum = (probabilities as number[]).reduce((total, value) => total + value, 0);
     if (Math.abs(sum - 1) > 1e-6) fail('probability_sum', `probabilities sum to ${sum}, not 1`);
   }
@@ -315,6 +323,8 @@ export function validateChoiceRequest(value: unknown): ChoiceRequest {
     relationships: value.relationships,
     goals: value.goals,
     candidates: value.candidates as Candidate[],
+    memorySnapshotHash: value.memorySnapshotHash as string | undefined,
+    memoryPolicyVersion: value.memoryPolicyVersion as string | undefined,
   });
   if (value.candidateSetHash !== rebuilt.candidateSetHash) {
     fail('candidate_hash', 'candidateSetHash does not match the candidate content');

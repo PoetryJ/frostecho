@@ -1,0 +1,34 @@
+{
+  "schema": "frostecho.jev04.data-gate/1",
+  "at": "2026-11-10T19:40:00+08:00",
+  "status": "blocked",
+  "mayTrainOnJev": false,
+  "evidence": {
+    "existingBehaviorCases": 192,
+    "existingJev03TestCases": 256,
+    "targetCases": 4096,
+    "publicAnchors": 0,
+    "independentDoubleLabels": 0,
+    "machineDerivedCorrections": 5,
+    "singleSessionLabels": 16,
+    "structuredSourceFacts": 0
+  },
+  "blockers": [
+    "五条 gold 更正仅有机器可复算派生，尚无独立复核签名",
+    "16 条缺标为单会话按合同补齐，不算独立双标",
+    "64 个公开锚点尚未作者化",
+    "4096 主 case 未作者化；现有 192/256 例不可靠改名扩样",
+    "承载者/先后关系尚无结构化 facts + oracle 逐条复算"
+  ],
+  "allowedMeanwhile": [
+    "B 仅运行合成特征训练管线 fixture，并在报告中明示不是 JEV 结果",
+    "C 用 fake/录制请求验证评分、校准、拒答与恢复",
+    "D/E/F/G 用 fixture 推进；reference 模式明确标注"
+  ],
+  "nextGate": [
+    "64 锚点独立两会话审查",
+    "16 标 + 5 更正由第二会话复核并签名",
+    "source facts schema + oracle 复算通过",
+    "train/dev 合格组先交付，再补 cal/select/cert/test"
+  ]
+}

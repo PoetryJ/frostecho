@@ -49,7 +49,8 @@ export type Command =
   | { commandId: string; type: 'work'; actorId: string; minutes: number }
   | { commandId: string; type: 'refuel'; actorId: string; amount: number }
   | { commandId: string; type: 'medical'; actorId: string; targetId: string; amount: number }
-  | { commandId: string; type: 'move'; actorId: string; to: LocationId };
+  | { commandId: string; type: 'move'; actorId: string; to: LocationId }
+  | { commandId: string; type: 'reserve'; actorId: string; forId: string; amount: number };
 
 export interface WorldEvent {
   eventId: string;
@@ -260,6 +261,14 @@ export function applyCommand(state: WorldV2, command: Command): { state: WorldV2
       const npc = needNpc(next, command.actorId);
       npcs[npc.id] = { ...npc, location: command.to, stamina: clamp(npc.stamina - 3, 0, 100) };
       events.push(event(next, command, 'moved', { to: command.to }));
+      break;
+    }
+    case 'reserve': {
+      needNpc(next, command.actorId);
+      if (command.amount <= 0) throw new SurvivalError('bad_amount', 'reserve amount must be positive');
+      if (resources.food < command.amount) throw new SurvivalError('insufficient_food', 'no food to reserve');
+      resources.food -= command.amount;
+      events.push(event(next, command, 'food_reserved', { forId: command.forId, amount: command.amount }));
       break;
     }
     default:

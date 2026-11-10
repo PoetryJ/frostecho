@@ -65,7 +65,7 @@ test('empty candidate set produces a hash and never a fake softmax', () => {
     selectedId: null,
     disposition: 'accept',
     reason: 'should not happen',
-  }), (error: unknown) => error instanceof ContractError && error.code === 'incomplete_scores');
+  }), (error: unknown) => error instanceof ContractError && error.code === 'empty_candidate_set');
 });
 
 test('accept requires a candidate from the bound set', () => {
