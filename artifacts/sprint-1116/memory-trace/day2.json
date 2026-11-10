@@ -1,0 +1,88 @@
+{
+  "schema": "frostecho.memory-trace/1",
+  "phase": "day2",
+  "simTime": 220,
+  "process": "pid=640613",
+  "restored": {
+    "hash": "c00bad576c80c982b31410dc1a3038d30d8d0c0dab94b0c11668628fde970af6",
+    "rebuiltHash": "c00bad576c80c982b31410dc1a3038d30d8d0c0dab94b0c11668628fde970af6"
+  },
+  "day2Start": {
+    "A": {
+      "status": "cancelled",
+      "evidenceIds": [
+        "e-retract-third",
+        "m-f89d6278b43639dd",
+        "e-retract-1",
+        "m-f722b6ec862457f2",
+        "e-promise-1",
+        "m-3f461846c87685ae"
+      ],
+      "hash": "c00bad576c80c982b31410dc1a3038d30d8d0c0dab94b0c11668628fde970af6"
+    },
+    "B": {
+      "status": "active",
+      "evidenceIds": [
+        "e-promise-1",
+        "m-40fd0a24ccb319fe"
+      ],
+      "hash": "c00bad576c80c982b31410dc1a3038d30d8d0c0dab94b0c11668628fde970af6"
+    }
+  },
+  "planA": {
+    "planId": "plan-npc_a-p-leave-food",
+    "owner": "npc_a",
+    "promiseId": "p-leave-food",
+    "dependencyRevision": 1,
+    "steps": [
+      "cook-extra-portion",
+      "leave-box-in-dorm"
+    ],
+    "state": "invalidated",
+    "invalidatedBy": "promise:cancelled@r3"
+  },
+  "planBBefore": {
+    "planId": "plan-npc_b-p-leave-food",
+    "owner": "npc_b",
+    "promiseId": "p-leave-food",
+    "dependencyRevision": 1,
+    "steps": [
+      "keep-soup-warm"
+    ],
+    "state": "planned"
+  },
+  "afterDirectCommunication": {
+    "B": {
+      "status": "cancelled",
+      "evidenceIds": [
+        "e-retract-2",
+        "m-c4850cb0fd26a50b",
+        "e-promise-1",
+        "m-40fd0a24ccb319fe"
+      ],
+      "hash": "0d5e1f86b4c30305c72567b8cd4f31e8d08e3f939a80d49ccebff895e0f2800e"
+    }
+  },
+  "planBAfter": {
+    "planId": "plan-npc_b-p-leave-food",
+    "owner": "npc_b",
+    "promiseId": "p-leave-food",
+    "dependencyRevision": 1,
+    "steps": [
+      "keep-soup-warm"
+    ],
+    "state": "invalidated",
+    "invalidatedBy": "promise:cancelled@r2"
+  },
+  "relationA": {
+    "fromId": "npc_a",
+    "toId": "player",
+    "trust": 0,
+    "grievance": 0,
+    "debt": 0,
+    "evidenceIds": [
+      "m-f722b6ec862457f2"
+    ]
+  },
+  "note": "Restore rebuilds indexes; A acts on the cancellation, B only after direct communication."
+}
