@@ -151,9 +151,90 @@ def load_policy(path: Path, *, check_files: bool = True) -> dict:
     return policy
 
 
+def selected_orders(policy: dict, selected) -> list[int]:
+    """Validate one requested presentation against the policy's declared support.
+
+    `allowedOrders`/`allowedPairs` describe what a policy *supports*, not a menu
+    to pick the most confident entry from. JEV-03 requires the caller to name the
+    presentation it actually forwarded, so S1 costs exactly one forward and S2
+    exactly two.
+    """
+    method = policy["method"]
+    if method == SINGLE:
+        if isinstance(selected, (list, tuple)) or selected is None:
+            raise PolicyError("single_pass needs one order index, not a set")
+        order = int(selected)
+        allowed = [int(value) for value in policy["allowedOrders"]]
+        if order not in allowed:
+            raise PolicyError(f"order {order} is not supported by this policy (allowed {allowed})")
+        return [order]
+    if method == PAIR:
+        if isinstance(selected, (int, str)) or selected is None:
+            raise PolicyError("reverse_pair_consensus needs a pair of order indices")
+        pair = [int(value) for value in selected]
+        if len(pair) != 2 or pair[0] == pair[1]:
+            raise PolicyError(f"{pair} is not a pair of two distinct orders")
+        allowed = [[int(a), int(b)] for a, b in policy["allowedPairs"]]
+        if pair not in allowed:
+            raise PolicyError(f"pair {pair} is not supported by this policy (allowed {allowed})")
+        return pair
+    raise PolicyError(f"unknown method {method!r}")
+
+
+def decide_one(policy: dict, logits_by_order: dict[int, list[float]], selected) -> dict:
+    """Decision for one base case on exactly one explicitly selected presentation.
+
+    This is the only decision entry point the CLI and the per-presentation
+    evaluation use. `logits_by_order` must hold exactly the logits for that
+    presentation: passing extra orders is refused rather than silently used.
+    """
+    if not policy["valid"] or policy["decisionMode"] != "selective":
+        return {"decision": "unavailable", "candidateId": None, "reason": "policy_invalid",
+                "score": None, "gating": None, "probabilities": None, "orders": [],
+                "presentation": None}
+    orders = selected_orders(policy, selected)
+    supplied = {int(key) for key in logits_by_order}
+    if supplied != set(orders):
+        raise PolicyError(f"selected presentation {orders} but logits were supplied for "
+                          f"{sorted(supplied)}")
+    temperature = float(policy["temperature"])
+    tau = float(policy["tau"])
+    method = policy["method"]
+    if method == SINGLE:
+        order = orders[0]
+        probs = stable_probs(order, logits_by_order[order], temperature)
+        candidate = max(probs, key=probs.get)
+        score = float(probs[candidate])
+        result = {"score": score, "gating": "max_confidence", "probabilities": probs,
+                  "orders": orders, "presentation": {"order": order}}
+        if score >= tau:
+            return {"decision": "accept", "candidateId": candidate, "reason": "confident", **result}
+        return {"decision": "abstain", "candidateId": None, "reason": "below_threshold", **result}
+
+    forward, reverse = orders
+    first = stable_probs(forward, logits_by_order[forward], temperature)
+    second = stable_probs(reverse, logits_by_order[reverse], temperature)
+    candidate_first = max(first, key=first.get)
+    candidate_second = max(second, key=second.get)
+    score = min(first[candidate_first], second[candidate_second])
+    result = {"score": float(score), "gating": "min_confidence", "probabilities": None,
+              "orders": orders, "presentation": {"pair": orders},
+              "probabilityFirst": first[candidate_first],
+              "probabilitySecond": second[candidate_second]}
+    if candidate_first != candidate_second:
+        return {"decision": "abstain", "candidateId": None, "reason": "order_disagreement", **result}
+    if score < tau:
+        return {"decision": "abstain", "candidateId": None, "reason": "below_threshold", **result}
+    return {"decision": "accept", "candidateId": candidate_first, "reason": "confident", **result}
+
+
 def decide(policy: dict, logits_by_order: dict[int, list[float]]) -> dict:
-    """Decision for one base case. `logits_by_order` holds raw head logits in
-    display order for each available presentation."""
+    """RESEARCH-ONLY aggregation over every presentation the policy supports.
+
+    Kept for the JEV-02R1 evaluation and for explicit research reports. It is not
+    a single-presentation production decision: it needs four (S1) or four (S2)
+    forwards and picks the most confident presentation, which the JEV-03 contract
+    forbids for a served decision. The CLI calls `decide_one` instead."""
     if not policy["valid"] or policy["decisionMode"] != "selective":
         return {"decision": "unavailable", "candidateId": None, "reason": "policy_invalid",
                 "score": None, "gating": None, "probabilities": None, "orders": []}

@@ -15,7 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import r1config as R
-from policy import PolicyError, decide, load_policy, stable_probs
+from policy import PolicyError, decide_one, load_policy, selected_orders, stable_probs
 
 
 def main(argv: list[str]) -> int:
@@ -24,7 +24,9 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--context", required=True)
     parser.add_argument("--player", required=True)
     parser.add_argument("--order", type=int, default=None,
-                        help="presentation index; defaults to the policy's first allowed order")
+                        help="single_pass: the one presentation to forward")
+    parser.add_argument("--pair", default=None,
+                        help="reverse_pair_consensus: the two orders to forward, e.g. 0,1")
     parser.add_argument("--raw-scores", action="store_true",
                         help="research output; not an accepted decision")
     args = parser.parse_args(argv)
@@ -35,15 +37,36 @@ def main(argv: list[str]) -> int:
         print(json.dumps({"error": "policy_rejected", "detail": str(error)}), file=sys.stderr)
         return 2
     method = policy["method"]
-    if args.order is None:
-        order = int(policy["allowedOrders"][0]) if policy["allowedOrders"] else int(policy["allowedPairs"][0][0])
+    # Exactly one presentation must be named; a conflict is refused before load.
+    if method == R.SINGLE:
+        if args.pair is not None:
+            print(json.dumps({"error": "conflicting_presentation",
+                              "detail": "single_pass takes --order, not --pair"}), file=sys.stderr)
+            return 2
+        if args.order is None:
+            print(json.dumps({"error": "missing_presentation",
+                              "detail": "single_pass requires --order"}), file=sys.stderr)
+            return 2
+        selected = args.order
     else:
-        order = args.order
-    if method == R.SINGLE and order not in [int(value) for value in policy["allowedOrders"]]:
-        print(json.dumps({"error": "order_not_allowed", "order": order}), file=sys.stderr)
-        return 2
-    if method == R.PAIR and order not in [int(v) for pair in policy["allowedPairs"] for v in pair]:
-        print(json.dumps({"error": "order_not_in_allowed_pair", "order": order}), file=sys.stderr)
+        if args.order is not None:
+            print(json.dumps({"error": "conflicting_presentation",
+                              "detail": "reverse_pair_consensus takes --pair, not --order"}),
+                  file=sys.stderr)
+            return 2
+        if args.pair is None:
+            print(json.dumps({"error": "missing_presentation",
+                              "detail": "reverse_pair_consensus requires --pair"}), file=sys.stderr)
+            return 2
+        try:
+            selected = [int(value) for value in args.pair.split(",")]
+        except ValueError:
+            print(json.dumps({"error": "bad_pair", "detail": args.pair}), file=sys.stderr)
+            return 2
+    try:
+        orders = selected_orders(policy, selected)
+    except PolicyError as error:
+        print(json.dumps({"error": "presentation_rejected", "detail": str(error)}), file=sys.stderr)
         return 2
 
     if policy["decisionMode"] == "unavailable" and not args.raw_scores:
@@ -63,14 +86,12 @@ def main(argv: list[str]) -> int:
     ledger = Ledger(R.EVIDENCE / "jobs.jsonl")
     case = {"visibleInput": {"context": args.context, "playerText": args.player}}
 
-    orders = [order] if method == R.SINGLE else [int(value) for pair in policy["allowedPairs"]
-                                                 if order in [int(v) for v in pair]
-                                                 for value in pair]
     logits = {}
     timings = []
     for index in orders:
-        job = ledger.reserve(f"demo-{method}-{order}-{index}-{int(time.time() * 1000)}",
-                             "forward", "demo")
+        job = ledger.reserve(
+            f"demo-{method}-{'-'.join(map(str, orders))}-{index}-{int(time.time() * 1000)}",
+            "forward", "demo")
         ledger.begin(job)
         tick = time.time()
         try:
@@ -87,7 +108,7 @@ def main(argv: list[str]) -> int:
                         "tokensIn": feature["tokensIn"]})
 
     if policy["valid"]:
-        result = decide(policy, logits)
+        result = decide_one(policy, logits, selected)
     else:
         result = {"decision": "unavailable", "candidateId": None, "reason": "policy_invalid",
                   "score": None, "gating": None}
@@ -103,6 +124,7 @@ def main(argv: list[str]) -> int:
         "temperature": policy["temperature"],
         "tau": policy["tau"],
         "displayOrder": {str(index): list(R.ORDERS[index]) for index in orders},
+        "presentation": orders,
         "forwardCalls": len(orders),
         "timings": timings,
         "policySha256": R.sha256_file(Path(args.policy)),
