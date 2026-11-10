@@ -56,12 +56,11 @@ def case_mean_ce(head, batch: dict, arm: str, index: torch.Tensor) -> torch.Tens
     logits = arm_logits(head, {"cand": batch["cand"][index], "hq": batch["hq"][index]}, arm)
     target = batch["targetDisplay"][index] if arm == "C" else batch["targetStable"][index]
     per_row = nn.functional.cross_entropy(logits, target, reduction="none")
-    cases = batch["caseIds"][index]
-    totals: dict[str, list[float]] = {}
-    for name, value in zip(cases, per_row.tolist()):
-        totals.setdefault(name, []).append(value)
-    means = [sum(values) / len(values) for values in totals.values()]
-    return torch.tensor(means).mean()
+    _, inverse = np.unique(np.asarray(batch["caseIds"])[index.numpy()], return_inverse=True)
+    inverse = torch.as_tensor(inverse, dtype=torch.long)
+    sums = torch.zeros(int(inverse.max()) + 1).index_add_(0, inverse, per_row)
+    counts = torch.zeros_like(sums).index_add_(0, inverse, torch.ones_like(per_row))
+    return (sums / counts).mean()
 
 
 def evaluate(head, batch: dict, arm: str) -> dict:

@@ -13,6 +13,7 @@ Run as the only process on the GPUs:
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 import time
 from pathlib import Path
@@ -87,11 +88,33 @@ def extract(model, ledger: Ledger, split: str, cases: list[dict], tag: str) -> d
 
 
 def generate(model, ledger: Ledger, split: str, cases: list[dict], tag: str) -> dict:
+    """Append each generation to disk immediately so an interruption cannot lose it.
+
+    Rows whose job id is already finished are skipped by id (never re-charged); if a
+    finished id has no persisted text, the row is recorded as lost instead of being
+    silently regenerated, because a re-run would exceed the generation cap.
+    """
+    path = R.RESULTS / f"{split}-json-generations.jsonl"
+    done = {}
+    if path.exists():
+        for row in R.read_jsonl(path):
+            done[(row["caseId"], int(row["order"]))] = row
+    finished = {event["jobId"] for event in ledger.events if event.get("event") == "finish"}
+    handles = open(path, "a", encoding="utf-8")
     rows = []
+    lost = []
     for index, raw in enumerate(cases):
         case = as_case(raw)
         order = int(raw["order"]) if "order" in raw else index % 4
+        key = (case["caseId"], order)
+        if key in done:
+            rows.append(done[key])
+            continue
         job_id = f"generate-{split}-{case['caseId']}-{order}-{tag}"
+        if job_id in finished:
+            lost.append({"caseId": case["caseId"], "order": order, "jobId": job_id,
+                         "why": "job finished before the run aborted; its text was never persisted"})
+            continue
         job = ledger.reserve(job_id, "generate", f"json-{split}")
         ledger.begin(job)
         started = time.time()
@@ -103,18 +126,84 @@ def generate(model, ledger: Ledger, split: str, cases: list[dict], tag: str) -> 
         ledger.finish(job, prefill=out["prefillCalls"], decode=out["decodeCalls"],
                       tokens_in=out["tokensIn"], tokens_out=out["newTokens"],
                       seconds=time.time() - started)
-        rows.append({"caseId": case["caseId"], "order": order, "rawText": out["rawText"],
-                     "newTokens": out["newTokens"], "tokensIn": out["tokensIn"],
-                     "tokenizeMs": out["tokenizeMs"], "prefillMs": out["prefillMs"],
-                     "readoutMs": out["readoutMs"], "decodeMs": out["decodeMs"],
-                     "e2eMs": out["e2eMs"], "renderedSha256": out["renderedSha256"]})
+        row = {"caseId": case["caseId"], "order": order, "rawText": out["rawText"],
+               "newTokens": out["newTokens"], "tokensIn": out["tokensIn"],
+               "tokenizeMs": out["tokenizeMs"], "prefillMs": out["prefillMs"],
+               "readoutMs": out["readoutMs"], "decodeMs": out["decodeMs"],
+               "e2eMs": out["e2eMs"], "renderedSha256": out["renderedSha256"]}
+        rows.append(row)
+        handles.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+        handles.flush()
         if (index + 1) % 128 == 0:
             print(f'{{"generate": "{split}", "done": {index + 1}, "of": {len(cases)}}}', flush=True)
-    digest = R.write_jsonl(R.RESULTS / f"{split}-json-generations.jsonl", rows)
+    handles.close()
+    digest = R.sha256_file(path)
     R.write_json(R.RESULTS / f"{split}-json-meta.json",
                  {"schema": "frostecho.jev03.json/1", "at": R.now_iso(), "rows": len(rows),
-                  "sha256": digest, "protocol": "jev02r1 frozen generation protocol (json arm)"})
-    return {"split": split, "rows": len(rows), "sha256": digest}
+                  "sha256": digest, "lost": lost,
+                  "lostNote": ("jobs that finished before the budget-guard abort; re-running them "
+                               "would exceed the 1100 generation cap, so they are reported missing "
+                               "instead of being regenerated"),
+                  "protocol": "jev02r1 frozen generation protocol (json arm)"})
+    return {"split": split, "rows": len(rows), "lost": len(lost), "sha256": digest}
+
+
+TIMING_CASES = 4   # 4 cases x 4 presentations = the 16 pre-fixed timing presentations
+
+
+def timing(model, ledger: Ledger, cases: list[dict], tag: str, repeats: int = 2) -> dict:
+    """16 pre-fixed test presentations x 2 repeats x {1 shared feature, 1 JSON}."""
+    fixed = cases[:TIMING_CASES * 4]
+    rows = []
+    for repeat in range(repeats):
+        for index, raw in enumerate(fixed):
+            case = as_case(raw)
+            order = int(raw["order"])
+            job = ledger.reserve(f"timing-fwd-{tag}-{repeat}-{index}", "forward", "timing")
+            ledger.begin(job)
+            started = time.time()
+            try:
+                forward = model.forward_timed(case, order)
+            except Exception as error:
+                ledger.fail(job, str(error), prefill=1, seconds=time.time() - started)
+                raise
+            ledger.finish(job, prefill=forward["prefillCalls"], decode=0,
+                          tokens_in=forward["tokensIn"], tokens_out=0,
+                          seconds=time.time() - started)
+            rows.append({"kind": "shared_feature", "repeat": repeat, "caseId": case["caseId"],
+                         "order": order, **{key: forward[key] for key in
+                                            ("tokensIn", "tokenizeMs", "prefillMs", "readoutMs",
+                                             "decodeMs", "e2eMs")}})
+            job = ledger.reserve(f"timing-gen-{tag}-{repeat}-{index}", "generate", "timing")
+            ledger.begin(job)
+            started = time.time()
+            try:
+                generated = model.generate_timed(case, order)
+            except Exception as error:
+                ledger.fail(job, str(error), prefill=1, seconds=time.time() - started)
+                raise
+            ledger.finish(job, prefill=generated["prefillCalls"], decode=generated["decodeCalls"],
+                          tokens_in=generated["tokensIn"], tokens_out=generated["newTokens"],
+                          seconds=time.time() - started)
+            rows.append({"kind": "json", "repeat": repeat, "caseId": case["caseId"],
+                         "order": order, **{key: generated[key] for key in
+                                            ("tokensIn", "newTokens", "tokenizeMs", "prefillMs",
+                                             "readoutMs", "decodeMs", "e2eMs")}})
+    summary = {}
+    for kind in ("shared_feature", "json"):
+        subset = sorted((row["e2eMs"] for row in rows if row["kind"] == kind))
+        summary[kind] = {"n": len(subset), "medianMs": round(subset[len(subset) // 2], 3),
+                         "minMs": round(subset[0], 3), "maxMs": round(subset[-1], 3),
+                         "stages": {stage: round(sum(row[stage] for row in rows
+                                                     if row["kind"] == kind) / len(subset), 3)
+                                    for stage in ("tokenizeMs", "prefillMs", "readoutMs",
+                                                  "decodeMs")}}
+    summary["note"] = ("one live timing pass on 16 fixed test presentations, 2 repeats each; "
+                       "small n, no p95 claim; load time is reported separately")
+    R.write_json(R.RESULTS / "timing.json", {"schema": "frostecho.jev03.timing/1",
+                                             "at": R.now_iso(), "rows": rows,
+                                             "summary": summary})
+    return summary
 
 
 def warmup(model, ledger: Ledger, cases: list[dict], tag: str, generations: int) -> dict:
@@ -151,13 +240,20 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--splits", nargs="+", default=["train", "dev"])
     parser.add_argument("--json", action="store_true", help="also generate the JSON arm outputs")
     parser.add_argument("--tag", default="a1")
+    parser.add_argument("--timing-split", default="test")
     parser.add_argument("--skip-warmup", action="store_true")
+    parser.add_argument("--reuse-features", action="store_true",
+                        help="reuse an existing cache whose identity matches (no new forwards)")
+    parser.add_argument("--only-timing", action="store_true",
+                        help="skip features and JSON; run just the fixed timing pass")
+    parser.add_argument("--timing", action="store_true",
+                        help="also run the 16x2 fixed timing presentations")
     args = parser.parse_args(argv)
 
     R.CACHE.mkdir(parents=True, exist_ok=True)
     R.RESULTS.mkdir(parents=True, exist_ok=True)
     R.EVIDENCE.mkdir(parents=True, exist_ok=True)
-    ledger = Ledger(R.EVIDENCE / "jobs.jsonl")
+    ledger = Ledger(R.EVIDENCE / "jobs.jsonl", caps=R.CAPS)
     workloads = {}
     for split in args.splits:
         cases = []
@@ -177,25 +273,45 @@ def main(argv: list[str]) -> int:
         R.write_json(R.EVIDENCE / "model-identity.json",
                      {"schema": "frostecho.jev03.model/1", "at": R.now_iso(),
                       "identity": model.identity, "featureIdentityHash": R.feature_identity_hash()})
-        first = workloads[args.splits[0]]
-        if not args.skip_warmup:
+        first = workloads[args.splits[0]] if args.splits else []
+        if not args.skip_warmup and args.splits:
             warmup(model, ledger, first, args.tag, 8 if args.json else 0)
         outputs = {}
+        if args.only_timing:
+            args.splits = []
         for split in args.splits:
-            outputs[split] = extract(model, ledger, split, workloads[split], args.tag)
+            cache = R.features_file(split)
+            meta_path = cache.with_suffix(".meta.json")
+            reusable = (args.reuse_features and cache.exists() and meta_path.exists()
+                        and R.read_json(meta_path)["featureIdentityHash"]
+                        == R.feature_identity_hash()
+                        and R.read_json(meta_path)["rows"] == len(workloads[split]))
+            if reusable:
+                outputs[split] = {"split": split, "rows": len(workloads[split]),
+                                  "cacheSha256": R.sha256_file(cache), "reused": True}
+            else:
+                outputs[split] = extract(model, ledger, split, workloads[split], args.tag)
         if args.json:
             outputs["json"] = generate(model, ledger, args.splits[-1], workloads[args.splits[-1]],
                                        args.tag)
+        if args.timing:
+            target = args.timing_split or (args.splits[-1] if args.splits else "test")
+            cases = workloads.get(target)
+            if cases is None:
+                cases = [{**row, "order": order}
+                         for row in R.read_jsonl(R.inputs_file(target)) for order in range(4)]
+            outputs["timing"] = timing(model, ledger, cases, args.tag)
         memory = model.memory()
         load_seconds = model.load_seconds
     report = {"schema": "frostecho.jev03.extract/1", "at": R.now_iso(), "outputs": outputs,
               "loadSeconds": round(load_seconds, 3), "wallSeconds": round(time.time() - started, 2),
               "gpuPeakGiB": {key: value["peakGiB"] for key, value in memory.items()},
-              "seal": {"sealed": [str(path) for path in (seal.paths if seal else [])],
+              "seal": {"sealed": sorted(getattr(seal, "sealed", [])) if seal else [],
                        "blockedAttempts": len(seal.attempts) if seal else 0,
                        "blockedPaths": seal.attempts if seal else []},
               "ledger": ledger.summary()["reserved"]}
-    name = "extract-" + "-".join(args.splits) + ("-json" if args.json else "") + f"-{args.tag}.json"
+    name = ("extract-" + "-".join(args.splits) + ("-json" if args.json else "")
+            + ("-timing" if args.timing else "") + f"-{args.tag}.json")
     R.write_json(R.EVIDENCE / name, report)
     print(R.canonical({"outputs": outputs, "wallSeconds": report["wallSeconds"],
                        "blocked": report["seal"]["blockedAttempts"],

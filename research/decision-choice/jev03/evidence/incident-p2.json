@@ -1,0 +1,56 @@
+{
+  "at": "2026-11-10T16:24:37+08:00",
+  "effect": {
+    "generationsFinishedWithoutPersistedText": 204,
+    "lostCases": 51,
+    "persistedGenerations": 820,
+    "timingPassCompleted": true
+  },
+  "hashes": {
+    "jsonGenerations": "ad921e7d9bafde8e5b6575f9ac852e92210231aa8e60a79804ef23e0bc3b5462",
+    "testFeatures": "555f5f55f6f8037508067331c11e548e671e881fb5312e9d5cb62b0f0828e159",
+    "timing": "3930676fbf60e982a5a794358224996b6b09b8f0c17a2fd78f3437a60f0cfdb4"
+  },
+  "ledger": {
+    "failed": 0,
+    "finished": 4184,
+    "forwardJobs": 3120,
+    "generationJobs": 1064,
+    "modelSeconds": 1710.615,
+    "reserved": 4184,
+    "tokensIn": 548116,
+    "tokensOut": 7456,
+    "unfinished": 0,
+    "windowSeconds": 2664.912
+  },
+  "recovery": "fixed caps=R.CAPS, added per-row append + jobId resume; the 204 finished generations stay charged and were not re-run because that would exceed the 1100 generation cap",
+  "schema": "frostecho.jev03.incident/1",
+  "timingSummary": {
+    "json": {
+      "maxMs": 1126.915,
+      "medianMs": 1063.593,
+      "minMs": 970.027,
+      "n": 32,
+      "stages": {
+        "decodeMs": 817.147,
+        "prefillMs": 235.63,
+        "readoutMs": 1.083,
+        "tokenizeMs": 0.297
+      }
+    },
+    "note": "one live timing pass on 16 fixed test presentations, 2 repeats each; small n, no p95 claim; load time is reported separately",
+    "shared_feature": {
+      "maxMs": 290.217,
+      "medianMs": 223.593,
+      "minMs": 162.575,
+      "n": 32,
+      "stages": {
+        "decodeMs": 0.0,
+        "prefillMs": 220.968,
+        "readoutMs": 2.431,
+        "tokenizeMs": 0.322
+      }
+    }
+  },
+  "what": "extract.py ran with the R1 default job cap (3300) instead of the JEV-03 cap (4300) and aborted at operation 3300 during the test JSON pass"
+}

@@ -44,6 +44,30 @@ def bootstrap(rows: list[dict], key: str, iterations: int = 2000, seed: int = 20
             "hi": round(float(np.percentile(array, 97.5)), 6)}
 
 
+def calibration(rows: list[dict]) -> dict:
+    """Uncalibrated NLL/Brier at T=1; this round never fits a temperature."""
+    import math
+
+    nll, brier = [], []
+    for row in rows:
+        logits = row.get("logits")
+        if not logits:
+            continue
+        peak = max(logits)
+        exps = [math.exp(value - peak) for value in logits]
+        total = sum(exps)
+        probs = [value / total for value in exps]
+        index = R.CLASSES.index(row["gold"])
+        nll.append(-math.log(max(probs[index], 1e-12)))
+        brier.append(sum((prob - (1.0 if position == index else 0.0)) ** 2
+                         for position, prob in enumerate(probs)))
+    if not nll:
+        return {}
+    return {"n": len(nll), "nll": round(sum(nll) / len(nll), 6),
+            "brier": round(sum(brier) / len(brier), 6),
+            "note": "uncalibrated (T=1); no temperature is fitted this round"}
+
+
 def summarise(rows: list[dict], label_fn) -> dict:
     """rows carry caseId, order, groupId, gold, prediction."""
     correct = [label_fn(row) for row in rows]
@@ -89,7 +113,8 @@ def summarise(rows: list[dict], label_fn) -> dict:
                             "allFourSamePrediction": consistency,
                             "rate": round(consistency / len(all_same_prediction), 6)},
             "bootstrap": bootstrap([{**row, "correct": ok} for row, ok in zip(rows, correct)],
-                                   "correct")}
+                                   "correct"),
+            "calibration": calibration(rows)}
 
 
 def main(argv: list[str]) -> int:
@@ -120,7 +145,7 @@ def main(argv: list[str]) -> int:
         case_id = row["caseId"]
         rows.append({"caseId": case_id, "order": row["order"], "arm": row["arm"],
                      "groupId": gold[case_id]["groupId"], "gold": gold[case_id]["labelId"],
-                     "prediction": row["prediction"],
+                     "prediction": row["prediction"], "logits": row["logits"],
                      "challenged": case_id in challenge})
 
     result = {"schema": "frostecho.jev03.results/1", "at": R.now_iso(),
