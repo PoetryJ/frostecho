@@ -23,6 +23,15 @@
 其余实现由主 agent 在各隔离 worktree 完成；不声称 8 个独立执行者已并行写码。
 槽位/时长不足，按波次推进。
 
+## 记忆增补（20261110-memory-addendum）
+
+- 统一接口：`ChoiceRequest` 增加 `memorySnapshotHash` / `memoryPolicyVersion`，请求、缓存、校准三者绑定。
+- D：四层事件溯源、`(observerId,eventId)` 幂等、来源/获知时间/撤销依赖、有界检索与截断标记、关系投影可重建。
+- C：检索失败 ≠ 空历史；最多一次补查；shadow 不执行；结果与状态/记忆快照绑定。
+- E：只让依赖承诺失效的候选/计划受影响（`invalidateDependentPlans`），无关事件不全局重规划。
+- H：12 条 CPU 回归全部并入测试，12/12；真实记忆消融后置，不阻塞本轮。
+- 首个轨迹：`node dist/scripts/memory-trace.js day1 && node dist/scripts/memory-trace.js day2`。
+
 ## 首 12 小时交付状态
 
 | 项 | 状态 | 证据 |
