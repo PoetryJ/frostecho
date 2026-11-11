@@ -1,0 +1,32 @@
+{
+  "schema": "frostecho.jev04.data-gate-v2/1",
+  "at": "2026-11-11T18:00:00+08:00",
+  "status": "blocked",
+  "mayTrainOnJev": false,
+  "evidence": {
+    "v1Cases": 64,
+    "v2Cases": 64,
+    "repaired": 2,
+    "families": 32,
+    "sourceGroups": 32,
+    "independentSkeletons": 4,
+    "trainCases": 48,
+    "devCases": 16,
+    "trainGroups": 24,
+    "devGroups": 8,
+    "crossSplitGroups": 0,
+    "adjudication": {
+      "keep": 26,
+      "challenge": 39,
+      "revise": 4
+    },
+    "doubleReviewedCases": 63,
+    "singleReviewCases": 1
+  },
+  "reasons": [
+    "semantic gate: only 4 generator skeletons cover 64 cases (v1 family structure)",
+    "59 of 69 disagreements require H adjudication (challenge)",
+    "quantity gate: train/dev below the 512/128 target; this is a qualified small set",
+    "no independent calibration/select/cert/test split available yet"
+  ]
+}
