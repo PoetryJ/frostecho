@@ -179,3 +179,53 @@ def certify(policy: PolicyIdentity, probabilities: list[float], correct: list[bo
     return Certificate(upper <= MAX_RISK, upper, errors, n, coverage,
                        "certificate meets risk and coverage" if upper <= MAX_RISK
                        else "upper bound above risk budget", alpha, policy)
+
+
+@dataclass(frozen=True)
+class CalibrationArtifact:
+    schema: str
+    policy: PolicyIdentity
+    temperature: float
+    tau: float
+    valid: bool
+    coverage: float
+    upper: float | None
+
+
+def save_artifact(path, artifact: CalibrationArtifact) -> None:
+    import json
+    from dataclasses import asdict
+    payload = asdict(artifact)
+    payload["schema"] = "frostecho.jev04.calibration-artifact/1"
+    with open(path, "w", encoding="utf-8") as handle:
+        json.dump(payload, handle, ensure_ascii=False, sort_keys=True, indent=2)
+
+
+def load_artifact(path, request_policy: PolicyIdentity) -> CalibrationArtifact:
+    """Load and verify a fitted policy; a stale identity is refused."""
+    import json
+    with open(path, encoding="utf-8") as handle:
+        payload = json.load(handle)
+    if payload.get("schema") != "frostecho.jev04.calibration-artifact/1":
+        raise ValueError("unexpected calibration artifact schema")
+    policy = PolicyIdentity(**payload["policy"])
+    assert_policy_compatible(policy, request_policy)
+    if not payload.get("valid"):
+        raise ValueError("calibration artifact is marked invalid")
+    temperature = float(payload["temperature"])
+    tau = float(payload["tau"])
+    if temperature <= 0 or not (0 <= tau <= 1):
+        raise ValueError("calibration artifact has out-of-range T or tau")
+    return CalibrationArtifact(schema=payload["schema"], policy=policy, temperature=temperature,
+                               tau=tau, valid=True, coverage=float(payload["coverage"]),
+                               upper=payload.get("upper"))
+
+
+def decide(artifact: CalibrationArtifact, logits: list[float]) -> dict:
+    """Apply T and tau exactly as the runtime policy does."""
+    probabilities = softmax(logits, artifact.temperature)
+    index = max(range(len(probabilities)), key=lambda i: probabilities[i])
+    pmax = probabilities[index]
+    if pmax < artifact.tau:
+        return {"disposition": "abstain", "selectedIndex": None, "pmax": pmax}
+    return {"disposition": "accept", "selectedIndex": index, "pmax": pmax}

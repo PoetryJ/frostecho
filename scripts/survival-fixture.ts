@@ -16,7 +16,7 @@ if (![8, 16, 32].includes(count)) {
 
 const ids = Array.from({ length: count }, (_, index) => `npc_${String(index + 1).padStart(2, '0')}`);
 const startedAt = Date.now();
-let state: WorldV2 = createWorldV2({ npcIds: ids, rngSeed: `fixture-${count}-${days}` });
+let state: WorldV2 = createWorldV2({ npcIds: ids, days, rngSeed: `fixture-${count}-${days}` });
 const perDay: unknown[] = [];
 let events = 0;
 
@@ -39,7 +39,7 @@ for (let day = 1; day <= days; day += 1) {
 }
 
 const nested = `${count}x${days}`;
-const outDir = join(process.cwd(), 'artifacts/sprint-1116/survival');
+const outDir = join(process.cwd(), 'artifacts/sprint-r1/survival');
 mkdirSync(outDir, { recursive: true });
 const payload = {
   schema: 'frostecho.survival-fixture/1',

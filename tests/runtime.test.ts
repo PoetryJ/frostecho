@@ -105,6 +105,7 @@ test('at most one extra retrieval is attempted', async () => {
   const req = request();
   let calls = 0;
   const outcome = await runChoice(req, abstainer(), binding(req), {
+    retrieval: () => 'error',
     extraRetrieval: async current => { calls += 1; return current; },
     fallback: referenceScorer(),
   });
@@ -152,4 +153,124 @@ test('reference accept executes exactly once', async () => {
   let executed = 0;
   await runChoice(req, referenceScorer(), binding(req), { execute: () => { executed += 1; } });
   assert.equal(executed, 1);
+});
+
+test('R1-C: execution port must confirm before the journal says applied', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'frostecho-exec-'));
+  const journalPath = join(dir, 'j.json');
+  try {
+    const req = request();
+    let submitted: string | null = null;
+    const outcome = await runChoice(req, referenceScorer(), binding(req), {
+      journalPath,
+      execution: {
+        commandId: () => 'cmd-1',
+        async submit(commandId) {
+          submitted = commandId;
+          return { status: 'applied' as const, eventIds: ['ev-1'], postStateVersion: 10, reason: null };
+        },
+        async query() {
+          return { status: 'unknown' as const, eventIds: [], postStateVersion: null, reason: 'not called' };
+        },
+      },
+    });
+    assert.equal(submitted, 'cmd-1');
+    assert.equal(outcome.audit.phase, 'applied');
+    assert.equal(outcome.audit.executed, true);
+    assert.deepEqual(outcome.audit.eventIds, ['ev-1']);
+    assert.equal(outcome.audit.postStateVersion, 10);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('R1-C: a rejected submission never becomes applied and is not retried', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'frostecho-reject-'));
+  const journalPath = join(dir, 'j.json');
+  try {
+    const req = request();
+    let submitCalls = 0;
+    const port = {
+      commandId: () => 'cmd-r',
+      async submit() {
+        submitCalls += 1;
+        return { status: 'rejected' as const, eventIds: [], postStateVersion: 9, reason: 'insufficient_food' };
+      },
+      async query() {
+        return { status: 'rejected' as const, eventIds: [], postStateVersion: 9, reason: 'insufficient_food' };
+      },
+    };
+    const first = await runChoice(req, referenceScorer(), binding(req), { journalPath, execution: port });
+    assert.equal(first.audit.phase, 'rejected');
+    assert.equal(first.audit.executed, false);
+    const second = await runChoice(req, referenceScorer(), binding(req), { journalPath, execution: port });
+    assert.equal(second.audit.cacheHit, true);
+    assert.equal(submitCalls, 1);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('R1-C: unknown submission is resolved by query on recovery, not re-submitted', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'frostecho-unknown-'));
+  const journalPath = join(dir, 'j.json');
+  try {
+    const req = request();
+    let submitCalls = 0;
+    let queryCalls = 0;
+    const port = {
+      commandId: () => 'cmd-u',
+      async submit() {
+        submitCalls += 1;
+        return { status: 'unknown' as const, eventIds: [], postStateVersion: null, reason: 'timeout' };
+      },
+      async query() {
+        queryCalls += 1;
+        return { status: 'applied' as const, eventIds: ['ev-u'], postStateVersion: 11, reason: null };
+      },
+    };
+    const first = await runChoice(req, referenceScorer(), binding(req), { journalPath, execution: port });
+    assert.equal(first.audit.phase, 'unknown');
+    assert.equal(first.audit.executed, false);
+    const second = await runChoice(req, referenceScorer(), binding(req), { journalPath, execution: port });
+    assert.equal(second.audit.phase, 'applied');
+    assert.equal(second.audit.executed, true);
+    assert.equal(submitCalls, 1);
+    assert.equal(queryCalls, 1);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('R1-C: a stale world or memory snapshot blocks submission', async () => {
+  const req = request();
+  let executions = 0;
+  const outcome = await runChoice(req, referenceScorer(), binding(req), {
+    currentSnapshot: () => ({ stateVersion: req.stateVersion + 1,
+      memorySnapshotHash: req.memorySnapshotHash }),
+    execution: {
+      commandId: () => 'cmd-stale',
+      async submit() { executions += 1; return { status: 'applied' as const, eventIds: [], postStateVersion: 0, reason: null }; },
+      async query() { return { status: 'unknown' as const, eventIds: [], postStateVersion: null, reason: null }; },
+    },
+  });
+  assert.equal(executions, 0);
+  assert.equal(outcome.result.disposition, 'abstain');
+  assert.match(outcome.result.reason, /stale_before_submit/);
+});
+
+test('R1-C: an invalid live response executes zero times', async () => {
+  const req = request();
+  let executions = 0;
+  const foreign = {
+    id: 'foreign', mode: 'json' as const,
+    score() {
+      return { requestId: 'other', candidateSetHash: 'other', scorerId: 'foreign',
+        scores: [], selectedId: 'outside-set', disposition: 'accept', reason: 'bad' };
+    },
+  } as never;
+  const outcome = await runChoice(req, foreign, binding(req), { execute: () => { executions += 1; } });
+  assert.equal(executions, 0);
+  assert.equal(outcome.audit.invalidResult, true);
+  assert.equal(outcome.result.selectedId, null);
 });

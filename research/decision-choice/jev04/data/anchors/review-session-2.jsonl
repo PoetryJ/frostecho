@@ -1,0 +1,64 @@
+{"caseId":"gR01-A","labels":["eat_self"],"rule":"R2 撤销已当面获知且出话人获授权，旧承诺失效","confidence":"high"}
+{"caseId":"gR01-B","labels":["leave_food"],"rule":"R1 未获知撤销，保留旧承诺（非记忆错误）","confidence":"high"}
+{"caseId":"gR02-A","labels":["leave_food"],"rule":"R1 取消只在别处对他人说，未传达到本角色","confidence":"high"}
+{"caseId":"gR02-B","labels":["eat_self"],"rule":"R2 已获知授权取消，旧承诺失效","confidence":"high"}
+{"caseId":"gR03-A","labels":["leave_food","verify"],"rule":"R2 转述方未获授权，不能撤销有效承诺，需核实","confidence":"medium"}
+{"caseId":"gR03-B","labels":["eat_self"],"rule":"R2 出话人获授权且已获知，承诺失效","confidence":"medium"}
+{"caseId":"gR04-A","labels":["leave_food"],"rule":"R2 无撤销发生，直接作出的承诺有效","confidence":"high"}
+{"caseId":"gR04-B","labels":["leave_food"],"rule":"R2 撤销出话人无授权，不改变有效承诺","confidence":"high"}
+{"caseId":"gR05-A","labels":["leave_food"],"rule":"R1 取消只对他人说，本角色未获知","confidence":"high"}
+{"caseId":"gR05-B","labels":["eat_self"],"rule":"R2 已获知授权取消","confidence":"high"}
+{"caseId":"gR06-A","labels":["leave_food"],"rule":"R3/R1 他人转述未亲耳听到，不构成有效获知，保留旧承诺","confidence":"high"}
+{"caseId":"gR06-B","labels":["eat_self"],"rule":"R2 已亲耳获知授权取消","confidence":"high"}
+{"caseId":"gR07-A","labels":["eat_self"],"rule":"R2 向本角色当面取消且获授权，承诺失效","confidence":"high"}
+{"caseId":"gR07-B","labels":["leave_food"],"rule":"R1 未获知取消，保留旧知识（非记忆错误）","confidence":"high"}
+{"caseId":"gR08-A","labels":["leave_food","verify"],"rule":"R2 议论者未获授权，取消无效，需核实来源","confidence":"medium"}
+{"caseId":"gR08-B","labels":["eat_self"],"rule":"R2 授权取消已获知","confidence":"medium"}
+{"caseId":"gQ01-A","labels":["verify"],"rule":"R3 quoteDepth=1 为转述，不构成新指令，只能核实","confidence":"high"}
+{"caseId":"gQ01-B","labels":["verify"],"rule":"R3 quoteDepth=0 但未获直接授权，仍非直接表态，需核实","confidence":"high"}
+{"caseId":"gQ02-A","labels":["leave_food","verify"],"rule":"R3 二次转述不构成有效取消，按旧承诺并核实","confidence":"high"}
+{"caseId":"gQ02-B","labels":["leave_food","verify"],"rule":"R3 未获授权的表态不算直接取消，保留旧承诺","confidence":"medium"}
+{"caseId":"gQ03-A","labels":["leave_food"],"rule":"R3 quoteDepth=0 且获直接授权，形成有效留饭承诺","confidence":"high"}
+{"caseId":"gQ03-B","labels":["verify"],"rule":"R3 未获授权，不构成有效承诺，需核实后再说","confidence":"medium"}
+{"caseId":"gQ04-A","labels":["leave_food","verify"],"rule":"R3 传闻式取消不改变承诺，需核实取消者与对象","confidence":"medium"}
+{"caseId":"gQ04-B","labels":["leave_food","verify"],"rule":"R3 未获授权的含糊说法不构成取消，保留旧承诺","confidence":"medium"}
+{"caseId":"gQ05-A","labels":["leave_food","verify"],"rule":"R3 复述昨日原话不构成新指令，旧承诺仍有效","confidence":"medium"}
+{"caseId":"gQ05-B","labels":["leave_food","verify"],"rule":"R3 多层复述更不构成新指令，保留旧承诺并核实","confidence":"medium"}
+{"caseId":"gQ06-A","labels":["leave_food","verify"],"rule":"R2/R3 维修工转述无权取消，需核实其身份","confidence":"high"}
+{"caseId":"gQ06-B","labels":["leave_food","verify"],"rule":"R2/R3 未获授权的转述不算直接取消，保留旧承诺","confidence":"medium"}
+{"caseId":"gQ07-A","labels":["eat_self"],"rule":"R3 quoteDepth=0 且获直接授权，当面取消有效","confidence":"high"}
+{"caseId":"gQ07-B","labels":["leave_food","verify"],"rule":"R3 未获授权的说法不构成取消，保留旧承诺并核实","confidence":"medium"}
+{"caseId":"gQ08-A","labels":["verify"],"rule":"R3 引述旧指令无效，且需确认今日已改口","confidence":"high"}
+{"caseId":"gQ08-B","labels":["verify"],"rule":"R3 未获授权的引述同样无效，需先核实现状","confidence":"medium"}
+{"caseId":"gA01-A","labels":["eat_self"],"rule":"R4 presentOthers=1 收话人唯一，可先吃","confidence":"high"}
+{"caseId":"gA01-B","labels":["wait"],"rule":"R4 presentOthers=0 无人可指向，只能等待","confidence":"medium"}
+{"caseId":"gA02-A","labels":["ask_clarify"],"rule":"R4 presentOthers=2 且未点名，须澄清","confidence":"high"}
+{"caseId":"gA02-B","labels":["eat_self"],"rule":"R4 presentOthers=1 收话人唯一","confidence":"high"}
+{"caseId":"gA03-A","labels":["eat_self"],"rule":"R4 explicitAddressee=true 点名唯一收话人","confidence":"high"}
+{"caseId":"gA03-B","labels":["ask_clarify"],"rule":"R4 未点名且 presentOthers=2，须澄清","confidence":"high"}
+{"caseId":"gA04-A","labels":["wait"],"rule":"R4 presentOthers=0 无人在场，只能等待","confidence":"high"}
+{"caseId":"gA04-B","labels":["eat_self"],"rule":"R4 presentOthers=1 按规则视为唯一收话人（与空房间描述冲突）","confidence":"low"}
+{"caseId":"gA05-A","labels":["ask_clarify"],"rule":"R4 未说明留给谁且多人在场，须澄清","confidence":"high"}
+{"caseId":"gA05-B","labels":["leave_food"],"rule":"R4 收话人唯一，按指令留一份","confidence":"high"}
+{"caseId":"gA06-A","labels":["leave_food"],"rule":"R4 explicitAddressee=true 点名代收人，按指令留给阿澈","confidence":"high"}
+{"caseId":"gA06-B","labels":["ask_clarify"],"rule":"R4 未点名且 presentOthers=3（>=2），须澄清对象","confidence":"high"}
+{"caseId":"gA07-A","labels":["ask_clarify"],"rule":"R4 presentOthers=2 群体指令无先后安排，须澄清","confidence":"medium"}
+{"caseId":"gA07-B","labels":["eat_self"],"rule":"R4 presentOthers=1 收话人唯一，可先吃","confidence":"medium"}
+{"caseId":"gA08-A","labels":["leave_food"],"rule":"R4 presentOthers=1 收话人唯一，按指令留到晚上","confidence":"medium"}
+{"caseId":"gA08-B","labels":["ask_clarify"],"rule":"R4 presentOthers=2 且未点名，须澄清（在场姓名与场景不符）","confidence":"low"}
+{"caseId":"gY01-A","labels":["eat_self"],"rule":"R5 knowsCancellation=true，不得执行过时承诺","confidence":"high"}
+{"caseId":"gY01-B","labels":["leave_food"],"rule":"R5 未获知取消，保留旧知识（非记忆错误）","confidence":"high"}
+{"caseId":"gY02-A","labels":["leave_food"],"rule":"R5 取消未传达到本角色，保留旧承诺（非记忆错误）","confidence":"high"}
+{"caseId":"gY02-B","labels":["eat_self"],"rule":"R5 已获知取消，不得继续留饭","confidence":"high"}
+{"caseId":"gY03-A","labels":["ask_clarify","decline"],"rule":"R6 foodStock=0 无法兑现留饭，应澄清求援并拒绝承诺","confidence":"high"}
+{"caseId":"gY03-B","labels":["leave_food"],"rule":"R5/R6 未获知取消且有 3 份库存，按旧承诺留饭","confidence":"high"}
+{"caseId":"gY04-A","labels":["eat_self"],"rule":"R5 已获知取消，库存充足也与留饭无关","confidence":"high"}
+{"caseId":"gY04-B","labels":["eat_self"],"rule":"R5 已获知取消，foodStock=0 不改变决策","confidence":"high"}
+{"caseId":"gY05-A","labels":["leave_food"],"rule":"R6 未获知取消且库存够一份，可执行旧承诺","confidence":"high"}
+{"caseId":"gY05-B","labels":["ask_clarify","decline"],"rule":"R6 foodStock=0 不能承诺实际留饭，须澄清求援","confidence":"high"}
+{"caseId":"gY06-A","labels":["eat_self"],"rule":"R5 当面听清取消，旧承诺失效","confidence":"high"}
+{"caseId":"gY06-B","labels":["leave_food"],"rule":"R5 未获知取消，保留旧知识（不是记忆错误）","confidence":"high"}
+{"caseId":"gY07-A","labels":["leave_food"],"rule":"R2/R5 第三方未转达即未获知，旧承诺仍有效（非记忆错误）","confidence":"high"}
+{"caseId":"gY07-B","labels":["eat_self"],"rule":"R5 knowsCancellation=true，不得执行过时承诺","confidence":"medium"}
+{"caseId":"gY08-A","labels":["leave_food","ask_clarify"],"rule":"R5 误认取消对象等于未获知，保留旧知识并非记忆错误","confidence":"medium"}
+{"caseId":"gY08-B","labels":["eat_self"],"rule":"R5 已获知取消，旧承诺失效","confidence":"medium"}

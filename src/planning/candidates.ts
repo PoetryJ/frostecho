@@ -13,6 +13,7 @@ import {
   type ChoiceRequest,
   type ChoiceResult,
   type ChoiceTask,
+  type ObservedFact,
 } from '../decision/contracts';
 
 export interface PlanningNpc {
@@ -67,6 +68,25 @@ const UTILITY_WEIGHTS: Record<string, number> = {
   preference: 0.3,
   risk: -0.5,
 };
+
+function parametersFor(candidate: Candidate, input: CandidateInput): Record<string, unknown> {
+  switch (candidate.id) {
+    case 'c-eat': return { action: 'eat', amount: 1 };
+    case 'c-refuel': return { action: 'refuel', amount: 1 };
+    case 'c-rest': return { action: 'rest', minutes: 60 };
+    case 'c-work': return { action: 'work', minutes: 60 };
+    case 'c-gather-food': return { action: 'gather', resource: 'food', amount: 2 };
+    case 'c-gather-wood': return { action: 'gather', resource: 'firewood', amount: 2 };
+    case 'c-medical': return { action: 'medical', amount: 1 };
+    case 'c-wait': return { action: 'wait' };
+    default:
+      if (candidate.id.startsWith('c-help-')) {
+        const promise = (input.promises ?? []).find(entry => `c-help-${entry.promiseId}` === candidate.id);
+        return { action: 'reserve', amount: 1, forId: promise?.toId ?? 'player' };
+      }
+      return { action: 'talk' };
+  }
+}
 
 export function utilityOf(candidate: Candidate): number {
   let total = 0;
@@ -138,17 +158,18 @@ export function generateCandidates(input: CandidateInput): Candidate[] {
   }
   const friend = (input.relations ?? []).find(relation => relation.trust > 0.2 && relation.toId !== self.id);
   if (friend && self.stamina > 20) {
-    out.push(candidate(`c-assist-${friend.toId}`, 'help', `帮助 ${friend.toId}`, {
+    out.push(candidate(`c-assist-${friend.toId}`, 'social', `与 ${friend.toId} 沟通`, {
       social: Math.min(1, friend.trust),
-    }, { stamina: -2 }, ['alive']));
+    }, { stamina: -1 }, ['alive']));
   }
   out.push(candidate('c-wait', 'wait', '原地等待', { preference: 0.1 }, {}, ['alive']));
-  return out;
+  return out.map(entry => ({ ...entry, parameters: parametersFor(entry, input) }));
 }
 
 export function buildPlanningRequest(input: CandidateInput & {
   requestId: string;
   stateVersion: number;
+  memoryFacts?: ObservedFact[];
   memorySnapshotHash?: string;
   memoryPolicyVersion?: string;
   task?: ChoiceTask;
@@ -162,7 +183,7 @@ export function buildPlanningRequest(input: CandidateInput & {
     observation: { npcs: input.view.npcs, resources: input.view.resources,
       furnace: input.view.furnace, weather: input.view.weather },
     question: '考虑到当前资源、身体状态和承诺，现在最该做什么？',
-    memoryFacts: [],
+    memoryFacts: input.memoryFacts ?? [],
     relationships: input.relations ?? [],
     goals: (input.promises ?? []).filter(promise => promise.status === 'active')
       .map(promise => ({ promiseId: promise.promiseId, toId: promise.toId })),

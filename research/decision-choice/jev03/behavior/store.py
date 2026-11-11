@@ -204,7 +204,10 @@ class JobStore:
         for job_id in self.recover()["resumable"]:
             payload = self.read_result(job_id)
             digest = sha256_text(canonical(payload))
-            cost = payload.get("measuredCost") or {"source": "recovered", "modelCalls": 0}
+            from runtime import measured_cost  # local import avoids a cycle
+            cost = measured_cost(payload)
+            if cost.get("source") == "invalid":
+                raise RuntimeError(f"invalid measuredCost on resume: {cost.get('reason')}")
             self._append({"event": "result", "jobId": job_id, "payloadSha": digest,
                           "bytes": len(canonical(payload).encode("utf-8")),
                           "at": R3.now_iso(), "recovered": True})

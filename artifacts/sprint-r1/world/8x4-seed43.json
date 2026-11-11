@@ -1,0 +1,926 @@
+{
+  "summary": {
+    "count": 8,
+    "days": 4,
+    "seed": "43",
+    "elapsedHours": 96,
+    "finalDay": 5,
+    "ending": "survived",
+    "alive": 8,
+    "events": 68,
+    "elapsedMs": 0.9529490000000038,
+    "resources": {
+      "food": 57,
+      "firewood": 51,
+      "power": 56,
+      "medicine": 2
+    },
+    "stateSha256": "5e9b6386216a9e28da5db5c26ecdfdff7f3c912fe1e8223d2e21b4b11ccb18fa",
+    "traceSha256": "f0e20d41661b62b5f5082cbfb673d562a4898ea79b6410ad472eb8d194e0bd07"
+  },
+  "trace": [
+    {
+      "round": 1,
+      "simTime": 1440,
+      "worldDay": 2,
+      "ending": "none",
+      "alive": 8,
+      "resources": {
+        "food": 50,
+        "firewood": 28,
+        "power": 44,
+        "medicine": 2
+      },
+      "hunger": [
+        47.8,
+        47.8,
+        47.8,
+        44.4,
+        47.8,
+        47.8,
+        47.8,
+        44.4
+      ],
+      "events": [
+        {
+          "eventId": "d1-wake:time_advanced:0",
+          "type": "time_advanced",
+          "simTime": 480,
+          "payload": {
+            "minutes": 480
+          }
+        },
+        {
+          "eventId": "d1-gather-npc_01:gathered:1",
+          "type": "gathered",
+          "simTime": 480,
+          "actorId": "npc_01",
+          "payload": {
+            "resource": "food",
+            "amount": 7
+          }
+        },
+        {
+          "eventId": "d1-gather-npc_02:gathered:2",
+          "type": "gathered",
+          "simTime": 480,
+          "actorId": "npc_02",
+          "payload": {
+            "resource": "food",
+            "amount": 6
+          }
+        },
+        {
+          "eventId": "d1-wood-npc_03:gathered:3",
+          "type": "gathered",
+          "simTime": 480,
+          "actorId": "npc_03",
+          "payload": {
+            "resource": "firewood",
+            "amount": 7
+          }
+        },
+        {
+          "eventId": "d1-work-npc_04:worked:4",
+          "type": "worked",
+          "simTime": 480,
+          "actorId": "npc_04",
+          "payload": {
+            "minutes": 60,
+            "power": 2
+          }
+        },
+        {
+          "eventId": "d1-gather-npc_05:gathered:5",
+          "type": "gathered",
+          "simTime": 480,
+          "actorId": "npc_05",
+          "payload": {
+            "resource": "food",
+            "amount": 6
+          }
+        },
+        {
+          "eventId": "d1-gather-npc_06:gathered:6",
+          "type": "gathered",
+          "simTime": 480,
+          "actorId": "npc_06",
+          "payload": {
+            "resource": "food",
+            "amount": 7
+          }
+        },
+        {
+          "eventId": "d1-wood-npc_07:gathered:7",
+          "type": "gathered",
+          "simTime": 480,
+          "actorId": "npc_07",
+          "payload": {
+            "resource": "firewood",
+            "amount": 6
+          }
+        },
+        {
+          "eventId": "d1-work-npc_08:worked:8",
+          "type": "worked",
+          "simTime": 480,
+          "actorId": "npc_08",
+          "payload": {
+            "minutes": 60,
+            "power": 2
+          }
+        },
+        {
+          "eventId": "d1-refuel:refuelled:9",
+          "type": "refuelled",
+          "simTime": 480,
+          "actorId": "npc_01",
+          "payload": {
+            "amount": 5
+          }
+        },
+        {
+          "eventId": "d1-night:time_advanced:10",
+          "type": "time_advanced",
+          "simTime": 1440,
+          "payload": {
+            "minutes": 960
+          }
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "simTime": 2880,
+      "worldDay": 3,
+      "ending": "none",
+      "alive": 8,
+      "resources": {
+        "food": 53,
+        "firewood": 35,
+        "power": 48,
+        "medicine": 2
+      },
+      "hunger": [
+        52.6,
+        52.6,
+        52.6,
+        45.79999999999999,
+        52.6,
+        52.6,
+        52.6,
+        45.79999999999999
+      ],
+      "events": [
+        {
+          "eventId": "d2-wake:time_advanced:11",
+          "type": "time_advanced",
+          "simTime": 1920,
+          "payload": {
+            "minutes": 480
+          }
+        },
+        {
+          "eventId": "d2-eat-npc_01:ate:12",
+          "type": "ate",
+          "simTime": 1920,
+          "actorId": "npc_01",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d2-gather-npc_01:gathered:13",
+          "type": "gathered",
+          "simTime": 1920,
+          "actorId": "npc_01",
+          "payload": {
+            "resource": "food",
+            "amount": 7
+          }
+        },
+        {
+          "eventId": "d2-eat-npc_02:ate:14",
+          "type": "ate",
+          "simTime": 1920,
+          "actorId": "npc_02",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d2-gather-npc_02:gathered:15",
+          "type": "gathered",
+          "simTime": 1920,
+          "actorId": "npc_02",
+          "payload": {
+            "resource": "food",
+            "amount": 7
+          }
+        },
+        {
+          "eventId": "d2-eat-npc_03:ate:16",
+          "type": "ate",
+          "simTime": 1920,
+          "actorId": "npc_03",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d2-wood-npc_03:gathered:17",
+          "type": "gathered",
+          "simTime": 1920,
+          "actorId": "npc_03",
+          "payload": {
+            "resource": "firewood",
+            "amount": 6
+          }
+        },
+        {
+          "eventId": "d2-eat-npc_04:ate:18",
+          "type": "ate",
+          "simTime": 1920,
+          "actorId": "npc_04",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d2-work-npc_04:worked:19",
+          "type": "worked",
+          "simTime": 1920,
+          "actorId": "npc_04",
+          "payload": {
+            "minutes": 60,
+            "power": 2
+          }
+        },
+        {
+          "eventId": "d2-eat-npc_05:ate:20",
+          "type": "ate",
+          "simTime": 1920,
+          "actorId": "npc_05",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d2-gather-npc_05:gathered:21",
+          "type": "gathered",
+          "simTime": 1920,
+          "actorId": "npc_05",
+          "payload": {
+            "resource": "food",
+            "amount": 7
+          }
+        },
+        {
+          "eventId": "d2-eat-npc_06:ate:22",
+          "type": "ate",
+          "simTime": 1920,
+          "actorId": "npc_06",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d2-gather-npc_06:gathered:23",
+          "type": "gathered",
+          "simTime": 1920,
+          "actorId": "npc_06",
+          "payload": {
+            "resource": "food",
+            "amount": 6
+          }
+        },
+        {
+          "eventId": "d2-eat-npc_07:ate:24",
+          "type": "ate",
+          "simTime": 1920,
+          "actorId": "npc_07",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d2-wood-npc_07:gathered:25",
+          "type": "gathered",
+          "simTime": 1920,
+          "actorId": "npc_07",
+          "payload": {
+            "resource": "firewood",
+            "amount": 6
+          }
+        },
+        {
+          "eventId": "d2-eat-npc_08:ate:26",
+          "type": "ate",
+          "simTime": 1920,
+          "actorId": "npc_08",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d2-work-npc_08:worked:27",
+          "type": "worked",
+          "simTime": 1920,
+          "actorId": "npc_08",
+          "payload": {
+            "minutes": 60,
+            "power": 2
+          }
+        },
+        {
+          "eventId": "d2-refuel:refuelled:28",
+          "type": "refuelled",
+          "simTime": 1920,
+          "actorId": "npc_01",
+          "payload": {
+            "amount": 5
+          }
+        },
+        {
+          "eventId": "d2-night:time_advanced:29",
+          "type": "time_advanced",
+          "simTime": 2880,
+          "payload": {
+            "minutes": 960
+          }
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "simTime": 4320,
+      "worldDay": 4,
+      "ending": "none",
+      "alive": 8,
+      "resources": {
+        "food": 55,
+        "firewood": 43,
+        "power": 52,
+        "medicine": 2
+      },
+      "hunger": [
+        57.40000000000001,
+        57.40000000000001,
+        57.40000000000001,
+        47.199999999999996,
+        57.40000000000001,
+        57.40000000000001,
+        57.40000000000001,
+        47.199999999999996
+      ],
+      "events": [
+        {
+          "eventId": "d3-wake:time_advanced:30",
+          "type": "time_advanced",
+          "simTime": 3360,
+          "payload": {
+            "minutes": 480
+          }
+        },
+        {
+          "eventId": "d3-eat-npc_01:ate:31",
+          "type": "ate",
+          "simTime": 3360,
+          "actorId": "npc_01",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d3-gather-npc_01:gathered:32",
+          "type": "gathered",
+          "simTime": 3360,
+          "actorId": "npc_01",
+          "payload": {
+            "resource": "food",
+            "amount": 7
+          }
+        },
+        {
+          "eventId": "d3-eat-npc_02:ate:33",
+          "type": "ate",
+          "simTime": 3360,
+          "actorId": "npc_02",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d3-gather-npc_02:gathered:34",
+          "type": "gathered",
+          "simTime": 3360,
+          "actorId": "npc_02",
+          "payload": {
+            "resource": "food",
+            "amount": 7
+          }
+        },
+        {
+          "eventId": "d3-eat-npc_03:ate:35",
+          "type": "ate",
+          "simTime": 3360,
+          "actorId": "npc_03",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d3-wood-npc_03:gathered:36",
+          "type": "gathered",
+          "simTime": 3360,
+          "actorId": "npc_03",
+          "payload": {
+            "resource": "firewood",
+            "amount": 6
+          }
+        },
+        {
+          "eventId": "d3-eat-npc_04:ate:37",
+          "type": "ate",
+          "simTime": 3360,
+          "actorId": "npc_04",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d3-work-npc_04:worked:38",
+          "type": "worked",
+          "simTime": 3360,
+          "actorId": "npc_04",
+          "payload": {
+            "minutes": 60,
+            "power": 2
+          }
+        },
+        {
+          "eventId": "d3-eat-npc_05:ate:39",
+          "type": "ate",
+          "simTime": 3360,
+          "actorId": "npc_05",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d3-gather-npc_05:gathered:40",
+          "type": "gathered",
+          "simTime": 3360,
+          "actorId": "npc_05",
+          "payload": {
+            "resource": "food",
+            "amount": 6
+          }
+        },
+        {
+          "eventId": "d3-eat-npc_06:ate:41",
+          "type": "ate",
+          "simTime": 3360,
+          "actorId": "npc_06",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d3-gather-npc_06:gathered:42",
+          "type": "gathered",
+          "simTime": 3360,
+          "actorId": "npc_06",
+          "payload": {
+            "resource": "food",
+            "amount": 6
+          }
+        },
+        {
+          "eventId": "d3-eat-npc_07:ate:43",
+          "type": "ate",
+          "simTime": 3360,
+          "actorId": "npc_07",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d3-wood-npc_07:gathered:44",
+          "type": "gathered",
+          "simTime": 3360,
+          "actorId": "npc_07",
+          "payload": {
+            "resource": "firewood",
+            "amount": 7
+          }
+        },
+        {
+          "eventId": "d3-eat-npc_08:ate:45",
+          "type": "ate",
+          "simTime": 3360,
+          "actorId": "npc_08",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d3-work-npc_08:worked:46",
+          "type": "worked",
+          "simTime": 3360,
+          "actorId": "npc_08",
+          "payload": {
+            "minutes": 60,
+            "power": 2
+          }
+        },
+        {
+          "eventId": "d3-refuel:refuelled:47",
+          "type": "refuelled",
+          "simTime": 3360,
+          "actorId": "npc_01",
+          "payload": {
+            "amount": 5
+          }
+        },
+        {
+          "eventId": "d3-night:time_advanced:48",
+          "type": "time_advanced",
+          "simTime": 4320,
+          "payload": {
+            "minutes": 960
+          }
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "simTime": 5760,
+      "worldDay": 5,
+      "ending": "survived",
+      "alive": 8,
+      "resources": {
+        "food": 57,
+        "firewood": 51,
+        "power": 56,
+        "medicine": 2
+      },
+      "hunger": [
+        62.200000000000024,
+        62.200000000000024,
+        62.200000000000024,
+        48.6,
+        62.200000000000024,
+        62.200000000000024,
+        62.200000000000024,
+        48.6
+      ],
+      "events": [
+        {
+          "eventId": "d4-wake:time_advanced:49",
+          "type": "time_advanced",
+          "simTime": 4800,
+          "payload": {
+            "minutes": 480
+          }
+        },
+        {
+          "eventId": "d4-eat-npc_01:ate:50",
+          "type": "ate",
+          "simTime": 4800,
+          "actorId": "npc_01",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d4-gather-npc_01:gathered:51",
+          "type": "gathered",
+          "simTime": 4800,
+          "actorId": "npc_01",
+          "payload": {
+            "resource": "food",
+            "amount": 7
+          }
+        },
+        {
+          "eventId": "d4-eat-npc_02:ate:52",
+          "type": "ate",
+          "simTime": 4800,
+          "actorId": "npc_02",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d4-gather-npc_02:gathered:53",
+          "type": "gathered",
+          "simTime": 4800,
+          "actorId": "npc_02",
+          "payload": {
+            "resource": "food",
+            "amount": 7
+          }
+        },
+        {
+          "eventId": "d4-eat-npc_03:ate:54",
+          "type": "ate",
+          "simTime": 4800,
+          "actorId": "npc_03",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d4-wood-npc_03:gathered:55",
+          "type": "gathered",
+          "simTime": 4800,
+          "actorId": "npc_03",
+          "payload": {
+            "resource": "firewood",
+            "amount": 6
+          }
+        },
+        {
+          "eventId": "d4-eat-npc_04:ate:56",
+          "type": "ate",
+          "simTime": 4800,
+          "actorId": "npc_04",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d4-work-npc_04:worked:57",
+          "type": "worked",
+          "simTime": 4800,
+          "actorId": "npc_04",
+          "payload": {
+            "minutes": 60,
+            "power": 2
+          }
+        },
+        {
+          "eventId": "d4-eat-npc_05:ate:58",
+          "type": "ate",
+          "simTime": 4800,
+          "actorId": "npc_05",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d4-gather-npc_05:gathered:59",
+          "type": "gathered",
+          "simTime": 4800,
+          "actorId": "npc_05",
+          "payload": {
+            "resource": "food",
+            "amount": 6
+          }
+        },
+        {
+          "eventId": "d4-eat-npc_06:ate:60",
+          "type": "ate",
+          "simTime": 4800,
+          "actorId": "npc_06",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d4-gather-npc_06:gathered:61",
+          "type": "gathered",
+          "simTime": 4800,
+          "actorId": "npc_06",
+          "payload": {
+            "resource": "food",
+            "amount": 6
+          }
+        },
+        {
+          "eventId": "d4-eat-npc_07:ate:62",
+          "type": "ate",
+          "simTime": 4800,
+          "actorId": "npc_07",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d4-wood-npc_07:gathered:63",
+          "type": "gathered",
+          "simTime": 4800,
+          "actorId": "npc_07",
+          "payload": {
+            "resource": "firewood",
+            "amount": 7
+          }
+        },
+        {
+          "eventId": "d4-eat-npc_08:ate:64",
+          "type": "ate",
+          "simTime": 4800,
+          "actorId": "npc_08",
+          "payload": {
+            "amount": 3
+          }
+        },
+        {
+          "eventId": "d4-work-npc_08:worked:65",
+          "type": "worked",
+          "simTime": 4800,
+          "actorId": "npc_08",
+          "payload": {
+            "minutes": 60,
+            "power": 2
+          }
+        },
+        {
+          "eventId": "d4-refuel:refuelled:66",
+          "type": "refuelled",
+          "simTime": 4800,
+          "actorId": "npc_01",
+          "payload": {
+            "amount": 5
+          }
+        },
+        {
+          "eventId": "d4-night:time_advanced:67",
+          "type": "time_advanced",
+          "simTime": 5760,
+          "payload": {
+            "minutes": 960
+          }
+        }
+      ]
+    }
+  ],
+  "final": {
+    "schema": "frostecho.world-v2/2",
+    "rulesVersion": "survival-rules/2",
+    "day": 5,
+    "simTime": 5760,
+    "version": 68,
+    "rngSeed": "43",
+    "weather": "snow",
+    "npcs": {
+      "npc_01": {
+        "id": "npc_01",
+        "location": "dorm-a",
+        "hunger": 62.200000000000024,
+        "stamina": 100,
+        "health": 100,
+        "san": 96.8,
+        "alive": true
+      },
+      "npc_02": {
+        "id": "npc_02",
+        "location": "dorm-b",
+        "hunger": 62.200000000000024,
+        "stamina": 100,
+        "health": 100,
+        "san": 96.8,
+        "alive": true
+      },
+      "npc_03": {
+        "id": "npc_03",
+        "location": "dorm-a",
+        "hunger": 62.200000000000024,
+        "stamina": 100,
+        "health": 100,
+        "san": 96.8,
+        "alive": true
+      },
+      "npc_04": {
+        "id": "npc_04",
+        "location": "dorm-b",
+        "hunger": 48.6,
+        "stamina": 100,
+        "health": 100,
+        "san": 96.8,
+        "alive": true
+      },
+      "npc_05": {
+        "id": "npc_05",
+        "location": "dorm-a",
+        "hunger": 62.200000000000024,
+        "stamina": 100,
+        "health": 100,
+        "san": 96.8,
+        "alive": true
+      },
+      "npc_06": {
+        "id": "npc_06",
+        "location": "dorm-b",
+        "hunger": 62.200000000000024,
+        "stamina": 100,
+        "health": 100,
+        "san": 96.8,
+        "alive": true
+      },
+      "npc_07": {
+        "id": "npc_07",
+        "location": "dorm-a",
+        "hunger": 62.200000000000024,
+        "stamina": 100,
+        "health": 100,
+        "san": 96.8,
+        "alive": true
+      },
+      "npc_08": {
+        "id": "npc_08",
+        "location": "dorm-b",
+        "hunger": 48.6,
+        "stamina": 100,
+        "health": 100,
+        "san": 96.8,
+        "alive": true
+      }
+    },
+    "resources": {
+      "food": 57,
+      "firewood": 51,
+      "power": 56,
+      "medicine": 2
+    },
+    "furnace": {
+      "lit": true,
+      "fuel": 7.599999999999996,
+      "warmth": 18
+    },
+    "commandLog": [
+      "d1-wake",
+      "d1-gather-npc_01",
+      "d1-gather-npc_02",
+      "d1-wood-npc_03",
+      "d1-work-npc_04",
+      "d1-gather-npc_05",
+      "d1-gather-npc_06",
+      "d1-wood-npc_07",
+      "d1-work-npc_08",
+      "d1-refuel",
+      "d1-night",
+      "d2-wake",
+      "d2-eat-npc_01",
+      "d2-gather-npc_01",
+      "d2-eat-npc_02",
+      "d2-gather-npc_02",
+      "d2-eat-npc_03",
+      "d2-wood-npc_03",
+      "d2-eat-npc_04",
+      "d2-work-npc_04",
+      "d2-eat-npc_05",
+      "d2-gather-npc_05",
+      "d2-eat-npc_06",
+      "d2-gather-npc_06",
+      "d2-eat-npc_07",
+      "d2-wood-npc_07",
+      "d2-eat-npc_08",
+      "d2-work-npc_08",
+      "d2-refuel",
+      "d2-night",
+      "d3-wake",
+      "d3-eat-npc_01",
+      "d3-gather-npc_01",
+      "d3-eat-npc_02",
+      "d3-gather-npc_02",
+      "d3-eat-npc_03",
+      "d3-wood-npc_03",
+      "d3-eat-npc_04",
+      "d3-work-npc_04",
+      "d3-eat-npc_05",
+      "d3-gather-npc_05",
+      "d3-eat-npc_06",
+      "d3-gather-npc_06",
+      "d3-eat-npc_07",
+      "d3-wood-npc_07",
+      "d3-eat-npc_08",
+      "d3-work-npc_08",
+      "d3-refuel",
+      "d3-night",
+      "d4-wake",
+      "d4-eat-npc_01",
+      "d4-gather-npc_01",
+      "d4-eat-npc_02",
+      "d4-gather-npc_02",
+      "d4-eat-npc_03",
+      "d4-wood-npc_03",
+      "d4-eat-npc_04",
+      "d4-work-npc_04",
+      "d4-eat-npc_05",
+      "d4-gather-npc_05",
+      "d4-eat-npc_06",
+      "d4-gather-npc_06",
+      "d4-eat-npc_07",
+      "d4-wood-npc_07",
+      "d4-eat-npc_08",
+      "d4-work-npc_08",
+      "d4-refuel",
+      "d4-night"
+    ],
+    "dead": [],
+    "ending": "survived",
+    "scenarioDays": 4
+  }
+}

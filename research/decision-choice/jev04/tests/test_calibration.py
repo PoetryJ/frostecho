@@ -118,3 +118,39 @@ class CertificateTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ArtifactTest(unittest.TestCase):
+    def test_roundtrip_applies_temperature_and_tau(self) -> None:
+        import tempfile
+        from pathlib import Path
+        from calibration import CalibrationArtifact, decide, load_artifact, save_artifact
+        policy = PolicyIdentity(model="fake", head="fake-head", tokenizer="none",
+                                renderer="jev04", task="choose_action", k=4,
+                                memory_policy_version="memory-policy/1")
+        artifact = CalibrationArtifact(schema="frostecho.jev04.calibration-artifact/1",
+                                       policy=policy, temperature=1.5, tau=0.6, valid=True,
+                                       coverage=0.4, upper=0.04)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "cal.json"
+            save_artifact(path, artifact)
+            loaded = load_artifact(path, policy)
+            decision = decide(loaded, [5.0, 0.0, -1.0, -2.0])
+            self.assertEqual(decision["disposition"], "accept")
+            self.assertEqual(decision["selectedIndex"], 0)
+
+    def test_other_policy_is_refused(self) -> None:
+        import tempfile
+        from pathlib import Path
+        from calibration import CalibrationArtifact, load_artifact, save_artifact
+        policy = PolicyIdentity(model="fake", head="fake-head", tokenizer="none",
+                                renderer="jev04", task="choose_action", k=4,
+                                memory_policy_version="memory-policy/1")
+        artifact = CalibrationArtifact(schema="frostecho.jev04.calibration-artifact/1",
+                                       policy=policy, temperature=1.0, tau=0.6, valid=True,
+                                       coverage=0.4, upper=0.04)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "cal.json"
+            save_artifact(path, artifact)
+            with self.assertRaises(ValueError):
+                load_artifact(path, PolicyIdentity(**{**policy.__dict__, "k": 8}))

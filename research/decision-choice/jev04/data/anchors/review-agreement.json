@@ -1,0 +1,101 @@
+{
+  "schema": "frostecho.jev04.anchor-review/1",
+  "anchors": 64,
+  "sessions": {
+    "s1": {
+      "rows": 64,
+      "uniqueIds": 63,
+      "duplicates": [
+        "gR01-B"
+      ],
+      "missing": [
+        "gY08-B"
+      ],
+      "comparable": 63,
+      "exactSetMatch": 33,
+      "exactRate": 0.5238,
+      "safeSubset": 44,
+      "safeSubsetRate": 0.6984,
+      "meanJaccard": 0.7328,
+      "perCategory": {
+        "revocation": {
+          "n": 16,
+          "exact": 4,
+          "subset": 15,
+          "exactRate": 0.25,
+          "subsetRate": 0.9375
+        },
+        "quotation": {
+          "n": 16,
+          "exact": 7,
+          "subset": 7,
+          "exactRate": 0.4375,
+          "subsetRate": 0.4375
+        },
+        "addressee": {
+          "n": 16,
+          "exact": 8,
+          "subset": 8,
+          "exactRate": 0.5,
+          "subsetRate": 0.5
+        },
+        "asymmetry": {
+          "n": 15,
+          "exact": 14,
+          "subset": 14,
+          "exactRate": 0.9333,
+          "subsetRate": 0.9333
+        }
+      }
+    },
+    "s2": {
+      "rows": 64,
+      "uniqueIds": 64,
+      "duplicates": [],
+      "missing": [],
+      "comparable": 64,
+      "exactSetMatch": 25,
+      "exactRate": 0.3906,
+      "safeSubset": 40,
+      "safeSubsetRate": 0.625,
+      "meanJaccard": 0.5573,
+      "perCategory": {
+        "revocation": {
+          "n": 16,
+          "exact": 3,
+          "subset": 16,
+          "exactRate": 0.1875,
+          "subsetRate": 1.0
+        },
+        "quotation": {
+          "n": 16,
+          "exact": 1,
+          "subset": 3,
+          "exactRate": 0.0625,
+          "subsetRate": 0.1875
+        },
+        "addressee": {
+          "n": 16,
+          "exact": 8,
+          "subset": 8,
+          "exactRate": 0.5,
+          "subsetRate": 0.5
+        },
+        "asymmetry": {
+          "n": 16,
+          "exact": 13,
+          "subset": 13,
+          "exactRate": 0.8125,
+          "subsetRate": 0.8125
+        }
+      }
+    }
+  },
+  "interSession": {
+    "commonIds": 63,
+    "exactAgreement": 37,
+    "exactAgreementRate": 0.5873
+  },
+  "disagreementCount": 69,
+  "policy": "challenge/acceptable-set reviewed by H; no label is changed to fit a model"
+}

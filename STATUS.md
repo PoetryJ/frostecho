@@ -1,78 +1,44 @@
-# STATUS — sprint-1116
+# STATUS — sprint R1（2026-11-11）
 
-基线：`3758cb4`。集成分支：`codex/sprint-1116`（不合 main，不改已验收默认）。
-本轮时间：2026-11-10 18:50 — 20:05（+08:00）。
+基线：`844bab54cacff1ea4fe9b413565d5e57f8bb3ffe`；集成分支 `codex/sprint-1116`。
+执行包：`handoff/20261111-sprint-r1` SHA256SUMS 26/26 OK（含 evidence/repros）。
 
-## 执行包校验
+## 先复现，再修复（官方 repros，隔离 clone）
 
-- `handoff/20261110-sprint-1116/SHA256SUMS.txt`：19/19 OK。
-- `handoff/20261110-memory-addendum/SHA256SUMS.txt`：2/2 OK。
-
-## 工作区（真实隔离）
-
-| 目录 | 分支 | 内容 |
+| 复现器 | 基线结果 | 修复后 |
 | --- | --- | --- |
-| `sprint-1116/integration` | `codex/sprint-1116` | 契约、E、C runtime、G/H、合并 |
-| `sprint-1116/A` | `codex/s1116-A` | JEV03R1 CPU 收口 |
-| `sprint-1116/C` | `codex/s1116-C` | 成本接线 + 真实证据复算 |
-| `sprint-1116/D` | `codex/s1116-D` | 事件溯源记忆/关系 + 跨进程轨迹 |
-| `sprint-1116/F` | `codex/s1116-F` | WorldV2 生存世界 + 规模 fixture |
-| `sprint-1116/B` `E` `G` `H` | 对应分支 | 已建 worktree；本轮实现合入 integration |
+| memory-blackbox | 5/5 fail | 5/5 pass |
+| choice-probe | 身份/缓存/检索/恢复/外部 selectedId 全反例 | 全部符合契约 |
+| cost-probe | 实际 run_job finish=unknown | measured，194940/5432 一致 |
+| world-audit | 80h/600h，快照别名污染 | 96h/720h，purity=false changed |
+| world-fault | 8 拒绝仍写 8 kept | 拒绝 0 兑现 |
+| acceptance-classification | 注入失败仍 exit0/blocked | 判 FAIL 且 exit≠0 |
 
-**并行诚实说明**：本轮只启动了 2 个真实只读 subagent（A 数据审计、H legacy 盘点），
-其余实现由主 agent 在各隔离 worktree 完成；不声称 8 个独立执行者已并行写码。
-槽位/时长不足，按波次推进。
+## 本轮修复
 
-## 记忆增补（20261110-memory-addendum）
+- F：`applyCommand` 深拷贝；NaN/Infinity/非法地图拒绝；24h 日历（4日=96h，30日=720h）；`submitCommand` 返回 commandId/applied/rejected/duplicate/eventIds/postStateVersion。
+- D：来源权限看 envelope 而非 payload 声明；`promise_kept` 必须绑定 applied command+beneficiary+event；查询/toJSON 深拷贝；旧 revision 不取消新计划。
+- C：请求 digest 覆盖 actor/question/observation/goals/relations/memory/candidates/模型身份；同 ID 异内容开新请求；实时结果重校验；检索 error/incomplete 0 执行；执行分 scored/submit_pending/applied/rejected/unknown，恢复按 commandId 查询；校准 artifact 实载+身份/T/tau。
+- E：候选参数可直接映射为 F 命令；公平调度、单 actor 在途唯一、超时/取消/迟到拒绝。
+- G：真实 stdin CLI（promise/cancel/tell/step/advance/save/restore），走 `runChoice→submitCommand→事件→记忆`；关系变化仅由确认履约驱动。
+- H：验收只按“确切 testId + 失败签名”分类；G11 证据包内置并 SHA 校验后方可解压；去掉跟踪的 node_modules symlink 与 __pycache__。
 
-- 统一接口：`ChoiceRequest` 增加 `memorySnapshotHash` / `memoryPolicyVersion`，请求、缓存、校准三者绑定。
-- D：四层事件溯源、`(observerId,eventId)` 幂等、来源/获知时间/撤销依赖、有界检索与截断标记、关系投影可重建。
-- C：检索失败 ≠ 空历史；最多一次补查；shadow 不执行；结果与状态/记忆快照绑定。
-- E：只让依赖承诺失效的候选/计划受影响（`invalidateDependentPlans`），无关事件不全局重规划。
-- H：12 条 CPU 回归全部并入测试，12/12；真实记忆消融后置，不阻塞本轮。
-- 首个轨迹：`node dist/scripts/memory-trace.js day1 && node dist/scripts/memory-trace.js day2`。
+## 证据
 
-## 首 12 小时交付状态
+- `artifacts/sprint-r1/acceptance/summary.json`（13 项）
+- `artifacts/sprint-r1/world/{matrix,snapshot-purity,runtime-guards}.json`（9 组 96h/720h）
+- `artifacts/sprint-r1/play/session.json`（真实玩家轨迹）
+- `research/decision-choice/jev04/data/anchors/`（64 锚点、两会话原文、分歧、48/16 split）
+- `artifacts/sprint-r1/models/t27-probe.json`（exit=2 的具体阻塞）
 
-| 项 | 状态 | 证据 |
-| --- | --- | --- |
-| CPU 收口（五错/16 标/双口径/成本） | 完成 | `jev04/cpu-closeout/recompute.json`、`REPORT.md` |
-| 评分/校准/拒答 API + mock | 完成 | `src/decision/runtime.ts`、`jev04/calibration/calibration.py` |
-| 至少一臂训练产物 | **数据门阻塞**；交可复现管线 fixture | `jev04/models/fixture-run/model-manifest.json` |
-| 跨进程记忆/关系演示 | 完成 | `artifacts/sprint-1116/memory-trace/day2.json` |
-| 8NPC 资源/时间/采集/吃饭/供暖闭环 | 完成 | `artifacts/sprint-1116/survival/8x4.json` |
-| LEGACY-PARITY + 首个旧玩法适配 | 清单+reference 四日入口 | `legacy-parity.md`、`artifacts/sprint-1116/play/8npc-4day.json` |
-| 12 条记忆 CPU 回归 | 并入测试，12/12 | `tests/memory-contract.test.ts` |
+## 并行与实际身份
 
-## 测试与验收
+本轮启动 3 个真实独立只读会话：2 个 64 锚点盲审 + 1 个旧 16 标/5 更正复核；
+实现由主 agent 在集成分支完成，不声称 8 路独立写码。GPU 当前空闲但无 Qwen3.5 权重。
 
-```bash
-export PATH=/root/.workbuddy/binaries/node/versions/20.18.0/bin:$PATH
-npm run build                       # 或 node node_modules/typescript/bin/tsc -p tsconfig.json
-npm test
-node dist/scripts/eval-full.js      # 独立验收
-python3 -m unittest discover -s research/decision-choice/jev04/tests -p "test_*.py"
-```
+## 未完成 / 下一阻塞
 
-最近结果：`eval-full` 12 pass / 0 fail / 2 blocked：
-- `g11-verify-latency`：3 条旧测试依赖未入库的 `artifacts/g11-live` 运行文件（基线即缺，非本轮回归）；
-- `g11-live-resume`：watchdog 墙钟偶发（模块未改动，复跑 2/2 通过）。
-
-## GPU / 算力
-
-- 4×H20 97GB，当前每卡约 19–20GB 被其他进程占用；**本轮未启动任何新 GPU 进程**。
-- B 因数据门未过，只跑 CPU 合成 fixture；未抢共享 GPU。
-- 待门控通过后，由主 agent 统一排 27B 提特征 → 4B 训练，单协调者。
-
-## 下一个阻塞（按关键路径）
-
-1. A：64 锚点 + 独立复核 16 标/5 更正 + 结构化 facts/oracle；否则 4096 无法开工。
-2. B：门控通过后接真实 27B/4B；当前只有 fixture。
-3. G：地图/碰撞、任务、议会→命令、危机救援、结局/轮回仍为未开始。
-4. H：g11 缺失证据需决定是否补 bundle（未补旧批，仅报告）。
-
-## 纪律
-
-- 未 push / 未合 main / 未改已验收默认。
-- 旧 gold、预测、账本、checkpoint 未改；更正只做只读派生。
-- 新模型仅 shadow（`jevShadowScorer`，`selectedId=null`），reference 成功不计为 JEV 成功。
+1. 数据：train/dev=48/16，未达 512/128；s1 缺 gY08-B、重复 gR01-B；分歧待 H 预注册 challenge。
+2. B：真实 T27 未启动（无权重、门未过）；仅 `t27-probe.json` 失败记录，无 fixture 冒充。
+3. 原作：8 地图/移动碰撞、议会、危机/救援、结局/轮回、UI/音效/i18n 仍未实现（见 `legacy-parity.md`）。
+4. 未跑真实 GPU 实模吞吐；96h/720h 为 fixture 调度证据，不称实模长程。

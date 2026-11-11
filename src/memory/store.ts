@@ -32,6 +32,8 @@ export interface MemoryRecordInput {
   supersedes?: string[];
   retracts?: string[];
   sourceEventIds?: string[];
+  /** Who actually spoke; the only field authorization may consult. */
+  speakerId?: string;
 }
 
 export interface MemoryRecord extends MemoryRecordInput {
@@ -124,6 +126,10 @@ function sha256(text: string): string {
   return createHash('sha256').update(text, 'utf8').digest('hex');
 }
 
+function clone<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
+}
+
 function canonical(value: unknown): string {
   if (value === null || typeof value !== 'object') return JSON.stringify(value);
   if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
@@ -148,10 +154,16 @@ export class MemoryStore {
     const previous = this.byObserver.get(input.observerId)?.length ?? 0;
     const record: MemoryRecord = {
       ...input,
+      payload: clone(input.payload),
+      // A derived record keeps exactly the provenance it was given; the record
+      // id itself is added to evidenceIds, not rewritten into sourceEventIds.
+      sourceEventIds: input.sourceEventIds && input.sourceEventIds.length > 0
+        ? [...new Set(input.sourceEventIds)] : [input.eventId],
+      supersedes: input.supersedes ? [...input.supersedes] : undefined,
+      retracts: input.retracts ? [...input.retracts] : undefined,
       recordId: `m-${sha256(`${input.observerId}|${input.eventId}`).slice(0, 16)}`,
       revision: previous + 1,
       subjectIds: [...new Set(input.subjectIds)],
-      sourceEventIds: [input.eventId],
     };
     this.records.push(record);
     this.seen.add(key);
@@ -161,7 +173,23 @@ export class MemoryStore {
     return { record, duplicate: false };
   }
 
+  private confirmedFulfilment(record: MemoryRecord): boolean {
+    if (record.source !== 'engine' || record.authority !== 'engine') return false;
+    const payload = record.payload as Record<string, unknown> | null;
+    const confirmation = payload?.confirmation as Record<string, unknown> | undefined;
+    if (!confirmation) return false;
+    const eventIds = Array.isArray(confirmation.eventIds) ? confirmation.eventIds : [];
+    return confirmation.status === 'applied'
+      && typeof confirmation.commandId === 'string' && confirmation.commandId.length > 0
+      && confirmation.promiseId === payload?.promiseId
+      && confirmation.beneficiaryId === payload?.toId
+      && eventIds.includes(record.eventId);
+  }
+
   private applyRelation(record: MemoryRecord): void {
+    // Relations only move on confirmed events this observer could know about.
+    if (record.source !== 'engine' || record.authority === 'inference' || record.authority === 'third_party') return;
+    if (record.kind === 'promise_kept' && !this.confirmedFulfilment(record)) return;
     const delta = RELATION_DELTAS[record.kind];
     if (!delta) return;
     const payload = record.payload as Record<string, unknown> | null;
@@ -206,8 +234,11 @@ export class MemoryStore {
       if (record.kind === 'promise_retract') {
         // Only the two parties to the promise may release it: the promisor
         // withdrawing, or the promisee saying it is no longer needed.
-        const byId = String(payload?.byId ?? '');
-        const authorized = byId === view.fromId || byId === view.toId;
+        // Authority comes from the envelope, never from a payload-declared id.
+        const byId = String(record.speakerId ?? payload?.byId ?? '');
+        const authorityOk = record.authority === 'player' || record.authority === 'npc' || record.authority === 'engine';
+        const authorized = authorityOk && record.source !== 'inference'
+          && (byId === view.fromId || byId === view.toId);
         if (authorized) {
           view.status = 'cancelled';
           view.cancelledBy = byId;
@@ -222,9 +253,16 @@ export class MemoryStore {
           }
         }
       } else if (record.kind === 'promise_kept') {
-        view.status = 'kept';
+        if (this.confirmedFulfilment(record)) {
+          view.status = 'kept';
+        } else {
+          view.conflicts = [...(view.conflicts ?? []),
+            { byId: String(record.speakerId ?? 'unconfirmed'), eventId: record.eventId }];
+        }
       } else if (record.kind === 'promise_broken') {
-        view.status = 'broken';
+        if (record.source === 'engine' && record.authority !== 'inference' && record.authority !== 'third_party') {
+          view.status = 'broken';
+        }
       }
     }
     return [...views.values()];
@@ -273,8 +311,8 @@ export class MemoryStore {
         kind: record.kind,
         occurredAt: record.occurredAt,
         observedAt: record.observedAt,
-        subjectIds: record.subjectIds,
-        payload: record.payload,
+        subjectIds: [...record.subjectIds],
+        payload: clone(record.payload),
         evidenceIds: [...record.sourceEventIds, record.recordId],
         source: record.source,
         authority: record.authority,
@@ -310,7 +348,8 @@ export class MemoryStore {
   }
 
   toJSON(): { schema: string; policyVersion: string; records: MemoryRecord[] } {
-    return { schema: 'frostecho.memory-store/1', policyVersion: this.policyVersion, records: this.records };
+    return { schema: 'frostecho.memory-store/1', policyVersion: this.policyVersion,
+      records: clone(this.records) };
   }
 
   static fromJSON(value: unknown): MemoryStore {
@@ -384,7 +423,8 @@ export function invalidateDependentPlans<T extends PlanLike>(
 ): T[] {
   return plans.map(plan => {
     if (plan.promiseId !== promiseId || status === 'active') return plan;
-    if (plan.dependencyRevision >= revision && plan.state === 'invalidated') return plan;
+    // Only a strictly newer effective revision may invalidate a plan.
+    if (revision <= plan.dependencyRevision) return plan;
     return { ...plan, state: 'invalidated' as const };
   });
 }

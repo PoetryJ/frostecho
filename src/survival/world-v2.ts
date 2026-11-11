@@ -7,9 +7,10 @@
  * larger means fuller. Eating increases it. Do not invert it again (G05).
  */
 
-export const WORLD_V2_SCHEMA = 'frostecho.world-v2/1';
-export const RULES_VERSION = 'survival-rules/1';
+export const WORLD_V2_SCHEMA = 'frostecho.world-v2/2';
+export const RULES_VERSION = 'survival-rules/2';
 export const MINUTES_PER_HOUR = 60;
+export const MINUTES_PER_DAY = 24 * MINUTES_PER_HOUR;
 
 export type Weather = 'clear' | 'snow' | 'storm' | 'cold-snap';
 export type LocationId = 'dorm-a' | 'dorm-b' | 'kitchen' | 'warehouse' | 'workshop' | 'medical' | 'command' | 'village';
@@ -39,6 +40,8 @@ export interface WorldV2 {
   commandLog: string[];
   dead: string[];
   ending: 'none' | 'survived' | 'all-dead';
+  /** Scenario length in real days; the ending is decided by elapsed simTime. */
+  scenarioDays: number;
 }
 
 export type Command =
@@ -90,7 +93,7 @@ export function hashUnit(seed: string, counter: number, channel: string): number
 
 export function createWorldV2(input: {
   npcIds: string[];
-  day?: number;
+  days?: number;
   weather?: Weather;
   resources?: Partial<WorldV2['resources']>;
   rngSeed?: string;
@@ -110,8 +113,8 @@ export function createWorldV2(input: {
   return {
     schema: WORLD_V2_SCHEMA,
     rulesVersion: RULES_VERSION,
-    day: input.day ?? 1,
-    simTime: (input.day ?? 1) * 24 * MINUTES_PER_HOUR,
+    day: 1,
+    simTime: 0,
     version: 0,
     rngSeed: input.rngSeed ?? 'seed-1116',
     weather: input.weather ?? 'snow',
@@ -121,6 +124,7 @@ export function createWorldV2(input: {
     commandLog: [],
     dead: [],
     ending: 'none',
+    scenarioDays: input.days ?? 4,
   };
 }
 
@@ -142,12 +146,18 @@ function needNpc(state: WorldV2, actorId: string): NpcState {
 
 /** Pure reducer. Same state + command always yields the same state + events. */
 export function applyCommand(state: WorldV2, command: Command): { state: WorldV2; events: WorldEvent[] } {
+  if (typeof command.commandId !== 'string' || command.commandId.length === 0) {
+    throw new SurvivalError('bad_command_id', 'commandId must be a non-empty string');
+  }
   if (state.commandLog.includes(command.commandId)) {
     throw new SurvivalError('duplicate_command', `command ${command.commandId} already applied`);
   }
   const events: WorldEvent[] = [];
   let next: WorldV2 = { ...state, commandLog: [...state.commandLog, command.commandId] };
-  const npcs = { ...next.npcs };
+  // Deep-copy every mutable nested object: a returned snapshot must never be
+  // mutated by a later command, and the input state must stay byte-identical.
+  const npcs: Record<string, NpcState> = {};
+  for (const [id, npc] of Object.entries(next.npcs)) npcs[id] = { ...npc };
   const resources = { ...next.resources };
   const furnace = { ...next.furnace };
 
@@ -183,9 +193,9 @@ export function applyCommand(state: WorldV2, command: Command): { state: WorldV2
         }
       }
       next.simTime += command.minutes;
-      next.day = Math.max(1, Math.ceil(next.simTime / (24 * MINUTES_PER_HOUR)));
+      next.day = Math.floor(next.simTime / MINUTES_PER_DAY) + 1;
       if (next.dead.length === Object.keys(npcs).length) next.ending = 'all-dead';
-      else if (next.day > 4) next.ending = 'survived';
+      else if (next.simTime >= next.scenarioDays * MINUTES_PER_DAY) next.ending = 'survived';
       events.push(event(next, command, 'time_advanced', { minutes: command.minutes }));
       break;
     }
@@ -206,7 +216,9 @@ export function applyCommand(state: WorldV2, command: Command): { state: WorldV2
     }
     case 'eat': {
       const npc = needNpc(next, command.actorId);
-      if (command.amount <= 0) throw new SurvivalError('bad_amount', 'eat amount must be positive');
+      if (!Number.isFinite(command.amount) || command.amount <= 0) {
+        throw new SurvivalError('bad_amount', 'eat amount must be a positive finite number');
+      }
       if (resources.food < command.amount) throw new SurvivalError('insufficient_food', 'no food left');
       resources.food -= command.amount;
       // Satiety goes UP. This is the G05 inversion guard.
@@ -217,7 +229,9 @@ export function applyCommand(state: WorldV2, command: Command): { state: WorldV2
     }
     case 'rest': {
       const npc = needNpc(next, command.actorId);
-      if (command.minutes < 0) throw new SurvivalError('bad_minutes', 'rest minutes must be non-negative');
+      if (!Number.isFinite(command.minutes) || command.minutes < 0) {
+        throw new SurvivalError('bad_minutes', 'rest minutes must be a non-negative finite number');
+      }
       const hours = command.minutes / MINUTES_PER_HOUR;
       npcs[npc.id] = { ...npc, stamina: clamp(npc.stamina + 12 * hours, 0, 100),
         health: clamp(npc.health + 1.5 * hours, 0, 100),
@@ -227,7 +241,9 @@ export function applyCommand(state: WorldV2, command: Command): { state: WorldV2
     }
     case 'work': {
       const npc = needNpc(next, command.actorId);
-      if (command.minutes < 0) throw new SurvivalError('bad_minutes', 'work minutes must be non-negative');
+      if (!Number.isFinite(command.minutes) || command.minutes < 0) {
+        throw new SurvivalError('bad_minutes', 'work minutes must be a non-negative finite number');
+      }
       const hours = command.minutes / MINUTES_PER_HOUR;
       if (npc.stamina < 5) throw new SurvivalError('too_tired', `${npc.id} has no stamina to work`);
       const produced = Math.max(1, Math.round(hours * 2));
@@ -239,7 +255,9 @@ export function applyCommand(state: WorldV2, command: Command): { state: WorldV2
     }
     case 'refuel': {
       needNpc(next, command.actorId);
-      if (command.amount <= 0) throw new SurvivalError('bad_amount', 'refuel amount must be positive');
+      if (!Number.isFinite(command.amount) || command.amount <= 0) {
+        throw new SurvivalError('bad_amount', 'refuel amount must be a positive finite number');
+      }
       if (resources.firewood < command.amount) throw new SurvivalError('insufficient_firewood', 'no firewood');
       resources.firewood -= command.amount;
       furnace.fuel = clamp(furnace.fuel + command.amount * 2, 0, 100);
@@ -250,7 +268,9 @@ export function applyCommand(state: WorldV2, command: Command): { state: WorldV2
     case 'medical': {
       needNpc(next, command.actorId);
       const target = needNpc(next, command.targetId);
-      if (command.amount <= 0) throw new SurvivalError('bad_amount', 'medical amount must be positive');
+      if (!Number.isFinite(command.amount) || command.amount <= 0) {
+        throw new SurvivalError('bad_amount', 'medical amount must be a positive finite number');
+      }
       if (resources.medicine < command.amount) throw new SurvivalError('insufficient_medicine', 'no medicine');
       resources.medicine -= command.amount;
       npcs[target.id] = { ...target, health: clamp(target.health + command.amount * 25, 0, 100) };
@@ -259,13 +279,18 @@ export function applyCommand(state: WorldV2, command: Command): { state: WorldV2
     }
     case 'move': {
       const npc = needNpc(next, command.actorId);
+      if (!LOCATIONS.includes(command.to)) {
+        throw new SurvivalError('bad_location', `unknown location ${String(command.to)}`);
+      }
       npcs[npc.id] = { ...npc, location: command.to, stamina: clamp(npc.stamina - 3, 0, 100) };
       events.push(event(next, command, 'moved', { to: command.to }));
       break;
     }
     case 'reserve': {
       needNpc(next, command.actorId);
-      if (command.amount <= 0) throw new SurvivalError('bad_amount', 'reserve amount must be positive');
+      if (!Number.isFinite(command.amount) || command.amount <= 0) {
+        throw new SurvivalError('bad_amount', 'reserve amount must be a positive finite number');
+      }
       if (resources.food < command.amount) throw new SurvivalError('insufficient_food', 'no food to reserve');
       resources.food -= command.amount;
       events.push(event(next, command, 'food_reserved', { forId: command.forId, amount: command.amount }));
@@ -278,9 +303,48 @@ export function applyCommand(state: WorldV2, command: Command): { state: WorldV2
   next = bump({ ...next, npcs, resources, furnace }, events[0] ?? event(next, command, 'noop'));
   if (!next.ending || next.ending === 'none') {
     if (next.dead.length === Object.keys(next.npcs).length && next.dead.length > 0) next.ending = 'all-dead';
-    else if (next.day > 4) next.ending = 'survived';
+    else if (next.simTime >= next.scenarioDays * MINUTES_PER_DAY) next.ending = 'survived';
   }
   return { state: next, events };
+}
+
+export const LOCATIONS: readonly LocationId[] = ['dorm-a', 'dorm-b', 'kitchen', 'warehouse',
+  'workshop', 'medical', 'command', 'village'];
+
+export interface CommandResult {
+  commandId: string;
+  status: 'applied' | 'rejected' | 'duplicate' | 'unknown';
+  reason: string | null;
+  events: WorldEvent[];
+  eventIds: string[];
+  postStateVersion: number;
+  state: WorldV2;
+}
+
+/**
+ * Submission port for G/C. Illegal input is rejected without touching state;
+ * a repeated commandId is reported as duplicate and never applies twice.
+ */
+export function submitCommand(state: WorldV2, command: Command): CommandResult {
+  if (typeof command.commandId !== 'string' || command.commandId.length === 0) {
+    return { commandId: String(command.commandId), status: 'rejected',
+      reason: 'bad_command_id', events: [], eventIds: [], postStateVersion: state.version, state };
+  }
+  if (state.commandLog.includes(command.commandId)) {
+    return { commandId: command.commandId, status: 'duplicate', reason: 'command_id already applied',
+      events: [], eventIds: [], postStateVersion: state.version, state };
+  }
+  try {
+    const { state: next, events } = applyCommand(state, command);
+    return { commandId: command.commandId, status: 'applied', reason: null, events,
+      eventIds: events.map(entry => entry.eventId), postStateVersion: next.version, state: next };
+  } catch (error) {
+    if (error instanceof SurvivalError) {
+      return { commandId: command.commandId, status: 'rejected', reason: error.code,
+        events: [], eventIds: [], postStateVersion: state.version, state };
+    }
+    throw error;
+  }
 }
 
 export interface SnapshotV1 {
@@ -316,7 +380,7 @@ export function migrateSnapshot(raw: unknown): WorldV2 {
   return {
     schema: WORLD_V2_SCHEMA,
     rulesVersion: RULES_VERSION,
-    day: Math.max(1, Math.ceil((value.simTime ?? 0) / (24 * MINUTES_PER_HOUR))),
+    day: Math.floor((value.simTime ?? 0) / MINUTES_PER_DAY) + 1,
     simTime: value.simTime ?? 0,
     version: 0,
     rngSeed: 'migrated',
@@ -327,6 +391,7 @@ export function migrateSnapshot(raw: unknown): WorldV2 {
     commandLog: [],
     dead: Object.values(npcs).filter(npc => !npc.alive).map(npc => npc.id),
     ending: 'none',
+    scenarioDays: 4,
   };
 }
 
@@ -366,10 +431,10 @@ export function runEightNpcDay(state: WorldV2, day: number): { state: WorldV2; e
   step({ commandId: `d${day}-wake`, type: 'advance', minutes: 8 * 60 });
   ids.forEach((id, index) => {
     if (!current.npcs[id].alive) return;
-    if (current.npcs[id].hunger < 50 && current.resources.food >= 2) {
-      step({ commandId: `d${day}-eat-${id}`, type: 'eat', actorId: id, amount: 2 });
+    if (current.npcs[id].hunger < 55 && current.resources.food >= 3) {
+      step({ commandId: `d${day}-eat-${id}`, type: 'eat', actorId: id, amount: 3 });
     }
-    if (current.npcs[id].hunger < 20 && current.resources.food >= 1) {
+    if (current.npcs[id].hunger < 25 && current.resources.food >= 1) {
       step({ commandId: `d${day}-eat2-${id}`, type: 'eat', actorId: id, amount: 1 });
     }
     const role = index % 4;
@@ -382,9 +447,11 @@ export function runEightNpcDay(state: WorldV2, day: number): { state: WorldV2; e
     }
   });
   const refueller = ids.find(id => current.npcs[id].alive);
-  if (refueller && current.resources.firewood >= 4) {
-    step({ commandId: `d${day}-refuel`, type: 'refuel', actorId: refueller, amount: 4 });
+  // 24h needs 9.6 fuel at 0.4/h; five wood gives ten fuel.
+  if (refueller && current.resources.firewood >= 5) {
+    step({ commandId: `d${day}-refuel`, type: 'refuel', actorId: refueller, amount: 5 });
   }
-  step({ commandId: `d${day}-night`, type: 'advance', minutes: 12 * 60, recovery: true });
+  // Exactly 24h per day: 8h morning + 16h overnight.
+  step({ commandId: `d${day}-night`, type: 'advance', minutes: 16 * 60, recovery: true });
   return { state: current, events };
 }

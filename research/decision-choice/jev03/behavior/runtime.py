@@ -170,14 +170,42 @@ class CacheBinding:
 
 
 def measured_cost(payload: dict) -> dict:
-    """Cost taken from the model return; never invented."""
+    """Canonical cost for one finished job.
+
+    Consumes and validates `payload["measuredCost"]` written by the caller. A
+    missing block is `unknown`; a malformed block is `invalid` and the caller
+    must fail instead of recording 0. Never invents counts.
+    """
     keys = ("tokensIn", "tokensOut", "decodeCalls", "prefillCalls")
-    if not all(key in payload for key in keys):
-        return {"source": "unknown", "modelCalls": 1}
-    return {"source": "measured", "modelCalls": 1,
-            "tokensIn": int(payload["tokensIn"]), "tokensOut": int(payload["tokensOut"]),
-            "decodeCalls": int(payload["decodeCalls"]),
-            "prefillCalls": int(payload["prefillCalls"])}
+    block = payload.get("measuredCost") if isinstance(payload, dict) else None
+    if block is not None:
+        if not isinstance(block, dict) or block.get("source") != "measured":
+            return {"source": "invalid", "modelCalls": 1,
+                    "reason": "measuredCost.source is not 'measured'"}
+        for key in keys:
+            value = block.get(key)
+            if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+                return {"source": "invalid", "modelCalls": 1,
+                        "reason": f"measuredCost.{key} is not a non-negative integer"}
+        calls = block.get("modelCalls", 1)
+        if not isinstance(calls, int) or isinstance(calls, bool) or calls < 1:
+            return {"source": "invalid", "modelCalls": 1,
+                    "reason": "measuredCost.modelCalls is not a positive integer"}
+        return {"source": "measured", "modelCalls": calls,
+                "tokensIn": block["tokensIn"], "tokensOut": block["tokensOut"],
+                "decodeCalls": block["decodeCalls"], "prefillCalls": block["prefillCalls"]}
+
+    out_key = "tokensOut" if "tokensOut" in payload else "newTokens" if "newTokens" in payload else None
+    if out_key and all(key in payload for key in ("tokensIn", out_key, "decodeCalls", "prefillCalls")):
+        values = {"tokensIn": payload["tokensIn"], "tokensOut": payload[out_key],
+                  "decodeCalls": payload["decodeCalls"], "prefillCalls": payload["prefillCalls"]}
+        if not all(isinstance(value, int) and not isinstance(value, bool) and value >= 0
+                   for value in values.values()):
+            return {"source": "invalid", "modelCalls": 1,
+                    "reason": "top-level cost fields are not non-negative integers"}
+        return {"source": "measured", "modelCalls": 1, **values}
+    return {"source": "unknown", "modelCalls": 1,
+            "reason": "no measuredCost and no complete top-level counts"}
 
 
 def run_job(store: JobStore, job_key: dict, call, payload_fn) -> tuple[dict, dict]:
@@ -193,7 +221,12 @@ def run_job(store: JobStore, job_key: dict, call, payload_fn) -> tuple[dict, dic
     raw = call()
     payload = payload_fn(raw)
     digest = store.commit_result(job_id, payload)
-    store.finish(job_id, digest, measured_cost(payload))
+    cost = measured_cost(payload)
+    if cost.get("source") == "invalid":
+        # Payload is persisted; no finish is written, so recovery sees a
+        # resumable job instead of a fake zero-cost success.
+        raise RuntimeError(f"invalid measuredCost: {cost.get('reason')}")
+    store.finish(job_id, digest, cost)
     return payload, {"reused": False, "modelCalls": 1}
 
 
