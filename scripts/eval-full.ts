@@ -14,7 +14,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createWorldV2, runEightNpcDay, type WorldV2 } from '../src/survival/world-v2';
 
-const OUT = join(process.cwd(), 'artifacts/sprint-r1/acceptance');
+const OUT = join(process.cwd(), 'artifacts/sprint-r2/eval-full');
 const results: { name: string; ok: boolean; blocked?: boolean; detail: string }[] = [];
 
 const KNOWN_FLAKES = [{

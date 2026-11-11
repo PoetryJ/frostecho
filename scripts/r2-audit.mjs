@@ -46,9 +46,9 @@ results[results.length - 1].detail = {
 
 // 3. Integration acceptance (eval-full, recursive discovery).
 const evalFull = run('eval-full', node, ['dist/scripts/eval-full.js']);
-if (existsSync(join(process.cwd(), 'artifacts/sprint-r1/acceptance/summary.json'))) {
+if (existsSync(join(process.cwd(), 'artifacts/sprint-r2/eval-full/summary.json'))) {
   results[results.length - 1].detail = JSON.parse(
-    readFileSync(join(process.cwd(), 'artifacts/sprint-r1/acceptance/summary.json'), 'utf8'));
+    readFileSync(join(process.cwd(), 'artifacts/sprint-r2/eval-full/summary.json'), 'utf8'));
 }
 
 // 4. Python suites.

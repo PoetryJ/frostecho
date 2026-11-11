@@ -1,6 +1,6 @@
 {
   "schema": "frostecho.r2.audit-summary/1",
-  "at": "2026-11-11T10:36:44.348Z",
+  "at": "2026-11-11T10:46:54.095Z",
   "mode": "CPU fixture/reference; no live model claim",
   "passed": 7,
   "failed": 0,
@@ -10,15 +10,15 @@
       "name": "build",
       "exit": 0,
       "ok": true,
-      "ms": 7088,
+      "ms": 7434,
       "tail": ""
     },
     {
       "name": "unit-tests",
       "exit": 0,
       "ok": true,
-      "ms": 124192,
-      "tail": "✔ timeout drops a late eat and submits nothing (0.493599ms)\n✔ reference session still reaches the goal without a player (0.624496ms)\n✔ eating increases satiety (G05 direction guard) (1.570405ms)\n✔ gathering is deterministic for the same seed and state (0.714564ms)\n✔ duplicate command ids are rejected (0.487889ms)\n✔ inventory never goes negative (0.214515ms)\n✔ a dead npc cannot act and its death is recorded once (1.002468ms)\n✔ four-day 8-npc loop is reproducible and ends with a declared ending (2.23379ms)\n✔ resources stay non-negative across the four-day loop (1.500007ms)\n✔ v0 snapshots migrate with documented defaults and the current rule version (0.261274ms)\n✔ a snapshot from another rules version is rejected, not silently upgraded (0.144307ms)\n✔ the presentation view is frozen (0.257944ms)\n✔ R1-F: a command never mutates the input snapshot (0.166047ms)\n✔ R1-F: a previously returned state is not changed by the next command (0.206206ms)\n✔ R1-F: four days is exactly 96h and thirty days is exactly 720h (24.993275ms)\n✔ R1-F: illegal location and non-finite amounts are rejected without effect (0.351532ms)\n✔ R1-F: submitCommand reports applied/rejected/duplicate and does not double-apply (0.272114ms)\nℹ tests 660\nℹ suites 0\nℹ pass 660\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 124073.728884",
+      "ms": 124572,
+      "tail": "✔ timeout drops a late eat and submits nothing (0.499429ms)\n✔ reference session still reaches the goal without a player (0.627136ms)\n✔ eating increases satiety (G05 direction guard) (1.506317ms)\n✔ gathering is deterministic for the same seed and state (0.680545ms)\n✔ duplicate command ids are rejected (0.414551ms)\n✔ inventory never goes negative (0.193116ms)\n✔ a dead npc cannot act and its death is recorded once (1.000478ms)\n✔ four-day 8-npc loop is reproducible and ends with a declared ending (2.189732ms)\n✔ resources stay non-negative across the four-day loop (1.326391ms)\n✔ v0 snapshots migrate with documented defaults and the current rule version (0.266345ms)\n✔ a snapshot from another rules version is rejected, not silently upgraded (0.155156ms)\n✔ the presentation view is frozen (0.230705ms)\n✔ R1-F: a command never mutates the input snapshot (0.159767ms)\n✔ R1-F: a previously returned state is not changed by the next command (0.205486ms)\n✔ R1-F: four days is exactly 96h and thirty days is exactly 720h (24.563544ms)\n✔ R1-F: illegal location and non-finite amounts are rejected without effect (0.372502ms)\n✔ R1-F: submitCommand reports applied/rejected/duplicate and does not double-apply (0.267064ms)\nℹ tests 660\nℹ suites 0\nℹ pass 660\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 124483.846723",
       "detail": {
         "pass": 660,
         "fail": 0
@@ -28,12 +28,12 @@
       "name": "eval-full",
       "exit": 0,
       "ok": true,
-      "ms": 147498,
-      "tail": "PASS unit-tests: files=87 pass=? fail=0\nPASS unit-tests-g11: evidence restored from packaged archive; exit=0\nPASS fixture-8x4-seed-a: ending=survived alive=8 hours=96/96 replay=true invariants=true 3ms\nPASS fixture-8x4-seed-b: ending=survived alive=8 hours=96/96 replay=true invariants=true 1ms\nPASS fixture-8x4-seed-c: ending=survived alive=8 hours=96/96 replay=true invariants=true 2ms\nPASS fixture-16x4-seed-a: ending=survived alive=16 hours=96/96 replay=true invariants=true 3ms\nPASS fixture-16x4-seed-b: ending=survived alive=16 hours=96/96 replay=true invariants=true 2ms\nPASS fixture-16x4-seed-c: ending=survived alive=16 hours=96/96 replay=true invariants=true 2ms\nPASS fixture-32x30-seed-a: ending=survived alive=32 hours=720/720 replay=true invariants=true 749ms\nPASS fixture-32x30-seed-b: ending=survived alive=32 hours=720/720 replay=true invariants=true 757ms\nPASS fixture-32x30-seed-c: ending=survived alive=32 hours=720/720 replay=true invariants=true 768ms\nPASS play-stdin-restore: A=cancelled B-before=active B-after=cancelled\nPASS fixture-reference-trace: mode=fixture-reference decisions=32 alive=8 unbound=0\n{\n  \"path\": \"/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r1/acceptance/summary.json\",\n  \"passed\": 13,\n  \"failed\": 0,\n  \"blocked\": 0\n}",
+      "ms": 149109,
+      "tail": "PASS unit-tests: files=87 pass=? fail=0\nPASS unit-tests-g11: evidence restored from packaged archive; exit=0\nPASS fixture-8x4-seed-a: ending=survived alive=8 hours=96/96 replay=true invariants=true 3ms\nPASS fixture-8x4-seed-b: ending=survived alive=8 hours=96/96 replay=true invariants=true 1ms\nPASS fixture-8x4-seed-c: ending=survived alive=8 hours=96/96 replay=true invariants=true 2ms\nPASS fixture-16x4-seed-a: ending=survived alive=16 hours=96/96 replay=true invariants=true 3ms\nPASS fixture-16x4-seed-b: ending=survived alive=16 hours=96/96 replay=true invariants=true 2ms\nPASS fixture-16x4-seed-c: ending=survived alive=16 hours=96/96 replay=true invariants=true 3ms\nPASS fixture-32x30-seed-a: ending=survived alive=32 hours=720/720 replay=true invariants=true 747ms\nPASS fixture-32x30-seed-b: ending=survived alive=32 hours=720/720 replay=true invariants=true 754ms\nPASS fixture-32x30-seed-c: ending=survived alive=32 hours=720/720 replay=true invariants=true 773ms\nPASS play-stdin-restore: A=cancelled B-before=active B-after=cancelled\nPASS fixture-reference-trace: mode=fixture-reference decisions=32 alive=8 unbound=0\n{\n  \"path\": \"/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r2/eval-full/summary.json\",\n  \"passed\": 13,\n  \"failed\": 0,\n  \"blocked\": 0\n}",
       "detail": {
         "schema": "frostecho.acceptance-summary/2",
         "mode": "CPU fixture/reference; no live model claim",
-        "at": "2026-11-11T10:36:40.605Z",
+        "at": "2026-11-11T10:46:50.249Z",
         "passed": 13,
         "failed": 0,
         "blocked": 0,
@@ -76,22 +76,22 @@
           {
             "name": "fixture-16x4-seed-c",
             "ok": true,
-            "detail": "ending=survived alive=16 hours=96/96 replay=true invariants=true 2ms"
+            "detail": "ending=survived alive=16 hours=96/96 replay=true invariants=true 3ms"
           },
           {
             "name": "fixture-32x30-seed-a",
             "ok": true,
-            "detail": "ending=survived alive=32 hours=720/720 replay=true invariants=true 749ms"
+            "detail": "ending=survived alive=32 hours=720/720 replay=true invariants=true 747ms"
           },
           {
             "name": "fixture-32x30-seed-b",
             "ok": true,
-            "detail": "ending=survived alive=32 hours=720/720 replay=true invariants=true 757ms"
+            "detail": "ending=survived alive=32 hours=720/720 replay=true invariants=true 754ms"
           },
           {
             "name": "fixture-32x30-seed-c",
             "ok": true,
-            "detail": "ending=survived alive=32 hours=720/720 replay=true invariants=true 768ms"
+            "detail": "ending=survived alive=32 hours=720/720 replay=true invariants=true 773ms"
           },
           {
             "name": "play-stdin-restore",
@@ -110,28 +110,28 @@
       "name": "python-jev04",
       "exit": 0,
       "ok": true,
-      "ms": 696,
-      "tail": "..............................\n----------------------------------------------------------------------\nRan 30 tests in 0.454s\n\nOK"
+      "ms": 741,
+      "tail": "..............................\n----------------------------------------------------------------------\nRan 30 tests in 0.465s\n\nOK"
     },
     {
       "name": "python-scorer-port",
       "exit": 0,
       "ok": true,
-      "ms": 102,
+      "ms": 105,
       "tail": ".............\n----------------------------------------------------------------------\nRan 13 tests in 0.004s\n\nOK"
     },
     {
       "name": "data-v2-validation",
       "exit": 0,
       "ok": true,
-      "ms": 76,
+      "ms": 72,
       "tail": "{\n  \"schema\": \"frostecho.jev04.v2-validation/1\",\n  \"cases\": 64,\n  \"train\": 48,\n  \"dev\": 16,\n  \"trainGroups\": 24,\n  \"devGroups\": 8,\n  \"families\": 32,\n  \"adjudication\": {\n    \"keep\": 26,\n    \"challenge\": 39,\n    \"revise\": 4\n  },\n  \"errors\": [],\n  \"warnings\": []\n}"
     },
     {
       "name": "world-matrix-96h-720h",
       "exit": 0,
       "ok": true,
-      "ms": 2833,
+      "ms": 2878,
       "tail": "{\"groups\":9,\"settleAtDay30\":true,\"failures\":0,\"path\":\"/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r2/world/matrix.json\"}",
       "detail": {
         "groups": 9,
