@@ -10,6 +10,8 @@
 export const WORLD_V2_SCHEMA = 'frostecho.world-v2/2';
 export const RULES_VERSION = 'survival-rules/2';
 export const MINUTES_PER_HOUR = 60;
+
+import { createHash } from 'node:crypto';
 export const MINUTES_PER_DAY = 24 * MINUTES_PER_HOUR;
 
 export type Weather = 'clear' | 'snow' | 'storm' | 'cold-snap';
@@ -38,6 +40,13 @@ export interface WorldV2 {
   resources: { food: number; firewood: number; power: number; medicine: number };
   furnace: { lit: boolean; fuel: number; warmth: number };
   commandLog: string[];
+  /**
+   * R2 frozen receipt ledger (owner). Keyed by commandId; records the command
+   * digest plus the FIRST authoritative outcome. A duplicate submit with the
+   * same digest replays this receipt; a different digest is an explicit
+   * conflict. Optional so pre-R2 snapshots load unchanged.
+   */
+  receipts?: Record<string, { digest: string; eventIds: string[]; postStateVersion: number }>;
   dead: string[];
   ending: 'none' | 'survived' | 'all-dead';
   /** Scenario length in real days; the ending is decided by elapsed simTime. */
@@ -305,7 +314,16 @@ export function applyCommand(state: WorldV2, command: Command): { state: WorldV2
     if (next.dead.length === Object.keys(next.npcs).length && next.dead.length > 0) next.ending = 'all-dead';
     else if (next.simTime >= next.scenarioDays * MINUTES_PER_DAY) next.ending = 'survived';
   }
+  // Immutable receipt: written once, never overwritten by later submissions.
+  next = { ...next, receipts: { ...(next.receipts ?? {}),
+    [command.commandId]: { digest: commandDigest(command),
+      eventIds: events.map(entry => entry.eventId), postStateVersion: next.version } } };
   return { state: next, events };
+}
+
+/** Stable content digest used to distinguish a retry from an ID conflict. */
+export function commandDigest(command: Command): string {
+  return createHash('sha256').update(JSON.stringify(command)).digest('hex');
 }
 
 export const LOCATIONS: readonly LocationId[] = ['dorm-a', 'dorm-b', 'kitchen', 'warehouse',
@@ -319,6 +337,8 @@ export interface CommandResult {
   eventIds: string[];
   postStateVersion: number;
   state: WorldV2;
+  /** Present only on `duplicate`: the first authoritative receipt, replayed. */
+  firstReceipt?: { digest: string; eventIds: string[]; postStateVersion: number };
 }
 
 /**
@@ -331,8 +351,15 @@ export function submitCommand(state: WorldV2, command: Command): CommandResult {
       reason: 'bad_command_id', events: [], eventIds: [], postStateVersion: state.version, state };
   }
   if (state.commandLog.includes(command.commandId)) {
+    const first = state.receipts?.[command.commandId];
+    if (first && first.digest !== commandDigest(command)) {
+      return { commandId: command.commandId, status: 'rejected',
+        reason: 'command_id_conflict', events: [], eventIds: [],
+        postStateVersion: state.version, state };
+    }
     return { commandId: command.commandId, status: 'duplicate', reason: 'command_id already applied',
-      events: [], eventIds: [], postStateVersion: state.version, state };
+      events: [], eventIds: first?.eventIds ?? [], postStateVersion: first?.postStateVersion ?? state.version,
+      state, ...(first ? { firstReceipt: first } : {}) };
   }
   try {
     const { state: next, events } = applyCommand(state, command);
