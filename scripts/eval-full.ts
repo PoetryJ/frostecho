@@ -9,7 +9,7 @@
  */
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createWorldV2, runEightNpcDay, type WorldV2 } from '../src/survival/world-v2';
@@ -46,8 +46,17 @@ function failingTestIds(tap: string): string[] {
   return ids;
 }
 
+/** Recursive discovery, identical to scripts/run-tests.mjs (R2 G4). */
+function testFilesIn(dir: string, out: string[] = []): string[] {
+  for (const name of readdirSync(dir).sort()) {
+    const path = join(dir, name);
+    if (statSync(path).isDirectory()) testFilesIn(path, out);
+    else if (name.endsWith('.test.js')) out.push(path);
+  }
+  return out;
+}
 const testDir = join(process.cwd(), 'dist/tests');
-const allFiles = readdirSync(testDir).filter(name => name.endsWith('.test.js')).map(name => join(testDir, name));
+const allFiles = testFilesIn(testDir);
 const g11File = allFiles.find(path => path.endsWith('g11-verify-latency.test.js'));
 const testFiles = allFiles.filter(path => path !== g11File);
 
