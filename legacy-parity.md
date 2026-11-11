@@ -23,10 +23,10 @@
 | 死亡 | `src/systems/death-system.js` | 健康归零 | `npc_died` 事件 | 单测 | fixture |
 | 四日结局 | `src/systems/death-ending.js` | 存活/全员死亡 | `ending` 字段 | 8x4 `survived`、32x30 `survived` | fixture |
 | 轮回/继承 | `src/systems/reincarnation-system.js` | 前世总结/继承 | 无 | 无 | 未开始 |
-| 每日任务/分工 | `src/systems/task-system.js`, `src/core/commander.js` | 派工、完成 | `src/planning/candidates.ts`（候选层） | `tests/planning.test.ts` | 脚手架 |
+| 每日任务/分工 | `src/systems/task-system.js`, `src/core/commander.js` | 派工、完成 | `src/gameplay-v2/`（任务板/冲突/参考规则） | `tests/r2-gameplay.test.ts` 7项（含96h与CLI） | fixture |
 | 议会/投票 | `src/systems/council-system.js` | 决议变命令 | 无 | 无 | 未开始 |
 | 危机/救援 | `src/systems/event-system.js` | 事件触发、救援 | 无 | 无 | 未开始 |
-| 玩家下达命令 | `src/ui/hud.js` 等 | 玩家操作 | `scripts/play-sprint.ts`（CLI 轨迹） | `artifacts/sprint-1116/play/8npc-4day.json` | fixture |
+| 玩家下达命令 | `src/ui/hud.js` 等 | 玩家操作 | `scripts/play-sprint.ts`（真实 stdin，R2 job 生命周期） | `tests/r2-lifecycle.test.ts`、`tests/r2-gameplay.test.ts` | fixture |
 | 承诺/留饭 | 旧对话系统（CHAT_ENABLED=false） | 接受/履约/撤销 | `src/memory/store.ts` + 候选 `help` | 12 条记忆回归 | fixture |
 | 记忆/关系 | `src/npc/npc.js`（最近 20 条、affinity） | 长期记忆、关系变化 | `src/memory/store.ts` | 12 条记忆回归 + 跨进程轨迹 | fixture |
 | UI/HUD | `src/ui/hud.js` | 状态显示 | 无 | 无 | 未开始 |

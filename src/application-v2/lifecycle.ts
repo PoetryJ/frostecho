@@ -16,7 +16,9 @@
 /** Per-player-input job identity and lifecycle state. */
 export type PlayerJobKind =
   | 'observe' | 'promise' | 'cancel' | 'tell' | 'advance'
-  | 'step' | 'knowledge' | 'save' | 'quit';
+  | 'step' | 'knowledge' | 'save' | 'quit'
+  /** R2 gameplay slice commands (additive; same job lifecycle). */
+  | 'assign' | 'cancel-task' | 'task-status' | 'game-step';
 
 export type PlayerJobStatus = 'pending' | 'running' | 'completed' | 'cancelled' | 'failed';
 

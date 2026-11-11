@@ -20,15 +20,21 @@
  *   cancel <npcId> [instanceId] cancel face to face with that NPC only
  *   tell <npcId> <promisorId>   tell another NPC the player already cancelled
  *   step [npcId]               run decisions (all alive NPCs, or one)
+ *   game-step                  run the four-day reference task loop (P)
+ *   assign <npcId> <kind>       assign gather-food|gather-wood|heating|leave-food
+ *   cancel-task <taskId>        cancel a task (cancelled leave-food retracts)
+ *   task-status                task board + day/ending (reference-rules/1)
  *   advance <minutes>           authoritative time advance
  *   knowledge                   each NPC's own promise knowledge
- *   save                        persist the whole session (barrier)
+ *   save                        persist session + task board (barrier)
  *   quit                        exit after the queue drains (barrier)
  */
 import { createInterface } from 'node:readline';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { PlaySession, defaultStatePath } from '../src/application-v2/session';
 import type { PlayerJob, PlayerJobKind } from '../src/application-v2/lifecycle';
+import { GameplayLoop } from '../src/gameplay-v2/loop';
+import { TaskBoard, type GameplayTaskKind } from '../src/gameplay-v2/tasks';
 
 function argValue(name: string): string | undefined {
   const index = process.argv.indexOf(name);
@@ -43,6 +49,12 @@ const food = argValue('--food') === undefined ? undefined : Number(argValue('--f
 const session = existsSync(statePath) && !process.argv.includes('--fresh')
   ? PlaySession.load(statePath)
   : PlaySession.create(npcCount, { days, food, seed: argValue('--seed') ?? `play-${npcCount}` });
+
+// Gameplay tasks live beside the session; both are written by `save`.
+const tasksPath = `${statePath}.tasks.json`;
+const board = existsSync(tasksPath) && !process.argv.includes('--fresh')
+  ? TaskBoard.fromJSON(JSON.parse(readFileSync(tasksPath, 'utf8'))) : new TaskBoard();
+const play = new GameplayLoop(session, board);
 
 const emit = (value: Record<string, unknown>) => console.log(JSON.stringify(value));
 emit({ schema: 'frostecho.play/2', event: 'ready', statePath,
@@ -61,7 +73,8 @@ let quitRequested = false;
 
 function kindOf(command: string): PlayerJobKind {
   const known: PlayerJobKind[] = ['observe', 'promise', 'cancel', 'tell', 'advance',
-    'step', 'knowledge', 'save', 'quit'];
+    'step', 'knowledge', 'save', 'quit', 'assign', 'cancel-task', 'task-status',
+    'game-step'];
   return (known as string[]).includes(command) ? command as PlayerJobKind : 'observe';
 }
 
@@ -110,9 +123,28 @@ async function runJob(job: PlayerJob, line: string,
         emit({ command, jobId: job.jobId, knowledge: session.knowledge(),
           plans: session.plans, instances: session.instances });
         break;
+      case 'assign': {
+        const task = play.assign(rest[0], rest[1] as GameplayTaskKind);
+        emit({ command, jobId: job.jobId, task, mode: 'reference-rules/1' });
+        break;
+      }
+      case 'cancel-task':
+        emit({ command, jobId: job.jobId, cancelled: play.cancelTask(rest[0]) });
+        break;
+      case 'task-status':
+        emit({ command, jobId: job.jobId, status: play.status() });
+        break;
+      case 'game-step': {
+        const result = play.step();
+        emit({ command, jobId: job.jobId, ...result });
+        break;
+      }
       case 'save':
         session.save(statePath);
+        writeFileSync(`${statePath}.tasks.json`,
+          `${JSON.stringify(play.board.toJSON(), null, 2)}\n`, 'utf8');
         emit({ command, jobId: job.jobId, saved: statePath, version: session.world.version,
+          tasks: play.board.tasks.length,
           pending: jobs.filter(entry => entry.kind === 'step' && !entry.terminal).length });
         break;
       case 'quit':
