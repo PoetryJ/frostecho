@@ -221,11 +221,48 @@ def load_artifact(path, request_policy: PolicyIdentity) -> CalibrationArtifact:
                                upper=payload.get("upper"))
 
 
-def decide(artifact: CalibrationArtifact, logits: list[float]) -> dict:
-    """Apply T and tau exactly as the runtime policy does."""
-    probabilities = softmax(logits, artifact.temperature)
-    index = max(range(len(probabilities)), key=lambda i: probabilities[i])
-    pmax = probabilities[index]
-    if pmax < artifact.tau:
-        return {"disposition": "abstain", "selectedIndex": None, "pmax": pmax}
-    return {"disposition": "accept", "selectedIndex": index, "pmax": pmax}
+class ScorerInputError(ValueError):
+    """Fail-closed refusal: the input cannot be scored under this policy."""
+
+
+def decide(artifact: CalibrationArtifact, logits: list[float],
+           candidate_count: int | None = None) -> dict:
+    """Apply T and tau exactly as the runtime policy does.
+
+    R2 fail-closed boundary: the logit count must equal the policy K and the
+    number of legal candidates, and every logit must be finite. Any mismatch
+    raises instead of accepting a default choice. Raw logits, plain softmax,
+    temperature-scaled probabilities and the utility vector are reported
+    separately so a caller can audit each layer.
+    """
+    import math
+
+    k = artifact.policy.k
+    if not isinstance(logits, (list, tuple)):
+        raise ScorerInputError("logits must be a list of numbers")
+    if len(logits) != k:
+        raise ScorerInputError(f"logits count {len(logits)} != policy K={k}")
+    if candidate_count is not None and candidate_count != k:
+        raise ScorerInputError(f"candidate count {candidate_count} != policy K={k}")
+    for position, value in enumerate(logits):
+        if not isinstance(value, (int, float)) or isinstance(value, bool) \
+                or not math.isfinite(float(value)):
+            raise ScorerInputError(f"logit {position} is not finite: {value!r}")
+    if not math.isfinite(float(artifact.temperature)) or artifact.temperature <= 0:
+        raise ScorerInputError("artifact temperature must be positive and finite")
+
+    raw = [float(value) for value in logits]
+    plain = softmax(raw, 1.0)
+    temperatured = softmax(raw, artifact.temperature)
+    index = max(range(len(temperatured)), key=lambda i: temperatured[i])
+    pmax = temperatured[index]
+    accepted = pmax >= artifact.tau
+    return {
+        "rawLogits": raw,
+        "softmaxProbabilities": plain,
+        "temperatureProbabilities": temperatured,
+        "utility": list(temperatured),
+        "disposition": "accept" if accepted else "abstain",
+        "selectedIndex": index if accepted else None,
+        "pmax": pmax,
+    }
