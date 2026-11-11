@@ -15,7 +15,8 @@ import { runChoice, type ExecutionOutcome, type ExecutionPort, type ScorerBindin
 import { makeChoiceResult, type Candidate, type ChoiceRequest } from '../decision/contracts';
 import { buildPlanningRequest, referenceScorer, type PromiseRef, type PlanningView } from '../planning/candidates';
 import { candidateCommand, UnsupportedActionError } from '../planning/commands';
-import { FairScheduler } from '../scheduler-v2/scheduler';
+import { FairScheduler, type TaskLease, type TaskOutcome } from '../scheduler-v2/scheduler';
+import type { PromiseInstance } from './lifecycle';
 import {
   createWorldV2,
   submitCommand,
@@ -40,6 +41,10 @@ export interface SessionDocument {
   memories: Record<string, ReturnType<MemoryStore['toJSON']>>;
   outcomes: Record<string, ExecutionOutcome>;
   plans: PlayerPlan[];
+  /** R2: promise instances; optional so pre-R2 saves load unchanged. */
+  instances?: PromiseInstance[];
+  /** R2: per-actor commit generations; optional for the same reason. */
+  generations?: Record<string, number>;
   sequence: number;
   seed: string;
 }
@@ -62,6 +67,10 @@ export class PlaySession {
   readonly memories = new Map<string, MemoryStore>();
   readonly outcomes: Record<string, ExecutionOutcome> = {};
   plans: PlayerPlan[] = [];
+  /** R2: every promise creation is an instance; retries reuse it by commandId. */
+  instances: PromiseInstance[] = [];
+  /** R2: per-actor commit generation, bumped on cancel/timeout. */
+  readonly generations = new Map<string, number>();
   sequence = 0;
   readonly seed: string;
   readonly npcIds: string[];
@@ -71,6 +80,27 @@ export class PlaySession {
     this.npcIds = npcIds;
     this.seed = seed;
     for (const id of npcIds) this.memories.set(id, new MemoryStore());
+  }
+
+  generationFor(actorId: string): number {
+    return this.generations.get(actorId) ?? 0;
+  }
+
+  /** Revoke every outstanding decision's right to submit for this actor. */
+  bumpGeneration(actorId: string, _reason: string): number {
+    const next = this.generationFor(actorId) + 1;
+    this.generations.set(actorId, next);
+    return next;
+  }
+
+  private promiseKeyOf(npcId: string): string {
+    return `p-food-${npcId}`;
+  }
+
+  private liveInstance(npcId: string): PromiseInstance | undefined {
+    const key = this.promiseKeyOf(npcId);
+    return [...this.instances].reverse().find(instance => instance.promiseKey === key
+      && instance.state === 'active');
   }
 
   static create(npcCount = 8, options: { days?: number; seed?: string; food?: number } = {}): PlaySession {
@@ -90,6 +120,8 @@ export class PlaySession {
     }
     Object.assign(session.outcomes, doc.outcomes);
     session.plans = doc.plans ?? [];
+    session.instances = doc.instances ?? [];
+    for (const [id, value] of Object.entries(doc.generations ?? {})) session.generations.set(id, value);
     session.sequence = doc.sequence ?? 0;
     return session;
   }
@@ -99,7 +131,8 @@ export class PlaySession {
     const memories: Record<string, ReturnType<MemoryStore['toJSON']>> = {};
     for (const [id, store] of this.memories) memories[id] = store.toJSON();
     const doc: SessionDocument = { schema: 'frostecho.session/1', world: this.world,
-      memories, outcomes: this.outcomes, plans: this.plans, sequence: this.sequence, seed: this.seed };
+      memories, outcomes: this.outcomes, plans: this.plans, instances: this.instances,
+      generations: Object.fromEntries(this.generations), sequence: this.sequence, seed: this.seed };
     mkdirSync(dirname(path), { recursive: true });
     writeFileSync(path, `${JSON.stringify(doc, null, 2)}\n`, 'utf8');
   }
@@ -129,54 +162,84 @@ export class PlaySession {
     return out;
   }
 
-  /** Player asks `npcId` to leave food. Everyone in the party hears it. */
-  playerPromise(npcId: string): { promiseId: string; heardBy: string[] } {
+  /**
+   * Player asks `npcId` to leave food. Everyone in the party hears it.
+   * Each creation is a new instance with a unique event id; retrying the same
+   * player command (same commandId) returns the existing instance instead of
+   * creating a second obligation.
+   */
+  playerPromise(npcId: string, commandId?: string): { promiseId: string; instanceId: string;
+    heardBy: string[]; duplicate: boolean } {
     if (!this.world.npcs[npcId]) throw new Error(`unknown npc ${npcId}`);
-    const promiseId = `p-food-${npcId}`;
+    const promiseId = this.promiseKeyOf(npcId);
+    const existing = commandId
+      ? this.instances.find(instance => instance.commandId === commandId) : undefined;
+    if (existing) {
+      return { promiseId: existing.promiseKey, instanceId: existing.instanceId,
+        heardBy: [...this.npcIds], duplicate: true };
+    }
+    const instanceId = `pi-${randomUUID()}`;
+    const eventId = `promise-${instanceId}`;
     const heardBy: string[] = [];
     for (const observer of this.npcIds) {
       if (!this.world.npcs[observer].alive) continue;
       this.ingest(observer, {
-        eventId: `promise-${promiseId}`, occurredAt: this.world.simTime,
+        eventId, occurredAt: this.world.simTime,
         observedAt: this.world.simTime, kind: 'promise_made',
         subjectIds: [npcId, 'player'],
-        payload: { promiseId, fromId: npcId, toId: 'player', text: '给玩家留一份饭' },
+        payload: { promiseId, fromId: npcId, toId: 'player', text: '给玩家留一份饭',
+          instanceId },
         source: 'engine', authority: 'npc', speakerId: npcId,
-        relatedRequestId: promiseId,
+        relatedRequestId: instanceId,
       });
       heardBy.push(observer);
     }
-    this.plans.push({ planId: `plan-${npcId}-${promiseId}`, ownerId: npcId, promiseId,
-      dependencyRevision: 1, state: 'planned' });
+    const instance: PromiseInstance = { instanceId, promiseKey: promiseId,
+      commandId: commandId ?? instanceId, createdAt: this.world.simTime, state: 'active' };
+    this.instances.push(instance);
+    const store = this.memories.get(npcId);
+    const revision = store?.promises(npcId, this.world.simTime)
+      .find(promise => promise.promiseId === promiseId)?.lastRevision ?? 1;
+    this.plans.push({ planId: `plan-${instanceId}`, ownerId: npcId, promiseId,
+      dependencyRevision: revision, state: 'planned' });
     this.refreshPlans();
-    return { promiseId, heardBy };
+    return { promiseId, instanceId, heardBy, duplicate: false };
   }
 
   /** Player cancels face to face with one NPC only. */
-  playerCancel(npcId: string): { promiseId: string; onlyObserver: string } {
-    const promiseId = `p-food-${npcId}`;
+  playerCancel(npcId: string, instanceId?: string): { promiseId: string; instanceId: string | null;
+    onlyObserver: string } {
+    const promiseId = this.promiseKeyOf(npcId);
+    const target = instanceId
+      ? this.instances.find(instance => instance.instanceId === instanceId)
+      : this.liveInstance(npcId);
     this.ingest(npcId, {
-      eventId: `cancel-${promiseId}-${this.sequence++}`, occurredAt: this.world.simTime,
+      eventId: `cancel-${randomUUID()}`, occurredAt: this.world.simTime,
       observedAt: this.world.simTime, kind: 'promise_retract',
       subjectIds: [npcId, 'player'],
-      payload: { promiseId, byId: 'player', text: '不用留了' },
+      payload: { promiseId, byId: 'player', text: '不用留了',
+        instanceId: target?.instanceId ?? null },
       source: 'player_statement', authority: 'player', speakerId: 'player',
-      retracts: [`promise-${promiseId}`],
+      retracts: target ? [`promise-${target.instanceId}`] : [],
     });
+    if (target) target.state = 'cancelled';
+    // A cancellation revokes any in-flight decision built on the old promise.
+    this.bumpGeneration(npcId, 'promise_cancelled');
     this.refreshPlans();
-    return { promiseId, onlyObserver: npcId };
+    return { promiseId, instanceId: target?.instanceId ?? null, onlyObserver: npcId };
   }
 
   /** Player repeats the cancellation to another NPC. */
   playerTell(npcId: string, promisorId: string): { promiseId: string; observer: string } {
-    const promiseId = `p-food-${promisorId}`;
+    const promiseId = this.promiseKeyOf(promisorId);
+    const target = this.liveInstance(promisorId);
     this.ingest(npcId, {
-      eventId: `relay-${promiseId}-${this.sequence++}`, occurredAt: this.world.simTime,
+      eventId: `relay-${randomUUID()}`, occurredAt: this.world.simTime,
       observedAt: this.world.simTime, kind: 'promise_retract',
       subjectIds: [npcId, 'player'],
       payload: { promiseId, byId: 'player', text: '玩家当面说已经取消了' },
       source: 'player_statement', authority: 'player', speakerId: 'player',
-      retracts: [`promise-${promiseId}`],
+      retracts: target ? [`promise-${target.instanceId}`] : [],
     });
     this.refreshPlans();
     return { promiseId, observer: npcId };
@@ -223,27 +286,51 @@ export class PlaySession {
       return { status: 'applied', eventIds: [], postStateVersion: this.world.version, reason: 'wait' };
     }
     const submitted = submitCommand(this.world, command);
-    this.world = submitted.state;
     if (submitted.status === 'applied') {
+      this.world = submitted.state;
       this.ingestEvents(actorId, submitted.events, commandId, candidate.id);
+      const outcome: ExecutionOutcome = { status: 'applied', eventIds: submitted.eventIds,
+        postStateVersion: submitted.postStateVersion, reason: submitted.reason };
+      this.outcomes[commandId] = outcome;
+      return outcome;
     }
-    const outcome: ExecutionOutcome = {
-      status: submitted.status === 'applied' ? 'applied'
-        : submitted.status === 'duplicate' ? 'unknown' : 'rejected',
-      eventIds: submitted.eventIds,
-      postStateVersion: submitted.postStateVersion,
-      reason: submitted.reason,
-    };
+    if (submitted.status === 'duplicate') {
+      // Replay the FIRST authoritative receipt; a confirmed success is never
+      // downgraded to unknown by a retry.
+      const previous = this.outcomes[commandId];
+      if (previous?.status === 'applied') return { ...previous, reason: 'duplicate' };
+      const first = submitted.firstReceipt;
+      const outcome: ExecutionOutcome = { status: 'applied',
+        eventIds: first?.eventIds ?? submitted.eventIds,
+        postStateVersion: first?.postStateVersion ?? submitted.postStateVersion,
+        reason: 'duplicate_replay' };
+      this.outcomes[commandId] = outcome;
+      return outcome;
+    }
+    // Rejected: a same-id/different-content conflict must not overwrite an
+    // already confirmed applied receipt in the ledger.
+    const previous = this.outcomes[commandId];
+    const outcome: ExecutionOutcome = { status: 'rejected',
+      eventIds: submitted.eventIds, postStateVersion: submitted.postStateVersion,
+      reason: submitted.reason };
+    if (previous?.status === 'applied') return { ...outcome, reason: submitted.reason };
     this.outcomes[commandId] = outcome;
     return outcome;
   }
 
   /** Run one real decision for an actor through C's execution port. */
-  async stepActor(actorId: string): Promise<StepDecision> {
+  async stepActor(actorId: string, lease?: TaskLease, expectedGeneration?: number): Promise<StepDecision> {
     const npc = this.world.npcs[actorId];
     if (!npc?.alive) return { actorId, status: 'skipped', selectedId: null, commandId: null,
       executionStatus: null, eventIds: [], postStateVersion: null, executed: false,
       reason: 'not alive', promiseStatuses: [] };
+    // A step accepted BEFORE a cancel must not run afterwards: the generation
+    // captured when the player input was accepted is the commit right.
+    if (expectedGeneration !== undefined && this.generationFor(actorId) !== expectedGeneration) {
+      return { actorId, status: 'cancelled', selectedId: null, commandId: null,
+        executionStatus: null, eventIds: [], postStateVersion: null, executed: false,
+        reason: 'generation_changed_before_start', promiseStatuses: [] };
+    }
     const store = this.memories.get(actorId)!;
     const view = viewOf(this.world);
     const query = store.query({ observerId: actorId, now: this.world.simTime, topK: 8 });
@@ -269,12 +356,31 @@ export class PlaySession {
       (promises[0]?.status ?? 'active') as never, promises[0]?.revision ?? 0);
 
     let decisions: StepDecision['promiseStatuses'] = [];
+    const generation = this.generationFor(actorId);
     const execution: ExecutionPort = {
       commandId: result => `${actorId}-${this.world.version}-${result.selectedId ?? 'none'}`,
-      submit: async (commandId, result) => {
+      submit: async (commandId, result, submittedRequest) => {
         const candidate = request.candidates.find(entry => entry.id === result.selectedId);
         if (!candidate) return { status: 'rejected', eventIds: [], postStateVersion: this.world.version,
           reason: 'unknown_selected_candidate' };
+        // R2 commit-time identity check. Everything below is synchronous: no
+        // await may separate these reads from the authoritative submission.
+        if (lease && !lease.active) {
+          return { status: 'rejected', eventIds: [], postStateVersion: this.world.version,
+            reason: `lease_revoked:${lease.revokedReason ?? 'expired'}` };
+        }
+        if (this.generationFor(actorId) !== generation) {
+          return { status: 'rejected', eventIds: [], postStateVersion: this.world.version,
+            reason: 'stale_generation' };
+        }
+        if (this.world.version !== submittedRequest.stateVersion) {
+          return { status: 'rejected', eventIds: [], postStateVersion: this.world.version,
+            reason: 'stale_state' };
+        }
+        if (store.snapshotHash() !== submittedRequest.memorySnapshotHash) {
+          return { status: 'rejected', eventIds: [], postStateVersion: this.world.version,
+            reason: 'stale_memory' };
+        }
         return this.executeCandidate(actorId, candidate, commandId);
       },
       query: async commandId => this.outcomes[commandId] ?? { status: 'unknown', eventIds: [],
@@ -283,8 +389,10 @@ export class PlaySession {
 
     const outcome = await runChoice(request, referenceScorer(), this.bindingFor(request), {
       execution,
+      // Fresh reads, never the captured query values: a cancel between request
+      // build and submission must invalidate this decision.
       currentSnapshot: () => ({ stateVersion: this.world.version,
-        memorySnapshotHash: query.memorySnapshotHash,
+        memorySnapshotHash: store.snapshotHash(),
         memoryPolicyVersion: query.memoryPolicyVersion }),
     });
     const after = store.promises(actorId, this.world.simTime);
@@ -321,21 +429,30 @@ export class PlaySession {
     }
   }
 
-  /** Round-robin decisions for every actor; one in flight per actor. */
-  async stepAll(): Promise<StepDecision[]> {
+  /**
+   * Round-robin decisions for every actor; one in flight per actor. Returns
+   * both the decisions and the REAL scheduler outcomes (completed/timed_out/
+   * failed/cancelled/late), so callers never silently drop work.
+   */
+  async stepAll(options: { expectedGenerations?: Record<string, number> } = {}):
+    Promise<{ decisions: StepDecision[]; outcomes: TaskOutcome<StepDecision>[] }> {
     const scheduler = new FairScheduler();
     const results = new Map<string, StepDecision>();
     for (const id of this.npcIds) {
       if (!this.world.npcs[id]?.alive) continue;
+      const expected = options.expectedGenerations?.[id];
       scheduler.add({ actorId: id, taskId: `step-${id}-${this.sequence++}`,
-        stateVersion: this.world.version, run: async () => {
-          const decision = await this.stepActor(id);
+        stateVersion: this.world.version, run: async lease => {
+          const decision = await this.stepActor(id, lease, expected);
           results.set(id, decision);
           return decision;
         } });
     }
-    await scheduler.run({ timeoutMs: 30_000, currentVersion: () => this.world.version });
-    return [...results.values()];
+    // Each step builds its request fresh inside run(), so the enqueue-time
+    // version is not a staleness signal; commit-time checks enforce it.
+    const outcomes = await scheduler.run<StepDecision>({ timeoutMs: 30_000, checkVersion: false,
+      currentVersion: () => this.world.version });
+    return { decisions: [...results.values()], outcomes };
   }
 
   observe(): Record<string, unknown> {

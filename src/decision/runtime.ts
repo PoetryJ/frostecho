@@ -135,6 +135,9 @@ export function requestDigest(request: ChoiceRequest, binding: ScorerBinding, sc
   return createHash('sha256').update(canonicalJson({
     schema: request.schema,
     requestId: request.requestId,
+    /** R2: the state version is part of the identity; recovery must not reuse
+     *  a scored answer produced against another world version. */
+    stateVersion: request.stateVersion,
     actorId: request.actorId,
     task: request.task,
     question: request.question,
@@ -329,9 +332,23 @@ export async function runChoice(
           audit: { ...latest.audit, cacheHit: true, recovered: true, executed: false,
             phase: 'unknown', executionStatus: null } };
       }
-      // phase scored or submit_pending without a port: reuse the scored result,
-      // do not call the model again, and continue to submission below.
+      if (latest.phase === 'submit_pending' && latest.commandId && !options.execution) {
+        // A durable submit_pending without a queryable port cannot be resolved;
+        // never assume the effect happened and never run it a second time.
+        return { result: latest.result,
+          audit: { ...latest.audit, cacheHit: true, recovered: true, executed: false,
+            phase: 'unknown', executionStatus: null,
+            reason: 'submit_pending_without_query_port: not re-executed' } };
+      }
+      // phase scored: reuse the scored result, restore the persisted evidence
+      // state, and never let a recorded error/incomplete upgrade to execution.
       recoveredResult = latest.result;
+      audit.retrieval = latest.audit.retrieval;
+      audit.evidenceGate = latest.audit.evidenceGate;
+      audit.extraRetrievalUsed = latest.audit.extraRetrievalUsed;
+      audit.fallbackUsed = latest.audit.fallbackUsed;
+      audit.fallbackFrom = latest.audit.fallbackFrom;
+      audit.invalidResult = latest.audit.invalidResult;
     }
   }
 
@@ -370,6 +387,9 @@ export async function runChoice(
   }
 
   // ---------- evidence gate ----------
+  // Recovered entries must keep their persisted retrieval verdict; only a live
+  // scoring run may claim `ok`. This also applies after recovery.
+  if (recoveredResult) retrieval = audit.retrieval;
   let evidenceBlocked = retrieval === 'error' || retrieval === 'incomplete';
   if (evidenceBlocked && options.extraRetrieval && !audit.extraRetrievalUsed) {
     audit.extraRetrievalUsed = true;
@@ -470,25 +490,35 @@ export async function runChoice(
     audit.executed = execution.status === 'applied';
     if (journal) journal.append({ digest, phase: audit.phase, request: activeRequest, result, audit, commandId, execution });
   } else if (executed && options.execute) {
-    // Legacy callback: the journal records `applied` only after it returns.
-    commandId = `legacy:${digest.slice(0, 16)}`;
-    audit.commandId = commandId;
-    audit.phase = 'submit_pending';
-    if (journal) journal.append({ digest, phase: 'submit_pending', request: activeRequest, result, audit, commandId });
-    try {
-      await options.execute(result);
-      execution = { status: 'applied', eventIds: [], postStateVersion: null, reason: 'legacy callback' };
-    } catch (error) {
-      // A thrown callback leaves the engine outcome unknown; recovery must ask
-      // the authority rather than assume success or failure.
-      execution = { status: 'unknown', eventIds: [], postStateVersion: null,
-        reason: `execute_error: ${(error as Error).message}` };
+    if (journal) {
+      // Durable mode requires a queryable, idempotent submission port. A legacy
+      // void callback has no recovery semantics, so persistent execution is
+      // refused instead of risking a second effect after a crash.
+      result = makeChoiceResult({ request: activeRequest, scorerId: result.scorerId,
+        scores: result.scores, selectedId: null, disposition: 'unavailable',
+        reason: 'legacy_execute_refused_in_journal_mode: no queryable idempotent port' });
+      audit.disposition = result.disposition;
+      audit.reason = result.reason;
+      audit.phase = 'scored';
+      audit.executed = false;
+      if (journal) journal.append({ digest, phase: 'scored', request: activeRequest, result, audit });
+    } else {
+      // Legacy callback without a journal: synchronous compatibility only.
+      commandId = `legacy:${digest.slice(0, 16)}`;
+      audit.commandId = commandId;
+      audit.phase = 'submit_pending';
+      try {
+        await options.execute(result);
+        execution = { status: 'applied', eventIds: [], postStateVersion: null, reason: 'legacy callback' };
+      } catch (error) {
+        execution = { status: 'unknown', eventIds: [], postStateVersion: null,
+          reason: `execute_error: ${(error as Error).message}` };
+      }
+      audit.executionStatus = execution.status === 'unknown' ? null : execution.status;
+      audit.phase = execution.status === 'applied' ? 'applied'
+        : execution.status === 'rejected' ? 'rejected' : 'unknown';
+      audit.executed = execution.status === 'applied';
     }
-    audit.executionStatus = execution.status === 'unknown' ? null : execution.status;
-    audit.phase = execution.status === 'applied' ? 'applied'
-      : execution.status === 'rejected' ? 'rejected' : 'unknown';
-    audit.executed = execution.status === 'applied';
-    if (journal) journal.append({ digest, phase: audit.phase, request: activeRequest, result, audit, commandId, execution });
   } else {
     audit.phase = 'scored';
     audit.executed = false;

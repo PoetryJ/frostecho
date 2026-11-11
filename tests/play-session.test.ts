@@ -37,8 +37,12 @@ test('a rejected reserve writes no promise_kept; success is fulfilled once', () 
   assert.equal(applied.eventIds.length, 1);
   assert.equal(session.knowledge().npc_01.promises[0].status, 'kept');
 
+  // R2 contract: a retry replays the FIRST authoritative receipt and never
+  // downgrades a confirmed success to unknown; resources move only once.
   const duplicate = session.executeCandidate('npc_01', candidate, 'cmd-apply');
-  assert.equal(duplicate.status, 'unknown');
+  assert.equal(duplicate.status, 'applied');
+  assert.deepEqual(duplicate.eventIds, applied.eventIds);
+  assert.equal(duplicate.postStateVersion, applied.postStateVersion);
   assert.equal(session.world.resources.food, 1);
   assert.equal(session.knowledge().npc_01.promises[0].status, 'kept');
 });
@@ -69,8 +73,9 @@ test('stdin input changes the trajectory and executes authoritative commands', a
   const session = PlaySession.create(3, { seed: 'decide' });
   session.playerPromise('npc_01');
   session.playerCancel('npc_01');
-  const decisions = await session.stepAll();
+  const { decisions, outcomes } = await session.stepAll();
   assert.ok(decisions.length >= 1);
+  assert.ok(outcomes.length >= 1);
   for (const decision of decisions) {
     assert.ok(['applied', 'rejected', 'unknown', 'scored'].includes(decision.status));
     assert.ok(decision.executed === false || decision.eventIds.length >= 0);
