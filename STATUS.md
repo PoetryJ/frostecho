@@ -1,3 +1,31 @@
+# STATUS — sprint R2（2026-11-11）
+
+基线：`54214bda95bfae6ec77fdf08d07af4458c0ada39`；集成分支 `codex/sprint-1116`；执行包 `handoff/20261111-sprint-r2` SHA 29/29 OK。
+
+## 本轮结果
+
+- R：stdin job 队列与 save/EOF/quit barrier；cancel/超时撤销提交代次（同步提交段校验 generation+version+memory hash）；承诺实例 ID；回执单调（duplicate 回放 firstReceipt、同 ID 异内容显式冲突）；journal 证据恢复不升级 error→ok；legacy 持久执行 fail closed。
+- P：`src/gameplay-v2/` 任务板（采集/供暖/留饭）、饥饿冲突、关系预登记差异（trust 0→gather-food，trust 1→leave-food）、96h 参考规则纵切；CLI 接 assign/cancel-task/task-status/game-step。
+- D：`jev04/data/v2/` 64 例逐 ID 修订（gQ07 取消标签修正、narrative 由 facts 生成）、69 分歧裁决 keep26/revise4/challenge39、48/16 按 32 组隔离；gate-v2 blocked 且理由具体。
+- M：`jev04/scorers/port.py` fail-closed 适配（K/NaN/Inf/身份漂移/未知 policy），fake 合法 artifact 接线；T27 身份预检新 runID（15 候选，无指定 Qwen3.5-27B）。
+- H：eval-full 递归发现（acceptance-v2 被正式入口覆盖）；`scripts/r2-audit.mjs` 一次真实全量；32x30 更正为 scenarioDays=30（720h，第30日结算）。
+
+## 证据
+
+- `artifacts/sprint-r2/acceptance/summary.json`（build/unit/eval-full/python/data/world 共 7 项，全 pass）
+- `artifacts/sprint-r2/world/matrix.json`（9 组 96h/720h，settleAtDay30=true）
+- `research/decision-choice/jev04/data/v2/{cases,adjudication,split,gate-v2}`（64/69/48/16）
+- `research/decision-choice/jev04/models/t27-identity-20261111-r2.json`
+- R2 包复现器基线输出：`sprint-r2/repro-out/`（隔离 clone）
+
+## 未完成 / 下一阻塞
+
+1. 39 条 challenge 需 H 逐项裁决；v2 骨架仅 4 种，不能称独立泛化。
+2. 真实 T27 未启动（无指定权重、数据门 blocked）；无真实 valid policy，校准仍 unavailable。
+3. 原作：地图/碰撞/寻路、议会、危机、轮回、建造、UI 未实现（见 legacy-parity.md）。
+
+---
+
 # STATUS — sprint R1（2026-11-11）
 
 基线：`844bab54cacff1ea4fe9b413565d5e57f8bb3ffe`；集成分支 `codex/sprint-1116`。
