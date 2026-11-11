@@ -7,10 +7,11 @@
     "mayTrainOnJev": false,
     "targetCases": 4096,
     "existingBehaviorCases": 192,
-    "publicAnchors": 64
+    "publicAnchors": 0
   },
   "searchRoots": [
     "/data3/DATA/models",
+    "/data",
     "/root/.cache/huggingface"
   ],
   "foundQwen35": [],
@@ -27,8 +28,8 @@
     ]
   },
   "reasons": [
-    "data gate blocked: 64/4096 anchors",
-    "no Qwen3.5 weights under searched roots: /data3/DATA/models, /root/.cache/huggingface"
+    "data gate blocked: 0/4096 anchors",
+    "no Qwen3.5 weights under searched roots: /data3/DATA/models, /data, /root/.cache/huggingface"
   ],
   "status": "blocked"
 }

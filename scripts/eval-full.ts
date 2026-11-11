@@ -87,7 +87,7 @@ if (tests.status === 0) {
 
 // G11 original evidence: restore from the packaged archive, then run its own 15 tests.
 if (g11File) {
-  const evidencePath = join(process.cwd(), 'artifacts/g11-live/g11-live-20261105-r1');
+  const evidencePath = join(process.cwd(), 'artifacts/g11-live/g11-live-20261105-r1/w1/w1-wait-run.run.json');
   if (!existsSync(evidencePath)) {
     const bootstrap = spawnSync('bash', [join(process.cwd(), 'scripts/bootstrap-g11-evidence.sh')],
       { encoding: 'utf8', cwd: process.cwd() });
