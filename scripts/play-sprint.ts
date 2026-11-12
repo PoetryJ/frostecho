@@ -21,11 +21,20 @@
  *   tell <npcId> <promisorId>   tell another NPC the player already cancelled
  *   step [npcId]               run decisions (all alive NPCs, or one)
  *   game-step                  run the four-day reference task loop (P)
- *   assign <npcId> <kind>       assign gather-food|gather-wood|heating|leave-food
+ *   assign <npcId> <kind>       assign gather-food|gather-wood|heating|leave-food|deliver-meal
  *   cancel-task <taskId>        cancel a task (cancelled leave-food retracts)
  *   task-status                task board + day/ending (reference-rules/1)
  *   advance <minutes>           authoritative time advance
  *   knowledge                   each NPC's own promise knowledge
+ *   map [village|warehouse|kitchen]  grid, buildings, doors, closed cells (R3)
+ *   where <npcId>               current location + grid cell (R3)
+ *   travel <npcId> <building>   walk a real A* route to a building door (R3)
+ *   withdraw <npcId> [amount]   take meals from the warehouse stock (R3)
+ *   deliver <npcId> [amount]    hand carried meals to the kitchen (R3)
+ *   restock <amount> [source]   refill the warehouse stock (player action, R3)
+ *   close-road <x,y> [...]      seal village cells (R3)
+ *   open-road <x,y> [...]       reopen sealed cells (R3)
+ *   tell-restock <npcId>        rumor: player says the warehouse is refilled (R3)
  *   save                        persist session + task board (barrier)
  *   quit                        exit after the queue drains (barrier)
  */
@@ -33,8 +42,9 @@ import { createInterface } from 'node:readline';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { PlaySession, defaultStatePath } from '../src/application-v2/session';
 import type { PlayerJob, PlayerJobKind } from '../src/application-v2/lifecycle';
-import { GameplayLoop } from '../src/gameplay-v2/loop';
+import { GameplayLoop, actorCell, MINUTES_PER_TILE } from '../src/gameplay-v2/loop';
 import { TaskBoard, type GameplayTaskKind } from '../src/gameplay-v2/tasks';
+import { BUILDINGS, MAPS, findPath } from '../src/spatial-v2/map';
 import type { ScorerPort } from '../src/planning/candidates';
 
 declare const require: (modulePath: string) => {
@@ -97,9 +107,20 @@ let quitRequested = false;
 function kindOf(command: string): PlayerJobKind {
   const known: PlayerJobKind[] = ['observe', 'promise', 'cancel', 'tell', 'advance',
     'step', 'knowledge', 'save', 'quit', 'assign', 'cancel-task', 'task-status',
-    'game-step'];
+    'game-step', 'map', 'where', 'travel', 'withdraw', 'deliver', 'restock',
+    'close-road', 'open-road', 'tell-restock'];
   return (known as string[]).includes(command) ? command as PlayerJobKind : 'observe';
 }
+
+function parseCells(parts: string[]): Array<{ x: number; y: number }> {
+  return parts.map(part => {
+    const [x, y] = part.split(',').map(piece => Number.parseInt(piece, 10));
+    if (!Number.isFinite(x) || !Number.isFinite(y)) throw new Error(`bad cell ${part} (use x,y)`);
+    return { x, y };
+  });
+}
+
+let spatialSequence = 0;
 
 async function runJob(job: PlayerJob, line: string,
   expected: number | Record<string, number> = 0): Promise<void> {
@@ -160,6 +181,88 @@ async function runJob(job: PlayerJob, line: string,
       case 'game-step': {
         const result = play.step();
         emit({ command, jobId: job.jobId, ...result });
+        break;
+      }
+      case 'map': {
+        const mapId = (rest[0] ?? 'village') as keyof typeof MAPS;
+        const map = MAPS[mapId];
+        if (!map) throw new Error(`unknown map ${String(rest[0])} (village|warehouse|kitchen)`);
+        emit({ command, jobId: job.jobId, map: { id: map.id, w: map.w, h: map.h,
+          buildings: BUILDINGS.map(entry => ({ id: entry.id, door: entry.door })),
+          interests: map.interests,
+          closedCells: session.world.spatial?.closedCells ?? [] } });
+        break;
+      }
+      case 'where': {
+        const npc = session.world.npcs[rest[0]];
+        if (!npc) throw new Error(`unknown npc ${String(rest[0])}`);
+        emit({ command, jobId: job.jobId, npcId: rest[0], location: npc.location,
+          cell: actorCell(session.world, rest[0]), alive: npc.alive });
+        break;
+      }
+      case 'travel': {
+        const actorId = rest[0];
+        const npc = session.world.npcs[actorId];
+        if (!npc) throw new Error(`unknown npc ${String(actorId)}`);
+        const target = BUILDINGS.find(entry => entry.id === rest[1]);
+        if (!target) throw new Error(`unknown building ${String(rest[1])} `
+          + `(${BUILDINGS.map(entry => entry.id).join('|')})`);
+        const from = actorCell(session.world, actorId);
+        const route = findPath(MAPS.village, from, target.door,
+          new Set(session.world.spatial?.closedCells ?? []));
+        if (!route.path) throw new Error(`route blocked: ${route.blockedBy}`);
+        const result = play.submitSpatial({ commandId: `player-travel-${++spatialSequence}`,
+          type: 'travel', actorId, route: route.path, minutesPerTile: MINUTES_PER_TILE });
+        emit({ command, jobId: job.jobId, ...result, tiles: route.path.length - 1,
+          minutes: (route.path.length - 1) * MINUTES_PER_TILE,
+          location: session.world.npcs[actorId].location });
+        break;
+      }
+      case 'withdraw': {
+        const actorId = rest[0];
+        const result = play.submitSpatial({ commandId: `player-withdraw-${++spatialSequence}`,
+          type: 'withdraw', actorId, place: 'warehouse', resource: 'food',
+          amount: Number(rest[1] ?? 1) });
+        emit({ command, jobId: job.jobId, ...result,
+          warehouseFood: session.world.spatial?.stocks.warehouse.food,
+          carry: session.world.spatial?.carry[actorId]?.meals ?? 0 });
+        break;
+      }
+      case 'deliver': {
+        const actorId = rest[0];
+        const result = play.submitSpatial({ commandId: `player-deliver-${++spatialSequence}`,
+          type: 'deliver', actorId, to: 'kitchen', amount: Number(rest[1] ?? 1) });
+        emit({ command, jobId: job.jobId, ...result,
+          deliveredMeals: session.world.spatial?.deliveredMeals ?? 0,
+          carry: session.world.spatial?.carry[actorId]?.meals ?? 0 });
+        break;
+      }
+      case 'restock': {
+        const result = play.submitSpatial({ commandId: `player-restock-${++spatialSequence}`,
+          type: 'restock', place: 'warehouse', resource: 'food',
+          amount: Number(rest[0]), source: rest[1] ?? 'player' });
+        emit({ command, jobId: job.jobId, ...result,
+          warehouseFood: session.world.spatial?.stocks.warehouse.food });
+        break;
+      }
+      case 'close-road': {
+        const cells = parseCells(rest);
+        const result = play.submitSpatial({ commandId: `player-close-${++spatialSequence}`,
+          type: 'close-road', cells });
+        emit({ command, jobId: job.jobId, ...result,
+          closedCells: session.world.spatial?.closedCells ?? [] });
+        break;
+      }
+      case 'open-road': {
+        const cells = parseCells(rest);
+        const result = play.submitSpatial({ commandId: `player-open-${++spatialSequence}`,
+          type: 'open-road', cells });
+        emit({ command, jobId: job.jobId, ...result,
+          closedCells: session.world.spatial?.closedCells ?? [] });
+        break;
+      }
+      case 'tell-restock': {
+        emit({ command, jobId: job.jobId, ...session.tellRestock(rest[0]) });
         break;
       }
       case 'save':

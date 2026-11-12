@@ -11,7 +11,8 @@
  * the active row first, so an old archive (even one already carrying the
  * pre-R3 duplicate-ID bug) cannot be mutated by mistake.
  */
-export type GameplayTaskKind = 'gather-food' | 'gather-wood' | 'heating' | 'leave-food';
+export type GameplayTaskKind = 'gather-food' | 'gather-wood' | 'heating' | 'leave-food'
+  | 'deliver-meal';
 
 export interface GameplayTask {
   taskId: string;

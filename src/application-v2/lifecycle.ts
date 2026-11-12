@@ -18,7 +18,10 @@ export type PlayerJobKind =
   | 'observe' | 'promise' | 'cancel' | 'tell' | 'advance'
   | 'step' | 'knowledge' | 'save' | 'quit'
   /** R2 gameplay slice commands (additive; same job lifecycle). */
-  | 'assign' | 'cancel-task' | 'task-status' | 'game-step';
+  | 'assign' | 'cancel-task' | 'task-status' | 'game-step'
+  /** R3 spatial slice commands (additive; same job lifecycle). */
+  | 'map' | 'where' | 'travel' | 'withdraw' | 'deliver' | 'restock'
+  | 'close-road' | 'open-road' | 'tell-restock';
 
 export type PlayerJobStatus = 'pending' | 'running' | 'completed' | 'cancelled' | 'failed';
 

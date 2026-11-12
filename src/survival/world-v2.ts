@@ -12,7 +12,11 @@ export const RULES_VERSION = 'survival-rules/2';
 export const MINUTES_PER_HOUR = 60;
 
 import { createHash } from 'node:crypto';
+import { BUILDINGS, MAPS, cellKey, isWalkable, type Cell } from '../spatial-v2/map';
 export const MINUTES_PER_DAY = 24 * MINUTES_PER_HOUR;
+
+/** Documented default for the lazily-created warehouse stock (R3, P). */
+export const DEFAULT_WAREHOUSE_FOOD = 4;
 
 export type Weather = 'clear' | 'snow' | 'storm' | 'cold-snap';
 export type LocationId = 'dorm-a' | 'dorm-b' | 'kitchen' | 'warehouse' | 'workshop' | 'medical' | 'command' | 'village';
@@ -47,10 +51,26 @@ export interface WorldV2 {
    * conflict. Optional so pre-R2 snapshots load unchanged.
    */
   receipts?: Record<string, { digest: string; eventIds: string[]; postStateVersion: number }>;
+  /**
+   * R3 spatial extension (P). Optional: absent while no spatial command has
+   * run, so pre-R3 snapshots and the frozen matrix flows stay byte-identical.
+   * Lazily initialized with the documented defaults on first use.
+   */
+  spatial?: SpatialState;
   dead: string[];
   ending: 'none' | 'survived' | 'all-dead';
   /** Scenario length in real days; the ending is decided by elapsed simTime. */
   scenarioDays: number;
+}
+
+/** R3 spatial bookkeeping: grid positions, place stocks, carried meals, closed cells. */
+export interface SpatialState {
+  /** Actor cell on the village grid; untracked actors resolve to their door. */
+  positions: Record<string, Cell>;
+  stocks: { warehouse: { food: number } };
+  carry: Record<string, { meals: number }>;
+  closedCells: string[];
+  deliveredMeals: number;
 }
 
 export type Command =
@@ -62,7 +82,13 @@ export type Command =
   | { commandId: string; type: 'refuel'; actorId: string; amount: number }
   | { commandId: string; type: 'medical'; actorId: string; targetId: string; amount: number }
   | { commandId: string; type: 'move'; actorId: string; to: LocationId }
-  | { commandId: string; type: 'reserve'; actorId: string; forId: string; amount: number };
+  | { commandId: string; type: 'reserve'; actorId: string; forId: string; amount: number }
+  | { commandId: string; type: 'travel'; actorId: string; route: Array<{ x: number; y: number }>; minutesPerTile: number }
+  | { commandId: string; type: 'withdraw'; actorId: string; place: 'warehouse'; resource: 'food'; amount: number }
+  | { commandId: string; type: 'restock'; place: 'warehouse'; resource: 'food'; amount: number; source: string }
+  | { commandId: string; type: 'deliver'; actorId: string; to: 'kitchen'; amount: number }
+  | { commandId: string; type: 'close-road'; cells: Array<{ x: number; y: number }> }
+  | { commandId: string; type: 'open-road'; cells: Array<{ x: number; y: number }> };
 
 export interface WorldEvent {
   eventId: string;
@@ -151,6 +177,30 @@ function needNpc(state: WorldV2, actorId: string): NpcState {
   if (!npc) throw new SurvivalError('unknown_actor', `unknown actor ${actorId}`);
   if (!npc.alive) throw new SurvivalError('dead_actor', `${actorId} is dead`);
   return npc;
+}
+
+/** Deep copy (or documented default) so spatial commands never alias old state. */
+function cloneSpatial(state: WorldV2): SpatialState {
+  if (!state.spatial) {
+    return { positions: {}, stocks: { warehouse: { food: DEFAULT_WAREHOUSE_FOOD } },
+      carry: {}, closedCells: [], deliveredMeals: 0 };
+  }
+  const source = state.spatial;
+  const positions: SpatialState['positions'] = {};
+  for (const [id, cell] of Object.entries(source.positions)) positions[id] = { ...cell };
+  const carry: SpatialState['carry'] = {};
+  for (const [id, entry] of Object.entries(source.carry)) carry[id] = { meals: entry.meals };
+  return { positions, carry, closedCells: [...source.closedCells],
+    stocks: { warehouse: { food: source.stocks.warehouse.food } },
+    deliveredMeals: source.deliveredMeals };
+}
+
+/** An actor that never traveled stands at its building's door (village centre fallback). */
+function positionOf(space: SpatialState, npc: NpcState): Cell {
+  const existing = space.positions[npc.id];
+  if (existing) return existing;
+  const building = BUILDINGS.find(entry => entry.id === npc.location);
+  return building ? { ...building.door } : { x: 25, y: 8 };
 }
 
 /** Pure reducer. Same state + command always yields the same state + events. */
@@ -303,6 +353,157 @@ export function applyCommand(state: WorldV2, command: Command): { state: WorldV2
       if (resources.food < command.amount) throw new SurvivalError('insufficient_food', 'no food to reserve');
       resources.food -= command.amount;
       events.push(event(next, command, 'food_reserved', { forId: command.forId, amount: command.amount }));
+      break;
+    }
+    case 'travel': {
+      const npc = needNpc(next, command.actorId);
+      if (!Array.isArray(command.route) || command.route.length === 0) {
+        throw new SurvivalError('bad_route', 'travel route must be a non-empty cell array');
+      }
+      if (!Number.isFinite(command.minutesPerTile) || command.minutesPerTile <= 0) {
+        throw new SurvivalError('bad_minutes', 'travel minutesPerTile must be a positive finite number');
+      }
+      const space = cloneSpatial(next);
+      const closed = new Set(space.closedCells);
+      const village = MAPS.village;
+      const start = positionOf(space, npc);
+      const firstCell = command.route[0];
+      if (firstCell.x !== start.x || firstCell.y !== start.y) {
+        throw new SurvivalError('bad_route',
+          `route must start at ${npc.id}'s current cell ${start.x},${start.y}`);
+      }
+      for (let index = 0; index < command.route.length; index += 1) {
+        const cell = command.route[index];
+        if (!Number.isFinite(cell.x) || !Number.isFinite(cell.y)) {
+          throw new SurvivalError('bad_route', 'route cells must be finite integers');
+        }
+        if (!isWalkable(village, cell, closed)) {
+          throw new SurvivalError('road_blocked', `route cell ${cell.x},${cell.y} is not walkable`);
+        }
+        if (index > 0) {
+          const previous = command.route[index - 1];
+          if (Math.abs(cell.x - previous.x) + Math.abs(cell.y - previous.y) !== 1) {
+            throw new SurvivalError('bad_route', 'route cells must be 4-adjacent steps');
+          }
+        }
+      }
+      const tiles = command.route.length - 1;
+      const minutes = tiles * command.minutesPerTile;
+      const hours = minutes / MINUTES_PER_HOUR;
+      const end = command.route[command.route.length - 1];
+      const building = BUILDINGS.find(entry => entry.door.x === end.x && entry.door.y === end.y);
+      space.positions[npc.id] = { x: end.x, y: end.y };
+      // Travel drains the traveller like an awake advance span, nobody else.
+      npcs[npc.id] = { ...npc,
+        location: building ? building.id as LocationId : npc.location,
+        hunger: clamp(npc.hunger - 0.9 * hours, 0, 100),
+        stamina: clamp(npc.stamina - 1.5 * hours, 0, 100),
+        san: clamp(npc.san - 0.2 * hours, 0, 100) };
+      next.spatial = space;
+      next.simTime += minutes;
+      next.day = Math.floor(next.simTime / MINUTES_PER_DAY) + 1;
+      events.push(event(next, command, 'traveled', { tiles, minutes,
+        ...(building ? { arrivedAt: building.id } : {}) }));
+      break;
+    }
+    case 'withdraw': {
+      const npc = needNpc(next, command.actorId);
+      if (!Number.isFinite(command.amount) || command.amount <= 0) {
+        throw new SurvivalError('bad_amount', 'withdraw amount must be a positive finite number');
+      }
+      if (npc.location !== command.place) {
+        throw new SurvivalError('bad_location', `withdraw requires standing at ${command.place}`);
+      }
+      const space = cloneSpatial(next);
+      const available = space.stocks.warehouse.food;
+      if (available < command.amount) {
+        // Observable authoritative failure, not a crash: the promise stays.
+        events.push(event(next, command, 'out_of_stock',
+          { place: command.place, available, wanted: command.amount }));
+        break;
+      }
+      space.stocks.warehouse.food = available - command.amount;
+      const carried = space.carry[npc.id]?.meals ?? 0;
+      space.carry[npc.id] = { meals: carried + command.amount };
+      next.spatial = space;
+      events.push(event(next, command, 'stock_withdrawn',
+        { place: command.place, amount: command.amount, remaining: available - command.amount,
+          carried: carried + command.amount }));
+      break;
+    }
+    case 'restock': {
+      if (!Number.isFinite(command.amount) || command.amount <= 0) {
+        throw new SurvivalError('bad_amount', 'restock amount must be a positive finite number');
+      }
+      const space = cloneSpatial(next);
+      const total = space.stocks.warehouse.food + command.amount;
+      space.stocks.warehouse.food = total;
+      next.spatial = space;
+      events.push(event(next, command, 'stock_restocked',
+        { place: command.place, amount: command.amount, source: command.source, total }));
+      break;
+    }
+    case 'deliver': {
+      const npc = needNpc(next, command.actorId);
+      if (!Number.isFinite(command.amount) || command.amount <= 0) {
+        throw new SurvivalError('bad_amount', 'deliver amount must be a positive finite number');
+      }
+      if (npc.location !== command.to) {
+        throw new SurvivalError('bad_location', `deliver requires standing at ${command.to}`);
+      }
+      const space = cloneSpatial(next);
+      const carried = space.carry[npc.id]?.meals ?? 0;
+      if (carried < command.amount) {
+        events.push(event(next, command, 'delivery_shortfall', { wanted: command.amount, carried }));
+        break;
+      }
+      space.carry[npc.id] = { meals: carried - command.amount };
+      space.deliveredMeals += command.amount;
+      next.spatial = space;
+      events.push(event(next, command, 'meal_delivered',
+        { to: command.to, amount: command.amount, totalDelivered: space.deliveredMeals }));
+      break;
+    }
+    case 'close-road': {
+      if (!Array.isArray(command.cells) || command.cells.length === 0) {
+        throw new SurvivalError('bad_cells', 'close-road needs at least one cell');
+      }
+      const village = MAPS.village;
+      const space = cloneSpatial(next);
+      let added = 0;
+      for (const cell of command.cells) {
+        if (!Number.isFinite(cell.x) || !Number.isFinite(cell.y)
+          || cell.x < 0 || cell.y < 0 || cell.x >= village.w || cell.y >= village.h) {
+          throw new SurvivalError('bad_cells',
+            `cell ${String(cell.x)},${String(cell.y)} is outside the village grid`);
+        }
+        const key = cellKey(cell);
+        if (!space.closedCells.includes(key)) {
+          space.closedCells = [...space.closedCells, key];
+          added += 1;
+        }
+      }
+      next.spatial = space;
+      events.push(event(next, command, 'road_closed',
+        { cells: command.cells.length, added, detail: command.cells.map(cellKey).join(';') }));
+      break;
+    }
+    case 'open-road': {
+      if (!Array.isArray(command.cells) || command.cells.length === 0) {
+        throw new SurvivalError('bad_cells', 'open-road needs at least one cell');
+      }
+      const space = cloneSpatial(next);
+      let removed = 0;
+      for (const cell of command.cells) {
+        const key = cellKey(cell);
+        if (space.closedCells.includes(key)) {
+          space.closedCells = space.closedCells.filter(entry => entry !== key);
+          removed += 1;
+        }
+      }
+      next.spatial = space;
+      events.push(event(next, command, 'road_reopened',
+        { cells: command.cells.length, removed, detail: command.cells.map(cellKey).join(';') }));
       break;
     }
     default:

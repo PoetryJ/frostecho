@@ -1,0 +1,16 @@
+{
+  "scenario": "rumor-only-then-real-restock",
+  "actorId": "npc_05",
+  "taskId": "task-001-deliver-meal",
+  "failureClass": "rumor-conflict",
+  "seed": "r3-compare-rumor-only-then-real-restock",
+  "branchAtStep": 4,
+  "maxSteps": 20,
+  "externalEvents": {
+    "4": 1,
+    "8": 1
+  },
+  "reset": "GameplayLoop.load('/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r3/comparison/snapshots/rumor-only-then-real-restock.session.json')",
+  "branch": "GameplayLoop.load('/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r3/comparison/snapshots/rumor-only-then-real-restock.session.json', { useExperience: false | true })",
+  "replay": "node dist/scripts/r3-compare.js --out <same dir>"
+}

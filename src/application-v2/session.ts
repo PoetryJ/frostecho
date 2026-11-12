@@ -259,6 +259,59 @@ export class PlaySession {
     return { status: result.status, simTime: this.world.simTime, eventIds: result.eventIds };
   }
 
+  /**
+   * R3 (P): player-side world command submission with explicit observation
+   * rules. Actor-attributed commands (travel/withdraw/deliver) are seen by the
+   * actor; a restock is personally witnessed only by NPCs standing at the
+   * warehouse; road closures/reopenings are communal announcements seen by all
+   * alive NPCs. Unobserved world changes never enter any NPC's memory.
+   */
+  submitWorldCommand(command: Command): { status: string; reason: string | null;
+    eventIds: string[]; events: WorldEvent[]; observedBy: string[] } {
+    const result = submitCommand(this.world, command);
+    const observedBy: string[] = [];
+    if (result.status === 'applied') {
+      this.world = result.state;
+      const actorId = 'actorId' in command ? command.actorId : undefined;
+      const observers = actorId !== undefined
+        ? [actorId]
+        : command.type === 'restock'
+          ? this.npcIds.filter(id => this.world.npcs[id]?.alive
+            && this.world.npcs[id].location === 'warehouse')
+          : this.npcIds.filter(id => this.world.npcs[id]?.alive);
+      for (const observer of observers) {
+        observedBy.push(observer);
+        for (const worldEvent of result.events) {
+          this.ingest(observer, {
+            eventId: worldEvent.eventId, occurredAt: worldEvent.simTime,
+            observedAt: this.world.simTime, kind: worldEvent.type,
+            subjectIds: [observer, String(worldEvent.payload.place ?? 'world')],
+            payload: { ...worldEvent.payload }, source: 'engine',
+            authority: 'engine', speakerId: 'engine',
+          });
+        }
+      }
+    }
+    return { status: result.status, reason: result.reason ?? null,
+      eventIds: result.eventIds, events: result.events, observedBy };
+  }
+
+  /**
+   * R3 (P): the player tells one NPC the warehouse was restocked. This is a
+   * RUMOR (source player_statement): it raises re-verification priority but
+   * never changes the actor's confirmed stock level.
+   */
+  tellRestock(npcId: string): { observer: string; rumor: true } {
+    if (!this.world.npcs[npcId]) throw new Error(`unknown npc ${npcId}`);
+    this.ingest(npcId, {
+      eventId: `rumor-restock-${randomUUID()}`, occurredAt: this.world.simTime,
+      observedAt: this.world.simTime, kind: 'restock_rumor',
+      subjectIds: [npcId, 'warehouse'], payload: { text: '玩家说仓库已补货', place: 'warehouse' },
+      source: 'player_statement', authority: 'player', speakerId: 'player',
+    });
+    return { observer: npcId, rumor: true };
+  }
+
   private ingest(observerId: string, input: Omit<MemoryRecordInput, 'observerId'>): void {
     const store = this.memories.get(observerId);
     if (!store) throw new Error(`no memory for ${observerId}`);

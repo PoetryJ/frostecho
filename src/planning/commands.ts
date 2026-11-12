@@ -36,6 +36,26 @@ export function candidateCommand(candidate: Candidate, actorId: string, commandI
     case 'medical': return { commandId, type: 'medical', actorId, targetId: actorId,
       amount: Number(parameters.amount ?? 1) };
     case 'move': return { commandId, type: 'move', actorId, to: parameters.to as never };
+    case 'travel': {
+      const route = parameters.route;
+      if (!Array.isArray(route) || route.length === 0) {
+        throw new UnsupportedActionError(candidate.id, 'travel:route');
+      }
+      return { commandId, type: 'travel', actorId,
+        route: route.map(cell => ({ x: Number(cell.x), y: Number(cell.y) })),
+        minutesPerTile: Number(parameters.minutesPerTile ?? 2) };
+    }
+    case 'withdraw': {
+      const place = parameters.place === 'warehouse' ? 'warehouse' as const : null;
+      if (!place) throw new UnsupportedActionError(candidate.id, `withdraw:${String(parameters.place)}`);
+      return { commandId, type: 'withdraw', actorId, place, resource: 'food' as const,
+        amount: Number(parameters.amount ?? 1) };
+    }
+    case 'deliver': {
+      const to = parameters.to === 'kitchen' ? 'kitchen' as const : null;
+      if (!to) throw new UnsupportedActionError(candidate.id, `deliver:${String(parameters.to)}`);
+      return { commandId, type: 'deliver', actorId, to, amount: Number(parameters.amount ?? 1) };
+    }
     case 'wait': return null;
     default: throw new UnsupportedActionError(candidate.id, action);
   }

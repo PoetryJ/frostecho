@@ -16,7 +16,7 @@ import type { GameplayDecisionInput } from '../src/gameplay-v2/decisions';
 function baseInput(overrides: Partial<GameplayDecisionInput> = {}): GameplayDecisionInput {
   return {
     actorId: 'npc_01',
-    npc: { id: 'npc_01', hunger: 60, stamina: 80, health: 100, san: 80, alive: true },
+    npc: { id: 'npc_01', location: 'dorm-a', hunger: 60, stamina: 80, health: 100, san: 80, alive: true },
     resources: { food: 5, firewood: 5, power: 50, medicine: 2 },
     furnace: { lit: true, fuel: 50, warmth: 1 },
     tasks: [],

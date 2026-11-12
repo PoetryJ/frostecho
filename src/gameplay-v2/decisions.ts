@@ -12,6 +12,7 @@ import type { GameplayTask } from './tasks';
 
 export interface GameplayNpcView {
   id: string;
+  location: string;
   hunger: number;
   stamina: number;
   health: number;
@@ -27,6 +28,79 @@ export interface GameplayDecisionInput {
   tasks: GameplayTask[];
   /** NPV -> player trust, from the memory store (0 when unknown). */
   relationTrust: number;
+  /**
+   * R3 (P): derived delivery phase inputs — carried meals, the actor's own
+   * last-confirmed warehouse level (null = never verified), an unverified
+   * restock rumor, and precomputed routes. Present only when a deliver-meal
+   * task is active.
+   */
+  delivery?: DeliveryView;
+}
+
+/** What the delivery state machine needs; all of it is observable to the actor. */
+export interface DeliveryView {
+  carried: number;
+  stockLevel: number | null;
+  restockRumor: boolean;
+  routeToWarehouse: Array<{ x: number; y: number }> | null;
+  routeToKitchen: Array<{ x: number; y: number }> | null;
+}
+
+/** Derived phase of the warehouse -> kitchen meal run (position + carry + belief). */
+export type DeliveryPhase = 'deliver' | 'travel-kitchen' | 'withdraw' | 'travel-warehouse'
+  | 'gather-fallback' | 'report-blocked';
+
+export function deriveDeliveryPhase(npc: GameplayNpcView, delivery: DeliveryView): DeliveryPhase {
+  if (delivery.carried > 0) {
+    if (npc.location === 'kitchen') return 'deliver';
+    return delivery.routeToKitchen ? 'travel-kitchen' : 'report-blocked';
+  }
+  if (npc.location === 'warehouse') {
+    if (delivery.stockLevel === 0 && !delivery.restockRumor) return 'gather-fallback';
+    return 'withdraw';
+  }
+  if (delivery.routeToWarehouse === null) return 'report-blocked';
+  if (delivery.stockLevel === 0 && !delivery.restockRumor) return 'gather-fallback';
+  return 'travel-warehouse';
+}
+
+function deliveryCandidates(npc: GameplayNpcView, delivery: DeliveryView):
+  { entries: GameplayCandidate[]; conflict: GameplayConflict | null } {
+  const phase = deriveDeliveryPhase(npc, delivery);
+  switch (phase) {
+    case 'deliver':
+      return { entries: [{ candidate: candidate('g-deliver', 'deliver', '把饭送进厨房',
+        { action: 'deliver', to: 'kitchen', amount: 1 }), utility: 0.9, rule: 'delivery.deliver' }], conflict: null };
+    case 'travel-kitchen':
+      return { entries: [{ candidate: candidate('g-travel-kitchen', 'travel', '带着饭去厨房',
+        { action: 'travel', route: delivery.routeToKitchen!, minutesPerTile: 2 }),
+        utility: 0.8, rule: 'delivery.travel-kitchen' }], conflict: null };
+    case 'withdraw':
+      return { entries: [{ candidate: candidate('g-withdraw', 'withdraw', '从仓库取饭',
+        { action: 'withdraw', place: 'warehouse', amount: 1 }), utility: 0.75,
+        rule: 'delivery.withdraw' }], conflict: null };
+    case 'travel-warehouse':
+      return { entries: [{ candidate: candidate('g-travel-warehouse', 'travel',
+        delivery.restockRumor ? '传闻已补货：回仓库核实' : '去仓库取饭',
+        { action: 'travel', route: delivery.routeToWarehouse!, minutesPerTile: 2 }),
+        utility: delivery.restockRumor ? 0.72 : 0.7, rule: 'delivery.travel-warehouse' }], conflict: null };
+    case 'gather-fallback':
+      // 亲见缺货：换来源采集 + 说明延误。承诺保持，不永久禁用仓库路线。
+      return { entries: [
+        { candidate: candidate('g-gather-food', 'gather', '仓库缺货：改为采集食物',
+          { action: 'gather', resource: 'food', amount: 2 }), utility: 0.5,
+          rule: 'delivery.fallback-gather' },
+        { candidate: candidate('g-report-delay', 'wait', '向玩家说明延误',
+          { action: 'wait' }), utility: 0.45, rule: 'delivery.report-delay' }],
+        conflict: { kind: 'hunger_vs_leave-food', chosen: 'g-gather-food', deferred: 'delivery',
+          detail: '亲见仓库缺货：换来源并说明延误，补货/传闻后重试' } };
+    case 'report-blocked':
+      return { entries: [
+        { candidate: candidate('g-report-blocked', 'wait', '道路封闭：上报无法通行',
+          { action: 'wait' }), utility: 0.46, rule: 'delivery.report-blocked' }],
+        conflict: { kind: 'heating_vs_gather', chosen: 'g-report-blocked', deferred: 'delivery',
+          detail: '路线被封闭：上报等待改道，承诺不自动取消' } };
+  }
 }
 
 export interface GameplayConflict {
@@ -112,6 +186,11 @@ export function buildGameplayCandidates(input: GameplayDecisionInput):
       list.push({ candidate: candidate(`c-help-${task.promiseId ?? 'player'}`, 'help', '给玩家留饭',
         { action: 'reserve', amount: 1, forId: 'player' }, { obligation: 1 }),
         utility, rule: 'task.leave-food' });
+    }
+    if (task.kind === 'deliver-meal' && input.delivery) {
+      const built = deliveryCandidates(npc, input.delivery);
+      list.push(...built.entries);
+      conflict = conflict ?? built.conflict;
     }
   }
 
