@@ -48,6 +48,17 @@ export interface SessionDocument {
   generations?: Record<string, number>;
   sequence: number;
   seed: string;
+  /** R4: persistent player-input sequence (never reset per process). */
+  inputSequence?: number;
+  /** R4: first authoritative result per explicit input id (retry conflict check). */
+  inputReceipts?: Record<string, InputReceipt>;
+}
+
+/** R4: one player input identity; only explicit retries key on it. */
+export interface InputReceipt {
+  kind: string;
+  digest: string;
+  result: unknown;
 }
 
 export interface StepDecision {
@@ -73,6 +84,12 @@ export class PlaySession {
   /** R2: per-actor commit generation, bumped on cancel/timeout. */
   readonly generations = new Map<string, number>();
   sequence = 0;
+  /**
+   * R4: persistent player-input identity. The sequence survives save/restore,
+   * so a new process never re-issues an old id (which would be a false retry).
+   */
+  inputSequence = 0;
+  readonly inputReceipts: Record<string, InputReceipt> = {};
   readonly seed: string;
   readonly npcIds: string[];
   /** R3 (M): injectable scorer seam for real-model / async acceptance runs. */
@@ -89,6 +106,31 @@ export class PlaySession {
 
   generationFor(actorId: string): number {
     return this.generations.get(actorId) ?? 0;
+  }
+
+  /** R4: a persistent, cross-process-unique input id for one new operation. */
+  nextInputId(kind: string, actorId?: string): string {
+    this.inputSequence += 1;
+    const suffix = actorId ? `-${actorId}` : '';
+    return `in-${this.inputSequence}-${kind}${suffix}`;
+  }
+
+  /**
+   * R4: replay an explicit retry only when the intent digest matches; a
+   * different payload under the same id is an explicit conflict with zero
+   * side effects. Returns null when the id was never seen (run it fresh).
+   */
+  private replayedInput(kind: string, inputId: string, digest: string): InputReceipt | null
+    | 'conflict' {
+    const seen = this.inputReceipts[inputId];
+    if (!seen) return null;
+    if (seen.kind !== kind || seen.digest !== digest) return 'conflict';
+    return seen;
+  }
+
+  private rememberInput(kind: string, inputId: string, digest: string, result: unknown): void {
+    if (this.inputReceipts[inputId]) return;
+    this.inputReceipts[inputId] = { kind, digest, result };
   }
 
   /** Revoke every outstanding decision's right to submit for this actor. */
@@ -129,6 +171,8 @@ export class PlaySession {
     session.instances = doc.instances ?? [];
     for (const [id, value] of Object.entries(doc.generations ?? {})) session.generations.set(id, value);
     session.sequence = doc.sequence ?? 0;
+    session.inputSequence = doc.inputSequence ?? 0;
+    Object.assign(session.inputReceipts, doc.inputReceipts ?? {});
     return session;
   }
 
@@ -138,7 +182,8 @@ export class PlaySession {
     for (const [id, store] of this.memories) memories[id] = store.toJSON();
     const doc: SessionDocument = { schema: 'frostecho.session/1', world: this.world,
       memories, outcomes: this.outcomes, plans: this.plans, instances: this.instances,
-      generations: Object.fromEntries(this.generations), sequence: this.sequence, seed: this.seed };
+      generations: Object.fromEntries(this.generations), sequence: this.sequence, seed: this.seed,
+      inputSequence: this.inputSequence, inputReceipts: this.inputReceipts };
     mkdirSync(dirname(path), { recursive: true });
     writeFileSync(path, `${JSON.stringify(doc, null, 2)}\n`, 'utf8');
   }
@@ -175,14 +220,22 @@ export class PlaySession {
    * creating a second obligation.
    */
   playerPromise(npcId: string, commandId?: string): { promiseId: string; instanceId: string;
-    heardBy: string[]; duplicate: boolean } {
+    heardBy: string[]; duplicate: boolean; inputId: string; conflict?: boolean;
+    reason?: string } {
     if (!this.world.npcs[npcId]) throw new Error(`unknown npc ${npcId}`);
     const promiseId = this.promiseKeyOf(npcId);
-    const existing = commandId
-      ? this.instances.find(instance => instance.commandId === commandId) : undefined;
-    if (existing) {
-      return { promiseId: existing.promiseKey, instanceId: existing.instanceId,
-        heardBy: [...this.npcIds], duplicate: true };
+    const digest = JSON.stringify({ kind: 'promise', npcId, promiseKey: promiseId });
+    const inputId = commandId ?? this.nextInputId('promise', npcId);
+    if (commandId) {
+      const replay = this.replayedInput('promise', inputId, digest);
+      if (replay === 'conflict') {
+        return { promiseId, instanceId: '', heardBy: [], duplicate: false,
+          inputId, conflict: true, reason: 'command_id_conflict' };
+      }
+      if (replay) {
+        return { ...(replay.result as { promiseId: string; instanceId: string;
+          heardBy: string[] }), duplicate: true, inputId };
+      }
     }
     const instanceId = `pi-${randomUUID()}`;
     const eventId = `promise-${instanceId}`;
@@ -209,13 +262,29 @@ export class PlaySession {
     this.plans.push({ planId: `plan-${instanceId}`, ownerId: npcId, promiseId,
       dependencyRevision: revision, state: 'planned' });
     this.refreshPlans();
-    return { promiseId, instanceId, heardBy, duplicate: false };
+    const result = { promiseId, instanceId, heardBy };
+    this.rememberInput('promise', inputId, digest, result);
+    return { ...result, duplicate: false, inputId };
   }
 
   /** Player cancels face to face with one NPC only. */
-  playerCancel(npcId: string, instanceId?: string): { promiseId: string; instanceId: string | null;
-    onlyObserver: string } {
+  playerCancel(npcId: string, instanceId?: string, commandId?: string): { promiseId: string;
+    instanceId: string | null; onlyObserver: string; inputId: string; duplicate?: boolean;
+    conflict?: boolean; reason?: string } {
     const promiseId = this.promiseKeyOf(npcId);
+    const digest = JSON.stringify({ kind: 'cancel', npcId, instanceId: instanceId ?? 'live' });
+    const inputId = commandId ?? this.nextInputId('cancel', npcId);
+    if (commandId) {
+      const replay = this.replayedInput('cancel', inputId, digest);
+      if (replay === 'conflict') {
+        return { promiseId, instanceId: null, onlyObserver: npcId, inputId,
+          conflict: true, reason: 'command_id_conflict' };
+      }
+      if (replay) {
+        return { ...(replay.result as { promiseId: string; instanceId: string | null;
+          onlyObserver: string }), duplicate: true, inputId };
+      }
+    }
     const target = instanceId
       ? this.instances.find(instance => instance.instanceId === instanceId)
       : this.liveInstance(npcId);
@@ -232,7 +301,9 @@ export class PlaySession {
     // A cancellation revokes any in-flight decision built on the old promise.
     this.bumpGeneration(npcId, 'promise_cancelled');
     this.refreshPlans();
-    return { promiseId, instanceId: target?.instanceId ?? null, onlyObserver: npcId };
+    const result = { promiseId, instanceId: target?.instanceId ?? null, onlyObserver: npcId };
+    this.rememberInput('cancel', inputId, digest, result);
+    return { ...result, inputId };
   }
 
   /** Player repeats the cancellation to another NPC. */
@@ -486,6 +557,39 @@ export class PlaySession {
         this.ingest(actorId, base);
       }
     }
+  }
+
+  /**
+   * R4 (G2): one CLI step with a revocable lease and a bounded timeout. When
+   * the scorer never returns, the lease is revoked and an explicit
+   * `timed_out` terminal state is returned; a late result then hits the
+   * synchronous commit checks and executes nothing.
+   */
+  async stepActorBounded(actorId: string, expectedGeneration: number,
+    timeoutMs = 10_000): Promise<{ decision: StepDecision; outcome: TaskOutcome<StepDecision> }> {
+    const scheduler = new FairScheduler();
+    scheduler.add<StepDecision>({ actorId, taskId: `cli-step-${actorId}-${this.sequence++}`,
+      stateVersion: this.world.version, run: async lease => {
+        const decision = await this.stepActor(actorId, lease, expectedGeneration);
+        // A revoked lease must surface as a timeout terminal state, never as a
+        // successful action: the commit section already refused to submit.
+        if (!lease.active) throw new Error(`lease_revoked:${lease.revokedReason ?? 'expired'}`);
+        return decision;
+      } });
+    const outcomes = await scheduler.run<StepDecision>({ timeoutMs, checkVersion: false,
+      currentVersion: () => this.world.version });
+    const outcome = outcomes[0];
+    if (outcome && outcome.status === 'completed') return { decision: outcome.value, outcome };
+    const status = outcome?.status ?? 'failed';
+    return {
+      decision: { actorId, status: status === 'timed_out' ? 'timed_out' : status,
+        selectedId: null, commandId: null, executionStatus: null, eventIds: [],
+        postStateVersion: null, executed: false,
+        reason: status === 'timed_out' ? 'step_timeout_revoked' : `step_${status}`,
+        promiseStatuses: [] },
+      outcome: outcome ?? { taskId: `cli-step-${actorId}`, actorId, status: 'failed',
+        error: 'no outcome' },
+    };
   }
 
   /**

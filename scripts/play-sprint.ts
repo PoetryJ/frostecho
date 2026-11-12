@@ -98,6 +98,8 @@ const jobs: PlayerJob[] = [];
 let sequence = 0;
 /** Control commands: immediate, submission order. */
 let controlChain: Promise<void> = Promise.resolve();
+/** R4 (G2): save/quit barriers; bounded and independent of control input. */
+let barrierChain: Promise<void> = Promise.resolve();
 /** Step jobs: serialized among themselves, never blocking later control input. */
 let stepChain: Promise<void> = Promise.resolve();
 const pendingSteps = new Set<Promise<void>>();
@@ -112,6 +114,20 @@ function kindOf(command: string): PlayerJobKind {
   return (known as string[]).includes(command) ? command as PlayerJobKind : 'observe';
 }
 
+/**
+ * R4 (G1): every player operation carries a persistent input id. A trailing
+ * `id=<value>` explicitly retries that operation (replay when the content
+ * matches, conflict otherwise); without it a fresh persistent id is issued.
+ */
+function inputIdFor(kind: string, parts: string[]): { id: string; parts: string[]; retry: boolean } {
+  const index = parts.findIndex(part => part.startsWith('id='));
+  if (index >= 0) {
+    return { id: parts[index].slice(3), retry: true,
+      parts: parts.filter((_, position) => position !== index) };
+  }
+  return { id: session.nextInputId(kind), parts, retry: false };
+}
+
 function parseCells(parts: string[]): Array<{ x: number; y: number }> {
   return parts.map(part => {
     const [x, y] = part.split(',').map(piece => Number.parseInt(piece, 10));
@@ -120,7 +136,57 @@ function parseCells(parts: string[]): Array<{ x: number; y: number }> {
   });
 }
 
-let spatialSequence = 0;
+/**
+ * R4 (G2): the settle bound for save/quit/EOF barriers. It comes from the
+ * frozen lifecycle policy (10s) and is overridable for acceptance runs.
+ */
+const SETTLE_MS = Number(process.env.R4_BARRIER_MS ?? 10_000);
+/** R4 (G2): one CLI step's lease timeout (also the scorer bound). */
+const STEP_TIMEOUT_MS = Number(process.env.R4_STEP_TIMEOUT_MS ?? 10_000);
+
+/** Actors with a step job currently in flight (for barrier revocation). */
+const inFlightActors = new Set<string>();
+/** Step jobs still running; a timed-out barrier must give them a terminal record. */
+const pendingStepJobs = new Set<PlayerJob>();
+const revokedByBarrier: string[] = [];
+
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Wait for `pending` to settle or for the settle bound to elapse. On timeout
+ * every still-in-flight actor loses its submission right; the caller records
+ * an explicit terminal state instead of claiming the action completed.
+ */
+async function settleWithin<T>(pending: Promise<T>[], boundMs: number): Promise<boolean> {
+  let timer: NodeJS.Timeout | undefined;
+  const timedOut = new Promise<boolean>(resolve => {
+    timer = setTimeout(() => resolve(true), boundMs);
+  });
+  const settled = Promise.allSettled(pending).then(() => false);
+  const didTimeOut = await Promise.race([settled, timedOut]);
+  if (timer) clearTimeout(timer);
+  if (didTimeOut) {
+    for (const actorId of inFlightActors) {
+      session.bumpGeneration(actorId, 'barrier_timeout');
+      revokedByBarrier.push(actorId);
+    }
+    // Explicit terminal state for the revoked jobs: a timeout is never a
+    // silent drop, and it is never reported as a completed action.
+    for (const job of pendingStepJobs) {
+      if (job.terminal) continue;
+      job.status = 'cancelled';
+      job.terminal = true;
+      job.detail = { ...(job.detail as Record<string, unknown> | undefined),
+        reason: 'barrier_timeout' };
+      emit({ event: 'job_terminal', jobId: job.jobId, kind: job.kind,
+        status: 'cancelled', reason: 'barrier_timeout' });
+    }
+    pendingStepJobs.clear();
+  }
+  return !didTimeOut;
+}
 
 async function runJob(job: PlayerJob, line: string,
   expected: number | Record<string, number> = 0): Promise<void> {
@@ -132,13 +198,17 @@ async function runJob(job: PlayerJob, line: string,
         emit({ command, jobId: job.jobId, ...session.observe() });
         break;
       case 'promise': {
-        job.commandId = rest[1] ?? job.jobId;
-        emit({ command, jobId: job.jobId, ...session.playerPromise(rest[0], job.commandId) });
+        // R4 (G1): a fresh persistent id for a new request; the second argument
+        // is an EXPLICIT retry id (replay on identical content, conflict else).
+        job.commandId = rest[1] ?? session.nextInputId('promise', rest[0]);
+        emit({ command, jobId: job.jobId,
+          ...session.playerPromise(rest[0], rest[1] ? job.commandId : undefined) });
         break;
       }
       case 'cancel': {
-        job.commandId = job.jobId;
-        emit({ command, jobId: job.jobId, ...session.playerCancel(rest[0], rest[1]) });
+        job.commandId = rest[2] ?? session.nextInputId('cancel', rest[0]);
+        emit({ command, jobId: job.jobId,
+          ...session.playerCancel(rest[0], rest[1], rest[2]) });
         break;
       }
       case 'tell':
@@ -150,11 +220,16 @@ async function runJob(job: PlayerJob, line: string,
         break;
       case 'step': {
         if (rest.length > 0) {
-          const decision = await session.stepActor(rest[0], undefined, expected as number);
+          // R4 (G2): the single-actor path gets the same revocable lease and a
+          // bounded timeout as the scheduler path; a missing scorer result can
+          // no longer wedge save/quit/EOF.
+          const bounded = await session.stepActorBounded(rest[0], expected as number,
+            STEP_TIMEOUT_MS);
+          const decision = bounded.decision;
           emit({ command, jobId: job.jobId, decisions: [decision],
             outcomes: [{ taskId: job.jobId, actorId: rest[0],
-              status: decision.status === 'cancelled' ? 'cancelled' : 'completed',
-              ...(decision.status === 'cancelled' ? {} : { value: decision }) }] });
+              status: bounded.outcome.status, ...(bounded.outcome.status === 'completed'
+                ? { value: decision } : {}) }] });
         } else {
           const result = await session.stepAll({
             expectedGenerations: expected as Record<string, number> });
@@ -201,17 +276,18 @@ async function runJob(job: PlayerJob, line: string,
         break;
       }
       case 'travel': {
-        const actorId = rest[0];
+        const input = inputIdFor('travel', rest);
+        const actorId = input.parts[0];
         const npc = session.world.npcs[actorId];
         if (!npc) throw new Error(`unknown npc ${String(actorId)}`);
-        const target = BUILDINGS.find(entry => entry.id === rest[1]);
-        if (!target) throw new Error(`unknown building ${String(rest[1])} `
+        const target = BUILDINGS.find(entry => entry.id === input.parts[1]);
+        if (!target) throw new Error(`unknown building ${String(input.parts[1])} `
           + `(${BUILDINGS.map(entry => entry.id).join('|')})`);
         const from = actorCell(session.world, actorId);
         const route = findPath(MAPS.village, from, target.door,
           new Set(session.world.spatial?.closedCells ?? []));
         if (!route.path) throw new Error(`route blocked: ${route.blockedBy}`);
-        const result = play.submitSpatial({ commandId: `player-travel-${++spatialSequence}`,
+        const result = play.submitSpatial({ commandId: input.id,
           type: 'travel', actorId, route: route.path, minutesPerTile: MINUTES_PER_TILE });
         emit({ command, jobId: job.jobId, ...result, tiles: route.path.length - 1,
           minutes: (route.path.length - 1) * MINUTES_PER_TILE,
@@ -219,43 +295,48 @@ async function runJob(job: PlayerJob, line: string,
         break;
       }
       case 'withdraw': {
-        const actorId = rest[0];
-        const result = play.submitSpatial({ commandId: `player-withdraw-${++spatialSequence}`,
+        const input = inputIdFor('withdraw', rest);
+        const actorId = input.parts[0];
+        const result = play.submitSpatial({ commandId: input.id,
           type: 'withdraw', actorId, place: 'warehouse', resource: 'food',
-          amount: Number(rest[1] ?? 1) });
+          amount: Number(input.parts[1] ?? 1) });
         emit({ command, jobId: job.jobId, ...result,
           warehouseFood: session.world.spatial?.stocks.warehouse.food,
           carry: session.world.spatial?.carry[actorId]?.meals ?? 0 });
         break;
       }
       case 'deliver': {
-        const actorId = rest[0];
-        const result = play.submitSpatial({ commandId: `player-deliver-${++spatialSequence}`,
-          type: 'deliver', actorId, to: 'kitchen', amount: Number(rest[1] ?? 1) });
+        const input = inputIdFor('deliver', rest);
+        const actorId = input.parts[0];
+        const result = play.submitSpatial({ commandId: input.id,
+          type: 'deliver', actorId, to: 'kitchen', amount: Number(input.parts[1] ?? 1) });
         emit({ command, jobId: job.jobId, ...result,
           deliveredMeals: session.world.spatial?.deliveredMeals ?? 0,
           carry: session.world.spatial?.carry[actorId]?.meals ?? 0 });
         break;
       }
       case 'restock': {
-        const result = play.submitSpatial({ commandId: `player-restock-${++spatialSequence}`,
+        const input = inputIdFor('restock', rest);
+        const result = play.submitSpatial({ commandId: input.id,
           type: 'restock', place: 'warehouse', resource: 'food',
-          amount: Number(rest[0]), source: rest[1] ?? 'player' });
+          amount: Number(input.parts[0]), source: input.parts[1] ?? 'player' });
         emit({ command, jobId: job.jobId, ...result,
           warehouseFood: session.world.spatial?.stocks.warehouse.food });
         break;
       }
       case 'close-road': {
-        const cells = parseCells(rest);
-        const result = play.submitSpatial({ commandId: `player-close-${++spatialSequence}`,
+        const input = inputIdFor('close-road', rest);
+        const cells = parseCells(input.parts);
+        const result = play.submitSpatial({ commandId: input.id,
           type: 'close-road', cells });
         emit({ command, jobId: job.jobId, ...result,
           closedCells: session.world.spatial?.closedCells ?? [] });
         break;
       }
       case 'open-road': {
-        const cells = parseCells(rest);
-        const result = play.submitSpatial({ commandId: `player-open-${++spatialSequence}`,
+        const input = inputIdFor('open-road', rest);
+        const cells = parseCells(input.parts);
+        const result = play.submitSpatial({ commandId: input.id,
           type: 'open-road', cells });
         emit({ command, jobId: job.jobId, ...result,
           closedCells: session.world.spatial?.closedCells ?? [] });
@@ -309,22 +390,43 @@ rl.on('line', line => {
       ? session.generationFor(rest[0])
       : Object.fromEntries(session.npcIds.map(id => [id, session.generationFor(id)]));
     const before = controlChain;
-    stepChain = stepChain.then(() => before).then(() => runJob(job, line, expected));
+    const actorIds = rest.length > 0 ? [rest[0]] : session.npcIds
+      .filter(id => session.world.npcs[id]?.alive);
+    stepChain = stepChain.then(() => before).then(() => {
+      for (const id of actorIds) inFlightActors.add(id);
+      return runJob(job, line, expected);
+    }).finally(() => {
+      for (const id of actorIds) inFlightActors.delete(id);
+    });
     const tracked = stepChain;
     pendingSteps.add(tracked);
-    void tracked.finally(() => pendingSteps.delete(tracked));
+    pendingStepJobs.add(job);
+    void tracked.finally(() => { pendingSteps.delete(tracked);
+      pendingStepJobs.delete(job); });
     return;
   }
 
   if (command === 'save' || command === 'quit') {
-    // Barrier: drain in-flight steps accepted before this line, then act.
+    // R4 (G2): the barrier waits for the steps accepted BEFORE this line, but
+    // only up to the settle bound. Control input (cancel/tell/cancel-task)
+    // stays on its own chain, so a waiting save can never block a cancel:
+    // the cancel revokes the generation and the pending step settles by
+    // refusing its stale submission.
     const snapshot = [...pendingSteps];
-    controlChain = controlChain
-      .then(() => Promise.allSettled(snapshot))
-      .then(() => runJob(job, line));
+    barrierChain = barrierChain.then(async () => {
+      await controlChain;
+      revokedByBarrier.length = 0;
+      const settled = await settleWithin(snapshot, SETTLE_MS);
+      job.detail = { settled, revokedByBarrier: [...revokedByBarrier] };
+      await runJob(job, line);
+      if (!settled) {
+        emit({ command, event: 'barrier_timeout', revoked: [...revokedByBarrier],
+          boundMs: SETTLE_MS });
+      }
+    });
     if (command === 'quit') {
       quitRequested = true;
-      controlChain = controlChain.then(() => { closed = true; rl.close(); });
+      barrierChain = barrierChain.then(() => { closed = true; rl.close(); });
     }
     return;
   }
@@ -334,13 +436,23 @@ rl.on('line', line => {
 
 rl.on('close', () => {
   if (quitRequested) closed = true;
-  const drain = Promise.allSettled([...pendingSteps]).then(() => stepChain).then(() => controlChain);
-  void drain.then(() => {
+  // R4 (G2): EOF is a barrier too, and an unreturned scorer must not hold the
+  // process open forever: bound the drain and revoke anything still running.
+  const drain = Promise.allSettled([...pendingSteps])
+    .then(() => stepChain).then(() => controlChain);
+  void settleWithin([drain], SETTLE_MS).then(settled => {
+    if (!settled) {
+      emit({ event: 'barrier_timeout', revoked: [...revokedByBarrier], boundMs: SETTLE_MS,
+        at: 'eof' });
+    }
     const open = jobs.filter(job => !job.terminal);
     if (open.length > 0) emit({ event: 'incomplete', open: open.map(job => job.jobId) });
     emit({ event: 'exit', jobs: jobs.length,
       completed: jobs.filter(job => job.status === 'completed').length,
-      failed: jobs.filter(job => job.status === 'failed').length, closed });
+      failed: jobs.filter(job => job.status === 'failed').length, closed,
+      settled });
+    // An explicitly revoked (timed-out) job is a recorded terminal state, not
+    // a silent drop: exit nonzero only for jobs that never reached a terminal.
     process.exit(open.length > 0 ? 1 : 0);
   });
 });
