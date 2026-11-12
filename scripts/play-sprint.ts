@@ -83,11 +83,11 @@ const session = existsSync(statePath) && !process.argv.includes('--fresh')
   : PlaySession.create(npcCount, { days, food, seed: argValue('--seed') ?? `play-${npcCount}`,
     scorerProvider: customScorer });
 
-// Gameplay tasks live beside the session; both are written by `save`.
-const tasksPath = `${statePath}.tasks.json`;
-const board = existsSync(tasksPath) && !process.argv.includes('--fresh')
-  ? TaskBoard.fromJSON(JSON.parse(readFileSync(tasksPath, 'utf8'))) : new TaskBoard();
-const play = new GameplayLoop(session, board);
+// R4: session + task board + experience + commitments all live beside the
+// session file and are written together by `save` / read together by `load`.
+const play = existsSync(statePath) && !process.argv.includes('--fresh')
+  ? GameplayLoop.load(statePath, {}, customScorer)
+  : new GameplayLoop(session);
 
 const emit = (value: Record<string, unknown>) => console.log(JSON.stringify(value));
 emit({ schema: 'frostecho.play/2', event: 'ready', statePath,
@@ -110,7 +110,9 @@ function kindOf(command: string): PlayerJobKind {
   const known: PlayerJobKind[] = ['observe', 'promise', 'cancel', 'tell', 'advance',
     'step', 'knowledge', 'save', 'quit', 'assign', 'cancel-task', 'task-status',
     'game-step', 'map', 'where', 'travel', 'withdraw', 'deliver', 'restock',
-    'close-road', 'open-road', 'tell-restock'];
+    'close-road', 'open-road', 'tell-restock', 'request', 'respond-change',
+    'commitment-status', 'resume-commitment', 'relinquish', 'cancel-commitment',
+    'deposit'];
   return (known as string[]).includes(command) ? command as PlayerJobKind : 'observe';
 }
 
@@ -342,16 +344,65 @@ async function runJob(job: PlayerJob, line: string,
           closedCells: session.world.spatial?.closedCells ?? [] });
         break;
       }
+      case 'deposit': {
+        const input = inputIdFor('deposit', rest);
+        const actorId = input.parts[0];
+        const result = play.submitSpatial({ commandId: input.id,
+          type: 'deposit', actorId, place: 'warehouse', resource: 'food',
+          amount: Number(input.parts[1] ?? 1) });
+        emit({ command, jobId: job.jobId, ...result,
+          publicFood: session.world.resources.food,
+          warehouseFood: session.world.spatial?.stocks.warehouse.food });
+        break;
+      }
+      case 'request': {
+        const input = inputIdFor('request', rest);
+        const result = play.requestCommitment(input.parts[0],
+          input.parts[1] ?? 'deliver-meal', { inputId: input.id });
+        emit({ command, jobId: job.jobId, ...result, mode: 'reference-rules/1' });
+        break;
+      }
+      case 'respond-change': {
+        const input = inputIdFor('respond-change', rest);
+        const verdict = input.parts[1] === 'accept' ? 'accept' as const : 'reject' as const;
+        const result = play.respondChange(input.parts[0], verdict, { inputId: input.id });
+        emit({ command, jobId: job.jobId, ...result, mode: 'reference-rules/1' });
+        break;
+      }
+      case 'commitment-status':
+        emit({ command, jobId: job.jobId, ...play.commitmentStatus(),
+          mode: 'reference-rules/1' });
+        break;
+      case 'resume-commitment': {
+        const input = inputIdFor('resume-commitment', rest);
+        emit({ command, jobId: job.jobId,
+          ...play.resumeCommitment(input.parts[0], { inputId: input.id,
+            reason: input.parts[1] ?? 'player-ordered' }) });
+        break;
+      }
+      case 'relinquish': {
+        const input = inputIdFor('relinquish', rest);
+        emit({ command, jobId: job.jobId,
+          ...play.withdrawCommitment(input.parts[0], { inputId: input.id,
+            reason: input.parts[1] ?? 'explicit-exit' }) });
+        break;
+      }
+      case 'cancel-commitment': {
+        const input = inputIdFor('cancel-commitment', rest);
+        emit({ command, jobId: job.jobId,
+          ...play.cancelCommitment(input.parts[0], { inputId: input.id }) });
+        break;
+      }
       case 'tell-restock': {
         emit({ command, jobId: job.jobId, ...session.tellRestock(rest[0]) });
         break;
       }
       case 'save':
-        session.save(statePath);
-        writeFileSync(`${statePath}.tasks.json`,
-          `${JSON.stringify(play.board.toJSON(), null, 2)}\n`, 'utf8');
+        play.save(statePath);
         emit({ command, jobId: job.jobId, saved: statePath, version: session.world.version,
           tasks: play.board.tasks.length,
+          commitments: play.commitments.all().map(row => ({ commitmentId: row.commitmentId,
+            status: row.status, revision: row.revision })),
           pending: jobs.filter(entry => entry.kind === 'step' && !entry.terminal).length });
         break;
       case 'quit':

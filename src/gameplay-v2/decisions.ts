@@ -42,13 +42,15 @@ export interface DeliveryView {
   carried: number;
   stockLevel: number | null;
   restockRumor: boolean;
+  /** Public (gathered) food the actor can see and move; part of the chain. */
+  publicFood: number;
   routeToWarehouse: Array<{ x: number; y: number }> | null;
   routeToKitchen: Array<{ x: number; y: number }> | null;
 }
 
-/** Derived phase of the warehouse -> kitchen meal run (position + carry + belief). */
+/** Derived phase of the gather -> warehouse -> kitchen chain. */
 export type DeliveryPhase = 'deliver' | 'travel-kitchen' | 'withdraw' | 'travel-warehouse'
-  | 'gather-fallback' | 'report-blocked';
+  | 'deposit' | 'gather-fallback' | 'report-blocked';
 
 export function deriveDeliveryPhase(npc: GameplayNpcView, delivery: DeliveryView): DeliveryPhase {
   if (delivery.carried > 0) {
@@ -56,11 +58,17 @@ export function deriveDeliveryPhase(npc: GameplayNpcView, delivery: DeliveryView
     return delivery.routeToKitchen ? 'travel-kitchen' : 'report-blocked';
   }
   if (npc.location === 'warehouse') {
-    if (delivery.stockLevel === 0 && !delivery.restockRumor) return 'gather-fallback';
+    if (delivery.stockLevel === 0 && !delivery.restockRumor) {
+      // R4: gathered food can refill the warehouse through a real transfer
+      // instead of waiting for the player to restock.
+      return delivery.publicFood >= 1 ? 'deposit' : 'gather-fallback';
+    }
     return 'withdraw';
   }
   if (delivery.routeToWarehouse === null) return 'report-blocked';
-  if (delivery.stockLevel === 0 && !delivery.restockRumor) return 'gather-fallback';
+  if (delivery.stockLevel === 0 && !delivery.restockRumor) {
+    return delivery.publicFood >= 1 ? 'travel-warehouse' : 'gather-fallback';
+  }
   return 'travel-warehouse';
 }
 
@@ -75,6 +83,10 @@ function deliveryCandidates(npc: GameplayNpcView, delivery: DeliveryView):
       return { entries: [{ candidate: candidate('g-travel-kitchen', 'travel', '带着饭去厨房',
         { action: 'travel', route: delivery.routeToKitchen!, minutesPerTile: 2 }),
         utility: 0.8, rule: 'delivery.travel-kitchen' }], conflict: null };
+    case 'deposit':
+      return { entries: [{ candidate: candidate('g-deposit', 'deposit', '把采集的粮食存入仓库',
+        { action: 'deposit', place: 'warehouse', amount: delivery.publicFood }),
+        utility: 0.74, rule: 'delivery.deposit' }], conflict: null };
     case 'withdraw':
       return { entries: [{ candidate: candidate('g-withdraw', 'withdraw', '从仓库取饭',
         { action: 'withdraw', place: 'warehouse', amount: 1 }), utility: 0.75,

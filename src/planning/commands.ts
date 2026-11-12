@@ -51,6 +51,12 @@ export function candidateCommand(candidate: Candidate, actorId: string, commandI
       return { commandId, type: 'withdraw', actorId, place, resource: 'food' as const,
         amount: Number(parameters.amount ?? 1) };
     }
+    case 'deposit': {
+      const place = parameters.place === 'warehouse' ? 'warehouse' as const : null;
+      if (!place) throw new UnsupportedActionError(candidate.id, `deposit:${String(parameters.place)}`);
+      return { commandId, type: 'deposit', actorId, place, resource: 'food' as const,
+        amount: Number(parameters.amount ?? 1) };
+    }
     case 'deliver': {
       const to = parameters.to === 'kitchen' ? 'kitchen' as const : null;
       if (!to) throw new UnsupportedActionError(candidate.id, `deliver:${String(parameters.to)}`);

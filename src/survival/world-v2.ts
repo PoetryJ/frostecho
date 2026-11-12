@@ -17,6 +17,8 @@ export const MINUTES_PER_DAY = 24 * MINUTES_PER_HOUR;
 
 /** Documented default for the lazily-created warehouse stock (R3, P). */
 export const DEFAULT_WAREHOUSE_FOOD = 4;
+/** R4: documented extra stamina a traveller pays per tile (charged once). */
+export const TRAVEL_STAMINA_PER_TILE = 0.08;
 
 export type Weather = 'clear' | 'snow' | 'storm' | 'cold-snap';
 export type LocationId = 'dorm-a' | 'dorm-b' | 'kitchen' | 'warehouse' | 'workshop' | 'medical' | 'command' | 'village';
@@ -85,6 +87,7 @@ export type Command =
   | { commandId: string; type: 'reserve'; actorId: string; forId: string; amount: number }
   | { commandId: string; type: 'travel'; actorId: string; route: Array<{ x: number; y: number }>; minutesPerTile: number }
   | { commandId: string; type: 'withdraw'; actorId: string; place: 'warehouse'; resource: 'food'; amount: number }
+  | { commandId: string; type: 'deposit'; actorId: string; place: 'warehouse'; resource: 'food'; amount: number }
   | { commandId: string; type: 'restock'; place: 'warehouse'; resource: 'food'; amount: number; source: string }
   | { commandId: string; type: 'deliver'; actorId: string; to: 'kitchen'; amount: number }
   | { commandId: string; type: 'close-road'; cells: Array<{ x: number; y: number }> }
@@ -203,6 +206,57 @@ function positionOf(space: SpatialState, npc: NpcState): Cell {
   return building ? { ...building.door } : { x: 25, y: 8 };
 }
 
+/**
+ * R4 (G3): the single world-clock rule. Every span of simulated time — an
+ * explicit advance, a travel leg, a rest-like command — evolves the SAME
+ * things in the SAME order: furnace fuel, every NPC's needs/damage/death,
+ * calendar day and ending. Callers own only the command-specific extras.
+ * Returns the ids that died during the span.
+ */
+function evolveSpan(state: WorldV2, minutes: number, options: {
+  recovery?: boolean;
+  travelerId?: string;
+  extraStamina?: number;
+} = {}): string[] {
+  const hours = minutes / MINUTES_PER_HOUR;
+  // Furnace fuel is a world resource: burn it once per span, not per npc.
+  const wanted = 0.4 * hours;
+  const burned = state.furnace.lit ? Math.min(state.furnace.fuel, wanted) : 0;
+  state.furnace.fuel = clamp(state.furnace.fuel - burned, 0, 100);
+  if (state.furnace.fuel <= 0) state.furnace.lit = false;
+  const coldHours = state.furnace.lit ? 0 : hours;
+  const deaths: string[] = [];
+  for (const npc of Object.values(state.npcs)) {
+    if (!npc.alive) continue;
+    const decay = 0.9 * hours + (state.weather === 'cold-snap' ? 0.4 * hours : 0);
+    const staminaDrain = 1.5 * hours;
+    npc.hunger = clamp(npc.hunger - decay, 0, 100);
+    // `recovery` marks an overnight span: the npc sleeps through it.
+    npc.stamina = clamp(npc.stamina + (options.recovery ? 8 * hours : -staminaDrain), 0, 100);
+    if (options.recovery) npc.san = clamp(npc.san + 2 * hours, 0, 100);
+    if (npc.hunger <= 0) npc.health = clamp(npc.health - 4 * hours, 0, 100);
+    if (coldHours > 0 && state.weather !== 'clear') {
+      npc.health = clamp(npc.health - 1.2 * coldHours, 0, 100);
+    }
+    npc.san = clamp(npc.san - (npc.hunger < 20 ? 1.4 * hours : 0.2 * hours), 0, 100);
+    // The traveller's extra cost is explicit and charged exactly once.
+    if (options.travelerId === npc.id && options.extraStamina) {
+      npc.stamina = clamp(npc.stamina - options.extraStamina, 0, 100);
+    }
+    if (npc.health <= 0 && npc.alive) {
+      npc.alive = false;
+      state.dead = [...state.dead, npc.id];
+      deaths.push(npc.id);
+    }
+  }
+  state.simTime += minutes;
+  state.day = Math.floor(state.simTime / MINUTES_PER_DAY) + 1;
+  if (state.dead.length === Object.keys(state.npcs).length) state.ending = 'all-dead';
+  else if (state.ending === 'none'
+    && state.simTime >= state.scenarioDays * MINUTES_PER_DAY) state.ending = 'survived';
+  return deaths;
+}
+
 /** Pure reducer. Same state + command always yields the same state + events. */
 export function applyCommand(state: WorldV2, command: Command): { state: WorldV2; events: WorldEvent[] } {
   if (typeof command.commandId !== 'string' || command.commandId.length === 0) {
@@ -225,36 +279,15 @@ export function applyCommand(state: WorldV2, command: Command): { state: WorldV2
       if (!Number.isFinite(command.minutes) || command.minutes < 0) {
         throw new SurvivalError('bad_minutes', 'advance minutes must be non-negative');
       }
-      const hours = command.minutes / MINUTES_PER_HOUR;
-      // Furnace fuel is a world resource: burn it once per span, not per npc.
-      const wanted = 0.4 * hours;
-      const burned = furnace.lit ? Math.min(furnace.fuel, wanted) : 0;
-      furnace.fuel = clamp(furnace.fuel - burned, 0, 100);
-      if (furnace.fuel <= 0) furnace.lit = false;
-      const coldHours = furnace.lit ? 0 : hours;
-      for (const npc of Object.values(npcs)) {
-        if (!npc.alive) continue;
-        const decay = 0.9 * hours + (next.weather === 'cold-snap' ? 0.4 * hours : 0);
-        const staminaDrain = 1.5 * hours;
-        npc.hunger = clamp(npc.hunger - decay, 0, 100);
-        // `recovery` marks an overnight span: the npc sleeps through it.
-        npc.stamina = clamp(npc.stamina + (command.recovery ? 8 * hours : -staminaDrain), 0, 100);
-        if (command.recovery) npc.san = clamp(npc.san + 2 * hours, 0, 100);
-        if (npc.hunger <= 0) npc.health = clamp(npc.health - 4 * hours, 0, 100);
-        if (coldHours > 0 && next.weather !== 'clear') {
-          npc.health = clamp(npc.health - 1.2 * coldHours, 0, 100);
-        }
-        npc.san = clamp(npc.san - (npc.hunger < 20 ? 1.4 * hours : 0.2 * hours), 0, 100);
-        if (npc.health <= 0 && npc.alive) {
-          npc.alive = false;
-          next.dead = [...next.dead, npc.id];
-          events.push(event(next, command, 'npc_died', { npcId: npc.id }));
-        }
+      // evolveSpan mutates state.npcs/furnace/resources in place: point them at
+      // the command-local copies so the input snapshot stays byte-identical.
+      next.npcs = npcs;
+      next.furnace = furnace;
+      next.resources = resources;
+      const deaths = evolveSpan(next, command.minutes, { recovery: command.recovery });
+      for (const deadId of deaths) {
+        events.push(event(next, command, 'npc_died', { npcId: deadId }));
       }
-      next.simTime += command.minutes;
-      next.day = Math.floor(next.simTime / MINUTES_PER_DAY) + 1;
-      if (next.dead.length === Object.keys(npcs).length) next.ending = 'all-dead';
-      else if (next.simTime >= next.scenarioDays * MINUTES_PER_DAY) next.ending = 'survived';
       events.push(event(next, command, 'time_advanced', { minutes: command.minutes }));
       break;
     }
@@ -389,21 +422,46 @@ export function applyCommand(state: WorldV2, command: Command): { state: WorldV2
       }
       const tiles = command.route.length - 1;
       const minutes = tiles * command.minutesPerTile;
-      const hours = minutes / MINUTES_PER_HOUR;
       const end = command.route[command.route.length - 1];
       const building = BUILDINGS.find(entry => entry.door.x === end.x && entry.door.y === end.y);
       space.positions[npc.id] = { x: end.x, y: end.y };
-      // Travel drains the traveller like an awake advance span, nobody else.
-      npcs[npc.id] = { ...npc,
-        location: building ? building.id as LocationId : npc.location,
-        hunger: clamp(npc.hunger - 0.9 * hours, 0, 100),
-        stamina: clamp(npc.stamina - 1.5 * hours, 0, 100),
-        san: clamp(npc.san - 0.2 * hours, 0, 100) };
+      npcs[npc.id] = { ...npc, location: building ? building.id as LocationId : npc.location };
+      next.npcs = npcs;
+      next.furnace = furnace;
+      next.resources = resources;
       next.spatial = space;
-      next.simTime += minutes;
-      next.day = Math.floor(next.simTime / MINUTES_PER_DAY) + 1;
+      // R4 (G3): a travel leg advances the SAME world clock as advance: furnace,
+      // every NPC's needs/damage/death, calendar and ending all participate.
+      // The traveller's extra stamina is explicit and charged exactly once.
+      const deaths = evolveSpan(next, minutes, { travelerId: npc.id,
+        extraStamina: tiles * TRAVEL_STAMINA_PER_TILE });
+      for (const deadId of deaths) {
+        events.push(event(next, command, 'npc_died', { npcId: deadId }));
+      }
       events.push(event(next, command, 'traveled', { tiles, minutes,
         ...(building ? { arrivedAt: building.id } : {}) }));
+      break;
+    }
+    case 'deposit': {
+      const npc = needNpc(next, command.actorId);
+      if (!Number.isFinite(command.amount) || command.amount <= 0) {
+        throw new SurvivalError('bad_amount', 'deposit amount must be a positive finite number');
+      }
+      if (npc.location !== command.place) {
+        throw new SurvivalError('bad_location', `deposit requires standing at ${command.place}`);
+      }
+      const space = cloneSpatial(next);
+      const publicFood = resources.food;
+      if (publicFood < command.amount) {
+        throw new SurvivalError('insufficient_food', 'no gathered food to deposit');
+      }
+      // One transfer, one source decrement and one target increment.
+      resources.food -= command.amount;
+      space.stocks.warehouse.food += command.amount;
+      next.spatial = space;
+      events.push(event(next, command, 'stock_deposited', { place: command.place,
+        amount: command.amount, publicFood: publicFood - command.amount,
+        total: space.stocks.warehouse.food }));
       break;
     }
     case 'withdraw': {

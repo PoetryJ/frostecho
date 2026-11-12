@@ -21,6 +21,8 @@ export interface GameplayTask {
   status: 'active' | 'cancelled' | 'done';
   assignedAt: number;
   promiseId?: string;
+  /** R4 (G1): persistent player-input identity for explicit retries. */
+  inputId?: string;
 }
 
 const ID_SEQUENCE_RE = /^task-(\d+)-/;
@@ -49,7 +51,16 @@ export class TaskBoard {
   }
 
   assign(actorId: string, kind: GameplayTaskKind, options:
-    { taskId?: string; promiseId?: string; now?: number } = {}): GameplayTask {
+    { taskId?: string; promiseId?: string; now?: number; inputId?: string } = {}): GameplayTask {
+    if (options.inputId) {
+      const replayed = this.tasks.find(task => task.inputId === options.inputId);
+      if (replayed) {
+        if (replayed.actorId !== actorId || replayed.kind !== kind) {
+          throw new Error(`taskboard: input_id_conflict ${options.inputId}`);
+        }
+        return replayed;
+      }
+    }
     const existing = this.tasks.find(task => task.actorId === actorId && task.kind === kind
       && task.status === 'active');
     if (existing) return existing;
@@ -77,6 +88,7 @@ export class TaskBoard {
     const task: GameplayTask = {
       taskId, actorId, kind, status: 'active', assignedAt: options.now ?? 0,
       ...(options.promiseId ? { promiseId: options.promiseId } : {}),
+      ...(options.inputId ? { inputId: options.inputId } : {}),
     };
     this.tasks.push(task);
     return task;

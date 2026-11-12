@@ -25,14 +25,16 @@ const NOTE_MAKERS: Record<string, ExperienceLesson> = {
   road_closed: 'road-blocked',
   stock_withdrawn: 'warehouse-stocked',
   stock_restocked: 'warehouse-stocked',
+  // R4: a real gathered-food deposit also proves the shelves are not empty.
+  stock_deposited: 'warehouse-stocked',
   meal_delivered: 'delivery-confirmed',
 };
 
 /** Events that INVALIDATE a lesson when personally witnessed. */
-const NOTE_INVALIDATORS: Partial<Record<ExperienceLesson, string>> = {
-  'warehouse-empty': 'stock_restocked',
-  'road-blocked': 'road_reopened',
-  'warehouse-stocked': 'out_of_stock',
+const NOTE_INVALIDATORS: Partial<Record<ExperienceLesson, string[]>> = {
+  'warehouse-empty': ['stock_restocked', 'stock_deposited'],
+  'road-blocked': ['road_reopened'],
+  'warehouse-stocked': ['out_of_stock'],
 };
 
 export interface ExperienceNote {
@@ -121,7 +123,8 @@ export class ExperienceStore {
     let ended = 0;
     for (const note of Object.values(this.notes)) {
       if (!note.valid || note.ownerActorId !== ownerActorId) continue;
-      if (NOTE_INVALIDATORS[note.lesson] !== contradictionType) continue;
+      const contradictors = NOTE_INVALIDATORS[note.lesson] ?? [];
+      if (!contradictors.includes(contradictionType)) continue;
       note.valid = false;
       note.invalidatedByEventIds.push(evidenceEventId);
       ended += 1;

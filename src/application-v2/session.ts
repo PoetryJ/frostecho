@@ -383,6 +383,53 @@ export class PlaySession {
     return { observer: npcId, rumor: true };
   }
 
+  /**
+   * R4 (G4): a commitment event is a real communication record: sender,
+   * recipient, content, revision and the supporting receipt. It is ingested
+   * into every living NPC's memory (social events are public here); the
+   * promisor additionally gets the relation-bearing records:
+   *  - commitment_fulfilled  -> promise_kept  (trust +, only with the receipt)
+   *  - commitment_withdrawn  -> promise_broken (trust -, grievance +)
+   * Nothing else moves a relation.
+   */
+  ingestCommitmentEvent(event: {
+    type: string; commitmentId: string; revision: number; at: number;
+    actorId: string; payload: Record<string, unknown>;
+  }): string[] {
+    const observers = this.npcIds.filter(id => this.world.npcs[id]?.alive);
+    const eventId = `cmt-${event.type}-${event.commitmentId}-${this.sequence++}`;
+    const recipient = String(event.payload.toId ?? 'player');
+    for (const observer of observers) {
+      const base: Omit<MemoryRecordInput, 'observerId'> = {
+        eventId, occurredAt: event.at, observedAt: this.world.simTime, kind: event.type,
+        subjectIds: [event.actorId, recipient],
+        payload: { ...event.payload, commitmentId: event.commitmentId,
+          revision: event.revision },
+        source: 'engine', authority: 'engine', speakerId: event.actorId,
+        relatedRequestId: event.commitmentId,
+      };
+      this.ingest(observer, base);
+      if (event.type === 'commitment_fulfilled' && observer === event.actorId) {
+        const promiseId = String(event.payload.promiseId ?? event.commitmentId);
+        const keptId = `${eventId}:kept`;
+        // Distinct event id: the memory store dedupes by (observer, eventId).
+        this.ingest(observer, { ...base, eventId: keptId, kind: 'promise_kept', payload: {
+          promiseId, fromId: event.actorId, toId: recipient, text: '按约定送达',
+          confirmation: { commandId: String(event.payload.receiptCommandId
+            ?? event.commitmentId), status: 'applied', eventIds: [keptId],
+            promiseId, beneficiaryId: recipient } } });
+      }
+      if (event.type === 'commitment_withdrawn') {
+        this.ingest(observer, { ...base, eventId: `${eventId}:broken`,
+          kind: 'promise_broken', payload: {
+            promiseId: String(event.payload.promiseId ?? event.commitmentId),
+            fromId: event.actorId, toId: recipient,
+            reason: String(event.payload.reason ?? 'withdrawn') } });
+      }
+    }
+    return observers;
+  }
+
   private ingest(observerId: string, input: Omit<MemoryRecordInput, 'observerId'>): void {
     const store = this.memories.get(observerId);
     if (!store) throw new Error(`no memory for ${observerId}`);

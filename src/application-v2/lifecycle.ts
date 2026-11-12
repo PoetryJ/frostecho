@@ -21,7 +21,10 @@ export type PlayerJobKind =
   | 'assign' | 'cancel-task' | 'task-status' | 'game-step'
   /** R3 spatial slice commands (additive; same job lifecycle). */
   | 'map' | 'where' | 'travel' | 'withdraw' | 'deliver' | 'restock'
-  | 'close-road' | 'open-road' | 'tell-restock';
+  | 'close-road' | 'open-road' | 'tell-restock'
+  /** R4 commitment negotiation commands (additive; same job lifecycle). */
+  | 'request' | 'respond-change' | 'commitment-status' | 'resume-commitment'
+  | 'relinquish' | 'cancel-commitment' | 'deposit';
 
 export type PlayerJobStatus = 'pending' | 'running' | 'completed' | 'cancelled' | 'failed';
 
