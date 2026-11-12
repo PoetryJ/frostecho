@@ -28,13 +28,26 @@ export interface GameplayStepResult {
   mode: 'reference-rules/1';
 }
 
+/**
+ * R4 (G5) memory arms for the paired comparison — identical visible state,
+ * candidates and rules; only the stock-belief mechanism differs:
+ *   none        : no memory at all (each step re-verifies blindly)
+ *   raw         : newest direct event only (strong rules over raw events)
+ *   summary     : raw evidence + a deterministic one-line summary of the
+ *                 last shortage (no per-note conditions, no refetch)
+ *   experience  : conditional notes with evidence/conditions/invalidation
+ */
+export type MemoryArm = 'none' | 'raw' | 'summary' | 'experience';
+
 export interface GameplayLoopOptions {
   /**
    * R3 (E): when false the loop never learns from past stock events — the
    * delivery policy sees a null stock level forever and must re-verify by
-   * acting. This is the reference-only arm of the paired comparison.
+   * acting. Kept for the historical reference-only arm.
    */
   useExperience?: boolean;
+  /** R4: explicit memory arm for the three-way comparison. */
+  memoryArm?: MemoryArm;
   /** Preloaded experience notes (restore path). */
   experience?: ExperienceStore;
   /** R4: preloaded commitments (restore path). */
@@ -105,13 +118,16 @@ export function warehouseBelief(session: PlaySession, actorId: string):
 
 export class GameplayLoop {
   readonly useExperience: boolean;
+  readonly memoryArm: MemoryArm;
   readonly experience: ExperienceStore;
   readonly commitments: CommitmentBoard;
 
   constructor(readonly session: PlaySession,
     readonly board: TaskBoard = new TaskBoard(),
     options: GameplayLoopOptions = {}) {
-    this.useExperience = options.useExperience !== false;
+    this.memoryArm = options.memoryArm ?? (options.useExperience === false
+      ? 'none' : 'experience');
+    this.useExperience = this.memoryArm === 'experience';
     this.experience = options.experience ?? ExperienceStore.empty();
     this.commitments = options.commitments ?? CommitmentBoard.empty();
   }
@@ -312,11 +328,15 @@ export class GameplayLoop {
       if (!result.path) return null;
       return cellKey(result.path[result.path.length - 1]) === cellKey(door) ? result.path : null;
     };
+    let stockLevel: number | null = null;
+    if (this.memoryArm === 'experience') {
+      stockLevel = this.experience.believesWarehouseEmpty(actorId) ? 0 : belief.level;
+    } else if (this.memoryArm === 'raw' || this.memoryArm === 'summary') {
+      stockLevel = belief.level;
+    }
     return {
       carried: world.spatial?.carry[actorId]?.meals ?? 0,
-      stockLevel: this.useExperience
-        ? (this.experience.believesWarehouseEmpty(actorId) ? 0 : belief.level)
-        : null,
+      stockLevel,
       publicFood: world.resources.food,
       restockRumor: belief.rumor,
       routeToWarehouse: routeTo('warehouse', npc.location === 'warehouse'),
@@ -360,7 +380,7 @@ export class GameplayLoop {
       const outcome = this.session.executeCandidate(actorId, chosen.candidate, commandId);
       const items = outcome.status === 'applied'
         ? this.itemsOfEvents(actorId, outcome.eventIds) : [];
-      if (items.length > 0 && this.useExperience) {
+      if (items.length > 0 && this.memoryArm === 'experience') {
         for (const item of items as Array<Record<string, unknown>>) {
           this.experience.observe(actorId, {
             eventId: Array.isArray(item.evidenceIds) && item.evidenceIds.length > 0
@@ -417,7 +437,7 @@ export class GameplayLoop {
   submitSpatial(command: Command): { status: string; eventIds: string[]; events: WorldEvent[];
     observedBy: string[] } {
     const result = this.session.submitWorldCommand(command);
-    if (this.useExperience && result.status === 'applied') {
+    if (this.memoryArm === 'experience' && result.status === 'applied') {
       for (const observer of result.observedBy) {
         for (const worldEvent of result.events) {
           this.experience.observe(observer, { eventId: worldEvent.eventId,

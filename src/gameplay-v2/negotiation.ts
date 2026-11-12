@@ -80,11 +80,14 @@ export function resumeReady(npc: NpcState, commitment: Commitment,
   return true;
 }
 
-/** A rejected proposal plus a dying promisor makes the explicit exit honest. */
+/**
+ * A dying promisor whose earlier survival proposal was rejected may exit
+ * explicitly. This is an announced exit (commitment_withdrawn event, relation
+ * consequence), never a silent edit of the terms.
+ */
 export function shouldWithdraw(npc: NpcState, commitment: Commitment): boolean {
-  if (commitment.status !== 'pending-change') return false;
-  const open = commitment.changes.some(change => change.status === 'open');
-  if (open) return false; // still waiting for the answer: never act unilaterally
-  const rejected = commitment.changes.some(change => change.status === 'rejected');
+  if (!['active', 'pending-change'].includes(commitment.status)) return false;
+  const rejected = commitment.changes.some(change => change.kind === 'suspend'
+    && change.status === 'rejected');
   return rejected && npc.hunger < NEGOTIATION.withdrawHunger;
 }

@@ -78,7 +78,9 @@ const days = Number(argValue('--days') ?? 4);
 const food = argValue('--food') === undefined ? undefined : Number(argValue('--food'));
 const customScorer = scorerProvider();
 
-const session = existsSync(statePath) && !process.argv.includes('--fresh')
+// The session ALWAYS comes from the gameplay loop (which owns the restore
+// path), so `session` and `play.session` can never diverge.
+const restoredSession = existsSync(statePath) && !process.argv.includes('--fresh')
   ? PlaySession.load(statePath, customScorer)
   : PlaySession.create(npcCount, { days, food, seed: argValue('--seed') ?? `play-${npcCount}`,
     scorerProvider: customScorer });
@@ -87,7 +89,8 @@ const session = existsSync(statePath) && !process.argv.includes('--fresh')
 // session file and are written together by `save` / read together by `load`.
 const play = existsSync(statePath) && !process.argv.includes('--fresh')
   ? GameplayLoop.load(statePath, {}, customScorer)
-  : new GameplayLoop(session);
+  : new GameplayLoop(restoredSession);
+const session = play.session;
 
 const emit = (value: Record<string, unknown>) => console.log(JSON.stringify(value));
 emit({ schema: 'frostecho.play/2', event: 'ready', statePath,
