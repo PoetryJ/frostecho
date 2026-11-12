@@ -406,6 +406,22 @@ export class PlaySession {
     return { observer: npcId, rumor: true };
   }
 
+  /** R5: a council/team event becomes a real shared memory record. */
+  ingestTeamEvent(type: string, payload: Record<string, unknown>, at: number): string[] {
+    const observers = this.npcIds.filter(id => this.world.npcs[id]?.alive);
+    const eventId = `team-${type}-${this.sequence++}`;
+    for (const observer of observers) {
+      this.ingest(observer, {
+        eventId, occurredAt: at, observedAt: this.world.simTime, kind: type,
+        subjectIds: [observer, 'council'],
+        payload: { ...payload },
+        source: 'engine', authority: 'engine', speakerId: 'council',
+        relatedRequestId: String(payload.resolutionId ?? payload.councilId ?? ''),
+      });
+    }
+    return observers;
+  }
+
   /**
    * R4 (G4): a commitment event is a real communication record: sender,
    * recipient, content, revision and the supporting receipt. It is ingested

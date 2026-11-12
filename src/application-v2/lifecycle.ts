@@ -24,7 +24,10 @@ export type PlayerJobKind =
   | 'close-road' | 'open-road' | 'tell-restock'
   /** R4 commitment negotiation commands (additive; same job lifecycle). */
   | 'request' | 'respond-change' | 'commitment-status' | 'resume-commitment'
-  | 'relinquish' | 'cancel-commitment' | 'deposit';
+  | 'relinquish' | 'cancel-commitment' | 'deposit'
+  /** R5 morning-council slice (additive; same job lifecycle). */
+  | 'council-open' | 'council-vote' | 'council-resolve' | 'council-status'
+  | 'council-respond' | 'council-reassign';
 
 export type PlayerJobStatus = 'pending' | 'running' | 'completed' | 'cancelled' | 'failed';
 

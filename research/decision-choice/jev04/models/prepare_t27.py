@@ -137,18 +137,20 @@ def mock_check(endpoint: str, revision: str = "main") -> dict:
 
 
 def download(revision: str = "main") -> dict:
+    resolved = resolve(revision)
     result = {"schema": "frostecho.jev04.t27-download/1", "at": now(),
               "revision": revision,
-              **{key: value for key, value in resolve(revision).items()
+              **{key: value for key, value in resolved.items()
                  if key in ("repo", "configUrl", "downloadUrl")},
+              "snapshotArgs": {"repo_id": TARGET_MODEL, "revision": revision,
+                               "resume_download": True, "max_workers": 4},
               "resumeCommand": ("python3 research/decision-choice/jev04/models/"
-                                "prepare_t27.py --download")}
-    # Reachability pre-check so a blocked network is recorded, not hung.
+                                f"prepare_t27.py --download --revision {revision}")}
+    # The FIRST network request is the real repository/revision config URL; it
+    # is also what a mock intercept must see.
     import urllib.request
     try:
-        urllib.request.urlopen("https://huggingface.co/api/models/"
-                               + TARGET_MODEL.split("/")[-1].replace(".", "-"),
-                               timeout=8)
+        urllib.request.urlopen(resolved["configUrl"], timeout=8)
         reachable = True
     except Exception as error:
         result.update({"status": "failed",
@@ -166,7 +168,8 @@ def download(revision: str = "main") -> dict:
     try:
         path = snapshot_download(TARGET_MODEL, revision=revision,
                                  resume_download=True, max_workers=4)
-        result.update({"status": "ok", "path": str(path)})
+        result.update({"status": "ok", "path": str(path),
+                       "requestedRepo": TARGET_MODEL, "requestedRevision": revision})
     except Exception as error:  # auth, quota, partial files...
         result.update({"status": "failed",
                        "errorType": type(error).__name__,

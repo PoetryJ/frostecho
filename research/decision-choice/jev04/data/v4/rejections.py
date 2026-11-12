@@ -25,12 +25,23 @@ def canonical(value) -> str:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
 
-def content_hash(case: dict) -> str:
-    return hashlib.sha256(canonical({
+def visible_input(case: dict) -> dict:
+    return {
+        "task": case.get("task"),
         "question": case.get("question"),
         "observation": case.get("observation"),
-        "candidates": [candidate.get("id") for candidate in case.get("candidates", [])],
-    }).encode("utf-8")).hexdigest()
+        "narrative": case.get("narrative"),
+        "facts": case.get("facts") or [],
+        "candidates": [
+            {"id": candidate.get("id"), "text": candidate.get("text"),
+             "kind": candidate.get("kind"), "params": candidate.get("params")}
+            for candidate in case.get("candidates", [])
+        ],
+    }
+
+
+def content_hash(case: dict) -> str:
+    return hashlib.sha256(canonical(visible_input(case)).encode("utf-8")).hexdigest()
 
 
 def write_rows(path: Path, rows: list[dict]) -> None:
@@ -57,13 +68,11 @@ def build_fixture(root: Path) -> dict:
                                      "label": "c-eat" if index % 2 == 0 else "c-wait"})
         adj.append({"caseId": case_id, "contentHash": case["contentHash"],
                     "label": "c-eat"})
-        visible = canonical({"question": case["question"],
-                             "observation": case["observation"],
-                             "candidates": [candidate["id"]
-                                            for candidate in case["candidates"]]})
+        visible = canonical(visible_input(case))
         (train if index < 2 else dev).append({
             "caseId": case_id, "contentHash": case["contentHash"],
-            "sourceGroup": f"fixture-group-{index}", "text": visible})
+            "sourceGroup": f"fixture-group-{index}",
+            "templateFamily": f"fixture-family-{index}", "text": visible})
     write_rows(root / "cases.v4.jsonl", cases)
     write_rows(root / "review-s1.v4.jsonl", reviews["s1"])
     write_rows(root / "review-s2.v4.jsonl", reviews["s2"])

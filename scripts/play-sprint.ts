@@ -35,6 +35,12 @@
  *   close-road <x,y> [...]      seal village cells (R3)
  *   open-road <x,y> [...]       reopen sealed cells (R3)
  *   tell-restock <npcId>        rumor: player says the warehouse is refilled (R3)
+ *   council-open                open the current day's morning council (R5)
+ *   council-vote <proposalId>   add the player vote (reference fixture)
+ *   council-resolve             tally, create a resolution + task requests
+ *   council-status              proposals, votes, requests, commitments, tasks
+ *   council-respond <requestId> <accept|decline|counter>
+ *   council-reassign <requestId> <npcId>  new request/revision for a substitute
  *   save                        persist session + task board (barrier)
  *   quit                        exit after the queue drains (barrier)
  */
@@ -114,7 +120,8 @@ function kindOf(command: string): PlayerJobKind {
     'game-step', 'map', 'where', 'travel', 'withdraw', 'deliver', 'restock',
     'close-road', 'open-road', 'tell-restock', 'request', 'respond-change',
     'commitment-status', 'resume-commitment', 'relinquish', 'cancel-commitment',
-    'deposit'];
+    'deposit', 'council-open', 'council-vote', 'council-resolve',
+    'council-status', 'council-respond', 'council-reassign'];
   return (known as string[]).includes(command) ? command as PlayerJobKind : 'observe';
 }
 
@@ -443,6 +450,36 @@ async function runJob(job: PlayerJob, line: string,
         emit({ command, jobId: job.jobId, ...session.tellRestock(rest[0]) });
         break;
       }
+      case 'council-open': {
+        const opened = play.openCouncil();
+        emit({ command, jobId: job.jobId, ...opened, mode: 'fixture-reference/1' });
+        break;
+      }
+      case 'council-vote': {
+        const voted = play.councilVote(rest[0]);
+        emit({ command, jobId: job.jobId, ...voted, mode: 'fixture-reference/1' });
+        break;
+      }
+      case 'council-resolve': {
+        const resolved = play.councilResolve();
+        emit({ command, jobId: job.jobId, ...resolved, mode: 'fixture-reference/1' });
+        break;
+      }
+      case 'council-status':
+        emit({ command, jobId: job.jobId, council: play.councilStatus(),
+          mode: 'fixture-reference/1' });
+        break;
+      case 'council-respond': {
+        const verdict = rest[1] === 'accept' ? 'accept' as const
+          : rest[1] === 'decline' ? 'decline' as const : 'counter' as const;
+        emit({ command, jobId: job.jobId,
+          ...play.councilRespond(rest[0], verdict), mode: 'fixture-reference/1' });
+        break;
+      }
+      case 'council-reassign':
+        emit({ command, jobId: job.jobId,
+          ...play.councilReassign(rest[0], rest[1]), mode: 'fixture-reference/1' });
+        break;
       case 'save':
         play.save(statePath);
         emit({ command, jobId: job.jobId, saved: statePath, version: session.world.version,

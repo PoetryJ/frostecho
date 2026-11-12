@@ -23,6 +23,7 @@
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { resolve as resolvePath } from 'node:path';
 import type { ChoiceRequest, ChoiceResult } from './contracts';
 import type { ScorerPort } from '../planning/candidates';
 import { makeChoiceResult } from './contracts';
@@ -85,14 +86,80 @@ function sha256File(path: string): string {
   return createHash('sha256').update(readFileSync(path)).digest('hex');
 }
 
+const RISK_PROTOCOL_VERSION = 'jev04-risk/1';
+const POLICY_FIELDS = ['model', 'head', 'tokenizer', 'renderer', 'task'] as const;
+
+/**
+ * R5: sealed means three DISTINCT, non-empty, valid partitions bound to the
+ * same policy identity and the exact risk protocol. A reused `{}` file, a
+ * duplicate partition, or an identity/risk mismatch leaves the policy shadow
+ * only.
+ */
 function evidenceSealed(registration: JevRegistration): boolean {
   const evidence = registration.evidence;
   if (!evidence || evidence.sealed !== true) return false;
-  for (const ref of [evidence.calT, evidence.select, evidence.cert]) {
+  if (evidence.protocolVersion !== RISK_PROTOCOL_VERSION) return false;
+  const paths: string[] = [];
+  const partitions: string[] = [];
+  const sampleSets: Set<string>[] = [];
+  for (const key of ['calT', 'select', 'cert'] as const) {
+    const ref = evidence[key];
     if (!ref || !existsSync(ref.path)) return false;
     if (sha256File(ref.path) !== ref.sha256) return false;
+    let payload: Record<string, unknown>;
+    try {
+      payload = JSON.parse(readFileSync(ref.path, 'utf8')) as Record<string, unknown>;
+    } catch {
+      return false;
+    }
+    if (!payload || typeof payload !== 'object' || Object.keys(payload).length === 0) {
+      return false;
+    }
+    if (payload.partition !== key) return false;
+    if (payload.protocol_version !== RISK_PROTOCOL_VERSION) return false;
+    if (payload.valid !== true) return false;
+    const samples = payload.sampleIds;
+    if (!Array.isArray(samples) || samples.length === 0
+      || samples.some(value => typeof value !== 'string' || value.length === 0)) {
+      return false;
+    }
+    sampleSets.push(new Set(samples as string[]));
+    const policy = payload.policy as Record<string, unknown> | undefined;
+    if (!policy) return false;
+    if (POLICY_FIELDS.some(field => policy[field] !== registration[field])) return false;
+    if (policy.k !== registration.K) return false;
+    if (policy.memory_policy_version !== registration.memoryPolicy) return false;
+    if (key === 'cert') {
+      const upper = Number(payload.upper);
+      const n = Number(payload.n);
+      if (!Number.isFinite(upper) || upper > 0.05 || !Number.isFinite(n) || n <= 0) {
+        return false;
+      }
+    }
+    if (key === 'calT') {
+      const temperature = Number(payload.temperature);
+      const tau = Number(payload.tau);
+      if (!Number.isFinite(temperature) || temperature <= 0
+        || !Number.isFinite(tau) || tau < 0 || tau > 1) return false;
+    }
+    if (key === 'select') {
+      const tau = Number(payload.tau);
+      const accepted = Number(payload.accepted);
+      if (!Number.isFinite(tau) || tau < 0 || tau > 1
+        || !Number.isFinite(accepted) || accepted < 100) return false;
+    }
+    paths.push(resolvePath(ref.path));
+    partitions.push(String(payload.partition));
   }
-  return Boolean(evidence.protocolVersion);
+  if (new Set(paths).size !== 3 || new Set(partitions).size !== 3) return false;
+  const [calT, select, cert] = sampleSets;
+  for (const value of calT) {
+    if (select.has(value) || cert.has(value)) return false;
+  }
+  for (const value of select) {
+    if (cert.has(value)) return false;
+  }
+  return true;
 }
 
 export function loadJevPolicyManifest(source: JevPolicyManifest | string): JevPolicyManifest {

@@ -1,51 +1,42 @@
 {
-  "schema": "frostecho.jev04.gate-v4/1",
-  "head": "ede5dc080114742cc72aeba422557eb4e16ea6fa",
-  "purpose": "content binding and rejection for any v4 data; admission is a separate gate",
-  "structuralReady": true,
-  "validator": {
-    "path": "research/decision-choice/jev04/data/v4/validate_v4.py",
-    "checks": [
-      "case contentHash recompute",
-      "review hash+version binding (s1/s2)",
-      "adjudication label in candidate set",
-      "split projection by caseId+hash",
-      "train text digest equals visible-input hash",
-      "group isolation"
-    ]
-  },
-  "selfTest": {
-    "path": "research/decision-choice/jev04/data/v4/rejections.py",
-    "fixture": "synthetic mechanism fixture (never training data)",
-    "classes": [
-      "review_hash",
-      "review_version",
-      "label",
-      "train_text",
-      "case_content"
-    ],
-    "result": "5/5 rejected non-zero with caseId and reason"
-  },
-  "semanticReview": {
-    "status": "blocked",
-    "reason": "a second independent reviewer is unavailable in this environment; no v4 review data was fabricated"
-  },
-  "reviewedBase": {
-    "version": "v3",
+  "schema": "frostecho.jev04.gate-v4/2",
+  "purpose": "report from the current bytes; not an input to training",
+  "validator": "research/decision-choice/jev04/data/v4/validate_v4.py",
+  "hashProtocol": "frostecho.jev04.visible/4 (task/narrative/facts/candidate order+id+text+kind+params)",
+  "summary": {
     "cases": 39,
-    "eligible": 33,
-    "train": 23,
-    "dev": 10,
-    "challengeIsolated": 25,
-    "note": "v3 files are read-only for R4"
+    "s1": 39,
+    "s2": 39,
+    "adjudicated": 39,
+    "trainRows": 0,
+    "devRows": 0,
+    "uniqueTrainRows": 0,
+    "uniqueDevRows": 0,
+    "reviewVersion": "v4-review/1",
+    "independentReviewers": true,
+    "qualifiedTrain": 0,
+    "qualifiedDev": 0,
+    "requiredTrain": 512,
+    "requiredDev": 128,
+    "trainSourceGroups": 0,
+    "devSourceGroups": 0,
+    "researchTrainReady": false,
+    "failures": []
+  },
+  "failures": [],
+  "adjudication": {
+    "eligible": 0,
+    "ambiguous": 29,
+    "inconsistent": 10,
+    "acceptableSetDisagreements": 4,
+    "statusDifferences": 18,
+    "humanDoubleLabel": false,
+    "crossModelValidation": false
   },
   "researchTrainReady": false,
-  "trainCases": 23,
-  "devCases": 10,
-  "requiredTrain": 512,
-  "requiredDev": 128,
   "formalTraining": {
     "status": "closed",
-    "reason": "researchTrainReady=false (23/10 < 512/128) and semantic review blocked"
-  }
+    "reason": "qualified counts below 512/128"
+  },
+  "note": "the 39-case review is an independent-session adjudication start point, not 512/128 training data"
 }

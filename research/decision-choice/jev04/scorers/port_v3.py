@@ -28,12 +28,16 @@ from typing import Optional
 
 _HERE = Path(__file__).resolve()
 sys.path.insert(0, str(_HERE.parent.parent / "calibration"))
-from calibration import SUPPORTED_K, ScorerInputError, softmax  # noqa: E402
+from calibration import MAX_RISK, SUPPORTED_K, ScorerInputError, softmax  # noqa: E402
 
 ARTIFACT_SCHEMA = "frostecho.jev04.scorer-artifact/1"
 MANIFEST_SCHEMA = "frostecho.jev04.trusted-policy-manifest/1"
 IDENTITY_FIELDS = ("model", "head", "adapter", "tokenizer", "renderer",
                    "task", "k", "policy_version", "memory_policy_version")
+RISK_PROTOCOL_VERSION = "jev04-risk/1"
+EVIDENCE_PARTITIONS = {"calT": "calT", "select": "select", "cert": "cert"}
+POLICY_FIELDS = ("model", "head", "tokenizer", "renderer", "task", "k",
+                 "memory_policy_version")
 
 
 class IdentityError(ValueError):
@@ -64,20 +68,85 @@ class TrustedRegistration:
     evidence: Optional[dict] = None        # sealed calT/select/cert refs
 
     def allows_real_execution(self) -> bool:
+        """All three sealed partitions must be distinct, valid and bound.
+
+        Empty `{}` files, the same file reused for calT/select/cert, a missing
+        or mismatched risk protocol, or a policy identity drift all fail closed.
+        """
         if self.mode != "real":
             return False
         evidence = self.evidence or {}
+        if evidence.get("protocol_version") != RISK_PROTOCOL_VERSION:
+            return False
+        paths: list[str] = []
+        partitions: list[str] = []
+        sample_sets: list[set[str]] = []
         for key in ("calT", "select", "cert"):
             ref = evidence.get(key)
             if not isinstance(ref, dict):
                 return False
-            path = Path(ref.get("path", ""))
+            path = Path(str(ref.get("path", "")))
             if not path.is_file():
                 return False
             digest = hashlib.sha256(path.read_bytes()).hexdigest()
             if digest != ref.get("sha256"):
                 return False
-        return bool(evidence.get("protocol_version"))
+            try:
+                payload = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                return False
+            if not isinstance(payload, dict) or not payload:
+                return False
+            if payload.get("partition") != EVIDENCE_PARTITIONS[key]:
+                return False
+            if payload.get("protocol_version") != RISK_PROTOCOL_VERSION:
+                return False
+            if payload.get("valid") is not True:
+                return False
+            samples = payload.get("sampleIds")
+            if not isinstance(samples, list) or not samples \
+                    or any(not isinstance(entry, str) or not entry for entry in samples):
+                return False
+            sample_sets.append(set(samples))
+            policy = payload.get("policy")
+            if not isinstance(policy, dict):
+                return False
+            if any(policy.get(name) != getattr(self.identity, name)
+                   for name in POLICY_FIELDS):
+                return False
+            if key == "cert":
+                try:
+                    upper = float(payload["upper"])
+                    n = int(payload["n"])
+                except (KeyError, TypeError, ValueError):
+                    return False
+                if not math.isfinite(upper) or upper > MAX_RISK or n <= 0:
+                    return False
+            if key == "calT":
+                try:
+                    temperature = float(payload["temperature"])
+                    tau = float(payload["tau"])
+                except (KeyError, TypeError, ValueError):
+                    return False
+                if not math.isfinite(temperature) or temperature <= 0 \
+                        or not (0 <= tau <= 1):
+                    return False
+            if key == "select":
+                try:
+                    tau = float(payload["tau"])
+                    accepted = int(payload["accepted"])
+                except (KeyError, TypeError, ValueError):
+                    return False
+                if not (0 <= tau <= 1) or accepted < 100:
+                    return False
+            paths.append(str(path.resolve()))
+            partitions.append(str(payload.get("partition")))
+        if len(set(paths)) != 3 or len(set(partitions)) != 3:
+            return False
+        if sample_sets[0] & sample_sets[1] or sample_sets[0] & sample_sets[2] \
+                or sample_sets[1] & sample_sets[2]:
+            return False
+        return True
 
 
 @dataclass(frozen=True)
@@ -209,7 +278,11 @@ def decide(artifact: ScorerArtifact, request: ScorerRequest,
 
     utility: Optional[list] = None
     utility_source: Optional[str] = None
-    counts_as_real = bool(registration and registration.mode == "real"
+    # A fixture artifact can never count as real, even when it reuses a real
+    # registration; only a real artifact + real registration + sealed evidence
+    # can be model evidence.
+    counts_as_real = bool(artifact.mode == "real" and registration
+                          and registration.mode == "real"
                           and registration.allows_real_execution())
     if artifact.mode == "real" and not counts_as_real:
         # A real policy without sealed evidence never executes: shadow only.

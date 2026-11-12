@@ -24,6 +24,10 @@ from pathlib import Path
 
 import torch
 
+# R5: the acceptable-set loss and the save/manifest component are the SAME
+# production functions the formal encoder entry uses.
+from encoder_train import acceptable_loss, save_head, weight_digest  # noqa: E402
+
 SEED = 17
 FEATURES = 16
 HIDDEN = 8
@@ -45,13 +49,6 @@ def build_head() -> torch.nn.Module:
     torch.manual_seed(SEED)
     return torch.nn.Sequential(torch.nn.Linear(FEATURES, HIDDEN), torch.nn.Tanh(),
                                torch.nn.Linear(HIDDEN, 1))
-
-
-def acceptable_loss(logits: torch.Tensor, acceptable: list[int]) -> torch.Tensor:
-    """Negative log of the softmax mass on the acceptable set (>= 0)."""
-    all_mass = torch.logsumexp(logits, dim=0)
-    accept_mass = torch.logsumexp(logits[torch.tensor(acceptable)], dim=0)
-    return all_mass - accept_mass
 
 
 def train_steps(head: torch.nn.Module, steps: int) -> dict:
@@ -98,14 +95,6 @@ def evaluate(head: torch.nn.Module) -> dict:
             "perCaseLogits": per_case}
 
 
-def weight_digest(head: torch.nn.Module) -> str:
-    digest = hashlib.sha256()
-    for name, tensor in head.state_dict().items():
-        digest.update(name.encode())
-        digest.update(tensor.detach().cpu().numpy().tobytes())
-    return digest.hexdigest()
-
-
 def load_check(path: Path) -> dict:
     head = build_head()
     head.load_state_dict(torch.load(path, map_location="cpu", weights_only=True))
@@ -142,9 +131,7 @@ def main() -> int:
     training = train_steps(head, steps=6)
     metrics = evaluate(head)
     digest = weight_digest(head)
-    head_path = out / "head.pt"
-    torch.save(head.state_dict(), head_path)
-    manifest = {
+    manifest = save_head(out, head, {
         "schema": "frostecho.jev04.tiny-head/1",
         "evidenceClass": "fixture",
         "arm": "CPU-tiny",
@@ -158,14 +145,10 @@ def main() -> int:
         "finalLoss": training["finalLoss"],
         "top1InAcceptable": metrics["top1InAcceptable"],
         "acceptableLoss": metrics["acceptableLoss"],
-        "weightDigest": digest,
-        "headPath": str(head_path),
-        "weightsSha256": hashlib.sha256(head_path.read_bytes()).hexdigest(),
         "realModel": False,
         "note": "mechanism proof only; not a training result and not model quality",
-    }
-    (out / "manifest.json").write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    })
+    head_path = out / "head.pt"
     (out / "metrics.json").write_text(
         json.dumps({"weightDigest": digest,
                     "perCaseLogits": metrics["perCaseLogits"]},

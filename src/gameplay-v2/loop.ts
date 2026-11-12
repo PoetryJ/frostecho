@@ -20,6 +20,8 @@ import { CommitmentBoard, isTerminal, type Commitment, type CommitmentEvent,
   type CommitmentTerms } from './commitments';
 import { initialResponse, resumeReady, shouldWithdraw, survivalProposal } from './negotiation';
 import { ExperienceStore, type FoldableEvent } from '../memory/experience';
+import { CouncilBoard, type CouncilRecord, type CouncilRequest,
+  type CouncilResolveResult } from '../council-v2/council';
 import type { Command, WorldEvent } from '../survival/world-v2';
 
 export interface GameplayStepResult {
@@ -52,6 +54,8 @@ export interface GameplayLoopOptions {
   experience?: ExperienceStore;
   /** R4: preloaded commitments (restore path). */
   commitments?: CommitmentBoard;
+  /** R5: preloaded council records (restore path). */
+  council?: CouncilBoard;
 }
 
 const KIND_TO_TASK: Record<string, GameplayTaskKind> = {
@@ -133,6 +137,7 @@ export class GameplayLoop {
   readonly memoryArm: MemoryArm;
   readonly experience: ExperienceStore;
   readonly commitments: CommitmentBoard;
+  readonly council: CouncilBoard;
 
   constructor(readonly session: PlaySession,
     readonly board: TaskBoard = new TaskBoard(),
@@ -142,6 +147,7 @@ export class GameplayLoop {
     this.useExperience = this.memoryArm === 'experience';
     this.experience = options.experience ?? ExperienceStore.empty();
     this.commitments = options.commitments ?? CommitmentBoard.empty();
+    this.council = options.council ?? CouncilBoard.empty();
   }
 
   static create(npcCount = 8, options: { days?: number; seed?: string; food?: number } = {},
@@ -173,7 +179,9 @@ export class GameplayLoop {
     options: { deadline?: number | null; conditions?: string[]; inputId?: string;
       beneficiaryId?: string; source?: string;
       /** R5: the acceptance verdict is supplied by the requesting team. */
-      verdict?: 'accept' | 'decline' | 'counter' } = {}):
+      verdict?: 'accept' | 'decline' | 'counter';
+      /** R5: an explicit counter keeps the instance proposed with terms. */
+      counterTerms?: CommitmentTerms } = {}):
     CommitmentRequestResult {
     const world = this.session.world;
     const npc = world.npcs[actorId];
@@ -201,10 +209,14 @@ export class GameplayLoop {
       ? { verdict: 'decline' as const, reason: 'already-committed' }
       : options.verdict === 'decline'
         ? { verdict: 'decline' as const, reason: 'declined-by-resident' }
-        : options.verdict === 'accept'
-          ? { verdict: 'accept' as const, reason: 'accepted-by-resident' }
-          : initialResponse(npc, this.commitments.activeFor(actorId)
-            .filter(row => row.commitmentId !== live.commitmentId));
+        : options.verdict === 'counter'
+          ? { verdict: 'counter' as const, reason: 'conditional-by-resident',
+            terms: options.counterTerms ?? initialResponse(npc)
+              .terms ?? { resumeWhen: 'hunger>=40' } }
+          : options.verdict === 'accept'
+            ? { verdict: 'accept' as const, reason: 'accepted-by-resident' }
+            : initialResponse(npc, this.commitments.activeFor(actorId)
+              .filter(row => row.commitmentId !== live.commitmentId));
     const responded = this.commitments.respond(live.commitmentId, answer.verdict,
       { at, reason: answer.reason, terms: 'terms' in answer ? answer.terms : undefined,
         inputId: options.inputId ? `${options.inputId}:respond` : undefined });
@@ -225,21 +237,25 @@ export class GameplayLoop {
    */
   private linkTask(commitment: Commitment, at: number, inputId?: string): GameplayTask | null {
     if (isTerminal(commitment.status)) return null;
-    if (commitment.taskId) {
-      const existing = this.board.find(commitment.taskId);
+    // Board results are clones; the binding must land on the live row.
+    const live = this.commitments.find(commitment.commitmentId) ?? commitment;
+    if (live.taskId) {
+      const existing = this.board.find(live.taskId);
       if (existing && existing.status === 'active') return existing;
     }
-    const bound = this.board.activeFor(commitment.promisorId)
-      .find(task => task.commitmentId === commitment.commitmentId);
+    const bound = this.board.activeFor(live.promisorId)
+      .find(task => task.commitmentId === live.commitmentId);
     if (bound) {
+      live.taskId = bound.taskId;
       commitment.taskId = bound.taskId;
       return bound;
     }
-    if (!['active', 'suspended'].includes(commitment.status)) return null;
-    const kind = GOAL_TO_TASK[commitment.goal];
+    if (!['active', 'suspended'].includes(live.status)) return null;
+    const kind = GOAL_TO_TASK[live.goal];
     if (!kind) return null;
-    const task = this.board.assign(commitment.promisorId, kind, { now: at,
-      commitmentId: commitment.commitmentId, ...(inputId ? { inputId } : {}) });
+    const task = this.board.assign(live.promisorId, kind, { now: at,
+      commitmentId: live.commitmentId, ...(inputId ? { inputId } : {}) });
+    live.taskId = task.taskId;
     commitment.taskId = task.taskId;
     return task;
   }
@@ -278,6 +294,10 @@ export class GameplayLoop {
       || (result.event.type === 'commitment_change_rejected'
         && result.commitment.status === 'active')) {
       this.linkTask(result.commitment, at);
+      const request = this.council.requestByCommitment(commitmentId);
+      if (request && request.status === 'countered' && result.commitment.status === 'active') {
+        request.status = 'accepted';
+      }
     }
     return { commitment: result.commitment, event: result.event };
   }
@@ -326,6 +346,128 @@ export class GameplayLoop {
 
   commitmentStatus(): { commitments: Commitment[]; tasks: unknown[] } {
     return { commitments: this.commitments.all(), tasks: this.board.toJSON() };
+  }
+
+  /** R5: one morning council for the current day (idempotent per save). */
+  openCouncil(): { council: CouncilRecord; duplicate: boolean } {
+    const opened = this.council.openMorning(this.session.world);
+    if (!opened.duplicate) {
+      this.session.ingestTeamEvent('council_opened', {
+        councilId: opened.council.councilId, revision: opened.council.revision,
+        source: 'council:morning', proposals: opened.council.proposals.length,
+      }, this.session.world.simTime);
+    }
+    return opened;
+  }
+
+  /** Player/reference vote on one proposal. */
+  councilVote(proposalId: string): { council: CouncilRecord; ignored: boolean } {
+    const current = this.council.all().at(-1);
+    if (!current) throw new Error('no council open');
+    return this.council.vote(current.councilId, proposalId, 'player',
+      'player-reference-vote');
+  }
+
+  /** Tally votes, create the team event and the resident task requests. */
+  councilResolve(): CouncilResolveResult {
+    const current = this.council.all().at(-1);
+    if (!current) throw new Error('no council open');
+    // Auto-vote any living resident who has not answered yet, then resolve.
+    this.council.autoVote(this.session.world, current.councilId);
+    const result = this.council.resolve(this.session.world, current.councilId);
+    if (!result.duplicate) {
+      this.session.ingestTeamEvent('council_resolved', {
+        councilId: result.resolution.councilId,
+        resolutionId: result.resolution.resolutionId,
+        source: result.resolution.source,
+        revision: result.resolution.revision,
+        proposalId: result.resolution.proposalId,
+        requests: result.resolution.requests,
+      }, result.resolution.decidedAt);
+    }
+    return result;
+  }
+
+  /**
+   * A resident answers a council request explicitly. Acceptance creates the
+   * commitment + task through the existing path; the council never writes a
+   * task itself. A counter stays a proposal until the beneficiary answers.
+   */
+  councilRespond(requestId: string, verdict: 'accept' | 'decline' | 'counter'):
+    { request: CouncilRequest; ignored: boolean; reason?: string;
+      commitment?: Commitment | null; task?: GameplayTask | null } {
+    const request = this.council.request(requestId);
+    if (!request) throw new Error(`unknown council request ${requestId}`);
+    const answer = this.council.respond(requestId, verdict);
+    if (answer.ignored) return { ...answer };
+    const at = this.session.world.simTime;
+    if (verdict === 'decline') {
+      this.session.ingestTeamEvent('council_request_declined', {
+        councilId: request.councilId, resolutionId: request.resolutionId,
+        source: request.source, revision: request.revision, requestId,
+        actorId: request.actorId, role: request.role,
+      }, at);
+      return { request: answer.request, ignored: false };
+    }
+    const terms = verdict === 'counter'
+      ? { resumeWhen: 'hunger>=40', reason: '先处理生存需要再承接议会分工' }
+      : undefined;
+    const result = this.requestCommitment(request.actorId, request.goal, {
+      source: request.source,
+      beneficiaryId: 'council',
+      inputId: `council-${request.requestId}`,
+      verdict,
+      ...(terms ? { counterTerms: terms } : {}),
+    });
+    this.council.attachCommitment(requestId, result.commitment.commitmentId);
+    if (verdict === 'accept' && result.commitment.status !== 'active') {
+      // An old promise is never silently erased: the refusal is recorded.
+      request.status = 'declined';
+      request.reason = result.response.reason;
+    }
+    if (result.task) request.taskKind = result.task.kind;
+    this.session.ingestTeamEvent(
+      verdict === 'counter' ? 'council_request_countered' : 'council_request_accepted',
+      { councilId: request.councilId, resolutionId: request.resolutionId,
+        source: request.source, revision: request.revision, requestId,
+        actorId: request.actorId, role: request.role,
+        commitmentId: result.commitment.commitmentId,
+        commitmentStatus: result.commitment.status,
+        taskId: result.task?.taskId ?? null,
+      }, at);
+    return { request: answer.request, ignored: false,
+      commitment: result.commitment, task: result.task };
+  }
+
+  /** Explicitly replace an exited resident with a NEW request/revision. */
+  councilReassign(requestId: string, actorId: string):
+    { request: CouncilRequest; previous: CouncilRequest } {
+    const request = this.council.request(requestId);
+    if (!request) throw new Error(`unknown council request ${requestId}`);
+    if (!this.session.world.npcs[actorId]?.alive) {
+      throw new Error(`unknown/alive npc required: ${actorId}`);
+    }
+    const commitment = request.commitmentId
+      ? this.commitments.find(request.commitmentId) : undefined;
+    const terminated = commitment ? isTerminal(commitment.status) : true;
+    if (!terminated && request.status === 'accepted') {
+      throw new Error(`cannot reassign an active assignment: ${requestId}`);
+    }
+    const previous = { ...request };
+    const replacement = this.council.reassign(requestId, actorId,
+      this.session.world.simTime, true);
+    this.session.ingestTeamEvent('council_request_reassigned', {
+      councilId: request.councilId, resolutionId: request.resolutionId,
+      source: request.source, revision: replacement.revision,
+      previousRequestId: requestId, requestId: replacement.requestId,
+      previousActorId: previous.actorId, actorId,
+    }, this.session.world.simTime);
+    return { request: replacement, previous };
+  }
+
+  councilStatus(): Array<Record<string, unknown>> {
+    return this.council.statusView(this.session.world, this.commitments,
+      this.board.toJSON());
   }
 
   /**
@@ -613,7 +755,8 @@ export class GameplayLoop {
       deliveryBeliefs: Object.fromEntries(this.session.npcIds
         .filter(id => this.board.activeFor(id).some(task => task.kind === 'deliver-meal'))
         .map(id => [id, warehouseBelief(this.session, id)])),
-      commitments: this.commitments.all() };
+      commitments: this.commitments.all(),
+      council: this.councilStatus() };
   }
 
   /** Session + task-board + experience sidecars; restore keeps them honest. */
@@ -625,6 +768,8 @@ export class GameplayLoop {
       `${JSON.stringify(this.experience.toJSON(), null, 2)}\n`, 'utf8');
     writeFileSync(`${path}.commitments.json`,
       `${JSON.stringify(this.commitments.toJSON(), null, 2)}\n`, 'utf8');
+    writeFileSync(`${path}.council.json`,
+      `${JSON.stringify(this.council.toJSON(), null, 2)}\n`, 'utf8');
   }
 
   static load(path: string, options: GameplayLoopOptions = {},
@@ -641,7 +786,12 @@ export class GameplayLoop {
     const commitments = existsSync(commitmentSidecar)
       ? CommitmentBoard.fromJSON(JSON.parse(readFileSync(commitmentSidecar, 'utf8')))
       : CommitmentBoard.empty();
-    return new GameplayLoop(session, board, { experience, commitments, ...options });
+    const councilSidecar = `${path}.council.json`;
+    const council = existsSync(councilSidecar)
+      ? CouncilBoard.fromJSON(JSON.parse(readFileSync(councilSidecar, 'utf8')))
+      : CouncilBoard.empty();
+    return new GameplayLoop(session, board,
+      { experience, commitments, council, ...options });
   }
 }
 
@@ -659,6 +809,12 @@ export const GAMEPLAY_COMMANDS = [
   { name: 'close-road', usage: 'close-road <x,y> [x,y ...]' },
   { name: 'open-road', usage: 'open-road <x,y> [x,y ...]' },
   { name: 'tell-restock', usage: 'tell-restock <npcId>' },
+  { name: 'council-open', usage: 'council-open' },
+  { name: 'council-vote', usage: 'council-vote <proposalId>' },
+  { name: 'council-resolve', usage: 'council-resolve' },
+  { name: 'council-status', usage: 'council-status' },
+  { name: 'council-respond', usage: 'council-respond <requestId> <accept|decline|counter>' },
+  { name: 'council-reassign', usage: 'council-reassign <requestId> <npcId>' },
 ] as const;
 
 /**
