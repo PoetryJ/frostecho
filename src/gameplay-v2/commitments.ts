@@ -50,6 +50,8 @@ export interface Commitment {
   promisorId: string;
   beneficiaryId: string;
   goal: string;
+  /** R5: the team event that asked for this work (council resolution etc.). */
+  source?: string;
   /** Conditions the promisor requires (e.g. 'warehouse-supply'). */
   conditions: string[];
   deadline: number | null;
@@ -65,6 +67,7 @@ export interface CommitmentInput {
   promisorId: string;
   beneficiaryId: string;
   goal: string;
+  source?: string;
   conditions?: string[];
   deadline?: number | null;
   taskId?: string | null;
@@ -90,6 +93,23 @@ export interface CommitmentResult {
 }
 
 const TERMINAL: CommitmentStatus[] = ['fulfilled', 'cancelled', 'declined', 'withdrawn'];
+
+export function isTerminal(status: CommitmentStatus): boolean {
+  return TERMINAL.includes(status);
+}
+
+/**
+ * R5: a terminal commitment absorbs every older proposal. Open changes can no
+ * longer be answered, and the change rows stay readable history only.
+ */
+function closeOpenChanges(commitment: Commitment, at: number, reason: string): void {
+  for (const change of commitment.changes) {
+    if (change.status !== 'open') continue;
+    change.status = 'rejected';
+    change.respondedAt = at;
+    change.responseEventId = `closed:${reason}`;
+  }
+}
 
 function receiptKey(kind: string, inputId: string): string {
   return `${kind}:${inputId}`;
@@ -171,7 +191,8 @@ export class CommitmentBoard {
   /** Step 1: the player asks; the commitment stays `proposed` (never auto-active). */
   request(input: CommitmentInput): CommitmentResult {
     const digest = JSON.stringify({ goal: input.goal, promisorId: input.promisorId,
-      beneficiaryId: input.beneficiaryId, deadline: input.deadline ?? null });
+      beneficiaryId: input.beneficiaryId, deadline: input.deadline ?? null,
+      source: input.source ?? null });
     const replay = this.replay('request', input.at === 0 ? input.inputId : input.inputId, digest);
     if (replay === 'conflict') return this.conflictEvent(undefined, input.at, input.promisorId,
       input.inputId);
@@ -193,6 +214,7 @@ export class CommitmentBoard {
       promisorId: input.promisorId,
       beneficiaryId: input.beneficiaryId,
       goal: input.goal,
+      ...(input.source ? { source: input.source } : {}),
       conditions: [...(input.conditions ?? [])],
       deadline: input.deadline ?? null,
       revision: 1,
@@ -250,6 +272,7 @@ export class CommitmentBoard {
     if (verdict === 'decline') {
       commitment.status = 'declined';
       commitment.updatedAt = options.at;
+      closeOpenChanges(commitment, options.at, 'declined');
       const event: CommitmentEvent = { type: 'commitment_declined', commitmentId,
         revision: commitment.revision, at: options.at, actorId: commitment.promisorId,
         payload: { fromId: commitment.promisorId, toId: commitment.beneficiaryId,
@@ -340,6 +363,16 @@ export class CommitmentBoard {
     if (replay === 'conflict') return this.conflictEvent(commitment, options.at,
       commitment.promisorId, options.inputId);
     if (replay) return replay;
+    // R5 invariant: a terminal instance never revives through an old change.
+    if (isTerminal(commitment.status)) {
+      return this.remember('respond-change', options.inputId, digest, {
+        commitment: structuredClone(commitment),
+        event: { type: 'commitment_response_ignored', commitmentId, revision: commitment.revision,
+          at: options.at, actorId: commitment.promisorId,
+          payload: { reason: `status_${commitment.status}` } },
+        reason: `status_${commitment.status}`,
+      });
+    }
     const change = commitment.changes.find(row => row.changeId === changeId);
     if (!change || change.status !== 'open') {
       return this.remember('respond-change', options.inputId, digest, {
@@ -353,6 +386,7 @@ export class CommitmentBoard {
     if (verdict === 'reject') {
       change.status = 'rejected';
       change.respondedAt = options.at;
+      closeOpenChanges(commitment, options.at, 'superseded');
       commitment.status = 'active';
       commitment.updatedAt = options.at;
       const event: CommitmentEvent = { type: 'commitment_change_rejected', commitmentId,
@@ -373,6 +407,7 @@ export class CommitmentBoard {
     if (change.kind === 'alt-source' && change.terms.source) {
       commitment.conditions = [...commitment.conditions, `source:${change.terms.source}`];
     }
+    closeOpenChanges(commitment, options.at, 'superseded');
     const event: CommitmentEvent = { type: 'commitment_change_accepted', commitmentId,
       revision: commitment.revision, at: options.at, actorId: commitment.promisorId,
       payload: { changeId, kind: change.kind, revision: commitment.revision,
@@ -431,6 +466,7 @@ export class CommitmentBoard {
     }
     commitment.status = 'withdrawn';
     commitment.updatedAt = options.at;
+    closeOpenChanges(commitment, options.at, 'withdrawn');
     const event: CommitmentEvent = { type: 'commitment_withdrawn', commitmentId,
       revision: commitment.revision, at: options.at, actorId: commitment.promisorId,
       payload: { fromId: commitment.promisorId, toId: commitment.beneficiaryId,
@@ -460,6 +496,7 @@ export class CommitmentBoard {
     }
     commitment.status = 'cancelled';
     commitment.updatedAt = options.at;
+    closeOpenChanges(commitment, options.at, 'cancelled');
     const event: CommitmentEvent = { type: 'commitment_cancelled', commitmentId,
       revision: commitment.revision, at: options.at, actorId: commitment.promisorId,
       payload: { fromId: commitment.promisorId, toId: commitment.beneficiaryId,
@@ -501,6 +538,7 @@ export class CommitmentBoard {
     }
     commitment.status = 'fulfilled';
     commitment.updatedAt = receipt.at;
+    closeOpenChanges(commitment, receipt.at, 'fulfilled');
     commitment.evidenceEventIds.push(receipt.eventId);
     const event: CommitmentEvent = { type: 'commitment_fulfilled', commitmentId,
       revision: commitment.revision, at: receipt.at, actorId: commitment.promisorId,

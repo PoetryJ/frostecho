@@ -368,6 +368,29 @@ export class PlaySession {
   }
 
   /**
+   * R5 (G1): canonical player intent receipt for spatial commands. The digest
+   * covers the ORIGINAL intent (actor/target/params), before any derived route
+   * is planned. A same-id retry replays the first result even if the route is
+   * now blocked; a same-id different intent is a conflict with zero effects.
+   */
+  submitSpatialIntent(options: { kind: string; inputId: string; digest: string;
+    build: () => Command }): { status: string; reason: string | null;
+    eventIds: string[]; events: WorldEvent[]; observedBy: string[]; duplicate?: boolean } {
+    const replay = this.replayedInput(options.kind, options.inputId, options.digest);
+    if (replay === 'conflict') {
+      return { status: 'rejected', reason: 'command_id_conflict', eventIds: [],
+        events: [], observedBy: [], duplicate: false };
+    }
+    if (replay) {
+      return { ...structuredClone(replay.result as { status: string; reason: string | null;
+        eventIds: string[]; events: WorldEvent[]; observedBy: string[] }), duplicate: true };
+    }
+    const result = this.submitWorldCommand(options.build());
+    this.rememberInput(options.kind, options.inputId, options.digest, result);
+    return result;
+  }
+
+  /**
    * R3 (P): the player tells one NPC the warehouse was restocked. This is a
    * RUMOR (source player_statement): it raises re-verification priority but
    * never changes the actor's confirmed stock level.

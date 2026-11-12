@@ -35,6 +35,15 @@ export interface GameplayDecisionInput {
    * task is active.
    */
   delivery?: DeliveryView;
+  /** R5 council slice: gather -> warehouse deposit view for a supply task. */
+  supply?: SupplyView;
+}
+
+/** Observable inputs for a supply-warehouse assignment. */
+export interface SupplyView {
+  publicFood: number;
+  atWarehouse: boolean;
+  routeToWarehouse: Array<{ x: number; y: number }> | null;
 }
 
 /** What the delivery state machine needs; all of it is observable to the actor. */
@@ -203,6 +212,31 @@ export function buildGameplayCandidates(input: GameplayDecisionInput):
       const built = deliveryCandidates(npc, input.delivery);
       list.push(...built.entries);
       conflict = conflict ?? built.conflict;
+    }
+    if (task.kind === 'supply-warehouse' && input.supply) {
+      const supply = input.supply;
+      if (supply.publicFood < 1) {
+        list.push({ candidate: candidate('g-gather-food', 'gather', '采集食物补仓库',
+          { action: 'gather', resource: 'food', amount: 2 }), utility: 0.66,
+          rule: 'council.supply-gather' });
+      } else if (!supply.atWarehouse) {
+        if (supply.routeToWarehouse) {
+          list.push({ candidate: candidate('g-supply-travel', 'travel', '把粮食运到仓库',
+            { action: 'travel', route: supply.routeToWarehouse, minutesPerTile: 2 }),
+            utility: 0.7, rule: 'council.supply-travel' });
+        } else {
+          conflict = { kind: 'heating_vs_gather', chosen: 'g-wait',
+            deferred: `task:${task.taskId}`, detail: '去仓库的道路封闭：供应任务等待改道' };
+        }
+      } else {
+        list.push({ candidate: candidate('g-deposit', 'deposit', '把采集的粮食存入仓库',
+          { action: 'deposit', place: 'warehouse', amount: Math.min(2, supply.publicFood) }),
+          utility: 0.78, rule: 'council.supply-deposit' });
+      }
+    }
+    if (task.kind === 'rest-first') {
+      list.push({ candidate: candidate('g-rest-first', 'rest', '按分工先休息',
+        { action: 'rest', minutes: 60 }), utility: 0.72, rule: 'council.rest-first' });
     }
   }
 

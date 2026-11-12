@@ -105,7 +105,6 @@ let controlChain: Promise<void> = Promise.resolve();
 let barrierChain: Promise<void> = Promise.resolve();
 /** Step jobs: serialized among themselves, never blocking later control input. */
 let stepChain: Promise<void> = Promise.resolve();
-const pendingSteps = new Set<Promise<void>>();
 let closed = false;
 let quitRequested = false;
 
@@ -149,46 +148,74 @@ const SETTLE_MS = Number(process.env.R4_BARRIER_MS ?? 10_000);
 /** R4 (G2): one CLI step's lease timeout (also the scorer bound). */
 const STEP_TIMEOUT_MS = Number(process.env.R4_STEP_TIMEOUT_MS ?? 10_000);
 
-/** Actors with a step job currently in flight (for barrier revocation). */
+/**
+ * R5 (G2): one accepted step job plus the exact actors/generations it captured
+ * when the line arrived. A barrier revokes THIS set only — never a later job.
+ */
+interface StepJobRecord {
+  job: PlayerJob;
+  actorIds: string[];
+  expected: number | Record<string, number>;
+  done: Promise<void>;
+  captured: boolean;
+}
+const stepJobs = new Set<StepJobRecord>();
+/** Actors with a step job currently in flight (diagnostic only). */
 const inFlightActors = new Set<string>();
-/** Step jobs still running; a timed-out barrier must give them a terminal record. */
-const pendingStepJobs = new Set<PlayerJob>();
 const revokedByBarrier: string[] = [];
 
 function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function cancelJob(job: PlayerJob, reason: string): void {
+  if (job.terminal) return;
+  job.status = 'cancelled';
+  job.terminal = true;
+  job.detail = { ...(job.detail as Record<string, unknown> | undefined), reason };
+  emit({ event: 'job_terminal', jobId: job.jobId, kind: job.kind,
+    status: 'cancelled', reason });
+}
+
 /**
- * Wait for `pending` to settle or for the settle bound to elapse. On timeout
- * every still-in-flight actor loses its submission right; the caller records
- * an explicit terminal state instead of claiming the action completed.
+ * Wait for the captured records to settle or for the settle bound to elapse.
+ * On timeout only the captured actors lose their submission right and only the
+ * captured non-terminal jobs become `cancelled`; later jobs re-stamp against
+ * the new generation and keep running.
  */
-async function settleWithin<T>(pending: Promise<T>[], boundMs: number): Promise<boolean> {
+async function settleWithin(records: StepJobRecord[], boundMs: number,
+  extra?: Promise<unknown>): Promise<boolean> {
   let timer: NodeJS.Timeout | undefined;
   const timedOut = new Promise<boolean>(resolve => {
     timer = setTimeout(() => resolve(true), boundMs);
   });
+  const pending: Promise<unknown>[] = records.map(record => record.done);
+  if (extra) pending.push(extra);
   const settled = Promise.allSettled(pending).then(() => false);
   const didTimeOut = await Promise.race([settled, timedOut]);
   if (timer) clearTimeout(timer);
   if (didTimeOut) {
-    for (const actorId of inFlightActors) {
+    const open = records.filter(record => !record.job.terminal);
+    const actors = new Set(open.flatMap(record => record.actorIds));
+    for (const actorId of actors) {
       session.bumpGeneration(actorId, 'barrier_timeout');
       revokedByBarrier.push(actorId);
     }
-    // Explicit terminal state for the revoked jobs: a timeout is never a
-    // silent drop, and it is never reported as a completed action.
-    for (const job of pendingStepJobs) {
-      if (job.terminal) continue;
-      job.status = 'cancelled';
-      job.terminal = true;
-      job.detail = { ...(job.detail as Record<string, unknown> | undefined),
-        reason: 'barrier_timeout' };
-      emit({ event: 'job_terminal', jobId: job.jobId, kind: job.kind,
-        status: 'cancelled', reason: 'barrier_timeout' });
+    // A timeout is an explicit terminal state, never a silent drop and never
+    // a completed action.
+    for (const record of open) cancelJob(record.job, 'barrier_timeout');
+    // Jobs accepted AFTER this barrier captured its set are outside its
+    // authority: re-stamp their expected generation so they still run.
+    for (const record of stepJobs) {
+      if (record.captured || record.job.terminal) continue;
+      if (typeof record.expected === 'number') {
+        record.expected = session.generationFor(record.actorIds[0]);
+      } else {
+        for (const actorId of record.actorIds) {
+          record.expected[actorId] = session.generationFor(actorId);
+        }
+      }
     }
-    pendingStepJobs.clear();
   }
   return !didTimeOut;
 }
@@ -196,6 +223,13 @@ async function settleWithin<T>(pending: Promise<T>[], boundMs: number): Promise<
 async function runJob(job: PlayerJob, line: string,
   expected: number | Record<string, number> = 0): Promise<void> {
   const [command, ...rest] = line.trim().split(/\s+/).filter(Boolean);
+  if (job.terminal) {
+    // A queued job revoked by an earlier barrier must never start its effects.
+    emit({ command, jobId: job.jobId, cancelled: true,
+      reason: String((job.detail as Record<string, unknown> | undefined)?.reason
+        ?? 'cancelled_before_start'), decisions: [], outcomes: [] });
+    return;
+  }
   job.status = 'running';
   try {
     switch (command) {
@@ -288,14 +322,23 @@ async function runJob(job: PlayerJob, line: string,
         const target = BUILDINGS.find(entry => entry.id === input.parts[1]);
         if (!target) throw new Error(`unknown building ${String(input.parts[1])} `
           + `(${BUILDINGS.map(entry => entry.id).join('|')})`);
-        const from = actorCell(session.world, actorId);
-        const route = findPath(MAPS.village, from, target.door,
-          new Set(session.world.spatial?.closedCells ?? []));
-        if (!route.path) throw new Error(`route blocked: ${route.blockedBy}`);
-        const result = play.submitSpatial({ commandId: input.id,
-          type: 'travel', actorId, route: route.path, minutesPerTile: MINUTES_PER_TILE });
-        emit({ command, jobId: job.jobId, ...result, tiles: route.path.length - 1,
-          minutes: (route.path.length - 1) * MINUTES_PER_TILE,
+        // R5: replay/conflict is decided on the canonical intent BEFORE a route
+        // is planned. The route is derived only when the input is new.
+        const result = session.submitSpatialIntent({ kind: 'travel', inputId: input.id,
+          digest: JSON.stringify({ actorId, building: target.id }),
+          build: () => {
+            const from = actorCell(session.world, actorId);
+            const route = findPath(MAPS.village, from, target.door,
+              new Set(session.world.spatial?.closedCells ?? []));
+            if (!route.path) throw new Error(`route blocked: ${route.blockedBy}`);
+            return { commandId: input.id, type: 'travel', actorId, route: route.path,
+              minutesPerTile: MINUTES_PER_TILE };
+          } });
+        const traveledEvent = result.events.find(entry => entry.type === 'traveled');
+        const traveled = traveledEvent
+          ? traveledEvent.payload as { tiles?: number; minutes?: number } : undefined;
+        emit({ command, jobId: job.jobId, ...result,
+          tiles: traveled?.tiles ?? 0, minutes: traveled?.minutes ?? 0,
           location: session.world.npcs[actorId].location });
         break;
       }
@@ -416,6 +459,15 @@ async function runJob(job: PlayerJob, line: string,
       default:
         throw new Error(`unknown command ${command}`);
     }
+    if (job.terminal) {
+      // A late scorer result must not overwrite the barrier's terminal record.
+      // (Only the barrier sets terminal while this handler is still running.)
+      emit({ event: 'job_late_result_ignored', jobId: job.jobId, kind: job.kind,
+        status: 'cancelled',
+        reason: String((job.detail as Record<string, unknown> | undefined)?.reason
+          ?? 'cancelled') });
+      return;
+    }
     job.status = 'completed';
     job.terminal = true;
   } catch (error) {
@@ -446,17 +498,18 @@ rl.on('line', line => {
     const before = controlChain;
     const actorIds = rest.length > 0 ? [rest[0]] : session.npcIds
       .filter(id => session.world.npcs[id]?.alive);
-    stepChain = stepChain.then(() => before).then(() => {
+    const record = { job, actorIds, expected, captured: false } as StepJobRecord;
+    const tracked = stepChain.then(() => before).then(() => {
+      if (job.terminal) return runJob(job, line, expected);
       for (const id of actorIds) inFlightActors.add(id);
       return runJob(job, line, expected);
     }).finally(() => {
       for (const id of actorIds) inFlightActors.delete(id);
     });
-    const tracked = stepChain;
-    pendingSteps.add(tracked);
-    pendingStepJobs.add(job);
-    void tracked.finally(() => { pendingSteps.delete(tracked);
-      pendingStepJobs.delete(job); });
+    stepChain = tracked;
+    record.done = tracked;
+    stepJobs.add(record);
+    void tracked.finally(() => { stepJobs.delete(record); });
     return;
   }
 
@@ -466,7 +519,9 @@ rl.on('line', line => {
     // stays on its own chain, so a waiting save can never block a cancel:
     // the cancel revokes the generation and the pending step settles by
     // refusing its stale submission.
-    const snapshot = [...pendingSteps];
+    // R5: the barrier captures exactly this set now. Later steps are outside it.
+    const snapshot = [...stepJobs].filter(record => !record.job.terminal);
+    for (const record of snapshot) record.captured = true;
     barrierChain = barrierChain.then(async () => {
       await controlChain;
       revokedByBarrier.length = 0;
@@ -492,9 +547,11 @@ rl.on('close', () => {
   if (quitRequested) closed = true;
   // R4 (G2): EOF is a barrier too, and an unreturned scorer must not hold the
   // process open forever: bound the drain and revoke anything still running.
-  const drain = Promise.allSettled([...pendingSteps])
-    .then(() => stepChain).then(() => controlChain);
-  void settleWithin([drain], SETTLE_MS).then(settled => {
+  const snapshot = [...stepJobs].filter(record => !record.job.terminal);
+  for (const record of snapshot) record.captured = true;
+  const drain = Promise.allSettled(snapshot.map(record => record.done))
+    .then(() => stepChain).then(() => controlChain).then(() => barrierChain);
+  void settleWithin(snapshot, SETTLE_MS, drain).then(settled => {
     if (!settled) {
       emit({ event: 'barrier_timeout', revoked: [...revokedByBarrier], boundMs: SETTLE_MS,
         at: 'eof' });

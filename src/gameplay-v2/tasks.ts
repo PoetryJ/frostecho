@@ -12,7 +12,11 @@
  * pre-R3 duplicate-ID bug) cannot be mutated by mistake.
  */
 export type GameplayTaskKind = 'gather-food' | 'gather-wood' | 'heating' | 'leave-food'
-  | 'deliver-meal';
+  | 'deliver-meal'
+  /** R5 council slice: gather/deposit into the warehouse as one real job. */
+  | 'supply-warehouse'
+  /** R5 council slice: an agreed rest-first assignment. */
+  | 'rest-first';
 
 export interface GameplayTask {
   taskId: string;
@@ -21,6 +25,8 @@ export interface GameplayTask {
   status: 'active' | 'cancelled' | 'done';
   assignedAt: number;
   promiseId?: string;
+  /** R5: the commitment this work row belongs to (null = explicit fixture task). */
+  commitmentId?: string;
   /** R4 (G1): persistent player-input identity for explicit retries. */
   inputId?: string;
 }
@@ -51,18 +57,24 @@ export class TaskBoard {
   }
 
   assign(actorId: string, kind: GameplayTaskKind, options:
-    { taskId?: string; promiseId?: string; now?: number; inputId?: string } = {}): GameplayTask {
+    { taskId?: string; promiseId?: string; now?: number; inputId?: string;
+      commitmentId?: string } = {}): GameplayTask {
     if (options.inputId) {
       const replayed = this.tasks.find(task => task.inputId === options.inputId);
       if (replayed) {
         if (replayed.actorId !== actorId || replayed.kind !== kind) {
           throw new Error(`taskboard: input_id_conflict ${options.inputId}`);
         }
+        if (options.commitmentId && replayed.commitmentId
+          && replayed.commitmentId !== options.commitmentId) {
+          throw new Error(`taskboard: commitment_id_conflict ${options.inputId}`);
+        }
         return replayed;
       }
     }
     const existing = this.tasks.find(task => task.actorId === actorId && task.kind === kind
-      && task.status === 'active');
+      && task.status === 'active'
+      && (task.commitmentId ?? null) === (options.commitmentId ?? null));
     if (existing) return existing;
     let taskId: string;
     if (options.taskId !== undefined) {
@@ -88,6 +100,7 @@ export class TaskBoard {
     const task: GameplayTask = {
       taskId, actorId, kind, status: 'active', assignedAt: options.now ?? 0,
       ...(options.promiseId ? { promiseId: options.promiseId } : {}),
+      ...(options.commitmentId ? { commitmentId: options.commitmentId } : {}),
       ...(options.inputId ? { inputId: options.inputId } : {}),
     };
     this.tasks.push(task);

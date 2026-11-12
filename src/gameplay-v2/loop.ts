@@ -16,7 +16,7 @@ import { TaskBoard, type GameplayTask, type GameplayTaskKind } from './tasks';
 import { buildGameplayCandidates, chooseReference, deriveDeliveryPhase,
   type DeliveryView, type GameplayStepRecord } from './decisions';
 import { BUILDINGS, findPath, MAPS, cellKey, type Cell } from '../spatial-v2/map';
-import { CommitmentBoard, type Commitment, type CommitmentEvent,
+import { CommitmentBoard, isTerminal, type Commitment, type CommitmentEvent,
   type CommitmentTerms } from './commitments';
 import { initialResponse, resumeReady, shouldWithdraw, survivalProposal } from './negotiation';
 import { ExperienceStore, type FoldableEvent } from '../memory/experience';
@@ -57,6 +57,18 @@ export interface GameplayLoopOptions {
 const KIND_TO_TASK: Record<string, GameplayTaskKind> = {
   'gather-food': 'gather-food', 'gather-wood': 'gather-wood',
   heating: 'heating', 'leave-food': 'leave-food', 'deliver-meal': 'deliver-meal',
+  'supply-warehouse': 'supply-warehouse', 'rest-first': 'rest-first',
+};
+
+/** R5: a commitment goal is bound to exactly one work row on every entry path. */
+const GOAL_TO_TASK: Record<string, GameplayTaskKind> = {
+  'deliver-meal': 'deliver-meal',
+  'supply-warehouse': 'supply-warehouse',
+  'rest-first': 'rest-first',
+  'gather-food': 'gather-food',
+  'gather-wood': 'gather-wood',
+  heating: 'heating',
+  'leave-food': 'leave-food',
 };
 
 /** Minutes of sim time one outdoor tile costs (documented reference constant). */
@@ -158,14 +170,19 @@ export class GameplayLoop {
    * task is linked only when the commitment is actually active.
    */
   requestCommitment(actorId: string, goal: string,
-    options: { deadline?: number | null; conditions?: string[]; inputId?: string } = {}):
+    options: { deadline?: number | null; conditions?: string[]; inputId?: string;
+      beneficiaryId?: string; source?: string;
+      /** R5: the acceptance verdict is supplied by the requesting team. */
+      verdict?: 'accept' | 'decline' | 'counter' } = {}):
     CommitmentRequestResult {
     const world = this.session.world;
     const npc = world.npcs[actorId];
     if (!npc) throw new Error(`unknown npc ${actorId}`);
     const at = world.simTime;
     const requested = this.commitments.request({ promisorId: actorId,
-      beneficiaryId: 'player', goal, conditions: options.conditions ?? ['warehouse-supply'],
+      beneficiaryId: options.beneficiaryId ?? 'player', goal,
+      ...(options.source ? { source: options.source } : {}),
+      conditions: options.conditions ?? ['warehouse-supply'],
       deadline: options.deadline ?? null, at, inputId: options.inputId });
     if (requested.conflict) {
       return { commitment: requested.commitment, task: null,
@@ -174,28 +191,67 @@ export class GameplayLoop {
     }
     if (requested.duplicate) {
       const live = this.commitments.find(requested.commitment.commitmentId);
-      return { commitment: live ?? requested.commitment, task: null,
+      const task = live?.taskId ? this.board.find(live.taskId) ?? null : null;
+      return { commitment: live ?? requested.commitment, task,
         response: { verdict: 'accept', reason: 'duplicate_replay' },
         events: [requested.event], duplicate: true };
     }
     const live = this.commitments.find(requested.commitment.commitmentId)!;
     const answer = requested.reason === 'already-committed'
       ? { verdict: 'decline' as const, reason: 'already-committed' }
-      : initialResponse(npc, this.commitments.activeFor(actorId)
-        .filter(row => row.commitmentId !== live.commitmentId));
+      : options.verdict === 'decline'
+        ? { verdict: 'decline' as const, reason: 'declined-by-resident' }
+        : options.verdict === 'accept'
+          ? { verdict: 'accept' as const, reason: 'accepted-by-resident' }
+          : initialResponse(npc, this.commitments.activeFor(actorId)
+            .filter(row => row.commitmentId !== live.commitmentId));
     const responded = this.commitments.respond(live.commitmentId, answer.verdict,
       { at, reason: answer.reason, terms: 'terms' in answer ? answer.terms : undefined,
         inputId: options.inputId ? `${options.inputId}:respond` : undefined });
     this.session.ingestCommitmentEvent(requested.event);
     this.session.ingestCommitmentEvent(responded.event);
-    let task: GameplayTask | null = null;
-    if (responded.commitment.status === 'active') {
-      task = this.board.assign(actorId, 'deliver-meal', { now: at,
-        inputId: options.inputId ? `${options.inputId}:task` : undefined });
-      live.taskId = task.taskId;
-    }
+    const task = responded.commitment.status === 'active'
+      ? this.linkTask(responded.commitment, at, options.inputId
+        ? `${options.inputId}:task` : undefined)
+      : null;
     return { commitment: this.commitments.find(live.commitmentId)!, response: answer,
       task, events: [requested.event, responded.event] };
+  }
+
+  /**
+   * R5: every path that reaches an executable state uses this one binding rule.
+   * A row is created only when the commitment is active (or suspended, where it
+   * exists but the wait gate keeps it from executing); repeated calls reuse it.
+   */
+  private linkTask(commitment: Commitment, at: number, inputId?: string): GameplayTask | null {
+    if (isTerminal(commitment.status)) return null;
+    if (commitment.taskId) {
+      const existing = this.board.find(commitment.taskId);
+      if (existing && existing.status === 'active') return existing;
+    }
+    const bound = this.board.activeFor(commitment.promisorId)
+      .find(task => task.commitmentId === commitment.commitmentId);
+    if (bound) {
+      commitment.taskId = bound.taskId;
+      return bound;
+    }
+    if (!['active', 'suspended'].includes(commitment.status)) return null;
+    const kind = GOAL_TO_TASK[commitment.goal];
+    if (!kind) return null;
+    const task = this.board.assign(commitment.promisorId, kind, { now: at,
+      commitmentId: commitment.commitmentId, ...(inputId ? { inputId } : {}) });
+    commitment.taskId = task.taskId;
+    return task;
+  }
+
+  /** R5: the accepted resumeWhen is a real wait gate, not a note. */
+  private waitGateOpen(commitment: Commitment): boolean {
+    const npc = this.session.world.npcs[commitment.promisorId];
+    if (!npc) return false;
+    const accepted = [...commitment.changes].reverse()
+      .find(change => change.status === 'accepted' && change.terms.resumeWhen);
+    if (!accepted?.terms.resumeWhen) return true;
+    return resumeReady(npc, commitment);
   }
 
   /** The beneficiary answers the newest open change proposal. */
@@ -203,12 +259,26 @@ export class GameplayLoop {
     options: { inputId?: string; reason?: string } = {}):
     { commitment: Commitment; event: CommitmentEvent } {
     const at = this.session.world.simTime;
-    const open = this.commitments.find(commitmentId)?.changes
-      .filter(change => change.status === 'open').at(-1);
-    if (!open) throw new Error(`no open change proposal for ${commitmentId}`);
+    const commitment = this.commitments.find(commitmentId);
+    if (!commitment) throw new Error(`unknown commitment ${commitmentId}`);
+    const open = commitment.changes.filter(change => change.status === 'open').at(-1);
+    if (!open || isTerminal(commitment.status)) {
+      // R5: a repeated/late answer is ignored, never a second work row.
+      const event: CommitmentEvent = { type: 'commitment_response_ignored',
+        commitmentId, revision: commitment.revision, at, actorId: commitment.promisorId,
+        payload: { reason: open ? `status_${commitment.status}` : 'no_open_change',
+          inputId: options.inputId ?? '' } };
+      this.session.ingestCommitmentEvent(event);
+      return { commitment: this.commitments.find(commitmentId)!, event };
+    }
     const result = this.commitments.respondChange(commitmentId, open.changeId, verdict,
       { at, inputId: options.inputId, reason: options.reason });
     this.session.ingestCommitmentEvent(result.event);
+    if (result.event.type === 'commitment_change_accepted'
+      || (result.event.type === 'commitment_change_rejected'
+        && result.commitment.status === 'active')) {
+      this.linkTask(result.commitment, at);
+    }
     return { commitment: result.commitment, event: result.event };
   }
 
@@ -218,7 +288,20 @@ export class GameplayLoop {
     const result = this.commitments.resume(commitmentId,
       { at: this.session.world.simTime, inputId: options.inputId, reason: options.reason });
     this.session.ingestCommitmentEvent(result.event);
+    if (result.commitment.status === 'active') {
+      this.linkTask(result.commitment, this.session.world.simTime);
+    }
     return { commitment: result.commitment, event: result.event };
+  }
+
+  /** Stop the work row bound to a terminal commitment; never a legacy fallback. */
+  private closeBoundTasks(commitment: Commitment): void {
+    for (const task of this.board.tasks) {
+      if (task.status !== 'active') continue;
+      if (task.commitmentId !== commitment.commitmentId
+        && task.taskId !== commitment.taskId) continue;
+      this.board.cancel(task.taskId);
+    }
   }
 
   /** The beneficiary cancels; every later attempt stops (independent terminal). */
@@ -227,8 +310,7 @@ export class GameplayLoop {
     const result = this.commitments.cancel(commitmentId,
       { at: this.session.world.simTime, inputId: options.inputId, reason: options.reason });
     this.session.ingestCommitmentEvent(result.event);
-    const task = result.commitment.taskId ? this.board.find(result.commitment.taskId) : undefined;
-    if (task && task.status === 'active') this.board.cancel(task.taskId);
+    this.closeBoundTasks(result.commitment);
     return { commitment: result.commitment, event: result.event };
   }
 
@@ -238,6 +320,7 @@ export class GameplayLoop {
     const result = this.commitments.withdraw(commitmentId,
       { at: this.session.world.simTime, inputId: options.inputId, reason: options.reason });
     this.session.ingestCommitmentEvent(result.event);
+    this.closeBoundTasks(result.commitment);
     return { commitment: result.commitment, event: result.event };
   }
 
@@ -245,12 +328,23 @@ export class GameplayLoop {
     return { commitments: this.commitments.all(), tasks: this.board.toJSON() };
   }
 
-  /** R4: delivery work only happens under an active commitment (or fixture mode). */
+  /**
+   * R5: a work row bound to a commitment executes only while that instance is
+   * active and its agreed wait gate is open. A row bound to a terminal promise
+   * never falls back to the legacy fixture path; only an explicitly unbound
+   * fixture row may run without a commitment.
+   */
   private deliveryAllowed(actorId: string): boolean {
-    const rows = this.commitments.activeFor(actorId)
-      .filter(row => row.goal === 'deliver-meal');
-    if (rows.length === 0) return true; // legacy assign path stays a fixture
-    return rows.some(row => row.status === 'active');
+    const tasks = this.board.activeFor(actorId).filter(task => task.kind === 'deliver-meal');
+    if (tasks.length === 0) return false;
+    for (const task of tasks) {
+      if (!task.commitmentId) continue; // explicit fixture assignment
+      const commitment = this.commitments.find(task.commitmentId);
+      if (!commitment || isTerminal(commitment.status)) return false;
+      if (commitment.status !== 'active') return false;
+      if (!this.waitGateOpen(commitment)) return false;
+    }
+    return true;
   }
 
   /** R4: has this actor personally seen an empty warehouse (belief, not truth)? */
@@ -267,6 +361,9 @@ export class GameplayLoop {
     const at = world.simTime;
     for (const commitment of this.commitments.activeFor(actorId)) {
       if (commitment.status === 'active') {
+        // A counter-accept with an unmet resumeWhen is an agreed wait: the
+        // promisor eats/rests first instead of renegotiating its own condition.
+        if (!this.waitGateOpen(commitment)) continue;
         const proposal = survivalProposal(npc, commitment);
         if (proposal) {
           const result = this.commitments.proposeChange(commitment.commitmentId, {
@@ -292,12 +389,15 @@ export class GameplayLoop {
           const result = this.commitments.resume(commitment.commitmentId,
             { at, reason: 'resume-condition-met' });
           this.session.ingestCommitmentEvent(result.event);
+          if (result.commitment.status === 'active') this.linkTask(result.commitment, at);
         }
       } else if (commitment.status === 'pending-change') {
         if (shouldWithdraw(npc, commitment)) {
           const result = this.commitments.withdraw(commitment.commitmentId,
             { at, reason: 'survival-exit' });
           this.session.ingestCommitmentEvent(result.event);
+          // The explicit exit also stops the bound work row; no legacy fallback.
+          this.closeBoundTasks(result.commitment);
         }
       }
     }
@@ -344,6 +444,27 @@ export class GameplayLoop {
     };
   }
 
+  /** R5: what a supply-warehouse assignee can see about its own route/stock. */
+  private supplyView(actorId: string): {
+    publicFood: number; atWarehouse: boolean;
+    routeToWarehouse: Array<{ x: number; y: number }> | null } {
+    const world = this.session.world;
+    const npc = world.npcs[actorId];
+    const from = actorCell(world, actorId);
+    if (npc.location === 'warehouse') {
+      return { publicFood: world.resources.food, atWarehouse: true,
+        routeToWarehouse: [] };
+    }
+    const door = BUILDINGS.find(building => building.id === 'warehouse')!.door;
+    const closed = new Set(world.spatial?.closedCells ?? []);
+    const result = findPath(MAPS.village, from, door, closed);
+    const route = result.path
+      && cellKey(result.path[result.path.length - 1]) === cellKey(door)
+      ? result.path : null;
+    return { publicFood: world.resources.food, atWarehouse: false,
+      routeToWarehouse: route };
+  }
+
   /** Events of a just-executed command, resolved from the actor's own memory. */
   private itemsOfEvents(actorId: string, eventIds: string[]): unknown[] {
     if (eventIds.length === 0) return [];
@@ -369,11 +490,14 @@ export class GameplayLoop {
       const tasks = this.board.activeFor(actorId);
       const delivery = tasks.some(task => task.kind === 'deliver-meal')
         && this.deliveryAllowed(actorId) ? this.deliveryView(actorId) : undefined;
+      const supply = tasks.some(task => task.kind === 'supply-warehouse')
+        ? this.supplyView(actorId) : undefined;
       const { candidates, conflict } = buildGameplayCandidates({
         actorId, npc: { id: npc.id, location: npc.location, hunger: npc.hunger,
           stamina: npc.stamina, health: npc.health, san: npc.san, alive: npc.alive },
         resources: this.session.world.resources, furnace: this.session.world.furnace,
         tasks, relationTrust: trust, ...(delivery ? { delivery } : {}),
+        ...(supply ? { supply } : {}),
       });
       const chosen = chooseReference(candidates);
       const commandId = `${actorId}-game-${this.session.world.version}-${chosen.candidate.id}`;
@@ -392,24 +516,32 @@ export class GameplayLoop {
       }
       const kinds = (items as Array<{ kind: string }>).map(item => item.kind);
       if (outcome.status === 'applied') {
-        const taskKind = chosen.candidate.id === 'g-gather-food' ? 'gather-food'
+        const active = this.board.activeFor(actorId);
+        const has = (kind: GameplayTaskKind) => active.some(task => task.kind === kind);
+        const taskKind = chosen.candidate.id === 'g-gather-food'
+          ? (has('supply-warehouse') ? null : 'gather-food')
           : chosen.candidate.id === 'g-gather-wood' ? 'gather-wood'
             : chosen.candidate.id === 'g-heat' ? 'heating'
               : chosen.candidate.id.startsWith('c-help-') ? 'leave-food'
-                : chosen.candidate.id === 'g-deliver' ? 'deliver-meal' : null;
+                : chosen.candidate.id === 'g-deposit'
+                  ? (has('supply-warehouse') ? 'supply-warehouse' : null)
+                  : chosen.candidate.id === 'g-rest'
+                    ? (has('rest-first') ? 'rest-first' : null)
+                    : chosen.candidate.id === 'g-rest-first' ? 'rest-first'
+                      : chosen.candidate.id === 'g-deliver' ? 'deliver-meal' : null;
         if (taskKind) {
           // A delivery only completes on the confirmed meal_delivered event;
           // out_of_stock / delivery_shortfall keep the task honestly open.
           if (taskKind === 'deliver-meal') {
             if (kinds.includes('meal_delivered')) {
-              const task = this.board.activeFor(actorId).find(entry => entry.kind === 'deliver-meal');
+              const task = this.board.activeFor(actorId)
+                .find(entry => entry.kind === 'deliver-meal');
               if (task) this.board.complete(task.taskId);
-              // R4 (G4): the commitment is fulfilled ONLY from this receipt.
-              const commitment = this.commitments.activeFor(actorId)
-                .filter(row => row.goal === 'deliver-meal')
-                .find(row => ['active', 'pending-change', 'suspended']
-                  .includes(row.status));
-              if (commitment) {
+              // R5: fulfilment binds the receipt to the task's own commitment;
+              // a legacy unbound fixture row can never fulfil a promise.
+              const commitment = task?.commitmentId
+                ? this.commitments.find(task.commitmentId) : undefined;
+              if (commitment && !isTerminal(commitment.status)) {
                 const receiptEventId = outcome.eventIds
                   .find(id => id.includes('meal_delivered')) ?? outcome.eventIds[0];
                 const fulfilled = this.commitments.fulfil(commitment.commitmentId, {
@@ -417,6 +549,22 @@ export class GameplayLoop {
                   at: this.session.world.simTime, amount: 1 });
                 this.session.ingestCommitmentEvent(fulfilled.event);
               }
+            }
+          } else if (taskKind === 'supply-warehouse') {
+            // Supply completes only when the stock actually reaches the
+            // warehouse (a real stock_deposited receipt).
+            if (kinds.includes('stock_deposited')) {
+              const task = this.board.activeFor(actorId)
+                .find(entry => entry.kind === 'supply-warehouse');
+              if (task) this.board.complete(task.taskId);
+            }
+          } else if (taskKind === 'rest-first') {
+            if (!kinds.includes('rested')) {
+              // A rest assignment that cannot execute stays open.
+            } else {
+              const task = this.board.activeFor(actorId)
+                .find(entry => entry.kind === 'rest-first');
+              if (task) this.board.complete(task.taskId);
             }
           } else {
             const task = this.board.activeFor(actorId).find(entry => entry.kind === taskKind);
