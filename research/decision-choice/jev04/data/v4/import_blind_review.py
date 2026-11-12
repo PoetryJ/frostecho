@@ -120,7 +120,9 @@ def main() -> int:
             "K": len(case["candidates"]),
             "candidates": [
                 {"id": candidate["id"], "text": candidate["text"],
-                 "kind": candidate.get("kind", mapped_task),
+                 "kind": candidate.get("kind")
+                 or candidate.get("params", {}).get("action")
+                 or mapped_task,
                  "params": candidate.get("params", {})}
                 for candidate in case["candidates"]
             ],
