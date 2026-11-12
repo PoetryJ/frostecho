@@ -35,20 +35,43 @@ import { PlaySession, defaultStatePath } from '../src/application-v2/session';
 import type { PlayerJob, PlayerJobKind } from '../src/application-v2/lifecycle';
 import { GameplayLoop } from '../src/gameplay-v2/loop';
 import { TaskBoard, type GameplayTaskKind } from '../src/gameplay-v2/tasks';
+import type { ScorerPort } from '../src/planning/candidates';
+
+declare const require: (modulePath: string) => {
+  createScorer: () => ScorerPort;
+};
 
 function argValue(name: string): string | undefined {
   const index = process.argv.indexOf(name);
   return index >= 0 ? process.argv[index + 1] : undefined;
 }
 
+/**
+ * R3 (M): --scorer <module.cjs> loads an external scorer factory
+ * (module.exports = { createScorer(): ScorerPort }) so acceptance runs can
+ * drive the real CLI with a slow, controllable async model scorer. The
+ * default stays the synchronous reference scorer.
+ */
+function scorerProvider(): (() => ScorerPort) | undefined {
+  const modulePath = argValue('--scorer');
+  if (!modulePath) return undefined;
+  const loaded = require(modulePath);
+  if (typeof loaded.createScorer !== 'function') {
+    throw new Error(`--scorer module must export createScorer(): ${modulePath}`);
+  }
+  return () => loaded.createScorer();
+}
+
 const statePath = argValue('--state') ?? defaultStatePath();
 const npcCount = Number(argValue('--npc') ?? 8);
 const days = Number(argValue('--days') ?? 4);
 const food = argValue('--food') === undefined ? undefined : Number(argValue('--food'));
+const customScorer = scorerProvider();
 
 const session = existsSync(statePath) && !process.argv.includes('--fresh')
-  ? PlaySession.load(statePath)
-  : PlaySession.create(npcCount, { days, food, seed: argValue('--seed') ?? `play-${npcCount}` });
+  ? PlaySession.load(statePath, customScorer)
+  : PlaySession.create(npcCount, { days, food, seed: argValue('--seed') ?? `play-${npcCount}`,
+    scorerProvider: customScorer });
 
 // Gameplay tasks live beside the session; both are written by `save`.
 const tasksPath = `${statePath}.tasks.json`;

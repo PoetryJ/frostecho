@@ -198,7 +198,13 @@ export type ScorerMode = 'reference' | 'json' | 'jev';
 export interface ScorerPort {
   readonly id: string;
   readonly mode: ScorerMode;
-  score(request: ChoiceRequest): ChoiceResult;
+  /**
+   * R3 (M): real model scorers are slow I/O, so the port accepts Promises.
+   * The runtime awaits every call; the commit section after scoring stays
+   * synchronous, and freshness (generation/version/memory) is re-checked
+   * inside that synchronous section, so a late result still commits nothing.
+   */
+  score(request: ChoiceRequest): ChoiceResult | Promise<ChoiceResult>;
 }
 
 function softmax(logits: number[]): number[] {

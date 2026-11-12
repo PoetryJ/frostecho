@@ -370,9 +370,9 @@ export async function runChoice(
       }
     }
     audit.retrieval = retrieval;
-    const invoked = (() => {
+    const invoked = await (async () => {
       try {
-        return scorer.score(activeRequest);
+        return await scorer.score(activeRequest);
       } catch (error) {
         return makeChoiceResult({ request: activeRequest, scorerId: scorer.id, scores: [],
           selectedId: null, disposition: 'unavailable',
@@ -397,9 +397,9 @@ export async function runChoice(
     if (refreshed) {
       activeRequest = refreshed;
       assertBinding(activeRequest, binding, options);
-      const check = validatedResult(activeRequest, (() => {
+      const check = validatedResult(activeRequest, await (async () => {
         try {
-          return scorer.score(activeRequest);
+          return await scorer.score(activeRequest);
         } catch (error) {
           return makeChoiceResult({ request: activeRequest, scorerId: scorer.id, scores: [],
             selectedId: null, disposition: 'unavailable',
@@ -425,7 +425,8 @@ export async function runChoice(
     if (options.fallback) {
       fallbackUsed = true;
       fallbackFrom = scorer.id;
-      const fallbackResult = validatedResult(activeRequest, options.fallback.score(activeRequest)).result;
+      const fallbackResult = validatedResult(activeRequest,
+        await options.fallback.score(activeRequest)).result;
       if (fallbackResult.disposition === 'accept') {
         result = makeChoiceResult({ request: activeRequest, scorerId: fallbackResult.scorerId,
           scores: fallbackResult.scores, selectedId: fallbackResult.selectedId,

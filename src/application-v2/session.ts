@@ -13,7 +13,8 @@ import { MemoryStore, invalidateDependentPlans, type MemoryRecordInput,
   type PromiseView } from '../memory/store';
 import { runChoice, type ExecutionOutcome, type ExecutionPort, type ScorerBinding } from '../decision/runtime';
 import { makeChoiceResult, type Candidate, type ChoiceRequest } from '../decision/contracts';
-import { buildPlanningRequest, referenceScorer, type PromiseRef, type PlanningView } from '../planning/candidates';
+import { buildPlanningRequest, referenceScorer, type PromiseRef, type PlanningView,
+  type ScorerPort } from '../planning/candidates';
 import { candidateCommand, UnsupportedActionError } from '../planning/commands';
 import { FairScheduler, type TaskLease, type TaskOutcome } from '../scheduler-v2/scheduler';
 import type { PromiseInstance } from './lifecycle';
@@ -74,11 +75,15 @@ export class PlaySession {
   sequence = 0;
   readonly seed: string;
   readonly npcIds: string[];
+  /** R3 (M): injectable scorer seam for real-model / async acceptance runs. */
+  private readonly scorerProvider: () => ScorerPort;
 
-  constructor(world: WorldV2, npcIds: string[], seed: string) {
+  constructor(world: WorldV2, npcIds: string[], seed: string,
+    scorerProvider: () => ScorerPort = referenceScorer) {
     this.world = world;
     this.npcIds = npcIds;
     this.seed = seed;
+    this.scorerProvider = scorerProvider;
     for (const id of npcIds) this.memories.set(id, new MemoryStore());
   }
 
@@ -103,18 +108,19 @@ export class PlaySession {
       && instance.state === 'active');
   }
 
-  static create(npcCount = 8, options: { days?: number; seed?: string; food?: number } = {}): PlaySession {
+  static create(npcCount = 8, options: { days?: number; seed?: string; food?: number;
+    scorerProvider?: () => ScorerPort } = {}): PlaySession {
     const npcIds = Array.from({ length: npcCount }, (_, index) => `npc_${String(index + 1).padStart(2, '0')}`);
     const seed = options.seed ?? `play-${npcCount}`;
     const world = createWorldV2({ npcIds, days: options.days ?? 4, rngSeed: seed,
       resources: options.food === undefined ? {} : { food: options.food } });
-    return new PlaySession(world, npcIds, seed);
+    return new PlaySession(world, npcIds, seed, options.scorerProvider);
   }
 
-  static load(path: string): PlaySession {
+  static load(path: string, scorerProvider?: () => ScorerPort): PlaySession {
     const doc = JSON.parse(readFileSync(path, 'utf8')) as SessionDocument;
     if (doc.schema !== 'frostecho.session/1') throw new Error('unexpected session schema');
-    const session = new PlaySession(doc.world, Object.keys(doc.world.npcs), doc.seed);
+    const session = new PlaySession(doc.world, Object.keys(doc.world.npcs), doc.seed, scorerProvider);
     for (const [id, payload] of Object.entries(doc.memories)) {
       session.memories.set(id, MemoryStore.fromJSON(payload));
     }
@@ -387,7 +393,7 @@ export class PlaySession {
         postStateVersion: null, reason: 'not recorded' },
     };
 
-    const outcome = await runChoice(request, referenceScorer(), this.bindingFor(request), {
+    const outcome = await runChoice(request, this.scorerProvider(), this.bindingFor(request), {
       execution,
       // Fresh reads, never the captured query values: a cancel between request
       // build and submission must invalidate this decision.

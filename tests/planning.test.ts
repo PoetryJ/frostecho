@@ -50,9 +50,9 @@ test('only active promises produce a help candidate', () => {
   assert.ok(!cancelled.some(candidate => candidate.kind === 'help'));
 });
 
-test('utility is not a probability', () => {
+test('utility is not a probability', async () => {
   const req = request();
-  const result = referenceScorer().score(req);
+  const result = await referenceScorer().score(req);
   assert.equal(result.disposition, 'accept');
   const sum = result.scores.reduce((total, score) => total + (score.probability ?? 0), 0);
   assert.ok(Math.abs(sum - 1) < 1e-6);
@@ -60,11 +60,11 @@ test('utility is not a probability', () => {
   assert.equal(eat.utilityComponents.hunger_need, 0.7);
 });
 
-test('candidate order does not change per-id utility or the selected id', () => {
+test('candidate order does not change per-id utility or the selected id', async () => {
   const req = request();
   const reversed = { ...req, candidates: [...req.candidates].reverse() };
-  const left = referenceScorer().score(req);
-  const right = referenceScorer().score(reversed);
+  const left = await referenceScorer().score(req);
+  const right = await referenceScorer().score(reversed);
   assert.equal(left.selectedId, right.selectedId);
   for (const score of left.scores) {
     const other = right.scores.find(entry => entry.candidateId === score.candidateId)!;
@@ -72,50 +72,50 @@ test('candidate order does not change per-id utility or the selected id', () => 
   }
 });
 
-test('an obligation beats a mild hunger when the promise is active', () => {
+test('an obligation beats a mild hunger when the promise is active', async () => {
   const req = request({ npcs: [{ id: 'npc_a', hunger: 80, stamina: 80, health: 100, san: 80, alive: true }] },
     [{ promiseId: 'p-1', toId: 'player', status: 'active', revision: 1 }]);
-  const result = referenceScorer().score(req);
+  const result = await referenceScorer().score(req);
   assert.equal(result.selectedId, 'c-help-p-1');
 });
 
-test('empty candidate sets are unavailable, not a softmax over nothing', () => {
+test('empty candidate sets are unavailable, not a softmax over nothing', async () => {
   const req = request();
   const dead = { ...req, candidates: [] };
-  const result = referenceScorer().score(dead);
+  const result = await referenceScorer().score(dead);
   assert.equal(result.disposition, 'unavailable');
   assert.equal(result.selectedId, null);
   assert.equal(result.scores.length, 0);
 });
 
-test('json scorer rejects a selection outside the candidate set', () => {
+test('json scorer rejects a selection outside the candidate set', async () => {
   const req = request();
   const scorer = jsonScorer('json-1', () => ({ selectedId: 'c-not-there' }));
-  assert.throws(() => scorer.score(req), (error: unknown) =>
+  await assert.rejects(async () => scorer.score(req), (error: unknown) =>
     (error as { code?: string }).code === 'unbound_selection');
 });
 
-test('json scorer handles malformed output as unavailable', () => {
+test('json scorer handles malformed output as unavailable', async () => {
   const req = request();
   const scorer = jsonScorer('json-1', () => '{not json');
-  const result = scorer.score(req);
+  const result = await scorer.score(req);
   assert.equal(result.disposition, 'unavailable');
   assert.match(result.reason, /json_parse_error/);
 });
 
-test('jev shadow never accepts an action', () => {
+test('jev shadow never accepts an action', async () => {
   const req = request();
   const shadow = jevShadowScorer('jev-shadow', request => [
     { candidateId: 'c-eat', logit: 3, probability: 0.7 },
   ]);
-  const result = shadow.score(req);
+  const result = await shadow.score(req);
   assert.equal(result.disposition, 'abstain');
   assert.equal(result.selectedId, null);
   assert.match(result.reason, /shadow_only/);
 });
 
-test('jev without a loaded model is unavailable, not a fake success', () => {
-  const result = jevShadowScorer('jev-shadow').score(request());
+test('jev without a loaded model is unavailable, not a fake success', async () => {
+  const result = await jevShadowScorer('jev-shadow').score(request());
   assert.equal(result.disposition, 'unavailable');
   assert.match(result.reason, /model_not_loaded/);
 });

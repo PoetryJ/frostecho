@@ -17,7 +17,9 @@ import {
   utilityOf,
   type PlanningView,
   type PromiseRef,
+  type ScorerPort,
 } from '../src/planning/candidates';
+import type { ChoiceResult } from '../src/decision/contracts';
 import {
   applyCommand,
   createWorldV2,
@@ -77,6 +79,16 @@ const memories = new Map(ids.map(id => [id, memoryFromNames(id)]));
 const trace: unknown[] = [];
 const allEvents: WorldEvent[] = [];
 
+/** This demo stays synchronous; a slow model scorer is out of scope here. */
+function scoreNow(scorer: ScorerPort, request: ReturnType<typeof buildPlanningRequest>):
+  ChoiceResult {
+  const value = scorer.score(request);
+  if (value instanceof Promise) {
+    throw new Error('play-fixture requires a synchronous scorer');
+  }
+  return value;
+}
+
 for (let day = 1; day <= days; day += 1) {
   const dayStart = state;
   const decisions: unknown[] = [];
@@ -104,7 +116,7 @@ for (let day = 1; day <= days; day += 1) {
     const request = buildPlanningRequest({ view: planningView, promises, stateVersion: state.version,
       requestId: `${id}-d${day}`, memorySnapshotHash: query.memorySnapshotHash,
       memoryPolicyVersion: query.memoryPolicyVersion });
-    const result = referenceScorer().score(request);
+    const result = scoreNow(referenceScorer(), request);
     const before = state;
     const applied = result.selectedId ? applyChoice(state, id, result.selectedId) : { state, events: [] };
     state = applied.state;
@@ -124,7 +136,8 @@ for (let day = 1; day <= days; day += 1) {
       selectedId: result.selectedId,
       candidateIds: request.candidates.map(candidate => candidate.id),
       utility: chosen ? utilityOf(chosen) : null,
-      probability: result.scores.find(score => score.candidateId === result.selectedId)?.probability ?? null,
+      probability: result.scores.find((score: { candidateId: string; probability?: number }) =>
+        score.candidateId === result.selectedId)?.probability ?? null,
       promiseStatus: promises[0]?.status ?? null,
       memorySnapshotHash: query.memorySnapshotHash,
       memoryQueryStatus: query.queryStatus,
