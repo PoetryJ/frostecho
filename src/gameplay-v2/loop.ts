@@ -45,7 +45,7 @@ export class GameplayLoop {
 
   /** Cancel a task. A cancelled leave-food task also retracts its promise. */
   cancelTask(taskId: string): boolean {
-    const task = this.board.tasks.find(entry => entry.taskId === taskId);
+    const task = this.board.find(taskId);
     if (!task) return false;
     if (!this.board.cancel(taskId)) return false;
     if (task.kind === 'leave-food') this.session.playerCancel(task.actorId);
