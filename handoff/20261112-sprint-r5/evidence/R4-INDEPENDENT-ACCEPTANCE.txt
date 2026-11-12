@@ -1,0 +1,68 @@
+FrostEcho Sprint R4 独立验收
+2026-11-12（Asia/Shanghai）
+
+结论：有限返工。R4有可保留的工程成果，但“主体验收通过、仅数据/权重受阻”的交付结论不成立；新分支反例影响承诺终态、保存后的世界一致性，以及正式训练准入。
+
+身份与复跑
+服务器 /data3/DATA/project/project_meishijiang/FrostEcho，分支codex/sprint-1116。
+HEAD db34123423a06cc5118fb92e1c3cfb9f0c03fceb，基线5abadc8之上4提交。
+bundle SHA256 b32c2ffea51b93ecdfd132cfe0ddab1b9a6dbc44e5a84a68dd340348064727fe。
+交付PACKAGE 65/65、原包96/96校验通过；独立bundle clone/fsck/npm ci/build/G11引导通过。
+root隔离目录 /tmp/frostecho-r4-root-db34123-rvIgkk/repo；另3个审查会话分域复跑。未修改产品主树，未合main，无FrostEcho模型调用/GPU/权重下载。
+本地submission.tar SHA256 3d98ccf3a4c5e6194dee0131b992a2310ddee43698a3b2c0e4cb8e1e5524c911。
+root一次运行eval-full --out：718/718普通测试及15项G11证据组通过（合计733），13/13验收，exit0；本次未遇watchdog抖动。证据eval-full/full-suite.tap、summary.json、eval-full.log。
+
+有效结果
+1. 单NPC异步取消、save等待期间及时cancel、未release EOF有界退出有效；独立实际承诺取消探针旧结果0命令/事件/履约，新step一次成功。
+2. 普通promise及restock跨重启身份修复有效；restock 2+3=9。原TaskBoard恢复回归保持。
+3. 旅行和advance确已共用世界演化；炉、全员需求、死亡、日历纳入同一时间逻辑，旅行者额外成本只扣一次。gather→deposit→withdraw→deliver资源链可用。
+4. 真实CLI两进程故事A：接受换来源后实际送饭；故事B：拒绝暂停不改revision，生存阈值后明确退出并记录关系变化。R4领域22/22及生命周期7/7与root全量重叠，不叠加计数。
+5. 五类已提供数据篡改拒绝5/5、旧port单测10/10、CPU tiny保存后新进程复载一致均独立复跑成功。tiny只是fixture，不是正式encoder入口证明。
+6. 传闻收到后经直接证据消耗的用例有效。比较已诚实报告没有经验正增益，但比较设计本身仍有未完成部分。
+
+决定返工的三组核心问题
+
+A. 承诺、任务和后续协商没有共同维护终态
+- request→relinquish→继续game-step：承诺仍withdrawn，关联任务却done，实际送饭1次。
+- pending-change→cancel-commitment→接受旧change：cancelled复活为active/rev2。
+- 首次counter获接受：承诺active但taskId=null、tasks=[]，条件接受没有接上后续任务。
+根因在loop.ts退出后未终结任务、无活承诺被当成legacy放行，以及commitments.ts接受change未检查承诺terminal。应统一维护生命周期不变量，不能逐故事补特例。
+原始证据 world-audit/output/、probe.cjs、REPORT.txt。
+
+B. 有界barrier没有撤销全部被公告取消的队列job
+真CLI连续排step npc_01、step npc_02；第一个scorer started后save超时。两个job均公告cancelled，存档version0；release后第二个尚未启动的NPC仍提交ate，version变1，终态还被覆写completed。
+根因是只撤inFlightActors，却把全部pendingStepJobs标取消；队列启动前不检查终态，晚返回无条件覆写完成。
+同域另有局部幂等缺陷：同一travel输入同id重传重新规划不同route，被误判command_id_conflict。须在衍生路线前按原始意图重放首次receipt。
+证据 lifecycle-audit/output/queued-*.json、travel-retry*.jsonl与两个独立脚本。
+
+C. JEV新模块未接入实际准入路径，且validator仍可误开门
+- encoder_train.gate_status仍读v3，返回mayTrainOnJev=true；gate-v4=false没有接入。目前正式入口靠缺权重退出，不是新数据门生效。
+- R3空{}三证书与fixture配real登记的反例仍能accept/counts_as_real=true；相关生产port未修改。TS仍shadow，未发现世界执行泄漏；这是审计构造的CPU反例，不是交付方伪造证书的指控。
+- v4改候选文字/动作参数、改训练标签为不存在的候选仍exit0；把两条synthetic题重复512/128行可得到researchTrainReady=true。
+- 下载mock走正确URL分支，实际download()首请求仍错误地指向/api/models/Qwen3-5-27B。通过拦截函数查实际调用证实，无外网请求。
+- tiny保存复载代码没有接入正式训练入口；full无保存却声明artifactWritten等旧问题仍在。
+证据 data-jev-audit/output/probe.json、probe.py、REPORT.txt。
+
+未证明与报告更正
+- 没有交8NPC空间96h完整真实链：当前G3是4NPC约一天窗口；旧96h fixture没有spatial，不能拼接为整合四日验收。
+- raw与summary用同一分支，无摘要机制；这不是三个不同记忆方法的零效果结论。部分指标将正常wait算重复、用循环数当命令数，协商接受路径未触发时mismatch0不能当证明。
+- 27B/4B正式三臂、概率校准、风险控制和JEV行为收益均未证明；不改变原预算和矩阵。
+- 交付REPORT/GATES的原包30/30应为96/96；GATES额外体力0.08与实际0.12不一致，属报告旧值，不扩成新的工程阻断。
+- 室内逐格、完整议会、危机、轮回、建造和UI仍未完成。
+
+下一步方向
+R5先通过三个窄修复提交：承诺状态不变量；barrier捕获job撤权；实际训练/政策/download路径接线。每项验收必须从用户真实入口进入，不以新增helper/tiny单独通过代替。
+随后一个可玩新功能：早会议案→表决结果→居民接受/拒绝/协商→两人实际分工→中途一人退出/取消→保存恢复→另一人继续履约。决议是团队信息/任务请求，不直接覆盖居民自主行动。
+原作来源已核legacy-reference.zip中的council-system.js和council-discussion.js：包含每日晨会、危机触发与8h冷却、表决及任务建议；会议分工保留为团队情报，由NPC会后自主响应。R5只做晨会的一项议案，危机自动触发/UI保持清单。
+
+SuperAgent与harness的用法
+SuperAgent提供持续事项、执行尝试、待输入与结果的分层；FrostEcho复用commitment/revision、attempt/lease、world receipt。harness应使取消、恢复和实际交付一致，模型不负责决定已取消job能否执行。
+工程harness采用小功能清单、恢复入口、一次真实用户流程、绑定HEAD的验收证据，避免“写了新门文件就认为旧入口被保护”。不新建通用调度平台。
+本轮重读来源：
+https://github.com/deepseek-ai/dsh-superagent-prototype/blob/main/docs/003-execution.md
+https://www.anthropic.com/research/effective-harnesses-for-long-running-agents
+
+额外推进：39题独立盲审
+root已从冻结v3 cases只投影可见输入、完整候选文字/params及来源组，生成逐题hash；两个fork_none新会话不得访问旧gold/旧review/生成oracle/彼此结果。原始输出与差异汇总见blind-review/。
+这些是独立模型会话的语义审查，不是独立人类或不同模型的真值保证，也不会自动使样本eligible。存在歧义/冲突须裁决或修题后重审；正式训练门仍需数量、来源隔离和实际入口检查。
+两审查各39/39且hash无错，35例可接受集合相同，4例集合分歧，10例共同标记字段口径/叙述冲突。状态分类存在18处分歧，部分只是“题目缺信息”与“澄清意图合理”的标注层次不同，必须先统一口径；不能宣称全部39题有错或35题已合格。详见blind-review/README.txt、summary.json、comparison.json与未改写的原始两份输出。

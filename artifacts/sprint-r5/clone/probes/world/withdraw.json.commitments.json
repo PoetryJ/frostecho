@@ -1,0 +1,128 @@
+{
+  "commitments": [
+    {
+      "commitmentId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+      "taskId": "task-001-deliver-meal",
+      "promisorId": "npc_01",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "withdrawn",
+      "evidenceEventIds": [],
+      "changes": [],
+      "createdAt": 0,
+      "updatedAt": 0
+    }
+  ],
+  "receipts": {
+    "request:in-1-request": {
+      "digest": "{\"goal\":\"deliver-meal\",\"promisorId\":\"npc_01\",\"beneficiaryId\":\"player\",\"deadline\":null,\"source\":null}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "taskId": null,
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "proposed",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 0,
+          "updatedAt": 0
+        },
+        "event": {
+          "type": "commitment_proposed",
+          "commitmentId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "revision": 1,
+          "at": 0,
+          "actorId": "npc_01",
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_01",
+            "toId": "player",
+            "conditions": "warehouse-supply",
+            "deadline": -1
+          }
+        }
+      }
+    },
+    "respond:in-1-request:respond": {
+      "digest": "{\"commitmentId\":\"cm-5c4c4995-11df-477d-9db7-59819ea87e06\",\"verdict\":\"accept\",\"reason\":\"available\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "taskId": null,
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "active",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 0,
+          "updatedAt": 0
+        },
+        "event": {
+          "type": "commitment_accepted",
+          "commitmentId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "revision": 1,
+          "at": 0,
+          "actorId": "npc_01",
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "available"
+          }
+        }
+      }
+    },
+    "withdraw:in-2-relinquish": {
+      "digest": "{\"commitmentId\":\"cm-5c4c4995-11df-477d-9db7-59819ea87e06\",\"action\":\"withdraw\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "taskId": "task-001-deliver-meal",
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "withdrawn",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 0,
+          "updatedAt": 0
+        },
+        "event": {
+          "type": "commitment_withdrawn",
+          "commitmentId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "revision": 1,
+          "at": 0,
+          "actorId": "npc_01",
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "reason": "explicit-exit",
+            "text": "explicit-exit"
+          }
+        }
+      }
+    }
+  }
+}

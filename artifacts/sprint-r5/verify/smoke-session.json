@@ -1,0 +1,255 @@
+{
+  "schema": "frostecho.session/1",
+  "world": {
+    "schema": "frostecho.world-v2/2",
+    "rulesVersion": "survival-rules/2",
+    "day": 1,
+    "simTime": 0,
+    "version": 0,
+    "rngSeed": "play-3",
+    "weather": "snow",
+    "npcs": {
+      "npc_01": {
+        "id": "npc_01",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_02": {
+        "id": "npc_02",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_03": {
+        "id": "npc_03",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      }
+    },
+    "resources": {
+      "food": 24,
+      "firewood": 20,
+      "power": 40,
+      "medicine": 2
+    },
+    "furnace": {
+      "lit": true,
+      "fuel": 6,
+      "warmth": 18
+    },
+    "commandLog": [],
+    "dead": [],
+    "ending": "none",
+    "scenarioDays": 4
+  },
+  "memories": {
+    "npc_01": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "team-council_opened-0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "council_opened",
+          "subjectIds": [
+            "npc_01",
+            "council"
+          ],
+          "payload": {
+            "councilId": "council-d1",
+            "revision": 1,
+            "source": "council:morning",
+            "proposals": 2
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "council-d1",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "team-council_opened-0"
+          ],
+          "recordId": "m-f394f477dbb86d9f",
+          "revision": 1
+        },
+        {
+          "eventId": "team-council_resolved-1",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "council_resolved",
+          "subjectIds": [
+            "npc_01",
+            "council"
+          ],
+          "payload": {
+            "councilId": "council-d1",
+            "resolutionId": "council-d1:plan-a:rev1",
+            "source": "council:council-d1/council-d1:plan-a:rev1",
+            "revision": 1,
+            "proposalId": "council-d1:plan-a",
+            "requests": [
+              "council-d1:plan-a:rev1:supply:npc_01",
+              "council-d1:plan-a:rev1:deliver:npc_02"
+            ]
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "council-d1:plan-a:rev1",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "team-council_resolved-1"
+          ],
+          "recordId": "m-96891c54ae5a8f9a",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_02": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "team-council_opened-0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "council_opened",
+          "subjectIds": [
+            "npc_02",
+            "council"
+          ],
+          "payload": {
+            "councilId": "council-d1",
+            "revision": 1,
+            "source": "council:morning",
+            "proposals": 2
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "council-d1",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "team-council_opened-0"
+          ],
+          "recordId": "m-02ceada7c066b562",
+          "revision": 1
+        },
+        {
+          "eventId": "team-council_resolved-1",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "council_resolved",
+          "subjectIds": [
+            "npc_02",
+            "council"
+          ],
+          "payload": {
+            "councilId": "council-d1",
+            "resolutionId": "council-d1:plan-a:rev1",
+            "source": "council:council-d1/council-d1:plan-a:rev1",
+            "revision": 1,
+            "proposalId": "council-d1:plan-a",
+            "requests": [
+              "council-d1:plan-a:rev1:supply:npc_01",
+              "council-d1:plan-a:rev1:deliver:npc_02"
+            ]
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "council-d1:plan-a:rev1",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "team-council_resolved-1"
+          ],
+          "recordId": "m-bdff8cf5a94c9337",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_03": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "team-council_opened-0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "council_opened",
+          "subjectIds": [
+            "npc_03",
+            "council"
+          ],
+          "payload": {
+            "councilId": "council-d1",
+            "revision": 1,
+            "source": "council:morning",
+            "proposals": 2
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "council-d1",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "team-council_opened-0"
+          ],
+          "recordId": "m-10797525d44f0450",
+          "revision": 1
+        },
+        {
+          "eventId": "team-council_resolved-1",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "council_resolved",
+          "subjectIds": [
+            "npc_03",
+            "council"
+          ],
+          "payload": {
+            "councilId": "council-d1",
+            "resolutionId": "council-d1:plan-a:rev1",
+            "source": "council:council-d1/council-d1:plan-a:rev1",
+            "revision": 1,
+            "proposalId": "council-d1:plan-a",
+            "requests": [
+              "council-d1:plan-a:rev1:supply:npc_01",
+              "council-d1:plan-a:rev1:deliver:npc_02"
+            ]
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "council-d1:plan-a:rev1",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "team-council_resolved-1"
+          ],
+          "recordId": "m-8ce67cc245348628",
+          "revision": 2
+        }
+      ]
+    }
+  },
+  "outcomes": {},
+  "plans": [],
+  "instances": [],
+  "generations": {},
+  "sequence": 2,
+  "seed": "play-3",
+  "inputSequence": 0,
+  "inputReceipts": {}
+}

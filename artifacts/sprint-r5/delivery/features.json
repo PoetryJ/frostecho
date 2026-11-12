@@ -1,0 +1,125 @@
+{
+  "schema": "frostecho.r5.features/1",
+  "head": "498c00015e51dc6d48668e2603e2e1877aa8e399",
+  "at": "2026-11-12T10:29:30.419Z",
+  "note": "statuses are derived from the fixed TAP / pytest log / comparison JSON; a missing result is not a pass",
+  "features": [
+    {
+      "featureId": "commitment-terminal",
+      "entry": "dist/scripts/play-sprint.js",
+      "command": "node --test dist/tests/acceptance-v5/gate-r5.test.js",
+      "invariant": "terminal commitments absorb old changes; counter-accept binds one task; wait gate is real",
+      "status": "pass",
+      "evidence": [
+        "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r5/eval-full/full-suite.tap"
+      ]
+    },
+    {
+      "featureId": "barrier-captured",
+      "entry": "dist/scripts/play-sprint.js",
+      "command": "node --test --test-name-pattern=R5-G4 dist/tests/acceptance-v5/gate-r5.test.js",
+      "invariant": "a save barrier revokes only its captured set; queued work has 0 effects; later work runs",
+      "status": "pass",
+      "evidence": [
+        "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r5/eval-full/full-suite.tap"
+      ],
+      "next": "rerun R5-G4 with a fresh state directory"
+    },
+    {
+      "featureId": "intent-idempotent",
+      "entry": "dist/scripts/play-sprint.js",
+      "command": "node --test --test-name-pattern=R5-G5 dist/tests/acceptance-v5/gate-r5.test.js",
+      "invariant": "same travel intent replays the first receipt; same id/different target conflicts with 0 effects",
+      "status": "pass",
+      "evidence": [
+        "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r5/eval-full/full-suite.tap"
+      ],
+      "next": "rerun R5-G5 on a clean state directory"
+    },
+    {
+      "featureId": "training-entry-refusal",
+      "entry": "research/decision-choice/jev04/models/encoder_train.py",
+      "command": "python3 -m pytest research/decision-choice/jev04/tests/test_r5_gates.py -v",
+      "invariant": "a closed v4 gate exits non-zero before any torch/transformers import",
+      "status": "pass",
+      "evidence": [
+        "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r5/jev/pytest.log"
+      ],
+      "next": "if the gate is reopened, re-run the stub audit before training"
+    },
+    {
+      "featureId": "data-qualification",
+      "entry": "research/decision-choice/jev04/data/v4/validate_v4.py",
+      "command": "python3 -m pytest research/decision-choice/jev04/tests/test_r5_gates.py -v",
+      "invariant": "text/params/label/duplicate/group tampering is rejected; unique counts gate training",
+      "status": "pass",
+      "evidence": [
+        "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r5/jev/pytest.log",
+        "/data3/DATA/project/project_meishijiang/FrostEcho/research/decision-choice/jev04/data/v4/gate-v4.json"
+      ],
+      "next": "adjudicate 39 cases and expand by source/family before 512/128"
+    },
+    {
+      "featureId": "port-shadow",
+      "entry": "research/decision-choice/jev04/scorers/port_v3.py",
+      "command": "python3 -m pytest research/decision-choice/jev04/tests/test_r5_gates.py -v; node --test dist/tests/r5-jev-evidence.test.js",
+      "invariant": "empty/reused/mis-protocol evidence is not real; fixture never counts; TS selectedId stays null",
+      "status": "pass",
+      "evidence": [
+        "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r5/jev/pytest.log",
+        "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r5/eval-full/full-suite.tap"
+      ]
+    },
+    {
+      "featureId": "download-path",
+      "entry": "research/decision-choice/jev04/models/prepare_t27.py",
+      "command": "python3 -m pytest research/decision-choice/jev04/tests/test_r5_gates.py -v",
+      "invariant": "first real request keeps Qwen/Qwen3.5-27B + exact revision; snapshot args and resume agree",
+      "status": "pass",
+      "evidence": [
+        "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r5/jev/pytest.log"
+      ],
+      "next": "network is still unresolved; keep the exact resume command"
+    },
+    {
+      "featureId": "council-resolution",
+      "entry": "dist/scripts/play-sprint.js",
+      "command": "node --test --test-name-pattern=R5-G6 dist/tests/acceptance-v5/gate-r5.test.js",
+      "invariant": "one council -> two plans -> resolution -> two residents -> real receipts",
+      "status": "pass",
+      "evidence": [
+        "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r5/eval-full/full-suite.tap"
+      ]
+    },
+    {
+      "featureId": "council-save-reassign",
+      "entry": "dist/scripts/play-sprint.js",
+      "command": "node --test --test-name-pattern=\"R5-G7|R5-G8\" dist/tests/acceptance-v5/gate-r5.test.js",
+      "invariant": "exit stops old task; substitute gets a new revision; replay creates no duplicate dispatch",
+      "status": "pass",
+      "evidence": [
+        "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r5/eval-full/full-suite.tap"
+      ]
+    },
+    {
+      "featureId": "four-day-96h",
+      "entry": "dist/scripts/play-sprint.js",
+      "command": "node --test --test-name-pattern=R5-G9 dist/tests/acceptance-v5/gate-r5.test.js",
+      "invariant": "8 NPCs, spatial from day 1, one success, one out_of_stock, split saves == continuous",
+      "status": "pass",
+      "evidence": [
+        "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r5/eval-full/full-suite.tap"
+      ]
+    },
+    {
+      "featureId": "raw-experience-comparison",
+      "entry": "dist/scripts/r4-compare.js",
+      "command": "node dist/scripts/r4-compare.js --out artifacts/sprint-r5/comparison",
+      "invariant": "raw and experience are different implementations; summary is not claimed; waits excluded; N/A not 0",
+      "status": "pass",
+      "evidence": [
+        "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r5/comparison/comparison.json"
+      ]
+    }
+  ]
+}

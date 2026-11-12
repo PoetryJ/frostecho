@@ -1,0 +1,1355 @@
+{
+  "councils": [
+    {
+      "councilId": "council-d1",
+      "day": 1,
+      "status": "resolved",
+      "revision": 1,
+      "proposals": [
+        {
+          "proposalId": "council-d1:plan-a",
+          "name": "A 采集直送",
+          "description": "A 采集并交存仓库，B 从仓库取饭送到厨房；两人满负荷，不安排休息。",
+          "assignments": [
+            {
+              "role": "supply",
+              "actorId": "npc_01",
+              "taskKind": "supply-warehouse",
+              "goal": "supply-warehouse"
+            },
+            {
+              "role": "deliver",
+              "actorId": "npc_02",
+              "taskKind": "deliver-meal",
+              "goal": "deliver-meal"
+            }
+          ],
+          "cost": {
+            "supplyTrips": 1,
+            "deliveryTrips": 1,
+            "restBlocks": 0,
+            "estimatedMinutes": 108
+          },
+          "basis": {
+            "food": 120,
+            "firewood": 20,
+            "warehouseFood": 0,
+            "actors": [
+              {
+                "id": "npc_01",
+                "hunger": 69,
+                "stamina": 79,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_02",
+                "hunger": 69,
+                "stamina": 79,
+                "location": "dorm-b"
+              },
+              {
+                "id": "npc_03",
+                "hunger": 69,
+                "stamina": 79,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_04",
+                "hunger": 69,
+                "stamina": 79,
+                "location": "dorm-b"
+              },
+              {
+                "id": "npc_05",
+                "hunger": 69,
+                "stamina": 79,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_06",
+                "hunger": 69,
+                "stamina": 79,
+                "location": "dorm-b"
+              },
+              {
+                "id": "npc_07",
+                "hunger": 69,
+                "stamina": 79,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_08",
+                "hunger": 69,
+                "stamina": 77,
+                "location": "warehouse"
+              }
+            ]
+          }
+        },
+        {
+          "proposalId": "council-d1:plan-b",
+          "name": "B 轮换休整",
+          "description": "npc_02 先休息一个时段，由 npc_03 代运；供应仍由 npc_01 完成，时间更长但保护低体力者。",
+          "assignments": [
+            {
+              "role": "supply",
+              "actorId": "npc_01",
+              "taskKind": "supply-warehouse",
+              "goal": "supply-warehouse"
+            },
+            {
+              "role": "rest",
+              "actorId": "npc_08",
+              "taskKind": "rest-first",
+              "goal": "rest-first"
+            },
+            {
+              "role": "deliver",
+              "actorId": "npc_03",
+              "taskKind": "deliver-meal",
+              "goal": "deliver-meal"
+            }
+          ],
+          "cost": {
+            "supplyTrips": 1,
+            "deliveryTrips": 1,
+            "restBlocks": 1,
+            "estimatedMinutes": 168
+          },
+          "basis": {
+            "food": 120,
+            "firewood": 20,
+            "warehouseFood": 0,
+            "actors": [
+              {
+                "id": "npc_01",
+                "hunger": 69,
+                "stamina": 79,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_02",
+                "hunger": 69,
+                "stamina": 79,
+                "location": "dorm-b"
+              },
+              {
+                "id": "npc_03",
+                "hunger": 69,
+                "stamina": 79,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_04",
+                "hunger": 69,
+                "stamina": 79,
+                "location": "dorm-b"
+              },
+              {
+                "id": "npc_05",
+                "hunger": 69,
+                "stamina": 79,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_06",
+                "hunger": 69,
+                "stamina": 79,
+                "location": "dorm-b"
+              },
+              {
+                "id": "npc_07",
+                "hunger": 69,
+                "stamina": 79,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_08",
+                "hunger": 69,
+                "stamina": 77,
+                "location": "warehouse"
+              }
+            ]
+          }
+        }
+      ],
+      "votes": [
+        {
+          "voterId": "npc_01",
+          "proposalId": "council-d1:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_02",
+          "proposalId": "council-d1:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_03",
+          "proposalId": "council-d1:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_04",
+          "proposalId": "council-d1:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_05",
+          "proposalId": "council-d1:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_06",
+          "proposalId": "council-d1:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_07",
+          "proposalId": "council-d1:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_08",
+          "proposalId": "council-d1:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        }
+      ],
+      "resolution": {
+        "councilId": "council-d1",
+        "resolutionId": "council-d1:plan-a:rev1",
+        "proposalId": "council-d1:plan-a",
+        "source": "council:council-d1/council-d1:plan-a:rev1",
+        "revision": 1,
+        "votes": [
+          {
+            "voterId": "npc_01",
+            "proposalId": "council-d1:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_02",
+            "proposalId": "council-d1:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_03",
+            "proposalId": "council-d1:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_04",
+            "proposalId": "council-d1:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_05",
+            "proposalId": "council-d1:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_06",
+            "proposalId": "council-d1:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_07",
+            "proposalId": "council-d1:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_08",
+            "proposalId": "council-d1:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          }
+        ],
+        "requests": [
+          "council-d1:plan-a:rev1:supply:npc_01",
+          "council-d1:plan-a:rev1:deliver:npc_02"
+        ],
+        "decidedAt": 50
+      },
+      "requests": [
+        {
+          "requestId": "council-d1:plan-a:rev1:supply:npc_01",
+          "councilId": "council-d1",
+          "resolutionId": "council-d1:plan-a:rev1",
+          "role": "supply",
+          "actorId": "npc_01",
+          "taskKind": "supply-warehouse",
+          "goal": "supply-warehouse",
+          "source": "council:council-d1/council-d1:plan-a:rev1",
+          "revision": 1,
+          "status": "accepted",
+          "commitmentId": "cm-39f56edb-af7c-4575-9bc4-5deb51df32df",
+          "createdAt": 50
+        },
+        {
+          "requestId": "council-d1:plan-a:rev1:deliver:npc_02",
+          "councilId": "council-d1",
+          "resolutionId": "council-d1:plan-a:rev1",
+          "role": "deliver",
+          "actorId": "npc_02",
+          "taskKind": "deliver-meal",
+          "goal": "deliver-meal",
+          "source": "council:council-d1/council-d1:plan-a:rev1",
+          "revision": 1,
+          "status": "accepted",
+          "commitmentId": "cm-e9933bc7-c6e9-460b-ab93-b9e8f86dae26",
+          "createdAt": 50
+        }
+      ],
+      "createdAt": 50,
+      "updatedAt": 50
+    },
+    {
+      "councilId": "council-d2",
+      "day": 2,
+      "status": "resolved",
+      "revision": 1,
+      "proposals": [
+        {
+          "proposalId": "council-d2:plan-a",
+          "name": "A 采集直送",
+          "description": "A 采集并交存仓库，B 从仓库取饭送到厨房；两人满负荷，不安排休息。",
+          "assignments": [
+            {
+              "role": "supply",
+              "actorId": "npc_03",
+              "taskKind": "supply-warehouse",
+              "goal": "supply-warehouse"
+            },
+            {
+              "role": "deliver",
+              "actorId": "npc_04",
+              "taskKind": "deliver-meal",
+              "goal": "deliver-meal"
+            }
+          ],
+          "cost": {
+            "supplyTrips": 1,
+            "deliveryTrips": 1,
+            "restBlocks": 0,
+            "estimatedMinutes": 108
+          },
+          "basis": {
+            "food": 129,
+            "firewood": 25,
+            "warehouseFood": 1,
+            "actors": [
+              {
+                "id": "npc_01",
+                "hunger": 46,
+                "stamina": 38,
+                "location": "warehouse"
+              },
+              {
+                "id": "npc_02",
+                "hunger": 46,
+                "stamina": 36,
+                "location": "kitchen"
+              },
+              {
+                "id": "npc_03",
+                "hunger": 46,
+                "stamina": 40,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_04",
+                "hunger": 45,
+                "stamina": 38,
+                "location": "dorm-b"
+              },
+              {
+                "id": "npc_05",
+                "hunger": 45,
+                "stamina": 38,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_06",
+                "hunger": 45,
+                "stamina": 38,
+                "location": "dorm-b"
+              },
+              {
+                "id": "npc_07",
+                "hunger": 45,
+                "stamina": 38,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_08",
+                "hunger": 45,
+                "stamina": 36,
+                "location": "warehouse"
+              }
+            ]
+          }
+        },
+        {
+          "proposalId": "council-d2:plan-b",
+          "name": "B 轮换休整",
+          "description": "npc_04 先休息一个时段，由 npc_05 代运；供应仍由 npc_03 完成，时间更长但保护低体力者。",
+          "assignments": [
+            {
+              "role": "supply",
+              "actorId": "npc_03",
+              "taskKind": "supply-warehouse",
+              "goal": "supply-warehouse"
+            },
+            {
+              "role": "rest",
+              "actorId": "npc_02",
+              "taskKind": "rest-first",
+              "goal": "rest-first"
+            },
+            {
+              "role": "deliver",
+              "actorId": "npc_05",
+              "taskKind": "deliver-meal",
+              "goal": "deliver-meal"
+            }
+          ],
+          "cost": {
+            "supplyTrips": 1,
+            "deliveryTrips": 1,
+            "restBlocks": 1,
+            "estimatedMinutes": 168
+          },
+          "basis": {
+            "food": 129,
+            "firewood": 25,
+            "warehouseFood": 1,
+            "actors": [
+              {
+                "id": "npc_01",
+                "hunger": 46,
+                "stamina": 38,
+                "location": "warehouse"
+              },
+              {
+                "id": "npc_02",
+                "hunger": 46,
+                "stamina": 36,
+                "location": "kitchen"
+              },
+              {
+                "id": "npc_03",
+                "hunger": 46,
+                "stamina": 40,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_04",
+                "hunger": 45,
+                "stamina": 38,
+                "location": "dorm-b"
+              },
+              {
+                "id": "npc_05",
+                "hunger": 45,
+                "stamina": 38,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_06",
+                "hunger": 45,
+                "stamina": 38,
+                "location": "dorm-b"
+              },
+              {
+                "id": "npc_07",
+                "hunger": 45,
+                "stamina": 38,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_08",
+                "hunger": 45,
+                "stamina": 36,
+                "location": "warehouse"
+              }
+            ]
+          }
+        }
+      ],
+      "votes": [
+        {
+          "voterId": "npc_01",
+          "proposalId": "council-d2:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_02",
+          "proposalId": "council-d2:plan-b",
+          "source": "fixture-reference/1",
+          "reason": "体力 36：轮换休整更可行",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_03",
+          "proposalId": "council-d2:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_04",
+          "proposalId": "council-d2:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_05",
+          "proposalId": "council-d2:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "作为替补 npc_05 不主张把工作转给自己",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_06",
+          "proposalId": "council-d2:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_07",
+          "proposalId": "council-d2:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_08",
+          "proposalId": "council-d2:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        }
+      ],
+      "resolution": {
+        "councilId": "council-d2",
+        "resolutionId": "council-d2:plan-a:rev1",
+        "proposalId": "council-d2:plan-a",
+        "source": "council:council-d2/council-d2:plan-a:rev1",
+        "revision": 1,
+        "votes": [
+          {
+            "voterId": "npc_01",
+            "proposalId": "council-d2:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_02",
+            "proposalId": "council-d2:plan-b",
+            "source": "fixture-reference/1",
+            "reason": "体力 36：轮换休整更可行",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_03",
+            "proposalId": "council-d2:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_04",
+            "proposalId": "council-d2:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_05",
+            "proposalId": "council-d2:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "作为替补 npc_05 不主张把工作转给自己",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_06",
+            "proposalId": "council-d2:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_07",
+            "proposalId": "council-d2:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_08",
+            "proposalId": "council-d2:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          }
+        ],
+        "requests": [
+          "council-d2:plan-a:rev1:supply:npc_03",
+          "council-d2:plan-a:rev1:deliver:npc_04"
+        ],
+        "decidedAt": 1616
+      },
+      "requests": [
+        {
+          "requestId": "council-d2:plan-a:rev1:supply:npc_03",
+          "councilId": "council-d2",
+          "resolutionId": "council-d2:plan-a:rev1",
+          "role": "supply",
+          "actorId": "npc_03",
+          "taskKind": "supply-warehouse",
+          "goal": "supply-warehouse",
+          "source": "council:council-d2/council-d2:plan-a:rev1",
+          "revision": 1,
+          "status": "accepted",
+          "commitmentId": "cm-9922ba53-983a-454a-9290-cf530973d52c",
+          "createdAt": 1616
+        },
+        {
+          "requestId": "council-d2:plan-a:rev1:deliver:npc_04",
+          "councilId": "council-d2",
+          "resolutionId": "council-d2:plan-a:rev1",
+          "role": "deliver",
+          "actorId": "npc_04",
+          "taskKind": "deliver-meal",
+          "goal": "deliver-meal",
+          "source": "council:council-d2/council-d2:plan-a:rev1",
+          "revision": 1,
+          "status": "accepted",
+          "commitmentId": "cm-b5b5e570-1ae4-496f-8a37-0e7e9f6c72bc",
+          "createdAt": 1616
+        }
+      ],
+      "createdAt": 1616,
+      "updatedAt": 1616
+    },
+    {
+      "councilId": "council-d3",
+      "day": 3,
+      "status": "resolved",
+      "revision": 1,
+      "proposals": [
+        {
+          "proposalId": "council-d3:plan-a",
+          "name": "A 采集直送",
+          "description": "A 采集并交存仓库，B 从仓库取饭送到厨房；两人满负荷，不安排休息。",
+          "assignments": [
+            {
+              "role": "supply",
+              "actorId": "npc_01",
+              "taskKind": "supply-warehouse",
+              "goal": "supply-warehouse"
+            },
+            {
+              "role": "deliver",
+              "actorId": "npc_03",
+              "taskKind": "deliver-meal",
+              "goal": "deliver-meal"
+            }
+          ],
+          "cost": {
+            "supplyTrips": 1,
+            "deliveryTrips": 1,
+            "restBlocks": 0,
+            "estimatedMinutes": 52
+          },
+          "basis": {
+            "food": 120,
+            "firewood": 30,
+            "warehouseFood": 2,
+            "actors": [
+              {
+                "id": "npc_01",
+                "hunger": 40,
+                "stamina": 36,
+                "location": "warehouse"
+              },
+              {
+                "id": "npc_02",
+                "hunger": 49,
+                "stamina": 33,
+                "location": "kitchen"
+              },
+              {
+                "id": "npc_03",
+                "hunger": 40,
+                "stamina": 36,
+                "location": "warehouse"
+              },
+              {
+                "id": "npc_04",
+                "hunger": 31,
+                "stamina": 32,
+                "location": "kitchen"
+              },
+              {
+                "id": "npc_05",
+                "hunger": 48,
+                "stamina": 36,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_06",
+                "hunger": 48,
+                "stamina": 36,
+                "location": "dorm-b"
+              },
+              {
+                "id": "npc_07",
+                "hunger": 48,
+                "stamina": 36,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_08",
+                "hunger": 48,
+                "stamina": 34,
+                "location": "warehouse"
+              }
+            ]
+          }
+        },
+        {
+          "proposalId": "council-d3:plan-b",
+          "name": "B 轮换休整",
+          "description": "npc_03 先休息一个时段，由 npc_05 代运；供应仍由 npc_01 完成，时间更长但保护低体力者。",
+          "assignments": [
+            {
+              "role": "supply",
+              "actorId": "npc_01",
+              "taskKind": "supply-warehouse",
+              "goal": "supply-warehouse"
+            },
+            {
+              "role": "rest",
+              "actorId": "npc_04",
+              "taskKind": "rest-first",
+              "goal": "rest-first"
+            },
+            {
+              "role": "deliver",
+              "actorId": "npc_05",
+              "taskKind": "deliver-meal",
+              "goal": "deliver-meal"
+            }
+          ],
+          "cost": {
+            "supplyTrips": 1,
+            "deliveryTrips": 1,
+            "restBlocks": 1,
+            "estimatedMinutes": 140
+          },
+          "basis": {
+            "food": 120,
+            "firewood": 30,
+            "warehouseFood": 2,
+            "actors": [
+              {
+                "id": "npc_01",
+                "hunger": 40,
+                "stamina": 36,
+                "location": "warehouse"
+              },
+              {
+                "id": "npc_02",
+                "hunger": 49,
+                "stamina": 33,
+                "location": "kitchen"
+              },
+              {
+                "id": "npc_03",
+                "hunger": 40,
+                "stamina": 36,
+                "location": "warehouse"
+              },
+              {
+                "id": "npc_04",
+                "hunger": 31,
+                "stamina": 32,
+                "location": "kitchen"
+              },
+              {
+                "id": "npc_05",
+                "hunger": 48,
+                "stamina": 36,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_06",
+                "hunger": 48,
+                "stamina": 36,
+                "location": "dorm-b"
+              },
+              {
+                "id": "npc_07",
+                "hunger": 48,
+                "stamina": 36,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_08",
+                "hunger": 48,
+                "stamina": 34,
+                "location": "warehouse"
+              }
+            ]
+          }
+        }
+      ],
+      "votes": [
+        {
+          "voterId": "npc_01",
+          "proposalId": "council-d3:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_02",
+          "proposalId": "council-d3:plan-b",
+          "source": "fixture-reference/1",
+          "reason": "体力 33：轮换休整更可行",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_03",
+          "proposalId": "council-d3:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_04",
+          "proposalId": "council-d3:plan-b",
+          "source": "fixture-reference/1",
+          "reason": "体力 32：轮换休整更可行",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_05",
+          "proposalId": "council-d3:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "作为替补 npc_05 不主张把工作转给自己",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_06",
+          "proposalId": "council-d3:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_07",
+          "proposalId": "council-d3:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_08",
+          "proposalId": "council-d3:plan-b",
+          "source": "fixture-reference/1",
+          "reason": "体力 34：轮换休整更可行",
+          "revision": 1
+        }
+      ],
+      "resolution": {
+        "councilId": "council-d3",
+        "resolutionId": "council-d3:plan-a:rev1",
+        "proposalId": "council-d3:plan-a",
+        "source": "council:council-d3/council-d3:plan-a:rev1",
+        "revision": 1,
+        "votes": [
+          {
+            "voterId": "npc_01",
+            "proposalId": "council-d3:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_02",
+            "proposalId": "council-d3:plan-b",
+            "source": "fixture-reference/1",
+            "reason": "体力 33：轮换休整更可行",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_03",
+            "proposalId": "council-d3:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_04",
+            "proposalId": "council-d3:plan-b",
+            "source": "fixture-reference/1",
+            "reason": "体力 32：轮换休整更可行",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_05",
+            "proposalId": "council-d3:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "作为替补 npc_05 不主张把工作转给自己",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_06",
+            "proposalId": "council-d3:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_07",
+            "proposalId": "council-d3:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_08",
+            "proposalId": "council-d3:plan-b",
+            "source": "fixture-reference/1",
+            "reason": "体力 34：轮换休整更可行",
+            "revision": 1
+          }
+        ],
+        "requests": [
+          "council-d3:plan-a:rev1:supply:npc_01",
+          "council-d3:plan-a:rev1:deliver:npc_03"
+        ],
+        "decidedAt": 3182
+      },
+      "requests": [
+        {
+          "requestId": "council-d3:plan-a:rev1:supply:npc_01",
+          "councilId": "council-d3",
+          "resolutionId": "council-d3:plan-a:rev1",
+          "role": "supply",
+          "actorId": "npc_01",
+          "taskKind": "supply-warehouse",
+          "goal": "supply-warehouse",
+          "source": "council:council-d3/council-d3:plan-a:rev1",
+          "revision": 1,
+          "status": "accepted",
+          "commitmentId": "cm-39f56edb-af7c-4575-9bc4-5deb51df32df",
+          "createdAt": 3182
+        },
+        {
+          "requestId": "council-d3:plan-a:rev1:deliver:npc_03",
+          "councilId": "council-d3",
+          "resolutionId": "council-d3:plan-a:rev1",
+          "role": "deliver",
+          "actorId": "npc_03",
+          "taskKind": "supply-warehouse",
+          "goal": "deliver-meal",
+          "source": "council:council-d3/council-d3:plan-a:rev1",
+          "revision": 1,
+          "status": "accepted",
+          "commitmentId": "cm-9922ba53-983a-454a-9290-cf530973d52c",
+          "createdAt": 3182
+        }
+      ],
+      "createdAt": 3182,
+      "updatedAt": 3182
+    },
+    {
+      "councilId": "council-d4",
+      "day": 4,
+      "status": "resolved",
+      "revision": 1,
+      "proposals": [
+        {
+          "proposalId": "council-d4:plan-a",
+          "name": "A 采集直送",
+          "description": "A 采集并交存仓库，B 从仓库取饭送到厨房；两人满负荷，不安排休息。",
+          "assignments": [
+            {
+              "role": "supply",
+              "actorId": "npc_05",
+              "taskKind": "supply-warehouse",
+              "goal": "supply-warehouse"
+            },
+            {
+              "role": "deliver",
+              "actorId": "npc_06",
+              "taskKind": "deliver-meal",
+              "goal": "deliver-meal"
+            }
+          ],
+          "cost": {
+            "supplyTrips": 1,
+            "deliveryTrips": 1,
+            "restBlocks": 0,
+            "estimatedMinutes": 108
+          },
+          "basis": {
+            "food": 107,
+            "firewood": 35,
+            "warehouseFood": 6,
+            "actors": [
+              {
+                "id": "npc_01",
+                "hunger": 46,
+                "stamina": 26,
+                "location": "warehouse"
+              },
+              {
+                "id": "npc_02",
+                "hunger": 45,
+                "stamina": 34,
+                "location": "kitchen"
+              },
+              {
+                "id": "npc_03",
+                "hunger": 46,
+                "stamina": 26,
+                "location": "warehouse"
+              },
+              {
+                "id": "npc_04",
+                "hunger": 45,
+                "stamina": 33,
+                "location": "kitchen"
+              },
+              {
+                "id": "npc_05",
+                "hunger": 44,
+                "stamina": 35,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_06",
+                "hunger": 44,
+                "stamina": 35,
+                "location": "dorm-b"
+              },
+              {
+                "id": "npc_07",
+                "hunger": 44,
+                "stamina": 35,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_08",
+                "hunger": 44,
+                "stamina": 33,
+                "location": "warehouse"
+              }
+            ]
+          }
+        },
+        {
+          "proposalId": "council-d4:plan-b",
+          "name": "B 轮换休整",
+          "description": "npc_06 先休息一个时段，由 npc_07 代运；供应仍由 npc_05 完成，时间更长但保护低体力者。",
+          "assignments": [
+            {
+              "role": "supply",
+              "actorId": "npc_05",
+              "taskKind": "supply-warehouse",
+              "goal": "supply-warehouse"
+            },
+            {
+              "role": "rest",
+              "actorId": "npc_01",
+              "taskKind": "rest-first",
+              "goal": "rest-first"
+            },
+            {
+              "role": "deliver",
+              "actorId": "npc_07",
+              "taskKind": "deliver-meal",
+              "goal": "deliver-meal"
+            }
+          ],
+          "cost": {
+            "supplyTrips": 1,
+            "deliveryTrips": 1,
+            "restBlocks": 1,
+            "estimatedMinutes": 168
+          },
+          "basis": {
+            "food": 107,
+            "firewood": 35,
+            "warehouseFood": 6,
+            "actors": [
+              {
+                "id": "npc_01",
+                "hunger": 46,
+                "stamina": 26,
+                "location": "warehouse"
+              },
+              {
+                "id": "npc_02",
+                "hunger": 45,
+                "stamina": 34,
+                "location": "kitchen"
+              },
+              {
+                "id": "npc_03",
+                "hunger": 46,
+                "stamina": 26,
+                "location": "warehouse"
+              },
+              {
+                "id": "npc_04",
+                "hunger": 45,
+                "stamina": 33,
+                "location": "kitchen"
+              },
+              {
+                "id": "npc_05",
+                "hunger": 44,
+                "stamina": 35,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_06",
+                "hunger": 44,
+                "stamina": 35,
+                "location": "dorm-b"
+              },
+              {
+                "id": "npc_07",
+                "hunger": 44,
+                "stamina": 35,
+                "location": "dorm-a"
+              },
+              {
+                "id": "npc_08",
+                "hunger": 44,
+                "stamina": 33,
+                "location": "warehouse"
+              }
+            ]
+          }
+        }
+      ],
+      "votes": [
+        {
+          "voterId": "npc_01",
+          "proposalId": "council-d4:plan-b",
+          "source": "fixture-reference/1",
+          "reason": "体力 26：轮换休整更可行",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_02",
+          "proposalId": "council-d4:plan-b",
+          "source": "fixture-reference/1",
+          "reason": "体力 34：轮换休整更可行",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_03",
+          "proposalId": "council-d4:plan-b",
+          "source": "fixture-reference/1",
+          "reason": "体力 26：轮换休整更可行",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_04",
+          "proposalId": "council-d4:plan-b",
+          "source": "fixture-reference/1",
+          "reason": "体力 33：轮换休整更可行",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_05",
+          "proposalId": "council-d4:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_06",
+          "proposalId": "council-d4:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "两案均可，选成本较低的 A",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_07",
+          "proposalId": "council-d4:plan-a",
+          "source": "fixture-reference/1",
+          "reason": "作为替补 npc_07 不主张把工作转给自己",
+          "revision": 1
+        },
+        {
+          "voterId": "npc_08",
+          "proposalId": "council-d4:plan-b",
+          "source": "fixture-reference/1",
+          "reason": "体力 33：轮换休整更可行",
+          "revision": 1
+        }
+      ],
+      "resolution": {
+        "councilId": "council-d4",
+        "resolutionId": "council-d4:plan-b:rev1",
+        "proposalId": "council-d4:plan-b",
+        "source": "council:council-d4/council-d4:plan-b:rev1",
+        "revision": 1,
+        "votes": [
+          {
+            "voterId": "npc_01",
+            "proposalId": "council-d4:plan-b",
+            "source": "fixture-reference/1",
+            "reason": "体力 26：轮换休整更可行",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_02",
+            "proposalId": "council-d4:plan-b",
+            "source": "fixture-reference/1",
+            "reason": "体力 34：轮换休整更可行",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_03",
+            "proposalId": "council-d4:plan-b",
+            "source": "fixture-reference/1",
+            "reason": "体力 26：轮换休整更可行",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_04",
+            "proposalId": "council-d4:plan-b",
+            "source": "fixture-reference/1",
+            "reason": "体力 33：轮换休整更可行",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_05",
+            "proposalId": "council-d4:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_06",
+            "proposalId": "council-d4:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "两案均可，选成本较低的 A",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_07",
+            "proposalId": "council-d4:plan-a",
+            "source": "fixture-reference/1",
+            "reason": "作为替补 npc_07 不主张把工作转给自己",
+            "revision": 1
+          },
+          {
+            "voterId": "npc_08",
+            "proposalId": "council-d4:plan-b",
+            "source": "fixture-reference/1",
+            "reason": "体力 33：轮换休整更可行",
+            "revision": 1
+          }
+        ],
+        "requests": [
+          "council-d4:plan-b:rev1:supply:npc_05",
+          "council-d4:plan-b:rev1:rest:npc_01",
+          "council-d4:plan-b:rev1:deliver:npc_07"
+        ],
+        "decidedAt": 4622
+      },
+      "requests": [
+        {
+          "requestId": "council-d4:plan-b:rev1:supply:npc_05",
+          "councilId": "council-d4",
+          "resolutionId": "council-d4:plan-b:rev1",
+          "role": "supply",
+          "actorId": "npc_05",
+          "taskKind": "supply-warehouse",
+          "goal": "supply-warehouse",
+          "source": "council:council-d4/council-d4:plan-b:rev1",
+          "revision": 1,
+          "status": "accepted",
+          "commitmentId": "cm-7c22dc58-d019-4895-8751-c1bf635445a3",
+          "createdAt": 4622
+        },
+        {
+          "requestId": "council-d4:plan-b:rev1:rest:npc_01",
+          "councilId": "council-d4",
+          "resolutionId": "council-d4:plan-b:rev1",
+          "role": "rest",
+          "actorId": "npc_01",
+          "taskKind": "supply-warehouse",
+          "goal": "rest-first",
+          "source": "council:council-d4/council-d4:plan-b:rev1",
+          "revision": 1,
+          "status": "accepted",
+          "commitmentId": "cm-39f56edb-af7c-4575-9bc4-5deb51df32df",
+          "createdAt": 4622
+        },
+        {
+          "requestId": "council-d4:plan-b:rev1:deliver:npc_07",
+          "councilId": "council-d4",
+          "resolutionId": "council-d4:plan-b:rev1",
+          "role": "deliver",
+          "actorId": "npc_07",
+          "taskKind": "deliver-meal",
+          "goal": "deliver-meal",
+          "source": "council:council-d4/council-d4:plan-b:rev1",
+          "revision": 1,
+          "status": "accepted",
+          "commitmentId": "cm-4e25a894-3146-4436-ac1e-596c4d6badf4",
+          "createdAt": 4622
+        }
+      ],
+      "createdAt": 4622,
+      "updatedAt": 4622
+    }
+  ]
+}
