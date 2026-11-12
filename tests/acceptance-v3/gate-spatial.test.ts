@@ -102,7 +102,8 @@ test('G2-P3: witnessed shortage changes the next action; restock is retried', ()
     const picked = steps(rows).filter(record => record.actorId === 'npc_02');
     const firstIds = picked.slice(0, 3).map(record => record.selectedId);
     assert.ok(firstIds.includes('g-withdraw'), 'attempts the empty warehouse in person');
-    assert.ok(firstIds.includes('g-gather-food'), 'then changes the source');
+    assert.ok(firstIds.some((id: string) => id === 'g-gather-food' || id === 'g-deposit'),
+      'then changes the source (R4 inserts the deposit transfer)');
     const statuses = rows.filter(row => row.command === 'task-status')
       .map(row => row.status);
     assert.equal(statuses[0].tasks.find((item: any) => item.kind === 'deliver-meal').status,

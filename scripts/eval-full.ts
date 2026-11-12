@@ -11,10 +11,15 @@ import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { createWorldV2, runEightNpcDay, type WorldV2 } from '../src/survival/world-v2';
 
-const OUT = join(process.cwd(), 'artifacts/sprint-r2/eval-full');
+const OUT_INDEX = process.argv.indexOf('--out');
+const OUT = OUT_INDEX !== -1 && process.argv[OUT_INDEX + 1]
+  ? resolve(process.argv[OUT_INDEX + 1])
+  : join(process.cwd(), 'artifacts/sprint-r2/eval-full');
+/** R4 (G8): the full suite is always captured as fixed TAP, not free text. */
+const TAP_PATH = join(OUT, 'full-suite.tap');
 const results: { name: string; ok: boolean; blocked?: boolean; detail: string }[] = [];
 
 const KNOWN_FLAKES = [{
@@ -60,7 +65,7 @@ const allFiles = testFilesIn(testDir);
 const g11File = allFiles.find(path => path.endsWith('g11-verify-latency.test.js'));
 const testFiles = allFiles.filter(path => path !== g11File);
 
-const tests = run(['--test', ...testFiles]);
+const tests = run(['--test', '--test-reporter=tap', ...testFiles]);
 const passMatch = tests.stdout.match(/# pass (\d+)/);
 const failMatch = tests.stdout.match(/# fail (\d+)/);
 const failures = failingTestIds(tests.stdout);
@@ -194,6 +199,7 @@ const summary = {
   results,
 };
 mkdirSync(OUT, { recursive: true });
+writeFileSync(TAP_PATH, tests.stdout, 'utf8');
 const path = join(OUT, 'summary.json');
 writeFileSync(path, `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
 console.log(JSON.stringify({ path, passed: summary.passed, failed: summary.failed, blocked: summary.blocked }, null, 2));

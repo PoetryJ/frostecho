@@ -105,8 +105,42 @@ def probe() -> dict:
     }
 
 
-def download() -> dict:
+def resolve(revision: str = "main") -> dict:
+    """The exact request identity a download would use (no network)."""
+    return {
+        "schema": "frostecho.jev04.t27-resolve/1",
+        "at": now(),
+        "repo": TARGET_MODEL,
+        "revision": revision,
+        "configUrl": f"https://huggingface.co/{TARGET_MODEL}/resolve/{revision}/config.json",
+        "downloadUrl": f"https://huggingface.co/{TARGET_MODEL}/resolve/{revision}",
+        "note": "revision is 'main' until a commit hash is pinned from a reachable host",
+    }
+
+
+def mock_check(endpoint: str, revision: str = "main") -> dict:
+    """Verify the URL/revision wiring against a LOCAL mock (network-free)."""
+    import urllib.request
+    url = f"{endpoint.rstrip('/')}/{TARGET_MODEL}/resolve/{revision}/config.json"
+    result = {"schema": "frostecho.jev04.t27-mock/1", "at": now(), "url": url,
+              "revision": revision}
+    try:
+        with urllib.request.urlopen(url, timeout=5) as response:
+            body = response.read()
+            result.update({"status": response.status,
+                           "bytes": len(body),
+                           "ok": response.status == 200 and len(body) > 0})
+    except Exception as error:
+        result.update({"ok": False,
+                       "error": f"{type(error).__name__}: {error}"[:300]})
+    return result
+
+
+def download(revision: str = "main") -> dict:
     result = {"schema": "frostecho.jev04.t27-download/1", "at": now(),
+              "revision": revision,
+              **{key: value for key, value in resolve(revision).items()
+                 if key in ("repo", "configUrl", "downloadUrl")},
               "resumeCommand": ("python3 research/decision-choice/jev04/models/"
                                 "prepare_t27.py --download")}
     # Reachability pre-check so a blocked network is recorded, not hung.
@@ -130,8 +164,8 @@ def download() -> dict:
                        "fix": "pip install -r requirements-t27.txt"})
         return result
     try:
-        path = snapshot_download(TARGET_MODEL, resume_download=True,
-                                 max_workers=4)
+        path = snapshot_download(TARGET_MODEL, revision=revision,
+                                 resume_download=True, max_workers=4)
         result.update({"status": "ok", "path": str(path)})
     except Exception as error:  # auth, quota, partial files...
         result.update({"status": "failed",
@@ -143,13 +177,25 @@ def download() -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--download", action="store_true")
+    parser.add_argument("--revision", default="main")
+    parser.add_argument("--resolve-only", action="store_true")
+    parser.add_argument("--mock-endpoint", default=None)
     parser.add_argument("--manifest-for", default=None,
                         help="write the full file manifest for this local path")
     args = parser.parse_args()
 
     stamp = _dt.datetime.now().strftime("%Y%m%d-%H%M%S")
-    if args.download:
-        result = download()
+    exit_code = 0
+    if args.resolve_only:
+        result = resolve(args.revision)
+        out = RUNS / f"t27-resolve-{stamp}.json"
+    elif args.mock_endpoint:
+        result = mock_check(args.mock_endpoint, args.revision)
+        exit_code = 0 if result.get("ok") else 1
+        out = RUNS / f"t27-mock-{stamp}.json"
+    elif args.download:
+        result = download(args.revision)
+        exit_code = 0 if result.get("status") == "ok" else 1
         out = RUNS / f"t27-download-{stamp}.json"
     elif args.manifest_for:
         root = Path(args.manifest_for)
@@ -163,7 +209,7 @@ def main() -> int:
                    encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False, indent=2))
     print(f"written: {out}", file=sys.stderr)
-    return 0
+    return exit_code
 
 
 if __name__ == "__main__":
