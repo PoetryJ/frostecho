@@ -1,0 +1,590 @@
+{
+  "commitments": [
+    {
+      "commitmentId": "cm-91505ace-3c52-4f5c-8906-c043d8773c87",
+      "taskId": "task-001-supply-warehouse",
+      "promisorId": "npc_01",
+      "beneficiaryId": "council",
+      "goal": "supply-warehouse",
+      "source": "council:council-d1/council-d1:plan-a:rev1",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "fulfilled",
+      "evidenceEventIds": [
+        "npc_01-game-2-g-deposit:stock_deposited:2"
+      ],
+      "changes": [],
+      "createdAt": 0,
+      "updatedAt": 82
+    },
+    {
+      "commitmentId": "cm-3445ab1c-35c6-47ec-9657-7d8e39f08a16",
+      "taskId": "task-002-deliver-meal",
+      "promisorId": "npc_02",
+      "beneficiaryId": "council",
+      "goal": "deliver-meal",
+      "source": "council:council-d1/council-d1:plan-a:rev1",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "fulfilled",
+      "evidenceEventIds": [
+        "npc_02-game-5-g-deliver:meal_delivered:5"
+      ],
+      "changes": [],
+      "createdAt": 0,
+      "updatedAt": 126
+    },
+    {
+      "commitmentId": "cm-9b7b3856-35b9-4b59-9aa4-4267cecafa85",
+      "taskId": "task-003-supply-warehouse",
+      "promisorId": "npc_03",
+      "beneficiaryId": "council",
+      "goal": "supply-warehouse",
+      "source": "council:council-d2/council-d2:plan-a:rev1",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "withdrawn",
+      "evidenceEventIds": [],
+      "changes": [],
+      "createdAt": 1446,
+      "updatedAt": 1446
+    },
+    {
+      "commitmentId": "cm-76e3976a-1394-483e-9126-f1eceede953e",
+      "taskId": "task-004-supply-warehouse",
+      "promisorId": "npc_01",
+      "beneficiaryId": "council",
+      "goal": "supply-warehouse",
+      "source": "council:council-d2/council-d2:plan-a:rev1",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "fulfilled",
+      "evidenceEventIds": [
+        "npc_01-game-17-g-deposit:stock_deposited:17"
+      ],
+      "changes": [],
+      "createdAt": 1446,
+      "updatedAt": 1446
+    },
+    {
+      "commitmentId": "cm-35661872-3113-48c7-ac15-bc4ac9499fc8",
+      "taskId": "task-005-deliver-meal",
+      "promisorId": "npc_04",
+      "beneficiaryId": "council",
+      "goal": "deliver-meal",
+      "source": "council:council-d2/council-d2:plan-a:rev1",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "fulfilled",
+      "evidenceEventIds": [
+        "npc_04-game-21-g-deliver:meal_delivered:21"
+      ],
+      "changes": [],
+      "createdAt": 1446,
+      "updatedAt": 1540
+    },
+    {
+      "commitmentId": "cm-91f0a12e-8bdb-4e2b-9172-f47a21b4c866",
+      "taskId": "task-006-deliver-meal",
+      "promisorId": "npc_06",
+      "beneficiaryId": "council",
+      "goal": "deliver-meal",
+      "source": "council:council-d3/council-d3:plan-b:rev1",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "active",
+      "evidenceEventIds": [],
+      "changes": [],
+      "createdAt": 2980,
+      "updatedAt": 2980
+    }
+  ],
+  "receipts": {
+    "request:council-council-d1:plan-a:rev1:supply:npc_01": {
+      "digest": "{\"goal\":\"supply-warehouse\",\"promisorId\":\"npc_01\",\"beneficiaryId\":\"council\",\"deadline\":null,\"source\":\"council:council-d1/council-d1:plan-a:rev1\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-91505ace-3c52-4f5c-8906-c043d8773c87",
+          "taskId": null,
+          "promisorId": "npc_01",
+          "beneficiaryId": "council",
+          "goal": "supply-warehouse",
+          "source": "council:council-d1/council-d1:plan-a:rev1",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "proposed",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 0,
+          "updatedAt": 0
+        },
+        "event": {
+          "type": "commitment_proposed",
+          "commitmentId": "cm-91505ace-3c52-4f5c-8906-c043d8773c87",
+          "revision": 1,
+          "at": 0,
+          "actorId": "npc_01",
+          "payload": {
+            "goal": "supply-warehouse",
+            "fromId": "npc_01",
+            "toId": "council",
+            "conditions": "warehouse-supply",
+            "deadline": -1
+          }
+        }
+      }
+    },
+    "respond:council-council-d1:plan-a:rev1:supply:npc_01:respond": {
+      "digest": "{\"commitmentId\":\"cm-91505ace-3c52-4f5c-8906-c043d8773c87\",\"verdict\":\"accept\",\"reason\":\"accepted-by-resident\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-91505ace-3c52-4f5c-8906-c043d8773c87",
+          "taskId": null,
+          "promisorId": "npc_01",
+          "beneficiaryId": "council",
+          "goal": "supply-warehouse",
+          "source": "council:council-d1/council-d1:plan-a:rev1",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "active",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 0,
+          "updatedAt": 0
+        },
+        "event": {
+          "type": "commitment_accepted",
+          "commitmentId": "cm-91505ace-3c52-4f5c-8906-c043d8773c87",
+          "revision": 1,
+          "at": 0,
+          "actorId": "npc_01",
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "council",
+            "text": "accepted-by-resident"
+          }
+        }
+      }
+    },
+    "request:council-council-d1:plan-a:rev1:deliver:npc_02": {
+      "digest": "{\"goal\":\"deliver-meal\",\"promisorId\":\"npc_02\",\"beneficiaryId\":\"council\",\"deadline\":null,\"source\":\"council:council-d1/council-d1:plan-a:rev1\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-3445ab1c-35c6-47ec-9657-7d8e39f08a16",
+          "taskId": null,
+          "promisorId": "npc_02",
+          "beneficiaryId": "council",
+          "goal": "deliver-meal",
+          "source": "council:council-d1/council-d1:plan-a:rev1",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "proposed",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 0,
+          "updatedAt": 0
+        },
+        "event": {
+          "type": "commitment_proposed",
+          "commitmentId": "cm-3445ab1c-35c6-47ec-9657-7d8e39f08a16",
+          "revision": 1,
+          "at": 0,
+          "actorId": "npc_02",
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_02",
+            "toId": "council",
+            "conditions": "warehouse-supply",
+            "deadline": -1
+          }
+        }
+      }
+    },
+    "respond:council-council-d1:plan-a:rev1:deliver:npc_02:respond": {
+      "digest": "{\"commitmentId\":\"cm-3445ab1c-35c6-47ec-9657-7d8e39f08a16\",\"verdict\":\"accept\",\"reason\":\"accepted-by-resident\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-3445ab1c-35c6-47ec-9657-7d8e39f08a16",
+          "taskId": null,
+          "promisorId": "npc_02",
+          "beneficiaryId": "council",
+          "goal": "deliver-meal",
+          "source": "council:council-d1/council-d1:plan-a:rev1",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "active",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 0,
+          "updatedAt": 0
+        },
+        "event": {
+          "type": "commitment_accepted",
+          "commitmentId": "cm-3445ab1c-35c6-47ec-9657-7d8e39f08a16",
+          "revision": 1,
+          "at": 0,
+          "actorId": "npc_02",
+          "payload": {
+            "fromId": "npc_02",
+            "toId": "council",
+            "text": "accepted-by-resident"
+          }
+        }
+      }
+    },
+    "request:council-council-d2:plan-a:rev1:supply:npc_03": {
+      "digest": "{\"goal\":\"supply-warehouse\",\"promisorId\":\"npc_03\",\"beneficiaryId\":\"council\",\"deadline\":null,\"source\":\"council:council-d2/council-d2:plan-a:rev1\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-9b7b3856-35b9-4b59-9aa4-4267cecafa85",
+          "taskId": null,
+          "promisorId": "npc_03",
+          "beneficiaryId": "council",
+          "goal": "supply-warehouse",
+          "source": "council:council-d2/council-d2:plan-a:rev1",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "proposed",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 1446,
+          "updatedAt": 1446
+        },
+        "event": {
+          "type": "commitment_proposed",
+          "commitmentId": "cm-9b7b3856-35b9-4b59-9aa4-4267cecafa85",
+          "revision": 1,
+          "at": 1446,
+          "actorId": "npc_03",
+          "payload": {
+            "goal": "supply-warehouse",
+            "fromId": "npc_03",
+            "toId": "council",
+            "conditions": "warehouse-supply",
+            "deadline": -1
+          }
+        }
+      }
+    },
+    "respond:council-council-d2:plan-a:rev1:supply:npc_03:respond": {
+      "digest": "{\"commitmentId\":\"cm-9b7b3856-35b9-4b59-9aa4-4267cecafa85\",\"verdict\":\"accept\",\"reason\":\"accepted-by-resident\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-9b7b3856-35b9-4b59-9aa4-4267cecafa85",
+          "taskId": null,
+          "promisorId": "npc_03",
+          "beneficiaryId": "council",
+          "goal": "supply-warehouse",
+          "source": "council:council-d2/council-d2:plan-a:rev1",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "active",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 1446,
+          "updatedAt": 1446
+        },
+        "event": {
+          "type": "commitment_accepted",
+          "commitmentId": "cm-9b7b3856-35b9-4b59-9aa4-4267cecafa85",
+          "revision": 1,
+          "at": 1446,
+          "actorId": "npc_03",
+          "payload": {
+            "fromId": "npc_03",
+            "toId": "council",
+            "text": "accepted-by-resident"
+          }
+        }
+      }
+    },
+    "withdraw:in-1-relinquish": {
+      "digest": "{\"commitmentId\":\"cm-9b7b3856-35b9-4b59-9aa4-4267cecafa85\",\"action\":\"withdraw\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-9b7b3856-35b9-4b59-9aa4-4267cecafa85",
+          "taskId": "task-003-supply-warehouse",
+          "promisorId": "npc_03",
+          "beneficiaryId": "council",
+          "goal": "supply-warehouse",
+          "source": "council:council-d2/council-d2:plan-a:rev1",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "withdrawn",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 1446,
+          "updatedAt": 1446
+        },
+        "event": {
+          "type": "commitment_withdrawn",
+          "commitmentId": "cm-9b7b3856-35b9-4b59-9aa4-4267cecafa85",
+          "revision": 1,
+          "at": 1446,
+          "actorId": "npc_03",
+          "payload": {
+            "fromId": "npc_03",
+            "toId": "council",
+            "reason": "explicit-exit",
+            "text": "explicit-exit"
+          }
+        }
+      }
+    },
+    "request:council-council-d2:plan-a:rev1:supply:npc_03:r2:npc_01": {
+      "digest": "{\"goal\":\"supply-warehouse\",\"promisorId\":\"npc_01\",\"beneficiaryId\":\"council\",\"deadline\":null,\"source\":\"council:council-d2/council-d2:plan-a:rev1\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-76e3976a-1394-483e-9126-f1eceede953e",
+          "taskId": null,
+          "promisorId": "npc_01",
+          "beneficiaryId": "council",
+          "goal": "supply-warehouse",
+          "source": "council:council-d2/council-d2:plan-a:rev1",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "proposed",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 1446,
+          "updatedAt": 1446
+        },
+        "event": {
+          "type": "commitment_proposed",
+          "commitmentId": "cm-76e3976a-1394-483e-9126-f1eceede953e",
+          "revision": 1,
+          "at": 1446,
+          "actorId": "npc_01",
+          "payload": {
+            "goal": "supply-warehouse",
+            "fromId": "npc_01",
+            "toId": "council",
+            "conditions": "warehouse-supply",
+            "deadline": -1
+          }
+        }
+      }
+    },
+    "respond:council-council-d2:plan-a:rev1:supply:npc_03:r2:npc_01:respond": {
+      "digest": "{\"commitmentId\":\"cm-76e3976a-1394-483e-9126-f1eceede953e\",\"verdict\":\"accept\",\"reason\":\"accepted-by-resident\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-76e3976a-1394-483e-9126-f1eceede953e",
+          "taskId": null,
+          "promisorId": "npc_01",
+          "beneficiaryId": "council",
+          "goal": "supply-warehouse",
+          "source": "council:council-d2/council-d2:plan-a:rev1",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "active",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 1446,
+          "updatedAt": 1446
+        },
+        "event": {
+          "type": "commitment_accepted",
+          "commitmentId": "cm-76e3976a-1394-483e-9126-f1eceede953e",
+          "revision": 1,
+          "at": 1446,
+          "actorId": "npc_01",
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "council",
+            "text": "accepted-by-resident"
+          }
+        }
+      }
+    },
+    "request:council-council-d2:plan-a:rev1:deliver:npc_04": {
+      "digest": "{\"goal\":\"deliver-meal\",\"promisorId\":\"npc_04\",\"beneficiaryId\":\"council\",\"deadline\":null,\"source\":\"council:council-d2/council-d2:plan-a:rev1\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-35661872-3113-48c7-ac15-bc4ac9499fc8",
+          "taskId": null,
+          "promisorId": "npc_04",
+          "beneficiaryId": "council",
+          "goal": "deliver-meal",
+          "source": "council:council-d2/council-d2:plan-a:rev1",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "proposed",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 1446,
+          "updatedAt": 1446
+        },
+        "event": {
+          "type": "commitment_proposed",
+          "commitmentId": "cm-35661872-3113-48c7-ac15-bc4ac9499fc8",
+          "revision": 1,
+          "at": 1446,
+          "actorId": "npc_04",
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_04",
+            "toId": "council",
+            "conditions": "warehouse-supply",
+            "deadline": -1
+          }
+        }
+      }
+    },
+    "respond:council-council-d2:plan-a:rev1:deliver:npc_04:respond": {
+      "digest": "{\"commitmentId\":\"cm-35661872-3113-48c7-ac15-bc4ac9499fc8\",\"verdict\":\"accept\",\"reason\":\"accepted-by-resident\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-35661872-3113-48c7-ac15-bc4ac9499fc8",
+          "taskId": null,
+          "promisorId": "npc_04",
+          "beneficiaryId": "council",
+          "goal": "deliver-meal",
+          "source": "council:council-d2/council-d2:plan-a:rev1",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "active",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 1446,
+          "updatedAt": 1446
+        },
+        "event": {
+          "type": "commitment_accepted",
+          "commitmentId": "cm-35661872-3113-48c7-ac15-bc4ac9499fc8",
+          "revision": 1,
+          "at": 1446,
+          "actorId": "npc_04",
+          "payload": {
+            "fromId": "npc_04",
+            "toId": "council",
+            "text": "accepted-by-resident"
+          }
+        }
+      }
+    },
+    "request:council-council-d3:plan-b:rev1:deliver:npc_06": {
+      "digest": "{\"goal\":\"deliver-meal\",\"promisorId\":\"npc_06\",\"beneficiaryId\":\"council\",\"deadline\":null,\"source\":\"council:council-d3/council-d3:plan-b:rev1\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-91f0a12e-8bdb-4e2b-9172-f47a21b4c866",
+          "taskId": null,
+          "promisorId": "npc_06",
+          "beneficiaryId": "council",
+          "goal": "deliver-meal",
+          "source": "council:council-d3/council-d3:plan-b:rev1",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "proposed",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 2980,
+          "updatedAt": 2980
+        },
+        "event": {
+          "type": "commitment_proposed",
+          "commitmentId": "cm-91f0a12e-8bdb-4e2b-9172-f47a21b4c866",
+          "revision": 1,
+          "at": 2980,
+          "actorId": "npc_06",
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_06",
+            "toId": "council",
+            "conditions": "warehouse-supply",
+            "deadline": -1
+          }
+        }
+      }
+    },
+    "respond:council-council-d3:plan-b:rev1:deliver:npc_06:respond": {
+      "digest": "{\"commitmentId\":\"cm-91f0a12e-8bdb-4e2b-9172-f47a21b4c866\",\"verdict\":\"accept\",\"reason\":\"accepted-by-resident\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-91f0a12e-8bdb-4e2b-9172-f47a21b4c866",
+          "taskId": null,
+          "promisorId": "npc_06",
+          "beneficiaryId": "council",
+          "goal": "deliver-meal",
+          "source": "council:council-d3/council-d3:plan-b:rev1",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "active",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 2980,
+          "updatedAt": 2980
+        },
+        "event": {
+          "type": "commitment_accepted",
+          "commitmentId": "cm-91f0a12e-8bdb-4e2b-9172-f47a21b4c866",
+          "revision": 1,
+          "at": 2980,
+          "actorId": "npc_06",
+          "payload": {
+            "fromId": "npc_06",
+            "toId": "council",
+            "text": "accepted-by-resident"
+          }
+        }
+      }
+    }
+  }
+}

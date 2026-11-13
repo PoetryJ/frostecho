@@ -1,0 +1,62 @@
+{
+  "schema": "frostecho.r6.preflight/1",
+  "at": "2026-11-13T03:22:28.705167+00:00",
+  "repo": "/agent/repos/frostecho",
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "pythonExecutable": "/usr/bin/python3",
+  "platform": "Linux-6.12.113+-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/git",
+        "--version"
+      ],
+      "exit": 0,
+      "stdout": "git version 2.43.0\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/exec-daemon/node",
+        "--version"
+      ],
+      "exit": 0,
+      "stdout": "v22.23.4\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/home/ubuntu/.nvm/versions/node/v22.23.4/bin/npm",
+        "--version"
+      ],
+      "exit": 0,
+      "stdout": "10.9.9\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "stdout": "040f90c1d5c31e5ad55090f52368d35e231faf61\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "r5-saved-20261112^{commit}"
+      ],
+      "exit": 128,
+      "stdout": "r5-saved-20261112^{commit}\n",
+      "stderr": "fatal: ambiguous argument 'r5-saved-20261112^{commit}': unknown revision or path not in the working tree.\nUse '--' to separate paths from revisions, like this:\n'git <command> [<revision>...] -- [<file>...]'\n"
+    }
+  ],
+  "checks": {},
+  "status": "blocked",
+  "head": "040f90c1d5c31e5ad55090f52368d35e231faf61",
+  "error": "RuntimeError: command failed: git"
+}

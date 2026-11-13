@@ -1,0 +1,28 @@
+test_finite_four_logits_reports_all_layers (test_port.CalibrationBoundary.test_finite_four_logits_reports_all_layers) ... ok
+test_infinite_logit_refused (test_port.CalibrationBoundary.test_infinite_logit_refused) ... ok
+test_nan_logit_refused (test_port.CalibrationBoundary.test_nan_logit_refused) ... ok
+test_two_logits_refused (test_port.CalibrationBoundary.test_two_logits_refused) ... ok
+test_candidate_count_mismatch_refused (test_port.FailClosed.test_candidate_count_mismatch_refused) ... ok
+test_identity_drift_refused (test_port.FailClosed.test_identity_drift_refused) ... ok
+test_infinity_refused (test_port.FailClosed.test_infinity_refused) ... ok
+test_k4_two_logits_refused (test_port.FailClosed.test_k4_two_logits_refused) ... ok
+test_load_with_drifted_request_identity_refused (test_port.FailClosed.test_load_with_drifted_request_identity_refused) ... ok
+test_nan_refused (test_port.FailClosed.test_nan_refused) ... ok
+test_unknown_policy_k_refused (test_port.FailClosed.test_unknown_policy_k_refused) ... ok
+test_abstain_below_tau (test_port.PositivePath.test_abstain_below_tau) ... ok
+test_legal_fake_artifact_full_chain (test_port.PositivePath.test_legal_fake_artifact_full_chain) ... ok
+test_save_and_load_round_trip (test_port_v3.ArtifactRoundTripTests.test_save_and_load_round_trip) ... ok
+test_k_drift_is_refused (test_port_v3.InputRefusalTests.test_k_drift_is_refused) ... ok
+test_nonfinite_logits_are_refused (test_port_v3.InputRefusalTests.test_nonfinite_logits_are_refused) ... ok
+test_manifest_schema_is_enforced (test_port_v3.TrustedManifestTests.test_manifest_schema_is_enforced) ... ok
+test_real_mode_without_sealed_evidence_is_shadow_only (test_port_v3.TrustedManifestTests.test_real_mode_without_sealed_evidence_is_shadow_only) ... ok
+test_registered_identity_resolves (test_port_v3.TrustedManifestTests.test_registered_identity_resolves) ... ok
+test_unknown_policy_version_is_refused (test_port_v3.TrustedManifestTests.test_unknown_policy_version_is_refused) ... ok
+test_unregistered_task_is_refused_even_when_artifact_agrees (test_port_v3.TrustedManifestTests.test_unregistered_task_is_refused_even_when_artifact_agrees) ... ok
+test_fixture_output_never_counts_as_real (test_port_v3.UtilityProvenanceTests.test_fixture_output_never_counts_as_real) ... ok
+test_utility_is_none_not_copied_probability (test_port_v3.UtilityProvenanceTests.test_utility_is_none_not_copied_probability) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.004s
+
+OK

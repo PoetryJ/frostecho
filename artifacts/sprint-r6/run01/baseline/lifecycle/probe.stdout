@@ -1,0 +1,34 @@
+{
+  "savedVersion": 0,
+  "outsideDecision": [
+    {
+      "actorId": "npc_01",
+      "status": "cancelled",
+      "selectedId": null,
+      "commandId": null,
+      "executionStatus": null,
+      "eventIds": [],
+      "postStateVersion": null,
+      "executed": false,
+      "reason": "generation_changed_before_start",
+      "promiseStatuses": []
+    }
+  ],
+  "thirdDecision": [
+    {
+      "actorId": "npc_01",
+      "status": "applied",
+      "selectedId": "c-eat",
+      "commandId": "npc_01-0-c-eat",
+      "executionStatus": "applied",
+      "eventIds": [
+        "npc_01-0-c-eat:ate:0"
+      ],
+      "postStateVersion": 1,
+      "executed": true,
+      "reason": "released async fixture (stale by construction)",
+      "promiseStatuses": []
+    }
+  ],
+  "finalVersion": 1
+}
