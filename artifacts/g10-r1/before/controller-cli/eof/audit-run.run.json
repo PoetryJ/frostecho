@@ -1,0 +1,97 @@
+{
+  "schema": "frostecho.g10.run/1",
+  "createdAt": "2026-11-04T11:33:23.594Z",
+  "sha256": "31ca9ffefd3ad9961a3512b636e14f083ecd7da1db971d9b1ea414254fdd328d",
+  "payload": {
+    "schema": "frostecho.g10.run/1",
+    "at": "2026-11-04T11:33:23.571Z",
+    "meta": {
+      "schema": "frostecho.g10.app/1",
+      "episodeId": "audit",
+      "providerKind": "fixture",
+      "fixtureId": "cooperate",
+      "goalMode": "negotiated",
+      "candidateSet": "choice",
+      "satiety": 40,
+      "scripted": true
+    },
+    "config": {
+      "mode": "reference",
+      "requestModel": null,
+      "thinking": true,
+      "timeoutMs": 120000
+    },
+    "view": {
+      "episodeId": "audit",
+      "mode": "reference",
+      "providerKind": "fixture",
+      "fixtureId": "cooperate",
+      "goalMode": "negotiated",
+      "candidateSet": "choice",
+      "scripted": true,
+      "simTime": 0,
+      "tick": 0,
+      "player": {
+        "actorId": "npc_b",
+        "location": "kitchen",
+        "hunger": 40
+      },
+      "food": {
+        "kitchen": 1,
+        "dorm": 0
+      },
+      "npcs": [
+        {
+          "actorId": "npc_a",
+          "cycle": 1,
+          "phase": "action",
+          "status": "ready",
+          "providerCalls": 1,
+          "selectedGoal": "yield_once",
+          "selectedGoalAchieved": false,
+          "selectedGoalReached": false,
+          "hungerNeedSatisfied": false,
+          "sessionOutcome": null,
+          "wakeAtSimTime": null,
+          "request": {
+            "requestId": "audit-req-1",
+            "text": "请把最后一份食物留给我，你先不要吃。",
+            "status": "accepted",
+            "outcome": "pending",
+            "outcomeReason": null,
+            "expiresAtSimTime": 1,
+            "acceptedAfterSeq": 0,
+            "lastProcessedSeq": 0,
+            "decidedGoal": "yield_once"
+          }
+        },
+        {
+          "actorId": "npc_c",
+          "cycle": 1,
+          "phase": "action",
+          "status": "ready",
+          "providerCalls": 0,
+          "selectedGoal": null,
+          "selectedGoalAchieved": false,
+          "selectedGoalReached": false,
+          "hungerNeedSatisfied": true,
+          "sessionOutcome": null,
+          "wakeAtSimTime": null,
+          "request": null
+        }
+      ],
+      "budget": {
+        "sessionCalls": 1,
+        "sessionLimit": 5,
+        "episodeCalls": 1,
+        "episodeLimit": 10
+      },
+      "campaign": null,
+      "savedPath": null,
+      "closed": false,
+      "busy": false
+    },
+    "campaign": null,
+    "wire": []
+  }
+}

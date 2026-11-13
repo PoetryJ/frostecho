@@ -1,0 +1,55 @@
+JEV-03 交付索引
+分支 codex/jev03-readout-training；基线 ab56847；未 push/merge，未改默认，未调用 18872。
+
+六个 checkpoint（每个 seed 的最低 dev 四序 NLL epoch）
+  C-seed17  epoch 93  devNll 0.049405  params 5120
+    /data3/DATA/project/project_meishijiang/FrostEcho-jev03-readout/research/decision-choice/jev03/runs/C-seed17/best.safetensors
+    file sha256 95cb12454a3a02246dac8b28b02f368d8ba942d4dc93e13fc08b00578c7dc70e
+    tensor sha256 7f6f64df05482ff9144109746cfcd1ed7ed9933775a1a7de1499ffb062661612
+  C-seed29  epoch 97  devNll 0.049792  params 5120
+    /data3/DATA/project/project_meishijiang/FrostEcho-jev03-readout/research/decision-choice/jev03/runs/C-seed29/best.safetensors
+    file sha256 ef8c55ef593cabf89efd6759cbea98de0756e81a621fc510a0771fc7d09dd819
+    tensor sha256 647ab9c8a004370265ff5158d2e5d665aa7849ae28d236a5ac032df2984784b4
+  C-seed43 [选定]  epoch 99  devNll 0.049265  params 5120
+    /data3/DATA/project/project_meishijiang/FrostEcho-jev03-readout/research/decision-choice/jev03/runs/C-seed43/best.safetensors
+    file sha256 a55cc47f1c30353b9c1a38e6de3d79e1765a26412b215486d40e06e04514c989
+    tensor sha256 7b6a490b3dd5eaeceb2693ccfaa26473e8a2b157597fad1c0d729419fde48695
+  Q-seed17 [选定]  epoch 96  devNll 0.023514  params 20480
+    /data3/DATA/project/project_meishijiang/FrostEcho-jev03-readout/research/decision-choice/jev03/runs/Q-seed17/best.safetensors
+    file sha256 b39631512e7bc983035c1a7b39dc7ccd4d697236100daaec61f143d5abc7e3a9
+    tensor sha256 cc369dbf164534444b05218879a1eaf285b99de81bcdb01266ef48d2fab8ab75
+  Q-seed29  epoch 83  devNll 0.024536  params 20480
+    /data3/DATA/project/project_meishijiang/FrostEcho-jev03-readout/research/decision-choice/jev03/runs/Q-seed29/best.safetensors
+    file sha256 83381f3f1a97f5b66107d44fa8cca2fceb4d2bac804bdefb928fcc625eefbc52
+    tensor sha256 8cb8165b6aa95a307da560042d6c6eeea9d849f0e4d88bbbc385de2c73b3c725
+  Q-seed43  epoch 97  devNll 0.024171  params 20480
+    /data3/DATA/project/project_meishijiang/FrostEcho-jev03-readout/research/decision-choice/jev03/runs/Q-seed43/best.safetensors
+    file sha256 df03d6b24d8d69d184362852c5fa0d654947817b353ba0ff647ae35261805fc1
+    tensor sha256 8b4f6f74c9626aae2ef3974454261feed1b21b599192e95657037e68dbaf3406
+  M0 冻结 JEV-02 M1  /data3/DATA/project/project_meishijiang/FrostEcho-jev02/research/decision-choice/jev02/runs/M1-seed17/candidate.safetensors
+    tensor sha256 5cda925fe9ae691ca31078db32eaee01305e351792940d34592ab093e29d172b
+
+主结果（test，246 例计分 / 984 次呈现；challenge 10 例不计分）
+  M0: acc 62.30%  worst-order 54.47%  macroF1 0.5855  NC 20.83%  consistency 47.56%
+  C: acc 92.89%  worst-order 90.24%  macroF1 0.9272  NC 89.35%  consistency 82.93%
+  Q: acc 92.68%  worst-order 90.65%  macroF1 0.9239  NC 90.74%  consistency 94.72%
+  JSON: acc 76.14% (n=788)  worst 70.56%  NC 22.73%
+  同案例（197 例，788 呈现）：M0 60.66%  C 93.53%  Q 93.40%  JSON 76.14%
+
+文件
+  results/test-scores.jsonl            3072 行逐呈现 logits（稳定类序）
+  results/test-predictions.jsonl       逐样本预测
+  results/test-json-generations.jsonl  820 行 JSON 原文（另 204 行清单见 test-json-meta.json lost）
+  results/timing.json                  16×2 固定呈现的端到端/分段计时
+  results/selection-seal.json          dev 选定与比较规则的封存（含数据/合同/gold 哈希）
+  results/unseal-record.json           封存哈希与 gold 阻断正向对照
+  results/final.json                   解封后全部指标、逐类混淆、bootstrap、配对
+  results/matched.json                 四臂同案例对照
+  results/REPORT.md                    报告（含预算事故与未证明项）
+  evidence/jobs.jsonl                  4184 次 operation 的逐条账本
+  evidence/incident-p2.json            预算护栏事故与恢复方式
+  evidence/model-identity.json         主干身份
+  runs/{C,Q}-seed{17,29,43}/           best.safetensors + curve.json 逐 epoch
+  data/                                 768 例、合同 v2、边界样例、盲标、裁决、challenge
+
+复跑：见 README.md；核验：python3 verify.py（只读，应 passes=true）

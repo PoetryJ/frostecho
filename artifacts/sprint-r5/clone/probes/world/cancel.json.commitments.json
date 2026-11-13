@@ -1,0 +1,157 @@
+{
+  "commitments": [
+    {
+      "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+      "taskId": "task-001-deliver-meal",
+      "promisorId": "npc_01",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "cancelled",
+      "evidenceEventIds": [],
+      "changes": [
+        {
+          "changeId": "chg-65e59529-7e43-4e25-a07e-640209657913",
+          "proposedRevision": 2,
+          "kind": "alt-source",
+          "terms": {
+            "source": "gather",
+            "reason": "仓库缺货，我改从村里采集再送来"
+          },
+          "reason": "warehouse-empty",
+          "proposedAt": 82,
+          "status": "rejected",
+          "respondedAt": 82,
+          "responseEventId": "closed:cancelled"
+        }
+      ],
+      "createdAt": 50,
+      "updatedAt": 82
+    }
+  ],
+  "receipts": {
+    "request:in-3-request": {
+      "digest": "{\"goal\":\"deliver-meal\",\"promisorId\":\"npc_01\",\"beneficiaryId\":\"player\",\"deadline\":null,\"source\":null}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "taskId": null,
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "proposed",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 50,
+          "updatedAt": 50
+        },
+        "event": {
+          "type": "commitment_proposed",
+          "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "revision": 1,
+          "at": 50,
+          "actorId": "npc_01",
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_01",
+            "toId": "player",
+            "conditions": "warehouse-supply",
+            "deadline": -1
+          }
+        }
+      }
+    },
+    "respond:in-3-request:respond": {
+      "digest": "{\"commitmentId\":\"cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d\",\"verdict\":\"accept\",\"reason\":\"available\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "taskId": null,
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "active",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 50,
+          "updatedAt": 50
+        },
+        "event": {
+          "type": "commitment_accepted",
+          "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "revision": 1,
+          "at": 50,
+          "actorId": "npc_01",
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "available"
+          }
+        }
+      }
+    },
+    "cancel:in-4-cancel-commitment": {
+      "digest": "{\"commitmentId\":\"cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d\",\"action\":\"cancel\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "taskId": "task-001-deliver-meal",
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "cancelled",
+          "evidenceEventIds": [],
+          "changes": [
+            {
+              "changeId": "chg-65e59529-7e43-4e25-a07e-640209657913",
+              "proposedRevision": 2,
+              "kind": "alt-source",
+              "terms": {
+                "source": "gather",
+                "reason": "仓库缺货，我改从村里采集再送来"
+              },
+              "reason": "warehouse-empty",
+              "proposedAt": 82,
+              "status": "rejected",
+              "respondedAt": 82,
+              "responseEventId": "closed:cancelled"
+            }
+          ],
+          "createdAt": 50,
+          "updatedAt": 82
+        },
+        "event": {
+          "type": "commitment_cancelled",
+          "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "revision": 1,
+          "at": 82,
+          "actorId": "npc_01",
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "玩家取消"
+          }
+        }
+      }
+    }
+  }
+}

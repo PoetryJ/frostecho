@@ -1,0 +1,445 @@
+{
+  "withdraw": {
+    "commitment": {
+      "commitmentId": "cm-5fd0a6c0-d779-4eac-9d5a-3f2266f2028b",
+      "taskId": "task-001-deliver-meal",
+      "promisorId": "npc_01",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "withdrawn",
+      "evidenceEventIds": [],
+      "changes": [],
+      "createdAt": 0,
+      "updatedAt": 0
+    },
+    "tasks": [
+      {
+        "taskId": "task-001-deliver-meal",
+        "actorId": "npc_01",
+        "kind": "deliver-meal",
+        "status": "cancelled",
+        "assignedAt": 0,
+        "commitmentId": "cm-5fd0a6c0-d779-4eac-9d5a-3f2266f2028b",
+        "inputId": "in-1-request:task"
+      }
+    ],
+    "world": {
+      "schema": "frostecho.world-v2/2",
+      "rulesVersion": "survival-rules/2",
+      "day": 1,
+      "simTime": 0,
+      "version": 0,
+      "rngSeed": "play-3",
+      "weather": "snow",
+      "npcs": {
+        "npc_01": {
+          "id": "npc_01",
+          "location": "dorm-a",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        },
+        "npc_02": {
+          "id": "npc_02",
+          "location": "dorm-b",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        },
+        "npc_03": {
+          "id": "npc_03",
+          "location": "dorm-a",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        }
+      },
+      "resources": {
+        "food": 24,
+        "firewood": 20,
+        "power": 40,
+        "medicine": 2
+      },
+      "furnace": {
+        "lit": true,
+        "fuel": 6,
+        "warmth": 18
+      },
+      "commandLog": [],
+      "dead": [],
+      "ending": "none",
+      "scenarioDays": 4
+    },
+    "selected": [
+      "g-wait",
+      "g-wait",
+      "g-wait",
+      "g-wait",
+      "g-wait",
+      "g-wait",
+      "g-wait",
+      "g-wait"
+    ]
+  },
+  "cancel": {
+    "before": {
+      "commitmentId": "cm-bfa4b11d-041b-4e73-b4c5-6b868f08a60b",
+      "taskId": "task-001-deliver-meal",
+      "promisorId": "npc_01",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "pending-change",
+      "evidenceEventIds": [],
+      "changes": [
+        {
+          "changeId": "chg-b225f2aa-7306-4c17-83b1-8b88730a668c",
+          "proposedRevision": 2,
+          "kind": "alt-source",
+          "terms": {
+            "source": "gather",
+            "reason": "仓库缺货，我改从村里采集再送来"
+          },
+          "reason": "warehouse-empty",
+          "proposedAt": 82,
+          "status": "open",
+          "respondedAt": null,
+          "responseEventId": null
+        }
+      ],
+      "createdAt": 50,
+      "updatedAt": 82
+    },
+    "commandRows": [
+      {
+        "command": "cancel-commitment",
+        "jobId": "job-0001",
+        "commitment": {
+          "commitmentId": "cm-bfa4b11d-041b-4e73-b4c5-6b868f08a60b",
+          "taskId": "task-001-deliver-meal",
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "cancelled",
+          "evidenceEventIds": [],
+          "changes": [
+            {
+              "changeId": "chg-b225f2aa-7306-4c17-83b1-8b88730a668c",
+              "proposedRevision": 2,
+              "kind": "alt-source",
+              "terms": {
+                "source": "gather",
+                "reason": "仓库缺货，我改从村里采集再送来"
+              },
+              "reason": "warehouse-empty",
+              "proposedAt": 82,
+              "status": "rejected",
+              "respondedAt": 82,
+              "responseEventId": "closed:cancelled"
+            }
+          ],
+          "createdAt": 50,
+          "updatedAt": 82
+        },
+        "event": {
+          "type": "commitment_cancelled",
+          "commitmentId": "cm-bfa4b11d-041b-4e73-b4c5-6b868f08a60b",
+          "revision": 1,
+          "at": 82,
+          "actorId": "npc_01",
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "玩家取消"
+          }
+        }
+      },
+      {
+        "command": "respond-change",
+        "jobId": "job-0002",
+        "commitment": {
+          "commitmentId": "cm-bfa4b11d-041b-4e73-b4c5-6b868f08a60b",
+          "taskId": "task-001-deliver-meal",
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "cancelled",
+          "evidenceEventIds": [],
+          "changes": [
+            {
+              "changeId": "chg-b225f2aa-7306-4c17-83b1-8b88730a668c",
+              "proposedRevision": 2,
+              "kind": "alt-source",
+              "terms": {
+                "source": "gather",
+                "reason": "仓库缺货，我改从村里采集再送来"
+              },
+              "reason": "warehouse-empty",
+              "proposedAt": 82,
+              "status": "rejected",
+              "respondedAt": 82,
+              "responseEventId": "closed:cancelled"
+            }
+          ],
+          "createdAt": 50,
+          "updatedAt": 82
+        },
+        "event": {
+          "type": "commitment_response_ignored",
+          "commitmentId": "cm-bfa4b11d-041b-4e73-b4c5-6b868f08a60b",
+          "revision": 1,
+          "at": 82,
+          "actorId": "npc_01",
+          "payload": {
+            "reason": "no_open_change",
+            "inputId": "in-5-respond-change"
+          }
+        },
+        "mode": "reference-rules/1"
+      }
+    ],
+    "after": {
+      "commitmentId": "cm-bfa4b11d-041b-4e73-b4c5-6b868f08a60b",
+      "taskId": "task-001-deliver-meal",
+      "promisorId": "npc_01",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "cancelled",
+      "evidenceEventIds": [],
+      "changes": [
+        {
+          "changeId": "chg-b225f2aa-7306-4c17-83b1-8b88730a668c",
+          "proposedRevision": 2,
+          "kind": "alt-source",
+          "terms": {
+            "source": "gather",
+            "reason": "仓库缺货，我改从村里采集再送来"
+          },
+          "reason": "warehouse-empty",
+          "proposedAt": 82,
+          "status": "rejected",
+          "respondedAt": 82,
+          "responseEventId": "closed:cancelled"
+        }
+      ],
+      "createdAt": 50,
+      "updatedAt": 82
+    },
+    "tasks": [
+      {
+        "taskId": "task-001-deliver-meal",
+        "actorId": "npc_01",
+        "kind": "deliver-meal",
+        "status": "cancelled",
+        "assignedAt": 50,
+        "commitmentId": "cm-bfa4b11d-041b-4e73-b4c5-6b868f08a60b",
+        "inputId": "in-3-request:task"
+      }
+    ]
+  },
+  "counter": {
+    "initial": {
+      "command": "request",
+      "jobId": "job-0002",
+      "commitment": {
+        "commitmentId": "cm-730cb13f-9cd7-446f-9d48-1b221b1b07a1",
+        "taskId": null,
+        "promisorId": "npc_01",
+        "beneficiaryId": "player",
+        "goal": "deliver-meal",
+        "conditions": [
+          "warehouse-supply"
+        ],
+        "deadline": null,
+        "revision": 1,
+        "status": "proposed",
+        "evidenceEventIds": [],
+        "changes": [
+          {
+            "changeId": "chg-dbf81d95-e1fe-4c8a-a930-ec0ce38dddbd",
+            "proposedRevision": 2,
+            "kind": "defer",
+            "terms": {
+              "resumeWhen": "hunger>=40",
+              "reason": "先让我吃一口再答应"
+            },
+            "reason": "need-food-first",
+            "proposedAt": 4000,
+            "status": "open",
+            "respondedAt": null,
+            "responseEventId": null
+          }
+        ],
+        "createdAt": 4000,
+        "updatedAt": 4000
+      },
+      "response": {
+        "verdict": "counter",
+        "reason": "need-food-first",
+        "terms": {
+          "resumeWhen": "hunger>=40",
+          "reason": "先让我吃一口再答应"
+        }
+      },
+      "task": null,
+      "events": [
+        {
+          "type": "commitment_proposed",
+          "commitmentId": "cm-730cb13f-9cd7-446f-9d48-1b221b1b07a1",
+          "revision": 1,
+          "at": 4000,
+          "actorId": "npc_01",
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_01",
+            "toId": "player",
+            "conditions": "warehouse-supply",
+            "deadline": -1
+          }
+        },
+        {
+          "type": "commitment_change_proposed",
+          "commitmentId": "cm-730cb13f-9cd7-446f-9d48-1b221b1b07a1",
+          "revision": 1,
+          "at": 4000,
+          "actorId": "npc_01",
+          "payload": {
+            "changeId": "chg-dbf81d95-e1fe-4c8a-a930-ec0ce38dddbd",
+            "kind": "defer",
+            "reason": "need-food-first",
+            "proposedRevision": 2,
+            "terms": "{\"resumeWhen\":\"hunger>=40\",\"reason\":\"先让我吃一口再答应\"}"
+          }
+        }
+      ],
+      "mode": "reference-rules/1"
+    },
+    "accept": {
+      "command": "respond-change",
+      "jobId": "job-0001",
+      "commitment": {
+        "commitmentId": "cm-730cb13f-9cd7-446f-9d48-1b221b1b07a1",
+        "taskId": "task-001-deliver-meal",
+        "promisorId": "npc_01",
+        "beneficiaryId": "player",
+        "goal": "deliver-meal",
+        "conditions": [
+          "warehouse-supply"
+        ],
+        "deadline": null,
+        "revision": 2,
+        "status": "active",
+        "evidenceEventIds": [],
+        "changes": [
+          {
+            "changeId": "chg-dbf81d95-e1fe-4c8a-a930-ec0ce38dddbd",
+            "proposedRevision": 2,
+            "kind": "defer",
+            "terms": {
+              "resumeWhen": "hunger>=40",
+              "reason": "先让我吃一口再答应"
+            },
+            "reason": "need-food-first",
+            "proposedAt": 4000,
+            "status": "accepted",
+            "respondedAt": 4000,
+            "responseEventId": "commitment_change_accepted"
+          }
+        ],
+        "createdAt": 4000,
+        "updatedAt": 4000
+      },
+      "event": {
+        "type": "commitment_change_accepted",
+        "commitmentId": "cm-730cb13f-9cd7-446f-9d48-1b221b1b07a1",
+        "revision": 2,
+        "at": 4000,
+        "actorId": "npc_01",
+        "payload": {
+          "changeId": "chg-dbf81d95-e1fe-4c8a-a930-ec0ce38dddbd",
+          "kind": "defer",
+          "revision": 2,
+          "status": "active"
+        }
+      },
+      "mode": "reference-rules/1"
+    },
+    "after": {
+      "commitmentId": "cm-730cb13f-9cd7-446f-9d48-1b221b1b07a1",
+      "taskId": "task-001-deliver-meal",
+      "promisorId": "npc_01",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 2,
+      "status": "active",
+      "evidenceEventIds": [],
+      "changes": [
+        {
+          "changeId": "chg-dbf81d95-e1fe-4c8a-a930-ec0ce38dddbd",
+          "proposedRevision": 2,
+          "kind": "defer",
+          "terms": {
+            "resumeWhen": "hunger>=40",
+            "reason": "先让我吃一口再答应"
+          },
+          "reason": "need-food-first",
+          "proposedAt": 4000,
+          "status": "accepted",
+          "respondedAt": 4000,
+          "responseEventId": "commitment_change_accepted"
+        }
+      ],
+      "createdAt": 4000,
+      "updatedAt": 4000
+    },
+    "tasks": [
+      {
+        "taskId": "task-001-deliver-meal",
+        "actorId": "npc_01",
+        "kind": "deliver-meal",
+        "status": "active",
+        "assignedAt": 4000,
+        "commitmentId": "cm-730cb13f-9cd7-446f-9d48-1b221b1b07a1"
+      }
+    ],
+    "selected": [
+      "g-eat",
+      "g-eat",
+      "g-eat"
+    ]
+  }
+}

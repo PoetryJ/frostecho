@@ -1,0 +1,1093 @@
+{
+  "schema": "frostecho.g05.game/2",
+  "episodeId": "g05-ca-t3-recurring",
+  "scenarioId": "ca/t3/recurring",
+  "wakePolicy": "event",
+  "mode": "reference",
+  "thinking": true,
+  "actorOrder": [
+    "npc_c",
+    "npc_a"
+  ],
+  "initialState": {
+    "tick": 0,
+    "simTime": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 70
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "kitchen",
+        "hunger": 70
+      },
+      "npc_c": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 70
+      }
+    },
+    "food": {
+      "kitchen": 0,
+      "dorm": 0
+    }
+  },
+  "finalState": {
+    "tick": 7,
+    "simTime": 4,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 90
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "kitchen",
+        "hunger": 30
+      },
+      "npc_c": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 90
+      }
+    },
+    "food": {
+      "kitchen": 0,
+      "dorm": 0
+    }
+  },
+  "commands": [
+    {
+      "seq": 1,
+      "command": {
+        "commandId": "g05-ca-t3-recurring:world:advance:1",
+        "actorId": "world",
+        "type": "advance_time",
+        "payload": {
+          "steps": 3
+        }
+      },
+      "result": {
+        "commandId": "g05-ca-t3-recurring:world:advance:1",
+        "seq": 1,
+        "status": "accepted",
+        "eventIds": [
+          "e1",
+          "e2",
+          "e3",
+          "e4"
+        ]
+      }
+    },
+    {
+      "seq": 2,
+      "command": {
+        "commandId": "g05-ca-t3-recurring:world:advance:2",
+        "actorId": "world",
+        "type": "advance_time",
+        "payload": {
+          "steps": 1
+        }
+      },
+      "result": {
+        "commandId": "g05-ca-t3-recurring:world:advance:2",
+        "seq": 2,
+        "status": "accepted",
+        "eventIds": [
+          "e5",
+          "e6",
+          "e7",
+          "e8"
+        ]
+      }
+    },
+    {
+      "seq": 3,
+      "command": {
+        "commandId": "g05-ca-t3-recurring:world:3",
+        "actorId": "world",
+        "type": "restock",
+        "payload": {
+          "location": "kitchen",
+          "amount": 4
+        }
+      },
+      "result": {
+        "commandId": "g05-ca-t3-recurring:world:3",
+        "seq": 3,
+        "status": "accepted",
+        "eventIds": [
+          "e9"
+        ]
+      }
+    },
+    {
+      "seq": 4,
+      "command": {
+        "commandId": "g05-ca-t3-recurring:npc:npc_c:3:1",
+        "actorId": "npc_c",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "g05-ca-t3-recurring:npc:npc_c:3:1",
+        "seq": 4,
+        "status": "accepted",
+        "eventIds": [
+          "e10",
+          "e11"
+        ]
+      }
+    },
+    {
+      "seq": 5,
+      "command": {
+        "commandId": "g05-ca-t3-recurring:npc:npc_a:3:1",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "g05-ca-t3-recurring:npc:npc_a:3:1",
+        "seq": 5,
+        "status": "accepted",
+        "eventIds": [
+          "e12",
+          "e13"
+        ]
+      }
+    },
+    {
+      "seq": 6,
+      "command": {
+        "commandId": "g05-ca-t3-recurring:npc:npc_c:3:2",
+        "actorId": "npc_c",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "g05-ca-t3-recurring:npc:npc_c:3:2",
+        "seq": 6,
+        "status": "accepted",
+        "eventIds": [
+          "e14",
+          "e15"
+        ]
+      }
+    },
+    {
+      "seq": 7,
+      "command": {
+        "commandId": "g05-ca-t3-recurring:npc:npc_a:3:2",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "g05-ca-t3-recurring:npc:npc_a:3:2",
+        "seq": 7,
+        "status": "accepted",
+        "eventIds": [
+          "e16",
+          "e17"
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "TimeAdvanced",
+      "before": 0,
+      "after": 3,
+      "steps": 3,
+      "eventId": "e1",
+      "seq": 1,
+      "commandId": "g05-ca-t3-recurring:world:advance:1"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_a",
+      "before": 70,
+      "after": 40,
+      "eventId": "e2",
+      "seq": 1,
+      "commandId": "g05-ca-t3-recurring:world:advance:1"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_b",
+      "before": 70,
+      "after": 40,
+      "eventId": "e3",
+      "seq": 1,
+      "commandId": "g05-ca-t3-recurring:world:advance:1"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_c",
+      "before": 70,
+      "after": 40,
+      "eventId": "e4",
+      "seq": 1,
+      "commandId": "g05-ca-t3-recurring:world:advance:1"
+    },
+    {
+      "type": "TimeAdvanced",
+      "before": 3,
+      "after": 4,
+      "steps": 1,
+      "eventId": "e5",
+      "seq": 2,
+      "commandId": "g05-ca-t3-recurring:world:advance:2"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_a",
+      "before": 40,
+      "after": 30,
+      "eventId": "e6",
+      "seq": 2,
+      "commandId": "g05-ca-t3-recurring:world:advance:2"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_b",
+      "before": 40,
+      "after": 30,
+      "eventId": "e7",
+      "seq": 2,
+      "commandId": "g05-ca-t3-recurring:world:advance:2"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_c",
+      "before": 40,
+      "after": 30,
+      "eventId": "e8",
+      "seq": 2,
+      "commandId": "g05-ca-t3-recurring:world:advance:2"
+    },
+    {
+      "type": "FoodRestocked",
+      "location": "kitchen",
+      "amount": 4,
+      "before": 0,
+      "after": 4,
+      "eventId": "e9",
+      "seq": 3,
+      "commandId": "g05-ca-t3-recurring:world:3"
+    },
+    {
+      "type": "FoodConsumed",
+      "location": "kitchen",
+      "amount": 1,
+      "before": 4,
+      "after": 3,
+      "eventId": "e10",
+      "seq": 4,
+      "commandId": "g05-ca-t3-recurring:npc:npc_c:3:1"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_c",
+      "before": 30,
+      "after": 60,
+      "eventId": "e11",
+      "seq": 4,
+      "commandId": "g05-ca-t3-recurring:npc:npc_c:3:1"
+    },
+    {
+      "type": "FoodConsumed",
+      "location": "kitchen",
+      "amount": 1,
+      "before": 3,
+      "after": 2,
+      "eventId": "e12",
+      "seq": 5,
+      "commandId": "g05-ca-t3-recurring:npc:npc_a:3:1"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_a",
+      "before": 30,
+      "after": 60,
+      "eventId": "e13",
+      "seq": 5,
+      "commandId": "g05-ca-t3-recurring:npc:npc_a:3:1"
+    },
+    {
+      "type": "FoodConsumed",
+      "location": "kitchen",
+      "amount": 1,
+      "before": 2,
+      "after": 1,
+      "eventId": "e14",
+      "seq": 6,
+      "commandId": "g05-ca-t3-recurring:npc:npc_c:3:2"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_c",
+      "before": 60,
+      "after": 90,
+      "eventId": "e15",
+      "seq": 6,
+      "commandId": "g05-ca-t3-recurring:npc:npc_c:3:2"
+    },
+    {
+      "type": "FoodConsumed",
+      "location": "kitchen",
+      "amount": 1,
+      "before": 1,
+      "after": 0,
+      "eventId": "e16",
+      "seq": 7,
+      "commandId": "g05-ca-t3-recurring:npc:npc_a:3:2"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_a",
+      "before": 60,
+      "after": 90,
+      "eventId": "e17",
+      "seq": 7,
+      "commandId": "g05-ca-t3-recurring:npc:npc_a:3:2"
+    }
+  ],
+  "cycles": {
+    "npc_c": [
+      {
+        "cycle": 1,
+        "reason": "initial cycle",
+        "startLogCursor": 0,
+        "endState": "satisfied",
+        "turns": [],
+        "providerCalls": 0
+      },
+      {
+        "cycle": 2,
+        "reason": "need reactivation: hunger 40 <= 40 after a satisfied cycle",
+        "startLogCursor": 1,
+        "endState": "waiting",
+        "turns": [
+          {
+            "globalTurn": 1,
+            "actorId": "npc_c",
+            "cycle": 2,
+            "actorRound": 1,
+            "observation": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 40,
+              "foodHere": 0,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": null,
+            "providerCalled": true,
+            "status": "stopped",
+            "logCursorBefore": 1,
+            "logCursorAfter": 1,
+            "step": {
+              "round": 1,
+              "observation": {
+                "id": "npc_c",
+                "location": "kitchen",
+                "hunger": 40,
+                "foodHere": 0,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "{\"type\":\"stop\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "stop"
+                }
+              }
+            }
+          }
+        ],
+        "providerCalls": 1
+      },
+      {
+        "cycle": 3,
+        "reason": "wake: own observation has food (kitchen hunger=30 foodHere=4)",
+        "startLogCursor": 3,
+        "endState": "satisfied",
+        "turns": [
+          {
+            "globalTurn": 3,
+            "actorId": "npc_c",
+            "cycle": 3,
+            "actorRound": 1,
+            "observation": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 30,
+              "foodHere": 4,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": null,
+            "providerCalled": true,
+            "status": "ready",
+            "logCursorBefore": 3,
+            "logCursorAfter": 4,
+            "step": {
+              "round": 1,
+              "observation": {
+                "id": "npc_c",
+                "location": "kitchen",
+                "hunger": 30,
+                "foodHere": 4,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "{\"type\":\"eat\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "eat"
+                }
+              },
+              "command": {
+                "commandId": "g05-ca-t3-recurring:npc:npc_c:3:1",
+                "actorId": "npc_c",
+                "type": "eat",
+                "payload": {}
+              },
+              "exec": {
+                "commandId": "g05-ca-t3-recurring:npc:npc_c:3:1",
+                "seq": 4,
+                "status": "accepted",
+                "eventIds": [
+                  "e10",
+                  "e11"
+                ]
+              }
+            }
+          },
+          {
+            "globalTurn": 5,
+            "actorId": "npc_c",
+            "cycle": 3,
+            "actorRound": 2,
+            "observation": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 60,
+              "foodHere": 2,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": {
+              "round": 1,
+              "kind": "accepted",
+              "detail": "eat"
+            },
+            "providerCalled": true,
+            "status": "goal_reached",
+            "logCursorBefore": 5,
+            "logCursorAfter": 6,
+            "step": {
+              "round": 2,
+              "observation": {
+                "id": "npc_c",
+                "location": "kitchen",
+                "hunger": 60,
+                "foodHere": 2,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "{\"type\":\"eat\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "eat"
+                }
+              },
+              "command": {
+                "commandId": "g05-ca-t3-recurring:npc:npc_c:3:2",
+                "actorId": "npc_c",
+                "type": "eat",
+                "payload": {}
+              },
+              "exec": {
+                "commandId": "g05-ca-t3-recurring:npc:npc_c:3:2",
+                "seq": 6,
+                "status": "accepted",
+                "eventIds": [
+                  "e14",
+                  "e15"
+                ]
+              }
+            }
+          }
+        ],
+        "providerCalls": 2
+      }
+    ],
+    "npc_a": [
+      {
+        "cycle": 1,
+        "reason": "initial cycle",
+        "startLogCursor": 0,
+        "endState": "satisfied",
+        "turns": [],
+        "providerCalls": 0
+      },
+      {
+        "cycle": 2,
+        "reason": "need reactivation: hunger 40 <= 40 after a satisfied cycle",
+        "startLogCursor": 1,
+        "endState": "waiting",
+        "turns": [
+          {
+            "globalTurn": 2,
+            "actorId": "npc_a",
+            "cycle": 2,
+            "actorRound": 1,
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40,
+              "foodHere": 0,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": null,
+            "providerCalled": true,
+            "status": "stopped",
+            "logCursorBefore": 1,
+            "logCursorAfter": 1,
+            "step": {
+              "round": 1,
+              "observation": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 40,
+                "foodHere": 0,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "{\"type\":\"stop\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "stop"
+                }
+              }
+            }
+          }
+        ],
+        "providerCalls": 1
+      },
+      {
+        "cycle": 3,
+        "reason": "wake: own observation has food (kitchen hunger=30 foodHere=4)",
+        "startLogCursor": 3,
+        "endState": "satisfied",
+        "turns": [
+          {
+            "globalTurn": 4,
+            "actorId": "npc_a",
+            "cycle": 3,
+            "actorRound": 1,
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 30,
+              "foodHere": 3,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": null,
+            "providerCalled": true,
+            "status": "ready",
+            "logCursorBefore": 4,
+            "logCursorAfter": 5,
+            "step": {
+              "round": 1,
+              "observation": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 30,
+                "foodHere": 3,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "{\"type\":\"eat\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "eat"
+                }
+              },
+              "command": {
+                "commandId": "g05-ca-t3-recurring:npc:npc_a:3:1",
+                "actorId": "npc_a",
+                "type": "eat",
+                "payload": {}
+              },
+              "exec": {
+                "commandId": "g05-ca-t3-recurring:npc:npc_a:3:1",
+                "seq": 5,
+                "status": "accepted",
+                "eventIds": [
+                  "e12",
+                  "e13"
+                ]
+              }
+            }
+          },
+          {
+            "globalTurn": 6,
+            "actorId": "npc_a",
+            "cycle": 3,
+            "actorRound": 2,
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 60,
+              "foodHere": 1,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": {
+              "round": 1,
+              "kind": "accepted",
+              "detail": "eat"
+            },
+            "providerCalled": true,
+            "status": "goal_reached",
+            "logCursorBefore": 6,
+            "logCursorAfter": 7,
+            "step": {
+              "round": 2,
+              "observation": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 60,
+                "foodHere": 1,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "{\"type\":\"eat\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "eat"
+                }
+              },
+              "command": {
+                "commandId": "g05-ca-t3-recurring:npc:npc_a:3:2",
+                "actorId": "npc_a",
+                "type": "eat",
+                "payload": {}
+              },
+              "exec": {
+                "commandId": "g05-ca-t3-recurring:npc:npc_a:3:2",
+                "seq": 7,
+                "status": "accepted",
+                "eventIds": [
+                  "e16",
+                  "e17"
+                ]
+              }
+            }
+          }
+        ],
+        "providerCalls": 2
+      }
+    ]
+  },
+  "actors": {
+    "npc_c": {
+      "state": "satisfied",
+      "cycles": 3,
+      "providerCalls": 3,
+      "goalReached": true
+    },
+    "npc_a": {
+      "state": "satisfied",
+      "cycles": 3,
+      "providerCalls": 3,
+      "goalReached": true
+    }
+  },
+  "transitions": [
+    {
+      "seq": 1,
+      "actorId": "npc_c",
+      "cycle": 1,
+      "from": null,
+      "to": "active",
+      "reason": "initial cycle (cycle 1)",
+      "observation": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 70,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 0
+    },
+    {
+      "seq": 2,
+      "actorId": "npc_a",
+      "cycle": 1,
+      "from": null,
+      "to": "active",
+      "reason": "initial cycle (cycle 1)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 70,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 0
+    },
+    {
+      "seq": 3,
+      "actorId": "npc_c",
+      "cycle": 1,
+      "from": "active",
+      "to": "satisfied",
+      "reason": "authoritative hunger 70 >= 70 at cycle start; no provider call",
+      "observation": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 70,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 0
+    },
+    {
+      "seq": 4,
+      "actorId": "npc_a",
+      "cycle": 1,
+      "from": "active",
+      "to": "satisfied",
+      "reason": "authoritative hunger 70 >= 70 at cycle start; no provider call",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 70,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 0
+    },
+    {
+      "seq": 5,
+      "actorId": "npc_c",
+      "cycle": 2,
+      "from": "satisfied",
+      "to": "active",
+      "reason": "need reactivation: hunger 40 <= 40 after a satisfied cycle (cycle 2)",
+      "observation": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 1
+    },
+    {
+      "seq": 6,
+      "actorId": "npc_a",
+      "cycle": 2,
+      "from": "satisfied",
+      "to": "active",
+      "reason": "need reactivation: hunger 40 <= 40 after a satisfied cycle (cycle 2)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 1
+    },
+    {
+      "seq": 7,
+      "actorId": "npc_c",
+      "cycle": 2,
+      "from": "active",
+      "to": "waiting",
+      "reason": "stop with an empty kitchen while hungry (kitchen hunger=40 foodHere=0)",
+      "observation": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 1
+    },
+    {
+      "seq": 8,
+      "actorId": "npc_a",
+      "cycle": 2,
+      "from": "active",
+      "to": "waiting",
+      "reason": "stop with an empty kitchen while hungry (kitchen hunger=40 foodHere=0)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 1
+    },
+    {
+      "seq": 9,
+      "actorId": "npc_c",
+      "cycle": 3,
+      "from": "waiting",
+      "to": "active",
+      "reason": "wake: own observation has food (kitchen hunger=30 foodHere=4) (cycle 3)",
+      "observation": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 30,
+        "foodHere": 4,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 3
+    },
+    {
+      "seq": 10,
+      "actorId": "npc_a",
+      "cycle": 3,
+      "from": "waiting",
+      "to": "active",
+      "reason": "wake: own observation has food (kitchen hunger=30 foodHere=4) (cycle 3)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 30,
+        "foodHere": 4,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 3
+    },
+    {
+      "seq": 11,
+      "actorId": "npc_c",
+      "cycle": 3,
+      "from": "active",
+      "to": "satisfied",
+      "reason": "authoritative hunger reached the goal",
+      "observation": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 90,
+        "foodHere": 1,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 6
+    },
+    {
+      "seq": 12,
+      "actorId": "npc_a",
+      "cycle": 3,
+      "from": "active",
+      "to": "satisfied",
+      "reason": "authoritative hunger reached the goal",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 90,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 7
+    }
+  ],
+  "stopReason": "completed",
+  "scenarioPass": true,
+  "replayMatches": true,
+  "idlePumps": {
+    "pumps": 0,
+    "callsBefore": 0,
+    "callsAfter": 0,
+    "cyclesBefore": 0,
+    "cyclesAfter": 0,
+    "actorStatesBefore": {},
+    "actorStatesAfter": {}
+  },
+  "requestConfig": {
+    "model": null,
+    "temperature": 0,
+    "max_tokens": 1024,
+    "stream": false,
+    "enableThinking": [
+      true
+    ],
+    "timeoutMs": 15000
+  },
+  "timing": {
+    "totalMs": 2
+  },
+  "needPolicy": "recurring",
+  "matrixVersion": "g05-r1-t123",
+  "rules": {
+    "LOW": 40,
+    "GOAL": 70,
+    "DECAY_PER_STEP": 10
+  },
+  "checkpoints": [
+    {
+      "label": "initial",
+      "logCursor": 0,
+      "commandCursor": 0,
+      "expected": {
+        "simTime": 0,
+        "a": 70,
+        "b": 70,
+        "c": 70,
+        "calls": 0
+      },
+      "actual": {
+        "simTime": 0,
+        "a": 70,
+        "b": 70,
+        "c": 70,
+        "food": 0,
+        "calls": 0
+      }
+    },
+    {
+      "label": "empty",
+      "logCursor": 4,
+      "commandCursor": 1,
+      "expected": {
+        "simTime": 3,
+        "a": 40,
+        "b": 40,
+        "c": 40,
+        "food": 0,
+        "calls": 2
+      },
+      "actual": {
+        "simTime": 3,
+        "a": 40,
+        "b": 40,
+        "c": 40,
+        "food": 0,
+        "calls": 2
+      }
+    },
+    {
+      "label": "waiting_decay",
+      "logCursor": 8,
+      "commandCursor": 2,
+      "expected": {
+        "simTime": 4,
+        "a": 30,
+        "b": 30,
+        "c": 30,
+        "food": 0,
+        "calls": 2
+      },
+      "actual": {
+        "simTime": 4,
+        "a": 30,
+        "b": 30,
+        "c": 30,
+        "food": 0,
+        "calls": 2
+      }
+    },
+    {
+      "label": "refed",
+      "logCursor": 17,
+      "commandCursor": 7,
+      "expected": {
+        "simTime": 4,
+        "a": 90,
+        "b": 30,
+        "c": 90,
+        "food": 0,
+        "calls": 6
+      },
+      "actual": {
+        "simTime": 4,
+        "a": 90,
+        "b": 30,
+        "c": 90,
+        "food": 0,
+        "calls": 6
+      }
+    }
+  ]
+}

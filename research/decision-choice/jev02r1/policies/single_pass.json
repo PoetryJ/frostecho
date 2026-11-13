@@ -1,0 +1,238 @@
+{
+  "schema": "frostecho.jev02r1.policy/1",
+  "valid": false,
+  "decisionMode": "unavailable",
+  "method": "single_pass",
+  "temperature": 2.0186162197192403,
+  "tau": null,
+  "gating": "max_confidence",
+  "allowedOrders": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "allowedPairs": [],
+  "head": {
+    "path": "/data3/DATA/project/project_meishijiang/FrostEcho-jev02/research/decision-choice/jev02/runs/M1-seed17/candidate.safetensors",
+    "fileSha256": "d53d9b368cac14acecfaaa5aca5fc5ae8873028ca92af9ba9d8423b273be634e",
+    "tensorSha256": "5cda925fe9ae691ca31078db32eaee01305e351792940d34592ab093e29d172b",
+    "params": 5120,
+    "kind": "linear_head"
+  },
+  "backbone": {
+    "path": "/data2/model_weights/Qwen3.8-27B",
+    "sha256": "86dad37e99839d662f00fcbd4fad76ac0b357ebcf275f0e10b5d1eb469d97973",
+    "files": {
+      "config.json": {
+        "sha256": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab",
+        "bytes": 4312
+      },
+      "tokenizer_config.json": {
+        "sha256": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+        "bytes": 17928
+      },
+      "chat_template.jinja": {
+        "sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+        "bytes": 8952
+      },
+      "model.safetensors.index.json": {
+        "sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+        "bytes": 112216
+      },
+      "generation_config.json": {
+        "sha256": "e70c136c1b78ddc1fb0905bac8e733a4dc448d4f852a5dd75143fffc70be550e",
+        "bytes": 202
+      }
+    }
+  },
+  "tokenizer": {
+    "sha256": "3b0d63376fde773a27ae396ee77446063ead10bbb7b0b376932410da818226a6",
+    "files": {
+      "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+      "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+      "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+      "merges.txt": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d",
+      "vocab.json": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003"
+    }
+  },
+  "prompt": {
+    "version": "jev02r1/prompt=render.py@e12ac4c/arm=label",
+    "sha256": "e8b648343061509446f40f0b62b58dd8604e879d799999dcac35920182609032"
+  },
+  "candidates": {
+    "version": "jev02r1/candidates=letter_label@e12ac4c",
+    "labels": {
+      "NEEDS_CLARIFICATION": "玩家这句话没有说清谁先吃",
+      "NO_PRIORITY_REQUEST": "玩家没有提出谁先吃",
+      "NPC_FIRST": "npc 先吃，玩家等 npc 吃完再吃",
+      "PLAYER_FIRST": "玩家先吃，npc 等玩家吃完再吃"
+    }
+  },
+  "calibration": {
+    "calTemperatureSha256": "b8f95f3418151a4060feeb213e40616417f2aca011ced1b96d96843c771c9126",
+    "calPolicySha256": "df7a1d8eea8a1b0fac2737228faebf1a30dd2efaa2d0a6b6e7dbb1af5e0b786c",
+    "temperatureFit": 2.0186162197192403,
+    "adoptedTfit": true
+  },
+  "selection": {
+    "supported": "all_orders",
+    "gate": {
+      "maxRisk": 0.05,
+      "minAcceptedBases": 50,
+      "minAcceptedPerClass": 5
+    },
+    "failingTaus": [
+      {
+        "tau": 0.5,
+        "failures": [
+          "0: risk 0.0678 > 0.05",
+          "1: risk 0.1351 > 0.05",
+          "2: risk 0.3248 > 0.05",
+          "3: risk 0.1083 > 0.05"
+        ],
+        "meanCoverage": 0.910156,
+        "pooledRisk": 0.158798
+      },
+      {
+        "tau": 0.6,
+        "failures": [
+          "0: risk 0.0625 > 0.05",
+          "1: risk 0.0526 > 0.05",
+          "2: risk 0.3178 > 0.05"
+        ],
+        "meanCoverage": 0.816407,
+        "pooledRisk": 0.12201
+      },
+      {
+        "tau": 0.7,
+        "failures": [
+          "2: risk 0.2688 > 0.05"
+        ],
+        "meanCoverage": 0.730469,
+        "pooledRisk": 0.093583
+      },
+      {
+        "tau": 0.8,
+        "failures": [
+          "2: risk 0.2338 > 0.05"
+        ],
+        "meanCoverage": 0.625,
+        "pooledRisk": 0.075
+      },
+      {
+        "tau": 0.85,
+        "failures": [
+          "2: risk 0.1940 > 0.05"
+        ],
+        "meanCoverage": 0.560547,
+        "pooledRisk": 0.062718
+      },
+      {
+        "tau": 0.9,
+        "failures": [
+          "1: accepted 3 NEEDS_CLARIFICATION bases < 5",
+          "2: risk 0.1481 > 0.05"
+        ],
+        "meanCoverage": 0.458985,
+        "pooledRisk": 0.042553
+      },
+      {
+        "tau": 0.925,
+        "failures": [
+          "1: accepted 2 NEEDS_CLARIFICATION bases < 5",
+          "2: risk 0.1458 > 0.05",
+          "2: accepted 48 < 50 bases",
+          "2: accepted 4 NEEDS_CLARIFICATION bases < 5"
+        ],
+        "meanCoverage": 0.419922,
+        "pooledRisk": 0.04186
+      },
+      {
+        "tau": 0.95,
+        "failures": [
+          "1: accepted 44 < 50 bases",
+          "1: accepted 3 NO_PRIORITY_REQUEST bases < 5",
+          "1: accepted 0 NEEDS_CLARIFICATION bases < 5",
+          "2: risk 0.1250 > 0.05",
+          "2: accepted 40 < 50 bases",
+          "2: accepted 2 NEEDS_CLARIFICATION bases < 5",
+          "3: accepted 39 < 50 bases"
+        ],
+        "meanCoverage": 0.341797,
+        "pooledRisk": 0.034286
+      },
+      {
+        "tau": 0.975,
+        "failures": [
+          "0: accepted 35 < 50 bases",
+          "1: accepted 34 < 50 bases",
+          "1: accepted 1 NO_PRIORITY_REQUEST bases < 5",
+          "1: accepted 0 NEEDS_CLARIFICATION bases < 5",
+          "2: risk 0.0870 > 0.05",
+          "2: accepted 23 < 50 bases",
+          "2: accepted 3 NPC_FIRST bases < 5",
+          "2: accepted 1 NEEDS_CLARIFICATION bases < 5",
+          "3: accepted 25 < 50 bases",
+          "3: accepted 1 NO_PRIORITY_REQUEST bases < 5"
+        ],
+        "meanCoverage": 0.228516,
+        "pooledRisk": 0.025641
+      },
+      {
+        "tau": 0.99,
+        "failures": [
+          "0: accepted 15 < 50 bases",
+          "0: accepted 4 PLAYER_FIRST bases < 5",
+          "0: accepted 4 NPC_FIRST bases < 5",
+          "0: accepted 4 NO_PRIORITY_REQUEST bases < 5",
+          "0: accepted 3 NEEDS_CLARIFICATION bases < 5",
+          "1: accepted 25 < 50 bases",
+          "1: accepted 3 NPC_FIRST bases < 5",
+          "1: accepted 0 NO_PRIORITY_REQUEST bases < 5",
+          "1: accepted 0 NEEDS_CLARIFICATION bases < 5",
+          "2: risk 0.0909 > 0.05",
+          "2: accepted 11 < 50 bases",
+          "2: accepted 2 NPC_FIRST bases < 5",
+          "2: accepted 3 NO_PRIORITY_REQUEST bases < 5",
+          "2: accepted 0 NEEDS_CLARIFICATION bases < 5",
+          "3: accepted 10 < 50 bases",
+          "3: accepted 4 PLAYER_FIRST bases < 5",
+          "3: accepted 2 NPC_FIRST bases < 5",
+          "3: accepted 1 NO_PRIORITY_REQUEST bases < 5",
+          "3: accepted 3 NEEDS_CLARIFICATION bases < 5"
+        ],
+        "meanCoverage": 0.119141,
+        "pooledRisk": 0.016393
+      },
+      {
+        "tau": 0.995,
+        "failures": [
+          "0: accepted 9 < 50 bases",
+          "0: accepted 3 PLAYER_FIRST bases < 5",
+          "0: accepted 1 NPC_FIRST bases < 5",
+          "0: accepted 3 NO_PRIORITY_REQUEST bases < 5",
+          "0: accepted 2 NEEDS_CLARIFICATION bases < 5",
+          "1: accepted 18 < 50 bases",
+          "1: accepted 2 NPC_FIRST bases < 5",
+          "1: accepted 0 NO_PRIORITY_REQUEST bases < 5",
+          "1: accepted 0 NEEDS_CLARIFICATION bases < 5",
+          "2: accepted 5 < 50 bases",
+          "2: accepted 4 PLAYER_FIRST bases < 5",
+          "2: accepted 0 NPC_FIRST bases < 5",
+          "2: accepted 1 NO_PRIORITY_REQUEST bases < 5",
+          "2: accepted 0 NEEDS_CLARIFICATION bases < 5",
+          "3: accepted 6 < 50 bases",
+          "3: accepted 3 PLAYER_FIRST bases < 5",
+          "3: accepted 1 NPC_FIRST bases < 5",
+          "3: accepted 0 NO_PRIORITY_REQUEST bases < 5",
+          "3: accepted 2 NEEDS_CLARIFICATION bases < 5"
+        ],
+        "meanCoverage": 0.074218,
+        "pooledRisk": 0.0
+      }
+    ]
+  },
+  "createdAt": "2026-11-10T12:51:35+08:00",
+  "notes": "no frozen threshold satisfied every gate on cal-policy; policy unavailable"
+}

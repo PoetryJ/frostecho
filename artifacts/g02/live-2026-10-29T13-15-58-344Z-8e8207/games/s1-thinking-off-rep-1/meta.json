@@ -1,0 +1,34 @@
+{
+  "batchId": "s1-thinking-off-rep-1",
+  "scenarioId": "s1",
+  "mode": "live",
+  "thinking": false,
+  "scenarioPass": false,
+  "goalReached": false,
+  "outcome": "provider_error",
+  "providerCalls": 1,
+  "replayMatches": true,
+  "reasons": [
+    "fail: A goalReached",
+    "fail: outcome goal_reached",
+    "fail: A hunger 40→70",
+    "fail: A in kitchen",
+    "fail: kitchen food consumed by A",
+    "pass: no player commands",
+    "fail: A moved",
+    "fail: A ate",
+    "pass: replay matches",
+    "pass: B hunger unchanged",
+    "pass: B location unchanged"
+  ],
+  "error": "network error",
+  "timing": {
+    "totalMs": 32,
+    "calls": [
+      {
+        "round": 1,
+        "ms": 32
+      }
+    ]
+  }
+}

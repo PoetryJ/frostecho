@@ -1,0 +1,139 @@
+{
+  "head": "da5c250",
+  "newRealModelCalls": 0,
+  "archivedWireCount": 16,
+  "exchanges": [
+    {
+      "attemptId": "att-0001",
+      "requestEqual": true,
+      "responseEqual": true
+    },
+    {
+      "attemptId": "att-0002",
+      "requestEqual": true,
+      "responseEqual": true
+    },
+    {
+      "attemptId": "att-0003",
+      "requestEqual": true,
+      "responseEqual": true
+    },
+    {
+      "attemptId": "att-0004",
+      "requestEqual": true,
+      "responseEqual": true
+    },
+    {
+      "attemptId": "att-0005",
+      "requestEqual": true,
+      "responseEqual": true
+    },
+    {
+      "attemptId": "att-0006",
+      "requestEqual": true,
+      "responseEqual": true
+    },
+    {
+      "attemptId": "att-0007",
+      "requestEqual": true,
+      "responseEqual": true
+    },
+    {
+      "attemptId": "att-0008",
+      "requestEqual": true,
+      "responseEqual": true
+    },
+    {
+      "attemptId": "att-0009",
+      "requestEqual": true,
+      "responseEqual": true
+    },
+    {
+      "attemptId": "att-0010",
+      "requestEqual": true,
+      "responseEqual": true
+    },
+    {
+      "attemptId": "att-0011",
+      "requestEqual": true,
+      "responseEqual": true
+    },
+    {
+      "attemptId": "att-0012",
+      "requestEqual": true,
+      "responseEqual": true
+    },
+    {
+      "attemptId": "att-0013",
+      "requestEqual": true,
+      "responseEqual": true
+    },
+    {
+      "attemptId": "att-0014",
+      "requestEqual": true,
+      "responseEqual": true
+    },
+    {
+      "attemptId": "att-0015",
+      "requestEqual": true,
+      "responseEqual": true
+    },
+    {
+      "attemptId": "att-0016",
+      "requestEqual": true,
+      "responseEqual": true
+    }
+  ],
+  "all16Exact": true,
+  "shortTimeout": {
+    "timeoutMs": 80,
+    "loopbackPosts": 1,
+    "error": {
+      "name": "AbortError",
+      "message": "aborted"
+    },
+    "capture": {
+      "requestBody": {
+        "model": "loopback-only",
+        "temperature": 0,
+        "max_tokens": 1024,
+        "stream": false,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "Reply with one JSON object and no other text.\nallowedActions: [\"move\",\"eat\",\"stop\",\"wait\"]\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\n\"stop\" ends your current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows the outer restock-wait and new-cycle rules.\n\"wait\" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {\"type\":\"wait\"} only when allowedActions includes \"wait\".\ngoal: hunger >= 70\nobservation: {\"id\":\"npc_a\",\"location\":\"kitchen\",\"hunger\":40,\"foodHere\":1,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null"
+          }
+        ]
+      },
+      "requestBodyText": "{\"model\":\"loopback-only\",\"temperature\":0,\"max_tokens\":1024,\"stream\":false,\"chat_template_kwargs\":{\"enable_thinking\":true},\"messages\":[{\"role\":\"user\",\"content\":\"Reply with one JSON object and no other text.\\nallowedActions: [\\\"move\\\",\\\"eat\\\",\\\"stop\\\",\\\"wait\\\"]\\nDo not set actorId or commandId. World changes happen only through Engine.submit.\\nhunger is satiety: higher means fuller.\\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\\n\\\"stop\\\" ends your current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows the outer restock-wait and new-cycle rules.\\n\\\"wait\\\" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {\\\"type\\\":\\\"wait\\\"} only when allowedActions includes \\\"wait\\\".\\ngoal: hunger >= 70\\nobservation: {\\\"id\\\":\\\"npc_a\\\",\\\"location\\\":\\\"kitchen\\\",\\\"hunger\\\":40,\\\"foodHere\\\":1,\\\"reachable\\\":[\\\"dorm\\\",\\\"kitchen\\\"]}\\nfeedback: null\"}]}",
+      "status": null,
+      "responseBody": null
+    },
+    "transport": {
+      "requestBody": {
+        "model": "loopback-only",
+        "temperature": 0,
+        "max_tokens": 1024,
+        "stream": false,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "Reply with one JSON object and no other text.\nallowedActions: [\"move\",\"eat\",\"stop\",\"wait\"]\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\n\"stop\" ends your current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows the outer restock-wait and new-cycle rules.\n\"wait\" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {\"type\":\"wait\"} only when allowedActions includes \"wait\".\ngoal: hunger >= 70\nobservation: {\"id\":\"npc_a\",\"location\":\"kitchen\",\"hunger\":40,\"foodHere\":1,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null"
+          }
+        ]
+      },
+      "responseContent": null,
+      "status": null,
+      "usage": null,
+      "latencyMs": 83,
+      "error": "timeout"
+    },
+    "actualRequestBodyText": "{\"model\":\"loopback-only\",\"temperature\":0,\"max_tokens\":1024,\"stream\":false,\"chat_template_kwargs\":{\"enable_thinking\":true},\"messages\":[{\"role\":\"user\",\"content\":\"Reply with one JSON object and no other text.\\nallowedActions: [\\\"move\\\",\\\"eat\\\",\\\"stop\\\",\\\"wait\\\"]\\nDo not set actorId or commandId. World changes happen only through Engine.submit.\\nhunger is satiety: higher means fuller.\\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\\n\\\"stop\\\" ends your current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows the outer restock-wait and new-cycle rules.\\n\\\"wait\\\" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {\\\"type\\\":\\\"wait\\\"} only when allowedActions includes \\\"wait\\\".\\ngoal: hunger >= 70\\nobservation: {\\\"id\\\":\\\"npc_a\\\",\\\"location\\\":\\\"kitchen\\\",\\\"hunger\\\":40,\\\"foodHere\\\":1,\\\"reachable\\\":[\\\"dorm\\\",\\\"kitchen\\\"]}\\nfeedback: null\"}]}"
+  }
+}

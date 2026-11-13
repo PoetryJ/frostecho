@@ -1,0 +1,35 @@
+FrostEcho R5 JEV / 39题独立核查，2026-11-12
+HEAD 498c00015e51dc6d48668e2603e2e1877aa8e399；基线db34123。
+隔离bundle clone /tmp/frostecho-r5-jev-O2EYv5/repo。
+结论（本域）：有限返工，当前正式训练关闭有效；可原样归档保存，保留下面两项未关闭边界，不在今晚继续开发或启动训练。
+
+已验证的有效结果
+1. Python相关tests/scorers独立66/66（0.79s），包括真实正式入口stub-import、旧空证书/fixture计real、重复分区和真正download函数首请求/参数mock。
+2. 直接调用encoder_train.py：exit2，gate重算v4，qualified train/dev均0、mayTrainOnJev=false、modelLoads0。正式路径已不读取v3 true；测试确认关闭门时torch/transformers导入0。
+3. validate_v4当前exit0表示结构通过，researchTrainReady=false；39题/39+39审查/39裁决，0eligible、29ambiguous、10inconsistent，与两审保守分类一致。train/dev均空，没有实际训练。
+4. 对照原始hand-off盲审：78条rawReviewSha256全部匹配；acceptableCandidateIds/status/reason/missingInformation全部原样保留；现39题narrative/facts/候选id,text,params与原冻结输入均相同。v4显式增加task映射/kind/hash协议，未发现本次偷偷改变审查内容或标签。
+5. 旧候选text/params篡改、非法标签、重复JSONL凑512/128的官方回归测试通过；tiny共享组件保存属于机制证明。本域未再运行tiny/正式encoder模型，以免重复验证；父验收可引用交付tiny边界，不将其当真实27B结果。
+6. download路径mock已覆盖真正download()，正确包含Qwen/Qwen3.5-27B、同一revision及续传命令；本域无网络下载，未重新探测真实网络。
+
+仍未关闭的边界（CPU人工构造反例，不是发现交付者造假）
+
+A. 旧审查导入器未核对原始输入不变，可以给变更内容重新背书。
+当前交付内容本身保持，见结果4；但是import_blind_review.py只按caseId取旧review，再将contentHash改成当前v4_case的新hash，没有核旧packet/canonical-inputs的原哈希或逐字段等价。
+独立隔离复制中，将v3-gA01-B的一个候选文字改成“未经新审查的候选：取消所有既有承诺”，再运行生产import_blind_review.py与validate_v4.py：均exit0；旧rawReviewSha256不变，contentHash却更新为新内容，缺重新审查没有报错。
+因为目前所有case均未准入，该反例的researchTrainReady仍false，没有实际训练；风险在后续修题/扩量时旧判断可被自动重绑。现39题“已迁移”不能泛化为导入器能拒绝任意内容漂移。
+证据 output/changed-import.stdout、changed-validation.stdout、probe.json.changed_source_import，及changed-import/完整隔离数据。
+关键位置：import_blind_review.py的v4_case构造、contentHash赋值及review重绑（约143–170行）。
+
+B. 实际风险准入仍信摘要，未把风险计算和实际artifact参数绑定。
+生产port_v3.allows_real_execution已拒空文件、复用分区与身份不符，但cert只检查upper有限且<=MAX_RISK、n>0；不校验errors/n与upper一致、n与样本数一致，亦未将artifact的temperature/tau与calT/select证据绑定。
+独立构造3份不同文件/不同sampleId/正确SHA与匹配policy：cert声称n=120、errors=120、upper=0.01，但只有1个sampleId；calT温度1.2，select阈值0.8。实际artifact用temperature0.01、tau0.0，生产decide仍返回accept、counts_as_real=true。
+该反例无模型、无世界执行，TS仍shadow；不能由已过空证书测试推论风险保证已实现。恢复真实模型前必须把这里保留为未证明能力。
+证据 output/contradictory-cert/三个原始证据及manifest、probe.json.inconsistent_risk_certificate。
+关键位置：port_v3.py allows_real_execution中的cert/calT/select校验，decide使用artifact.temperature与artifact.tau但只借registration作准入。
+
+范围与复跑
+- 全程CUDA_VISIBLE_DEVICES=''、HF_HUB_OFFLINE=1；没有FrostEcho模型加载/forward/GPU/权重下载；没有改服务器主树。
+- 66项测试：python3 -m pytest research/decision-choice/jev04/tests research/decision-choice/jev04/scorers/tests -q。
+- 两个独立边界及原审查核对：python3 probe.py <isolated-repo> <new-output> <original-blind-review-directory>。
+- probe仅在new-output/changed-import复制树中改变样本，不改所审checkout；新输出目录保留完整证据。
+- 源码快照source-evidence.tgz、setup.sh/run.sh、output/均已归档。今晚不生成R6任务，后续恢复时读取这些准确边界。

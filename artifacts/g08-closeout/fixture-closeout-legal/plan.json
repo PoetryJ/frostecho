@@ -1,0 +1,92 @@
+{
+  "schema": "frostecho.g08.eval.plan/1",
+  "batch": "fixture-closeout-legal",
+  "createdAt": "2026-11-03T12:03:54.920Z",
+  "version": {
+    "commit": "8285dd4fd017d286aa58c76bffcbb558da3410d2",
+    "dirty": false,
+    "dirtyFiles": [],
+    "sourceFingerprint": "9e384c40dbaa67e94b1b421cf860c1bfeea20c9261ba2e7e9327be2c19d53e4d",
+    "promptFingerprint": "8d66afdf043633df7103189682fdd5b1647e293554bba761825529f1364c9ae2",
+    "node": "v22.20.0",
+    "platform": "linux"
+  },
+  "mode": "fake",
+  "model": "fake-model",
+  "endpointHost": "127.0.0.1:37441",
+  "hardChatLimit": 8,
+  "requestConfig": {
+    "model": "fake-model",
+    "temperature": 0,
+    "max_tokens": 1024,
+    "stream": false,
+    "enableThinking": [
+      true
+    ],
+    "timeoutMs": 120000
+  },
+  "templateFingerprint": "30e8bb0a30d8bc399470f0d7bfd550b68fbfcae04e5814c3549ed982872fa991",
+  "scenarios": "请把最后一份食物留给我，你先不要吃。",
+  "initialState": "A/B kitchen 40, C kitchen 70, kitchen food 1, dorm 0, simTime 0, actorOrder [A,C], recurring/event",
+  "plan": [
+    {
+      "index": 1,
+      "rep": 1,
+      "actionSet": "legacy",
+      "arm": "off",
+      "episodeId": "g08-r1-legacy-off"
+    },
+    {
+      "index": 2,
+      "rep": 1,
+      "actionSet": "legacy",
+      "arm": "on",
+      "episodeId": "g08-r1-legacy-on"
+    },
+    {
+      "index": 3,
+      "rep": 1,
+      "actionSet": "timed_wait",
+      "arm": "off",
+      "episodeId": "g08-r1-timed_wait-off"
+    },
+    {
+      "index": 4,
+      "rep": 1,
+      "actionSet": "timed_wait",
+      "arm": "on",
+      "episodeId": "g08-r1-timed_wait-on"
+    },
+    {
+      "index": 5,
+      "rep": 2,
+      "actionSet": "timed_wait",
+      "arm": "on",
+      "episodeId": "g08-r2-timed_wait-on"
+    },
+    {
+      "index": 6,
+      "rep": 2,
+      "actionSet": "timed_wait",
+      "arm": "off",
+      "episodeId": "g08-r2-timed_wait-off"
+    },
+    {
+      "index": 7,
+      "rep": 2,
+      "actionSet": "legacy",
+      "arm": "on",
+      "episodeId": "g08-r2-legacy-on"
+    },
+    {
+      "index": 8,
+      "rep": 2,
+      "actionSet": "legacy",
+      "arm": "off",
+      "episodeId": "g08-r2-legacy-off"
+    }
+  ],
+  "oneDecisionPerEpisode": true,
+  "noAdvanceTime": true,
+  "noRetries": true
+}

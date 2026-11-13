@@ -1,0 +1,230 @@
+{
+  "repo": "/data3/DATA/project/project_meishijiang/FrostEcho",
+  "newRealModelCalls": 0,
+  "inflightGoal": {
+    "simTime": 1,
+    "status": "failed",
+    "binding": null,
+    "goalDecision": null,
+    "providerCalls": 1,
+    "worldCommands": 1,
+    "pass": true
+  },
+  "inflightAction": {
+    "simTime": 1,
+    "status": "failed",
+    "wakeAtSimTime": null,
+    "providerCalls": 2,
+    "worldCommands": 1,
+    "pass": true
+  },
+  "gameInflightGoal": {
+    "simTime": 1,
+    "status": "failed",
+    "binding": null,
+    "request": {
+      "schema": "frostecho.g09.goal-request/2",
+      "requestId": "req",
+      "episodeId": "ep",
+      "from": "player",
+      "to": "npc_a",
+      "kind": "yield_once",
+      "text": "请把最后一份食物留给我，你先不要吃。",
+      "options": [
+        "feed_self",
+        "yield_once"
+      ],
+      "createdAtSimTime": 0,
+      "expiresAtSimTime": 1,
+      "status": "expired",
+      "decision": null,
+      "acceptedAfterSeq": null,
+      "lastProcessedSeq": 0,
+      "outcome": "expired",
+      "outcomeReason": "no goal answer before the expiry 1"
+    },
+    "pass": true
+  },
+  "gameInflightAction": {
+    "simTime": 1,
+    "status": "failed",
+    "wakeAtSimTime": null,
+    "request": {
+      "schema": "frostecho.g09.goal-request/2",
+      "requestId": "req",
+      "episodeId": "ep",
+      "from": "player",
+      "to": "npc_a",
+      "kind": "yield_once",
+      "text": "请把最后一份食物留给我，你先不要吃。",
+      "options": [
+        "feed_self",
+        "yield_once"
+      ],
+      "createdAtSimTime": 0,
+      "expiresAtSimTime": 1,
+      "status": "accepted",
+      "decision": {
+        "goal": "yield_once",
+        "round": 1,
+        "decidedAtSimTime": 0,
+        "raw": "{\"goal\":\"yield_once\"}"
+      },
+      "acceptedAfterSeq": 0,
+      "lastProcessedSeq": 1,
+      "outcome": "expired",
+      "outcomeReason": "no fulfilment before the expiry 1"
+    },
+    "pass": true
+  },
+  "actualGameFulfillment": {
+    "player": {
+      "ok": true,
+      "detail": "ep:player:npc_b:1"
+    },
+    "requestAfterPlayer": {
+      "schema": "frostecho.g09.goal-request/2",
+      "requestId": "req",
+      "episodeId": "ep",
+      "from": "player",
+      "to": "npc_a",
+      "kind": "yield_once",
+      "text": "请把最后一份食物留给我，你先不要吃。",
+      "options": [
+        "feed_self",
+        "yield_once"
+      ],
+      "createdAtSimTime": 0,
+      "expiresAtSimTime": 1,
+      "status": "accepted",
+      "decision": {
+        "goal": "yield_once",
+        "round": 1,
+        "decidedAtSimTime": 0,
+        "raw": "{\"goal\":\"yield_once\"}"
+      },
+      "acceptedAfterSeq": 0,
+      "lastProcessedSeq": 1,
+      "outcome": "fulfilled",
+      "outcomeReason": "the player ate at seq 1"
+    },
+    "requestAfterTime": {
+      "schema": "frostecho.g09.goal-request/2",
+      "requestId": "req",
+      "episodeId": "ep",
+      "from": "player",
+      "to": "npc_a",
+      "kind": "yield_once",
+      "text": "请把最后一份食物留给我，你先不要吃。",
+      "options": [
+        "feed_self",
+        "yield_once"
+      ],
+      "createdAtSimTime": 0,
+      "expiresAtSimTime": 1,
+      "status": "accepted",
+      "decision": {
+        "goal": "yield_once",
+        "round": 1,
+        "decidedAtSimTime": 0,
+        "raw": "{\"goal\":\"yield_once\"}"
+      },
+      "acceptedAfterSeq": 0,
+      "lastProcessedSeq": 1,
+      "outcome": "fulfilled",
+      "outcomeReason": "the player ate at seq 1"
+    },
+    "sessionGoalReached": true,
+    "actorGoalReached": true,
+    "pass": true
+  },
+  "actualGameViolation": {
+    "request": {
+      "schema": "frostecho.g09.goal-request/2",
+      "requestId": "req",
+      "episodeId": "ep",
+      "from": "player",
+      "to": "npc_a",
+      "kind": "yield_once",
+      "text": "请把最后一份食物留给我，你先不要吃。",
+      "options": [
+        "feed_self",
+        "yield_once"
+      ],
+      "createdAtSimTime": 0,
+      "expiresAtSimTime": 1,
+      "status": "accepted",
+      "decision": {
+        "goal": "yield_once",
+        "round": 1,
+        "decidedAtSimTime": 0,
+        "raw": "{\"goal\":\"yield_once\"}"
+      },
+      "acceptedAfterSeq": 0,
+      "lastProcessedSeq": 1,
+      "outcome": "violated",
+      "outcomeReason": "npc_a ate first at seq 1"
+    },
+    "sessionResult": false,
+    "pass": true
+  },
+  "acceptanceBoundary": {
+    "lastEngineSeq": 1,
+    "binding": {
+      "schema": "frostecho.g09.goal-binding/2",
+      "episodeId": "ep",
+      "requestId": "req",
+      "goal": "yield_once",
+      "decidedRound": 1,
+      "decidedAtSimTime": 0,
+      "expiresAtSimTime": 1,
+      "acceptedAfterSeq": 1,
+      "raw": "{\"goal\":\"yield_once\"}"
+    },
+    "request": {
+      "schema": "frostecho.g09.goal-request/2",
+      "requestId": "req",
+      "episodeId": "ep",
+      "from": "player",
+      "to": "npc_a",
+      "kind": "yield_once",
+      "text": "请把最后一份食物留给我，你先不要吃。",
+      "options": [
+        "feed_self",
+        "yield_once"
+      ],
+      "createdAtSimTime": 0,
+      "expiresAtSimTime": 1,
+      "status": "accepted",
+      "decision": {
+        "goal": "yield_once",
+        "round": 1,
+        "decidedAtSimTime": 0,
+        "raw": "{\"goal\":\"yield_once\"}"
+      },
+      "acceptedAfterSeq": 1,
+      "lastProcessedSeq": 1,
+      "outcome": "pending",
+      "outcomeReason": null
+    },
+    "pass": true
+  },
+  "pureMachine": {
+    "oldEventOutcome": "pending",
+    "violationThenPlayer": "violated",
+    "pass": true
+  },
+  "realRecurring": {
+    "seen": [
+      "goal",
+      "action",
+      "action",
+      "action"
+    ],
+    "cycles": 2,
+    "processed": [
+      "req"
+    ],
+    "pass": true
+  }
+}

@@ -1,0 +1,420 @@
+{
+  "schema": "frostecho.g02.summary/2",
+  "mode": "live",
+  "realModel": true,
+  "model": "qwen3.8-27b",
+  "thinkingDefault": true,
+  "batchId": "g02-r1-live-healthcheck",
+  "gamesPlanned": 18,
+  "gamesRun": 0,
+  "maxProviderCalls": 90,
+  "requestCount": 0,
+  "httpRequests": 0,
+  "decisionCalls": 0,
+  "budgetIntercepts": 0,
+  "callCapExceeded": false,
+  "serial": true,
+  "retries": 0,
+  "gate": {
+    "size": 6,
+    "passed": null
+  },
+  "stopReason": "health_failed",
+  "health": {
+    "ok": false,
+    "checkedAt": "2026-10-30T02:58:18.466Z",
+    "modelsUrlPath": "/v1/models",
+    "status": null,
+    "models": [],
+    "expectedModel": "qwen3.8-27b",
+    "modelMatch": false,
+    "kind": "connect",
+    "error": "network error: ECONNREFUSED",
+    "latencyMs": 18
+  },
+  "byScenario": {
+    "s1": {
+      "games": 0,
+      "scenarioPass": 0,
+      "passRate": 0,
+      "goalReached": 0
+    },
+    "s2": {
+      "games": 0,
+      "scenarioPass": 0,
+      "passRate": 0,
+      "goalReached": 0
+    },
+    "s3": {
+      "games": 0,
+      "scenarioPass": 0,
+      "passRate": 0,
+      "goalReached": 0
+    }
+  },
+  "byThinking": {
+    "true": {
+      "games": 0,
+      "scenarioPass": 0,
+      "passRate": 0,
+      "goalReached": 0,
+      "requestCount": 0,
+      "httpRequests": 0,
+      "decisionCalls": 0,
+      "budgetIntercepts": 0,
+      "latencyMs": 0,
+      "promptTokens": 0,
+      "completionTokens": 0,
+      "totalTokens": 0,
+      "usageKnownRequests": 0,
+      "usageUnknownRequests": 0,
+      "errors": {
+        "transport": 0,
+        "parse": 0,
+        "decide": 0,
+        "execute": 0,
+        "s3ExpectedNoFood": 0
+      }
+    },
+    "false": {
+      "games": 0,
+      "scenarioPass": 0,
+      "passRate": 0,
+      "goalReached": 0,
+      "requestCount": 0,
+      "httpRequests": 0,
+      "decisionCalls": 0,
+      "budgetIntercepts": 0,
+      "latencyMs": 0,
+      "promptTokens": 0,
+      "completionTokens": 0,
+      "totalTokens": 0,
+      "usageKnownRequests": 0,
+      "usageUnknownRequests": 0,
+      "errors": {
+        "transport": 0,
+        "parse": 0,
+        "decide": 0,
+        "execute": 0,
+        "s3ExpectedNoFood": 0
+      }
+    }
+  },
+  "errors": {
+    "transport": 0,
+    "parse": 0,
+    "decide": 0,
+    "execute": 0,
+    "s3ExpectedNoFood": 0
+  },
+  "rebuilt": {
+    "schema": "frostecho.g02.summary/2",
+    "batchId": "g02-r1-live-healthcheck",
+    "planned": 18,
+    "byStatus": {
+      "pass": 0,
+      "behavior_fail": 0,
+      "interrupted": 0,
+      "not_run": 18
+    },
+    "combinations": [
+      {
+        "scenarioId": "s1",
+        "thinking": true,
+        "planned": 3,
+        "valid": 0,
+        "pass": 0,
+        "behaviorFail": 0,
+        "interrupted": 0,
+        "notRun": 3,
+        "goalReached": 0,
+        "counters": {
+          "decisionCalls": 0,
+          "forwardedCalls": 0,
+          "httpRequests": 0,
+          "budgetIntercepts": 0,
+          "latencyMs": 0,
+          "usage": {
+            "promptTokens": 0,
+            "completionTokens": 0,
+            "totalTokens": 0,
+            "knownRequests": 0,
+            "unknownRequests": 0
+          },
+          "errors": {
+            "transport": 0,
+            "parse": 0,
+            "decide": 0,
+            "execute": 0,
+            "s3ExpectedNoFood": 0
+          }
+        }
+      },
+      {
+        "scenarioId": "s1",
+        "thinking": false,
+        "planned": 3,
+        "valid": 0,
+        "pass": 0,
+        "behaviorFail": 0,
+        "interrupted": 0,
+        "notRun": 3,
+        "goalReached": 0,
+        "counters": {
+          "decisionCalls": 0,
+          "forwardedCalls": 0,
+          "httpRequests": 0,
+          "budgetIntercepts": 0,
+          "latencyMs": 0,
+          "usage": {
+            "promptTokens": 0,
+            "completionTokens": 0,
+            "totalTokens": 0,
+            "knownRequests": 0,
+            "unknownRequests": 0
+          },
+          "errors": {
+            "transport": 0,
+            "parse": 0,
+            "decide": 0,
+            "execute": 0,
+            "s3ExpectedNoFood": 0
+          }
+        }
+      },
+      {
+        "scenarioId": "s2",
+        "thinking": true,
+        "planned": 3,
+        "valid": 0,
+        "pass": 0,
+        "behaviorFail": 0,
+        "interrupted": 0,
+        "notRun": 3,
+        "goalReached": 0,
+        "counters": {
+          "decisionCalls": 0,
+          "forwardedCalls": 0,
+          "httpRequests": 0,
+          "budgetIntercepts": 0,
+          "latencyMs": 0,
+          "usage": {
+            "promptTokens": 0,
+            "completionTokens": 0,
+            "totalTokens": 0,
+            "knownRequests": 0,
+            "unknownRequests": 0
+          },
+          "errors": {
+            "transport": 0,
+            "parse": 0,
+            "decide": 0,
+            "execute": 0,
+            "s3ExpectedNoFood": 0
+          }
+        }
+      },
+      {
+        "scenarioId": "s2",
+        "thinking": false,
+        "planned": 3,
+        "valid": 0,
+        "pass": 0,
+        "behaviorFail": 0,
+        "interrupted": 0,
+        "notRun": 3,
+        "goalReached": 0,
+        "counters": {
+          "decisionCalls": 0,
+          "forwardedCalls": 0,
+          "httpRequests": 0,
+          "budgetIntercepts": 0,
+          "latencyMs": 0,
+          "usage": {
+            "promptTokens": 0,
+            "completionTokens": 0,
+            "totalTokens": 0,
+            "knownRequests": 0,
+            "unknownRequests": 0
+          },
+          "errors": {
+            "transport": 0,
+            "parse": 0,
+            "decide": 0,
+            "execute": 0,
+            "s3ExpectedNoFood": 0
+          }
+        }
+      },
+      {
+        "scenarioId": "s3",
+        "thinking": true,
+        "planned": 3,
+        "valid": 0,
+        "pass": 0,
+        "behaviorFail": 0,
+        "interrupted": 0,
+        "notRun": 3,
+        "goalReached": 0,
+        "counters": {
+          "decisionCalls": 0,
+          "forwardedCalls": 0,
+          "httpRequests": 0,
+          "budgetIntercepts": 0,
+          "latencyMs": 0,
+          "usage": {
+            "promptTokens": 0,
+            "completionTokens": 0,
+            "totalTokens": 0,
+            "knownRequests": 0,
+            "unknownRequests": 0
+          },
+          "errors": {
+            "transport": 0,
+            "parse": 0,
+            "decide": 0,
+            "execute": 0,
+            "s3ExpectedNoFood": 0
+          }
+        }
+      },
+      {
+        "scenarioId": "s3",
+        "thinking": false,
+        "planned": 3,
+        "valid": 0,
+        "pass": 0,
+        "behaviorFail": 0,
+        "interrupted": 0,
+        "notRun": 3,
+        "goalReached": 0,
+        "counters": {
+          "decisionCalls": 0,
+          "forwardedCalls": 0,
+          "httpRequests": 0,
+          "budgetIntercepts": 0,
+          "latencyMs": 0,
+          "usage": {
+            "promptTokens": 0,
+            "completionTokens": 0,
+            "totalTokens": 0,
+            "knownRequests": 0,
+            "unknownRequests": 0
+          },
+          "errors": {
+            "transport": 0,
+            "parse": 0,
+            "decide": 0,
+            "execute": 0,
+            "s3ExpectedNoFood": 0
+          }
+        }
+      }
+    ],
+    "byThinking": {
+      "true": {
+        "decisionCalls": 0,
+        "forwardedCalls": 0,
+        "httpRequests": 0,
+        "budgetIntercepts": 0,
+        "latencyMs": 0,
+        "usage": {
+          "promptTokens": 0,
+          "completionTokens": 0,
+          "totalTokens": 0,
+          "knownRequests": 0,
+          "unknownRequests": 0
+        },
+        "errors": {
+          "transport": 0,
+          "parse": 0,
+          "decide": 0,
+          "execute": 0,
+          "s3ExpectedNoFood": 0
+        },
+        "games": 0,
+        "pass": 0
+      },
+      "false": {
+        "decisionCalls": 0,
+        "forwardedCalls": 0,
+        "httpRequests": 0,
+        "budgetIntercepts": 0,
+        "latencyMs": 0,
+        "usage": {
+          "promptTokens": 0,
+          "completionTokens": 0,
+          "totalTokens": 0,
+          "knownRequests": 0,
+          "unknownRequests": 0
+        },
+        "errors": {
+          "transport": 0,
+          "parse": 0,
+          "decide": 0,
+          "execute": 0,
+          "s3ExpectedNoFood": 0
+        },
+        "games": 0,
+        "pass": 0
+      }
+    },
+    "global": {
+      "decisionCalls": 0,
+      "forwardedCalls": 0,
+      "httpRequests": 0,
+      "budgetIntercepts": 0,
+      "latencyMs": 0,
+      "usage": {
+        "promptTokens": 0,
+        "completionTokens": 0,
+        "totalTokens": 0,
+        "knownRequests": 0,
+        "unknownRequests": 0
+      },
+      "errors": {
+        "transport": 0,
+        "parse": 0,
+        "decide": 0,
+        "execute": 0,
+        "s3ExpectedNoFood": 0
+      }
+    },
+    "notRun": [
+      "s1-thinking-on-rep-1",
+      "s1-thinking-off-rep-1",
+      "s2-thinking-on-rep-1",
+      "s2-thinking-off-rep-1",
+      "s3-thinking-on-rep-1",
+      "s3-thinking-off-rep-1",
+      "s1-thinking-on-rep-2",
+      "s1-thinking-off-rep-2",
+      "s2-thinking-on-rep-2",
+      "s2-thinking-off-rep-2",
+      "s3-thinking-on-rep-2",
+      "s3-thinking-off-rep-2",
+      "s1-thinking-on-rep-3",
+      "s1-thinking-off-rep-3",
+      "s2-thinking-on-rep-3",
+      "s2-thinking-off-rep-3",
+      "s3-thinking-on-rep-3",
+      "s3-thinking-off-rep-3"
+    ],
+    "interrupted": [],
+    "issues": [],
+    "complete": false,
+    "success": false
+  },
+  "notes": [
+    "Production default enable_thinking remains true. This batch compares true and false and does not switch the default.",
+    "Decision timeout defaults to 30000ms so a thinking completion near 15s is not a false timeout. Override with FROSTECHO_LIVE_TIMEOUT_MS. No implicit retries.",
+    "mode=live sends one HTTP chat completion at a time. Failures are not retried. The harness never restarts the model service.",
+    "Order is paired: rep → scenario → thinking on/off. Rep 1 (one game per combination) is the gate; reps 2..3 run only if the gate passes.",
+    "scenarioPass is separate from goalReached. S2 and S3 pass when A stops with hunger still 40. stop is never goalReached.",
+    "S3 stale-observe NO_FOOD is counted in errors.s3ExpectedNoFood, not in errors.execute.",
+    "requestCount = calls forwarded past the local budget; httpRequests = chat completions actually sent; budgetIntercepts = local refusals.",
+    "Token totals cover only requests whose response had usage; usageUnknownRequests counts the rest (never assumed 0).",
+    "Evidence is tied to commit 3bdf8c76f5d26fc0c1f96f4d64159589884fbcf7 (dirty=false) and source beddadc44452; older artifacts do not prove this source.",
+    "thinking env default at process start: true"
+  ]
+}

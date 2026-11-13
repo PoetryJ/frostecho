@@ -1,0 +1,210 @@
+{
+  "schema": "frostecho.g09.plan/1",
+  "batch": "g09-live-20261104-frozen",
+  "plan": [
+    {
+      "index": 1,
+      "episodeId": "g09-r1-s40-self_only",
+      "rep": 1,
+      "cell": "s40-self_only",
+      "satiety": 40,
+      "arm": "self_only",
+      "requestId": null
+    },
+    {
+      "index": 2,
+      "episodeId": "g09-r1-s40-choice",
+      "rep": 1,
+      "cell": "s40-choice",
+      "satiety": 40,
+      "arm": "choice",
+      "requestId": "g09-r1-s40-choice-req-1"
+    },
+    {
+      "index": 3,
+      "episodeId": "g09-r1-s60-self_only",
+      "rep": 1,
+      "cell": "s60-self_only",
+      "satiety": 60,
+      "arm": "self_only",
+      "requestId": null
+    },
+    {
+      "index": 4,
+      "episodeId": "g09-r1-s60-choice",
+      "rep": 1,
+      "cell": "s60-choice",
+      "satiety": 60,
+      "arm": "choice",
+      "requestId": "g09-r1-s60-choice-req-1"
+    },
+    {
+      "index": 5,
+      "episodeId": "g09-r2-s40-self_only",
+      "rep": 2,
+      "cell": "s40-self_only",
+      "satiety": 40,
+      "arm": "self_only",
+      "requestId": null
+    },
+    {
+      "index": 6,
+      "episodeId": "g09-r2-s40-choice",
+      "rep": 2,
+      "cell": "s40-choice",
+      "satiety": 40,
+      "arm": "choice",
+      "requestId": "g09-r2-s40-choice-req-1"
+    },
+    {
+      "index": 7,
+      "episodeId": "g09-r2-s60-self_only",
+      "rep": 2,
+      "cell": "s60-self_only",
+      "satiety": 60,
+      "arm": "self_only",
+      "requestId": null
+    },
+    {
+      "index": 8,
+      "episodeId": "g09-r2-s60-choice",
+      "rep": 2,
+      "cell": "s60-choice",
+      "satiety": 60,
+      "arm": "choice",
+      "requestId": "g09-r2-s60-choice-req-1"
+    }
+  ],
+  "hardChatLimit": 16,
+  "repCount": 2,
+  "createdAt": "2026-11-04T04:04:05.876Z",
+  "mode": "live",
+  "model": "qwen3.8-27b",
+  "thinking": true,
+  "timeoutMs": 120000,
+  "cells": [
+    {
+      "cell": "s40-self_only",
+      "satiety": 40,
+      "arm": "self_only"
+    },
+    {
+      "cell": "s40-choice",
+      "satiety": 40,
+      "arm": "choice"
+    },
+    {
+      "cell": "s60-self_only",
+      "satiety": 60,
+      "arm": "self_only"
+    },
+    {
+      "cell": "s60-choice",
+      "satiety": 60,
+      "arm": "choice"
+    }
+  ],
+  "protocol": "goal_choice -> action, one session, two phases, one budget",
+  "initialStates": {
+    "s40-self_only": {
+      "tick": 0,
+      "simTime": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 20
+        },
+        "npc_c": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 40
+        }
+      },
+      "food": {
+        "kitchen": 1,
+        "dorm": 0
+      }
+    },
+    "s40-choice": {
+      "tick": 0,
+      "simTime": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 20
+        },
+        "npc_c": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 40
+        }
+      },
+      "food": {
+        "kitchen": 1,
+        "dorm": 0
+      }
+    },
+    "s60-self_only": {
+      "tick": 0,
+      "simTime": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 60
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 20
+        },
+        "npc_c": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 40
+        }
+      },
+      "food": {
+        "kitchen": 1,
+        "dorm": 0
+      }
+    },
+    "s60-choice": {
+      "tick": 0,
+      "simTime": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 60
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 20
+        },
+        "npc_c": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 40
+        }
+      },
+      "food": {
+        "kitchen": 1,
+        "dorm": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,301 @@
+
+> frostecho@0.1.0 test
+> npm run build && node scripts/run-tests.mjs
+
+
+> frostecho@0.1.0 build
+> tsc -p tsconfig.json
+
+TAP version 13
+# Subtest: env config requires a full URL and model; the key is optional
+ok 1 - env config requires a full URL and model; the key is optional
+  ---
+  duration_ms: 1.077305
+  type: 'test'
+  ...
+# Subtest: prompt is only the decide input
+ok 2 - prompt is only the decide input
+  ---
+  duration_ms: 0.30966
+  type: 'test'
+  ...
+# Subtest: HTTP adapter posts chat completions to the full URL and reads message content
+ok 3 - HTTP adapter posts chat completions to the full URL and reads message content
+  ---
+  duration_ms: 16.671494
+  type: 'test'
+  ...
+# Subtest: HTTP errors do not include the response body or the API key
+ok 4 - HTTP errors do not include the response body or the API key
+  ---
+  duration_ms: 0.806752
+  type: 'test'
+  ...
+# Subtest: adapter drops a body that arrives after abort
+ok 5 - adapter drops a body that arrives after abort
+  ---
+  duration_ms: 91.202949
+  type: 'test'
+  ...
+# Subtest: fake chat completions server: move then eat, and a transport error submits nothing
+ok 6 - fake chat completions server: move then eat, and a transport error submits nothing
+  ---
+  duration_ms: 26.746114
+  type: 'test'
+  ...
+# Subtest: HTTP timeout aborts the request and submits nothing
+ok 7 - HTTP timeout aborts the request and submits nothing
+  ---
+  duration_ms: 31.445275
+  type: 'test'
+  ...
+# Subtest: observation is own id, location, hunger, food here, and reachable places
+ok 8 - observation is own id, location, hunger, food here, and reachable places
+  ---
+  duration_ms: 1.135519
+  type: 'test'
+  ...
+# Subtest: foodHere follows the current location only
+ok 9 - foodHere follows the current location only
+  ---
+  duration_ms: 0.151631
+  type: 'test'
+  ...
+# Subtest: changing invisible food, other NPCs, or tick does not change the observation
+ok 10 - changing invisible food, other NPCs, or tick does not change the observation
+  ---
+  duration_ms: 0.202862
+  type: 'test'
+  ...
+# Subtest: observation does not mutate the world and reachable is a copy
+ok 11 - observation does not mutate the world and reachable is a copy
+  ---
+  duration_ms: 0.213586
+  type: 'test'
+  ...
+# Subtest: prototype actor ids are not observable NPCs
+ok 12 - prototype actor ids are not observable NPCs
+  ---
+  duration_ms: 0.362187
+  type: 'test'
+  ...
+# Subtest: parser accepts only move, eat, and stop
+ok 13 - parser accepts only move, eat, and stop
+  ---
+  duration_ms: 1.096549
+  type: 'test'
+  ...
+# Subtest: parser rejects extra fields, illegal places, and non-objects
+ok 14 - parser rejects extra fields, illegal places, and non-objects
+  ---
+  duration_ms: 0.280832
+  type: 'test'
+  ...
+# Subtest: formal regression: actorId "proto" -> UNKNOWN_ACTOR, state and events unchanged
+ok 15 - formal regression: actorId "proto" -> UNKNOWN_ACTOR, state and events unchanged
+  ---
+  duration_ms: 2.845822
+  type: 'test'
+  ...
+# Subtest: reference policy moves, eats, or stops from its own input
+ok 16 - reference policy moves, eats, or stops from its own input
+  ---
+  duration_ms: 0.651404
+  type: 'test'
+  ...
+# Subtest: reference policy ignores feedback and does not need a world
+ok 17 - reference policy ignores feedback and does not need a world
+  ---
+  duration_ms: 0.471382
+  type: 'test'
+  ...
+# Subtest: happy path: move then eat, food 1→0, hunger 40→70, replay matches
+ok 18 - happy path: move then eat, food 1→0, hunger 40→70, replay matches
+  ---
+  duration_ms: 3.469394
+  type: 'test'
+  ...
+# Subtest: invisible place food and other NPC attrs do not change the decide input
+ok 19 - invisible place food and other NPC attrs do not change the decide input
+  ---
+  duration_ms: 0.792341
+  type: 'test'
+  ...
+# Subtest: no kitchen food while already there is a normal stop and is not the goal
+ok 20 - no kitchen food while already there is a normal stop and is not the goal
+  ---
+  duration_ms: 1.188358
+  type: 'test'
+  ...
+# Subtest: a model stop from the dorm leaves state unchanged and is not success
+ok 21 - a model stop from the dorm leaves state unchanged and is not success
+  ---
+  duration_ms: 0.506429
+  type: 'test'
+  ...
+# Subtest: empty kitchen from the dorm: reference moves, then stops, hunger stays 40
+ok 22 - empty kitchen from the dorm: reference moves, then stops, hunger stays 40
+  ---
+  duration_ms: 0.772535
+  type: 'test'
+  ...
+# Subtest: illegal JSON, illegal action, and forged actorId are not submitted; the next round can recover
+ok 23 - illegal JSON, illegal action, and forged actorId are not submitted; the next round can recover
+  ---
+  duration_ms: 1.155041
+  type: 'test'
+  ...
+# Subtest: eat in the dorm is rejected, fed back, then move and eat reach the goal
+ok 24 - eat in the dorm is rejected, fed back, then move and eat reach the goal
+  ---
+  duration_ms: 0.834196
+  type: 'test'
+  ...
+# Subtest: five consecutive illegal outputs end the run with no world commands
+ok 25 - five consecutive illegal outputs end the run with no world commands
+  ---
+  duration_ms: 0.583704
+  type: 'test'
+  ...
+# Subtest: a late provider response after timeout is not executed
+ok 26 - a late provider response after timeout is not executed
+  ---
+  duration_ms: 111.941498
+  type: 'test'
+  ...
+# Subtest: same initial state, runId, and reference policy produce identical actions, events, and final state
+ok 27 - same initial state, runId, and reference policy produce identical actions, events, and final state
+  ---
+  duration_ms: 1.219574
+  type: 'test'
+  ...
+# Subtest: actorId proto is not submitted by the runner
+ok 28 - actorId proto is not submitted by the runner
+  ---
+  duration_ms: 0.217781
+  type: 'test'
+  ...
+# Subtest: already full hunger is success without a provider call
+ok 29 - already full hunger is success without a provider call
+  ---
+  duration_ms: 0.176225
+  type: 'test'
+  ...
+# Subtest: A: move to kitchen then eat
+ok 30 - A: move to kitchen then eat
+  ---
+  duration_ms: 2.469446
+  type: 'test'
+  ...
+# Subtest: A2: hunger clamps at 100
+ok 31 - A2: hunger clamps at 100
+  ---
+  duration_ms: 0.525481
+  type: 'test'
+  ...
+# Subtest: B: contention for last food, order npc_a then npc_b
+ok 32 - B: contention for last food, order npc_a then npc_b
+  ---
+  duration_ms: 0.714294
+  type: 'test'
+  ...
+# Subtest: B: contention for last food, order npc_b then npc_a
+ok 33 - B: contention for last food, order npc_b then npc_a
+  ---
+  duration_ms: 1.352948
+  type: 'test'
+  ...
+# Subtest: C: duplicate successful command has no extra effect
+ok 34 - C: duplicate successful command has no extra effect
+  ---
+  duration_ms: 0.7714
+  type: 'test'
+  ...
+# Subtest: D: same commandId with different payload -> COMMAND_ID_CONFLICT
+ok 35 - D: same commandId with different payload -> COMMAND_ID_CONFLICT
+  ---
+  duration_ms: 0.432529
+  type: 'test'
+  ...
+# Subtest: E: invalid input / unmet preconditions leave state unchanged
+ok 36 - E: invalid input / unmet preconditions leave state unchanged
+  ---
+  duration_ms: 0.86952
+  type: 'test'
+  ...
+# Subtest: F: replay(initial, events) equals live final state; no executor called
+ok 37 - F: replay(initial, events) equals live final state; no executor called
+  ---
+  duration_ms: 0.641865
+  type: 'test'
+  ...
+# Subtest: G: restore from save then retry completed command -> no duplicate effect
+ok 38 - G: restore from save then retry completed command -> no duplicate effect
+  ---
+  duration_ms: 1.423695
+  type: 'test'
+  ...
+# Subtest: Immutability: returned state/history cannot corrupt engine
+ok 39 - Immutability: returned state/history cannot corrupt engine
+  ---
+  duration_ms: 0.907963
+  type: 'test'
+  ...
+# Subtest: Determinism: same commands -> identical records (no wall clock)
+ok 40 - Determinism: same commands -> identical records (no wall clock)
+  ---
+  duration_ms: 0.356155
+  type: 'test'
+  ...
+# Subtest: H: move actorId toString -> UNKNOWN_ACTOR, no throw, state and events unchanged
+ok 41 - H: move actorId toString -> UNKNOWN_ACTOR, no throw, state and events unchanged
+  ---
+  duration_ms: 0.331418
+  type: 'test'
+  ...
+# Subtest: H: move actorId constructor -> UNKNOWN_ACTOR, no throw, state and events unchanged
+ok 42 - H: move actorId constructor -> UNKNOWN_ACTOR, no throw, state and events unchanged
+  ---
+  duration_ms: 0.222013
+  type: 'test'
+  ...
+# Subtest: H: move actorId proto -> UNKNOWN_ACTOR, no throw, state and events unchanged
+ok 43 - H: move actorId proto -> UNKNOWN_ACTOR, no throw, state and events unchanged
+  ---
+  duration_ms: 0.190096
+  type: 'test'
+  ...
+# Subtest: I: same commandId eat, omitted payload vs {} -> COMMAND_ID_CONFLICT both orders
+ok 44 - I: same commandId eat, omitted payload vs {} -> COMMAND_ID_CONFLICT both orders
+  ---
+  duration_ms: 0.840932
+  type: 'test'
+  ...
+# Subtest: I-restore: omitted payload vs {} still conflicts after JSON save/restore, both orders
+ok 45 - I-restore: omitted payload vs {} still conflicts after JSON save/restore, both orders
+  ---
+  duration_ms: 0.899935
+  type: 'test'
+  ...
+# Subtest: I-null: omitted payload vs explicit null -> COMMAND_ID_CONFLICT, both orders, and both after JSON restore
+ok 46 - I-null: omitted payload vs explicit null -> COMMAND_ID_CONFLICT, both orders, and both after JSON restore
+  ---
+  duration_ms: 1.359761
+  type: 'test'
+  ...
+# Subtest: J: true duplicates, key-order equality, and failed-command retry stay duplicates
+ok 47 - J: true duplicates, key-order equality, and failed-command retry stay duplicates
+  ---
+  duration_ms: 0.966079
+  type: 'test'
+  ...
+1..47
+# tests 47
+# suites 0
+# pass 47
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 252.25173
+EXIT:0

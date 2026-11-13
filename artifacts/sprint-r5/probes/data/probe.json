@@ -1,0 +1,283 @@
+{
+  "head": "cdcb909e737066a13c7545a43f65e28d6973f390",
+  "v4_declared": {
+    "schema": "frostecho.jev04.gate-v4/2",
+    "purpose": "report from the current bytes; not an input to training",
+    "validator": "research/decision-choice/jev04/data/v4/validate_v4.py",
+    "hashProtocol": "frostecho.jev04.visible/4 (task/narrative/facts/candidate order+id+text+kind+params)",
+    "summary": {
+      "cases": 39,
+      "s1": 39,
+      "s2": 39,
+      "adjudicated": 39,
+      "trainRows": 0,
+      "devRows": 0,
+      "uniqueTrainRows": 0,
+      "uniqueDevRows": 0,
+      "reviewVersion": "v4-review/1",
+      "independentReviewers": true,
+      "qualifiedTrain": 0,
+      "qualifiedDev": 0,
+      "requiredTrain": 512,
+      "requiredDev": 128,
+      "trainSourceGroups": 0,
+      "devSourceGroups": 0,
+      "researchTrainReady": false,
+      "failures": []
+    },
+    "failures": [],
+    "adjudication": {
+      "eligible": 0,
+      "ambiguous": 29,
+      "inconsistent": 10,
+      "acceptableSetDisagreements": 4,
+      "statusDifferences": 18,
+      "humanDoubleLabel": false,
+      "crossModelValidation": false
+    },
+    "researchTrainReady": false,
+    "formalTraining": {
+      "status": "closed",
+      "reason": "qualified counts below 512/128"
+    },
+    "note": "the 39-case review is an independent-session adjudication start point, not 512/128 training data"
+  },
+  "actual_formal_training_gate": {
+    "mayTrainOnJev": false,
+    "reason": "not ready: qualified 0/512 train, 0/128 dev",
+    "failures": [],
+    "summary": {
+      "cases": 39,
+      "s1": 39,
+      "s2": 39,
+      "adjudicated": 39,
+      "trainRows": 0,
+      "devRows": 0,
+      "uniqueTrainRows": 0,
+      "uniqueDevRows": 0,
+      "reviewVersion": "v4-review/1",
+      "independentReviewers": true,
+      "qualifiedTrain": 0,
+      "qualifiedDev": 0,
+      "requiredTrain": 512,
+      "requiredDev": 128,
+      "trainSourceGroups": 0,
+      "devSourceGroups": 0,
+      "researchTrainReady": false,
+      "failures": []
+    }
+  },
+  "v4_fixture_baseline": {
+    "exit": 0,
+    "payload": {
+      "ok": true,
+      "dir": "artifacts/sprint-r5/probes/data/baseline",
+      "summary": {
+        "cases": 4,
+        "s1": 4,
+        "s2": 4,
+        "adjudicated": 4,
+        "trainRows": 2,
+        "devRows": 2,
+        "uniqueTrainRows": 2,
+        "uniqueDevRows": 2,
+        "reviewVersion": "v4-review/1",
+        "independentReviewers": false,
+        "qualifiedTrain": 0,
+        "qualifiedDev": 0,
+        "requiredTrain": 512,
+        "requiredDev": 128,
+        "trainSourceGroups": 2,
+        "devSourceGroups": 2,
+        "researchTrainReady": false,
+        "failures": []
+      }
+    }
+  },
+  "candidate_semantics_changed": {
+    "exit": 1,
+    "payload": {
+      "ok": false,
+      "dir": "artifacts/sprint-r5/probes/data/candidate-semantics",
+      "summary": {
+        "cases": 4,
+        "s1": 4,
+        "s2": 4,
+        "adjudicated": 4,
+        "trainRows": 2,
+        "devRows": 2,
+        "uniqueTrainRows": 2,
+        "uniqueDevRows": 2,
+        "reviewVersion": "v4-review/1",
+        "independentReviewers": false,
+        "qualifiedTrain": 0,
+        "qualifiedDev": 0,
+        "requiredTrain": 512,
+        "requiredDev": 128,
+        "trainSourceGroups": 2,
+        "devSourceGroups": 2,
+        "researchTrainReady": false,
+        "failures": [
+          "v4-fixture-00: content_hash_mismatch (case declares a3a5a920f0fc, computed 3698bc9ab162)",
+          "v4-fixture-00: s1_hash_not_bound (a3a5a920f0fc vs 3698bc9ab162)",
+          "v4-fixture-00: s2_hash_not_bound (a3a5a920f0fc vs 3698bc9ab162)",
+          "v4-fixture-00: adjudication_hash_not_bound",
+          "train:v4-fixture-00: split_hash_not_bound (a3a5a920f0fc vs 3698bc9ab162)",
+          "train:v4-fixture-00: train_text_differs_from_case"
+        ]
+      },
+      "failures": [
+        "v4-fixture-00: content_hash_mismatch (case declares a3a5a920f0fc, computed 3698bc9ab162)",
+        "v4-fixture-00: s1_hash_not_bound (a3a5a920f0fc vs 3698bc9ab162)",
+        "v4-fixture-00: s2_hash_not_bound (a3a5a920f0fc vs 3698bc9ab162)",
+        "v4-fixture-00: adjudication_hash_not_bound",
+        "train:v4-fixture-00: split_hash_not_bound (a3a5a920f0fc vs 3698bc9ab162)",
+        "train:v4-fixture-00: train_text_differs_from_case"
+      ]
+    }
+  },
+  "training_label_invalid": {
+    "exit": 1,
+    "payload": {
+      "ok": false,
+      "dir": "artifacts/sprint-r5/probes/data/training-label",
+      "summary": {
+        "cases": 4,
+        "s1": 4,
+        "s2": 4,
+        "adjudicated": 4,
+        "trainRows": 2,
+        "devRows": 2,
+        "uniqueTrainRows": 2,
+        "uniqueDevRows": 2,
+        "reviewVersion": "v4-review/1",
+        "independentReviewers": false,
+        "qualifiedTrain": 0,
+        "qualifiedDev": 0,
+        "requiredTrain": 512,
+        "requiredDev": 128,
+        "trainSourceGroups": 2,
+        "devSourceGroups": 2,
+        "researchTrainReady": false,
+        "failures": [
+          "train:v4-fixture-00: illegal_label 'not-a-candidate'"
+        ]
+      },
+      "failures": [
+        "train:v4-fixture-00: illegal_label 'not-a-candidate'"
+      ]
+    }
+  },
+  "synthetic_repeats_open_gate": {
+    "exit": 1,
+    "payload": {
+      "ok": false,
+      "dir": "artifacts/sprint-r5/probes/data/repeated-fixtures",
+      "summary": {
+        "cases": 4,
+        "s1": 4,
+        "s2": 4,
+        "adjudicated": 4,
+        "trainRows": 512,
+        "devRows": 128,
+        "uniqueTrainRows": 1,
+        "uniqueDevRows": 1,
+        "reviewVersion": "v4-review/1",
+        "independentReviewers": false,
+        "qualifiedTrain": 0,
+        "qualifiedDev": 0,
+        "requiredTrain": 512,
+        "requiredDev": 128,
+        "trainSourceGroups": 1,
+        "devSourceGroups": 1,
+        "researchTrainReady": false,
+        "failures": [
+          "train: duplicate_ids ['v4-fixture-00']",
+          "dev: duplicate_ids ['v4-fixture-02']"
+        ]
+      },
+      "failures": [
+        "train: duplicate_ids ['v4-fixture-00']",
+        "dev: duplicate_ids ['v4-fixture-02']"
+      ]
+    }
+  },
+  "empty_certificate_real": {
+    "raw_logits": [
+      5.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "softmax_probabilities": [
+      0.9801866626534912,
+      0.006604445782169691,
+      0.006604445782169691,
+      0.006604445782169691
+    ],
+    "temperature_probabilities": [
+      0.9801866626534912,
+      0.006604445782169691,
+      0.006604445782169691,
+      0.006604445782169691
+    ],
+    "utility": null,
+    "utility_source": null,
+    "selected_index": null,
+    "disposition": "shadow_only",
+    "pmax": 0.9801866626534912,
+    "mode": "real",
+    "counts_as_real": false
+  },
+  "empty_certificate_fixture": {
+    "raw_logits": [
+      5.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "softmax_probabilities": [
+      0.9801866626534912,
+      0.006604445782169691,
+      0.006604445782169691,
+      0.006604445782169691
+    ],
+    "temperature_probabilities": [
+      0.9801866626534912,
+      0.006604445782169691,
+      0.006604445782169691,
+      0.006604445782169691
+    ],
+    "utility": null,
+    "utility_source": null,
+    "selected_index": 0,
+    "disposition": "accept",
+    "pmax": 0.9801866626534912,
+    "mode": "fixture",
+    "counts_as_real": false
+  },
+  "actual_download_url": {
+    "observed_first_request": [
+      "https://huggingface.co/Qwen/Qwen3.5-27B/resolve/0123456789abcdef/config.json"
+    ],
+    "returned_report": {
+      "schema": "frostecho.jev04.t27-download/1",
+      "at": "2026-11-12T10:15:15.613031+00:00",
+      "revision": "0123456789abcdef",
+      "repo": "Qwen/Qwen3.5-27B",
+      "configUrl": "https://huggingface.co/Qwen/Qwen3.5-27B/resolve/0123456789abcdef/config.json",
+      "downloadUrl": "https://huggingface.co/Qwen/Qwen3.5-27B/resolve/0123456789abcdef",
+      "snapshotArgs": {
+        "repo_id": "Qwen/Qwen3.5-27B",
+        "revision": "0123456789abcdef",
+        "resume_download": true,
+        "max_workers": 4
+      },
+      "resumeCommand": "python3 research/decision-choice/jev04/models/prepare_t27.py --download --revision 0123456789abcdef",
+      "status": "failed",
+      "errorType": "network-unreachable",
+      "error": "OSError: audit intercept; no external network call"
+    },
+    "networkUsed": false
+  }
+}

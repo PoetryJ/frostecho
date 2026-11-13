@@ -1,0 +1,85 @@
+{
+  "schema": "frostecho.r6.four-probes/1",
+  "phase": "baseline",
+  "note": "baseline success proves defects reproduced, NOT product acceptance; synthetic CPU probes, no model",
+  "repo": "/agent/repos/frostecho",
+  "checks": {
+    "product": {
+      "defectObserved": true,
+      "fixed": false,
+      "taskStatus": "done",
+      "commitmentStatus": "active",
+      "evidenceIds": [],
+      "warehouseFood": 6
+    },
+    "lifecycle": {
+      "defectObserved": true,
+      "fixed": false,
+      "oldDenied": true,
+      "outside": [
+        {
+          "actorId": "npc_01",
+          "status": "cancelled",
+          "selectedId": null,
+          "commandId": null,
+          "executionStatus": null,
+          "eventIds": [],
+          "postStateVersion": null,
+          "executed": false,
+          "reason": "generation_changed_before_start",
+          "promiseStatuses": []
+        }
+      ],
+      "savedVersion": 0,
+      "finalVersion": 1
+    },
+    "data": {
+      "defectObserved": true,
+      "fixed": false,
+      "caseId": "v2-gA01-B",
+      "importExit": 0,
+      "validatorExit": 0,
+      "rawReviewShaUnchanged": true,
+      "contentHashRebound": true,
+      "dataBytesUnchanged": false,
+      "reasonedRejection": false,
+      "unexpectedCrash": false
+    },
+    "risk": {
+      "defectObserved": true,
+      "fixed": false,
+      "decision": {
+        "raw_logits": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "softmax_probabilities": [
+          0.4753668864186717,
+          0.17487770452710943,
+          0.17487770452710943,
+          0.17487770452710943
+        ],
+        "temperature_probabilities": [
+          1.0,
+          3.720075976020836e-44,
+          3.720075976020836e-44,
+          3.720075976020836e-44
+        ],
+        "utility": null,
+        "utility_source": null,
+        "selected_index": 0,
+        "disposition": "accept",
+        "pmax": 1.0,
+        "mode": "real",
+        "counts_as_real": true
+      }
+    }
+  },
+  "errors": {},
+  "head": "040f90c1d5c31e5ad55090f52368d35e231faf61",
+  "verified": true,
+  "scope": "four_minimal_probes",
+  "exit": 0
+}

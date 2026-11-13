@@ -1,0 +1,13 @@
+{
+  "schema": "frostecho.jev04.controls-plan/1",
+  "rule": "每条轨迹同时保留成功、失败、应改变决策、不应改变决策四类；不把从失败中找数据变成只学失败。",
+  "categories": [
+    { "name": "success", "meaning": "正确解释/选择并实际履约，保留输入与证据" },
+    { "name": "failure", "meaning": "错误解释/选择、过期知识执行、无故违约" },
+    { "name": "should_change", "meaning": "相关撤销/更正已获知，决策应改变" },
+    { "name": "should_not_change", "meaning": "无关事件、等价重建、未获知的变化，决策不应改变" }
+  ],
+  "minimumPerCategory": 16,
+  "status": "planned-not-authored",
+  "frozenDataPolicy": "已冻结数据不暗改；需要改变则开新版本"
+}

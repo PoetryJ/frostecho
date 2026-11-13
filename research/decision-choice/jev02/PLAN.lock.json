@@ -1,0 +1,125 @@
+{
+  "schema": "frostecho.jev02.plan-lock/1",
+  "at": "2026-11-09T18:04:59+08:00",
+  "baseline": "5c1e033",
+  "branch": "codex/jev-02-overnight",
+  "model": {
+    "path": "/data2/model_weights/Qwen3.8-27B",
+    "files": {
+      "config.json": {
+        "sha256": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab",
+        "bytes": 4312
+      },
+      "tokenizer_config.json": {
+        "sha256": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+        "bytes": 17928
+      },
+      "chat_template.jinja": {
+        "sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+        "bytes": 8952
+      },
+      "model.safetensors.index.json": {
+        "sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+        "bytes": 112216
+      },
+      "generation_config.json": {
+        "sha256": "e70c136c1b78ddc1fb0905bac8e733a4dc448d4f852a5dd75143fffc70be550e",
+        "bytes": 202
+      }
+    },
+    "metadataBytes": 143610
+  },
+  "data": {
+    "trainStatsSha": "4fe2f197633222cd992b9b9ffbf30b5ea65e1c420feb08e4251cc57b21730faf",
+    "testStatsSha": "736f5d80f44050e52d752610245867344dc62002ca498da329cd6518bb610d71",
+    "testGoldSha256": "b77699e1ee4a7f1a1886f3acad470efac82ea5628b67cdc551b1a06556dc54d0",
+    "testInputsSha256": "69c00e84948f64afbdd351f0733f1b77f431732eeb90cdf3b603249a50be5a5c",
+    "hashes": {
+      "train": "32dcc26c5b0d3190dd75b553e14325d35ef97df7e84d83fadf3ec13d7283d9a9",
+      "dev": "98f7eddfc1f8dcff7b7e44b35c36a79b2ab016652e8a2bc791b27ac249562cab",
+      "cal": "3b9ab13550ade80fef6c1476896524cf9bffebb5c02889eb229147954be655c6"
+    },
+    "splits": {
+      "train": 1024,
+      "dev": 128,
+      "cal": 512
+    }
+  },
+  "latencyCaseIds": [
+    "jev02-test-PF-0042",
+    "jev02-test-PF-0029",
+    "jev02-test-NF-0116",
+    "jev02-test-NF-0066",
+    "jev02-test-NP-0179",
+    "jev02-test-NP-0155",
+    "jev02-test-NC-0219",
+    "jev02-test-NC-0213"
+  ],
+  "caps": {
+    "model_jobs": 25000,
+    "generation_jobs": 1700,
+    "max_new_tokens": 64,
+    "per_gpu_gib": 24,
+    "window_seconds": 43200,
+    "retries_total": 10,
+    "retries_per_task": 1,
+    "feature_jobs": 24000,
+    "forward_jobs": 23300,
+    "latency_jobs": 200,
+    "warmup_jobs": 16
+  },
+  "training": {
+    "hidden": 5120,
+    "batch_groups": 32,
+    "lr": 0.001,
+    "weight_decay": 0.01,
+    "epochs_max": 100,
+    "patience": 10,
+    "grad_clip": 1.0,
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "consistency_weight": 0.1,
+    "variants": [
+      "M1",
+      "M2"
+    ]
+  },
+  "orders": [
+    [
+      "PLAYER_FIRST",
+      "NPC_FIRST",
+      "NO_PRIORITY_REQUEST",
+      "NEEDS_CLARIFICATION"
+    ],
+    [
+      "NEEDS_CLARIFICATION",
+      "NO_PRIORITY_REQUEST",
+      "NPC_FIRST",
+      "PLAYER_FIRST"
+    ],
+    [
+      "NPC_FIRST",
+      "PLAYER_FIRST",
+      "NEEDS_CLARIFICATION",
+      "NO_PRIORITY_REQUEST"
+    ],
+    [
+      "NO_PRIORITY_REQUEST",
+      "NEEDS_CLARIFICATION",
+      "PLAYER_FIRST",
+      "NPC_FIRST"
+    ]
+  ],
+  "arms": [
+    "rules",
+    "json",
+    "label_logits",
+    "old_h0",
+    "M1",
+    "M2"
+  ],
+  "lockSha256": "7b5227bb93f9264ef4f2dbe23f57d73ad2f1279eb6bab7687e941d542e100be1"
+}

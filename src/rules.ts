@@ -1,15 +1,100 @@
-import { Command, Location, RejectReason, RULES, WorldEvent, WorldState } from './types';
+import { Command, Location, NpcState, RejectReason, RULES, WorldEvent, WorldState } from './types';
+
+/** G04: internal routing marker for experimental environment input. */
+export const WORLD_ACTOR_ID = 'world';
+const RESTOCK_MIN = 1;
+const RESTOCK_MAX = 10;
+/**
+ * restock is world-only (a network-driven NPC can never grow food), targets an
+ * existing location, takes an integer amount in [1,10] and nothing else, and
+ * must keep the new total a safe integer.
+ */
+function decideRestock(state: Readonly<WorldState>, cmd: Command): Decision {
+  if (cmd.actorId !== WORLD_ACTOR_ID) {
+    return { ok: false, reason: 'FORBIDDEN_ACTION', detail: `only ${WORLD_ACTOR_ID} may restock, not ${cmd.actorId}` };
+  }
+  const p = cmd.payload as any;
+  if (!p || typeof p !== 'object' || Array.isArray(p)) {
+    return { ok: false, reason: 'INVALID_PAYLOAD', detail: 'restock payload must be {location, amount}' };
+  }
+  const keys = Object.keys(p).sort().join(',');
+  if (keys !== 'amount,location') return { ok: false, reason: 'INVALID_PAYLOAD', detail: 'restock accepts only {location, amount}' };
+  if (!isLoc(p.location)) return { ok: false, reason: 'INVALID_PAYLOAD', detail: `restock.location must be one of ${RULES.LOCATIONS.join('|')}` };
+  if (!Number.isSafeInteger(p.amount) || p.amount < RESTOCK_MIN || p.amount > RESTOCK_MAX) {
+    return { ok: false, reason: 'INVALID_PAYLOAD', detail: `restock.amount must be an integer in [${RESTOCK_MIN},${RESTOCK_MAX}]` };
+  }
+  const location = p.location as Location;
+  const before = state.food[location];
+  const after = before + p.amount;
+  if (!Number.isSafeInteger(after)) return { ok: false, reason: 'INVALID_PAYLOAD', detail: 'restock would overflow the food counter' };
+  return { ok: true, events: [{ type: 'FoodRestocked', location, amount: p.amount as number, before, after } as any] };
+}
 
 export type Decision =
   | { ok: true; events: Omit<WorldEvent, 'eventId' | 'seq' | 'commandId'>[] }
   | { ok: false; reason: RejectReason; detail: string };
 
+/**
+ * G05-R1: advance_time is world-only, takes an integer steps in
+ * [1, TIME_ADVANCE_MAX_STEPS] and nothing else. One atomic commit: TimeAdvanced
+ * first, then one HungerChanged per NPC (actorId-sorted, player included) of
+ * -DECAY_PER_STEP per step, floored at 0. A multi-step advance is a single time
+ * jump with no interleaved NPC actions; with no intermediate actions, advance N
+ * equals N×advance 1 in simTime and satiety (logs may differ).
+ */
+function decideAdvanceTime(state: Readonly<WorldState>, cmd: Command): Decision {
+  if (cmd.actorId !== WORLD_ACTOR_ID) {
+    return { ok: false, reason: 'FORBIDDEN_ACTION', detail: `only ${WORLD_ACTOR_ID} may advance_time, not ${cmd.actorId}` };
+  }
+  const p = cmd.payload as any;
+  if (!p || typeof p !== 'object' || Array.isArray(p)) {
+    return { ok: false, reason: 'INVALID_PAYLOAD', detail: 'advance_time payload must be {steps}' };
+  }
+  const keys = Object.keys(p).sort().join(',');
+  if (keys !== 'steps') return { ok: false, reason: 'INVALID_PAYLOAD', detail: 'advance_time accepts only {steps}' };
+  if (!Number.isSafeInteger(p.steps) || p.steps < 1 || p.steps > RULES.TIME_ADVANCE_MAX_STEPS) {
+    return { ok: false, reason: 'INVALID_PAYLOAD', detail: `advance_time.steps must be an integer in [1,${RULES.TIME_ADVANCE_MAX_STEPS}]` };
+  }
+  const before = state.simTime ?? 0;
+  const after = before + p.steps;
+  if (!Number.isSafeInteger(after)) {
+    return { ok: false, reason: 'INVALID_PAYLOAD', detail: 'advance_time would overflow simTime' };
+  }
+  const events: Omit<WorldEvent, 'eventId' | 'seq' | 'commandId'>[] = [
+    { type: 'TimeAdvanced', before, after, steps: p.steps } as any,
+  ];
+  for (const npcId of Object.keys(state.npcs).sort()) {
+    const npc = state.npcs[npcId];
+    const decayed = Math.max(RULES.HUNGER_MIN, npc.hunger - p.steps * RULES.DECAY_PER_STEP);
+    if (decayed !== npc.hunger) events.push({ type: 'HungerChanged', npcId, before: npc.hunger, after: decayed } as any);
+  }
+  return { ok: true, events };
+}
+
 const isLoc = (x: unknown): x is Location => typeof x === 'string' && (RULES.LOCATIONS as readonly string[]).includes(x);
 const clamp = (n: number) => Math.min(RULES.HUNGER_MAX, Math.max(RULES.HUNGER_MIN, n));
 
+/**
+ * Own-property lookup only. Bracket access walks Object.prototype, so actorIds
+ * such as "toString" and "constructor" are truthy functions; decide would then
+ * emit NpcMoved with a missing id and applyEvent would throw TypeError.
+ */
+function actorOf(state: Readonly<WorldState>, actorId: string): NpcState | undefined {
+  if (!Object.hasOwn(state.npcs, actorId)) return undefined;
+  const npc = state.npcs[actorId];
+  if (!npc || typeof npc !== 'object') return undefined;
+  return npc;
+}
+
 /** Pure: validate a command against state and decide events. Never mutates state. */
 export function decide(state: Readonly<WorldState>, cmd: Command): Decision {
-  const npc = state.npcs[cmd.actorId];
+  if (cmd.type === 'restock') return decideRestock(state, cmd);
+  if (cmd.type === 'advance_time') return decideAdvanceTime(state, cmd);
+  if (cmd.actorId === WORLD_ACTOR_ID) {
+    // The world is not an NPC: it may restock and advance time, nothing else.
+    return { ok: false, reason: 'FORBIDDEN_ACTION', detail: `world may only restock or advance_time, not ${String(cmd.type)}` };
+  }
+  const npc = actorOf(state, cmd.actorId);
   if (!npc) return { ok: false, reason: 'UNKNOWN_ACTOR', detail: `actor ${cmd.actorId} not found` };
   switch (cmd.type) {
     case 'move': {
@@ -43,6 +128,8 @@ export function applyEvent(state: WorldState, e: WorldEvent): WorldState {
     case 'NpcMoved': s.npcs[e.npcId].location = e.to; break;
     case 'FoodConsumed': s.food[e.location] = e.after; break;
     case 'HungerChanged': s.npcs[e.npcId].hunger = e.after; break;
+    case 'FoodRestocked': s.food[e.location] = e.after; break;
+    case 'TimeAdvanced': s.simTime = e.after; break;
   }
   s.tick = e.seq;
   return s;
@@ -55,5 +142,6 @@ export function checkInvariants(s: WorldState): string[] {
     if (!(n.hunger >= RULES.HUNGER_MIN && n.hunger <= RULES.HUNGER_MAX)) errs.push(`hunger ${n.id}=${n.hunger}`);
     if (!isLoc(n.location)) errs.push(`location ${n.id}=${n.location}`);
   }
+  if (s.simTime !== undefined && (!Number.isSafeInteger(s.simTime) || s.simTime < 0)) errs.push(`simTime=${String(s.simTime)}`);
   return errs;
 }

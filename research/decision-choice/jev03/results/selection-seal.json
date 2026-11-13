@@ -1,0 +1,57 @@
+{
+  "M0": {
+    "fileSha256": "d53d9b368cac14acecfaaa5aca5fc5ae8873028ca92af9ba9d8423b273be634e",
+    "kind": "linear_head",
+    "params": 5120,
+    "path": "/data3/DATA/project/project_meishijiang/FrostEcho-jev02/research/decision-choice/jev02/runs/M1-seed17/candidate.safetensors",
+    "tensorSha256": "5cda925fe9ae691ca31078db32eaee01305e351792940d34592ab093e29d172b"
+  },
+  "arms": {
+    "C": {
+      "kind": "shared candidate scorer",
+      "params": 5120
+    },
+    "M0": {
+      "kind": "frozen jev02 M1 head",
+      "params": 5120
+    },
+    "Q": {
+      "kind": "final-query classifier",
+      "params": 20480
+    }
+  },
+  "at": "2026-11-10T15:28:08+08:00",
+  "boundarySha256": "82bf9840eb27a4e182fe195bfe6dfb9146dee81e8afa65fe1468b7cd0f20e633",
+  "contractSha256": "4b96946528e2a4dcd0379be985d05046b2fd87c98b5b93f58d392d0d9645654e",
+  "dataHashes": {
+    "dev": "b68f8e3c09a1394edbe253e389c2310a165a4ea606b41ef74fa61e13a5c83e1f",
+    "test": "6d2c0379056379b2b7d69c1353c291da27af47a725656fa870c8db6f4074980f",
+    "train": "975db0f9ab54ae101231d35762bf1f08765f82c36d9c54db15019e0976a92590"
+  },
+  "featureIdentityHash": "555f5f55f6f8037508067331c11e548e671e881fb5312e9d5cb62b0f0828e159",
+  "goldSha256": "454eb516df2fc729fa4f725d1be09805c0d077e5da78bf011b2bce7bfa75ccdb",
+  "groupsSha256": "d91a65fc705724895baff8a1d5e93a36ed60fd88818f4fdbf4c636e23e858841",
+  "rule": "per arm: lowest dev four-order mean NLL; tie -> earlier epoch, then smaller seed; C vs Q decided by the same dev metric, test never used to re-pick",
+  "schema": "frostecho.jev03.selection/1",
+  "selected": {
+    "C": {
+      "bestEpoch": 99,
+      "devNll": 0.04926517605781555,
+      "fileSha256": "a55cc47f1c30353b9c1a38e6de3d79e1765a26412b215486d40e06e04514c989",
+      "params": 5120,
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-jev03-readout/research/decision-choice/jev03/runs/C-seed43/best.safetensors",
+      "seed": 43,
+      "tensorSha256": "7b6a490b3dd5eaeceb2693ccfaa26473e8a2b157597fad1c0d729419fde48695"
+    },
+    "Q": {
+      "bestEpoch": 96,
+      "devNll": 0.023513581603765488,
+      "fileSha256": "b39631512e7bc983035c1a7b39dc7ccd4d697236100daaec61f143d5abc7e3a9",
+      "params": 20480,
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-jev03-readout/research/decision-choice/jev03/runs/Q-seed17/best.safetensors",
+      "seed": 17,
+      "tensorSha256": "cc369dbf164534444b05218879a1eaf285b99de81bcdb01266ef48d2fab8ab75"
+    }
+  },
+  "testScoresExist": false
+}

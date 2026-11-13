@@ -1,0 +1,42 @@
+FrostEcho R4 D/M 独立复验
+2026-11-12；HEAD db34123423a06cc5118fb92e1c3cfb9f0c03fceb；基线5abadc8。
+隔离bundle clone：/tmp/frostecho-r4-data-cMX9wQ/repo。
+本域结论：有限返工。阻断来自真实入口未接修复和验证遗漏，不是仅仅缺权重或第二审查者。
+
+独立复跑有效结果
+- 提交的v4五类篡改拒绝复跑5/5成功。
+- Python port-v3原有单测10/10成功，但不覆盖本次已知负例。
+- tiny_head_check显式CUDA_VISIBLE_DEVICES=''、R4_TINY_DEVICE=cpu，在CPU运行6步并保存head，子进程重新加载logits与weightDigest相同；fixture/realModel=false边界诚实。该检查不是27B或原三臂训练。
+- 新gate-v4.json明示researchTrainReady=false、23/10不足512/128、缺第二独立审查；未伪造v4审查数据。
+- 正式模型未调用、未训练，审计无权重下载、无GPU。URL探针使用函数拦截，无外网请求。
+
+关键问题（只列会影响准入的三组）
+1. 宣告的关闭门未接入真实入口；旧证据反例完全未修。
+  encoder_train.py:42-47仍读取data/v3/gate-v3.json。独立import调用gate_status返回mayTrainOnJev=true，reason='gate passed for small set'；v4 false未被读取。正式入口目前因为权重缺失而退出，不能称数据门已保护训练。
+  scorers/port_v3.py:66-81仍仅查calT/select/cert文件与SHA，212-214只依registration判断real。复现：三份证据引用同一内容{}文件、SHA正确→real artifact accept/counts_as_real=true；fixture artifact配相同real登记仍true。
+  上述两个核心文件及TS adapter在R4未改。TS依旧shadow，未观察到实际世界执行泄漏；负例是审计构造，不指控交付者伪造真实证书。
+  正式encoder入口也未接tiny的保存复载/acceptable-set修正，R3 full无保存却声明artifactWritten的问题仍在。tiny通过只认证tiny脚本。
+
+2. v4绑定只覆盖人工选择的五种篡改，不能认证实际训练数据。
+  validate_v4.py:48-54只hash question/observation/候选ID，未hash候选文本、kind、params；在提交的合法fixture上改c-eat的kind=withdraw并加入新未审文本，validator仍exit0。
+  101-113核split hash/text但不核split训练标签与裁决一致；加入label及acceptableOpaque=not-a-candidate，仍exit0。
+  59-65使用dict去重cases/review，却不拒绝重复split记录；129按行数判断researchTrainReady。把4条synthetic fixture中的一条train重复512次、另一条dev重复128次，validator exit0且researchTrainReady=true。
+  该反例仍由同一fixture程序生成的两份review和synthetic=true数据构成，没有独立语义审查。这证明原计划的正式数据资格逻辑尚未实现；不是已经发生真实模型训练。
+  缺审查者是合理blocked原因，但不能代替这些可用CPU关闭的资格/真实入口错误。
+
+3. 下载mock验证的是另一个分支，实际download仍请求错误URL。
+  prepare_t27.py:149-150实际第一请求是https://huggingface.co/api/models/Qwen3-5-27B，丢Qwen/并把3.5改3-5；resolve/mock分支显示的正确URL没有覆盖它。
+  独立拦截download('0123456789abcdef')记录到这个实际请求；无网络发出。revision传给snapshot_download，但resumeCommand不带revision；本轮先修真实路径，不继续重复not-found报告。
+  失败退出非零已修，当前网络errno101是真实提交记录；网络恢复后仍存在上面URL问题。
+
+原始证据和复跑
+probe.py <repo> <output>：只import真实门函数、创建隔离合成数据目录及负例，不加载模型。
+output/probe.json、每个validator stdout/stderr、official-rejections/validator-rejections.json、tiny-cpu/manifest.json与head.pt、port-v3-tests.log。
+run.sh明确CPU环境。源码快照source-evidence.tgz仅用于行号复核。未改主树。
+
+下一轮极窄修复与接线验收
+A. 修改实际encoder_train入口消费唯一researchTrainReady报告并重新验证hash/资格，不能信可手改缓存；缺审查/不足数量时在任何torch/encoder加载前非零退出。用一个假的模型加载函数断言调用次数0，而不是再交独立gate脚本。
+B. 从实际case schema完整绑定渲染输入+候选text/params、acceptable-set/裁决，拒绝重复ID与不合格source/family、synthetic计入正式数量；训练split严格投影且每条标签可回查裁决。旧v3保存失败证据，v4先接真实39题而非只留fixture。
+C. 修改实际port_v3：fixture永不real；空证书/同分区复用/身份或风险协议不符不执行。通过同一生产decide和TSshadow桥复跑负例。
+D. 用mock拦截真正download()路径的第一个请求与snapshot_download参数，验证repo/revision/失败exit/续传命令；正式模型准备只接受精确身份与文件完整性。
+E. 需要独立审查的39题输入包见BLIND-REVIEW-PACK.txt；让负责人另开fork_none两会话读同一冻结输入，不给sealed、旧review、生成oracle代码。这个阻塞可以通过交接解决，不需要再等小模型单会话自行证明独立。

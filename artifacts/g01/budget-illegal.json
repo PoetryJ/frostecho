@@ -1,0 +1,144 @@
+{
+  "runId": "budget",
+  "actorId": "npc_a",
+  "outcome": "budget_exhausted",
+  "goalReached": false,
+  "providerCalls": 5,
+  "steps": [
+    {
+      "round": 1,
+      "observation": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "raw": "nope",
+      "parse": {
+        "ok": false,
+        "error": "invalid JSON"
+      },
+      "error": "invalid JSON"
+    },
+    {
+      "round": 2,
+      "observation": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "raw": "{\"type\":\"fly\"}",
+      "parse": {
+        "ok": false,
+        "error": "type must be move, eat, or stop"
+      },
+      "error": "type must be move, eat, or stop"
+    },
+    {
+      "round": 3,
+      "observation": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "raw": "{\"type\":\"eat\",\"x\":1}",
+      "parse": {
+        "ok": false,
+        "error": "eat must be exactly {\"type\":\"eat\"}"
+      },
+      "error": "eat must be exactly {\"type\":\"eat\"}"
+    },
+    {
+      "round": 4,
+      "observation": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "raw": "{\"type\":\"move\",\"to\":\"moon\"}",
+      "parse": {
+        "ok": false,
+        "error": "move.to must be one of dorm|kitchen"
+      },
+      "error": "move.to must be one of dorm|kitchen"
+    },
+    {
+      "round": 5,
+      "observation": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "raw": "{\"type\":\"move\",\"to\":\"kitchen\",\"actorId\":\"npc_b\"}",
+      "parse": {
+        "ok": false,
+        "error": "move must be exactly {\"type\":\"move\",\"to\":<location>}"
+      },
+      "error": "move must be exactly {\"type\":\"move\",\"to\":<location>}"
+    }
+  ],
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "events": [],
+  "finalState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "error": "provider call budget exhausted"
+}

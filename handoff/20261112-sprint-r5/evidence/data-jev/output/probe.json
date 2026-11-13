@@ -1,0 +1,226 @@
+{
+  "head": "db34123423a06cc5118fb92e1c3cfb9f0c03fceb",
+  "v4_declared": {
+    "schema": "frostecho.jev04.gate-v4/1",
+    "head": "ede5dc080114742cc72aeba422557eb4e16ea6fa",
+    "purpose": "content binding and rejection for any v4 data; admission is a separate gate",
+    "structuralReady": true,
+    "validator": {
+      "path": "research/decision-choice/jev04/data/v4/validate_v4.py",
+      "checks": [
+        "case contentHash recompute",
+        "review hash+version binding (s1/s2)",
+        "adjudication label in candidate set",
+        "split projection by caseId+hash",
+        "train text digest equals visible-input hash",
+        "group isolation"
+      ]
+    },
+    "selfTest": {
+      "path": "research/decision-choice/jev04/data/v4/rejections.py",
+      "fixture": "synthetic mechanism fixture (never training data)",
+      "classes": [
+        "review_hash",
+        "review_version",
+        "label",
+        "train_text",
+        "case_content"
+      ],
+      "result": "5/5 rejected non-zero with caseId and reason"
+    },
+    "semanticReview": {
+      "status": "blocked",
+      "reason": "a second independent reviewer is unavailable in this environment; no v4 review data was fabricated"
+    },
+    "reviewedBase": {
+      "version": "v3",
+      "cases": 39,
+      "eligible": 33,
+      "train": 23,
+      "dev": 10,
+      "challengeIsolated": 25,
+      "note": "v3 files are read-only for R4"
+    },
+    "researchTrainReady": false,
+    "trainCases": 23,
+    "devCases": 10,
+    "requiredTrain": 512,
+    "requiredDev": 128,
+    "formalTraining": {
+      "status": "closed",
+      "reason": "researchTrainReady=false (23/10 < 512/128) and semantic review blocked"
+    }
+  },
+  "actual_formal_training_gate": {
+    "mayTrainOnJev": true,
+    "reason": "gate passed for small set"
+  },
+  "v4_fixture_baseline": {
+    "exit": 0,
+    "payload": {
+      "ok": true,
+      "dir": "/tmp/frostecho-r4-data-cMX9wQ/output/baseline",
+      "summary": {
+        "cases": 4,
+        "s1": 4,
+        "s2": 4,
+        "adjudicated": 4,
+        "train": 2,
+        "dev": 2,
+        "reviewVersion": "v4-review/1",
+        "trainCases": 2,
+        "devCases": 2,
+        "requiredTrain": 512,
+        "requiredDev": 128,
+        "trainSourceGroups": 2,
+        "devSourceGroups": 2,
+        "researchTrainReady": false,
+        "failures": []
+      }
+    }
+  },
+  "candidate_semantics_changed": {
+    "exit": 0,
+    "payload": {
+      "ok": true,
+      "dir": "/tmp/frostecho-r4-data-cMX9wQ/output/candidate-semantics",
+      "summary": {
+        "cases": 4,
+        "s1": 4,
+        "s2": 4,
+        "adjudicated": 4,
+        "train": 2,
+        "dev": 2,
+        "reviewVersion": "v4-review/1",
+        "trainCases": 2,
+        "devCases": 2,
+        "requiredTrain": 512,
+        "requiredDev": 128,
+        "trainSourceGroups": 2,
+        "devSourceGroups": 2,
+        "researchTrainReady": false,
+        "failures": []
+      }
+    }
+  },
+  "training_label_invalid": {
+    "exit": 0,
+    "payload": {
+      "ok": true,
+      "dir": "/tmp/frostecho-r4-data-cMX9wQ/output/training-label",
+      "summary": {
+        "cases": 4,
+        "s1": 4,
+        "s2": 4,
+        "adjudicated": 4,
+        "train": 2,
+        "dev": 2,
+        "reviewVersion": "v4-review/1",
+        "trainCases": 2,
+        "devCases": 2,
+        "requiredTrain": 512,
+        "requiredDev": 128,
+        "trainSourceGroups": 2,
+        "devSourceGroups": 2,
+        "researchTrainReady": false,
+        "failures": []
+      }
+    }
+  },
+  "synthetic_repeats_open_gate": {
+    "exit": 0,
+    "payload": {
+      "ok": true,
+      "dir": "/tmp/frostecho-r4-data-cMX9wQ/output/repeated-fixtures",
+      "summary": {
+        "cases": 4,
+        "s1": 4,
+        "s2": 4,
+        "adjudicated": 4,
+        "train": 512,
+        "dev": 128,
+        "reviewVersion": "v4-review/1",
+        "trainCases": 512,
+        "devCases": 128,
+        "requiredTrain": 512,
+        "requiredDev": 128,
+        "trainSourceGroups": 1,
+        "devSourceGroups": 1,
+        "researchTrainReady": true,
+        "failures": []
+      }
+    }
+  },
+  "empty_certificate_real": {
+    "raw_logits": [
+      5.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "softmax_probabilities": [
+      0.9801866626534912,
+      0.006604445782169691,
+      0.006604445782169691,
+      0.006604445782169691
+    ],
+    "temperature_probabilities": [
+      0.9801866626534912,
+      0.006604445782169691,
+      0.006604445782169691,
+      0.006604445782169691
+    ],
+    "utility": null,
+    "utility_source": null,
+    "selected_index": 0,
+    "disposition": "accept",
+    "pmax": 0.9801866626534912,
+    "mode": "real",
+    "counts_as_real": true
+  },
+  "empty_certificate_fixture": {
+    "raw_logits": [
+      5.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "softmax_probabilities": [
+      0.9801866626534912,
+      0.006604445782169691,
+      0.006604445782169691,
+      0.006604445782169691
+    ],
+    "temperature_probabilities": [
+      0.9801866626534912,
+      0.006604445782169691,
+      0.006604445782169691,
+      0.006604445782169691
+    ],
+    "utility": null,
+    "utility_source": null,
+    "selected_index": 0,
+    "disposition": "accept",
+    "pmax": 0.9801866626534912,
+    "mode": "fixture",
+    "counts_as_real": true
+  },
+  "actual_download_url": {
+    "observed_first_request": [
+      "https://huggingface.co/api/models/Qwen3-5-27B"
+    ],
+    "returned_report": {
+      "schema": "frostecho.jev04.t27-download/1",
+      "at": "2026-11-12T08:53:57.508379+00:00",
+      "revision": "0123456789abcdef",
+      "repo": "Qwen/Qwen3.5-27B",
+      "configUrl": "https://huggingface.co/Qwen/Qwen3.5-27B/resolve/0123456789abcdef/config.json",
+      "downloadUrl": "https://huggingface.co/Qwen/Qwen3.5-27B/resolve/0123456789abcdef",
+      "resumeCommand": "python3 research/decision-choice/jev04/models/prepare_t27.py --download",
+      "status": "failed",
+      "errorType": "network-unreachable",
+      "error": "OSError: audit intercept; no external network call"
+    },
+    "networkUsed": false
+  }
+}

@@ -1,0 +1,10 @@
+{"schema":"frostecho.play/2","event":"ready","statePath":"artifacts/sprint-r6/run01/r1c-cancel/session.json","restored":false,"day":1,"simTime":0,"npcs":["npc_01","npc_02"]}
+{"command":"cancel","jobId":"job-0004","promiseId":"p-food-npc_01","instanceId":null,"onlyObserver":"npc_01","inputId":"in-2-cancel-npc_01"}
+{"event":"job_terminal","jobId":"job-0001","kind":"step","status":"cancelled","reason":"barrier_timeout"}
+{"command":"save","jobId":"job-0002","saved":"artifacts/sprint-r6/run01/r1c-cancel/session.json","version":0,"tasks":0,"commitments":[],"pending":1}
+{"command":"save","event":"barrier_timeout","revoked":["npc_01"],"boundMs":350}
+{"command":"step","jobId":"job-0001","decisions":[{"actorId":"npc_01","status":"scored","selectedId":null,"commandId":null,"executionStatus":null,"eventIds":[],"postStateVersion":null,"executed":false,"reason":"stale_before_submit:memory","promiseStatuses":[]}],"outcomes":[{"taskId":"job-0001","actorId":"npc_01","status":"completed","value":{"actorId":"npc_01","status":"scored","selectedId":null,"commandId":null,"executionStatus":null,"eventIds":[],"postStateVersion":null,"executed":false,"reason":"stale_before_submit:memory","promiseStatuses":[]}}]}
+{"event":"job_late_result_ignored","jobId":"job-0001","kind":"step","status":"cancelled","reason":"barrier_timeout"}
+{"command":"step","jobId":"job-0003","decisions":[{"actorId":"npc_01","status":"cancelled","selectedId":null,"commandId":null,"executionStatus":null,"eventIds":[],"postStateVersion":null,"executed":false,"reason":"generation_changed_before_start","promiseStatuses":[]}],"outcomes":[{"taskId":"job-0003","actorId":"npc_01","status":"completed","value":{"actorId":"npc_01","status":"cancelled","selectedId":null,"commandId":null,"executionStatus":null,"eventIds":[],"postStateVersion":null,"executed":false,"reason":"generation_changed_before_start","promiseStatuses":[]}}]}
+{"command":"quit","jobId":"job-0005","bye":true,"version":0}
+{"event":"exit","jobs":5,"completed":4,"failed":0,"closed":true,"settled":true}

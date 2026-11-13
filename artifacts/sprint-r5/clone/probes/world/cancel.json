@@ -1,0 +1,699 @@
+{
+  "schema": "frostecho.session/1",
+  "world": {
+    "schema": "frostecho.world-v2/2",
+    "rulesVersion": "survival-rules/2",
+    "day": 1,
+    "simTime": 82,
+    "version": 4,
+    "rngSeed": "play-3",
+    "weather": "snow",
+    "npcs": {
+      "npc_01": {
+        "id": "npc_01",
+        "location": "warehouse",
+        "hunger": 68.77,
+        "stamina": 76.67,
+        "health": 100,
+        "san": 79.72666666666666,
+        "alive": true
+      },
+      "npc_02": {
+        "id": "npc_02",
+        "location": "warehouse",
+        "hunger": 68.77,
+        "stamina": 75.95,
+        "health": 100,
+        "san": 79.72666666666666,
+        "alive": true
+      },
+      "npc_03": {
+        "id": "npc_03",
+        "location": "dorm-a",
+        "hunger": 68.77,
+        "stamina": 77.95,
+        "health": 100,
+        "san": 79.72666666666666,
+        "alive": true
+      }
+    },
+    "resources": {
+      "food": 24,
+      "firewood": 20,
+      "power": 40,
+      "medicine": 2
+    },
+    "furnace": {
+      "lit": true,
+      "fuel": 5.453333333333334,
+      "warmth": 18
+    },
+    "commandLog": [
+      "in-1-travel",
+      "in-2-withdraw",
+      "npc_01-game-2-g-travel-warehouse",
+      "npc_01-game-3-g-withdraw"
+    ],
+    "dead": [],
+    "ending": "none",
+    "scenarioDays": 4,
+    "spatial": {
+      "positions": {
+        "npc_02": {
+          "x": 16,
+          "y": 15
+        },
+        "npc_01": {
+          "x": 16,
+          "y": 15
+        }
+      },
+      "carry": {
+        "npc_02": {
+          "meals": 4
+        }
+      },
+      "closedCells": [],
+      "stocks": {
+        "warehouse": {
+          "food": 0
+        }
+      },
+      "deliveredMeals": 0
+    },
+    "receipts": {
+      "in-1-travel": {
+        "digest": "bfefa19c58e874849281c17ae972bf06e4177c41b0747bfa621814cc670de009",
+        "eventIds": [
+          "in-1-travel:traveled:0"
+        ],
+        "postStateVersion": 1
+      },
+      "in-2-withdraw": {
+        "digest": "8eff098dcf152a9493c6ba891c77c1e1d37a0c3b972d605b51a30b82cd376516",
+        "eventIds": [
+          "in-2-withdraw:stock_withdrawn:1"
+        ],
+        "postStateVersion": 2
+      },
+      "npc_01-game-2-g-travel-warehouse": {
+        "digest": "8758f934d83892eae0462f5637013527d2d6c9e40da9ff04b6f40e38b824b49e",
+        "eventIds": [
+          "npc_01-game-2-g-travel-warehouse:traveled:2"
+        ],
+        "postStateVersion": 3
+      },
+      "npc_01-game-3-g-withdraw": {
+        "digest": "96e1b42f331a27cf54de18bc0195d676e63cdcc0389c8d5210ed49e813702401",
+        "eventIds": [
+          "npc_01-game-3-g-withdraw:out_of_stock:3"
+        ],
+        "postStateVersion": 4
+      }
+    }
+  },
+  "memories": {
+    "npc_01": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmt-commitment_proposed-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-0",
+          "occurredAt": 50,
+          "observedAt": 50,
+          "kind": "commitment_proposed",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_01",
+            "toId": "player",
+            "conditions": "warehouse-supply",
+            "deadline": -1,
+            "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cmt-commitment_proposed-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-0"
+          ],
+          "recordId": "m-888b38cdeba28592",
+          "revision": 1
+        },
+        {
+          "eventId": "cmt-commitment_accepted-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-1",
+          "occurredAt": 50,
+          "observedAt": 50,
+          "kind": "commitment_accepted",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "available",
+            "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cmt-commitment_accepted-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-1"
+          ],
+          "recordId": "m-a07a98bb63bca3cb",
+          "revision": 2
+        },
+        {
+          "eventId": "npc_01-game-2-g-travel-warehouse:traveled:2",
+          "occurredAt": 82,
+          "observedAt": 82,
+          "kind": "traveled",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "tiles": 16,
+            "minutes": 32,
+            "arrivedAt": "warehouse"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "npc_01-game-2-g-travel-warehouse:traveled:2"
+          ],
+          "recordId": "m-5bab1a114c579714",
+          "revision": 3
+        },
+        {
+          "eventId": "npc_01-game-3-g-withdraw:out_of_stock:3",
+          "occurredAt": 82,
+          "observedAt": 82,
+          "kind": "out_of_stock",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "place": "warehouse",
+            "available": 0,
+            "wanted": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "npc_01-game-3-g-withdraw:out_of_stock:3"
+          ],
+          "recordId": "m-71888b24898d6e4d",
+          "revision": 4
+        },
+        {
+          "eventId": "cmt-commitment_change_proposed-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-2",
+          "occurredAt": 82,
+          "observedAt": 82,
+          "kind": "commitment_change_proposed",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "changeId": "chg-65e59529-7e43-4e25-a07e-640209657913",
+            "kind": "alt-source",
+            "reason": "warehouse-empty",
+            "proposedRevision": 2,
+            "terms": "{\"source\":\"gather\",\"reason\":\"仓库缺货，我改从村里采集再送来\"}",
+            "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cmt-commitment_change_proposed-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-2"
+          ],
+          "recordId": "m-099a61ed3e3e7edd",
+          "revision": 5
+        },
+        {
+          "eventId": "cmt-commitment_cancelled-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-3",
+          "occurredAt": 82,
+          "observedAt": 82,
+          "kind": "commitment_cancelled",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "玩家取消",
+            "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cmt-commitment_cancelled-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-3"
+          ],
+          "recordId": "m-3e6aa1d1509c08b1",
+          "revision": 6
+        },
+        {
+          "eventId": "cmt-commitment_response_ignored-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-4",
+          "occurredAt": 82,
+          "observedAt": 82,
+          "kind": "commitment_response_ignored",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "reason": "no_open_change",
+            "inputId": "in-5-respond-change",
+            "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cmt-commitment_response_ignored-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-4"
+          ],
+          "recordId": "m-4145493741f67c5a",
+          "revision": 7
+        }
+      ]
+    },
+    "npc_02": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "in-1-travel:traveled:0",
+          "occurredAt": 50,
+          "observedAt": 50,
+          "kind": "traveled",
+          "subjectIds": [
+            "npc_02",
+            "world"
+          ],
+          "payload": {
+            "tiles": 25,
+            "minutes": 50,
+            "arrivedAt": "warehouse"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "in-1-travel:traveled:0"
+          ],
+          "recordId": "m-c5a46449e7639555",
+          "revision": 1
+        },
+        {
+          "eventId": "in-2-withdraw:stock_withdrawn:1",
+          "occurredAt": 50,
+          "observedAt": 50,
+          "kind": "stock_withdrawn",
+          "subjectIds": [
+            "npc_02",
+            "warehouse"
+          ],
+          "payload": {
+            "place": "warehouse",
+            "amount": 4,
+            "remaining": 0,
+            "carried": 4
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "in-2-withdraw:stock_withdrawn:1"
+          ],
+          "recordId": "m-6502d1e67093b97c",
+          "revision": 2
+        },
+        {
+          "eventId": "cmt-commitment_proposed-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-0",
+          "occurredAt": 50,
+          "observedAt": 50,
+          "kind": "commitment_proposed",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_01",
+            "toId": "player",
+            "conditions": "warehouse-supply",
+            "deadline": -1,
+            "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "cmt-commitment_proposed-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-0"
+          ],
+          "recordId": "m-3705157a5bfc5977",
+          "revision": 3
+        },
+        {
+          "eventId": "cmt-commitment_accepted-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-1",
+          "occurredAt": 50,
+          "observedAt": 50,
+          "kind": "commitment_accepted",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "available",
+            "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "cmt-commitment_accepted-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-1"
+          ],
+          "recordId": "m-4b9b246d0cfadd4a",
+          "revision": 4
+        },
+        {
+          "eventId": "cmt-commitment_change_proposed-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-2",
+          "occurredAt": 82,
+          "observedAt": 82,
+          "kind": "commitment_change_proposed",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "changeId": "chg-65e59529-7e43-4e25-a07e-640209657913",
+            "kind": "alt-source",
+            "reason": "warehouse-empty",
+            "proposedRevision": 2,
+            "terms": "{\"source\":\"gather\",\"reason\":\"仓库缺货，我改从村里采集再送来\"}",
+            "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "cmt-commitment_change_proposed-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-2"
+          ],
+          "recordId": "m-4349d52ce0d2fa63",
+          "revision": 5
+        },
+        {
+          "eventId": "cmt-commitment_cancelled-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-3",
+          "occurredAt": 82,
+          "observedAt": 82,
+          "kind": "commitment_cancelled",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "玩家取消",
+            "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "cmt-commitment_cancelled-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-3"
+          ],
+          "recordId": "m-9a2ee70a43d0c9c2",
+          "revision": 6
+        },
+        {
+          "eventId": "cmt-commitment_response_ignored-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-4",
+          "occurredAt": 82,
+          "observedAt": 82,
+          "kind": "commitment_response_ignored",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "reason": "no_open_change",
+            "inputId": "in-5-respond-change",
+            "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "cmt-commitment_response_ignored-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-4"
+          ],
+          "recordId": "m-67fadcb20bf5626d",
+          "revision": 7
+        }
+      ]
+    },
+    "npc_03": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmt-commitment_proposed-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-0",
+          "occurredAt": 50,
+          "observedAt": 50,
+          "kind": "commitment_proposed",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_01",
+            "toId": "player",
+            "conditions": "warehouse-supply",
+            "deadline": -1,
+            "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "cmt-commitment_proposed-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-0"
+          ],
+          "recordId": "m-66a970e9b1f5bd34",
+          "revision": 1
+        },
+        {
+          "eventId": "cmt-commitment_accepted-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-1",
+          "occurredAt": 50,
+          "observedAt": 50,
+          "kind": "commitment_accepted",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "available",
+            "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "cmt-commitment_accepted-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-1"
+          ],
+          "recordId": "m-978765c25db1c865",
+          "revision": 2
+        },
+        {
+          "eventId": "cmt-commitment_change_proposed-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-2",
+          "occurredAt": 82,
+          "observedAt": 82,
+          "kind": "commitment_change_proposed",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "changeId": "chg-65e59529-7e43-4e25-a07e-640209657913",
+            "kind": "alt-source",
+            "reason": "warehouse-empty",
+            "proposedRevision": 2,
+            "terms": "{\"source\":\"gather\",\"reason\":\"仓库缺货，我改从村里采集再送来\"}",
+            "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "cmt-commitment_change_proposed-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-2"
+          ],
+          "recordId": "m-f796e2cc6e983cf7",
+          "revision": 3
+        },
+        {
+          "eventId": "cmt-commitment_cancelled-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-3",
+          "occurredAt": 82,
+          "observedAt": 82,
+          "kind": "commitment_cancelled",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "玩家取消",
+            "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "cmt-commitment_cancelled-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-3"
+          ],
+          "recordId": "m-5daa62db36bdcff3",
+          "revision": 4
+        },
+        {
+          "eventId": "cmt-commitment_response_ignored-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-4",
+          "occurredAt": 82,
+          "observedAt": 82,
+          "kind": "commitment_response_ignored",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "reason": "no_open_change",
+            "inputId": "in-5-respond-change",
+            "commitmentId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "cmt-commitment_response_ignored-cm-028a6572-d0b9-46bf-aef3-e1cce3e1094d-4"
+          ],
+          "recordId": "m-f46203f69834f044",
+          "revision": 5
+        }
+      ]
+    }
+  },
+  "outcomes": {
+    "npc_01-game-2-g-travel-warehouse": {
+      "status": "applied",
+      "eventIds": [
+        "npc_01-game-2-g-travel-warehouse:traveled:2"
+      ],
+      "postStateVersion": 3,
+      "reason": null
+    },
+    "npc_01-game-3-g-withdraw": {
+      "status": "applied",
+      "eventIds": [
+        "npc_01-game-3-g-withdraw:out_of_stock:3"
+      ],
+      "postStateVersion": 4,
+      "reason": null
+    }
+  },
+  "plans": [],
+  "instances": [],
+  "generations": {},
+  "sequence": 5,
+  "seed": "play-3",
+  "inputSequence": 5,
+  "inputReceipts": {
+    "in-1-travel": {
+      "kind": "travel",
+      "digest": "{\"actorId\":\"npc_02\",\"building\":\"warehouse\"}",
+      "result": {
+        "status": "applied",
+        "reason": null,
+        "eventIds": [
+          "in-1-travel:traveled:0"
+        ],
+        "events": [
+          {
+            "eventId": "in-1-travel:traveled:0",
+            "type": "traveled",
+            "simTime": 50,
+            "actorId": "npc_02",
+            "payload": {
+              "tiles": 25,
+              "minutes": 50,
+              "arrivedAt": "warehouse"
+            }
+          }
+        ],
+        "observedBy": [
+          "npc_02"
+        ]
+      }
+    }
+  }
+}

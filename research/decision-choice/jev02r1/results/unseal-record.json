@@ -1,0 +1,34 @@
+{
+  "schema": "frostecho.jev02r1.unseal-record/1",
+  "at": "2026-11-10T12:52:20+08:00",
+  "goldRead": false,
+  "goldSealControl": "blocked:GoldBlocked",
+  "seal": {
+    "sealedPaths": [
+      "test.gold.json",
+      "test.labels.jsonl"
+    ],
+    "blockedAttempts": 1,
+    "blockedPaths": [
+      "/data3/DATA/project/project_meishijiang/FrostEcho-jev02-r1/research/decision-choice/jev02r1/data/test.gold.json"
+    ],
+    "enforced": "builtins.open/io.open/os.open/Path.open/read_text/read_bytes"
+  },
+  "policies": {
+    "single_pass": {
+      "sha256": "0ca43ab88343b27c65c3fce7fa17d7fbea0e7042cc1a5f214bb6873c4298b3da"
+    },
+    "reverse_pair_consensus": {
+      "sha256": "801ef394bf9a66fe5184645c42ef464be52e536100c5d00dc04404a830e3ddb1"
+    }
+  },
+  "features": {
+    "npzSha256": "d70f243a4b2a599573b03047aa77d775aaf31891968d7ab7114d8f50bac3b48f",
+    "metaSha256": "831fb70540e61eb4da7e7f3be963d54b7dccf1c944820e03d728eac00cafa093"
+  },
+  "predictions": {
+    "test-scores.jsonl": "372d814a03f49641da25d2585928a559f7de99e46c2fce587b7f890c54ac8717",
+    "test-predictions-single_pass.jsonl": "44ccdf66370fd835c924c86a2f3317bc1e96d34c86896a15278ec71dcdad2a45",
+    "test-predictions-reverse_pair_consensus.jsonl": "af6f2bb466d02678a1d1a9a5bdeadee41aada75791af7608f2cb3f2a14c2c05e"
+  }
+}

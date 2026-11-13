@@ -1,0 +1,93 @@
+{
+  "repo": "/data3/DATA/project/project_meishijiang/FrostEcho",
+  "out": "artifacts/g10-r1/after/adapters",
+  "realModelCalls": 0,
+  "loopbackPosts": 0,
+  "originalTaskLimit": 1,
+  "goal": {
+    "ok": false,
+    "code": "PROVIDER_ERROR",
+    "advanced": 1,
+    "detail": "provider_error"
+  },
+  "saved": {
+    "ok": false,
+    "code": "SAVE_FAILED",
+    "detail": "EXISTS: slot 'chosen' already exists; refusing to overwrite /data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g10-r1/after/adapters/chosen.g09.json",
+    "saveCode": "EXISTS"
+  },
+  "loadDifferentCampaignAccepted": false,
+  "loadOnlyPosts": 0,
+  "postDeltaAfterSwitch": 0,
+  "action": null,
+  "afterView": null,
+  "originalLedger": {
+    "schema": "frostecho.g09.campaign/1",
+    "campaignId": "task-original",
+    "ledgerId": "a858dfa4-ecb6-4f97-b35c-43c6af5a4edc",
+    "limit": 1,
+    "spent": 1,
+    "attempts": [
+      {
+        "attemptId": "att-0001",
+        "seq": 1,
+        "batch": "demo",
+        "episodeId": "demo",
+        "phase": "goal",
+        "at": "2026-11-04T11:43:33.198Z",
+        "state": "finished",
+        "outcome": "success",
+        "totalTokens": 5
+      }
+    ],
+    "updatedAt": "2026-11-04T11:43:33.492Z"
+  },
+  "replacementLedger": {
+    "schema": "frostecho.g09.campaign/1",
+    "campaignId": "task-replacement",
+    "ledgerId": "7863d29e-6560-4daa-b0d0-d1cabe30521d",
+    "limit": 1,
+    "spent": 0,
+    "attempts": [],
+    "updatedAt": "2026-11-04T11:43:32.846Z"
+  },
+  "inputSlotUnchanged": true,
+  "savedApp": {
+    "schema": "frostecho.g10.app/2",
+    "episodeId": "demo",
+    "providerKind": "live",
+    "fixtureId": null,
+    "goalMode": "negotiated",
+    "candidateSet": "choice",
+    "satiety": 40,
+    "scripted": false,
+    "campaign": {
+      "schema": "frostecho.g10.campaign-binding/1",
+      "ledgerId": "a858dfa4-ecb6-4f97-b35c-43c6af5a4edc",
+      "locator": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g10-r1/after/adapters/original-campaign/campaign.json",
+      "limit": 1,
+      "spentFloor": 1,
+      "usedPrefix": [
+        "att-0001"
+      ],
+      "savedAtUtc": "2026-11-04T11:43:33.848Z"
+    }
+  },
+  "runRecord": {
+    "path": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g10-r1/after/adapters/demo-run-2.run.json",
+    "payloadKeys": [
+      "schema",
+      "at",
+      "lineage",
+      "meta",
+      "config",
+      "beforeCloseView",
+      "authoritative",
+      "wire",
+      "campaign"
+    ],
+    "hasWorldRecord": true,
+    "hasCommands": true,
+    "hasEvents": true
+  }
+}

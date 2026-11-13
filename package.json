@@ -1,13 +1,35 @@
 {
-  "name": "gospel-rebuild",
-  "version": "0.0.1",
+  "name": "frostecho",
+  "version": "0.1.0",
   "private": true,
-  "description": "G00: minimal action execution & event replay kernel",
+  "description": "FrostEcho: G00 world kernel and G01 observe-decide loop with an HTTP live entry",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "npm run build && node --test dist/tests/",
+    "test": "npm run build && node scripts/run-tests.mjs",
     "demo": "npm run build && node dist/scripts/demo.js",
-    "manifest": "node scripts/manifest.mjs"
+    "demo:g01": "npm run build && node dist/scripts/demo-g01.js",
+    "demo:g01:live": "npm run build && node dist/scripts/demo-g01-live.js",
+    "play": "npm run build && node dist/scripts/play.js",
+    "play:g03": "npm run build && node dist/scripts/play-g03.js",
+    "eval:g02": "npm run build && node dist/scripts/eval-g02.js",
+    "eval:g03": "npm run build && node dist/scripts/eval-g03.js",
+    "manifest": "node scripts/manifest.mjs",
+    "eval:g04": "npm run build && node dist/scripts/eval-g04.js",
+    "play:g04": "npm run build && node dist/scripts/play-g04.js",
+    "eval:g05": "node dist/scripts/eval-g05.js",
+    "play:g05": "node dist/scripts/play-g05.js",
+    "eval:g06": "node dist/scripts/eval-g06.js",
+    "play:g06": "npm run build && node dist/scripts/play-g06.js",
+    "play:g07": "npm run build && node dist/scripts/play-g07.js",
+    "eval:g07": "node dist/scripts/eval-g07.js",
+    "play:g08": "npm run build && node dist/scripts/play-g08.js",
+    "play:g10": "npm run build && node dist/scripts/play-g10.js",
+    "verify:r5": "npm run build && node dist/scripts/verify-r5.js",
+    "features:r5": "npm run build && node dist/scripts/r5-features.js",
+    "eval:full": "npm run build && node dist/scripts/eval-full.js"
   },
-  "devDependencies": { "@types/node": "^20", "typescript": "^5" }
+  "devDependencies": {
+    "@types/node": "^20",
+    "typescript": "^5"
+  }
 }

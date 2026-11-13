@@ -1,0 +1,184 @@
+{
+  "runId": "eat-dorm",
+  "actorId": "npc_a",
+  "outcome": "goal_reached",
+  "goalReached": true,
+  "providerCalls": 3,
+  "steps": [
+    {
+      "round": 1,
+      "observation": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "raw": "{\"type\":\"eat\"}",
+      "parse": {
+        "ok": true,
+        "action": {
+          "type": "eat"
+        }
+      },
+      "command": {
+        "commandId": "eat-dorm:1",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "exec": {
+        "commandId": "eat-dorm:1",
+        "seq": 1,
+        "status": "rejected",
+        "reason": "NOT_IN_KITCHEN",
+        "detail": "at dorm",
+        "eventIds": []
+      },
+      "error": "rejected NOT_IN_KITCHEN: at dorm"
+    },
+    {
+      "round": 2,
+      "observation": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "raw": "{\"type\":\"move\",\"to\":\"kitchen\"}",
+      "parse": {
+        "ok": true,
+        "action": {
+          "type": "move",
+          "to": "kitchen"
+        }
+      },
+      "command": {
+        "commandId": "eat-dorm:2",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "exec": {
+        "commandId": "eat-dorm:2",
+        "seq": 2,
+        "status": "accepted",
+        "eventIds": [
+          "e1"
+        ]
+      }
+    },
+    {
+      "round": 3,
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40,
+        "foodHere": 1,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "raw": "{\"type\":\"eat\"}",
+      "parse": {
+        "ok": true,
+        "action": {
+          "type": "eat"
+        }
+      },
+      "command": {
+        "commandId": "eat-dorm:3",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "exec": {
+        "commandId": "eat-dorm:3",
+        "seq": 3,
+        "status": "accepted",
+        "eventIds": [
+          "e2",
+          "e3"
+        ]
+      }
+    }
+  ],
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "events": [
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_a",
+      "from": "dorm",
+      "to": "kitchen",
+      "eventId": "e1",
+      "seq": 2,
+      "commandId": "eat-dorm:2"
+    },
+    {
+      "type": "FoodConsumed",
+      "location": "kitchen",
+      "amount": 1,
+      "before": 1,
+      "after": 0,
+      "eventId": "e2",
+      "seq": 3,
+      "commandId": "eat-dorm:3"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_a",
+      "before": 40,
+      "after": 70,
+      "eventId": "e3",
+      "seq": 3,
+      "commandId": "eat-dorm:3"
+    }
+  ],
+  "finalState": {
+    "tick": 3,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 70
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 0
+    }
+  }
+}

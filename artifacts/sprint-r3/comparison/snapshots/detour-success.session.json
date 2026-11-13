@@ -1,0 +1,465 @@
+{
+  "schema": "frostecho.session/1",
+  "world": {
+    "schema": "frostecho.world-v2/2",
+    "rulesVersion": "survival-rules/2",
+    "day": 1,
+    "simTime": 50,
+    "version": 3,
+    "rngSeed": "r3-compare-detour-success",
+    "weather": "snow",
+    "npcs": {
+      "npc_01": {
+        "id": "npc_01",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_02": {
+        "id": "npc_02",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_03": {
+        "id": "npc_03",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_04": {
+        "id": "npc_04",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_05": {
+        "id": "npc_05",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_06": {
+        "id": "npc_06",
+        "location": "warehouse",
+        "hunger": 69.25,
+        "stamina": 78.75,
+        "health": 100,
+        "san": 79.83333333333333,
+        "alive": true
+      },
+      "npc_07": {
+        "id": "npc_07",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_08": {
+        "id": "npc_08",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      }
+    },
+    "resources": {
+      "food": 24,
+      "firewood": 20,
+      "power": 40,
+      "medicine": 2
+    },
+    "furnace": {
+      "lit": true,
+      "fuel": 6,
+      "warmth": 18
+    },
+    "commandLog": [
+      "cmp-side-road",
+      "npc_06-game-1-g-travel-warehouse",
+      "npc_06-game-2-g-withdraw"
+    ],
+    "dead": [],
+    "ending": "none",
+    "scenarioDays": 4,
+    "spatial": {
+      "positions": {
+        "npc_06": {
+          "x": 16,
+          "y": 15
+        }
+      },
+      "carry": {
+        "npc_06": {
+          "meals": 1
+        }
+      },
+      "closedCells": [
+        "16,30",
+        "17,30"
+      ],
+      "stocks": {
+        "warehouse": {
+          "food": 3
+        }
+      },
+      "deliveredMeals": 0
+    },
+    "receipts": {
+      "cmp-side-road": {
+        "digest": "d46a4145ba489496450a23ce45fd4a56b5bf1cc9427774ac8735e18a530062e0",
+        "eventIds": [
+          "cmp-side-road:road_closed:0"
+        ],
+        "postStateVersion": 1
+      },
+      "npc_06-game-1-g-travel-warehouse": {
+        "digest": "de3755186038a08a6977488cd820ddbef3c04ce17efc4695184a6731a7972228",
+        "eventIds": [
+          "npc_06-game-1-g-travel-warehouse:traveled:1"
+        ],
+        "postStateVersion": 2
+      },
+      "npc_06-game-2-g-withdraw": {
+        "digest": "21db22b348e8119cbfc2ff3f2592c920deccfe86a8505d55f427ba76b10426f6",
+        "eventIds": [
+          "npc_06-game-2-g-withdraw:stock_withdrawn:2"
+        ],
+        "postStateVersion": 3
+      }
+    }
+  },
+  "memories": {
+    "npc_01": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmp-side-road:road_closed:0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_closed",
+          "subjectIds": [
+            "npc_01",
+            "world"
+          ],
+          "payload": {
+            "cells": 2,
+            "added": 2,
+            "detail": "16,30;17,30"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cmp-side-road:road_closed:0"
+          ],
+          "recordId": "m-0e231d954039f80b",
+          "revision": 1
+        }
+      ]
+    },
+    "npc_02": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmp-side-road:road_closed:0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_closed",
+          "subjectIds": [
+            "npc_02",
+            "world"
+          ],
+          "payload": {
+            "cells": 2,
+            "added": 2,
+            "detail": "16,30;17,30"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "cmp-side-road:road_closed:0"
+          ],
+          "recordId": "m-d1b19a618066cd57",
+          "revision": 1
+        }
+      ]
+    },
+    "npc_03": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmp-side-road:road_closed:0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_closed",
+          "subjectIds": [
+            "npc_03",
+            "world"
+          ],
+          "payload": {
+            "cells": 2,
+            "added": 2,
+            "detail": "16,30;17,30"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "cmp-side-road:road_closed:0"
+          ],
+          "recordId": "m-21a741d4e2091ab0",
+          "revision": 1
+        }
+      ]
+    },
+    "npc_04": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmp-side-road:road_closed:0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_closed",
+          "subjectIds": [
+            "npc_04",
+            "world"
+          ],
+          "payload": {
+            "cells": 2,
+            "added": 2,
+            "detail": "16,30;17,30"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_04",
+          "sourceEventIds": [
+            "cmp-side-road:road_closed:0"
+          ],
+          "recordId": "m-9a389e00ad48e1c6",
+          "revision": 1
+        }
+      ]
+    },
+    "npc_05": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmp-side-road:road_closed:0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_closed",
+          "subjectIds": [
+            "npc_05",
+            "world"
+          ],
+          "payload": {
+            "cells": 2,
+            "added": 2,
+            "detail": "16,30;17,30"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_05",
+          "sourceEventIds": [
+            "cmp-side-road:road_closed:0"
+          ],
+          "recordId": "m-3c4818ee4e5b4824",
+          "revision": 1
+        }
+      ]
+    },
+    "npc_06": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmp-side-road:road_closed:0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_closed",
+          "subjectIds": [
+            "npc_06",
+            "world"
+          ],
+          "payload": {
+            "cells": 2,
+            "added": 2,
+            "detail": "16,30;17,30"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_06",
+          "sourceEventIds": [
+            "cmp-side-road:road_closed:0"
+          ],
+          "recordId": "m-5ac59cd6c55e7e21",
+          "revision": 1
+        },
+        {
+          "eventId": "npc_06-game-1-g-travel-warehouse:traveled:1",
+          "occurredAt": 50,
+          "observedAt": 50,
+          "kind": "traveled",
+          "subjectIds": [
+            "npc_06",
+            "player"
+          ],
+          "payload": {
+            "tiles": 25,
+            "minutes": 50,
+            "arrivedAt": "warehouse"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_06",
+          "sourceEventIds": [
+            "npc_06-game-1-g-travel-warehouse:traveled:1"
+          ],
+          "recordId": "m-72d9365825f4cceb",
+          "revision": 2
+        },
+        {
+          "eventId": "npc_06-game-2-g-withdraw:stock_withdrawn:2",
+          "occurredAt": 50,
+          "observedAt": 50,
+          "kind": "stock_withdrawn",
+          "subjectIds": [
+            "npc_06",
+            "player"
+          ],
+          "payload": {
+            "place": "warehouse",
+            "amount": 1,
+            "remaining": 3,
+            "carried": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_06",
+          "sourceEventIds": [
+            "npc_06-game-2-g-withdraw:stock_withdrawn:2"
+          ],
+          "recordId": "m-0b2eac5a4d38e47b",
+          "revision": 3
+        }
+      ]
+    },
+    "npc_07": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmp-side-road:road_closed:0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_closed",
+          "subjectIds": [
+            "npc_07",
+            "world"
+          ],
+          "payload": {
+            "cells": 2,
+            "added": 2,
+            "detail": "16,30;17,30"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_07",
+          "sourceEventIds": [
+            "cmp-side-road:road_closed:0"
+          ],
+          "recordId": "m-2c10474a72f96201",
+          "revision": 1
+        }
+      ]
+    },
+    "npc_08": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmp-side-road:road_closed:0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_closed",
+          "subjectIds": [
+            "npc_08",
+            "world"
+          ],
+          "payload": {
+            "cells": 2,
+            "added": 2,
+            "detail": "16,30;17,30"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_08",
+          "sourceEventIds": [
+            "cmp-side-road:road_closed:0"
+          ],
+          "recordId": "m-a8c57a76f5a40732",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  "outcomes": {
+    "npc_06-game-1-g-travel-warehouse": {
+      "status": "applied",
+      "eventIds": [
+        "npc_06-game-1-g-travel-warehouse:traveled:1"
+      ],
+      "postStateVersion": 2,
+      "reason": null
+    },
+    "npc_06-game-2-g-withdraw": {
+      "status": "applied",
+      "eventIds": [
+        "npc_06-game-2-g-withdraw:stock_withdrawn:2"
+      ],
+      "postStateVersion": 3,
+      "reason": null
+    }
+  },
+  "plans": [],
+  "instances": [],
+  "generations": {},
+  "sequence": 0,
+  "seed": "r3-compare-detour-success"
+}

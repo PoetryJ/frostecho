@@ -1,0 +1,13 @@
+请执行 FrostEcho R6。服务器维护中，本轮不得访问服务器、下载权重、调用付费模型API或跑GPU。
+
+仓库：https://github.com/PoetryJ/frostecho
+任务包分支：codex/sprint-r6-package-20261113
+先读 handoff/20261113-sprint-r6/00-START.txt，然后按01至06执行。
+产品基线是 r5-saved-20261112=f4739493b9dcec7214f04ab68c05f92bd5a8ea21；本任务包分支只加说明和复现工具。新建执行分支codex/sprint-r6，不合main。
+
+优先顺序：供仓task完成却承诺active；save捕获外新job误取消；旧review重绑改题；风险证书统计/实际T和tau未绑定。
+必须先用tools/repro.py --expect baseline复现，再修并用--expect fixed验收。原probe exit0不是通过，要核JSON断言。正向合法CPU fixture也必须通过，不能靠全部拒绝假修复。
+四项过门后，做同一晨会工作跨日的供仓/送饭、退出换人、缺货恢复与保存闭环；连续/每日恢复两臂，交真实回执关联与obligation-ledger，报告实际分钟。
+JEV只做生产组件的CPU评分→概率→accept/abstain/证据重算，fixture不计real；39题0eligible，正式训练/执行门保持关闭。
+单会话顺序完成即可，不假称多worker/独立双审。所有输出新目录，冻结R5证据不动；最终全量在隔离clone运行一次。缺shell或依赖时交具体BLOCKED，不编造运行。
+按06交源码提交、原始证据、环境、bundle/SHA与≤12行短报。不要停在计划，完成本包授权工作；超出范围的真实训练/新大玩法等待负责人另行安排。

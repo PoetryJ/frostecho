@@ -1,0 +1,39 @@
+R5验收与交付
+
+先决门（全部走01指定的实际生产入口）
+1. 承诺：withdraw后0送饭；cancel后旧accept/reject不复活；初次counter-accept在条件未满足时等待，满足后唯一任务真实完成；终态/任务/回执一致。
+2. barrier：双NPC排队save超时后release两个旧任务均0效果，终态不反转；新step正常。原单NPC取消/EOF门保持。
+3. 幂等：同travel原始输入同ID重放首次receipt；同ID不同目的地拒绝0效果，跨进程同样成立。
+4. 正式训练入口：旧v3 true+新数据不合格时必须非零拒绝、模型加载次数0；不能只有validate_v4单测通过。
+5. 数据：候选文字/params变动、非法训练标签、重复行凑512/128、synthetic或未决题混入均拒绝；hash/审查/裁决/split逐例追溯。模型评分数据与未来calT/select/cert/test按原协议隔离。
+6. 实际port与TS桥：空证书、fixture配real、重复分区、身份漂移、NaN/Inf/K错误拒绝计real；shadow无世界执行。
+7. 真download路径mock核首URL、repo、revision、snapshot与续传一致；失败非零；正式保存复载组件在CPU fixture可验证且不虚报真实模型。
+
+新玩法门
+8. 一场晨会、至少两方案、表决→两居民请求/接受或协商→实际分工；一人退出/取消后0旧效果，另人继续，必要替代者独立接受。
+9. 议会中/协商中跨进程save恢复与决议重传无重复派工；新revision不被旧结果覆盖。
+10. 8NPC、spatial启用、实际工作/移动贯穿96h；连续与拆段保存一致；资源不足场景如实失败。旧无spatial fixture不替代此门。
+11. raw/experience对照可复算，指标按receipt计，正常wait排除，未触发指标N/A；不同方法必须真实有不同实现。
+
+数据审查交接
+本包blind-review/含39题冻结可见输入与两个新独立模型会话输出，均未看旧gold/彼此答案。SUMMARY只统计一致/分歧，不是真值裁决；不得把一致自动变eligible。
+两审39/39、hash校验无误；35例集合一致，4例集合分歧，10例共同标记库存/取消字段口径问题；18例状态分类不同，先按README统一“题目可判定”与“候选意图合理”的标注层次。不要把保守needsAdjudication=39解读成39题全错。
+H按分歧与缺失信息逐case裁决：supported且证据充分才可准入；ambiguous保留acceptable-set或challenge；inconsistent修题后重新hash并重审。保留原raw输出，不能改成一致答案。不能当人类双标或跨模型验证。
+数据39题仅是审查起点，不到原512/128，不许可正式训练。先修真实入口和资格，再按来源/家族独立扩量；已解封集不得变盲测，修订成对变体不得跨split。所有计数区分case、sourceGroup、family和review记录。
+
+最终交付
+新HEAD干净bundle clone按lock构建；G11引导；递归全量TS包含acceptance-v5；eval-full --out指新目录；Python相关、真实入口负例、晨会与四日跨进程轨迹。全套最后一次即可，首失败保留，必要修复后复跑。
+features.json每个pass绑定本HEAD真实入口及原始证据。原包SHA不改；delivery独立PACKAGE-SHA256含bundle、报告、门结果、原始轨迹、数据门及模型准确边界。未合main。
+只给一个整体通过/有限返工/停止结论，产品/研究能力分开列。改正R4报告旧计数：原包96/96；不把tiny结果写成正式encoder结果。
+
+原始复跑（均先读脚本，使用隔离clone和全新输出目录）
+node repros/world-probe.cjs <built-repo> <new-out>
+node repros/lifecycle-probe.cjs <built-repo> <new-out>
+node repros/promise-cancel-recheck.cjs <built-repo> <new-out>
+python3 repros/data-port-probe.py <repo> <new-out>
+旧脚本有些记录旧行为而非断言新版，应核JSON事实；H在acceptance-v5固定目标不变量。禁止将探针exit0直接视为修复成功。
+
+参考来源
+SuperAgent：https://github.com/deepseek-ai/dsh-superagent-prototype/blob/main/docs/003-execution.md
+长任务harness：https://www.anthropic.com/research/effective-harnesses-for-long-running-agents
+本轮据此采用持续事项/一次执行分离、明确恢复材料和端到端行为清单；不是声称这些外部项目已证明FrostEcho的效果。

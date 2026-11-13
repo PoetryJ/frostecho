@@ -1,0 +1,402 @@
+{
+  "schema": "frostecho.session/1",
+  "world": {
+    "schema": "frostecho.world-v2/2",
+    "rulesVersion": "survival-rules/2",
+    "day": 1,
+    "simTime": 82,
+    "version": 6,
+    "rngSeed": "r3-compare-empty-throughout",
+    "weather": "snow",
+    "npcs": {
+      "npc_01": {
+        "id": "npc_01",
+        "location": "warehouse",
+        "hunger": 69.52,
+        "stamina": 79.2,
+        "health": 100,
+        "san": 79.89333333333333,
+        "alive": true
+      },
+      "npc_02": {
+        "id": "npc_02",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_03": {
+        "id": "npc_03",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_04": {
+        "id": "npc_04",
+        "location": "warehouse",
+        "hunger": 68.44999999999999,
+        "stamina": 76.35,
+        "health": 100,
+        "san": 79.83333333333333,
+        "alive": true
+      },
+      "npc_05": {
+        "id": "npc_05",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_06": {
+        "id": "npc_06",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_07": {
+        "id": "npc_07",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_08": {
+        "id": "npc_08",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      }
+    },
+    "resources": {
+      "food": 33,
+      "firewood": 20,
+      "power": 40,
+      "medicine": 2
+    },
+    "furnace": {
+      "lit": true,
+      "fuel": 6,
+      "warmth": 18
+    },
+    "commandLog": [
+      "cmp-drain-t",
+      "cmp-drain-w",
+      "npc_04-game-2-g-travel-warehouse",
+      "npc_04-game-3-g-withdraw",
+      "npc_04-game-4-g-gather-food",
+      "npc_04-game-5-g-gather-food"
+    ],
+    "dead": [],
+    "ending": "none",
+    "scenarioDays": 4,
+    "spatial": {
+      "positions": {
+        "npc_01": {
+          "x": 16,
+          "y": 15
+        },
+        "npc_04": {
+          "x": 16,
+          "y": 15
+        }
+      },
+      "carry": {
+        "npc_01": {
+          "meals": 4
+        }
+      },
+      "closedCells": [],
+      "stocks": {
+        "warehouse": {
+          "food": 0
+        }
+      },
+      "deliveredMeals": 0
+    },
+    "receipts": {
+      "cmp-drain-t": {
+        "digest": "8154d8cdd9c27340e76ad2ddd3fdab5dda70bf2e9a525d95774284f98b7c9c49",
+        "eventIds": [
+          "cmp-drain-t:traveled:0"
+        ],
+        "postStateVersion": 1
+      },
+      "cmp-drain-w": {
+        "digest": "50e978e67f63aec9579bc80fd8d6fd1b9bf4ab7b0594862fb762419e49b03e2a",
+        "eventIds": [
+          "cmp-drain-w:stock_withdrawn:1"
+        ],
+        "postStateVersion": 2
+      },
+      "npc_04-game-2-g-travel-warehouse": {
+        "digest": "844cf7cd9737fda415d5f9998f0cb763a05022ea3bd815e5d4fa9bd49906a985",
+        "eventIds": [
+          "npc_04-game-2-g-travel-warehouse:traveled:2"
+        ],
+        "postStateVersion": 3
+      },
+      "npc_04-game-3-g-withdraw": {
+        "digest": "a62e74467181e0c37a4d797be931f1553c8325b96cb794a56d671f20a9a27f92",
+        "eventIds": [
+          "npc_04-game-3-g-withdraw:out_of_stock:3"
+        ],
+        "postStateVersion": 4
+      },
+      "npc_04-game-4-g-gather-food": {
+        "digest": "33fb61893a6a4fae78a825bc53fa4353b18ea2c3bdbc1873d226bdac3aba8f19",
+        "eventIds": [
+          "npc_04-game-4-g-gather-food:gathered:4"
+        ],
+        "postStateVersion": 5
+      },
+      "npc_04-game-5-g-gather-food": {
+        "digest": "c45258df16288b1db1e0bac592cd2982d1fe43077beaa6b12b7afde778c38734",
+        "eventIds": [
+          "npc_04-game-5-g-gather-food:gathered:5"
+        ],
+        "postStateVersion": 6
+      }
+    }
+  },
+  "memories": {
+    "npc_01": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmp-drain-t:traveled:0",
+          "occurredAt": 32,
+          "observedAt": 32,
+          "kind": "traveled",
+          "subjectIds": [
+            "npc_01",
+            "world"
+          ],
+          "payload": {
+            "tiles": 16,
+            "minutes": 32,
+            "arrivedAt": "warehouse"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cmp-drain-t:traveled:0"
+          ],
+          "recordId": "m-10e0e8be3ac3d4e0",
+          "revision": 1
+        },
+        {
+          "eventId": "cmp-drain-w:stock_withdrawn:1",
+          "occurredAt": 32,
+          "observedAt": 32,
+          "kind": "stock_withdrawn",
+          "subjectIds": [
+            "npc_01",
+            "warehouse"
+          ],
+          "payload": {
+            "place": "warehouse",
+            "amount": 4,
+            "remaining": 0,
+            "carried": 4
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cmp-drain-w:stock_withdrawn:1"
+          ],
+          "recordId": "m-769fb399f80d3ed0",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_02": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": []
+    },
+    "npc_03": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": []
+    },
+    "npc_04": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "npc_04-game-2-g-travel-warehouse:traveled:2",
+          "occurredAt": 82,
+          "observedAt": 82,
+          "kind": "traveled",
+          "subjectIds": [
+            "npc_04",
+            "player"
+          ],
+          "payload": {
+            "tiles": 25,
+            "minutes": 50,
+            "arrivedAt": "warehouse"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_04",
+          "sourceEventIds": [
+            "npc_04-game-2-g-travel-warehouse:traveled:2"
+          ],
+          "recordId": "m-a17275a7f400cf59",
+          "revision": 1
+        },
+        {
+          "eventId": "npc_04-game-3-g-withdraw:out_of_stock:3",
+          "occurredAt": 82,
+          "observedAt": 82,
+          "kind": "out_of_stock",
+          "subjectIds": [
+            "npc_04",
+            "player"
+          ],
+          "payload": {
+            "place": "warehouse",
+            "available": 0,
+            "wanted": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_04",
+          "sourceEventIds": [
+            "npc_04-game-3-g-withdraw:out_of_stock:3"
+          ],
+          "recordId": "m-495f2c16fef48cf8",
+          "revision": 2
+        },
+        {
+          "eventId": "npc_04-game-4-g-gather-food:gathered:4",
+          "occurredAt": 82,
+          "observedAt": 82,
+          "kind": "gathered",
+          "subjectIds": [
+            "npc_04",
+            "player"
+          ],
+          "payload": {
+            "resource": "food",
+            "amount": 4
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_04",
+          "sourceEventIds": [
+            "npc_04-game-4-g-gather-food:gathered:4"
+          ],
+          "recordId": "m-ca6c2539a4dd9315",
+          "revision": 3
+        },
+        {
+          "eventId": "npc_04-game-5-g-gather-food:gathered:5",
+          "occurredAt": 82,
+          "observedAt": 82,
+          "kind": "gathered",
+          "subjectIds": [
+            "npc_04",
+            "player"
+          ],
+          "payload": {
+            "resource": "food",
+            "amount": 5
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_04",
+          "sourceEventIds": [
+            "npc_04-game-5-g-gather-food:gathered:5"
+          ],
+          "recordId": "m-db024877e1bc52d5",
+          "revision": 4
+        }
+      ]
+    },
+    "npc_05": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": []
+    },
+    "npc_06": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": []
+    },
+    "npc_07": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": []
+    },
+    "npc_08": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": []
+    }
+  },
+  "outcomes": {
+    "npc_04-game-2-g-travel-warehouse": {
+      "status": "applied",
+      "eventIds": [
+        "npc_04-game-2-g-travel-warehouse:traveled:2"
+      ],
+      "postStateVersion": 3,
+      "reason": null
+    },
+    "npc_04-game-3-g-withdraw": {
+      "status": "applied",
+      "eventIds": [
+        "npc_04-game-3-g-withdraw:out_of_stock:3"
+      ],
+      "postStateVersion": 4,
+      "reason": null
+    },
+    "npc_04-game-4-g-gather-food": {
+      "status": "applied",
+      "eventIds": [
+        "npc_04-game-4-g-gather-food:gathered:4"
+      ],
+      "postStateVersion": 5,
+      "reason": null
+    },
+    "npc_04-game-5-g-gather-food": {
+      "status": "applied",
+      "eventIds": [
+        "npc_04-game-5-g-gather-food:gathered:5"
+      ],
+      "postStateVersion": 6,
+      "reason": null
+    }
+  },
+  "plans": [],
+  "instances": [],
+  "generations": {},
+  "sequence": 0,
+  "seed": "r3-compare-empty-throughout"
+}

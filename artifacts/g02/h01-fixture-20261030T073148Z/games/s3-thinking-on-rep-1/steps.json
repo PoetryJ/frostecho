@@ -1,0 +1,94 @@
+[
+  {
+    "round": 1,
+    "observation": {
+      "id": "npc_a",
+      "location": "dorm",
+      "hunger": 40,
+      "foodHere": 0,
+      "reachable": [
+        "dorm",
+        "kitchen"
+      ]
+    },
+    "raw": "{\"type\":\"move\",\"to\":\"kitchen\"}",
+    "parse": {
+      "ok": true,
+      "action": {
+        "type": "move",
+        "to": "kitchen"
+      }
+    },
+    "command": {
+      "commandId": "s3-thinking-on-rep-1:npc:1",
+      "actorId": "npc_a",
+      "type": "move",
+      "payload": {
+        "to": "kitchen"
+      }
+    },
+    "exec": {
+      "commandId": "s3-thinking-on-rep-1:npc:1",
+      "seq": 1,
+      "status": "accepted",
+      "eventIds": [
+        "e1"
+      ]
+    }
+  },
+  {
+    "round": 2,
+    "observation": {
+      "id": "npc_a",
+      "location": "kitchen",
+      "hunger": 40,
+      "foodHere": 1,
+      "reachable": [
+        "dorm",
+        "kitchen"
+      ]
+    },
+    "raw": "{\"type\":\"eat\"}",
+    "parse": {
+      "ok": true,
+      "action": {
+        "type": "eat"
+      }
+    },
+    "command": {
+      "commandId": "s3-thinking-on-rep-1:npc:2",
+      "actorId": "npc_a",
+      "type": "eat",
+      "payload": {}
+    },
+    "exec": {
+      "commandId": "s3-thinking-on-rep-1:npc:2",
+      "seq": 4,
+      "status": "rejected",
+      "reason": "NO_FOOD",
+      "detail": "kitchen food=0",
+      "eventIds": []
+    },
+    "error": "rejected NO_FOOD: kitchen food=0"
+  },
+  {
+    "round": 3,
+    "observation": {
+      "id": "npc_a",
+      "location": "kitchen",
+      "hunger": 40,
+      "foodHere": 0,
+      "reachable": [
+        "dorm",
+        "kitchen"
+      ]
+    },
+    "raw": "{\"type\":\"stop\"}",
+    "parse": {
+      "ok": true,
+      "action": {
+        "type": "stop"
+      }
+    }
+  }
+]

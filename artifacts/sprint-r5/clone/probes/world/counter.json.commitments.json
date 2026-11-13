@@ -1,0 +1,175 @@
+{
+  "commitments": [
+    {
+      "commitmentId": "cm-1ebf6189-8690-478e-8b57-7a42a0d69095",
+      "taskId": "task-001-deliver-meal",
+      "promisorId": "npc_01",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 2,
+      "status": "active",
+      "evidenceEventIds": [],
+      "changes": [
+        {
+          "changeId": "chg-9ae3cdb7-8c2f-43d7-89eb-12fe802cb103",
+          "proposedRevision": 2,
+          "kind": "defer",
+          "terms": {
+            "resumeWhen": "hunger>=40",
+            "reason": "先让我吃一口再答应"
+          },
+          "reason": "need-food-first",
+          "proposedAt": 4000,
+          "status": "accepted",
+          "respondedAt": 4000,
+          "responseEventId": "commitment_change_accepted"
+        }
+      ],
+      "createdAt": 4000,
+      "updatedAt": 4000
+    }
+  ],
+  "receipts": {
+    "request:in-1-request": {
+      "digest": "{\"goal\":\"deliver-meal\",\"promisorId\":\"npc_01\",\"beneficiaryId\":\"player\",\"deadline\":null,\"source\":null}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-1ebf6189-8690-478e-8b57-7a42a0d69095",
+          "taskId": null,
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "proposed",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 4000,
+          "updatedAt": 4000
+        },
+        "event": {
+          "type": "commitment_proposed",
+          "commitmentId": "cm-1ebf6189-8690-478e-8b57-7a42a0d69095",
+          "revision": 1,
+          "at": 4000,
+          "actorId": "npc_01",
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_01",
+            "toId": "player",
+            "conditions": "warehouse-supply",
+            "deadline": -1
+          }
+        }
+      }
+    },
+    "respond:in-1-request:respond": {
+      "digest": "{\"commitmentId\":\"cm-1ebf6189-8690-478e-8b57-7a42a0d69095\",\"verdict\":\"counter\",\"reason\":\"need-food-first\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-1ebf6189-8690-478e-8b57-7a42a0d69095",
+          "taskId": null,
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "proposed",
+          "evidenceEventIds": [],
+          "changes": [
+            {
+              "changeId": "chg-9ae3cdb7-8c2f-43d7-89eb-12fe802cb103",
+              "proposedRevision": 2,
+              "kind": "defer",
+              "terms": {
+                "resumeWhen": "hunger>=40",
+                "reason": "先让我吃一口再答应"
+              },
+              "reason": "need-food-first",
+              "proposedAt": 4000,
+              "status": "open",
+              "respondedAt": null,
+              "responseEventId": null
+            }
+          ],
+          "createdAt": 4000,
+          "updatedAt": 4000
+        },
+        "event": {
+          "type": "commitment_change_proposed",
+          "commitmentId": "cm-1ebf6189-8690-478e-8b57-7a42a0d69095",
+          "revision": 1,
+          "at": 4000,
+          "actorId": "npc_01",
+          "payload": {
+            "changeId": "chg-9ae3cdb7-8c2f-43d7-89eb-12fe802cb103",
+            "kind": "defer",
+            "reason": "need-food-first",
+            "proposedRevision": 2,
+            "terms": "{\"resumeWhen\":\"hunger>=40\",\"reason\":\"先让我吃一口再答应\"}"
+          }
+        }
+      }
+    },
+    "respond-change:in-2-respond-change": {
+      "digest": "{\"commitmentId\":\"cm-1ebf6189-8690-478e-8b57-7a42a0d69095\",\"changeId\":\"chg-9ae3cdb7-8c2f-43d7-89eb-12fe802cb103\",\"verdict\":\"accept\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-1ebf6189-8690-478e-8b57-7a42a0d69095",
+          "taskId": null,
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 2,
+          "status": "active",
+          "evidenceEventIds": [],
+          "changes": [
+            {
+              "changeId": "chg-9ae3cdb7-8c2f-43d7-89eb-12fe802cb103",
+              "proposedRevision": 2,
+              "kind": "defer",
+              "terms": {
+                "resumeWhen": "hunger>=40",
+                "reason": "先让我吃一口再答应"
+              },
+              "reason": "need-food-first",
+              "proposedAt": 4000,
+              "status": "accepted",
+              "respondedAt": 4000,
+              "responseEventId": "commitment_change_accepted"
+            }
+          ],
+          "createdAt": 4000,
+          "updatedAt": 4000
+        },
+        "event": {
+          "type": "commitment_change_accepted",
+          "commitmentId": "cm-1ebf6189-8690-478e-8b57-7a42a0d69095",
+          "revision": 2,
+          "at": 4000,
+          "actorId": "npc_01",
+          "payload": {
+            "changeId": "chg-9ae3cdb7-8c2f-43d7-89eb-12fe802cb103",
+            "kind": "defer",
+            "revision": 2,
+            "status": "active"
+          }
+        }
+      }
+    }
+  }
+}

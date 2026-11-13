@@ -1,0 +1,53 @@
+FrostEcho R4 P/E 独立核查
+日期2026-11-12；HEAD db34123423a06cc5118fb92e1c3cfb9f0c03fceb；基线5abadc8。
+隔离bundle clone：/tmp/frostecho-r4-world-db34123/repo。
+Node24.14.0，CPU；未改主树、未调用模型/GPU。
+
+结论：有限返工。统一时钟/资源链、已交两条故事有效；承诺生命周期跨分支仍不闭合，不宜宣称主体验收完全通过。
+
+有效结果
+- 从交付bundle独立clone/npm ci/build成功。r4-clock、r4-commitment、acceptance-v4三个文件22/22通过，其中真实CLI两进程故事A、B均由原验收器复跑。这22项与root全量重叠不可相加。
+- 旅行与advance复用evolveSpan，炉/全体NPC/伤害/日历进入共同时间规则；旅行者额外体力扣一次的已有用例通过。gather→deposit→withdraw→deliver资源转移与重复回执用例通过。
+- 故事A能显式接受换来源rev2后真正送饭；故事B拒绝暂停保持rev1、达到生存阈值后withdrawn并有关系证据。
+- r4-compare六类原脚本独立复跑；raw/summary/experience输出持平，传闻和亲见缺货类从历史none臂13/11次空取降为一次并送达。没有模型增益声明。
+
+三个主要问题
+
+1. P1 终态没有关闭所有后续状态变化和关联任务。
+  a) 真实两进程CLI：request npc_01 deliver-meal→save；重启relinquish该承诺→8次game-step。承诺仍withdrawn，但关联任务done、world.spatial.deliveredMeals=1。实际路线为travel-warehouse→withdraw→travel-kitchen→deliver。
+  根因：src/gameplay-v2/loop.ts:236-241退出不关闭任务；:249-253只查询活承诺，查不到时直接当legacy fixture放行；自动survival-exit的:296-300同样不关闭任务。
+  b) 真实两进程CLI：缺货pending-change→save；重启cancel-commitment→respond-change accept，承诺由cancelled复活为active/revision2（任务仍cancelled，状态又不一致）。
+  根因：commitments.ts:334-352只检查change是否open，没有拒绝承诺terminal；cancel也未关闭open change。
+  证据：output/withdraw-*.jsonl、withdraw.json及sidecars；cancel-*.jsonl、cancel.json及sidecars；output/probe.json。
+  修正应合并为一条生命周期不变量：terminal承诺吸收后续旧change/attempt，明确绑定它的任务不得fallback成legacy；只有显式fixture任务可无承诺运行。退出、取消、履约统一收尾task/待回应/attempt，旧回执可读但不重复副作用。
+
+2. P1 初次条件接受没有接上执行任务。
+  真CLI先advance4000，再request；NPC counter need-food-first，条件hunger>=40。新进程respond-change accept后承诺active但taskId=null/tasks=[]；之后step只处理需求，不存在送饭任务。
+  根因：loop.ts:192-195仅在初次request立即accept时创建任务，:202-212后续接受条件没有绑定任务；初次counter的变化kind=defer也没有把resumeWhen作为等待门兑现。
+  证据：output/counter-first.jsonl、counter-second.jsonl及counter存档；probe.json中accept快照明确active/taskId null。
+  这是同一“状态变化后的关联不变量”范围，可与问题1一并修。条件接受后要等待约定条件，满足时创建/恢复唯一关联任务；不能因不同入口漏建任务，也不能尚未满足就假装可执行。
+
+3. P2 研究对照仍不构成三个不同记忆方法的比较。
+  loop.ts:334-335 raw与summary完全走同一belief.level，没有摘要生成/存储/检索机制。因此raw=summary是相同实现重复，不是摘要方法的零效果证据。
+  scripts/r4-compare.ts:161将任意相同selectedId计uselessRepeat，包含完成后的正常wait；:153每轮加1叫commandCount，而每轮可含8NPC动作；:150-158只在step内部计accept，外部回应发生在:178-179之后，且这六类没有一条接受alt-source，协商一致性指标多为未触发。
+  survival-conflict本次原输出仍active，未覆盖退出；用户已诚实说明。应把未触发标N/A/coverage不足，不能用mismatch0证明一致。
+  修正范围：没有真实summary实现就移除该臂并如实报告两方法；保留raw强基线。按authority receipt计实际命令/失败/履约，明确等待不算无效重复。加一条真正接受调整并走完行动的对照，或把相应指标标未测；不强求正提升。
+  证据comparison/comparison.json、comparison.log；提交源码行号如上。
+
+未证明边界
+- R4 G3真实CLI测试是4NPC、16轮game-step后advance1440，>=24h且至少送1份饭（gate-v4.test.ts:151起）。没有交8NPC空间96h完整真实链。旧8NPC96h仍无spatial字段；delivery/GATES.json也明确标这一边界。不要把旧四日fixture与新空间短故事拼成已验收整合四日。
+- 两条故事证明明确注册reference规则，不代表JEV、LLM语义理解、长期经验泛化。
+- 资源/时钟已有重点用例通过，本轮未扩大地图几何/室内/原作全内容检查。
+
+复跑
+export PATH=/root/.workbuddy/binaries/node/versions/24.14.0/bin:/usr/local/bin:/usr/bin:/bin
+cd /tmp/frostecho-r4-world-db34123/repo
+node --test dist/tests/r4-clock.test.js dist/tests/r4-commitment.test.js dist/tests/acceptance-v4/gate-v4.test.js
+node /tmp/frostecho-r4-world-db34123/probe.cjs "$PWD" /tmp/frostecho-r4-world-db34123/new-output
+node dist/scripts/r4-compare.js --out /tmp/frostecho-r4-world-db34123/new-comparison
+probe要求全新输出目录，以免读取上次存档。仅写隔离输出，不改产品代码。
+
+下一轮最小产品任务
+先一个承诺-任务状态不变量提交关闭上述三条CLI反例；用状态转移表覆盖cancel/withdraw/fulfil之后的旧accept/reject与初次counter接受。保持既有正向故事。
+随后实现一项议会决定→居民选择接受/拒绝→实际分工的纵切：例如投票安排厨房送饭或炉火保障，决议产生request而不是直接修改NPC行动/承诺；复用已修的承诺/attempt/receipt，居民仍有生存优先和协商退出；同一游戏进程8NPC跨四日，保存恢复后继续履约。不要再搭议会自己的第二执行框架。
+JEV可在决议后的候选承接/协商选择上shadow评估；harness负责有来源事件、待回应、超时/取消、版本与真实收据。该纵切同时推进SuperAgent启发与原作玩法。

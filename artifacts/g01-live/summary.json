@@ -1,0 +1,167 @@
+{
+  "runs": [
+    {
+      "name": "run-1",
+      "runId": "g01-live-1",
+      "actorId": "npc_a",
+      "outcome": "goal_reached",
+      "goalReached": true,
+      "replayMatches": true,
+      "providerCalls": 2,
+      "error": null,
+      "stepCount": 2,
+      "raw": [
+        "\n\n{\"type\":\"move\",\"to\":\"kitchen\"}",
+        "\n\n{\"type\":\"eat\"}"
+      ],
+      "commands": [
+        "move",
+        "eat"
+      ],
+      "stepErrors": [
+        null,
+        null
+      ],
+      "model": "qwen3.8-27b",
+      "apiKey": "absent",
+      "sampling": {
+        "temperature": 0,
+        "max_tokens": 1024,
+        "stream": false,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        }
+      },
+      "timing": {
+        "totalMs": 12505,
+        "calls": [
+          {
+            "round": 1,
+            "ms": 6370
+          },
+          {
+            "round": 2,
+            "ms": 6133
+          }
+        ]
+      },
+      "requestStats": {
+        "providerCalls": 2,
+        "maxDecisions": 5,
+        "timeoutMs": 15000,
+        "retries": 0
+      },
+      "finalHunger": 70
+    },
+    {
+      "name": "run-2",
+      "runId": "g01-live-2",
+      "actorId": "npc_a",
+      "outcome": "goal_reached",
+      "goalReached": true,
+      "replayMatches": true,
+      "providerCalls": 2,
+      "error": null,
+      "stepCount": 2,
+      "raw": [
+        "\n\n{\"type\":\"move\",\"to\":\"kitchen\"}",
+        "\n\n{\"type\":\"eat\"}"
+      ],
+      "commands": [
+        "move",
+        "eat"
+      ],
+      "stepErrors": [
+        null,
+        null
+      ],
+      "model": "qwen3.8-27b",
+      "apiKey": "absent",
+      "sampling": {
+        "temperature": 0,
+        "max_tokens": 1024,
+        "stream": false,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        }
+      },
+      "timing": {
+        "totalMs": 12423,
+        "calls": [
+          {
+            "round": 1,
+            "ms": 6243
+          },
+          {
+            "round": 2,
+            "ms": 6178
+          }
+        ]
+      },
+      "requestStats": {
+        "providerCalls": 2,
+        "maxDecisions": 5,
+        "timeoutMs": 15000,
+        "retries": 0
+      },
+      "finalHunger": 70
+    },
+    {
+      "name": "run-3",
+      "runId": "g01-live-3",
+      "actorId": "npc_a",
+      "outcome": "goal_reached",
+      "goalReached": true,
+      "replayMatches": true,
+      "providerCalls": 2,
+      "error": null,
+      "stepCount": 2,
+      "raw": [
+        "\n\n{\"type\":\"move\",\"to\":\"kitchen\"}",
+        "\n\n{\"type\":\"eat\"}"
+      ],
+      "commands": [
+        "move",
+        "eat"
+      ],
+      "stepErrors": [
+        null,
+        null
+      ],
+      "model": "qwen3.8-27b",
+      "apiKey": "absent",
+      "sampling": {
+        "temperature": 0,
+        "max_tokens": 1024,
+        "stream": false,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        }
+      },
+      "timing": {
+        "totalMs": 12400,
+        "calls": [
+          {
+            "round": 1,
+            "ms": 6275
+          },
+          {
+            "round": 2,
+            "ms": 6125
+          }
+        ]
+      },
+      "requestStats": {
+        "providerCalls": 2,
+        "maxDecisions": 5,
+        "timeoutMs": 15000,
+        "retries": 0
+      },
+      "finalHunger": 70
+    }
+  ],
+  "successCount": 3,
+  "requestCount": 6,
+  "allGoalReached": true,
+  "allReplayMatch": true
+}

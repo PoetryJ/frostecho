@@ -1,0 +1,197 @@
+{
+  "scenario": "I-restore-empty-then-omit",
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "log": [
+    {
+      "seq": 1,
+      "command": {
+        "commandId": "ir-empty",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "ir-empty",
+        "seq": 1,
+        "status": "accepted",
+        "eventIds": [
+          "e1",
+          "e2"
+        ]
+      }
+    },
+    {
+      "seq": 2,
+      "command": {
+        "commandId": "ir-empty",
+        "actorId": "npc_a",
+        "type": "eat"
+      },
+      "result": {
+        "commandId": "ir-empty",
+        "seq": 2,
+        "status": "rejected",
+        "reason": "COMMAND_ID_CONFLICT",
+        "detail": "commandId reused with different content (original seq 1)",
+        "eventIds": [],
+        "originalSeq": 1
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "FoodConsumed",
+      "location": "kitchen",
+      "amount": 1,
+      "before": 1,
+      "after": 0,
+      "eventId": "e1",
+      "seq": 1,
+      "commandId": "ir-empty"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_a",
+      "before": 40,
+      "after": 70,
+      "eventId": "e2",
+      "seq": 1,
+      "commandId": "ir-empty"
+    }
+  ],
+  "finalState": {
+    "tick": 1,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 70
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 0
+    }
+  },
+  "saveData": {
+    "version": 1,
+    "initialState": {
+      "tick": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "dorm",
+          "hunger": 20
+        }
+      },
+      "food": {
+        "dorm": 0,
+        "kitchen": 1
+      }
+    },
+    "state": {
+      "tick": 1,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 70
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "dorm",
+          "hunger": 20
+        }
+      },
+      "food": {
+        "dorm": 0,
+        "kitchen": 0
+      }
+    },
+    "seq": 1,
+    "eventCounter": 2,
+    "events": [
+      {
+        "type": "FoodConsumed",
+        "location": "kitchen",
+        "amount": 1,
+        "before": 1,
+        "after": 0,
+        "eventId": "e1",
+        "seq": 1,
+        "commandId": "ir-empty"
+      },
+      {
+        "type": "HungerChanged",
+        "npcId": "npc_a",
+        "before": 40,
+        "after": 70,
+        "eventId": "e2",
+        "seq": 1,
+        "commandId": "ir-empty"
+      }
+    ],
+    "log": [
+      {
+        "seq": 1,
+        "command": {
+          "commandId": "ir-empty",
+          "actorId": "npc_a",
+          "type": "eat",
+          "payload": {}
+        },
+        "result": {
+          "commandId": "ir-empty",
+          "seq": 1,
+          "status": "accepted",
+          "eventIds": [
+            "e1",
+            "e2"
+          ]
+        }
+      }
+    ],
+    "processed": {
+      "ir-empty": {
+        "fingerprint": "{\"actorId\":\"npc_a\",\"payload\":{},\"type\":\"eat\"}",
+        "result": {
+          "commandId": "ir-empty",
+          "seq": 1,
+          "status": "accepted",
+          "eventIds": [
+            "e1",
+            "e2"
+          ]
+        }
+      }
+    }
+  }
+}

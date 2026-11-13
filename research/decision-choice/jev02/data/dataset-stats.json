@@ -1,0 +1,131 @@
+{
+  "schema": "frostecho.jev01.dataset-stats/1",
+  "seed": 20261109,
+  "ordersPerCase": 2,
+  "splits": {
+    "cal": 64,
+    "dev": 64,
+    "test": 128,
+    "train": 384
+  },
+  "perClass": {
+    "cal": {
+      "PLAYER_FIRST": 16,
+      "NPC_FIRST": 16,
+      "NO_PRIORITY_REQUEST": 16,
+      "NEEDS_CLARIFICATION": 16
+    },
+    "dev": {
+      "PLAYER_FIRST": 16,
+      "NPC_FIRST": 16,
+      "NO_PRIORITY_REQUEST": 16,
+      "NEEDS_CLARIFICATION": 16
+    },
+    "test": {
+      "PLAYER_FIRST": 32,
+      "NPC_FIRST": 32,
+      "NO_PRIORITY_REQUEST": 32,
+      "NEEDS_CLARIFICATION": 32
+    },
+    "train": {
+      "PLAYER_FIRST": 96,
+      "NPC_FIRST": 96,
+      "NO_PRIORITY_REQUEST": 96,
+      "NEEDS_CLARIFICATION": 96
+    }
+  },
+  "families": {
+    "cal": [
+      "NC12",
+      "NC13",
+      "NF12",
+      "NF13",
+      "NP12",
+      "NP13",
+      "PF12",
+      "PF13"
+    ],
+    "dev": [
+      "NC10",
+      "NC11",
+      "NF10",
+      "NF11",
+      "NP10",
+      "NP11",
+      "PF10",
+      "PF11"
+    ],
+    "test": [
+      "NC14",
+      "NC15",
+      "NF14",
+      "NF15",
+      "NP14",
+      "NP15",
+      "PF14",
+      "PF15"
+    ],
+    "train": [
+      "NC01",
+      "NC02",
+      "NC03",
+      "NC04",
+      "NC05",
+      "NC06",
+      "NC07",
+      "NC08",
+      "NC09",
+      "NF01",
+      "NF02",
+      "NF03",
+      "NF04",
+      "NF05",
+      "NF06",
+      "NF07",
+      "NF08",
+      "NF09",
+      "NP01",
+      "NP02",
+      "NP03",
+      "NP04",
+      "NP05",
+      "NP06",
+      "NP07",
+      "NP08",
+      "NP09",
+      "PF01",
+      "PF02",
+      "PF03",
+      "PF04",
+      "PF05",
+      "PF06",
+      "PF07",
+      "PF08",
+      "PF09"
+    ]
+  },
+  "familyCounts": {
+    "cal": 8,
+    "dev": 8,
+    "test": 8,
+    "train": 36
+  },
+  "testComposition": {
+    "new_combination": 64,
+    "language_ood": 64
+  },
+  "hashes": {
+    "casesSha256": "aa94b2bf902eb4649bd5a148846959245958167a1e394875e3f5b703cee72dba",
+    "labelsSha256": "421ac28b2b7157caf253a96631fda129eb4456fe9ed21fb3300c195a78e6b3af",
+    "groupsSha256": "c90d6de861cc3abcf80eaa92d92d61be475005e2a9b4ebe348490161b9eccf9b",
+    "splitsSha256": "880b5b99eca5a140164cc032f626fdf1c665cb7802d8d8744eb7cd69a820fd80",
+    "caseCount": 640
+  },
+  "testGoldSha256": "6b5dfdd5f7e0d701a53b92a14babcd109d215c07930920ce844245f00ac9a15c",
+  "testInputsSha256": "6b0f9e435b061e9870c73d0f5ce3e7906f36249110146b082588aae589fe0212",
+  "limitations": [
+    "bounded synthetic/annotated pilot, not 640 real players or an independent natural distribution",
+    "families are template families; variants are surface combinations, not independent samples",
+    "the only natural-language entry available is the fixed G09 S1 request text"
+  ]
+}

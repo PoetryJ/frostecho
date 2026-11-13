@@ -1,0 +1,45 @@
+{
+  "schema": "frostecho.g04.game/1",
+  "episodeId": "n2-ca-event",
+  "scenarioId": "n2",
+  "wakePolicy": "event",
+  "mode": "live",
+  "thinking": true,
+  "actorOrder": [
+    "npc_c",
+    "npc_a"
+  ],
+  "stopReason": "user_closed",
+  "commands": 1,
+  "events": 1,
+  "actors": {
+    "npc_c": {
+      "state": "waiting",
+      "cycles": 1,
+      "providerCalls": 1,
+      "goalReached": false
+    },
+    "npc_a": {
+      "state": "waiting",
+      "cycles": 1,
+      "providerCalls": 1,
+      "goalReached": false
+    }
+  },
+  "scenarioPass": true,
+  "idlePumps": {
+    "pumps": 100,
+    "callsBefore": 2,
+    "callsAfter": 2,
+    "cyclesBefore": 2,
+    "cyclesAfter": 2,
+    "actorStatesBefore": {
+      "npc_c": "waiting",
+      "npc_a": "waiting"
+    },
+    "actorStatesAfter": {
+      "npc_c": "waiting",
+      "npc_a": "waiting"
+    }
+  }
+}

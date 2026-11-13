@@ -1,0 +1,31 @@
+JEV-03R1 交付索引
+分支 codex/jev03-r1-behavior；基线 b36840e；未 push/merge，未改默认，未调用 18872，未重训/未补旧204。
+
+CPU 门控（CUDA_VISIBLE_DEVICES 为空时实测）：R1 28 + J3 26 + 行为 25 = 79 项全部通过。
+  jev02r1/cli.py 现按 --device 显式校验，假 backend 注入 CPU，生产路径仍校验实际设备。
+  behavior/store.py：reserve→begin→commit_result(fsync+rename)→finish；恢复分 resumable/unresolved/corrupt。
+  behavior/runtime.py：plan/caps 显式（1552/776/7200s），未知或冲突配置在载模前拒绝；缓存绑定输入清单/token/render/身份/头部SHA/字节。
+
+唯一新批（GPU 一次，23.5 分钟）
+  model operations 1552/1552，生成 776/776，decode 5432，prefill 1552，输入 194940 token，输出 5432 token
+  墙钟 1411s / 7200s，加载 13s，GPU 峰值 15.00 GiB/卡
+  job 账本 complete=True，reserved/finished/results=1552/1552/1552；gold 阻断正向对照 blocked:GoldBlocked（1 次）
+
+成对质量（96 对=192 例=768 呈现）
+  M0: acc 47.40%  worst-order 34.90%  macroF1 0.432  flip 0/64  invariant 11/32  四序一致且全错 13/192  各类PF/NF/NO/NC 56.6/46.1/63.3/15.6
+  C: acc 53.65%  worst-order 48.96%  macroF1 0.542  flip 0/64  invariant 16/32  四序一致且全错 6/192  各类PF/NF/NO/NC 49.6/52.7/60.2/57.0
+  Q: acc 59.64%  worst-order 57.81%  macroF1 0.574  flip 4/64  invariant 18/32  四序一致且全错 55/192  各类PF/NF/NO/NC 96.9/28.9/50.0/56.2
+  JSON: acc 61.20%  worst-order 57.29%  macroF1 0.526  flip 9/64  invariant 16/32  四序一致且全错 36/192  各类PF/NF/NO/NC 68.0/86.3/53.9/4.7
+
+文件
+  behavior/{store,runtime}.py        JobStore 与 plan/设备/缓存绑定
+  behavior/{run,assemble,score,cost}.py  唯一新批、派生缓存、CPU 读出、成本派生
+  behavior/{report,verify}.py        成对指标与只读复算（verify.py passes=true）
+  behavior/data/{semantic3.json,pairs_*.py,build.py}  语义 v3、96 对源、门控
+  behavior/{cases,inputs,gold,pairs,stats}.json(l)     192 例与封存结构
+  behavior/data/blind/{sessions.json,anchors.jsonl,cases.jsonl}  双会话盲标记录
+  results/scores.jsonl (2304 行)、generations.jsonl (768)、metrics.json、REPORT.md、cost.json、cache-binding.json
+  evidence/jobs.jsonl（1552 job 事件）、results/<jobId>.json（逐 job 产物）、batch.json
+  jev03/results/CORRECTION-JEV03R1.md（对 JEV-03 结论的追加更正）
+
+复跑：见 behavior/README.md；核验：python3 behavior/verify.py（只读，独立 clone 可跑）

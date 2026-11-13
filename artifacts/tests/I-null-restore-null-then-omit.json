@@ -1,0 +1,78 @@
+{
+  "scenario": "I-null-restore-null-then-omit",
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "log": [
+    {
+      "seq": 1,
+      "command": {
+        "commandId": "in-null-r",
+        "actorId": "npc_a",
+        "type": "eat",
+        "payload": null
+      },
+      "result": {
+        "commandId": "in-null-r",
+        "seq": 1,
+        "status": "rejected",
+        "reason": "INVALID_PAYLOAD",
+        "detail": "eat takes empty payload {}",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 2,
+      "command": {
+        "commandId": "in-null-r",
+        "actorId": "npc_a",
+        "type": "eat"
+      },
+      "result": {
+        "commandId": "in-null-r",
+        "seq": 2,
+        "status": "rejected",
+        "reason": "COMMAND_ID_CONFLICT",
+        "detail": "commandId reused with different content (original seq 1)",
+        "eventIds": [],
+        "originalSeq": 1
+      }
+    }
+  ],
+  "events": [],
+  "finalState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  }
+}

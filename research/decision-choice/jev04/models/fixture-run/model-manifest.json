@@ -1,0 +1,52 @@
+{
+  "schema": "frostecho.jev04.training-fixture/1",
+  "note": "synthetic pipeline fixture only; not JEV data, not a model result",
+  "config": {
+    "dim": 32,
+    "k": 4,
+    "groups": 128,
+    "steps": 80,
+    "lr": 0.001,
+    "seeds": [
+      17,
+      43
+    ],
+    "optimizer": "AdamW",
+    "loss": "listwise CE"
+  },
+  "runs": [
+    {
+      "seed": 17,
+      "dev": {
+        "loss": 1.336477,
+        "accuracy": 0.34375
+      },
+      "trainableParameters": 32,
+      "frozenParameters": 1056,
+      "saveLoadMaxDelta": 0.0,
+      "checkpoint": "checkpoint-17.pt",
+      "checkpointSha256": "19a079828576fea23a96bcdf6d6bb5bf92a2b8922a44d6ae33af44056a5371c7",
+      "log": "train-17.jsonl",
+      "logSha256": "a80913da209bf41fc80e64afc0696fdfeac21a5402f5f7c391b31ab8913f26be"
+    },
+    {
+      "seed": 43,
+      "dev": {
+        "loss": 1.382133,
+        "accuracy": 0.34375
+      },
+      "trainableParameters": 32,
+      "frozenParameters": 1056,
+      "saveLoadMaxDelta": 0.0,
+      "checkpoint": "checkpoint-43.pt",
+      "checkpointSha256": "da5e7543c203c16516551ac64f9a067ac34235ee6b0cbead9d759b948d4442c2",
+      "log": "train-43.jsonl",
+      "logSha256": "1447e918165a03d5bd6653ffad6cc4e6821a73b3e563e3b7c22445651d19b001"
+    }
+  ],
+  "overfitProbe": {
+    "groups": 16,
+    "steps": 300,
+    "trainAccuracy": 1.0
+  }
+}

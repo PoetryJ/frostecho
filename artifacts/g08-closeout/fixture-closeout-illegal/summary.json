@@ -1,0 +1,441 @@
+{
+  "schema": "frostecho.g08.eval.summary/1",
+  "costsSchema": "frostecho.g08.eval.costs/1",
+  "batch": "fixture-closeout-illegal",
+  "createdAt": "2026-11-03T12:04:00.230Z",
+  "mode": "fake",
+  "model": "fake-model",
+  "version": {
+    "commit": "8285dd4fd017d286aa58c76bffcbb558da3410d2",
+    "dirty": false,
+    "dirtyFiles": [],
+    "sourceFingerprint": "9e384c40dbaa67e94b1b421cf860c1bfeea20c9261ba2e7e9327be2c19d53e4d",
+    "promptFingerprint": "8d66afdf043633df7103189682fdd5b1647e293554bba761825529f1364c9ae2",
+    "node": "v22.20.0",
+    "platform": "linux"
+  },
+  "endpointHost": "127.0.0.1:42861",
+  "hardChatLimit": 8,
+  "gateSpent": 1,
+  "gateBlocked": 0,
+  "fatal": "g08-r1-legacy-off: invalid_output (illegal action for the legacy axis (strict re-parse failed); the experiment stops here without a player action)",
+  "totals": {
+    "planned": 8,
+    "completed": 0,
+    "failed": 1,
+    "notRun": 7
+  },
+  "chatRequests": 1,
+  "cells": {
+    "legacy-off": {
+      "episodeId": "g08-r1-legacy-off",
+      "actionSet": "legacy",
+      "arm": "off",
+      "outcome": "invalid_output",
+      "npcAction": null,
+      "npcAte": null,
+      "playerAte": null,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": 12,
+      "requests": 1,
+      "latencyMs": 6,
+      "usageUnknown": false
+    },
+    "legacy-on": {
+      "episodeId": "g08-r1-legacy-on",
+      "actionSet": "legacy",
+      "arm": "on",
+      "outcome": "not_run",
+      "npcAction": null,
+      "npcAte": null,
+      "playerAte": null,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": null,
+      "requests": 0,
+      "latencyMs": null,
+      "usageUnknown": false
+    },
+    "timed_wait-off": {
+      "episodeId": "g08-r1-timed_wait-off",
+      "actionSet": "timed_wait",
+      "arm": "off",
+      "outcome": "not_run",
+      "npcAction": null,
+      "npcAte": null,
+      "playerAte": null,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": null,
+      "requests": 0,
+      "latencyMs": null,
+      "usageUnknown": false
+    },
+    "timed_wait-on": {
+      "episodeId": "g08-r1-timed_wait-on",
+      "actionSet": "timed_wait",
+      "arm": "on",
+      "outcome": "not_run",
+      "npcAction": null,
+      "npcAte": null,
+      "playerAte": null,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": null,
+      "requests": 0,
+      "latencyMs": null,
+      "usageUnknown": false
+    }
+  },
+  "episodes": [
+    {
+      "episodeId": "g08-r1-legacy-off",
+      "actionSet": "legacy",
+      "arm": "off",
+      "outcome": "invalid_output",
+      "npcAction": null,
+      "npcAte": null,
+      "playerAte": null,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": 12,
+      "requests": 1,
+      "latencyMs": 6,
+      "usageUnknown": false
+    },
+    {
+      "episodeId": "g08-r1-legacy-on",
+      "actionSet": "legacy",
+      "arm": "on",
+      "outcome": "not_run",
+      "npcAction": null,
+      "npcAte": null,
+      "playerAte": null,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": null,
+      "requests": 0,
+      "latencyMs": null,
+      "usageUnknown": false
+    },
+    {
+      "episodeId": "g08-r1-timed_wait-off",
+      "actionSet": "timed_wait",
+      "arm": "off",
+      "outcome": "not_run",
+      "npcAction": null,
+      "npcAte": null,
+      "playerAte": null,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": null,
+      "requests": 0,
+      "latencyMs": null,
+      "usageUnknown": false
+    },
+    {
+      "episodeId": "g08-r1-timed_wait-on",
+      "actionSet": "timed_wait",
+      "arm": "on",
+      "outcome": "not_run",
+      "npcAction": null,
+      "npcAte": null,
+      "playerAte": null,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": null,
+      "requests": 0,
+      "latencyMs": null,
+      "usageUnknown": false
+    },
+    {
+      "episodeId": "g08-r2-timed_wait-on",
+      "actionSet": "timed_wait",
+      "arm": "on",
+      "outcome": "not_run",
+      "npcAction": null,
+      "npcAte": null,
+      "playerAte": null,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": null,
+      "requests": 0,
+      "latencyMs": null,
+      "usageUnknown": false
+    },
+    {
+      "episodeId": "g08-r2-timed_wait-off",
+      "actionSet": "timed_wait",
+      "arm": "off",
+      "outcome": "not_run",
+      "npcAction": null,
+      "npcAte": null,
+      "playerAte": null,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": null,
+      "requests": 0,
+      "latencyMs": null,
+      "usageUnknown": false
+    },
+    {
+      "episodeId": "g08-r2-legacy-on",
+      "actionSet": "legacy",
+      "arm": "on",
+      "outcome": "not_run",
+      "npcAction": null,
+      "npcAte": null,
+      "playerAte": null,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": null,
+      "requests": 0,
+      "latencyMs": null,
+      "usageUnknown": false
+    },
+    {
+      "episodeId": "g08-r2-legacy-off",
+      "actionSet": "legacy",
+      "arm": "off",
+      "outcome": "not_run",
+      "npcAction": null,
+      "npcAte": null,
+      "playerAte": null,
+      "waitAccepted": false,
+      "wakeAtSimTime": null,
+      "totalTokens": null,
+      "requests": 0,
+      "latencyMs": null,
+      "usageUnknown": false
+    }
+  ],
+  "tokens": [
+    {
+      "episodeId": "g08-r1-legacy-off",
+      "totalTokens": 12
+    },
+    {
+      "episodeId": "g08-r1-legacy-on",
+      "totalTokens": null
+    },
+    {
+      "episodeId": "g08-r1-timed_wait-off",
+      "totalTokens": null
+    },
+    {
+      "episodeId": "g08-r1-timed_wait-on",
+      "totalTokens": null
+    },
+    {
+      "episodeId": "g08-r2-timed_wait-on",
+      "totalTokens": null
+    },
+    {
+      "episodeId": "g08-r2-timed_wait-off",
+      "totalTokens": null
+    },
+    {
+      "episodeId": "g08-r2-legacy-on",
+      "totalTokens": null
+    },
+    {
+      "episodeId": "g08-r2-legacy-off",
+      "totalTokens": null
+    }
+  ],
+  "costs": {
+    "schema": "frostecho.g08.eval.costs/1",
+    "counts": {
+      "planned": 8,
+      "completed": 0,
+      "failed": 1,
+      "notRun": 7,
+      "chatRequests": 1,
+      "spent": 1,
+      "blocked": 0,
+      "unresolved": 0,
+      "usageUnknown": 0
+    },
+    "knownTokenSum": 12,
+    "usageUnknown": 0,
+    "episodes": [
+      {
+        "episodeId": "g08-r1-legacy-off",
+        "actionSet": "legacy",
+        "arm": "off",
+        "outcome": "invalid_output",
+        "requests": 1,
+        "begins": 1,
+        "finishes": 1,
+        "totalTokens": 12,
+        "usageUnknown": false,
+        "latencyMs": 6
+      },
+      {
+        "episodeId": "g08-r1-legacy-on",
+        "actionSet": "legacy",
+        "arm": "on",
+        "outcome": "not_run",
+        "requests": 0,
+        "begins": 0,
+        "finishes": 0,
+        "totalTokens": null,
+        "usageUnknown": false,
+        "latencyMs": null
+      },
+      {
+        "episodeId": "g08-r1-timed_wait-off",
+        "actionSet": "timed_wait",
+        "arm": "off",
+        "outcome": "not_run",
+        "requests": 0,
+        "begins": 0,
+        "finishes": 0,
+        "totalTokens": null,
+        "usageUnknown": false,
+        "latencyMs": null
+      },
+      {
+        "episodeId": "g08-r1-timed_wait-on",
+        "actionSet": "timed_wait",
+        "arm": "on",
+        "outcome": "not_run",
+        "requests": 0,
+        "begins": 0,
+        "finishes": 0,
+        "totalTokens": null,
+        "usageUnknown": false,
+        "latencyMs": null
+      },
+      {
+        "episodeId": "g08-r2-timed_wait-on",
+        "actionSet": "timed_wait",
+        "arm": "on",
+        "outcome": "not_run",
+        "requests": 0,
+        "begins": 0,
+        "finishes": 0,
+        "totalTokens": null,
+        "usageUnknown": false,
+        "latencyMs": null
+      },
+      {
+        "episodeId": "g08-r2-timed_wait-off",
+        "actionSet": "timed_wait",
+        "arm": "off",
+        "outcome": "not_run",
+        "requests": 0,
+        "begins": 0,
+        "finishes": 0,
+        "totalTokens": null,
+        "usageUnknown": false,
+        "latencyMs": null
+      },
+      {
+        "episodeId": "g08-r2-legacy-on",
+        "actionSet": "legacy",
+        "arm": "on",
+        "outcome": "not_run",
+        "requests": 0,
+        "begins": 0,
+        "finishes": 0,
+        "totalTokens": null,
+        "usageUnknown": false,
+        "latencyMs": null
+      },
+      {
+        "episodeId": "g08-r2-legacy-off",
+        "actionSet": "legacy",
+        "arm": "off",
+        "outcome": "not_run",
+        "requests": 0,
+        "begins": 0,
+        "finishes": 0,
+        "totalTokens": null,
+        "usageUnknown": false,
+        "latencyMs": null
+      }
+    ],
+    "cells": [
+      {
+        "cell": "legacy-off",
+        "episodes": [
+          "g08-r1-legacy-off",
+          "g08-r2-legacy-off"
+        ],
+        "requests": 1,
+        "totalTokens": null,
+        "usageUnknown": false,
+        "latencyMs": null
+      },
+      {
+        "cell": "legacy-on",
+        "episodes": [
+          "g08-r1-legacy-on",
+          "g08-r2-legacy-on"
+        ],
+        "requests": 0,
+        "totalTokens": null,
+        "usageUnknown": false,
+        "latencyMs": null
+      },
+      {
+        "cell": "timed_wait-off",
+        "episodes": [
+          "g08-r1-timed_wait-off",
+          "g08-r2-timed_wait-off"
+        ],
+        "requests": 0,
+        "totalTokens": null,
+        "usageUnknown": false,
+        "latencyMs": null
+      },
+      {
+        "cell": "timed_wait-on",
+        "episodes": [
+          "g08-r1-timed_wait-on",
+          "g08-r2-timed_wait-on"
+        ],
+        "requests": 0,
+        "totalTokens": null,
+        "usageUnknown": false,
+        "latencyMs": null
+      }
+    ],
+    "pairs": [
+      {
+        "pair": "legacy-r1",
+        "offEpisode": "g08-r1-legacy-off",
+        "onEpisode": "g08-r1-legacy-on",
+        "offTokens": 12,
+        "onTokens": null,
+        "delta": null
+      },
+      {
+        "pair": "timed_wait-r1",
+        "offEpisode": "g08-r1-timed_wait-off",
+        "onEpisode": "g08-r1-timed_wait-on",
+        "offTokens": null,
+        "onTokens": null,
+        "delta": null
+      },
+      {
+        "pair": "legacy-r2",
+        "offEpisode": "g08-r2-legacy-off",
+        "onEpisode": "g08-r2-legacy-on",
+        "offTokens": null,
+        "onTokens": null,
+        "delta": null
+      },
+      {
+        "pair": "timed_wait-r2",
+        "offEpisode": "g08-r2-timed_wait-off",
+        "onEpisode": "g08-r2-timed_wait-on",
+        "offTokens": null,
+        "onTokens": null,
+        "delta": null
+      }
+    ]
+  }
+}
