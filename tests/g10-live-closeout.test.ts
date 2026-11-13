@@ -46,6 +46,17 @@ function openCli(args: string[]): OpenChild {
   return { child, stdout: () => stdout, result: () => done, stdin };
 }
 
+test('stdout handshake waits until a later chunk carries the second marker', async () => {
+  let text = '持久化失败';
+  const pending = waitFor({ stdout: () => text } as OpenChild, '失败证据未能落盘');
+  let settled = false;
+  void pending.then(() => { settled = true; });
+  await new Promise(resolve => setTimeout(resolve, 40));
+  assert.equal(settled, false);
+  text += '\n失败证据未能落盘';
+  await pending;
+});
+
 async function waitFor(child: OpenChild, text: string): Promise<void> {
   const deadline = Date.now() + 15_000;
   while (!child.stdout().includes(text)) {
@@ -83,6 +94,7 @@ test('A transient save IO then recovery before EOF: exit 1, stderr cause, record
   writeFileSync(root, 'blocked'); // the root path becomes a plain file
   child.stdin.write('save broken\n');
   await waitFor(child, '持久化失败');
+  await waitFor(child, '失败证据未能落盘');
   assert.ok(child.stdout().includes('失败证据未能落盘'), 'must not claim the evidence file was saved');
   // recovery: the root becomes a directory again before EOF
   const { rmSync } = await import('node:fs');

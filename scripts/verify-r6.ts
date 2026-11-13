@@ -5,6 +5,7 @@
  *
  *   node dist/scripts/verify-r6.js --out artifacts/sprint-r6/<run-id>/integration
  */
+import { createHash } from 'node:crypto';
 import { spawn, spawnSync } from 'node:child_process';
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -336,6 +337,58 @@ function buildLedger(final: Record<string, unknown>): LedgerRow[] {
   return rows;
 }
 
+function sortValue(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(sortValue);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.keys(value as object).sort()
+      .map(key => [key, sortValue((value as Record<string, unknown>)[key])]));
+  }
+  return value;
+}
+
+export function normalizeLinkedState(value: any): any {
+  const aliases: Record<string, string> = {};
+  const apply = (text: string) => {
+    let out = text;
+    for (const [oldId, mapped] of Object.entries(aliases).sort((left, right) => right[0].length - left[0].length)) {
+      out = out.split(oldId).join(mapped);
+    }
+    return out;
+  };
+  for (const council of value.council?.councils ?? []) {
+    for (const request of council.requests ?? []) {
+      if (request.commitmentId) aliases[request.commitmentId] = `CM_FOR:${request.requestId}`;
+    }
+  }
+  for (const commitment of value.commitments?.commitments ?? []) {
+    if (!aliases[commitment.commitmentId]) {
+      throw new Error(`unmapped commitment: ${commitment.commitmentId}`);
+    }
+    (commitment.changes ?? []).forEach((change: any, index: number) => {
+      if (change.changeId) {
+        aliases[change.changeId] = `CHANGE_FOR:${aliases[commitment.commitmentId]}:${index}`;
+      }
+    });
+  }
+  for (const [actor, memory] of Object.entries(value.session?.memories ?? {}) as [string, any][]) {
+    for (const record of memory?.records ?? []) {
+      if (record?.recordId) {
+        aliases[record.recordId] = `MEM:${actor}:${apply(String(record.eventId ?? ''))}:${record.revision}`;
+      }
+    }
+  }
+  for (const [oldId, note] of Object.entries(value.experience ?? {}) as [string, any][]) {
+    const conditions = createHash('sha256')
+      .update(JSON.stringify(sortValue(note.conditions)))
+      .digest('hex');
+    aliases[oldId] = `EXP:${note.ownerActorId}:${note.lesson}:${conditions}`;
+  }
+  if (new Set(Object.values(aliases)).size !== Object.keys(aliases).length) {
+    throw new Error('normalization is not a bijection');
+  }
+  return sortValue(JSON.parse(apply(JSON.stringify(sortValue(value)))));
+}
+
 function project(final: Record<string, unknown>): unknown {
   const session = final.session as any;
   const world = session.world;
@@ -390,12 +443,16 @@ export async function runStory(root: string): Promise<{ pass: boolean; reason: s
   continuous: StoryResult; segmented: StoryResult }> {
   const continuous = await runArm(join(root, 'continuous'), false);
   const segmented = await runArm(join(root, 'segmented'), true);
-  const left = project(readSidecars(join(root, 'continuous', 'session.json')));
-  const right = project(readSidecars(join(root, 'segmented', 'session.json')));
+  const leftRaw = readSidecars(join(root, 'continuous', 'session.json'));
+  const rightRaw = readSidecars(join(root, 'segmented', 'session.json'));
+  const left = normalizeLinkedState(leftRaw);
+  const right = normalizeLinkedState(rightRaw);
   writeJson(join(root, 'normalize.json'), {
-    rule: 'Drop random commitment/change ids. Compare world clock, resources, npc vitals, spatial stocks/carry/delivered, task id/actor/kind/status, commitment promisor/goal/status/revision/evidence ids, and council request ids. Save/quit may differ; every other command is the same sequence.',
+    rule: 'Map commitment ids by requestId, change ids by parent commitment and ordinal. Keep task.commitmentId, request.commitmentId, revision and receipt ids. A scrambled task.commitmentId must not compare equal.',
   });
-  const same = JSON.stringify(left) === JSON.stringify(right);
+  const sameWorld = JSON.stringify(sortValue((leftRaw.session as any).world))
+    === JSON.stringify(sortValue((rightRaw.session as any).world));
+  const same = sameWorld && JSON.stringify(left) === JSON.stringify(right);
   writeJson(join(root, 'authority-diff.json'), same ? { equal: true }
     : { equal: false, continuous: left, segmented: right });
   writeJson(join(root, 'ledger-diff.json'), {
@@ -467,8 +524,8 @@ report = {
 }
 (out / 'decisions.json').write_text(json.dumps(report, indent=2) + '\\n', encoding='utf-8')
 `;
-  const proc = spawnSync(process.execPath.replace(/node$/, 'python3') === process.execPath
-    ? 'python3' : 'python3', ['-c', script], { encoding: 'utf8' });
+  const python = resolvePython();
+  const proc = spawnSync(python, ['-c', script], { encoding: 'utf8', timeout: 120_000 });
   writeFileSync(join(dir, 'python.stdout'), proc.stdout ?? '');
   writeFileSync(join(dir, 'python.stderr'), proc.stderr ?? '');
   if (proc.status !== 0) return { pass: false, reason: `python bundle failed: ${proc.stderr}` };
@@ -516,13 +573,47 @@ report = {
     note: 'CPU fixture only. 39 cases remain 0 eligible. No weights were loaded.',
   };
   writeJson(join(dir, 'capability.json'), capability);
-  const torch = spawnSync('python3', ['-c', 'import torch'], { encoding: 'utf8' });
-  writeFileSync(join(dir, 'torch-import.txt'), `exit=${torch.status}\n${torch.stderr ?? ''}`);
-  return { pass: problems.length === 0 && capability.researchTrainReady === false, reason: problems.join('; ') || 'cpu fixture accepted and abstained' };
+  const encoder = spawnSync(python, [
+    join('research', 'decision-choice', 'jev04', 'models', 'encoder_train.py'),
+    '--data-dir', join('research', 'decision-choice', 'jev04', 'data', 'v4'),
+  ], { encoding: 'utf8', timeout: 60_000 });
+  const gateText = `${encoder.stdout ?? ''}\n${encoder.stderr ?? ''}`;
+  writeFileSync(join(dir, 'encoder-gate.txt'), `exit=${encoder.status}\n${gateText}`);
+  capability.researchTrainReady = /"mayTrainOnJev":\s*true/.test(gateText);
+  capability.realModelLoaded = /loaded weights|model loaded/i.test(gateText) && !/refused/i.test(gateText);
+  capability.realExecutionEnabled = capability.realModelLoaded && capability.researchTrainReady;
+  return { pass: problems.length === 0 && capability.researchTrainReady === false
+      && capability.realModelLoaded === false, reason: problems.join('; ') || 'cpu fixture accepted and abstained' };
 }
 
 function git(args: string[]): string {
   return execFileSync('git', args, { encoding: 'utf8' }).trim();
+}
+
+export function resolvePython(argv = process.argv, env = process.env): string {
+  const index = argv.indexOf('--python');
+  const chosen = (index >= 0 ? argv[index + 1] : undefined) || env.FROSTECHO_PYTHON;
+  if (chosen) return chosen;
+  for (const name of ['python3', 'python']) {
+    const found = spawnSync(name, ['-c', 'import sys; print(sys.executable)'], { encoding: 'utf8' });
+    if (found.status === 0 && found.stdout.trim()) return found.stdout.trim();
+  }
+  throw new Error('no python interpreter');
+}
+
+export type GateStatus = 'pass' | 'fail' | 'blocked';
+
+export function judgeGate(entry: { status?: string; head?: string } | undefined,
+  expectedHead: string): GateStatus {
+  if (!entry || typeof entry.status !== 'string') return 'blocked';
+  if (entry.head && entry.head !== expectedHead) return 'fail';
+  if (entry.status === 'pass') return 'pass';
+  if (entry.status === 'blocked') return 'blocked';
+  return 'fail';
+}
+
+export function integrationExit(statuses: GateStatus[]): number {
+  return statuses.every(status => status === 'pass') ? 0 : 1;
 }
 
 export async function runIntegration(out: string): Promise<number> {
@@ -531,23 +622,49 @@ export async function runIntegration(out: string): Promise<number> {
     schema: 'frostecho.r6.integration/1',
     sourceHead: git(['rev-parse', 'HEAD']),
     workerCount: 1,
-    P: { status: 'pass', evidence: 'supply receipt bound in the morning story and gate-r6' },
-    R: { status: 'pass', evidence: 'capture grant read at start; gate-r6 and fixed lifecycle probe' },
-    D: { status: 'pass', evidence: 'import rejects drifted source text before writing' },
+    P: { status: 'blocked', evidence: '' },
+    R: { status: 'blocked', evidence: '' },
+    D: { status: 'blocked', evidence: '' },
     M: { status: 'pending' },
     play: { status: 'pending' },
     jevCpu: { status: 'pending' },
     frozenEvidence: { status: 'pending' },
   };
   try {
+    const python = resolvePython();
+    const head = String(summary.sourceHead);
+    const runProbe = (args: string[], dir: string) => spawnSync(python, args, {
+      encoding: 'utf8', timeout: 180_000,
+    });
+    const r6Dir = join(out, 'r6-fixed');
+    runProbe(['handoff/20261113-sprint-r6/tools/repro.py', '--repo', process.cwd(),
+      '--out', r6Dir, '--expect', 'fixed'], r6Dir);
+    const r61Dir = join(out, 'r61-fixed');
+    runProbe(['handoff/20261113-sprint-r6-1/check.py', '--repo', process.cwd(),
+      '--out', r61Dir, '--expect', 'fixed'], r61Dir);
+    const readSummary = (dir: string) => existsSync(join(dir, 'summary.json'))
+      ? JSON.parse(readFileSync(join(dir, 'summary.json'), 'utf8')) as any : undefined;
+    const r6 = readSummary(r6Dir);
+    const r61 = readSummary(r61Dir);
+    const gate = (ok: boolean, evidence: string, seenHead?: string) => ({
+      status: judgeGate({ status: ok ? 'pass' : 'fail', head: seenHead }, head),
+      evidence, head: seenHead ?? null,
+    });
+    summary.P = r6 ? gate(r6.checks?.product?.fixed === true && r6.verified === true, r6Dir, r6.head)
+      : { status: 'blocked', evidence: r6Dir };
+    summary.R = r61 ? gate(r61.checks?.R?.fixed === true, r61Dir, r61.head)
+      : { status: 'blocked', evidence: r61Dir };
+    summary.D = r61 ? gate(r61.checks?.D?.fixed === true, r61Dir, r61.head)
+      : { status: 'blocked', evidence: r61Dir };
+    summary.M = r61 ? gate(r61.checks?.M?.fixed === true && r61.checks?.fixture_control?.pass === true,
+      r61Dir, r61.head) : { status: 'blocked', evidence: r61Dir };
     const story = await runStory(join(out, 'play'));
     summary.play = { status: story.pass ? 'pass' : 'fail', reason: story.reason,
       simMinutes: story.continuous.simMinutes,
       evidence: join(out, 'play') };
     const jev = runJev(join(out, 'jev'));
     summary.jevCpu = { status: jev.pass ? 'pass' : 'fail', reason: jev.reason, evidence: join(out, 'jev') };
-    summary.M = summary.jevCpu;
-    const pre = spawnSync('python3', ['handoff/20261113-sprint-r6/tools/preflight.py',
+    const pre = spawnSync(python, ['handoff/20261113-sprint-r6/tools/preflight.py',
       '--repo', process.cwd(), '--out', join(out, 'preflight')], { encoding: 'utf8' });
     writeFileSync(join(out, 'preflight.stdout'), pre.stdout ?? '');
     summary.frozenEvidence = { status: pre.status === 0 ? 'pass' : 'fail', exit: pre.status };

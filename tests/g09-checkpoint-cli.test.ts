@@ -3,7 +3,7 @@
  * zero-call restore, no re-choice, save-as, mode conflicts, failure finalization.
  */
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { createServer } from 'node:http';
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -117,6 +117,24 @@ test('a tampered or contradictory slot is refused before any game exists', async
   }
 });
 
+function cliAsync(root: string, args: string[]): Promise<{ code: number; out: string }> {
+  return new Promise(resolve => {
+    const child = spawn(process.execPath, ['dist/scripts/play-g09.js', '--root', root, ...args],
+      { stdio: ['ignore', 'pipe', 'pipe'] });
+    const exited = new Promise<number | null>(resolveExit => {
+      child.on('exit', code => resolveExit(code));
+    });
+    let out = '';
+    child.stdout?.on('data', chunk => { out += String(chunk); });
+    child.stderr?.on('data', chunk => { out += String(chunk); });
+    const timer = setTimeout(() => { child.kill('SIGKILL'); }, 20_000);
+    void exited.then(code => {
+      clearTimeout(timer);
+      resolve({ code: code ?? 1, out });
+    });
+  });
+}
+
 function cli(root: string, ...args: string[]): { code: number; out: string } {
   try {
     return { code: 0, out: execFileSync(process.execPath, ['dist/scripts/play-g09.js', '--root', root, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }) };
@@ -149,21 +167,29 @@ test('the CLI runs the real protocol, saves, loads and save-as', () => {
 
 test('a 500 step exits nonzero, writes the failure record and keeps the slot bytes', async () => {
   const root = tempRoot();
-  const server = createServer((_req, res) => { res.statusCode = 500; res.end('boom'); });
+  let hits = 0;
+  const server = createServer((_req, res) => {
+    hits += 1;
+    res.statusCode = 500;
+    res.end('boom');
+  });
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', () => resolve()));
   const port = (server.address() as { port: number }).port;
+  const http = `http://127.0.0.1:${port}/v1/chat/completions`;
   try {
-    const created = cli(root, '--new', '--slot', 'fail', '--live', '--http', `http://127.0.0.1:${port}/v1/chat/completions`, '--model', 'm', '--goals', 'negotiated', '--request', 'npc_a=yield_once', '--save');
+    const created = await cliAsync(root, ['--new', '--slot', 'fail', '--live', '--http', http, '--model', 'm', '--goals', 'negotiated', '--request', 'npc_a=yield_once', '--save']);
     assert.equal(created.code, 0, created.out);
     const slotPath = g09CheckpointPath(root, 'fail');
     const before = readFileSync(slotPath);
-    const failed = cli(root, '--load', '--path', slotPath, '--live', '--http', `http://127.0.0.1:${port}/v1/chat/completions`, '--model', 'm', '--step');
+    const failed = await cliAsync(root, ['--load', '--path', slotPath, '--live', '--http', http, '--model', 'm', '--step']);
     assert.notEqual(failed.code, 0, 'a 500 step must exit nonzero');
+    assert.ok(hits >= 1, 'the in-process server must actually return 500');
     assert.equal(readFileSync(slotPath).equals(before), true, 'the input slot bytes must not change');
     assert.ok(existsSync(`${slotPath.replace(/\.g09\.json$/, '')}.failure.json`), 'the failure record is written separately');
     const record = JSON.parse(readFileSync(`${slotPath.replace(/\.g09\.json$/, '')}.failure.json`, 'utf8')) as { schema: string; reason: string };
     assert.equal(record.schema, 'frostecho.g09.run-failure/2');
-    assert.match(record.reason, /provider_error|timeout|500|http/i);
+    assert.match(record.reason, /500|http/i);
+    assert.equal(/timeout/i.test(record.reason) && !/500|http/i.test(record.reason), false);
   } finally {
     server.close();
     rmSync(root, { recursive: true, force: true });

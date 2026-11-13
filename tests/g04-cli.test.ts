@@ -45,6 +45,9 @@ async function runCliSteps(
     env: { ...process.env, ...env },
     stdio: ['pipe', 'pipe', 'pipe'],
   });
+  const exited = new Promise<number | null>(resolve => {
+    child.on('exit', code => resolve(code));
+  });
   let stdout = '';
   let stderr = '';
   let seen = 0;
@@ -64,7 +67,13 @@ async function runCliSteps(
     if (step.until !== undefined) await waitFor(step.until);
   }
   child.stdin.end();
-  const code = await new Promise<number | null>(resolveExit => child.on('exit', c => resolveExit(c)));
+  const code = await Promise.race([
+    exited,
+    new Promise<number | null>(resolve => setTimeout(() => {
+      child.kill('SIGKILL');
+      resolve(null);
+    }, 20_000)),
+  ]);
   return { code, stdout, stderr, outDir };
 }
 
@@ -280,6 +289,9 @@ test('quit during an in-flight live request waits only the started request', asy
       env: { ...process.env, FROSTECHO_LLM_URL: url, FROSTECHO_LLM_MODEL: 'qwen3.8-27b' },
       stdio: ['pipe', 'pipe', 'pipe'],
     });
+    const exited = new Promise<number | null>(resolve => {
+      child.on('exit', code => resolve(code));
+    });
     let stdout = '';
     child.stdout.on('data', (chunk: Buffer) => { stdout += chunk.toString(); });
     child.stderr.on('data', () => {});
@@ -302,7 +314,13 @@ test('quit during an in-flight live request waits only the started request', asy
       if (Date.now() > deadline) throw new Error(`finalize not reached\n${stdout}`);
       await new Promise(r => setTimeout(r, 10));
     }
-    const code = await new Promise<number | null>(resolveExit => child.on('exit', c => resolveExit(c)));
+    const code = await Promise.race([
+      exited,
+      new Promise<number | null>(resolve => setTimeout(() => {
+        child.kill('SIGKILL');
+        resolve(null);
+      }, 15_000)),
+    ]);
     assert.equal(code, 0, stdout);
     assert.equal(counter.chats, 1, 'no second request may start after quit');
     assert.equal(savedLines(stdout), 1, stdout);
@@ -344,4 +362,17 @@ test('offline reference mode records the same effective timeout resolution', asy
   const run = await runCli([], 'status\nquit\n', { FROSTECHO_LIVE_TIMEOUT_MS: '120000' });
   assert.equal(run.code, 0, `${run.stdout}\n${run.stderr}`);
   assert.equal(readSaved(run.outDir).record.requestConfig.timeoutMs, 120_000);
+});
+
+test('an exit listener created at spawn still resolves after the child has already exited', async () => {
+  const child = spawn(process.execPath, ['-e', 'process.exit(0)']);
+  const exited = new Promise<number | null>(resolve => {
+    child.on('exit', code => resolve(code));
+  });
+  await new Promise(resolve => setImmediate(resolve));
+  const code = await Promise.race([
+    exited,
+    new Promise<number | null>(resolve => setTimeout(() => resolve(null), 2_000)),
+  ]);
+  assert.equal(code, 0);
 });

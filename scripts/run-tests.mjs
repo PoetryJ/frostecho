@@ -11,8 +11,6 @@ import { join, relative, resolve, sep } from 'node:path';
  * never replace a file that is already present.
  */
 function restorePackagedG11() {
-  const marker = join('artifacts', 'g11-live', 'g11-live-20261105-r1', 'w1', 'w1-wait-run.run.json');
-  if (existsSync(marker)) return;
   const pkg = join('evidence', 'g11-original-evidence.tar.gz');
   const sums = join('evidence', 'g11-original-evidence.sha256');
   if (!existsSync(pkg) || !existsSync(sums)) {
