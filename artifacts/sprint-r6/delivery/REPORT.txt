@@ -7,6 +7,6 @@
 7. 玩法：四日晨会；供仓与送饭真实履约；供仓者退出后 revision2 替代者完成；缺货被当事人观察到并经采集→交存→取用→送达恢复；两臂 simTime=4394 分钟且权威投影一致。
 8. 验收：Python 核心 51 pass / 1 skip(scipy)，port 23 pass，gate-r6 pass。冻结 final_check 的 eval-full 在 900s 超时；历史 g04 live 用例未返回。首跑 JS 温度差 0.0018 的记录保留。
 9. R5 971+272+128 与任务包 SHA 预检仍过。本次无 GPU、无权重、无模型 API、无真实训练。
-10. 代码 HEAD ac7aa4b801d50fae6ddcd6eb2f5524129a40c866。bundle 在生成后写入 artifacts/sprint-r6/delivery/，SHA 写入同目录 BUNDLE.sha256；bundle 不包含其自身提交。
+10. 源码 HEAD ac7aa4b；bundle 内容提交 cf1ed793be0b45b8a86d8fda4ef72db7e5176383；路径 artifacts/sprint-r6/delivery/frostecho-r6.bundle；SHA256 683763a876941bb55710216abfb6a03124dec2e6ae0adc7d5ff8fdb4f8d3c230。bundle 不含保存它的后续提交。
 11. 未完成：冻结全量未在 900s 内结束；未证明校准、模型收益、512/128，也未打开执行门。
 12. 建议：有限返工。四缺口和晨会 CPU 闭环已有原始记录；全量套件没有在冻结时限内跑完。不合并 main。
