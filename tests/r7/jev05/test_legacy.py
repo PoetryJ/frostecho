@@ -41,6 +41,39 @@ class LegacyContractTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "outside"):
                 legacy.output_directory(Path(temp) / "runs/new", temp)
 
+    def test_explicit_migration_and_reviewed_subset_preserve_identity(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            path = root / "features-increment.npz"
+            np.savez(path, cand=np.zeros((8, 4, 5120), dtype=np.float32))
+            new_identity = {"testOnly": True, "deviceMap": "new-runtime"}
+            new_sha = legacy.digest(new_identity)
+            anchors = [{"tokenMatch": True, "predictionMatch": True} for _ in range(16)]
+            anchor_file = root / "anchor-records.jsonl"
+            anchor_file.write_text("".join(legacy.canonical(row) + "\n" for row in anchors), encoding="utf-8")
+            compatibility = {"legacyFeatureIdentityHash": "old", "newFeatureIdentityHash": new_sha,
+                             "checkpointSha256": "head", "anchorSplit": "train", "presentations": 16,
+                             "allTokenHashesEqual": True, "predictionMismatches": 0, "compatibleForWarmStart": True,
+                             "anchorRecordsSha256": legacy.sha(anchor_file)}
+            legacy.write(root / "compatibility.json", compatibility)
+            item = {"caseId": "kept", "context": "context", "playerText": "player", "labelId": "PLAYER_FIRST", "split": "train", "groupId": "g"}
+            data_file = root / "train.jsonl"
+            data_file.write_text(legacy.canonical(item) + "\n", encoding="utf-8")
+            meta = {"featureIdentityHash": new_sha, "featureIdentity": new_identity, "split": "pending",
+                    "caseIds": ["kept"] * 4 + ["excluded"] * 4, "orderIds": [0, 1, 2, 3] * 2,
+                    "tokenHash": ["unit"] * 8, "inputHashes": [legacy.visible_hash(item)] * 4 + ["excluded"] * 4,
+                    "compatibilityPath": "compatibility.json", "compatibilitySha256": legacy.sha(root / "compatibility.json")}
+            legacy.write(path.with_suffix(".meta.json"), meta)
+            with self.assertRaisesRegex(ValueError, "explicit"):
+                legacy.load_cache(path, "old")
+            selected = legacy.load_cache(path, "old", data_path=data_file, expected_split="train",
+                                         allow_device_migration=True, expected_checkpoint_sha="head")
+            self.assertEqual(selected["ids"], ["kept"] * 4)
+            self.assertEqual(selected["provenance"]["featureIdentityHash"], new_sha)
+            self.assertEqual(selected["provenance"]["legacyFeatureIdentityHash"], "old")
+            self.assertEqual(selected["provenance"]["selectedSourceRows"], [0, 1, 2, 3])
+            self.assertEqual(len(legacy.read(path.with_suffix(".meta.json"))["caseIds"]), 8)
+
 
 if __name__ == "__main__":
     unittest.main()

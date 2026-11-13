@@ -5,7 +5,7 @@ FrostEcho R7 工作进展（不是完整项目完成报告）
 本轮已提交445e2c1：原素材网页入口通过实际HTTP→CLI动作与保存恢复；长期记忆已进入GameplayLoop的候选上下文并持久化；新增真实编码/训练/校准组件。独立复跑新增TS12/12、Python12/12。尚未完成全部原作，也未证明新模型长程收益。
 
 旧训练复用（用户提醒后实际查明并复跑）
-- JEV-03确有6个真实训练头；C-seed43是原共享5120参数候选评分头，checkpoint SHA256 a55cc47f1c30353b9c1a38e6de3d79e17665a26412b215486d40e06e04514c989。
+- JEV-03确有6个真实训练头；C-seed43是原共享5120参数候选评分头，checkpoint SHA256 a55cc47f1c30353b9c1a38e6de3d79e1765a26412b215486d40e06e04514c989。
 - 原数据384train/128dev/256test；来源为synthetic_dialogue和既有独立会话审查，不能改称真实玩家人工标注。
 - 服务器FrostEcho-jev03-readout工作区的train/dev/test特征缓存全在，featureIdentityHash=555f5f55f6f8037508067331c11e548e671e881fb5312e9d5cb62b0f0828e159。
 - 已新进程加载C43+真实test缓存，1024次呈现、256例，predictionMismatches=0；最大logit误差1.621246337890625e-05，高于脚本1e-5，原始result保留status=fail/exit3，未改门刷绿。判别结果复现与严格数值门分别报告，不把此称新收益。
@@ -23,3 +23,11 @@ FrostEcho R7 工作进展（不是完整项目完成报告）
 - 服务器小模型按handoff/20261113-r7-server/SERVER-WORKER-PROMPT.txt完成原作玩法整合，不动研究/checkpoint/旧工作区。
 - Codex继续旧C模型复用、增量数据与校准/运行接线；不以页面检查失败停止计算工作。
 - 数据全新4096扩量暂缓，先盘活旧资产并补真实缺口。当前没有新的真实训练完成记录，不把机制测试、缓存复算或启动加载说成训练。
+
+旧模型增量实验（本轮继续执行）
+- 64条新语义案例已逐条作者化并冻结。两个隔离模型会话分别盲审；63条同意唯一标签，1条条件恢复阈值不明，保留pending。实际入库47train/16dev，8个场景组不跨分区；不是人工标注或真实玩家数据。
+- 独立回读确认已入库的63条均绑定两份supported单标签审查、输入SHA和原始审查文件。旧v4通用行动数据门未被改写。
+- 原模型Qwen3.8-27B目录实跑BF16：GPU1+CPU offload，原joint renderer与旧C43读出。4个旧train anchor的四序共16次真实前向，token全同、预测0不一致；最大logit差0.6009127497673035，新运行环境使用新特征身份，只构成有限的设备迁移证据。
+- batch1原始记录已保留；完成anchor后停止自有任务以改为四序等长批处理，每序独立渲染、分词、计算，减少重复CPU权重搬运。没有量化或改成另一种读出。
+- 已启动run_increment.sh c43-increment-batch4-1：编码64输入后，47条新训练与384条旧训练合用（431），16条新dev与128条旧dev合用（144）；依次运行warm-start/random、seed17/43、同20epochs。运行结果尚待回收，不能先称训练完成或增益成立。
+- 原数据/缓存/checkpoint的11文件149221535字节已重新生成SHA清单，见artifacts/sprint-r7/legacy-reuse/recovered-assets.json。源码与新数据、原始两审和初次真实前向记录一同保存。

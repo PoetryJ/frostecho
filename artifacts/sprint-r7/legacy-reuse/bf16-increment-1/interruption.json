@@ -1,0 +1,8 @@
+{
+  "status": "interrupted-for-batched-encoding",
+  "time": "2026-11-13T10:18:59.549698+00:00",
+  "pid": 3389390,
+  "command": ".venv/bin/python -u workbench/legacy/encode_bf16.py --legacy-root /data3/DATA/project/project_meishijiang/FrostEcho-jev03-readout/research/decision-choice/jev03 --model-path /data2/model_weights/Qwen3.8-27B --init-checkpoint /data3/DATA/project/project_meishijiang/FrostEcho-jev03-readout/research/decision-choice/jev03/runs/C-seed43/best.safetensors --reference-train-cache /data3/DATA/project/project_meishijiang/FrostEcho-jev03-readout/research/decision-choice/jev03/cache/features-train.npz --inputs workbench/incremental-c/batch-064.inputs.jsonl --output-dir artifacts/legacy-reuse/bf16-increment-1 --allow-device-migration ",
+  "reason": "16 BF16 anchor presentations complete; preserve evidence and switch to four separately rendered orders per GPU batch to reduce CPU offload transfers. This partial increment is not a completed encoding or training run.",
+  "completedIncrementPresentations": 12
+}

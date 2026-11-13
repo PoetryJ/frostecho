@@ -1,0 +1,73 @@
+FrostEcho incremental-c batch-016 independent blind review B
+reviewerId: jev05-blind-b
+sessionId: /root/jev05_blind_b
+reviewerType: model-authored-independent-session; not human annotation
+contractSha256: 4b96946528e2a4dcd0379be985d05046b2fd87c98b5b93f58d392d0d9645654e
+blindSha256: 4753187a7a61fe2bc2d627470aebc356dc718cc006d1cb1c5dfe250549b1ccb2
+inputsSha256: b402fcd91ff8eb5f94508c63416fd9bad702203a78814cf4fe2226eb3d55d7a9
+范围：逐条读取 semantic/2 合同、冻结记录、blind 与 inputs；未读取作者标签、作者代码、gold 或其他审查者意见。以下是本独立模型会话的原始简短审查意见。
+status=supported 表示标签集合得到合同支持。NEEDS_CLARIFICATION 本身可以是唯一且受支持的类别，不等于审查状态 ambiguous。
+
+c-inc-train-memory-retracted-supper-01
+canonicalInputSha256: e90f03d2907c50d87001ee39da6fe4a01f361876ee95a0b3f940da9a51309f13
+可接受标签集合：{NO_PRIORITY_REQUEST}。审查状态：supported。当前只纠正值班本中旧话语的日期，没有提出本顿谁先吃。引号内的‘我先吃’属于历史转述；按 R0、R3、R6，不由旧约定推成当前请求。
+
+c-inc-train-memory-retracted-supper-02
+canonicalInputSha256: 06bd6069a9087a17f21f9e97abcc8ad6675f794fbe40bc3be5de983103770edc
+可接受标签集合：{NPC_FIRST}。审查状态：supported。‘昨晚是我先’是背景，‘这顿你先动筷，我等你吃完’明确给出当前安排。李婶是唯一收话人，按 R4、R6，当前让李婶先吃。
+
+c-inc-train-memory-retracted-supper-03
+canonicalInputSha256: 3e51b3a45fa10d8c65f7cecb4810df81364cd4e9fdbccbe7c91444640434d690
+可接受标签集合：{PLAYER_FIRST}。审查状态：supported。‘眼下这碗我先吃’是明确的玩家自指先吃主张。旧约定撤回和送饭任务取消不改变当前这句话的方向；按 R0、R4，玩家先吃。
+
+c-inc-train-memory-retracted-supper-04
+canonicalInputSha256: 4b78bddbb9c7935a18fba337a37b23d4c1cd1a4811fa9657551a2024a5bdfe8c
+可接受标签集合：{NEEDS_CLARIFICATION}。审查状态：supported。‘这顿还照本子里那个顺序吃’提出了当前先后请求，但本子有两种相反旧顺序，且没有指明哪一行。撤回两条记录也没有选出其中一条，按 R8 是请求指代不唯一；不是审查者无把握所致。
+
+c-inc-train-memory-retracted-supper-05
+canonicalInputSha256: ba0389b783bfda78b098740d75d811cdb8273c91d18ddbfc298c4c699246d373
+可接受标签集合：{NO_PRIORITY_REQUEST}。审查状态：supported。玩家取消留饭并要求食物归回公共锅，只处理份额与留饭任务，没有表达任何吃食先后安排。按 R3、R5，不能把‘给我留’解释为玩家先吃。
+
+c-inc-train-memory-retracted-supper-06
+canonicalInputSha256: dfa3adca86ffc1633beff0fe61b3c4e21e6c782eecd1dbbf8abeeeffe152bf5f
+可接受标签集合：{PLAYER_FIRST}。审查状态：supported。‘我先吃两口’明确由玩家主张自己先吃。虽然两名 NPC 在场而未点名，R4 的玩家自指路径不要求唯一收话人；旧纸条已被当前话语否定。
+
+c-inc-train-memory-retracted-supper-07
+canonicalInputSha256: 45668d2bcc417e7f128f1e76eade34137ca0b8875239189013bd6549ea41cb57
+可接受标签集合：{NPC_FIRST}。审查状态：supported。只有陆晨与玩家在场，且筷子递给陆晨，省略主语的‘先吃吧’收话人唯一；‘等你吃完我再盛’进一步确定陆晨先。按 R4、R7，为 NPC_FIRST。
+
+c-inc-train-memory-retracted-supper-08
+canonicalInputSha256: 681597832446bc1b2c64bb3854c29d266eb3018a55053eca6bf535c3fcfb3d07
+可接受标签集合：{NEEDS_CLARIFICATION}。审查状态：supported。当前直接询问旧安排是否有效，以及‘你先还是我先’，没有给出唯一方向。两人的记录分歧是待核对的认知状态，并非输入强制同时成立的矛盾；按 R8 可唯一归为需要澄清。
+
+c-inc-train-hearsay-vs-witness-01
+canonicalInputSha256: a96554a0de9b5506cef4b912d2d8c74884afd48af292ab54f7bbdc58d34c1c7f
+可接受标签集合：{NO_PRIORITY_REQUEST}。审查状态：supported。玩家在核对录音，只澄清‘让你先吃’出自老钱而非自己，没有对本顿重新安排或表示认可。按 R0、R3、R6，纯转述不构成当前优先权请求。
+
+c-inc-train-hearsay-vs-witness-02
+canonicalInputSha256: ada84b43b1281b5569c29b9d96f9dae6afab4d7814c4ccbfde345ab87fb916fd
+可接受标签集合：{PLAYER_FIRST}。审查状态：supported。玩家先把他人的建议与本人意见分开，再明确说‘我这回要先吃’。按 R4、R6，应依据当前本人立场归为玩家先吃，巡夜理由不改变方向。
+
+c-inc-train-hearsay-vs-witness-03
+canonicalInputSha256: b4e866e62223fe5599addbaee5a648bc197107a047e34d40a524cd63abfe1d34
+可接受标签集合：{NPC_FIRST}。审查状态：supported。‘仓库的事回头再核实’将库存传闻与当前用餐安排分开，随后明确‘你先吃，我等一会儿’。苏医生是唯一收话人，按 R4，当前让 NPC 先吃，不受未核实库存阻断。
+
+c-inc-train-hearsay-vs-witness-04
+canonicalInputSha256: a3042a2193e808bef9d3342a94cc82cb0c4e0564c10fd55061f9b7a6330b7571
+可接受标签集合：{NEEDS_CLARIFICATION}。审查状态：supported。玩家给出相反的两个条件分支：空仓时 NPC 先，有粮时玩家先；当前库存未获确认。请求存在，但决定方向的必要条件在可见上下文中不唯一，按 R8 为需要澄清。
+
+c-inc-train-hearsay-vs-witness-05
+canonicalInputSha256: a9c85d64887865e800b1e39dc642c60faf07464755755e758015cf356d8c2c08
+可接受标签集合：{NO_PRIORITY_REQUEST}。审查状态：supported。这句话只更新库存事实并纠正旧消息，没有安排谁先吃。即使上下文涉及食物与共同见闻，R2、R3 仍要求实际先后内容，因此为无优先权请求。
+
+c-inc-train-hearsay-vs-witness-06
+canonicalInputSha256: 02249b18e66e6e2cfd7e40e1789219e82febd4027eb6b4c4b4bca842f03b0162
+可接受标签集合：{NPC_FIRST}。审查状态：supported。当前话语直接重申‘这顿你先吃，我随后吃’，赵师傅是唯一收话人；空仓条件也已由双方亲见确认。即使提及‘刚才说的’，本句自身已有唯一的新安排，按 R4、R6 为 NPC_FIRST。
+
+c-inc-train-hearsay-vs-witness-07
+canonicalInputSha256: c4ac7023717a722fa7d231e0702d595b01cdb7444ff1c80b9f0138e45239fecf
+可接受标签集合：{PLAYER_FIRST}。审查状态：supported。‘广播不等了’明确取消此前等待条件，‘我先吃自己的这一份’明确提出玩家自指先吃。按 R4，此路径不要求从在场两名 NPC 中选一个收话人，也无未满足的当前条件。
+
+c-inc-train-hearsay-vs-witness-08
+canonicalInputSha256: 4ebf37a7f4bf7c70bed3e12d107a4592890e3f92928028cb04e34cfceab80642
+可接受标签集合：{NEEDS_CLARIFICATION}。审查状态：supported。当前让‘刚才送消息的那个’先吃，但陆晨和赵师傅均符合该描述，且没有注视、点名或其他区别线索。玩家晚吃虽明确，先吃 NPC 的指代仍不唯一；按 R1、R4、R8，不能只因让给他人就强定 NPC_FIRST。

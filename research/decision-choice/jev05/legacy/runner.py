@@ -96,15 +96,36 @@ def make_head(checkpoint=None):
     return head.eval()
 
 
-def load_cache(path, expected_identity, *, data_path=None, expected_split=None):
+def load_cache(path, expected_identity, *, data_path=None, expected_split=None,
+               allow_device_migration=False, expected_checkpoint_sha=None):
     path = Path(path)
     meta_path = path.with_suffix(".meta.json")
     meta = read(meta_path)
-    if meta.get("featureIdentityHash") != expected_identity:
-        raise ValueError("cache encoder/tokenizer/renderer/readout identity differs from historical C")
-    if "featureIdentity" in meta and digest(meta["featureIdentity"]) != expected_identity:
+    actual_identity = meta.get("featureIdentityHash")
+    compatibility = None
+    if actual_identity != expected_identity:
+        if not allow_device_migration:
+            raise ValueError("cache runtime differs; explicit --allow-device-migration and recorded train-anchor compatibility are required")
+        compatibility_path = path.parent / meta.get("compatibilityPath", "compatibility.json")
+        if not expected_checkpoint_sha or sha(compatibility_path) != meta.get("compatibilitySha256"):
+            raise ValueError("device migration compatibility evidence hash/checkpoint missing")
+        compatibility = read(compatibility_path)
+        if (compatibility.get("legacyFeatureIdentityHash") != expected_identity or
+                compatibility.get("newFeatureIdentityHash") != actual_identity or
+                compatibility.get("checkpointSha256") != expected_checkpoint_sha or
+                compatibility.get("anchorSplit") != "train" or compatibility.get("presentations") != 16 or
+                compatibility.get("allTokenHashesEqual") is not True or compatibility.get("predictionMismatches") != 0 or
+                compatibility.get("compatibleForWarmStart") is not True):
+            raise ValueError("device migration is not compatible with this original C checkpoint")
+        anchor_file = compatibility_path.parent / "anchor-records.jsonl"
+        if sha(anchor_file) != compatibility.get("anchorRecordsSha256"):
+            raise ValueError("original migration anchor records changed")
+        anchors = rows(anchor_file)
+        if len(anchors) != 16 or not all(row.get("tokenMatch") is True and row.get("predictionMatch") is True for row in anchors):
+            raise ValueError("raw migration anchors do not support compatibility declaration")
+    if "featureIdentity" in meta and digest(meta["featureIdentity"]) != actual_identity:
         raise ValueError("cache feature identity object does not match its hash")
-    if expected_split is not None and meta.get("split") != expected_split:
+    if expected_split is not None and meta.get("split") != expected_split and not (compatibility and meta.get("split") == "pending"):
         raise ValueError("cache split mismatch")
     with np.load(path, allow_pickle=False) as data:
         cand = np.array(data["cand"], dtype=np.float32)
@@ -125,14 +146,30 @@ def load_cache(path, expected_identity, *, data_path=None, expected_split=None):
     if data_path is not None:
         data_rows = rows(data_path)
         by_id = {row["caseId"]: row for row in data_rows}
-        if len(by_id) != len(data_rows) or set(by_id) != set(ids):
+        if len(by_id) != len(data_rows):
+            raise ValueError("duplicate training/evaluation data IDs")
+        if set(by_id) != set(ids) and compatibility and meta.get("split") == "pending" and set(by_id) < set(ids):
+            # One frozen unlabeled extraction can later supply disjoint train
+            # and dev views. Filtering is in memory and never rewrites provenance.
+            selected = [index for index, key in enumerate(ids) if key in by_id]
+            cand = cand[selected]
+            ids = [ids[index] for index in selected]
+            orders = [orders[index] for index in selected]
+            meta = {**meta, "selectedSourceRows": selected}
+            for key in ("caseIds", "orderIds", "inputHashes", "tokenHash"):
+                if key in meta:
+                    meta[key] = [meta[key][index] for index in selected]
+        if set(by_id) != set(ids):
             raise ValueError("training/evaluation data IDs differ from cache")
         if any(row.get("labelId") not in CLASSES or (expected_split is not None and row.get("split") != expected_split) for row in data_rows):
             raise ValueError("wrong historical label/split")
         labels = np.asarray([ORDERS[order].index(by_id[key]["labelId"]) for key, order in zip(ids, orders)], dtype=np.int64)
     return {"cand": cand, "ids": ids, "orders": orders, "labels": labels, "cases": by_id, "meta": meta,
             "provenance": {"cacheSha256": sha(path), "metaSha256": sha(meta_path),
-                           "featureIdentityHash": expected_identity,
+                           "featureIdentityHash": actual_identity,
+                           "legacyFeatureIdentityHash": expected_identity,
+                           "deviceMigration": compatibility,
+                           "selectedSourceRows": meta.get("selectedSourceRows"),
                            "dataSha256": sha(data_path) if data_path else None}}
 
 
@@ -173,7 +210,8 @@ def validate_increment(train, dev, legacy):
         archived_path = Path(legacy) / "data" / (split + ".jsonl")
         if data["provenance"]["dataSha256"] != sha(archived_path):
             meta = data["meta"]
-            if meta.get("dataSha256") != data["provenance"]["dataSha256"]:
+            if meta.get("dataSha256") != data["provenance"]["dataSha256"] and not (
+                    data["provenance"].get("deviceMigration") and meta.get("labelsRequiredForEncoding") is False):
                 raise ValueError("incremental cache must bind the exact new dataSha256")
             expected_inputs = [visible_hash(data["cases"][key]) for key in data["ids"]]
             if meta.get("inputHashes") != expected_inputs:
@@ -203,31 +241,63 @@ def validate_increment(train, dev, legacy):
             "historicalTestFiles": [str(path) for path in historical_test_sources(legacy)]}
 
 
+def combine_training(base, increment, *, role="train"):
+    """In-memory union only: original and migrated cache files remain untouched."""
+    if set(base["cases"]) & set(increment["cases"]):
+        raise ValueError("base/increment case IDs overlap")
+    if {visible_hash(row) for row in base["cases"].values()} & {visible_hash(row) for row in increment["cases"].values()}:
+        raise ValueError("base/increment visible inputs duplicate")
+    return {"cand": np.concatenate([base["cand"], increment["cand"]]),
+            "ids": base["ids"] + increment["ids"], "orders": base["orders"] + increment["orders"],
+            "labels": np.concatenate([base["labels"], increment["labels"]]),
+            "cases": {**base["cases"], **increment["cases"]},
+            "provenance": {"composition": "archived-base-plus-device-migrated-increment", "role": role,
+                           "sources": [base["provenance"], increment["provenance"]]}}
+
+
+def check_combined_splits(train, dev):
+    if set(train["cases"]) & set(dev["cases"]):
+        raise ValueError("combined train/dev case overlap")
+    for field in ("groupId",):
+        if {row[field] for row in train["cases"].values()} & {row[field] for row in dev["cases"].values()}:
+            raise ValueError("combined train/dev group overlap")
+    if {visible_hash(row) for row in train["cases"].values()} & {visible_hash(row) for row in dev["cases"].values()}:
+        raise ValueError("combined train/dev visible-input overlap")
+
+
 def evaluate(head, data):
     import torch
     head.eval()
     correct, loss, count = 0, 0.0, 0
+    device = next(head.parameters()).device
     with torch.inference_mode():
         for start in range(0, len(data["ids"]), 128):
-            logits = head(torch.from_numpy(data["cand"][start:start + 128]))
-            target = torch.from_numpy(data["labels"][start:start + 128])
+            logits = head(torch.from_numpy(data["cand"][start:start + 128]).to(device))
+            target = torch.from_numpy(data["labels"][start:start + 128]).to(device)
             loss += float(torch.nn.functional.cross_entropy(logits, target, reduction="sum"))
             correct += int((logits.argmax(dim=-1) == target).sum())
             count += len(target)
     return {"presentations": count, "cases": len(set(data["ids"])), "nll": loss / count, "accuracy": correct / count}
 
 
-def train_extension(head, train, dev, output, args, provenance):
+def train_extension(head, train, dev, output, args, provenance, dev_components=None):
     import torch
     from safetensors.torch import save_file
     torch.manual_seed(args.seed)
+    torch.set_num_threads(args.cpu_threads)
+    if args.device != "cpu":
+        import os
+        if os.environ.get("CUDA_VISIBLE_DEVICES") != "1" or not torch.cuda.is_available():
+            raise ValueError("CUDA head training requires only authorized physical GPU1 visible")
+    head = head.to(args.device)
     rng = np.random.default_rng(args.seed)
     optimizer = torch.optim.AdamW(head.parameters(), lr=1e-3, weight_decay=1e-2)
     cases = sorted(set(train["ids"]))
     by_case = {key: [index for index, value in enumerate(train["ids"]) if value == key] for key in cases}
     baseline = evaluate(head, dev)
     best, best_state, selected_epoch = baseline["nll"], {key: value.detach().clone() for key, value in head.state_dict().items()}, 0
-    curve = [{"epoch": 0, "dev": baseline}]
+    init_components = {name: evaluate(head, data) for name, data in (dev_components or {}).items()}
+    curve = [{"epoch": 0, "dev": baseline, "devComponents": init_components}]
     for epoch in range(1, args.epochs + 1):
         head.train()
         order = rng.permutation(len(cases))
@@ -235,8 +305,8 @@ def train_extension(head, train, dev, output, args, provenance):
         for start in range(0, len(cases), 32):
             selected = [cases[int(index)] for index in order[start:start + 32]]
             indices = [index for key in selected for index in by_case[key]]
-            logits = head(torch.from_numpy(train["cand"][indices]))
-            target = torch.from_numpy(train["labels"][indices])
+            logits = head(torch.from_numpy(train["cand"][indices]).to(args.device))
+            target = torch.from_numpy(train["labels"][indices]).to(args.device)
             # Every case has exactly four presentations, so row mean equals
             # historical equal-case mean over four orders.
             loss = torch.nn.functional.cross_entropy(logits, target)
@@ -246,7 +316,8 @@ def train_extension(head, train, dev, output, args, provenance):
             optimizer.step()
             losses.append(float(loss.detach()))
         validation = evaluate(head, dev)
-        curve.append({"epoch": epoch, "trainNll": sum(losses) / len(losses), "dev": validation})
+        components = {name: evaluate(head, data) for name, data in (dev_components or {}).items()}
+        curve.append({"epoch": epoch, "trainNll": sum(losses) / len(losses), "dev": validation, "devComponents": components})
         if validation["nll"] < best - 1e-12:
             best, selected_epoch = validation["nll"], epoch
             best_state = {key: value.detach().clone() for key, value in head.state_dict().items()}
@@ -257,11 +328,14 @@ def train_extension(head, train, dev, output, args, provenance):
     result = {"schema": "frostecho.jev05.legacy-extension/1", "protocol": "historical-semantic-contract/2",
               "mode": args.mode, "optimizerResumed": False, "optimizer": "new AdamW state; weights-only warm-start",
               "selectedEpoch": selected_epoch, "initDev": baseline, "finalDev": evaluate(head, dev),
+              "initDevComponents": init_components,
+              "finalDevComponents": {name: evaluate(head, data) for name, data in (dev_components or {}).items()},
               "checkpointSha256": sha(output / "best.safetensors"), "provenance": provenance,
               "config": {"seed": args.seed, "epochs": args.epochs, "lr": 1e-3, "weightDecay": 1e-2,
                          "batchGroups": 32, "fourOrders": True, "normalization": "LayerNorm eps=1e-5"},
               "newGainProven": False, "v5Qualified": False, "executionAdmitted": False,
               "note": "New held-out evaluation is required; old test remains evaluation-only. This run does not claim new calibrated action capability."}
+    result["config"].update(device=args.device, cpuThreads=args.cpu_threads)
     write(output / "result.json", result)
     return result
 
@@ -285,6 +359,14 @@ def main(argv=None):
             command.add_argument("--train-cache", required=True)
             command.add_argument("--dev-cache", required=True)
             command.add_argument("--mode", choices=["warm-start", "random"], default="warm-start")
+            command.add_argument("--allow-device-migration", action="store_true")
+            command.add_argument("--base-train-data", help="optional archived train JSONL, retained as a separate provenance source")
+            command.add_argument("--base-train-cache", help="optional archived train NPZ, never rewritten")
+            command.add_argument("--base-dev-data", help="optional archived dev JSONL retained as separate evaluation source")
+            command.add_argument("--base-dev-cache", help="optional archived dev NPZ, never rewritten")
+            command.add_argument("--review-evidence", help="original adjudication/report file binding excluded cases and label provenance")
+            command.add_argument("--device", choices=["cpu", "cuda:0"], default="cpu")
+            command.add_argument("--cpu-threads", type=int, default=4)
             command.add_argument("--seed", type=int, default=43)
             command.add_argument("--epochs", type=int, default=20)
     args = parser.parse_args(argv)
@@ -324,10 +406,24 @@ def main(argv=None):
         return 0 if result["status"] == "pass" else 3
     if not 1 <= args.epochs <= 100:
         raise ValueError("legacy training requires 1..100 epochs")
-    train = load_cache(args.train_cache, expected_identity, data_path=args.train_data, expected_split="train")
-    dev = load_cache(args.dev_cache, expected_identity, data_path=args.dev_data, expected_split="dev")
+    migration = {"allow_device_migration": args.allow_device_migration, "expected_checkpoint_sha": sha(args.init_checkpoint)}
+    train = load_cache(args.train_cache, expected_identity, data_path=args.train_data, expected_split="train", **migration)
+    dev = load_cache(args.dev_cache, expected_identity, data_path=args.dev_data, expected_split="dev", **migration)
     increment = validate_increment(train, dev, legacy)
     provenance.update(train=train["provenance"], dev=dev["provenance"], increment=increment)
+    dev_components = {"increment": dev}
+    if args.review_evidence:
+        provenance["reviewEvidence"] = {"path": str(Path(args.review_evidence).resolve()), "sha256": sha(args.review_evidence)}
+    if train["meta"].get("split") == "pending" or dev["meta"].get("split") == "pending":
+        source_ids = set(read(Path(args.train_cache).with_suffix(".meta.json"))["caseIds"])
+        # A shared 64-case cache is preserved, including excluded/challenge IDs.
+        selected_ids = set(train["cases"]) | set(dev["cases"])
+        excluded = sorted(source_ids - selected_ids)
+        provenance["reviewedSubset"] = {"sourceCases": len(source_ids), "selectedTrainCases": len(train["cases"]),
+                                       "selectedDevCases": len(dev["cases"]), "excludedIds": excluded,
+                                       "reasonSource": provenance.get("reviewEvidence")}
+        if excluded and not args.review_evidence:
+            raise ValueError("excluded frozen inputs require --review-evidence binding the original challenge/adjudication reasons")
     if increment["newSemanticCases"] == 0:
         result = {"status": "restored-baseline-only", "trainedNewHead": False, "reason": "no incremental semantic training inputs",
                   "baselineDev": evaluate(make_head(args.init_checkpoint), dev), "provenance": provenance,
@@ -335,10 +431,32 @@ def main(argv=None):
         write(output / "result.json", result)
         print(canonical(result))
         return 0
+    if bool(args.base_train_data) != bool(args.base_train_cache):
+        raise ValueError("base train data/cache must be provided together")
+    if args.base_train_data:
+        if sha(args.base_train_data) != sha(legacy / "data" / "train.jsonl"):
+            raise ValueError("base training source must be the preserved original train data")
+        base = load_cache(args.base_train_cache, expected_identity, data_path=args.base_train_data, expected_split="train")
+        # Check every source against the same dev and historical test exclusions.
+        validate_increment(base, dev, legacy)
+        train = combine_training(base, train)
+        provenance["combinedTraining"] = train["provenance"]
+    if bool(args.base_dev_data) != bool(args.base_dev_cache):
+        raise ValueError("base dev data/cache must be provided together")
+    if args.base_dev_data:
+        if sha(args.base_dev_data) != sha(legacy / "data" / "dev.jsonl"):
+            raise ValueError("base dev source must be the preserved original dev data")
+        base_dev = load_cache(args.base_dev_cache, expected_identity, data_path=args.base_dev_data, expected_split="dev")
+        dev_components["original"] = base_dev
+        dev = combine_training(base_dev, dev, role="dev")
+        provenance["combinedDev"] = dev["provenance"]
+    check_combined_splits(train, dev)
+    if args.cpu_threads < 1:
+        raise ValueError("cpu threads must be positive")
     import torch
     torch.manual_seed(args.seed)
     head = make_head(args.init_checkpoint if args.mode == "warm-start" else None)
-    result = train_extension(head, train, dev, output, args, provenance)
+    result = train_extension(head, train, dev, output, args, provenance, dev_components=dev_components)
     print(canonical(result))
     return 0
 

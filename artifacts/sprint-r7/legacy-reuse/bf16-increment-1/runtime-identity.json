@@ -1,0 +1,143 @@
+{
+  "schema": "frostecho.jev05.legacy-bf16-device-migration/1",
+  "legacyFeatureIdentityHash": "555f5f55f6f8037508067331c11e548e671e881fb5312e9d5cb62b0f0828e159",
+  "backboneMetadata": {
+    "files": {
+      "chat_template.jinja": {
+        "sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+        "bytes": 8952
+      },
+      "config.json": {
+        "sha256": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab",
+        "bytes": 4312
+      },
+      "generation_config.json": {
+        "sha256": "e70c136c1b78ddc1fb0905bac8e733a4dc448d4f852a5dd75143fffc70be550e",
+        "bytes": 202
+      },
+      "model.safetensors.index.json": {
+        "sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+        "bytes": 112216
+      },
+      "tokenizer_config.json": {
+        "sha256": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+        "bytes": 17928
+      }
+    },
+    "verification": "archived metadata and anchor compatibility; historical weight-shard hashes were not recorded"
+  },
+  "rendererSha256": "b90330dd5878332c2fe119e43d26b80446a906a879767dd877ae562b008d7a76",
+  "renderer": "jev02/render.py",
+  "readout": "joint-candidate-line-final-token",
+  "orders": [
+    [
+      "PLAYER_FIRST",
+      "NPC_FIRST",
+      "NO_PRIORITY_REQUEST",
+      "NEEDS_CLARIFICATION"
+    ],
+    [
+      "NEEDS_CLARIFICATION",
+      "NO_PRIORITY_REQUEST",
+      "NPC_FIRST",
+      "PLAYER_FIRST"
+    ],
+    [
+      "NPC_FIRST",
+      "PLAYER_FIRST",
+      "NEEDS_CLARIFICATION",
+      "NO_PRIORITY_REQUEST"
+    ],
+    [
+      "NO_PRIORITY_REQUEST",
+      "NEEDS_CLARIFICATION",
+      "PLAYER_FIRST",
+      "NPC_FIRST"
+    ]
+  ],
+  "precision": "bfloat16",
+  "quantization": "none",
+  "class": "Qwen3_5ForCausalLM",
+  "torch": "2.5.1+cu121",
+  "transformers": "5.2.0",
+  "physicalCudaVisibleDevices": "1",
+  "attentionImplementation": "eager",
+  "deviceMap": {
+    "model.embed_tokens": "0",
+    "model.layers.0": "0",
+    "model.layers.1": "0",
+    "model.layers.2": "0",
+    "model.layers.3": "0",
+    "model.layers.4": "0",
+    "model.layers.5": "0",
+    "model.layers.6": "0",
+    "model.layers.7": "0",
+    "model.layers.8": "0",
+    "model.layers.9": "0",
+    "model.layers.10": "0",
+    "model.layers.11": "0",
+    "model.layers.12": "0",
+    "model.layers.13": "0",
+    "model.layers.14": "0",
+    "model.layers.15": "0",
+    "model.layers.16": "0",
+    "model.layers.17": "0",
+    "model.layers.18": "0",
+    "model.layers.19": "0",
+    "model.layers.20": "0",
+    "model.layers.21": "cpu",
+    "model.layers.22": "cpu",
+    "model.layers.23": "cpu",
+    "model.layers.24": "cpu",
+    "model.layers.25": "cpu",
+    "model.layers.26": "cpu",
+    "model.layers.27": "cpu",
+    "model.layers.28": "cpu",
+    "model.layers.29": "cpu",
+    "model.layers.30": "cpu",
+    "model.layers.31": "cpu",
+    "model.layers.32": "cpu",
+    "model.layers.33": "cpu",
+    "model.layers.34": "cpu",
+    "model.layers.35": "cpu",
+    "model.layers.36": "cpu",
+    "model.layers.37": "cpu",
+    "model.layers.38": "cpu",
+    "model.layers.39": "cpu",
+    "model.layers.40": "cpu",
+    "model.layers.41": "cpu",
+    "model.layers.42": "cpu",
+    "model.layers.43": "cpu",
+    "model.layers.44": "cpu",
+    "model.layers.45": "cpu",
+    "model.layers.46": "cpu",
+    "model.layers.47": "cpu",
+    "model.layers.48": "cpu",
+    "model.layers.49": "cpu",
+    "model.layers.50": "cpu",
+    "model.layers.51": "cpu",
+    "model.layers.52": "cpu",
+    "model.layers.53": "cpu",
+    "model.layers.54": "cpu",
+    "model.layers.55": "cpu",
+    "model.layers.56": "cpu",
+    "model.layers.57": "cpu",
+    "model.layers.58": "cpu",
+    "model.layers.59": "cpu",
+    "model.layers.60": "cpu",
+    "model.layers.61": "cpu",
+    "model.layers.62": "cpu",
+    "model.layers.63": "cpu",
+    "model.norm": "cpu",
+    "model.rotary_emb": "cpu",
+    "lm_head": "cpu"
+  },
+  "maxMemory": {
+    "0": "20GiB",
+    "cpu": "50GiB"
+  },
+  "loadSeconds": 83.35717479884624,
+  "dimension": 5120,
+  "batchSize": 1,
+  "featureIdentityHash": "a9da1acadeb42dd386684d8d42bcd6b16bdd0fa3e41030dfa5def967b6349825"
+}
