@@ -76,12 +76,43 @@ class EvidenceTests(unittest.TestCase):
         self.assertFalse(as_real.counts_as_real)
         self.assertIn("fixture", as_real.reason or "")
 
-    def test_cpu_mechanism_can_count_when_parameters_bind(self):
+    def test_cpu_mechanism_is_numeric_but_never_real(self):
         inspection, high, _low = self.decide(self.bundle, mode="real")
         self.assertTrue(inspection.ok, inspection.reason)
-        self.assertTrue(high.counts_as_real)
-        self.assertEqual(high.disposition, "accept")
-        self.assertEqual(high.selected_index, 0)
+        self.assertFalse(high.counts_as_real)
+        self.assertIsNone(high.selected_index)
+        self.assertEqual(high.disposition, "shadow_only")
+        self.assertIn("cpu-mechanism", high.reason or "")
+
+    def test_unknown_evidence_class_is_not_real(self):
+        from sealed import canonical, sha256_text
+        bundle = copy.deepcopy(self.bundle)
+        for payload in bundle.values():
+            payload["evidenceClass"] = "model-run"
+            for record in payload["records"]:
+                record["evidenceClass"] = "model-run"
+            payload["data_sha256"] = sha256_text(canonical(payload["records"]))
+        with tempfile.TemporaryDirectory() as tmp:
+            loaded = write_bundle(Path(tmp), bundle)
+            inspection = port.resolve_registration(loaded, self.identity).inspect()
+            self.assertFalse(inspection.ok)
+            self.assertIn("evidenceClass", inspection.reason)
+            art = port.ScorerArtifact(
+                port.ARTIFACT_SCHEMA, self.identity, "real", 1.0, 0.5, 0, None,
+                calibration_id="fixture-r6-cpu")
+            out = port.decide(art, port.ScorerRequest(
+                "unknown", self.identity, ["c0", "c1", "c2", "c3"], [6, 0, 0, 0]), loaded)
+            self.assertFalse(out.counts_as_real)
+            self.assertIsNone(out.selected_index)
+            self.assertEqual(out.disposition, "shadow_only")
+
+    def test_relabeling_the_same_fixture_records_is_rejected(self):
+        bundle = build_cpu_bundle(IDENTITY, evidence_class="fixture", seeds=(17, 43))
+        for payload in bundle.values():
+            payload["evidenceClass"] = "cpu-mechanism"
+        inspection, _high, _low = self.decide(bundle, mode="real")
+        self.assertFalse(inspection.ok)
+        self.assertIn("evidenceClass", inspection.reason)
 
     def test_each_tamper_names_itself(self):
         base = self.bundle

@@ -276,10 +276,10 @@ def decide(artifact: ScorerArtifact, request: ScorerRequest,
         elif artifact.calibration_id != inspection.calibration_id:
             reason = (f"calibration_id {artifact.calibration_id!r} != "
                       f"evidence {inspection.calibration_id!r}")
-        elif inspection.evidence_class == "fixture":
-            reason = "fixture evidence cannot count as real"
+        elif inspection.evidence_class in ("fixture", "cpu-mechanism"):
+            reason = f"{inspection.evidence_class} synthetic evidence cannot count as real"
         else:
-            bound = True
+            reason = (f"evidenceClass {inspection.evidence_class!r} is not real-model evidence")
     counts_as_real = bool(artifact.mode == "real" and bound)
     if artifact.mode == "real" and not counts_as_real:
         # A real policy without sealed, bound evidence never executes.

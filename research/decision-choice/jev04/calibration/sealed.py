@@ -197,6 +197,11 @@ def _inspect(payloads: dict[str, dict], identity: dict) -> Inspection:
         raise ValueError("sourceGroup crosses calT/select/cert")
     for name in required:
         for record in parsed[name]:
+            record_class = record.get("evidenceClass")
+            if record_class is not None and str(record_class) != evidence_class:
+                raise ValueError(
+                    f"{name}: record evidenceClass {record_class!r} != "
+                    f"partition evidenceClass {evidence_class!r}")
             _logits_and_label(record, name, protocol)
 
     cal_rows = [_logits_and_label(record, "calT", protocol) for record in parsed["calT"]]
@@ -272,7 +277,8 @@ def _float_token(value: float) -> float:
 
 
 def synthesize_records(n: int, seed: int, source_group: str, prefix: str,
-                       protocol: tuple[str, ...] = CANDIDATE_PROTOCOL) -> list[dict]:
+                       protocol: tuple[str, ...] = CANDIDATE_PROTOCOL,
+                       evidence_class: str = "fixture") -> list[dict]:
     """Peaked correct logits. Seeded, synthetic, and not a research sample."""
     rng = random.Random(seed)
     records = []
@@ -286,7 +292,7 @@ def synthesize_records(n: int, seed: int, source_group: str, prefix: str,
             "candidateIds": list(protocol),
             "logits": logits,
             "label": label,
-            "evidenceClass": "fixture",
+            "evidenceClass": evidence_class,
         })
     return records
 
@@ -298,9 +304,12 @@ def build_cpu_bundle(identity: dict, *, calibration_id: str = "fixture-r6-cpu",
     if evidence_class not in ("fixture", "cpu-mechanism"):
         raise ValueError("bundle evidenceClass must be fixture or cpu-mechanism")
     protocol = CANDIDATE_PROTOCOL
-    cal_records = synthesize_records(n, seeds[0], f"{calibration_id}-calT", "calT", protocol)
-    select_records = synthesize_records(n, seeds[1], f"{calibration_id}-select", "select", protocol)
-    cert_records = synthesize_records(n, seeds[0] + seeds[1], f"{calibration_id}-cert", "cert", protocol)
+    cal_records = synthesize_records(n, seeds[0], f"{calibration_id}-calT", "calT", protocol,
+                                     evidence_class=evidence_class)
+    select_records = synthesize_records(n, seeds[1], f"{calibration_id}-select", "select", protocol,
+                                        evidence_class=evidence_class)
+    cert_records = synthesize_records(n, seeds[0] + seeds[1], f"{calibration_id}-cert", "cert", protocol,
+                                      evidence_class=evidence_class)
     policy = {field: identity[field] for field in (
         "model", "head", "adapter", "tokenizer", "renderer", "task", "k",
         "policy_version", "memory_policy_version")}

@@ -17,6 +17,7 @@ export interface EvidenceRecord {
   candidateIds: string[];
   logits: number[];
   label: number;
+  evidenceClass?: string;
   accepted?: boolean;
   error?: boolean;
 }
@@ -210,6 +211,10 @@ function assess(payloads: Record<'calT' | 'select' | 'cert', EvidencePayload>,
       }
       seen.add(record.sampleId);
       if (!record.sourceGroup) throw new Error(`${name}: missing sourceGroup`);
+      const recordClass = (record as { evidenceClass?: string }).evidenceClass;
+      if (recordClass && recordClass !== String(payload.evidenceClass)) {
+        throw new Error(`${name}: record evidenceClass ${recordClass} != partition evidenceClass ${payload.evidenceClass}`);
+      }
     });
     if (payload.data_sha256 !== sha256(canonical(records))) {
       throw new Error(`${name}: data_sha256 does not match the per-sample records`);
@@ -259,6 +264,10 @@ function assess(payloads: Record<'calT' | 'select' | 'cert', EvidencePayload>,
     throw new Error(`calT temperature ${payloads.calT.temperature} != fitted ${fitted}`);
   }
   const temperature = payloads.calT.temperature;
+  const mask = (records: EvidenceRecord[], used: number, tau: number) => records.map(record => {
+    const scaled = softmax(record.logits, used);
+    return scaled[argmax(scaled)] >= tau ? '1' : '0';
+  }).join('');
   const selectRows = (payloads.select.records as EvidenceRecord[]).map(record => {
     const scaled = softmax(record.logits, temperature);
     const chosen = argmax(scaled);
@@ -285,6 +294,12 @@ function assess(payloads: Record<'calT' | 'select' | 'cert', EvidencePayload>,
   }
   if (typeof payloads.select.coverage !== 'number' || !close(payloads.select.coverage, best.coverage)) {
     throw new Error('select coverage does not match the recomputed value');
+  }
+  for (const name of ['select', 'cert'] as const) {
+    const records = payloads[name].records as EvidenceRecord[];
+    if (mask(records, temperature, best.tau) !== mask(records, fitted, best.tau)) {
+      throw new Error(`temperature tolerance would change the ${name} accept set`);
+    }
   }
   const certRows = (payloads.cert.records as EvidenceRecord[]).map(record => {
     const scaled = softmax(record.logits, temperature);
