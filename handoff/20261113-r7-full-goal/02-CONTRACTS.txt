@@ -1,0 +1,42 @@
+集成合同：O 在开工第一小时落成类型和模块注册，其他线据此并行
+下列为本轮要实现的接口，不声称 R6.1 已存在；优先包装已有类型，不能再发明第二个工作队列。
+
+1. 规则版本
+OriginalRulesProfile = gospel-5.8.19。
+原作解包目录是规则来源；现 legacy-parity.md/SCOPE 的旧文字仅作索引，遇冲突以该版本实际执行分支为准。
+明确原作日历、分/秒换算、D4 18:00结算。保留旧R6场景Profile以运行旧回归，不混成一套数值。
+
+2. 领域模块
+DomainCommand { commandId, actorId, expectedVersion, domain, type, payload }
+reduceDomain(snapshot, command, context) -> { patch, events, requests }
+onTimeSpan(snapshot, {fromMinute,toMinute,rngState}) -> { patch, events, requests }
+校验后由同一World提交。跨域资源转移原子化；所有时间由一个时钟推进；模块不得各自setInterval改权威状态。
+World扩展至少weather/heating/machines/crises/council/life；O负责版本迁移。
+
+3. 显示与输入
+observe(actorId) -> 可见状态+有来源记忆。玩家全局管理UI与NPC局部观察区分权限。
+intent(text, actorId, targets, sourceId) -> proposed goal/task specs或clarification，不直接产出世界事实。
+CouncilResolution{councilId,revision,requestSpecs[]} 进入已有requestCommitment；NPC自动initialResponse。
+UI只发命令读快照，旧GST对象是view/adapter；关闭旧世界独立tick。
+
+4. 记忆与经验
+ObservedEvent {eventId,lifeId,observerId,simTime,kind,payload,source}
+MemoryNote {id,actorId,claim,evidenceIds,validWhen,supersedes?,confidenceKind}
+Experience {id,actorId,goal,conditions,attempt,outcome,evidenceIds,invalidatedBy?}
+来源事件不可改；派生笔记可纠正；成功/失败两侧经验均保留。
+KnowledgeView不得把未观察补货、他人私信、裁决答案或未来事件泄漏给模型。
+LifeArchive{lifeId,rulesProfile,seed,ending,deaths,resources,commitments,lessons,evidenceIds}
+
+5. JEV
+Candidate包含完整语义正文、参数、合法性、前置条件与cost/utility分量；candidateId只是身份，不是语义特征替代品。
+DecisionInput绑定actor/life/worldVersion/generation/observationHash/memoryHash/candidateSetHash。
+ScoreResult包含真实模型revision、encoder/embedding配置、checkpointSHA、logits、T、probabilities、tau、accepted/abstain、校准与协议身份。
+Probability = 对冻结acceptable-set任务的候选置信度；不等于生存收益/utility，也不等于所有未来环境的风险保证。
+模型接受后仍走旧提交复核。拒答走观察/澄清/明确reference后备，原始reason和模式可见；后备不计JEV成功。
+新real-model模式必须有可复核的真实来源，不能简单放开fixture/cpu-mechanism标签。
+
+6. 保存/恢复
+一次保存包含World、全部领域、持续工作、承诺、经验/关系、RNG、life档案、模型/协议身份。
+保存不能持久化一个已经失效的推理结果；恢复后重算当前候选/有效性。
+对相同输入序列比较最终权威状态，ID映射保持任务↔承诺↔回执关联。
+保持既有cancel/save/EOF保证；不为了UI再造一个绕过它们的异步提交入口。

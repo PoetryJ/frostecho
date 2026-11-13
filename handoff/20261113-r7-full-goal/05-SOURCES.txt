@@ -1,0 +1,35 @@
+本包来源与当前事实（2026-11-13）
+1. FrostEcho R6.1
+产品源码 b70dd2cb4e19612aeee8d52e6e0b1b96038b01cc；交付tip14ad38a075712e8f449c943ebce874d11fd27cb2。
+本轮通过GitHub API查到CI run43393992212状态success，四job均success。
+https://github.com/PoetryJ/frostecho/actions/runs/43393992212
+本次只做源码路径/功能/真实模型通路检查，未声称独立复跑整套。
+
+2. 原作
+本机福音雪镇 gospel-snow-town 5.8.19 noSteam 安装版本；package.json声明MIT。
+legacy-reference.zip（115源码）SHA256 5a53d2801f746d38b03986601b8d96dc8760fc72ff602c0ebe42d131a86b7662
+legacy-assets.zip（85资产＋清单）SHA256 cce134362606fc1dbccf071a62d40b91320f997554d1f99df247c82096cc057b
+来源app.asar SHA256 ac7f45dd48be581dbc264dbcc795cbe4e5add0bc6678e6dafd2e6d08a4926005。
+本包带原始inventory与历史hash-audit；历史SCOPE仅作旧索引，已知含过期描述。
+当前直接读原作：furnace-system.js删除第二炉；death-ending.js为D4 18点；
+task-system.js 15类型；event-system.js 10事件类型；difficulty-config.js为easy/hard。
+需区分代码存在与本版本实际启用，不能照旧摘要移植已删除功能。
+
+3. SuperAgent
+https://github.com/deepseek-ai/dsh-superagent-prototype
+https://github.com/deepseek-ai/dsh-superagent-prototype/blob/main/docs/001-domain.md
+https://github.com/deepseek-ai/dsh-superagent-prototype/blob/main/docs/003-execution.md
+借鉴持续工作接收消息、运行/暂停/恢复和人工介入，落到NPC已有任务/承诺，不再造另一套总任务框架。
+官方注明研究原型且部分文章设计未实现；不能把文档描述当可直接照搬的已验证能力。
+
+4. Anthropic记忆
+https://www.anthropic.com/research/components-of-agent-memory
+借鉴日志、笔记、记忆组织及按需上下文，休息时基于原始日志纠错整理。
+本轮工程设计与长期收益实验属于FrostEcho自己的假设，不引用他人收益当本项目已证明收益。
+
+5. 官方模型
+https://huggingface.co/Qwen/Qwen3.5-4B
+https://huggingface.co/Qwen/Qwen3.5-27B
+https://huggingface.co/Qwen/Qwen3.5-4B/raw/main/config.json
+网页可访问不等于Grok主机已下载/能运行。
+API服务商未定；后续按用户提供服务的官方文档核对embedding/微调/隐藏状态能力，再冻结实现，不编造API。
