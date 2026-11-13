@@ -9,7 +9,8 @@
  *  - `pending-change` means a change was proposed, NOT agreed;
  *  - only an explicit accept updates revision/conditions;
  *  - cancel and fulfilment are independent terminal states;
- *  - only an authoritative `meal_delivered` receipt may fulfil an instance;
+ *  - only an authoritative receipt for that task may fulfil an instance
+ *    (`meal_delivered` or `stock_deposited`), never a dialogue or a guess;
  *  - a failed attempt keeps the goal; a revision change invalidates old
  *    attempts (attempts carry the revision they were built for).
  */

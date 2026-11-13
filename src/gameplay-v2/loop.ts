@@ -607,6 +607,31 @@ export class GameplayLoop {
       routeToWarehouse: route };
   }
 
+  /**
+   * The receipt this actor's own command actually produced.
+   * Amount and event id come from that receipt. A missing event, a non-positive
+   * amount, or another command's id does not qualify, and eventIds[0] is never
+   * a substitute.
+   */
+  private authoritativeReceipt(actorId: string, eventIds: string[], kind: string):
+    { eventId: string; amount: number } | null {
+    if (eventIds.length === 0) return null;
+    const wanted = new Set(eventIds);
+    const items = this.itemsOfEvents(actorId, eventIds) as Array<{
+      kind: string; payload?: Record<string, unknown>; evidenceIds?: string[];
+    }>;
+    for (const item of items) {
+      if (item.kind !== kind) continue;
+      const amount = item.payload?.amount;
+      if (typeof amount !== 'number' || !Number.isFinite(amount) || amount <= 0) continue;
+      const eventId = (item.evidenceIds ?? []).find(id => wanted.has(id)
+        && id.includes(`:${kind}:`));
+      if (!eventId) continue;
+      return { eventId, amount };
+    }
+    return null;
+  }
+
   /** Events of a just-executed command, resolved from the actor's own memory. */
   private itemsOfEvents(actorId: string, eventIds: string[]): unknown[] {
     if (eventIds.length === 0) return [];
@@ -672,33 +697,35 @@ export class GameplayLoop {
                     : chosen.candidate.id === 'g-rest-first' ? 'rest-first'
                       : chosen.candidate.id === 'g-deliver' ? 'deliver-meal' : null;
         if (taskKind) {
-          // A delivery only completes on the confirmed meal_delivered event;
-          // out_of_stock / delivery_shortfall keep the task honestly open.
-          if (taskKind === 'deliver-meal') {
-            if (kinds.includes('meal_delivered')) {
+          // Delivery and supply complete only on the confirmed receipt for
+          // THIS actor and THIS command. The amount is the receipt's amount.
+          // out_of_stock / delivery_shortfall / a failed deposit stay open.
+          if (taskKind === 'deliver-meal' || taskKind === 'supply-warehouse') {
+            const receiptKind = taskKind === 'deliver-meal'
+              ? 'meal_delivered' : 'stock_deposited';
+            const receipt = this.authoritativeReceipt(actorId, outcome.eventIds, receiptKind);
+            if (receipt) {
               const task = this.board.activeFor(actorId)
-                .find(entry => entry.kind === 'deliver-meal');
-              if (task) this.board.complete(task.taskId);
-              // R5: fulfilment binds the receipt to the task's own commitment;
-              // a legacy unbound fixture row can never fulfil a promise.
+                .find(entry => entry.kind === taskKind);
               const commitment = task?.commitmentId
                 ? this.commitments.find(task.commitmentId) : undefined;
-              if (commitment && !isTerminal(commitment.status)) {
-                const receiptEventId = outcome.eventIds
-                  .find(id => id.includes('meal_delivered')) ?? outcome.eventIds[0];
+              // Only the task's own commitment, and only while it can still
+              // be settled. Never scan this NPC's other promises.
+              if (task && commitment && commitment.promisorId === actorId
+                && !isTerminal(commitment.status)) {
                 const fulfilled = this.commitments.fulfil(commitment.commitmentId, {
-                  eventId: receiptEventId, commandId,
-                  at: this.session.world.simTime, amount: 1 });
+                  eventId: receipt.eventId, commandId,
+                  at: this.session.world.simTime, amount: receipt.amount });
                 this.session.ingestCommitmentEvent(fulfilled.event);
+                if (fulfilled.commitment.status === 'fulfilled'
+                  && fulfilled.commitment.evidenceEventIds.includes(receipt.eventId)) {
+                  this.board.complete(task.taskId);
+                }
+              } else if (task && !task.commitmentId) {
+                // An explicitly unbound legacy fixture row completes on the
+                // receipt and never settles some other promise.
+                this.board.complete(task.taskId);
               }
-            }
-          } else if (taskKind === 'supply-warehouse') {
-            // Supply completes only when the stock actually reaches the
-            // warehouse (a real stock_deposited receipt).
-            if (kinds.includes('stock_deposited')) {
-              const task = this.board.activeFor(actorId)
-                .find(entry => entry.kind === 'supply-warehouse');
-              if (task) this.board.complete(task.taskId);
             }
           } else if (taskKind === 'rest-first') {
             if (!kinds.includes('rested')) {
