@@ -236,6 +236,26 @@ def check_v4_snapshot(handoff: Path, cases: dict[str, dict],
             if row.get("caseId") != case_id:
                 errors.append(f"{case_id}: field=caseId review identity drift")
         visible = packet.get("visibleInput") or {}
+        try:
+            reviewed = json.loads(serialized)
+        except json.JSONDecodeError:
+            errors.append(f"{case_id}: field=canonical serializedInput is not JSON")
+            reviewed = None
+        if isinstance(reviewed, dict):
+            for field in field_diffs(semantic_view(reviewed), semantic_view(visible)):
+                errors.append(
+                    f"{case_id}: field={field} packet visible input != canonical serializedInput")
+            current = semantic_view({
+                "task": case.get("sourceTask") or case.get("task"),
+                "narrative": case.get("narrative"),
+                "facts": case.get("facts") or [],
+                "question": case.get("question"),
+                "observation": case.get("observation"),
+                "candidates": case.get("candidates") or [],
+            })
+            for field in field_diffs(semantic_view(reviewed), current):
+                errors.append(
+                    f"{case_id}: field={field} v4 projection != canonical serializedInput")
         projected = semantic_view({
             "task": case.get("sourceTask") or case.get("task"),
             "narrative": case.get("narrative"),

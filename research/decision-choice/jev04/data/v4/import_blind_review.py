@@ -73,7 +73,7 @@ def load_jsonl(path: Path) -> list[dict]:
 
 def write_jsonl(path: Path, rows: list[dict]) -> None:
     path.write_text("\n".join(json.dumps(row, ensure_ascii=False) for row in rows) + "\n",
-                    encoding="utf-8")
+                    encoding="utf-8", newline="\n")
 
 
 def raw_hashes(path: Path) -> dict[str, str]:
@@ -266,7 +266,7 @@ def main() -> int:
         "candidateTextAndParams": "bound into the v4 contentHash",
         "semanticIntentVsWorldParams": "candidate.text is intent; candidate.params is the "
                                        "world command candidate and is NOT silently rewritten",
-    }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
     (OUT / "field-semantics.json").write_text(json.dumps({
         "schema": "frostecho.jev04.field-semantics/1",
         "foodStock": "world food resource units available to the acting NPC; "
@@ -278,7 +278,7 @@ def main() -> int:
         "retractionExists": "an AUTHORIZED retraction event exists",
         "retractionStatement": "a retraction-like statement was uttered (may be "
                                "unauthorized); the current schema lacks this field",
-    }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
     summary = {
         "schema": "frostecho.jev04.adjudication-summary/1",
         "date": "2026-11-12",
@@ -299,7 +299,7 @@ def main() -> int:
         "sourceReviewHashProtocol": "blind-review serializedInput (not reused as v4 hash)",
     }
     (OUT / "adjudication-summary.json").write_text(
-        json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
     print(json.dumps({key: summary[key] for key in
                       ("cases", "eligible", "ambiguous", "inconsistent",
                        "acceptableSetDisagreements", "statusDifferences")},
