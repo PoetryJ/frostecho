@@ -23,6 +23,7 @@ import { ExperienceStore, type FoldableEvent } from '../memory/experience';
 import { CouncilBoard, type CouncilRecord, type CouncilRequest,
   type CouncilResolveResult } from '../council-v2/council';
 import type { Command, WorldEvent } from '../survival/world-v2';
+import { LongTermMemory, type MemoryContext, type MemoryQuery } from '../r7/memory';
 
 export interface GameplayStepResult {
   records: GameplayStepRecord[];
@@ -56,6 +57,12 @@ export interface GameplayLoopOptions {
   commitments?: CommitmentBoard;
   /** R5: preloaded council records (restore path). */
   council?: CouncilBoard;
+  /** R7 DecisionInput memory, separate from the legacy reference-policy memory arm. */
+  longTermMemory?: LongTermMemory;
+  decisionMemoryMode?: 'raw' | 'layered';
+  decisionMemoryTokenBudget?: number;
+  /** Called with the actual pre-action context. Does not choose/commit an action. */
+  onDecisionContext?: (context: MemoryContext) => void;
 }
 
 const KIND_TO_TASK: Record<string, GameplayTaskKind> = {
@@ -138,6 +145,11 @@ export class GameplayLoop {
   readonly experience: ExperienceStore;
   readonly commitments: CommitmentBoard;
   readonly council: CouncilBoard;
+  readonly longTermMemory: LongTermMemory;
+  readonly decisionMemoryMode: 'raw' | 'layered';
+  readonly decisionMemoryTokenBudget: number;
+  private readonly memoryCursor = new Map<string, number>();
+  private readonly onDecisionContext?: (context: MemoryContext) => void;
 
   constructor(readonly session: PlaySession,
     readonly board: TaskBoard = new TaskBoard(),
@@ -148,6 +160,37 @@ export class GameplayLoop {
     this.experience = options.experience ?? ExperienceStore.empty();
     this.commitments = options.commitments ?? CommitmentBoard.empty();
     this.council = options.council ?? CouncilBoard.empty();
+    this.longTermMemory = options.longTermMemory ?? new LongTermMemory();
+    this.decisionMemoryMode = options.decisionMemoryMode ?? 'layered';
+    this.decisionMemoryTokenBudget = options.decisionMemoryTokenBudget ?? 1200;
+    this.onDecisionContext = options.onDecisionContext;
+  }
+
+  /** Ingest only the records actually delivered to each NPC's existing mailbox. */
+  syncLongTermMemory(actorId?: string): void {
+    const ids = actorId === undefined ? this.session.npcIds : [actorId];
+    for (const id of ids) {
+      const store = this.session.memories.get(id);
+      if (!store) throw new Error(`unknown memory actor ${id}`);
+      const records = store.toJSON().records;
+      const start = Math.min(this.memoryCursor.get(id) ?? 0, records.length);
+      for (const record of records.slice(start)) {
+        if (record.observerId !== id) continue;
+        this.longTermMemory.ingestMemoryRecord(record);
+      }
+      this.memoryCursor.set(id, records.length);
+    }
+  }
+
+  /** Ready for a real scorer: bounded text, source ids, observation/memory hashes. */
+  decisionContext(actorId: string, options: Partial<Pick<MemoryQuery,
+    'mode' | 'tokenBudget' | 'goal' | 'place'>> = {}): MemoryContext {
+    this.syncLongTermMemory(actorId);
+    return this.longTermMemory.query({ actorId, now: this.session.world.simTime,
+      mode: options.mode ?? this.decisionMemoryMode,
+      tokenBudget: options.tokenBudget ?? this.decisionMemoryTokenBudget,
+      goal: options.goal ?? this.board.activeFor(actorId)[0]?.kind,
+      ...(options.place ? { place: options.place } : {}) });
   }
 
   static create(npcCount = 8, options: { days?: number; seed?: string; food?: number } = {},
@@ -644,6 +687,7 @@ export class GameplayLoop {
 
   /** One decision per alive NPC, executed through the authoritative session path. */
   step(): GameplayStepResult {
+    this.syncLongTermMemory();
     const records: GameplayStepRecord[] = [];
     const knowledge = this.session.knowledge();
     for (const actorId of this.session.npcIds) {
@@ -659,12 +703,15 @@ export class GameplayLoop {
         && this.deliveryAllowed(actorId) ? this.deliveryView(actorId) : undefined;
       const supply = tasks.some(task => task.kind === 'supply-warehouse')
         ? this.supplyView(actorId) : undefined;
+      const memoryContext = this.decisionContext(actorId);
+      this.onDecisionContext?.(memoryContext);
       const { candidates, conflict } = buildGameplayCandidates({
         actorId, npc: { id: npc.id, location: npc.location, hunger: npc.hunger,
           stamina: npc.stamina, health: npc.health, san: npc.san, alive: npc.alive },
         resources: this.session.world.resources, furnace: this.session.world.furnace,
         tasks, relationTrust: trust, ...(delivery ? { delivery } : {}),
         ...(supply ? { supply } : {}),
+        memoryContext,
       });
       const chosen = chooseReference(candidates);
       const commandId = `${actorId}-game-${this.session.world.version}-${chosen.candidate.id}`;
@@ -746,6 +793,7 @@ export class GameplayLoop {
         conflict, candidates: candidates.map(entry => ({ id: entry.candidate.id,
           utility: entry.utility, rule: entry.rule })), mode: 'reference-rules/1' });
     }
+    this.syncLongTermMemory();
     return { records, executed: records.filter(record => record.executed).length,
       mode: 'reference-rules/1' };
   }
@@ -763,6 +811,7 @@ export class GameplayLoop {
         }
       }
     }
+    this.syncLongTermMemory();
     return result;
   }
 
@@ -770,8 +819,13 @@ export class GameplayLoop {
     return this.session.advance(minutes);
   }
 
-  status(): Record<string, unknown> {
+  status(memoryActorId?: string): Record<string, unknown> {
     const spatial = this.session.world.spatial;
+    this.syncLongTermMemory();
+    // The global player status exposes mode/counts, never all NPCs' private text.
+    // An explicit per-actor query returns only that observer's own context.
+    const memoryContexts = (memoryActorId ? [memoryActorId] : this.session.npcIds)
+      .map(actorId => this.decisionContext(actorId));
     return { day: this.session.world.day, simTime: this.session.world.simTime,
       hoursElapsed: this.session.world.simTime / 60, ending: this.session.world.ending,
       mode: 'reference-rules/1', tasks: this.board.toJSON(),
@@ -783,11 +837,17 @@ export class GameplayLoop {
         .filter(id => this.board.activeFor(id).some(task => task.kind === 'deliver-meal'))
         .map(id => [id, warehouseBelief(this.session, id)])),
       commitments: this.commitments.all(),
+      decisionMemory: { mode: this.decisionMemoryMode, tokenBudget: this.decisionMemoryTokenBudget,
+        actors: memoryContexts.map(context => ({ actorId: context.actorId, lifeId: context.lifeId,
+          itemCount: context.items.length, evidenceCount: context.evidenceIds.length,
+          omitted: context.omitted, memoryHash: context.memoryHash,
+          ...(memoryActorId ? { contextText: context.contextText, evidenceIds: context.evidenceIds } : {}) })) },
       council: this.councilStatus() };
   }
 
   /** Session + task-board + experience sidecars; restore keeps them honest. */
   save(path: string): void {
+    this.syncLongTermMemory();
     this.session.save(path);
     writeFileSync(`${path}.tasks.json`, `${JSON.stringify(this.board.toJSON(), null, 2)}\n`,
       'utf8');
@@ -797,6 +857,10 @@ export class GameplayLoop {
       `${JSON.stringify(this.commitments.toJSON(), null, 2)}\n`, 'utf8');
     writeFileSync(`${path}.council.json`,
       `${JSON.stringify(this.council.toJSON(), null, 2)}\n`, 'utf8');
+    writeFileSync(`${path}.long-term-memory.json`, `${JSON.stringify({
+      schema: 'frostecho.gameplay-decision-memory/1', mode: this.decisionMemoryMode,
+      tokenBudget: this.decisionMemoryTokenBudget, memory: this.longTermMemory.serialize(),
+    }, null, 2)}\n`, 'utf8');
   }
 
   static load(path: string, options: GameplayLoopOptions = {},
@@ -817,8 +881,17 @@ export class GameplayLoop {
     const council = existsSync(councilSidecar)
       ? CouncilBoard.fromJSON(JSON.parse(readFileSync(councilSidecar, 'utf8')))
       : CouncilBoard.empty();
+    const memorySidecar = `${path}.long-term-memory.json`;
+    const memoryDocument = existsSync(memorySidecar)
+      ? JSON.parse(readFileSync(memorySidecar, 'utf8')) : null;
+    if (memoryDocument && memoryDocument.schema !== 'frostecho.gameplay-decision-memory/1') {
+      throw new Error('unsupported gameplay decision-memory sidecar');
+    }
+    const longTermMemory = memoryDocument ? LongTermMemory.restore(memoryDocument.memory) : new LongTermMemory();
     return new GameplayLoop(session, board,
-      { experience, commitments, council, ...options });
+      { experience, commitments, council, longTermMemory,
+        ...(memoryDocument ? { decisionMemoryMode: memoryDocument.mode,
+          decisionMemoryTokenBudget: memoryDocument.tokenBudget } : {}), ...options });
   }
 }
 

@@ -1,0 +1,9 @@
+# Isolated model environment; do not replace the game's dependencies.
+# Resolve and freeze the exact installed versions in each real run.
+numpy>=1.26,<3
+torch>=2.5,<3
+transformers>=5.0,<6
+accelerate>=1.3,<2
+safetensors>=0.6,<1
+sentencepiece>=0.2,<1
+# Optional --load-in-4bit CUDA path: install a compatible bitsandbytes wheel.

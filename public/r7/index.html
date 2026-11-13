@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FrostEcho · 福音雪镇</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="snowmark">❄</span><div><h1>FROSTECHO</h1><p>福音雪镇 <span>·</span> 极寒中的八个名字</p></div></div>
+    <div id="calendar" class="calendar">等待开始</div>
+    <div class="header-actions"><button id="music" title="播放原作背景音乐">♫ 音乐</button><button id="new-game">新游戏</button><button id="continue-game">继续存档</button></div>
+  </header>
+
+  <div class="resource-bar" id="resources"><span>开始游戏后显示权威资源</span></div>
+  <nav class="transport" aria-label="游戏控制">
+    <div class="controls"><button id="run" class="primary">▶ 开始行动</button><button id="one-step">行动一步</button><button data-command="advance 60">推进 1 小时</button><label>步速 <select id="speed"><option value="1">1×</option><option value="4">4×</option><option value="12">12×</option></select></label></div>
+    <div class="controls"><span id="mode" class="mode">未运行</span><button id="save">保存</button><button id="save-exit">保存并退出</button></div>
+  </nav>
+
+  <main class="workspace">
+    <aside class="roster-panel panel"><div class="panel-heading"><h2>居民</h2><span id="living-count">8 位</span></div><div id="roster"></div><p class="small muted">选择居民查看状态，再点击地图建筑指挥移动。居民持续行动时，你仍可取消或调整安排。</p></aside>
+
+    <section class="world-column">
+      <div class="map-toolbar"><span id="map-title">村庄 · 50 × 40</span><span id="selected-hint">选择一位居民</span></div>
+      <div id="map-stage" class="map-stage" aria-label="村庄地图">
+        <img class="world-base" src="/assets/asset/map/village_base_clean.png" alt="原作雪镇地图" draggable="false">
+        <div id="building-layer"></div><div id="npc-layer"></div><div id="road-layer"></div>
+        <div id="welcome" class="welcome"><div class="eyebrow">FROSTECHO · 生存与承诺</div><h2>雪还在下。<br>镇子需要每一个人。</h2><p>安排物资生产，与居民协商任务，召开晨会。每次行动、履约与失约都留下真实记录。</p><button id="welcome-start" class="primary">开始新的四日</button><p class="small">当前以规则驱动居民行动；真实 JEV 接入后将单独显示。</p></div>
+        <div id="ending" class="ending hidden"></div>
+      </div>
+      <div class="map-footer"><span>原作 5.8.19 地图与人物素材</span><span id="save-status">尚未保存</span></div>
+      <section class="event-panel panel"><div class="panel-heading"><h2>行动记录</h2><span>来自世界与任务回执</span></div><div id="event-log" aria-live="polite"></div></section>
+    </section>
+
+    <aside class="inspector panel">
+      <div id="npc-detail" class="npc-detail"></div>
+      <div class="tabs" role="tablist"><button class="active" data-tab="work">任务</button><button data-tab="council">晨会</button><button data-tab="memory">记忆</button></div>
+      <div id="tab-work" class="tab-content">
+        <div class="section-label">为当前居民安排工作</div>
+        <div class="form-row"><select id="task-kind"><option value="gather-food">采集食物</option><option value="gather-wood">采集木柴</option><option value="heating">维持供暖</option><option value="supply-warehouse">补充仓库</option><option value="deliver-meal">送饭</option><option value="rest-first">先休息</option></select><button id="assign-task">派工</button></div>
+        <div class="section-label">提出承诺请求</div>
+        <div class="button-grid"><button id="request-supply">请求补仓</button><button id="request-delivery">请求送饭</button></div>
+        <div class="section-label">当前位置行动</div>
+        <div class="button-grid"><button id="withdraw">取 1 份食物</button><button id="deposit">交存 1 份食物</button><button id="deliver">交付 1 份饭</button><button id="tell-restock">告知补货传闻</button></div>
+        <h3>任务与承诺</h3><div id="work-list" class="cards"></div>
+      </div>
+      <div id="tab-council" class="tab-content hidden"><div class="button-grid"><button data-command="council-open">召开今日晨会</button><button data-command="council-resolve">形成决议</button></div><p class="small muted">投票模式与每位居民的请求状态以实际回执为准。</p><div id="council-list" class="cards"></div></div>
+      <div id="tab-memory" class="tab-content hidden"><button id="load-memory">查看当前居民所知</button><p class="small muted">显示该居民自己的承诺知识、关系与计划；全局管理视图不会写入居民记忆。</p><pre id="memory-view">尚未查询</pre></div>
+    </aside>
+  </main>
+
+  <footer class="command-dock">
+    <form id="command-form"><label for="command-input">自由命令</label><input id="command-input" autocomplete="off" placeholder="例如 request npc_01 deliver-meal 或 travel npc_01 warehouse"><button type="submit" class="primary">执行</button></form>
+    <details><summary>命令帮助与原始回执</summary><p>支持当前引擎命令：assign / request / travel / withdraw / deposit / deliver / cancel-task / cancel-commitment / respond-change / council-open / council-vote / council-resolve / advance / save。这里按命令语法执行；自然语言意图接入前不会假装理解任意句子。</p><pre id="raw-result">执行命令后在这里查看原始结果。</pre></details>
+    <div id="notice" role="status">正在连接本地游戏服务…</div>
+  </footer>
+  <audio id="bgm" loop preload="none" src="/assets/music/第一天Frozen_Gridline_Echo.mp3"></audio>
+  <script src="/app.js"></script>
+</body>
+</html>

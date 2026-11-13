@@ -9,6 +9,7 @@
  */
 import type { Candidate } from '../decision/contracts';
 import type { GameplayTask } from './tasks';
+import type { MemoryContext } from '../r7/memory';
 
 export interface GameplayNpcView {
   id: string;
@@ -37,6 +38,8 @@ export interface GameplayDecisionInput {
   delivery?: DeliveryView;
   /** R5 council slice: gather -> warehouse deposit view for a supply task. */
   supply?: SupplyView;
+  /** R7: real observed-context input for scorer integration; reference scores stay unchanged. */
+  memoryContext?: MemoryContext;
 }
 
 /** Observable inputs for a supply-warehouse assignment. */
