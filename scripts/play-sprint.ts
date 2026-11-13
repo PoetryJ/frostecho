@@ -213,12 +213,14 @@ async function settleWithin(records: StepJobRecord[], boundMs: number,
     // A timeout is an explicit terminal state, never a silent drop and never
     // a completed action.
     for (const record of open) cancelJob(record.job, 'barrier_timeout');
-    // Jobs accepted AFTER this barrier captured its set keep the right they
-    // still hold. Refresh only a grant that this barrier itself just
-    // invalidated. An earlier explicit cancel left an older grant; stamping
-    // the new global generation would resurrect it.
+    // This barrier owns only the jobs snapshotted when ITS line arrived.
+    // A later save must not mark those later jobs as owned by this barrier.
+    const owned = new Set(records.map(record => record.job.jobId));
+    // Jobs accepted after this snapshot keep the right they still hold.
+    // Refresh only a grant that this barrier itself just invalidated.
+    // An explicit cancel left an older grant; no save may stamp it current.
     for (const record of stepJobs) {
-      if (record.captured || record.job.terminal) continue;
+      if (owned.has(record.job.jobId) || record.job.terminal) continue;
       if (typeof record.expected === 'number') {
         const actorId = record.actorIds[0];
         const prior = before.get(actorId);

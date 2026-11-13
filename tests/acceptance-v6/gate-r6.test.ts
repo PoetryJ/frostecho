@@ -79,7 +79,7 @@ test('R6-P: cancel before the deposit does not fulfil, and a meal receipt still 
   }
 });
 
-test('R6-R: a step outside the save capture runs once, and an explicit cancel stays dead', async () => {
+test('R6-R: a step outside one save capture runs once', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'r6-r-'));
   const state = join(dir, 's.json');
   const started = join(dir, 'started');
@@ -117,6 +117,49 @@ test('R6-R: a step outside the save capture runs once, and an explicit cancel st
     assert.equal(steps[2].decisions[0].executed, true);
     const saved = JSON.parse(readFileSync(state, 'utf8'));
     assert.equal(saved.world.version, 2);
+  } finally {
+    if (child.exitCode === null) child.kill('SIGKILL');
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('R6-R: an explicit cancel stays dead and a later save does not re-grant it', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'r6-cancel-'));
+  const state = join(dir, 's.json');
+  const started = join(dir, 'started');
+  const release = join(dir, 'release');
+  const child = spawn(process.execPath, [CLI, '--fresh', '--npc', '2', '--state', state, '--scorer', SCORER], {
+    cwd: process.cwd(), stdio: ['pipe', 'pipe', 'pipe'],
+    env: { ...process.env, R3_SCORER_STARTED: started, R3_SCORER_RELEASE: release,
+      R3_SCORER_TARGET: 'c-eat', R4_BARRIER_MS: '350', R4_STEP_TIMEOUT_MS: '5000' },
+  });
+  let out = '';
+  child.stdout.setEncoding('utf8');
+  child.stdout.on('data', chunk => { out += chunk; });
+  const rows = () => out.trim() ? out.trim().split('\n').map(line => JSON.parse(line)) : [];
+  const wait = async (predicate: () => boolean) => {
+    const deadline = Date.now() + 10_000;
+    while (!predicate()) {
+      if (Date.now() > deadline) throw new Error(out.slice(-1500));
+      await new Promise(resolve => setTimeout(resolve, 10));
+    }
+  };
+  const closed = new Promise<void>(resolve => { child.on('close', () => resolve()); });
+  try {
+    await wait(() => rows().some(row => row.event === 'ready'));
+    child.stdin.write('step npc_01\n');
+    await wait(() => existsSync(started));
+    child.stdin.write('save\nstep npc_01\ncancel npc_01\n');
+    await wait(() => rows().some(row => row.command === 'cancel'));
+    writeFileSync(release, 'go');
+    await wait(() => rows().filter(row => row.command === 'step').length === 2);
+    child.stdin.write('step npc_01\nsave\nquit\n');
+    await closed;
+    const steps = rows().filter(row => row.command === 'step');
+    assert.equal(steps[1].decisions[0].executed, false);
+    assert.deepEqual(steps[1].decisions[0].eventIds, []);
+    assert.equal(rows().some(row => row.command === 'cancel'), true);
+    assert.equal(JSON.parse(readFileSync(state, 'utf8')).world.version, 1);
   } finally {
     if (child.exitCode === null) child.kill('SIGKILL');
     rmSync(dir, { recursive: true, force: true });
