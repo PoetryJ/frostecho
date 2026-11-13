@@ -27,6 +27,7 @@ import { resolve as resolvePath } from 'node:path';
 import type { ChoiceRequest, ChoiceResult } from './contracts';
 import type { ScorerPort } from '../planning/candidates';
 import { makeChoiceResult } from './contracts';
+import { assessEvidence, type EvidencePayload } from './jev-evidence';
 
 export interface JevRegistration {
   model: string;
@@ -102,6 +103,7 @@ function evidenceSealed(registration: JevRegistration): boolean {
   const paths: string[] = [];
   const partitions: string[] = [];
   const sampleSets: Set<string>[] = [];
+  const payloads: Partial<Record<'calT' | 'select' | 'cert', EvidencePayload>> = {};
   for (const key of ['calT', 'select', 'cert'] as const) {
     const ref = evidence[key];
     if (!ref || !existsSync(ref.path)) return false;
@@ -117,7 +119,6 @@ function evidenceSealed(registration: JevRegistration): boolean {
     }
     if (payload.partition !== key) return false;
     if (payload.protocol_version !== RISK_PROTOCOL_VERSION) return false;
-    if (payload.valid !== true) return false;
     const samples = payload.sampleIds;
     if (!Array.isArray(samples) || samples.length === 0
       || samples.some(value => typeof value !== 'string' || value.length === 0)) {
@@ -150,6 +151,7 @@ function evidenceSealed(registration: JevRegistration): boolean {
     }
     paths.push(resolvePath(ref.path));
     partitions.push(String(payload.partition));
+    payloads[key] = payload as EvidencePayload;
   }
   if (new Set(paths).size !== 3 || new Set(partitions).size !== 3) return false;
   const [calT, select, cert] = sampleSets;
@@ -159,7 +161,17 @@ function evidenceSealed(registration: JevRegistration): boolean {
   for (const value of select) {
     if (cert.has(value)) return false;
   }
-  return true;
+  const assessment = assessEvidence({
+    calT: payloads.calT as EvidencePayload,
+    select: payloads.select as EvidencePayload,
+    cert: payloads.cert as EvidencePayload,
+  }, {
+    model: registration.model, head: registration.head, adapter: registration.adapter,
+    tokenizer: registration.tokenizer, renderer: registration.renderer,
+    task: registration.task, k: registration.K, policy_version: registration.policy,
+    memory_policy_version: registration.memoryPolicy,
+  });
+  return assessment.ok;
 }
 
 export function loadJevPolicyManifest(source: JevPolicyManifest | string): JevPolicyManifest {

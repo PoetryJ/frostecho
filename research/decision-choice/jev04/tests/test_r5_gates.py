@@ -130,21 +130,13 @@ def identity():
 
 
 def evidence_payload(partition: str, protocol: str = port.RISK_PROTOCOL_VERSION) -> dict:
-    policy = {"model": BASE_IDENTITY["model"], "head": BASE_IDENTITY["head"],
-              "tokenizer": BASE_IDENTITY["tokenizer"],
-              "renderer": BASE_IDENTITY["renderer"],
-              "task": BASE_IDENTITY["task"], "k": BASE_IDENTITY["k"],
-              "memory_policy_version": BASE_IDENTITY["memory_policy_version"]}
-    payload = {"schema": "frostecho.jev04.evidence/1", "partition": partition,
-               "protocol_version": protocol, "valid": True, "policy": policy,
-               "sampleIds": [f"{partition}-{index}" for index in range(4)]}
-    if partition == "cert":
-        payload.update({"upper": 0.03, "n": 120, "errors": 2, "coverage": 0.4,
-                        "alpha": 0.05})
-    elif partition == "calT":
-        payload.update({"temperature": 1.2, "tau": 0.8})
-    else:
-        payload.update({"tau": 0.8, "accepted": 120, "coverage": 0.4})
+    """Per-sample CPU bundle. The old 4-id / n=120 summary was not evidence."""
+    sys.path.insert(0, str(JEV / "calibration"))
+    from sealed import build_cpu_bundle
+    bundle = build_cpu_bundle(BASE_IDENTITY, calibration_id="r5-gate-cpu",
+                              evidence_class="cpu-mechanism")
+    payload = json.loads(json.dumps(bundle[partition]))
+    payload["protocol_version"] = protocol
     return payload
 
 

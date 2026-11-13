@@ -28,7 +28,8 @@ from typing import Optional
 
 _HERE = Path(__file__).resolve()
 sys.path.insert(0, str(_HERE.parent.parent / "calibration"))
-from calibration import MAX_RISK, SUPPORTED_K, ScorerInputError, softmax  # noqa: E402
+from calibration import SUPPORTED_K, ScorerInputError, softmax  # noqa: E402
+from sealed import Inspection, inspect_partitions  # noqa: E402
 
 ARTIFACT_SCHEMA = "frostecho.jev04.scorer-artifact/1"
 MANIFEST_SCHEMA = "frostecho.jev04.trusted-policy-manifest/1"
@@ -67,86 +68,60 @@ class TrustedRegistration:
     utility_source: Optional[str]          # explicit provenance or None
     evidence: Optional[dict] = None        # sealed calT/select/cert refs
 
-    def allows_real_execution(self) -> bool:
-        """All three sealed partitions must be distinct, valid and bound.
-
-        Empty `{}` files, the same file reused for calT/select/cert, a missing
-        or mismatched risk protocol, or a policy identity drift all fail closed.
-        """
+    def inspect(self) -> Inspection:
+        """Recompute the sealed bundle. `valid: true` is not evidence."""
         if self.mode != "real":
-            return False
+            return Inspection(ok=False, reason="registration mode is not real")
+        loaded, reason = self._load_partitions()
+        if reason:
+            return Inspection(ok=False, reason=reason)
+        return inspect_partitions(loaded, self.identity.as_dict())
+
+    def _load_partitions(self) -> tuple[dict, str | None]:
         evidence = self.evidence or {}
         if evidence.get("protocol_version") != RISK_PROTOCOL_VERSION:
-            return False
+            return {}, "risk protocol missing or drifted"
+        payloads: dict = {}
         paths: list[str] = []
-        partitions: list[str] = []
-        sample_sets: list[set[str]] = []
         for key in ("calT", "select", "cert"):
             ref = evidence.get(key)
             if not isinstance(ref, dict):
-                return False
+                return {}, f"{key}: evidence reference missing"
             path = Path(str(ref.get("path", "")))
             if not path.is_file():
-                return False
+                return {}, f"{key}: evidence file missing"
             digest = hashlib.sha256(path.read_bytes()).hexdigest()
             if digest != ref.get("sha256"):
-                return False
+                return {}, f"{key}: sha256 does not match the file bytes"
             try:
                 payload = json.loads(path.read_text(encoding="utf-8"))
-            except (OSError, json.JSONDecodeError):
-                return False
+            except (OSError, json.JSONDecodeError) as exc:
+                return {}, f"{key}: unreadable evidence ({exc})"
             if not isinstance(payload, dict) or not payload:
-                return False
+                return {}, f"{key}: empty evidence"
             if payload.get("partition") != EVIDENCE_PARTITIONS[key]:
-                return False
+                return {}, f"{key}: partition name drift"
             if payload.get("protocol_version") != RISK_PROTOCOL_VERSION:
-                return False
-            if payload.get("valid") is not True:
-                return False
-            samples = payload.get("sampleIds")
-            if not isinstance(samples, list) or not samples \
-                    or any(not isinstance(entry, str) or not entry for entry in samples):
-                return False
-            sample_sets.append(set(samples))
+                return {}, f"{key}: protocol_version drift"
             policy = payload.get("policy")
             if not isinstance(policy, dict):
-                return False
-            if any(policy.get(name) != getattr(self.identity, name)
-                   for name in POLICY_FIELDS):
-                return False
-            if key == "cert":
-                try:
-                    upper = float(payload["upper"])
-                    n = int(payload["n"])
-                except (KeyError, TypeError, ValueError):
-                    return False
-                if not math.isfinite(upper) or upper > MAX_RISK or n <= 0:
-                    return False
-            if key == "calT":
-                try:
-                    temperature = float(payload["temperature"])
-                    tau = float(payload["tau"])
-                except (KeyError, TypeError, ValueError):
-                    return False
-                if not math.isfinite(temperature) or temperature <= 0 \
-                        or not (0 <= tau <= 1):
-                    return False
-            if key == "select":
-                try:
-                    tau = float(payload["tau"])
-                    accepted = int(payload["accepted"])
-                except (KeyError, TypeError, ValueError):
-                    return False
-                if not (0 <= tau <= 1) or accepted < 100:
-                    return False
+                return {}, f"{key}: policy missing"
+            if any(policy.get(name) != getattr(self.identity, name) for name in POLICY_FIELDS):
+                return {}, f"{key}: policy identity drift"
+            payloads[key] = payload
             paths.append(str(path.resolve()))
-            partitions.append(str(payload.get("partition")))
-        if len(set(paths)) != 3 or len(set(partitions)) != 3:
-            return False
-        if sample_sets[0] & sample_sets[1] or sample_sets[0] & sample_sets[2] \
-                or sample_sets[1] & sample_sets[2]:
-            return False
-        return True
+        if len(set(paths)) != 3:
+            return {}, "calT/select/cert are not three distinct files"
+        return payloads, None
+
+    def allows_real_execution(self) -> bool:
+        """Distinct sealed partitions whose statistics recompute from records.
+
+        Empty files, a reused file, a protocol or identity drift, a summary
+        that does not match the records, or a parameter mismatch all fail
+        closed. `valid: true` is not consulted.
+        """
+        return self.inspect().ok
 
 
 @dataclass(frozen=True)
@@ -181,6 +156,7 @@ class ScorerOutput:
     pmax: float
     mode: str
     counts_as_real: bool             # fixture output is never model evidence
+    reason: Optional[str] = None     # explicit refusal; None on an ordinary fixture decision
 
 
 def load_trusted_manifest(path: str) -> dict:
@@ -279,18 +255,40 @@ def decide(artifact: ScorerArtifact, request: ScorerRequest,
     utility: Optional[list] = None
     utility_source: Optional[str] = None
     # A fixture artifact can never count as real, even when it reuses a real
-    # registration; only a real artifact + real registration + sealed evidence
-    # can be model evidence.
-    counts_as_real = bool(artifact.mode == "real" and registration
-                          and registration.mode == "real"
-                          and registration.allows_real_execution())
+    # registration; only a real artifact + real registration + recomputed
+    # evidence whose T/tau/calibration_id match this artifact can be model
+    # evidence. Fixture-class evidence stays counts_as_real false.
+    inspection = registration.inspect() if registration is not None and registration.mode == "real" else None
+    reason: Optional[str] = None
+    bound = False
+    if artifact.mode == "real":
+        if inspection is None:
+            reason = "real artifact has no real registration"
+        elif not inspection.ok:
+            reason = inspection.reason
+        elif inspection.temperature is None or not math.isclose(
+                artifact.temperature, inspection.temperature, rel_tol=0.0, abs_tol=1e-9):
+            reason = (f"artifact temperature {artifact.temperature} != "
+                      f"calT {inspection.temperature}")
+        elif inspection.tau is None or not math.isclose(
+                artifact.tau, inspection.tau, rel_tol=0.0, abs_tol=1e-9):
+            reason = f"artifact tau {artifact.tau} != frozen tau {inspection.tau}"
+        elif artifact.calibration_id != inspection.calibration_id:
+            reason = (f"calibration_id {artifact.calibration_id!r} != "
+                      f"evidence {inspection.calibration_id!r}")
+        elif inspection.evidence_class == "fixture":
+            reason = "fixture evidence cannot count as real"
+        else:
+            bound = True
+    counts_as_real = bool(artifact.mode == "real" and bound)
     if artifact.mode == "real" and not counts_as_real:
-        # A real policy without sealed evidence never executes: shadow only.
+        # A real policy without sealed, bound evidence never executes.
         return ScorerOutput(raw_logits=raw, softmax_probabilities=plain,
                             temperature_probabilities=temperatured,
                             utility=None, utility_source=None,
                             selected_index=None, disposition="shadow_only",
-                            pmax=pmax, mode=artifact.mode, counts_as_real=False)
+                            pmax=pmax, mode=artifact.mode, counts_as_real=False,
+                            reason=reason)
     if registration is not None and registration.utility_source and counts_as_real:
         # An explicit utility source would be consumed here from its own
         # sealed artifact; R3 ships none, so utility stays None.
