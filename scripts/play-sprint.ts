@@ -204,6 +204,8 @@ async function settleWithin(records: StepJobRecord[], boundMs: number,
   if (didTimeOut) {
     const open = records.filter(record => !record.job.terminal);
     const actors = new Set(open.flatMap(record => record.actorIds));
+    const before = new Map<string, number>();
+    for (const actorId of actors) before.set(actorId, session.generationFor(actorId));
     for (const actorId of actors) {
       session.bumpGeneration(actorId, 'barrier_timeout');
       revokedByBarrier.push(actorId);
@@ -211,15 +213,24 @@ async function settleWithin(records: StepJobRecord[], boundMs: number,
     // A timeout is an explicit terminal state, never a silent drop and never
     // a completed action.
     for (const record of open) cancelJob(record.job, 'barrier_timeout');
-    // Jobs accepted AFTER this barrier captured its set are outside its
-    // authority: re-stamp their expected generation so they still run.
+    // Jobs accepted AFTER this barrier captured its set keep the right they
+    // still hold. Refresh only a grant that this barrier itself just
+    // invalidated. An earlier explicit cancel left an older grant; stamping
+    // the new global generation would resurrect it.
     for (const record of stepJobs) {
       if (record.captured || record.job.terminal) continue;
       if (typeof record.expected === 'number') {
-        record.expected = session.generationFor(record.actorIds[0]);
+        const actorId = record.actorIds[0];
+        const prior = before.get(actorId);
+        if (prior !== undefined && record.expected === prior) {
+          record.expected = session.generationFor(actorId);
+        }
       } else {
         for (const actorId of record.actorIds) {
-          record.expected[actorId] = session.generationFor(actorId);
+          const prior = before.get(actorId);
+          if (prior !== undefined && record.expected[actorId] === prior) {
+            record.expected[actorId] = session.generationFor(actorId);
+          }
         }
       }
     }
@@ -537,9 +548,12 @@ rl.on('line', line => {
       .filter(id => session.world.npcs[id]?.alive);
     const record = { job, actorIds, expected, captured: false } as StepJobRecord;
     const tracked = stepChain.then(() => before).then(() => {
-      if (job.terminal) return runJob(job, line, expected);
+      // Read the grant now. A barrier may have refreshed record.expected
+      // after this line was accepted; the closure value is the old grant.
+      const granted = record.expected;
+      if (job.terminal) return runJob(job, line, granted);
       for (const id of actorIds) inFlightActors.add(id);
-      return runJob(job, line, expected);
+      return runJob(job, line, granted);
     }).finally(() => {
       for (const id of actorIds) inFlightActors.delete(id);
     });
