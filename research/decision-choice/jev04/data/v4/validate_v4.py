@@ -284,6 +284,12 @@ def check(dir_path: Path) -> tuple[list[str], dict]:
     if mixed_synthetic:
         failures.append("split: synthetic_mixed_with_formal")
 
+    if str(Path(__file__).resolve().parent) not in sys.path:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from provenance import check_v4_snapshot
+    handoff = Path(__file__).resolve().parent.parents[4] / "handoff" / "20261112-sprint-r5" / "blind-review"
+    failures.extend(check_v4_snapshot(handoff, cases, s1, s2))
+
     qualified_train = {case_id for case_id in qualified_train
                        if cases.get(case_id, {}).get("synthetic") is not True}
     qualified_dev = {case_id for case_id in qualified_dev

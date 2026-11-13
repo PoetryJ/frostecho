@@ -27,6 +27,10 @@ ROOT = HERE.parents[4]
 HANDOFF = ROOT / "handoff" / "20261112-sprint-r5" / "blind-review"
 V3_CASES = HERE.parent / "v3" / "cases.v3.jsonl"
 OUT = HERE
+sys_path = __import__("sys").path
+if str(HERE) not in sys_path:
+    sys_path.insert(0, str(HERE))
+from provenance import check_blind_bundle, load_jsonl as load_rows, raw_lines, sha256_text  # noqa: E402
 
 TASK_MAP = {
     "reference_resolution": "interpret_request",
@@ -82,8 +86,32 @@ def raw_hashes(path: Path) -> dict[str, str]:
     return out
 
 
+def reject(errors: list[str]) -> int:
+    print(json.dumps({"ok": False, "rejected": len(errors), "failures": errors[:40]},
+                     ensure_ascii=False, indent=2))
+    for item in errors[:40]:
+        print(f"reject review input content: {item}", file=__import__("sys").stderr)
+    return 1
+
+
 def main() -> int:
     v3 = load_jsonl(V3_CASES)
+    errors = check_blind_bundle(HANDOFF, v3)
+    for label, filename in (("review-a", "review-s1.v4.jsonl"), ("review-b", "review-s2.v4.jsonl")):
+        existing = OUT / filename
+        if not existing.is_file():
+            continue
+        raw = raw_lines(HANDOFF / f"{label}.jsonl")
+        for row in load_rows(existing):
+            case_id = row.get("caseId")
+            stored = row.get("rawReviewSha256")
+            if not stored or case_id not in raw:
+                errors.append(f"{case_id}: field=rawReviewSha missing original {label}")
+                continue
+            if stored != sha256_text(raw[case_id][0]):
+                errors.append(f"{case_id}: field=rawReviewSha {label} does not match the review line")
+    if errors:
+        return reject(errors)
     a_rows = load_jsonl(HANDOFF / "review-a.jsonl")
     b_rows = load_jsonl(HANDOFF / "review-b.jsonl")
     a_raw = raw_hashes(HANDOFF / "review-a.jsonl")
