@@ -168,18 +168,9 @@ async function main(): Promise<number> {
     meta: runtime.meta, ports: runtime.ports,
   });
 
-  print(renderWelcome(controller.view()));
-  const demo = demoLabel(runtime.meta);
-  if (demo !== null) console.log(`本次为 ${demo}；结果只证明机制，不代表真实模型。`);
-  if (runtime.loadInfo !== null) {
-    console.log(`已从 ${runtime.loadInfo.path} 恢复：0 次调用、0 次提交、不重选目标。`);
-  }
-  print(renderStatus(controller.view()));
-
-  // The ONE finalization lives in the controller: close, authoritative run
-  // record, exit code. quit/EOF/SIGINT all share its single promise.
+  // Register SIGINT before any ready text. A piped client can signal as soon
+  // as it sees the banner; the default action would exit with no code.
   const rl = createInterface({ input: process.stdin, output: process.stdout, terminal: process.stdin.isTTY === true, prompt: 'g10> ' });
-  if (process.stdin.isTTY === true) rl.prompt();
   let interrupted = false;
   const interrupt = (): void => {
     interrupted = true;
@@ -189,6 +180,15 @@ async function main(): Promise<number> {
   // With piped stdin the signal reaches the process, not readline; both paths
   // finalize exactly once and never add a decision.
   process.on('SIGINT', interrupt);
+
+  print(renderWelcome(controller.view()));
+  const demo = demoLabel(runtime.meta);
+  if (demo !== null) console.log(`本次为 ${demo}；结果只证明机制，不代表真实模型。`);
+  if (runtime.loadInfo !== null) {
+    console.log(`已从 ${runtime.loadInfo.path} 恢复：0 次调用、0 次提交、不重选目标。`);
+  }
+  print(renderStatus(controller.view()));
+  if (process.stdin.isTTY === true) rl.prompt();
 
   for await (const line of rl) {
     const parsed = parseInput(line);
