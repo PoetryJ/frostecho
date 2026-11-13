@@ -1,0 +1,41 @@
+{
+  "schema": "frostecho.r61.provenance/1",
+  "productBaseline": "12cc208124c1b6d73c8fd5af66352091f8db9027",
+  "taskPackageHead": "1b4bb039985acff02c4bd59043646c93dea3879a",
+  "taskPackageTag": "r6.1-taskpack-20261113",
+  "r6TaskPackageHead": "040f90c1d5c31e5ad55090f52368d35e231faf61",
+  "r5Baseline": "f4739493b9dcec7214f04ab68c05f92bd5a8ea21",
+  "sourceHead": "b70dd2cb4e19612aeee8d52e6e0b1b96038b01cc",
+  "evidenceHead": null,
+  "bundleHead": null,
+  "deliveryTip": null,
+  "branch": "codex/sprint-r6-1",
+  "executor": "one Grok session",
+  "workerCount": 1,
+  "independentReview": false,
+  "startedUtc": "2026-11-13T08:10:52Z",
+  "finishedLocalCheckUtc": "2026-11-13T08:27:19Z",
+  "environment": {
+    "os": "Linux 6.12.113+ x86_64",
+    "node": "v22.23.4",
+    "npm": "10.9.9",
+    "python": "3.12.3",
+    "git": "2.43.0",
+    "gpu": false,
+    "modelWeightsDownloaded": false,
+    "paidModelApi": false,
+    "maintenanceServer": false
+  },
+  "commands": [
+    {"cmd": "check.py --expect baseline", "out": "artifacts/sprint-r6-1/run01/baseline", "exit": 0, "head": "1b4bb039985acff02c4bd59043646c93dea3879a", "note": "R/D/M/G11 defectObserved true; not a product pass"},
+    {"cmd": "check.py --expect fixed", "out": "artifacts/sprint-r6-1/run01/fixed", "exit": 0, "head": "b70dd2cb4e19612aeee8d52e6e0b1b96038b01cc"},
+    {"cmd": "repro.py --expect fixed", "out": "artifacts/sprint-r6-1/run01/r6-regression", "exit": 0, "head": "b70dd2cb4e19612aeee8d52e6e0b1b96038b01cc"},
+    {"cmd": "verify-r6", "out": "artifacts/sprint-r6-1/run01/integration", "exit": 0, "head": "b70dd2cb4e19612aeee8d52e6e0b1b96038b01cc"},
+    {"cmd": "final_check.py", "out": "artifacts/sprint-r6-1/run01/final-check", "exit": 0, "head": "a86c8a1a268fb1f3f6392440a6a94d440a278a05", "note": "local pass before CI; Ubuntu 22 later failed X1b with a null SIGINT exit. Kept, not overwritten."},
+    {"cmd": "final_check.py", "out": "artifacts/sprint-r6-1/run01/final-check-b70dd2c", "exit": 2, "head": "b70dd2cb4e19612aeee8d52e6e0b1b96038b01cc", "note": "blocked before clone because two tracked encoder refusal logs had been deleted; they were restored and this attempt was kept"},
+    {"cmd": "final_check.py", "out": "artifacts/sprint-r6-1/run01/final-check-final", "exit": 0, "head": "b70dd2cb4e19612aeee8d52e6e0b1b96038b01cc", "note": "eval-full 13 passed, 0 failed, 0 blocked; python-core ran 54 skipped 1; python-port ran 23; acceptance clone removed after the summary"}
+  ],
+  "ciRun": "https://github.com/PoetryJ/frostecho/actions/runs/43393495393",
+  "oldBundleSha256": "683763a876941bb55710216abfb6a03124dec2e6ae0adc7d5ff8fdb4f8d3c230",
+  "oldBundleContent": "cf1ed793be0b45b8a86d8fda4ef72db7e5176383"
+}

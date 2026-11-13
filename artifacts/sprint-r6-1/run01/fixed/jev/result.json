@@ -1,0 +1,198 @@
+{
+  "sourceHead": "b70dd2cb4e19612aeee8d52e6e0b1b96038b01cc",
+  "noModel": true,
+  "noServer": true,
+  "validatorProjectionGap": {
+    "caseId": "v2-gA01-B",
+    "exit": 1,
+    "result": {
+      "ok": false,
+      "dir": "/agent/repos/frostecho/artifacts/sprint-r6-1/run01/fixed/jev/validator-projection-mini/research/decision-choice/jev04/data/v4",
+      "summary": {
+        "cases": 39,
+        "s1": 39,
+        "s2": 39,
+        "adjudicated": 39,
+        "trainRows": 0,
+        "devRows": 0,
+        "uniqueTrainRows": 0,
+        "uniqueDevRows": 0,
+        "reviewVersion": "v4-review/1",
+        "independentReviewers": true,
+        "qualifiedTrain": 0,
+        "qualifiedDev": 0,
+        "requiredTrain": 512,
+        "requiredDev": 128,
+        "trainSourceGroups": 0,
+        "devSourceGroups": 0,
+        "researchTrainReady": false,
+        "failures": [
+          "v2-gA01-B: field=narrative.text packet visible input != canonical serializedInput",
+          "v2-gA01-B: field=narrative.text v4 projection != canonical serializedInput"
+        ]
+      },
+      "failures": [
+        "v2-gA01-B: field=narrative.text packet visible input != canonical serializedInput",
+        "v2-gA01-B: field=narrative.text v4 projection != canonical serializedInput"
+      ]
+    },
+    "originalReviewAndCanonicalHashesUnchanged": true,
+    "packetDeclaredHashStillOriginal": true,
+    "visibleTextDiffersFromCanonical": true,
+    "oldV4Hash": "15b304b38e4d4d414829d3d89d1eb87c92caa26b6a993602a531ff465fef92c9",
+    "newV4Hash": "b2aa90faca63418cd15568ffb5c170160f893bc4e191d84d8a9401c2e9653995",
+    "note": "Synthetic mutation in isolated copy; current shipped dataset not accused of tampering. Research gate remains false."
+  },
+  "cpuClassRealAdmission": {
+    "fixture": {
+      "inspection": {
+        "ok": true,
+        "reason": "recomputed evidence matches the frozen policy",
+        "temperature": 0.104095,
+        "tau": 0.5,
+        "calibration_id": "audit-r6-shared",
+        "evidence_class": "fixture",
+        "upper": 0.018549134077503752,
+        "n": 160,
+        "errors": 0,
+        "coverage": 1.0
+      },
+      "decision": {
+        "raw_logits": [
+          6.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "softmax_probabilities": [
+          0.9926186332070156,
+          0.0024604555976614757,
+          0.0024604555976614757,
+          0.0024604555976614757
+        ],
+        "temperature_probabilities": [
+          1.0,
+          9.277168061693845e-26,
+          9.277168061693845e-26,
+          9.277168061693845e-26
+        ],
+        "utility": null,
+        "utility_source": null,
+        "selected_index": null,
+        "disposition": "shadow_only",
+        "pmax": 1.0,
+        "mode": "real",
+        "counts_as_real": false,
+        "reason": "fixture synthetic evidence cannot count as real"
+      },
+      "explicitRejection": null,
+      "recordEvidenceClasses": [
+        "fixture"
+      ]
+    },
+    "cpu-mechanism": {
+      "inspection": {
+        "ok": false,
+        "reason": "calT: record evidenceClass 'fixture' != partition evidenceClass 'cpu-mechanism'",
+        "temperature": null,
+        "tau": null,
+        "calibration_id": null,
+        "evidence_class": null,
+        "upper": null,
+        "n": null,
+        "errors": null,
+        "coverage": null
+      },
+      "decision": {
+        "raw_logits": [
+          6.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "softmax_probabilities": [
+          0.9926186332070156,
+          0.0024604555976614757,
+          0.0024604555976614757,
+          0.0024604555976614757
+        ],
+        "temperature_probabilities": [
+          1.0,
+          9.277168061693845e-26,
+          9.277168061693845e-26,
+          9.277168061693845e-26
+        ],
+        "utility": null,
+        "utility_source": null,
+        "selected_index": null,
+        "disposition": "shadow_only",
+        "pmax": 1.0,
+        "mode": "real",
+        "counts_as_real": false,
+        "reason": "calT: record evidenceClass 'fixture' != partition evidenceClass 'cpu-mechanism'"
+      },
+      "explicitRejection": null,
+      "recordEvidenceClasses": [
+        "fixture"
+      ]
+    }
+  },
+  "positiveFixture": {
+    "high": {
+      "raw_logits": [
+        6.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "softmax_probabilities": [
+        0.9926186332070156,
+        0.0024604555976614757,
+        0.0024604555976614757,
+        0.0024604555976614757
+      ],
+      "temperature_probabilities": [
+        1.0,
+        9.277168061693845e-26,
+        9.277168061693845e-26,
+        9.277168061693845e-26
+      ],
+      "utility": null,
+      "utility_source": null,
+      "selected_index": 0,
+      "disposition": "accept",
+      "pmax": 1.0,
+      "mode": "fixture",
+      "counts_as_real": false,
+      "reason": null
+    },
+    "low": {
+      "raw_logits": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "softmax_probabilities": [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ],
+      "temperature_probabilities": [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ],
+      "utility": null,
+      "utility_source": null,
+      "selected_index": null,
+      "disposition": "abstain",
+      "pmax": 0.25,
+      "mode": "fixture",
+      "counts_as_real": false,
+      "reason": null
+    }
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "schema": "frostecho.r6.four-probes/1",
+  "phase": "fixed",
+  "note": "baseline success proves defects reproduced, NOT product acceptance; synthetic CPU probes, no model",
+  "repo": "/agent/repos/frostecho",
+  "checks": {
+    "product": {
+      "defectObserved": false,
+      "fixed": true,
+      "taskStatus": "done",
+      "commitmentStatus": "fulfilled",
+      "evidenceIds": [
+        "npc_01-game-1-g-deposit:stock_deposited:1"
+      ],
+      "warehouseFood": 6
+    },
+    "lifecycle": {
+      "defectObserved": false,
+      "fixed": true,
+      "oldDenied": true,
+      "outside": [
+        {
+          "actorId": "npc_01",
+          "status": "applied",
+          "selectedId": "c-eat",
+          "commandId": "npc_01-0-c-eat",
+          "executionStatus": "applied",
+          "eventIds": [
+            "npc_01-0-c-eat:ate:0"
+          ],
+          "postStateVersion": 1,
+          "executed": true,
+          "reason": "released async fixture (stale by construction)",
+          "promiseStatuses": []
+        }
+      ],
+      "savedVersion": 0,
+      "finalVersion": 2
+    },
+    "data": {
+      "defectObserved": false,
+      "fixed": true,
+      "caseId": "v2-gA01-B",
+      "importExit": 1,
+      "validatorExit": 0,
+      "rawReviewShaUnchanged": true,
+      "contentHashRebound": false,
+      "dataBytesUnchanged": true,
+      "reasonedRejection": true,
+      "unexpectedCrash": false
+    },
+    "risk": {
+      "defectObserved": false,
+      "fixed": true,
+      "decision": {
+        "raw_logits": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "softmax_probabilities": [
+          0.4753668864186717,
+          0.17487770452710943,
+          0.17487770452710943,
+          0.17487770452710943
+        ],
+        "temperature_probabilities": [
+          1.0,
+          3.720075976020836e-44,
+          3.720075976020836e-44,
+          3.720075976020836e-44
+        ],
+        "utility": null,
+        "utility_source": null,
+        "selected_index": null,
+        "disposition": "shadow_only",
+        "pmax": 1.0,
+        "mode": "real",
+        "counts_as_real": false,
+        "reason": "calT: missing per-sample records; summary n/errors/upper is not evidence"
+      }
+    }
+  },
+  "errors": {},
+  "head": "b70dd2cb4e19612aeee8d52e6e0b1b96038b01cc",
+  "verified": true,
+  "scope": "four_minimal_probes",
+  "exit": 0
+}

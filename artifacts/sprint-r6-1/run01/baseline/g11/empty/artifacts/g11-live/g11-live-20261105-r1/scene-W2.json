@@ -1,0 +1,38 @@
+{
+  "schema": "frostecho.g11-live.scene/1",
+  "at": "2026-11-06T08:44:09.505Z",
+  "prefix": {
+    "mode": "prefix",
+    "scene": "W2",
+    "phase": "prefix",
+    "classification": "technical_failure",
+    "reasons": [
+      "W2/action step failed: PROVIDER_ERROR timeout"
+    ],
+    "posts": 2,
+    "sceneStartSpent": 4,
+    "endSpent": 6,
+    "slotPath": null,
+    "slotSha256": null,
+    "slotBytes": null,
+    "runRecordPath": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g11-live/g11-live-20261105-r1/w2/w2-prefix-run.run.json",
+    "finalizeOk": false,
+    "modelChoice": {
+      "goal": "yield_once",
+      "action": null
+    }
+  },
+  "suffix": null,
+  "overall": "technical_failure",
+  "exit": {
+    "prefix": {
+      "code": 1,
+      "signal": null,
+      "killedByWatchdog": false,
+      "watchdogMs": 270000,
+      "spawnError": null,
+      "stderrTail": "{\"level\":\"failure\",\"code\":\"PROVIDER_ERROR\",\"message\":\"npc_a: timeout\",\"evidencePath\":\"/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g11-live/g11-live-20261105-r1/w2/w2-prefix.failure.json\"}\n"
+    },
+    "suffix": null
+  }
+}

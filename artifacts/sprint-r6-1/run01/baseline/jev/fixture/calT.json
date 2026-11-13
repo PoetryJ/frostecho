@@ -1,0 +1,3066 @@
+{
+  "schema": "frostecho.jev04.evidence/1",
+  "partition": "calT",
+  "protocol_version": "jev04-risk/1",
+  "evidenceClass": "fixture",
+  "calibration_id": "audit-r6-shared",
+  "policy": {
+    "model": "fixture/r6",
+    "head": "shared-scalar/1",
+    "adapter": "jev-choice/1",
+    "tokenizer": "fixture-tok/1",
+    "renderer": "jev04-render/3",
+    "task": "choose_action",
+    "k": 4,
+    "policy_version": "softmax-accept/1",
+    "memory_policy_version": "memory-policy/1"
+  },
+  "sampleIds": [
+    "calT-0000",
+    "calT-0001",
+    "calT-0002",
+    "calT-0003",
+    "calT-0004",
+    "calT-0005",
+    "calT-0006",
+    "calT-0007",
+    "calT-0008",
+    "calT-0009",
+    "calT-0010",
+    "calT-0011",
+    "calT-0012",
+    "calT-0013",
+    "calT-0014",
+    "calT-0015",
+    "calT-0016",
+    "calT-0017",
+    "calT-0018",
+    "calT-0019",
+    "calT-0020",
+    "calT-0021",
+    "calT-0022",
+    "calT-0023",
+    "calT-0024",
+    "calT-0025",
+    "calT-0026",
+    "calT-0027",
+    "calT-0028",
+    "calT-0029",
+    "calT-0030",
+    "calT-0031",
+    "calT-0032",
+    "calT-0033",
+    "calT-0034",
+    "calT-0035",
+    "calT-0036",
+    "calT-0037",
+    "calT-0038",
+    "calT-0039",
+    "calT-0040",
+    "calT-0041",
+    "calT-0042",
+    "calT-0043",
+    "calT-0044",
+    "calT-0045",
+    "calT-0046",
+    "calT-0047",
+    "calT-0048",
+    "calT-0049",
+    "calT-0050",
+    "calT-0051",
+    "calT-0052",
+    "calT-0053",
+    "calT-0054",
+    "calT-0055",
+    "calT-0056",
+    "calT-0057",
+    "calT-0058",
+    "calT-0059",
+    "calT-0060",
+    "calT-0061",
+    "calT-0062",
+    "calT-0063",
+    "calT-0064",
+    "calT-0065",
+    "calT-0066",
+    "calT-0067",
+    "calT-0068",
+    "calT-0069",
+    "calT-0070",
+    "calT-0071",
+    "calT-0072",
+    "calT-0073",
+    "calT-0074",
+    "calT-0075",
+    "calT-0076",
+    "calT-0077",
+    "calT-0078",
+    "calT-0079",
+    "calT-0080",
+    "calT-0081",
+    "calT-0082",
+    "calT-0083",
+    "calT-0084",
+    "calT-0085",
+    "calT-0086",
+    "calT-0087",
+    "calT-0088",
+    "calT-0089",
+    "calT-0090",
+    "calT-0091",
+    "calT-0092",
+    "calT-0093",
+    "calT-0094",
+    "calT-0095",
+    "calT-0096",
+    "calT-0097",
+    "calT-0098",
+    "calT-0099",
+    "calT-0100",
+    "calT-0101",
+    "calT-0102",
+    "calT-0103",
+    "calT-0104",
+    "calT-0105",
+    "calT-0106",
+    "calT-0107",
+    "calT-0108",
+    "calT-0109",
+    "calT-0110",
+    "calT-0111",
+    "calT-0112",
+    "calT-0113",
+    "calT-0114",
+    "calT-0115",
+    "calT-0116",
+    "calT-0117",
+    "calT-0118",
+    "calT-0119",
+    "calT-0120",
+    "calT-0121",
+    "calT-0122",
+    "calT-0123",
+    "calT-0124",
+    "calT-0125",
+    "calT-0126",
+    "calT-0127",
+    "calT-0128",
+    "calT-0129",
+    "calT-0130",
+    "calT-0131",
+    "calT-0132",
+    "calT-0133",
+    "calT-0134",
+    "calT-0135",
+    "calT-0136",
+    "calT-0137",
+    "calT-0138",
+    "calT-0139",
+    "calT-0140",
+    "calT-0141",
+    "calT-0142",
+    "calT-0143",
+    "calT-0144",
+    "calT-0145",
+    "calT-0146",
+    "calT-0147",
+    "calT-0148",
+    "calT-0149",
+    "calT-0150",
+    "calT-0151",
+    "calT-0152",
+    "calT-0153",
+    "calT-0154",
+    "calT-0155",
+    "calT-0156",
+    "calT-0157",
+    "calT-0158",
+    "calT-0159"
+  ],
+  "records": [
+    {
+      "sampleId": "calT-0000",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.532215,
+        0.092007,
+        0.138148,
+        -0.063112
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0001",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.768342,
+        0.048415,
+        -0.116951,
+        -0.141919
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0002",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.692656,
+        -0.074285,
+        0.000481,
+        -0.054769
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0003",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.625218,
+        -0.029523,
+        0.149534,
+        -0.131342
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0004",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.910376,
+        -0.104725,
+        0.061671,
+        0.017668
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0005",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.618399,
+        0.011989,
+        0.114737,
+        0.041632
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0006",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.283214,
+        0.131933,
+        -0.00777,
+        0.148898
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0007",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.744386,
+        0.094013,
+        0.125993,
+        -0.14465
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0008",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.749658,
+        0.07561,
+        -0.043607,
+        0.137852
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0009",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.914784,
+        0.110337,
+        -0.078316,
+        0.017045
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0010",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.385495,
+        -0.042088,
+        -0.06984,
+        0.085941
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0011",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.31713,
+        0.016664,
+        0.016044,
+        -0.111154
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0012",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.15669,
+        -0.054336,
+        -0.050378,
+        0.122712
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0013",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.934318,
+        -0.147071,
+        0.075981,
+        -0.045599
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0014",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.15006,
+        0.039931,
+        0.068695,
+        -0.057064
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0015",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.371997,
+        0.123012,
+        -0.143802,
+        0.019255
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0016",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.783148,
+        0.069492,
+        0.137945,
+        0.027044
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0017",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.424779,
+        -0.074574,
+        -0.10476,
+        -0.116878
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0018",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.621569,
+        0.011093,
+        0.091481,
+        0.126056
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0019",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.677887,
+        0.127788,
+        -0.122162,
+        0.08129
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0020",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.273005,
+        -0.028895,
+        -0.127495,
+        -0.124454
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0021",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.590477,
+        0.009685,
+        -0.070432,
+        -0.100977
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0022",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.107968,
+        -0.003956,
+        -0.032169,
+        -0.004055
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0023",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.458122,
+        -0.016482,
+        0.140216,
+        0.07552
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0024",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.489006,
+        -0.09336,
+        -0.040772,
+        -0.141487
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0025",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.157168,
+        -0.023196,
+        0.118031,
+        -0.051376
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0026",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.996195,
+        0.016758,
+        0.033893,
+        -0.039614
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0027",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.037273,
+        -0.058996,
+        -0.043345,
+        0.027453
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0028",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.529983,
+        -0.092373,
+        0.022711,
+        0.061184
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0029",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.949853,
+        -0.016333,
+        0.001277,
+        0.010876
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0030",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.934746,
+        -0.070972,
+        0.146342,
+        0.097896
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0031",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.39859,
+        -0.086625,
+        -0.069849,
+        0.005289
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0032",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.986183,
+        -0.008486,
+        0.121825,
+        0.033677
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0033",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.073171,
+        0.12258,
+        0.101219,
+        -0.142152
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0034",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.587894,
+        -0.083384,
+        0.044791,
+        0.105151
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0035",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.077402,
+        -0.132496,
+        0.011752,
+        -0.093576
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0036",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.950637,
+        -0.045806,
+        0.01312,
+        0.095876
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0037",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.515256,
+        -0.147763,
+        0.075048,
+        -0.048221
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0038",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.643288,
+        -0.139942,
+        0.06925,
+        -0.064551
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0039",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.566619,
+        0.011514,
+        -0.077023,
+        -0.00166
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0040",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.400613,
+        -0.075007,
+        0.054282,
+        -0.056845
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0041",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.303308,
+        -0.085911,
+        0.145345,
+        0.086172
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0042",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.046647,
+        -0.019232,
+        0.008423,
+        -0.033468
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0043",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.069583,
+        -0.103755,
+        0.017766,
+        -0.10066
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0044",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.814287,
+        0.09095,
+        0.114303,
+        0.137008
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0045",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.854042,
+        -0.099411,
+        0.063486,
+        0.083407
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0046",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.577353,
+        0.077421,
+        0.075105,
+        0.089793
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0047",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.24485,
+        -0.074807,
+        -0.092694,
+        -0.147896
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0048",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.340667,
+        -0.020837,
+        0.116904,
+        -0.036535
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0049",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.642695,
+        -0.128155,
+        -0.048069,
+        0.079085
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0050",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.84354,
+        0.073049,
+        -0.057508,
+        0.109029
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0051",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.775922,
+        -0.106935,
+        -0.118774,
+        0.095379
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0052",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.426461,
+        0.082159,
+        0.088098,
+        -0.078861
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0053",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.157495,
+        0.101774,
+        -0.019151,
+        -0.068928
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0054",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.07037,
+        0.122696,
+        -0.088987,
+        -0.055244
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0055",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.846338,
+        -0.131975,
+        0.052469,
+        -0.00239
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0056",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.503959,
+        -0.059226,
+        0.117907,
+        0.132226
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0057",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.885688,
+        -0.087584,
+        -0.041171,
+        0.112752
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0058",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.395256,
+        0.040025,
+        -0.036079,
+        -0.01333
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0059",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.883428,
+        0.084618,
+        0.131839,
+        -0.004744
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0060",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.455479,
+        -0.110612,
+        0.113538,
+        0.080396
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0061",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.478325,
+        -0.00419,
+        0.105569,
+        0.057823
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0062",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.946408,
+        0.128973,
+        0.10734,
+        -0.002197
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0063",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.367927,
+        0.143319,
+        -0.005557,
+        0.137853
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0064",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.072003,
+        -0.008351,
+        -0.090363,
+        -0.073027
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0065",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.225002,
+        -0.017668,
+        -0.123737,
+        -0.061088
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0066",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.12675,
+        -0.056588,
+        -0.036474,
+        -0.071017
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0067",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.836517,
+        -0.140665,
+        0.01094,
+        0.010423
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0068",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.902839,
+        -0.067595,
+        0.034824,
+        0.1202
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0069",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.658531,
+        -0.117727,
+        -0.038421,
+        -0.00639
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0070",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.61581,
+        -0.002105,
+        0.143565,
+        -0.147652
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0071",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.222621,
+        0.005575,
+        -0.105338,
+        -0.035312
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0072",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.485978,
+        -0.137736,
+        -0.032481,
+        -0.117149
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0073",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.770625,
+        -0.090927,
+        0.092641,
+        -0.135875
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0074",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.952093,
+        0.148821,
+        -0.118139,
+        -0.121152
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0075",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.033286,
+        0.043223,
+        -0.059159,
+        -0.050791
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0076",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.073666,
+        -0.149066,
+        -0.011592,
+        0.112795
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0077",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.186274,
+        -0.012232,
+        0.07971,
+        0.111166
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0078",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.180183,
+        -0.060928,
+        0.128731,
+        0.067475
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0079",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.078024,
+        0.078604,
+        -0.128706,
+        -0.053333
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0080",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.589968,
+        0.128316,
+        0.02163,
+        -0.089895
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0081",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.112744,
+        -0.124401,
+        0.094454,
+        -0.035673
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0082",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.47673,
+        -0.025871,
+        0.0789,
+        -0.070978
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0083",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.7321,
+        -0.028563,
+        -0.111188,
+        0.070641
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0084",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.422034,
+        0.047325,
+        -0.008732,
+        0.087123
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0085",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.871478,
+        -0.088503,
+        0.009182,
+        -0.087545
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0086",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.01146,
+        0.035288,
+        -0.090312,
+        -0.113439
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0087",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.772674,
+        -0.071535,
+        0.063611,
+        0.098839
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0088",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.257771,
+        0.017889,
+        0.134517,
+        -0.14543
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0089",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.332166,
+        -0.052851,
+        0.027561,
+        0.093336
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0090",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.197824,
+        0.085888,
+        0.02577,
+        0.048051
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0091",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.047729,
+        0.021441,
+        0.126939,
+        -0.116813
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0092",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.014571,
+        0.002242,
+        0.065573,
+        0.12528
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0093",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.559689,
+        -0.035237,
+        0.047192,
+        -0.030327
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0094",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.654264,
+        0.063814,
+        0.031961,
+        0.135783
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0095",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.457668,
+        0.138629,
+        0.059945,
+        -0.07159
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0096",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.622754,
+        -0.123118,
+        -0.118434,
+        -0.000539
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0097",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.016881,
+        0.066993,
+        -0.072681,
+        -0.014709
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0098",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.029033,
+        0.091246,
+        -0.069693,
+        -0.101478
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0099",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.708711,
+        -0.14031,
+        -0.115884,
+        -0.137916
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0100",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.151397,
+        -0.087054,
+        -0.097507,
+        0.103521
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0101",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.527939,
+        -0.147126,
+        0.126968,
+        -0.140287
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0102",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.162587,
+        -0.026719,
+        -0.049445,
+        0.012364
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0103",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.568243,
+        -0.13298,
+        -0.123254,
+        0.037355
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0104",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.373682,
+        -0.035164,
+        -0.139754,
+        0.097126
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0105",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.8593,
+        0.073053,
+        0.124206,
+        0.106935
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0106",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.298371,
+        -0.079928,
+        -0.012384,
+        0.098358
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0107",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.85484,
+        0.061827,
+        -0.085225,
+        0.020056
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0108",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.411519,
+        -0.057071,
+        0.013311,
+        0.039725
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0109",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.074723,
+        0.074276,
+        -0.11004,
+        0.139621
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0110",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.228079,
+        -0.058874,
+        -0.119834,
+        -0.041258
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0111",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.987963,
+        0.140062,
+        0.093626,
+        -0.038975
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0112",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.691079,
+        -0.054707,
+        -0.109559,
+        -0.017637
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0113",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.571371,
+        0.032371,
+        0.090475,
+        -0.024419
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0114",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.14768,
+        0.120812,
+        -0.092012,
+        0.007406
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0115",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.685967,
+        -0.008197,
+        0.027334,
+        0.009611
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0116",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.931088,
+        -0.053633,
+        0.084076,
+        -0.067155
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0117",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.018166,
+        -0.070879,
+        -0.014255,
+        0.089523
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0118",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.298657,
+        -0.027988,
+        0.05248,
+        -0.147327
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0119",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.723407,
+        -0.064747,
+        0.03413,
+        0.040178
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0120",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.49476,
+        -0.040536,
+        -0.059448,
+        -0.081694
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0121",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.889125,
+        0.075639,
+        0.096696,
+        -0.031799
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0122",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.819928,
+        0.100433,
+        0.094218,
+        0.075896
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0123",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.13823,
+        0.114315,
+        -0.068067,
+        0.001906
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0124",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.734257,
+        -0.132042,
+        -0.07282,
+        0.039492
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0125",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.892658,
+        0.070011,
+        0.015885,
+        -0.110229
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0126",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.734698,
+        -0.055569,
+        -0.12305,
+        0.080616
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0127",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.42308,
+        0.003899,
+        0.124392,
+        0.018561
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0128",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.766668,
+        -0.023405,
+        -0.070988,
+        0.138985
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0129",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.103552,
+        0.124031,
+        -0.065963,
+        0.040626
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0130",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.110101,
+        0.012369,
+        -0.084749,
+        -0.103451
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0131",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.612911,
+        -0.099973,
+        0.109315,
+        0.044568
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0132",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.740822,
+        -0.122345,
+        -0.089194,
+        0.088366
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0133",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.976132,
+        -0.002286,
+        -0.149979,
+        0.129066
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0134",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.511101,
+        0.064437,
+        0.054869,
+        -0.11954
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0135",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.394354,
+        0.05826,
+        -0.148587,
+        -0.027383
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0136",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.634069,
+        -0.141125,
+        -0.142414,
+        -0.052466
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0137",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.773297,
+        0.054715,
+        0.086324,
+        0.028672
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0138",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.430137,
+        -0.11424,
+        -0.069672,
+        0.109369
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0139",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.289333,
+        -0.109116,
+        0.010119,
+        0.128431
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0140",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.599866,
+        0.118057,
+        -0.123848,
+        -0.00479
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0141",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.404076,
+        0.132584,
+        0.131071,
+        -0.050385
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0142",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.774292,
+        0.13293,
+        -0.077519,
+        -0.068265
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0143",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.085215,
+        -0.060909,
+        -0.09199,
+        -0.029563
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0144",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.715311,
+        0.082321,
+        -0.091462,
+        0.00842
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0145",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.809342,
+        0.142618,
+        -0.010519,
+        -0.030146
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0146",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.137678,
+        -0.101643,
+        -0.138344,
+        -0.070448
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0147",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.886513,
+        -0.101085,
+        0.015256,
+        0.138339
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0148",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.245914,
+        -0.092091,
+        0.054843,
+        0.10788
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0149",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.490335,
+        -0.055774,
+        0.13902,
+        0.133989
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0150",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.689346,
+        -0.106782,
+        -0.07483,
+        0.131498
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0151",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.466784,
+        0.023448,
+        0.03905,
+        0.125894
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0152",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.6445,
+        -0.023827,
+        -0.044845,
+        -0.07844
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0153",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.32952,
+        -0.02057,
+        -0.133351,
+        0.093898
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0154",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.400295,
+        0.022441,
+        -0.047567,
+        0.089271
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0155",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.066447,
+        0.030706,
+        -0.039292,
+        -0.06636
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0156",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.82869,
+        0.002991,
+        -0.097762,
+        0.129785
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0157",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        5.52137,
+        -0.109958,
+        -0.126304,
+        0.039344
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0158",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.453347,
+        0.085363,
+        -0.075598,
+        -0.051557
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    },
+    {
+      "sampleId": "calT-0159",
+      "sourceGroup": "audit-r6-shared-calT",
+      "candidateIds": [
+        "c0",
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "logits": [
+        4.180489,
+        -0.147859,
+        0.116181,
+        -0.107172
+      ],
+      "label": 0,
+      "evidenceClass": "fixture"
+    }
+  ],
+  "data_sha256": "251ae1d54f0ba88b3e2682e114c3b78b275a46469b9b2f5a370bec6ef960cc57",
+  "note": "synthetic CPU fixture; not research train/dev/cal registration",
+  "temperature": 0.104095,
+  "tau": 0.5
+}

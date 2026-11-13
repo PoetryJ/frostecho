@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: R6-P: a real stock_deposited receipt fulfils only that supply commitment
+ok 1 - R6-P: a real stock_deposited receipt fulfils only that supply commitment
+  ---
+  duration_ms: 128.606432
+  type: 'test'
+  ...
+# Subtest: R6-P: cancel before the deposit does not fulfil, and a meal receipt still does
+ok 2 - R6-P: cancel before the deposit does not fulfil, and a meal receipt still does
+  ---
+  duration_ms: 132.932291
+  type: 'test'
+  ...
+# Subtest: R6-R: a step outside one save capture runs once
+ok 3 - R6-R: a step outside one save capture runs once
+  ---
+  duration_ms: 443.442948
+  type: 'test'
+  ...
+# Subtest: R6-R: an explicit cancel stays dead and a later save does not re-grant it
+ok 4 - R6-R: an explicit cancel stays dead and a later save does not re-grant it
+  ---
+  duration_ms: 89.763147
+  type: 'test'
+  ...
+# Subtest: R6 play: four mornings, one exit, one observed shortage, both arms agree
+ok 5 - R6 play: four mornings, one exit, one observed shortage, both arms agree
+  ---
+  duration_ms: 4483.151164
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5321.792577

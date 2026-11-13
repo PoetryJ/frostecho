@@ -1,0 +1,64 @@
+{
+  "supply": {
+    "commitment": "cm-2f38c5c7-9200-413d-97e8-9554e7e81c40",
+    "receiptId": "npc_01-game-1-g-deposit:stock_deposited:1",
+    "linkedRecords": 1,
+    "afterVersion": 2
+  },
+  "cancel": {
+    "name": "explicit-cancel",
+    "old": {
+      "actorId": "npc_01",
+      "status": "scored",
+      "selectedId": null,
+      "commandId": null,
+      "executionStatus": null,
+      "eventIds": [],
+      "postStateVersion": null,
+      "executed": false,
+      "reason": "stale_before_submit:memory",
+      "promiseStatuses": []
+    },
+    "outside": {
+      "actorId": "npc_01",
+      "status": "cancelled",
+      "selectedId": null,
+      "commandId": null,
+      "executionStatus": null,
+      "eventIds": [],
+      "postStateVersion": null,
+      "executed": false,
+      "reason": "generation_changed_before_start",
+      "promiseStatuses": []
+    },
+    "finalVersion": 1
+  },
+  "twoSave": {
+    "name": "two-save",
+    "old": {
+      "actorId": "npc_01",
+      "status": "rejected",
+      "selectedId": "c-eat",
+      "commandId": "npc_01-0-c-eat",
+      "executionStatus": "rejected",
+      "eventIds": [],
+      "postStateVersion": 0,
+      "executed": false,
+      "reason": "released async fixture (stale by construction)",
+      "promiseStatuses": []
+    },
+    "outside": {
+      "actorId": "npc_01",
+      "status": "cancelled",
+      "selectedId": null,
+      "commandId": null,
+      "executionStatus": null,
+      "eventIds": [],
+      "postStateVersion": null,
+      "executed": false,
+      "reason": "generation_changed_before_start",
+      "promiseStatuses": []
+    },
+    "finalVersion": 1
+  }
+}

@@ -1,0 +1,204 @@
+{
+  "scenario": "two-save",
+  "controlInput": "save\nstep npc_01\nsave\n",
+  "process": {
+    "code": 0,
+    "signal": null
+  },
+  "firstSavedVersion": 0,
+  "steps": [
+    {
+      "command": "step",
+      "jobId": "job-0001",
+      "decisions": [
+        {
+          "actorId": "npc_01",
+          "status": "rejected",
+          "selectedId": "c-eat",
+          "commandId": "npc_01-0-c-eat",
+          "executionStatus": "rejected",
+          "eventIds": [],
+          "postStateVersion": 0,
+          "executed": false,
+          "reason": "released async fixture (stale by construction)",
+          "promiseStatuses": []
+        }
+      ],
+      "outcomes": [
+        {
+          "taskId": "job-0001",
+          "actorId": "npc_01",
+          "status": "completed",
+          "value": {
+            "actorId": "npc_01",
+            "status": "rejected",
+            "selectedId": "c-eat",
+            "commandId": "npc_01-0-c-eat",
+            "executionStatus": "rejected",
+            "eventIds": [],
+            "postStateVersion": 0,
+            "executed": false,
+            "reason": "released async fixture (stale by construction)",
+            "promiseStatuses": []
+          }
+        }
+      ]
+    },
+    {
+      "command": "step",
+      "jobId": "job-0003",
+      "decisions": [
+        {
+          "actorId": "npc_01",
+          "status": "cancelled",
+          "selectedId": null,
+          "commandId": null,
+          "executionStatus": null,
+          "eventIds": [],
+          "postStateVersion": null,
+          "executed": false,
+          "reason": "generation_changed_before_start",
+          "promiseStatuses": []
+        }
+      ],
+      "outcomes": [
+        {
+          "taskId": "job-0003",
+          "actorId": "npc_01",
+          "status": "completed",
+          "value": {
+            "actorId": "npc_01",
+            "status": "cancelled",
+            "selectedId": null,
+            "commandId": null,
+            "executionStatus": null,
+            "eventIds": [],
+            "postStateVersion": null,
+            "executed": false,
+            "reason": "generation_changed_before_start",
+            "promiseStatuses": []
+          }
+        }
+      ]
+    },
+    {
+      "command": "step",
+      "jobId": "job-0005",
+      "decisions": [
+        {
+          "actorId": "npc_01",
+          "status": "applied",
+          "selectedId": "c-eat",
+          "commandId": "npc_01-0-c-eat",
+          "executionStatus": "applied",
+          "eventIds": [
+            "npc_01-0-c-eat:ate:0"
+          ],
+          "postStateVersion": 1,
+          "executed": true,
+          "reason": "released async fixture (stale by construction)",
+          "promiseStatuses": []
+        }
+      ],
+      "outcomes": [
+        {
+          "taskId": "job-0005",
+          "actorId": "npc_01",
+          "status": "completed",
+          "value": {
+            "actorId": "npc_01",
+            "status": "applied",
+            "selectedId": "c-eat",
+            "commandId": "npc_01-0-c-eat",
+            "executionStatus": "applied",
+            "eventIds": [
+              "npc_01-0-c-eat:ate:0"
+            ],
+            "postStateVersion": 1,
+            "executed": true,
+            "reason": "released async fixture (stale by construction)",
+            "promiseStatuses": []
+          }
+        }
+      ]
+    }
+  ],
+  "firstTwo": [
+    {
+      "command": "step",
+      "jobId": "job-0001",
+      "decisions": [
+        {
+          "actorId": "npc_01",
+          "status": "rejected",
+          "selectedId": "c-eat",
+          "commandId": "npc_01-0-c-eat",
+          "executionStatus": "rejected",
+          "eventIds": [],
+          "postStateVersion": 0,
+          "executed": false,
+          "reason": "released async fixture (stale by construction)",
+          "promiseStatuses": []
+        }
+      ],
+      "outcomes": [
+        {
+          "taskId": "job-0001",
+          "actorId": "npc_01",
+          "status": "completed",
+          "value": {
+            "actorId": "npc_01",
+            "status": "rejected",
+            "selectedId": "c-eat",
+            "commandId": "npc_01-0-c-eat",
+            "executionStatus": "rejected",
+            "eventIds": [],
+            "postStateVersion": 0,
+            "executed": false,
+            "reason": "released async fixture (stale by construction)",
+            "promiseStatuses": []
+          }
+        }
+      ]
+    },
+    {
+      "command": "step",
+      "jobId": "job-0003",
+      "decisions": [
+        {
+          "actorId": "npc_01",
+          "status": "cancelled",
+          "selectedId": null,
+          "commandId": null,
+          "executionStatus": null,
+          "eventIds": [],
+          "postStateVersion": null,
+          "executed": false,
+          "reason": "generation_changed_before_start",
+          "promiseStatuses": []
+        }
+      ],
+      "outcomes": [
+        {
+          "taskId": "job-0003",
+          "actorId": "npc_01",
+          "status": "completed",
+          "value": {
+            "actorId": "npc_01",
+            "status": "cancelled",
+            "selectedId": null,
+            "commandId": null,
+            "executionStatus": null,
+            "eventIds": [],
+            "postStateVersion": null,
+            "executed": false,
+            "reason": "generation_changed_before_start",
+            "promiseStatuses": []
+          }
+        }
+      ]
+    }
+  ],
+  "finalVersion": 1,
+  "cancelSeen": false
+}
