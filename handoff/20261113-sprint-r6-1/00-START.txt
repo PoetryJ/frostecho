@@ -1,0 +1,35 @@
+FrostEcho R6.1 有限收口任务 — 2026-11-13
+
+负责人结论依据见AUDIT.txt：R6有效工作保留；P供仓终态和晨会故事可接受，R/D/M更完整契约仍有已证缺口。下一轮先收口，不新增危机/UI/轮回，不开放真实模型门。
+只在Grok可执行环境本地CPU操作；服务器仍维护，不SSH/探测权重端口，不下载模型/GPU/API。单会话顺序执行即可；不虚称多worker、独立双审。
+
+固定产品/测试基线：12cc208124c1b6d73c8fd5af66352091f8db9027（含G11补证据修复）。
+仓库：https://github.com/PoetryJ/frostecho
+本包分支 codex/sprint-r6-1-package-20261113；本包只增任务/审计证据，不修产品。
+
+启动
+git clone --branch codex/sprint-r6-1-package-20261113 https://github.com/PoetryJ/frostecho.git FrostEcho-r61
+cd FrostEcho-r61
+git switch -c codex/sprint-r6-1
+python handoff/20261113-sprint-r6/tools/manifest.py handoff/20261113-sprint-r6-1 --name SHA256SUMS.txt --verify
+npm ci
+npm run build
+python handoff/20261113-sprint-r6-1/check.py --repo . --out artifacts/sprint-r6-1/run01/baseline --expect baseline
+
+Python可用python3替代；out必须全新，runner均传绝对路径。Windows调用实际python.exe，不依赖商店别名。未发现shell/运行时则具体blocked，不改全局、不转去维护服务器。
+baseline exit0表示三条新缺口和G11局部恢复缺口被复现，并保留P/显式cancel正控制；不是验收通过。
+
+执行顺序
+1. 按01关闭R/D/M，补Windows导入字节确定性；每项先基线、再修复、保留原始结果。
+2. 按02修G11/异步测试harness/真实汇总与保存比较；不靠加大900秒、skip或标known flake过门。
+3. 原R6四探针、R6.1探针、P/显式cancel正控制、JEV CPU正负例、晨会连续/恢复均过，再按03单次全量和最终HEAD的CI。
+4. 最后重封装bundle/报告，覆盖最终源码；不合main，不移动旧标签，不改R5/R6原任务包或已冻结证据。
+
+修复后
+python handoff/20261113-sprint-r6-1/check.py --repo . --out artifacts/sprint-r6-1/run01/fixed --expect fixed
+原R6 wrapper也需保持：
+python handoff/20261113-sprint-r6/tools/repro.py --repo . --out artifacts/sprint-r6-1/run01/r6-regression --expect fixed
+
+本包check只覆盖最小反例，不代替01/02的自动回归和真实统计。所有进程退出与JSON字段均核对；crash/缺依赖不当作拒绝成功。
+产品代码所有权：同一Grok会话负责R队列→D来源链→M类型准入→H测试及集成；如真拆worker，文件不得交叉写且指定一个集成者。
+R文件scripts/play-sprint.ts；D在data/v4/provenance/import/validate及测试；M在sealed/port/TS证据及测试；H在run-tests、g04/g09/g10用例、verify-r6及验收。

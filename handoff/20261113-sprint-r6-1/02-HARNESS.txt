@@ -1,0 +1,28 @@
+H：让测试与汇总真正证明结果；不能只单独追g04
+
+1 G11按全清单补缺
+scripts/run-tests.mjs当前marker存在即return。probes/g11.py的marker-only沙盒仍缺13文件。
+先校验归档与SHA、枚举全部预期文件；逐项只补缺失，已有字节不覆盖。空目录、marker-only、其他文件已存在、归档SHA损坏都做测试。损坏归档非零且不部分写入；保留--restore-only入口。
+如果抽取helper，探针最小源码树应复制所需helper，但不得改掉缺失文件/已有字节断言。G11只是历史证据，不是新live。
+
+2 g04退出监听竞争
+在spawn时立即创建exit/close promise，再发送命令/等待finalize，之后await已有promise；不要等输出后才注册监听。等待有界，finally关闭自己的child/server。
+验收用可控调度让child先退出，再消费finalize后的结果，仍正常结束；不靠随机sleep凑时序。原g04 12项保持。独立诊断只证明该机制，不能改写历史900秒的唯一根因。
+
+3 g09假HTTP500测试
+现同进程启动fake HTTP server却用execFileSync等待child，父event loop无法返回500；实测耗120.6秒，timeout还被断言当成功。
+改为异步child或独立server进程；断言server确实收到请求并返回500，错误类型为预期HTTP500，不能接受timeout替代。保持存档回滚/错误回执语义，关闭server/child有界。不能换成mock直接返回“通过”。
+
+4 g10 stdout握手
+等待“持久化失败”后立即断言另一条消息会受输出分块影响。本次全量首败，单次定向复跑过。
+等待实际第二个标记/结构化持久化结果，再断言原业务条件。给有界等待、分块到达对照，保留IO失败与恢复前后数据断言。不得skip/重复全量刷绿。
+
+5 verify-r6真实总门及可移植性
+现在P/R/D在执行前硬编码pass，capability几个false也直接填字面值。改为读取本轮同HEAD实际子命令/断言结果及证据路径，缺证据/不同HEAD/失败都不能pass。
+新增注入一项门失败的验收：总门非零且该项fail；缺结果为blocked，不能仍写pass。
+Python解释器从显式--python/环境参数或可靠探测选择；支持带空格的python.exe绝对路径，不硬编码python3，不经shell拼接。Node/Python子进程有界并清理自身子树。不用import torch检查“模型未加载”，用实际调用记录/入口stub证明。
+保存比较不能直接删随机ID关联：采用稳定request/source关系双射规范化，保留任务→承诺、请求→承诺、revision、履约事件、世界及相关sidecars。给一个“仅打乱task.commitmentId”的负例，比较必须失败。
+probes/story-audit.py示范本次独立双射方法，但其读取的是审计目录结构；正式verify脚本自行封装参数，不复制硬编码路径。
+
+玩法保持：现晨会故事实际4394分钟=73小时14分钟，进入第4日；不是96h。独立全world与规范化后sidecars一致，2供仓+3送饭履约有效。
+收口后连续/逐段各跑一次，复用同冻结控制序列，交完整存档/账本/回执。不要因为补测试擅加一天时长或改变初始food120来制造新“生存平衡”结论。
