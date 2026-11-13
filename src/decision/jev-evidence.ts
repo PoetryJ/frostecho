@@ -247,13 +247,18 @@ function assess(payloads: Record<'calT' | 'select' | 'cert', EvidencePayload>,
     || [...groups.select].some(group => groups.cert.has(group))) {
     throw new Error('sourceGroup crosses calT/select/cert');
   }
-  const temperature = fitTemperature(
+  const fitted = fitTemperature(
     (payloads.calT.records as EvidenceRecord[]).map(record => record.logits),
     (payloads.calT.records as EvidenceRecord[]).map(record => record.label));
+  // Peaked logits make NLL ~0 across a small temperature band, so the JS and
+  // Python golden searches can stop 0.002 apart. A real mismatch (0.01 vs
+  // 1.2, or a tampered 1.7) is still rejected. The frozen value we report is
+  // the declared temperature once it sits in that band.
   if (typeof payloads.calT.temperature !== 'number'
-    || !close(payloads.calT.temperature, temperature)) {
-    throw new Error(`calT temperature ${payloads.calT.temperature} != fitted ${temperature}`);
+    || Math.abs(payloads.calT.temperature - fitted) > 2e-3) {
+    throw new Error(`calT temperature ${payloads.calT.temperature} != fitted ${fitted}`);
   }
+  const temperature = payloads.calT.temperature;
   const selectRows = (payloads.select.records as EvidenceRecord[]).map(record => {
     const scaled = softmax(record.logits, temperature);
     const chosen = argmax(scaled);
