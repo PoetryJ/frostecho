@@ -1,0 +1,51 @@
+{
+  "schema": "frostecho.r8.comparison/1",
+  "generatedAt": "2026-11-16T07:45:40.276Z",
+  "baseline": {
+    "arm": "reference",
+    "dir": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/O/reference-3seed",
+    "metrics": {
+      "seed": "r8-3",
+      "profile": "gospel-5.8.19",
+      "mode": "reference",
+      "endings": [
+        {
+          "lifeNumber": 1,
+          "ending": "perfect",
+          "survivors": 8,
+          "elapsed": 4920,
+          "at": 5400
+        }
+      ],
+      "decisions": 335,
+      "executed": 335,
+      "rejected": 0,
+      "multiCandidateDecisions": 320,
+      "meanLatencyMs": 0.036,
+      "trajectorySha256": "1c8414b4cbbe7497ba4302af8d6fe2c6be961010d90e014e9375ceabcbc23e37",
+      "summaries": [
+        {
+          "seed": "r8-1",
+          "ending": "perfect"
+        },
+        {
+          "seed": "r8-2",
+          "ending": "perfect"
+        },
+        {
+          "seed": "r8-3",
+          "ending": "perfect"
+        }
+      ]
+    }
+  },
+  "proposed": {
+    "arm": "proposed",
+    "status": "blocked",
+    "reason": "no proposed-arm run was produced this round: the JSONL scorer service needs frozen 27B features for new inputs, and no free GPU can hold the backbone (see jev preflight). Reference arm is real.",
+    "nextCommand": "python research/decision-choice/jev05/action/train.py preflight --json"
+  },
+  "sameConditions": false,
+  "adoption": "pending-owner",
+  "caveat": "Reference arm is a rule policy, not a model. No claim that the proposed arm is better, and no utility is derived from a probability."
+}

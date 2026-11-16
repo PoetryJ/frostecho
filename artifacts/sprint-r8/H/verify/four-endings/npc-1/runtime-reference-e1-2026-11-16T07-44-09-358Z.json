@@ -1,0 +1,1956 @@
+{
+  "schema": "frostecho.r8-runtime/1",
+  "profile": "gospel-5.8.19",
+  "clock": 5400,
+  "ended": true,
+  "endingKind": "extinction",
+  "states": {
+    "survival": {
+      "outdoorMinutes": {
+        "npc_01": 0
+      },
+      "hypothermic": [],
+      "lastMinute": 5400,
+      "reportedDeaths": []
+    },
+    "production": {
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "stopped"
+      },
+      "buildRemaining": {},
+      "ranMinutes": {
+        "foodCollector": 120
+      },
+      "lastMinute": 5400
+    },
+    "tasks": {
+      "tasks": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_FOOD_COLLECTOR",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "done",
+          "revision": 3,
+          "workedMinutes": 0,
+          "createdAtMinute": 0
+        },
+        {
+          "taskId": "task-2",
+          "type": "MAINTAIN_POWER",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "done",
+          "revision": 3,
+          "workedMinutes": 0,
+          "createdAtMinute": 480
+        },
+        {
+          "taskId": "task-3",
+          "type": "MAINTAIN_POWER",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "done",
+          "revision": 3,
+          "workedMinutes": 0,
+          "createdAtMinute": 1200
+        },
+        {
+          "taskId": "task-4",
+          "type": "MAINTAIN_POWER",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "accepted",
+          "revision": 2,
+          "workedMinutes": 0,
+          "createdAtMinute": 1680
+        },
+        {
+          "taskId": "task-5",
+          "type": "COLLECT_WOOD",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "done",
+          "revision": 3,
+          "workedMinutes": 0,
+          "createdAtMinute": 2640
+        },
+        {
+          "taskId": "task-6",
+          "type": "COLLECT_WOOD",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "done",
+          "revision": 3,
+          "workedMinutes": 0,
+          "createdAtMinute": 3600
+        },
+        {
+          "taskId": "task-7",
+          "type": "COLLECT_WOOD",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "done",
+          "revision": 3,
+          "workedMinutes": 0,
+          "createdAtMinute": 4560
+        }
+      ],
+      "seq": 7,
+      "dailyUsage": {}
+    },
+    "council": {
+      "meetings": [
+        {
+          "meetingId": "council-1",
+          "openedAtMinute": 0,
+          "reason": "morning",
+          "proposals": [
+            {
+              "proposalId": "p-council-1-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "BUILD_FOOD_COLLECTOR"
+                }
+              ],
+              "rationale": "food is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-1-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-1-1"
+        },
+        {
+          "meetingId": "council-2",
+          "openedAtMinute": 480,
+          "reason": "power_low",
+          "proposals": [
+            {
+              "proposalId": "p-council-2-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "MAINTAIN_POWER"
+                }
+              ],
+              "rationale": "power is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-2-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-2-1"
+        },
+        {
+          "meetingId": "council-3",
+          "openedAtMinute": 1200,
+          "reason": "power_low",
+          "proposals": [
+            {
+              "proposalId": "p-council-3-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "MAINTAIN_POWER"
+                }
+              ],
+              "rationale": "power is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-3-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-3-1"
+        },
+        {
+          "meetingId": "council-4",
+          "openedAtMinute": 1680,
+          "reason": "firewood_low",
+          "proposals": [
+            {
+              "proposalId": "p-council-4-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "MAINTAIN_POWER"
+                }
+              ],
+              "rationale": "power is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-4-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-4-1"
+        },
+        {
+          "meetingId": "council-5",
+          "openedAtMinute": 2160,
+          "reason": "firewood_low",
+          "proposals": [],
+          "votes": {},
+          "status": "expired",
+          "winnerProposalId": null
+        },
+        {
+          "meetingId": "council-6",
+          "openedAtMinute": 2640,
+          "reason": "firewood_low",
+          "proposals": [
+            {
+              "proposalId": "p-council-6-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "COLLECT_WOOD"
+                }
+              ],
+              "rationale": "firewood is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-6-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-6-1"
+        },
+        {
+          "meetingId": "council-7",
+          "openedAtMinute": 3120,
+          "reason": "firewood_low",
+          "proposals": [],
+          "votes": {},
+          "status": "expired",
+          "winnerProposalId": null
+        },
+        {
+          "meetingId": "council-8",
+          "openedAtMinute": 3600,
+          "reason": "firewood_low",
+          "proposals": [
+            {
+              "proposalId": "p-council-8-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "COLLECT_WOOD"
+                }
+              ],
+              "rationale": "firewood is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-8-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-8-1"
+        },
+        {
+          "meetingId": "council-9",
+          "openedAtMinute": 4080,
+          "reason": "firewood_low",
+          "proposals": [],
+          "votes": {},
+          "status": "expired",
+          "winnerProposalId": null
+        },
+        {
+          "meetingId": "council-10",
+          "openedAtMinute": 4560,
+          "reason": "firewood_low",
+          "proposals": [
+            {
+              "proposalId": "p-council-10-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "COLLECT_WOOD"
+                }
+              ],
+              "rationale": "firewood is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-10-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-10-1"
+        }
+      ],
+      "seq": 10,
+      "cooldownUntil": 5040
+    },
+    "crises": {
+      "active": [
+        {
+          "crisisId": "crisis-1",
+          "kind": "extinction",
+          "startedAtMinute": 0,
+          "resolvedAtMinute": null,
+          "subjectIds": [
+            "npc_01"
+          ],
+          "detail": "1 survivors"
+        },
+        {
+          "crisisId": "crisis-2",
+          "kind": "day4_warning",
+          "startedAtMinute": 3840,
+          "resolvedAtMinute": null,
+          "subjectIds": [],
+          "detail": "final day lockdown"
+        }
+      ],
+      "history": [],
+      "seq": 2,
+      "lastFoodConflictMinute": null,
+      "foodConflictCooldownMinutes": 60
+    },
+    "life": {
+      "lifeNumber": 1,
+      "pastLives": [
+        {
+          "lifeNumber": 1,
+          "ending": "extinction",
+          "survivors": 1,
+          "endedAtElapsed": 4920,
+          "lessons": []
+        }
+      ],
+      "ending": {
+        "kind": "extinction",
+        "survivors": 1,
+        "settledAtElapsed": 4920
+      },
+      "settled": true
+    }
+  },
+  "journal": [
+    {
+      "at": 480,
+      "proposalId": "council:council-1:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-1",
+        "reason": "morning"
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "council:council-1:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-1",
+        "winner": "p-council-1-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "tasks:task-1:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-1",
+        "type": "BUILD_FOOD_COLLECTOR",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "tasks:task-1:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-1",
+        "revision": 2
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "production:foodCollector:build-started",
+      "type": "machine_build_started",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "machine": "foodCollector",
+        "minutes": 300
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "tasks:task-1:done",
+      "type": "task_completed",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-1",
+        "type": "BUILD_FOOD_COLLECTOR",
+        "receipt": "v1:resource:production:foodCollector:build:power"
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "production:heating:540",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.591667,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "crises:crisis-1:extinction",
+      "type": "crisis_started",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "crisisId": "crisis-1",
+        "kind": "extinction",
+        "alive": 1
+      }
+    },
+    {
+      "at": 540,
+      "proposalId": "production:heating:600",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.55,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 600,
+      "proposalId": "production:heating:660",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.508333,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 660,
+      "proposalId": "production:heating:720",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.466667,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 720,
+      "proposalId": "production:foodCollector:built",
+      "type": "machine_built",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "machine": "foodCollector"
+      }
+    },
+    {
+      "at": 720,
+      "proposalId": "production:heating:780",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.425,
+        "band": "cold",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 780,
+      "proposalId": "production:heating:840",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.469792,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 840,
+      "proposalId": "production:heating:900",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.514583,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 840,
+      "proposalId": "production:foodCollector:stop:900",
+      "type": "machine_stopped",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "machine": "foodCollector",
+        "reason": "missing power",
+        "need": 3
+      }
+    },
+    {
+      "at": 900,
+      "proposalId": "production:heating:960",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.595833,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 960,
+      "proposalId": "council:council-2:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-2",
+        "reason": "power_low"
+      }
+    },
+    {
+      "at": 960,
+      "proposalId": "council:council-2:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-2",
+        "winner": "p-council-2-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "at": 960,
+      "proposalId": "tasks:task-2:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-2",
+        "type": "MAINTAIN_POWER",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 960,
+      "proposalId": "tasks:task-2:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-2",
+        "revision": 2
+      }
+    },
+    {
+      "at": 960,
+      "proposalId": "tasks:task-2:done",
+      "type": "task_completed",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-2",
+        "type": "MAINTAIN_POWER",
+        "receipt": "npc_01-r8-25:worked:25"
+      }
+    },
+    {
+      "at": 960,
+      "proposalId": "production:heating:1020",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.670833,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1020,
+      "proposalId": "production:heating:1080",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.629167,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1080,
+      "proposalId": "production:heating:1140",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.5875,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1140,
+      "proposalId": "production:heating:1200",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.68125,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1200,
+      "proposalId": "production:heating:1260",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.69375,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1260,
+      "proposalId": "production:heating:1320",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.679167,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1320,
+      "proposalId": "production:heating:1380",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.664583,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1380,
+      "proposalId": "production:heating:1440",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.622917,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1440,
+      "proposalId": "production:heating:1500",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.595833,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 1500,
+      "proposalId": "production:heating:1560",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.56875,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 1560,
+      "proposalId": "production:heating:1620",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.541667,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 1620,
+      "proposalId": "production:heating:1680",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.514583,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 1680,
+      "proposalId": "council:council-3:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-3",
+        "reason": "power_low"
+      }
+    },
+    {
+      "at": 1680,
+      "proposalId": "council:council-3:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-3",
+        "winner": "p-council-3-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "at": 1680,
+      "proposalId": "tasks:task-3:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-3",
+        "type": "MAINTAIN_POWER",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 1680,
+      "proposalId": "tasks:task-3:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-3",
+        "revision": 2
+      }
+    },
+    {
+      "at": 1680,
+      "proposalId": "tasks:task-3:done",
+      "type": "task_completed",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-3",
+        "type": "MAINTAIN_POWER",
+        "receipt": "npc_01-r8-55:worked:55"
+      }
+    },
+    {
+      "at": 1680,
+      "proposalId": "production:heating:1740",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.589583,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1740,
+      "proposalId": "production:heating:1800",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.547917,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1800,
+      "proposalId": "production:heating:1860",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.50625,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1860,
+      "proposalId": "production:heating:1920",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.464583,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1920,
+      "proposalId": "production:heating:1980",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.422917,
+        "band": "cold",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1980,
+      "proposalId": "production:heating:2040",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.38125,
+        "band": "cold",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 2040,
+      "proposalId": "production:heating:2100",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.339583,
+        "band": "cold",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 2100,
+      "proposalId": "production:heating:2160",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.297917,
+        "band": "cold",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 2160,
+      "proposalId": "council:council-4:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-4",
+        "reason": "firewood_low"
+      }
+    },
+    {
+      "at": 2160,
+      "proposalId": "council:council-4:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-4",
+        "winner": "p-council-4-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "at": 2160,
+      "proposalId": "tasks:task-4:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-4",
+        "type": "MAINTAIN_POWER",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 2160,
+      "proposalId": "tasks:task-4:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-4",
+        "revision": 2
+      }
+    },
+    {
+      "at": 2160,
+      "proposalId": "production:heating:2220",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.270833,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2220,
+      "proposalId": "production:heating:2280",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.24375,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2280,
+      "proposalId": "production:heating:2340",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.216667,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2340,
+      "proposalId": "production:heating:2400",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.189583,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2400,
+      "proposalId": "production:heating:2460",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.1625,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2460,
+      "proposalId": "production:heating:2520",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.135417,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2520,
+      "proposalId": "production:heating:2580",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.108333,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2580,
+      "proposalId": "production:heating:2640",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.08125,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2640,
+      "proposalId": "council:council-5:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-5",
+        "reason": "firewood_low"
+      }
+    },
+    {
+      "at": 2640,
+      "proposalId": "production:heating:2700",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.054167,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2700,
+      "proposalId": "production:heating:2760",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.027083,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2760,
+      "proposalId": "production:heating:2820",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2760,
+      "proposalId": "council:council-5:expired",
+      "type": "council_expired",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-5"
+      }
+    },
+    {
+      "at": 2820,
+      "proposalId": "production:heating:2880",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 2880,
+      "proposalId": "production:heating:2940",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 2940,
+      "proposalId": "production:heating:3000",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 3000,
+      "proposalId": "production:heating:3060",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 3060,
+      "proposalId": "production:heating:3120",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 3120,
+      "proposalId": "council:council-6:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-6",
+        "reason": "firewood_low"
+      }
+    },
+    {
+      "at": 3120,
+      "proposalId": "council:council-6:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-6",
+        "winner": "p-council-6-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "at": 3120,
+      "proposalId": "tasks:task-5:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-5",
+        "type": "COLLECT_WOOD",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 3120,
+      "proposalId": "tasks:task-5:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-5",
+        "revision": 2
+      }
+    },
+    {
+      "at": 3120,
+      "proposalId": "tasks:task-5:done",
+      "type": "task_completed",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-5",
+        "type": "COLLECT_WOOD",
+        "receipt": "npc_01-r8-106:gathered:106"
+      }
+    },
+    {
+      "at": 3120,
+      "proposalId": "production:heating:3180",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.352083,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3180,
+      "proposalId": "production:heating:3240",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.325,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3240,
+      "proposalId": "production:heating:3300",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.297917,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3300,
+      "proposalId": "production:heating:3360",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.270833,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3360,
+      "proposalId": "production:heating:3420",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.24375,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3420,
+      "proposalId": "production:heating:3480",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.216667,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3480,
+      "proposalId": "production:heating:3540",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.189583,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3540,
+      "proposalId": "production:heating:3600",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.1625,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3600,
+      "proposalId": "council:council-7:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-7",
+        "reason": "firewood_low"
+      }
+    },
+    {
+      "at": 3600,
+      "proposalId": "production:heating:3660",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.135417,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3660,
+      "proposalId": "production:heating:3720",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.108333,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3720,
+      "proposalId": "production:heating:3780",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.08125,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3720,
+      "proposalId": "council:council-7:expired",
+      "type": "council_expired",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-7"
+      }
+    },
+    {
+      "at": 3780,
+      "proposalId": "production:heating:3840",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.054167,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3840,
+      "proposalId": "production:heating:3900",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.027083,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3900,
+      "proposalId": "production:heating:3960",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3960,
+      "proposalId": "production:heating:4020",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 4020,
+      "proposalId": "production:heating:4080",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 4080,
+      "proposalId": "council:council-8:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-8",
+        "reason": "firewood_low"
+      }
+    },
+    {
+      "at": 4080,
+      "proposalId": "council:council-8:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-8",
+        "winner": "p-council-8-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "at": 4080,
+      "proposalId": "tasks:task-6:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-6",
+        "type": "COLLECT_WOOD",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 4080,
+      "proposalId": "tasks:task-6:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-6",
+        "revision": 2
+      }
+    },
+    {
+      "at": 4080,
+      "proposalId": "tasks:task-6:done",
+      "type": "task_completed",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-6",
+        "type": "COLLECT_WOOD",
+        "receipt": "npc_01-r8-142:gathered:142"
+      }
+    },
+    {
+      "at": 4080,
+      "proposalId": "production:heating:4140",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.379167,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4140,
+      "proposalId": "production:heating:4200",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.352083,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4200,
+      "proposalId": "production:heating:4260",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.325,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4260,
+      "proposalId": "production:heating:4320",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.297917,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4320,
+      "proposalId": "production:heating:4380",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.270833,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4320,
+      "proposalId": "crises:crisis-2:day4",
+      "type": "crisis_started",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "crisisId": "crisis-2",
+        "kind": "day4_warning",
+        "outdoor": "snow"
+      }
+    },
+    {
+      "at": 4380,
+      "proposalId": "production:heating:4440",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.24375,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4440,
+      "proposalId": "production:heating:4500",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.216667,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4500,
+      "proposalId": "production:heating:4560",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.189583,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4560,
+      "proposalId": "council:council-9:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-9",
+        "reason": "firewood_low"
+      }
+    },
+    {
+      "at": 4560,
+      "proposalId": "production:heating:4620",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.1625,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4620,
+      "proposalId": "production:heating:4680",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.135417,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4680,
+      "proposalId": "production:heating:4740",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.108333,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4680,
+      "proposalId": "council:council-9:expired",
+      "type": "council_expired",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-9"
+      }
+    },
+    {
+      "at": 4740,
+      "proposalId": "production:heating:4800",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.08125,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4800,
+      "proposalId": "production:heating:4860",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.054167,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4860,
+      "proposalId": "production:heating:4920",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.027083,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4920,
+      "proposalId": "production:heating:4980",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4980,
+      "proposalId": "production:heating:5040",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 5040,
+      "proposalId": "council:council-10:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-10",
+        "reason": "firewood_low"
+      }
+    },
+    {
+      "at": 5040,
+      "proposalId": "council:council-10:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-10",
+        "winner": "p-council-10-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "at": 5040,
+      "proposalId": "tasks:task-7:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-7",
+        "type": "COLLECT_WOOD",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 5040,
+      "proposalId": "tasks:task-7:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-7",
+        "revision": 2
+      }
+    },
+    {
+      "at": 5040,
+      "proposalId": "production:heating:5100",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 5100,
+      "proposalId": "tasks:task-7:done",
+      "type": "task_completed",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-7",
+        "type": "COLLECT_WOOD",
+        "receipt": "npc_01-r8-180:gathered:180"
+      }
+    },
+    {
+      "at": 5100,
+      "proposalId": "production:heating:5160",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.379167,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 5160,
+      "proposalId": "production:heating:5220",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.352083,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 5220,
+      "proposalId": "production:heating:5280",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.325,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 5280,
+      "proposalId": "production:heating:5340",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.297917,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 5340,
+      "proposalId": "production:heating:5400",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.270833,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 5400,
+      "proposalId": "life:1:ended",
+      "type": "ending_reached",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "lifeNumber": 1,
+        "ending": "extinction",
+        "survivors": 1,
+        "elapsed": 4920
+      }
+    },
+    {
+      "at": 5400,
+      "type": "ending_reached",
+      "actorId": "system",
+      "payload": {
+        "ending": "extinction",
+        "survivors": 1,
+        "elapsed": 4920
+      }
+    }
+  ],
+  "rejections": []
+}

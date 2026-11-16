@@ -1,0 +1,514 @@
+#!/usr/bin/env python3
+"""R8 action scorer toolchain (M).
+
+Subcommands: preflight | encode | train | calibrate | score | serve
+
+Real artifacts this tool knows about (verified by `preflight`, never assumed):
+
+  * head        artifacts/sprint-r7/legacy-reuse/c43-increment-batch4-1/
+                warm-start-17/best.safetensors  -> tensor `score.weight` [1,5120]
+  * encoder     /data2/model_weights/Qwen3.8-27B (config.json hidden_size)
+  * features    a .npz holding real frozen-encoder features (cand/hq arrays)
+
+A path that is missing is reported as missing. A GPU that is occupied by
+another process is reported as occupied with the measured free MiB. The tool
+never downloads a backbone and never kills a foreign process.
+
+The head is a plain linear scorer over frozen 5120-d features, so scoring is
+exact real inference: `logits = features @ w`, softmax over the candidate set.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import struct
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+import numpy as np
+
+ROOT = Path(__file__).resolve().parents[4]
+HEAD = (ROOT / "artifacts/sprint-r7/legacy-reuse/c43-increment-batch4-1"
+        / "warm-start-17/best.safetensors")
+ENCODER = Path("/data2/model_weights/Qwen3.8-27B")
+HIDDEN = 5120
+RENDERER = "joint-c-action/1"
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1 << 20), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def read_head(path: Path) -> np.ndarray:
+    """Minimal safetensors reader: F32 tensors only, no torch dependency."""
+    with path.open("rb") as stream:
+        header_len = struct.unpack("<Q", stream.read(8))[0]
+        header = json.loads(stream.read(header_len))
+        tensors = {}
+        for name, info in header.items():
+            if name == "__metadata__":
+                continue
+            if info["dtype"] != "F32":
+                raise SystemExit(f"unsupported dtype {info['dtype']} for {name}")
+            start, end = info["data_offsets"]
+            stream.seek(8 + header_len + start)
+            tensors[name] = np.frombuffer(stream.read(end - start), dtype=np.float32)
+        if "score.weight" not in tensors:
+            raise SystemExit("head has no score.weight tensor")
+        weight = tensors["score.weight"].reshape(-1)
+        if weight.shape[0] != HIDDEN:
+            raise SystemExit(f"head width {weight.shape[0]} != {HIDDEN}")
+        return weight.astype(np.float64)
+
+
+def gpu_free_mib() -> list[dict]:
+    try:
+        out = subprocess.run(
+            ["nvidia-smi", "--query-gpu=index,name,memory.total,memory.used",
+             "--format=csv,noheader,nounits"],
+            capture_output=True, text=True, timeout=20)
+    except (OSError, subprocess.SubprocessError):
+        return []
+    rows = []
+    if out.returncode != 0:
+        return rows
+    for line in out.stdout.strip().splitlines():
+        parts = [part.strip() for part in line.split(",")]
+        if len(parts) < 4:
+            continue
+        rows.append({"index": int(parts[0]), "name": parts[1],
+                     "totalMiB": int(parts[2]), "usedMiB": int(parts[3]),
+                     "freeMiB": int(parts[2]) - int(parts[3])})
+    return rows
+
+
+def encoder_hidden(path: Path) -> int | None:
+    config = path / "config.json"
+    if not config.exists():
+        return None
+    data = json.loads(config.read_text())
+    return int(data.get("hidden_size") or data.get("text_config", {}).get("hidden_size") or 0)
+
+
+def preflight(args) -> dict:
+    head = Path(args.head)
+    encoder = Path(args.encoder)
+    report: dict = {"schema": "frostecho.jev05.action.preflight/1",
+                    "checkedAt": time.strftime("%Y-%m-%dT%H:%M:%S"),
+                    "renderer": RENDERER, "hidden": HIDDEN}
+    report["head"] = {"path": str(head), "exists": head.exists(),
+                      "sha256": sha256(head) if head.exists() else None}
+    hidden = encoder_hidden(encoder)
+    report["encoder"] = {"path": str(encoder), "exists": encoder.exists(),
+                         "hiddenSize": hidden,
+                         "matchesHead": hidden == HIDDEN}
+    gpus = gpu_free_mib()
+    report["gpus"] = gpus
+    # A 27B BF16 backbone needs ~54 GiB; anything less is not a loadable卡.
+    bf16_gib = 2 * 27e9 / 2**30
+    best_free = max((gpu["freeMiB"] for gpu in gpus), default=0)
+    report["encoderLoadable"] = best_free >= bf16_gib * 1024
+    report["requiredVramMiB"] = int(bf16_gib * 1024)
+    features = Path(args.features) if args.features else None
+    if features and features.exists():
+        with np.load(features, allow_pickle=True) as archive:
+            cand = archive["cand"] if "cand" in archive else None
+            report["features"] = {"path": str(features), "sha256": sha256(features),
+                                 "candShape": list(cand.shape) if cand is not None else None,
+                                 "dtype": str(cand.dtype) if cand is not None else None,
+                                 "rows": int(cand.shape[0]) if cand is not None else 0}
+    else:
+        report["features"] = {"path": str(features) if features else None, "exists": False}
+    blockers = []
+    if not report["head"]["exists"]:
+        blockers.append("head checkpoint missing")
+    if not report["encoder"]["exists"]:
+        blockers.append("encoder backbone missing")
+    if not report["encoderLoadable"]:
+        blockers.append(
+            f"no free GPU can hold a 27B BF16 backbone "
+            f"(need {int(bf16_gib * 1024)} MiB, best free {best_free} MiB; "
+            f"other processes hold the cards)")
+    if not (features and features.exists()):
+        blockers.append("no frozen-feature cache for new inputs; encode is blocked")
+    report["blockedReason"] = "; ".join(blockers) if blockers else None
+    report["readyForScoring"] = report["head"]["exists"]
+    report["readyForTraining"] = report["readyForScoring"] and (features is not None
+                                                               and features.exists())
+    report["readyForLiveEncoding"] = report["encoderLoadable"] and report["encoder"]["matchesHead"]
+    report["status"] = "ready" if report["readyForTraining"] else "blocked"
+    return report
+
+
+def load_cases(path: Path) -> list[dict]:
+    cases = []
+    for line in path.read_text().splitlines():
+        line = line.strip()
+        if line:
+            cases.append(json.loads(line))
+    return cases
+
+
+def softmax(values: np.ndarray) -> np.ndarray:
+    shifted = values - values.max()
+    exps = np.exp(shifted)
+    return exps / exps.sum()
+
+
+def set_nll(logits: np.ndarray, acceptable: list[int]) -> tuple[float, np.ndarray]:
+    all_max = logits.max()
+    accept = logits[acceptable]
+    accept_max = accept.max()
+    loss = (all_max + np.log(np.exp(logits - all_max).sum())
+            - accept_max - np.log(np.exp(accept - accept_max).sum()))
+    gradient = softmax(logits)
+    gradient[acceptable] -= softmax(accept)
+    return float(loss), gradient
+
+
+def score_matrix(weight: np.ndarray, features: np.ndarray) -> np.ndarray:
+    """features: [.., K, 5120] -> logits [.., K]."""
+    return features.astype(np.float64) @ weight
+
+
+def evaluate(weight: np.ndarray, cases: list[dict], features: dict) -> dict:
+    correct = 0
+    losses = []
+    used = 0
+    for case in cases:
+        cand = features.get(case["caseId"])
+        acceptable = case.get("acceptableIds")
+        if cand is None or not acceptable:
+            continue
+        ids = [candidate["id"] for candidate in case["candidates"]]
+        try:
+            indices = [ids.index(value) for value in acceptable]
+        except ValueError:
+            continue
+        logits = score_matrix(weight, cand)
+        losses.append(set_nll(logits, indices)[0])
+        correct += int(int(np.argmax(logits)) in indices)
+        used += 1
+    return {"cases": used,
+            "top1InAcceptable": (correct / used) if used else None,
+            "setNll": float(np.mean(losses)) if losses else None}
+
+
+def cmd_preflight(args) -> int:
+    report = preflight(args)
+    if args.json:
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    else:
+        print(f"head      : {report['head']['path']} exists={report['head']['exists']}")
+        print(f"encoder   : {report['encoder']['path']} hidden={report['encoder']['hiddenSize']}")
+        print(f"gpus      : {[(gpu['index'], gpu['freeMiB']) for gpu in report['gpus']]}")
+        print(f"training  : {report['readyForTraining']}")
+        print(f"blocked   : {report['blockedReason']}")
+    return 0
+
+
+def cmd_encode(args) -> int:
+    """Real encoder pass; refuses honestly when the card cannot hold it."""
+    report = preflight(args)
+    if not report["readyForLiveEncoding"]:
+        print(json.dumps({"status": "blocked", "reason": report["blockedReason"],
+                          "gpus": report["gpus"],
+                          "requiredVramMiB": report["requiredVramMiB"]},
+                         ensure_ascii=False, indent=2))
+        return 3
+    # A real pass is implemented, but only reachable with a free card.
+    from transformers import AutoModel, AutoTokenizer  # noqa: F401  (lazy import)
+    tokenizer = AutoTokenizer.from_pretrained(str(ENCODER), trust_remote_code=True)
+    model = AutoModel.from_pretrained(str(ENCODER), torch_dtype="bfloat16",
+                                      device_map="cuda:0", trust_remote_code=True)
+    model.eval()
+    import torch
+    cases = load_cases(Path(args.cases))
+    rows, hq = [], []
+    started = time.time()
+    with torch.inference_mode():
+        for case in cases:
+            texts = [case["observationText"]] + [candidate["text"]
+                                                 for candidate in case["candidates"]]
+            encoded = tokenizer(texts, return_tensors="pt", padding=True,
+                                truncation=True, max_length=args.max_length).to("cuda:0")
+            hidden = model(**encoded).last_hidden_state
+            mask = encoded["attention_mask"]
+            last = hidden[torch.arange(hidden.shape[0]), mask.sum(dim=1) - 1]
+            vector = last.float().cpu().numpy()
+            hq.append(vector[0])
+            rows.append(vector[1:])
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    np.savez_compressed(out, cand=np.asarray(rows, dtype=np.float32),
+                        hq=np.asarray(hq, dtype=np.float32))
+    print(json.dumps({"status": "encoded", "cases": len(cases),
+                      "seconds": round(time.time() - started, 2),
+                      "out": str(out), "sha256": sha256(out)}, ensure_ascii=False))
+    return 0
+
+
+def features_for(cases: list[dict], archive_path: Path,
+                 order: int = 0) -> dict[str, np.ndarray]:
+    """Bind each case to its feature row through the cache's caseIds list."""
+    binding = archive_path.with_name("cache-binding.json")
+    with np.load(archive_path, allow_pickle=True) as archive:
+        cand = archive["cand"]
+    if not binding.exists():
+        raise SystemExit(f"missing cache binding next to {archive_path}")
+    case_ids = json.loads(binding.read_text())["caseIds"]
+    per_case: dict[str, list[int]] = {}
+    for index, case_id in enumerate(case_ids):
+        per_case.setdefault(case_id, []).append(index)
+    bound = {}
+    for case in cases:
+        rows = per_case.get(case["caseId"])
+        if not rows:
+            continue
+        row = rows[order] if order < len(rows) else rows[0]
+        bound[case["caseId"]] = cand[row]
+    return bound
+
+
+def cmd_train(args) -> int:
+    weight = read_head(Path(args.head))
+    cases = load_cases(Path(args.cases))
+    features = features_for(cases, Path(args.features), args.order)
+    train_cases = [case for case in cases if features.get(case["caseId"]) is not None
+                   and case.get("acceptableIds")]
+    if not train_cases:
+        print(json.dumps({"status": "blocked",
+                          "reason": "no labelled case has bound features"}))
+        return 3
+    rng = np.random.default_rng(args.seed)
+    current = weight.copy() if args.init == "warm" else rng.normal(
+        0, 0.02, size=weight.shape[0])
+    best = current.copy()
+    best_loss = float("inf")
+    curve = []
+    for epoch in range(args.epochs):
+        order = rng.permutation(len(train_cases))
+        total = 0.0
+        for index in order:
+            case = train_cases[index]
+            ids = [candidate["id"] for candidate in case["candidates"]]
+            acceptable = [ids.index(value) for value in case["acceptableIds"]]
+            logits = score_matrix(current, features[case["caseId"]])
+            loss, gradient = set_nll(logits, acceptable)
+            current -= args.lr * (features[case["caseId"]].astype(np.float64).T @ gradient)
+            total += loss
+        mean = total / len(train_cases)
+        curve.append({"epoch": epoch + 1, "loss": round(mean, 6)})
+        if mean < best_loss:
+            best_loss = mean
+            best = current.copy()
+    result = {"schema": "frostecho.jev05.action.train/1", "init": args.init,
+              "seed": args.seed, "epochs": args.epochs, "lr": args.lr,
+              "cases": len(train_cases), "bestLoss": round(best_loss, 6),
+              "curve": curve, "headInSha256": sha256(Path(args.head)),
+              "renderer": RENDERER, "featureCacheSha256": sha256(Path(args.features))}
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+    np.save(out / f"weight-{args.init}-{args.seed}.npy", best.astype(np.float32))
+    (out / f"result-{args.init}-{args.seed}.json").write_text(
+        json.dumps(result, ensure_ascii=False, indent=2))
+    print(json.dumps(result, ensure_ascii=False))
+    return 0
+
+
+def cmd_score(args) -> int:
+    weight = read_head(Path(args.head))
+    cases = load_cases(Path(args.cases))
+    features = features_for(cases, Path(args.features), args.order)
+    rows = []
+    for case in cases:
+        cand = features.get(case["caseId"])
+        if cand is None:
+            continue
+        logits = score_matrix(weight, cand)
+        probabilities = softmax(logits)
+        ids = [candidate["id"] for candidate in case["candidates"]]
+        selected = ids[int(np.argmax(logits))]
+        acceptable = case.get("acceptableIds") or []
+        rows.append({"caseId": case["caseId"], "candidateSetHash": case.get("candidateSetHash"),
+                     "selectedId": selected,
+                     "logits": [round(float(value), 6) for value in logits],
+                     "probabilities": [round(float(value), 6) for value in probabilities],
+                     "acceptableIds": acceptable,
+                     "top1Acceptable": (selected in acceptable) if acceptable else None,
+                     "headSha256": sha256(Path(args.head)),
+                     "renderer": RENDERER})
+    labelled = [row for row in rows if row["top1Acceptable"] is not None]
+    histogram: dict[str, int] = {}
+    for row in rows:
+        histogram[row["selectedId"]] = histogram.get(row["selectedId"], 0) + 1
+    result = {"schema": "frostecho.jev05.action.score/1", "cases": len(rows),
+              "labelledCases": len(labelled),
+              "top1InAcceptable": ((sum(1 for row in labelled if row["top1Acceptable"])
+                                    / len(labelled)) if labelled else None),
+              "argmaxHistogram": histogram,
+              "certifiesActions": False,
+              "scope": "real head inference over real frozen features; unlabelled "
+                       "presentations prove the path runs, not action accuracy",
+              "rows": rows}
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(result, ensure_ascii=False, indent=2))
+    print(json.dumps({"status": "scored", "cases": result["cases"],
+                      "top1InAcceptable": result["top1InAcceptable"],
+                      "out": str(out), "sha256": sha256(out)}, ensure_ascii=False))
+    return 0
+
+
+def cmd_calibrate(args) -> int:
+    weight = read_head(Path(args.head))
+    cases = load_cases(Path(args.cases))
+    features = features_for(cases, Path(args.features), args.order)
+    temperatures = [0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 5.0]
+    best = None
+    for temperature in temperatures:
+        nlls = []
+        for case in cases:
+            cand = features.get(case["caseId"])
+            if cand is None or not case.get("acceptableIds"):
+                continue
+            ids = [candidate["id"] for candidate in case["candidates"]]
+            acceptable = [ids.index(value) for value in case["acceptableIds"]]
+            logits = score_matrix(weight, cand) / temperature
+            nlls.append(set_nll(logits, acceptable)[0])
+        if not nlls:
+            continue
+        value = float(np.mean(nlls))
+        if best is None or value < best["nll"]:
+            best = {"temperature": temperature, "nll": round(value, 6),
+                    "cases": len(nlls)}
+    if best is None:
+        print(json.dumps({"status": "blocked", "reason": "no labelled case with features"}))
+        return 3
+    result = {"schema": "frostecho.jev05.action.calibration/1", **best,
+              "headSha256": sha256(Path(args.head)), "renderer": RENDERER,
+              "featureCacheSha256": sha256(Path(args.features))}
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(result, ensure_ascii=False, indent=2))
+    print(json.dumps(result, ensure_ascii=False))
+    return 0
+
+
+def cmd_serve(args) -> int:
+    """Line protocol: one ChoiceRequest in, one result out. Never invents ids."""
+    weight = read_head(Path(args.head))
+    feature_map = json.loads(Path(args.feature_map).read_text())
+    identity = {"mode": args.mode, "scorerId": "jev-joint-c/1",
+                "checkpointSha256": sha256(Path(args.head)),
+                "encoderId": str(ENCODER), "rendererId": RENDERER,
+                "memoryPolicyId": args.memory_policy,
+                "dataCertificateSha256": args.data_certificate,
+                "experimental": args.mode == "jev-experimental",
+                "countsAsAdmitted": args.mode == "jev-admitted"}
+    for line in sys.stdin:
+        line = line.strip()
+        if not line:
+            continue
+        started = time.time()
+        request = json.loads(line)
+        candidates = request.get("candidates") or []
+        matrix = []
+        missing = []
+        for candidate in candidates:
+            key = candidate.get("parameters", {}).get("featureKey")
+            row = feature_map.get(key) if key else None
+            if row is None:
+                missing.append(candidate.get("id"))
+            else:
+                matrix.append(row)
+        if not candidates or missing:
+            print(json.dumps({"requestId": request.get("requestId"),
+                              "candidateSetHash": request.get("candidateSetHash"),
+                              "error": "no_features_for_candidates",
+                              "missing": missing}, ensure_ascii=False), flush=True)
+            continue
+        logits = score_matrix(weight, np.asarray(matrix, dtype=np.float32))
+        probabilities = softmax(logits)
+        order = np.argsort(-probabilities)
+        print(json.dumps({
+            "requestId": request["requestId"],
+            "candidateSetHash": request["candidateSetHash"],
+            "scores": [{"candidateId": candidate["id"],
+                        "logit": round(float(logits[index]), 6),
+                        "probability": round(float(probabilities[index]), 6)}
+                       for index, candidate in enumerate(candidates)],
+            "selectedId": candidates[int(order[0])]["id"],
+            "disposition": "accept",
+            "reason": f"joint-c argmax at T={args.temperature}",
+            "identity": identity,
+            "latencyMs": round((time.time() - started) * 1000, 3),
+        }, ensure_ascii=False), flush=True)
+    return 0
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="R8 action scorer: preflight/encode/train/calibrate/score/serve")
+    parser.add_argument("--head", default=str(HEAD))
+    parser.add_argument("--encoder", default=str(ENCODER))
+    parser.add_argument("--features", default=None)
+    parser.add_argument("--cases", default=None)
+    parser.add_argument("--json", action="store_true")
+    sub = parser.add_subparsers(dest="command", required=True)
+    pre = sub.add_parser("preflight")
+    pre.add_argument("--json", action="store_true")
+    pre.set_defaults(func=cmd_preflight)
+    enc = sub.add_parser("encode")
+    enc.add_argument("--out", required=True)
+    enc.add_argument("--max-length", type=int, default=1024)
+    enc.set_defaults(func=cmd_encode)
+    train = sub.add_parser("train")
+    train.add_argument("--out", required=True)
+    train.add_argument("--init", choices=["warm", "random"], default="warm")
+    train.add_argument("--seed", type=int, default=17)
+    train.add_argument("--epochs", type=int, default=40)
+    train.add_argument("--lr", type=float, default=0.05)
+    train.add_argument("--order", type=int, default=0)
+    train.set_defaults(func=cmd_train)
+    cal = sub.add_parser("calibrate")
+    cal.add_argument("--out", required=True)
+    cal.add_argument("--order", type=int, default=0)
+    cal.set_defaults(func=cmd_calibrate)
+    score = sub.add_parser("score")
+    score.add_argument("--out", required=True)
+    score.add_argument("--order", type=int, default=0)
+    score.set_defaults(func=cmd_score)
+    serve = sub.add_parser("serve")
+    serve.add_argument("--feature-map", required=True)
+    serve.add_argument("--mode", choices=["jev-experimental", "jev-admitted"],
+                       default="jev-experimental")
+    serve.add_argument("--temperature", type=float, default=1.0)
+    serve.add_argument("--memory-policy", default="conditional-experience")
+    serve.add_argument("--data-certificate", default=None)
+    serve.set_defaults(func=cmd_serve)
+    return parser
+
+
+def main() -> int:
+    parser = build_parser()
+    args = parser.parse_args()
+    if getattr(args, "cases", None) is None and args.command in ("train", "calibrate",
+                                                                   "score"):
+        parser.error(f"{args.command} requires --cases")
+    if getattr(args, "features", None) is None and args.command in ("train", "calibrate",
+                                                                      "score"):
+        parser.error(f"{args.command} requires --features")
+    return args.func(args)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,482 @@
+{
+  "schema": "frostecho.r8.verify/1",
+  "sourceHEAD": "07d5df34b296f69aa3c52ce2fe263ffa713e14d5",
+  "generatedAt": "2026-11-16T07:44:09.991Z",
+  "strict": false,
+  "gates": [
+    {
+      "gate": "original-playthrough",
+      "status": "pass",
+      "command": "/data/home/user_00/.local/node22/bin/node dist/scripts/r8/playthrough.js --profile gospel-5.8.19 --seed r8-verify --mode reference --out /data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/playthrough",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8",
+      "exitCode": 0,
+      "sourceHEAD": "07d5df34b296f69aa3c52ce2fe263ffa713e14d5",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/playthrough/summary-reference-r8-verify-2026-11-16T07-44-02-589Z.json",
+      "sha256": "2e8077a18d9ae824ebfbdbf98da7c62231fd73d35e10f70d6dd1f5d2bf60cf9b",
+      "evidenceClass": "reference",
+      "note": "D1 08:00 -> D4 18:00, elapsed=4920, ending settled",
+      "observed": {
+        "ok": true,
+        "profile": "gospel-5.8.19",
+        "seed": "r8-verify",
+        "mode": "reference",
+        "lives": 1,
+        "ending": "perfect",
+        "survivors": 8,
+        "elapsed": 4920,
+        "decisions": 335,
+        "executed": 322,
+        "rejected": 13,
+        "out": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/playthrough",
+        "summary": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/playthrough/summary-reference-r8-verify-2026-11-16T07-44-02-589Z.json"
+      }
+    },
+    {
+      "gate": "reincarnation",
+      "status": "pass",
+      "command": "/data/home/user_00/.local/node22/bin/node dist/scripts/r8/playthrough.js --seed r8-verify --lives 2 --mode reference --out /data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/reincarnation",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8",
+      "exitCode": 0,
+      "sourceHEAD": "07d5df34b296f69aa3c52ce2fe263ffa713e14d5",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/reincarnation/summary-reference-r8-verify-2026-11-16T07-44-04-038Z.json",
+      "sha256": "1a241f069e935a956d956ae0a04e9ad6fa144ac4e710c81a30d504cd889153a6",
+      "evidenceClass": "reference",
+      "note": "two settled lives, lifeNumber incremented"
+    },
+    {
+      "gate": "cross-process-restore",
+      "status": "pass",
+      "command": "/data/home/user_00/.local/node22/bin/node /data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/restore/restore-probe.js <dist> save|load /data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/restore/life.save",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8",
+      "exitCode": 0,
+      "sourceHEAD": "07d5df34b296f69aa3c52ce2fe263ffa713e14d5",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/restore/life.save",
+      "sha256": "d1084bcb8186269448aedba041651fca7d3b9f4a26e2acbc325c919199c89e3e",
+      "evidenceClass": "reference",
+      "note": "same calendar endpoint 1920 after reload"
+    },
+    {
+      "gate": "four-endings",
+      "status": "pass",
+      "command": "/data/home/user_00/.local/node22/bin/node dist/scripts/r8/playthrough.js --npc <n> --food <f>",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8",
+      "exitCode": 0,
+      "sourceHEAD": "07d5df34b296f69aa3c52ce2fe263ffa713e14d5",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/four-endings",
+      "sha256": "",
+      "evidenceClass": "reference",
+      "note": "thresholds hit: {\"1\":\"extinction\",\"3\":\"bleak\",\"5\":\"normal\",\"8\":\"perfect\"}",
+      "observed": {
+        "1": "extinction",
+        "3": "bleak",
+        "5": "normal",
+        "8": "perfect"
+      }
+    },
+    {
+      "gate": "original-parity",
+      "status": "pass",
+      "command": "/data/home/user_00/.local/node22/bin/node /data3/DATA/project/project_meishijiang/FrostEcho-r8/scripts/r8/parity.mjs",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8",
+      "exitCode": 0,
+      "sourceHEAD": "07d5df34b296f69aa3c52ce2fe263ffa713e14d5",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/parity.json",
+      "sha256": "3b3a0bda86d2dea9776d8002e3103f336f0cdd51ec7ee0b1d01ccfa31c767141",
+      "evidenceClass": "reference",
+      "note": "33 original constants match",
+      "observed": {
+        "schema": "frostecho.r8.parity/1",
+        "generatedAt": "2026-11-16T07:44:09.575Z",
+        "originalRoot": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/handoff/20261113-r7-full-goal/reference-extracted/source/extracted",
+        "checks": 33,
+        "failed": 0,
+        "failures": [],
+        "results": [
+          {
+            "name": "day boundary is 24h",
+            "file": "src/core/game.js",
+            "pattern": "/24\\s*\\*\\s*3600/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "day length 1440 minutes"
+          },
+          {
+            "name": "start 08:00",
+            "file": "src/core/game.js",
+            "pattern": "/gameTimeSeconds\\s*=\\s*8\\s*\\*\\s*3600/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "D1 08:00 start"
+          },
+          {
+            "name": "timeSpeed 60",
+            "file": "src/core/game.js",
+            "pattern": "/timeSpeed\\s*=\\s*60/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "1 real second = 1 game minute"
+          },
+          {
+            "name": "firewood default 30",
+            "file": "src/systems/resource-system.js",
+            "pattern": "/woodFuel\\s*:\\s*30/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "RESOURCE_DEFAULTS"
+          },
+          {
+            "name": "food default 130",
+            "file": "src/systems/resource-system.js",
+            "pattern": "/food\\s*:\\s*130/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "RESOURCE_DEFAULTS"
+          },
+          {
+            "name": "power default 30",
+            "file": "src/systems/resource-system.js",
+            "pattern": "/power\\s*:\\s*30/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "RESOURCE_DEFAULTS"
+          },
+          {
+            "name": "heating wood 1.0/h",
+            "file": "src/systems/resource-system.js",
+            "pattern": "/1\\.0/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "heating wood per hour"
+          },
+          {
+            "name": "town power 2.0/h",
+            "file": "src/systems/resource-system.js",
+            "pattern": "/2\\.0/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "town power per hour"
+          },
+          {
+            "name": "generator buildPower 10",
+            "file": "src/systems/machine-system.js",
+            "pattern": "/buildMaterialCost\\s*:\\s*10/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "charged from power"
+          },
+          {
+            "name": "lumberMill buildPower 12",
+            "file": "src/systems/machine-system.js",
+            "pattern": "/buildMaterialCost\\s*:\\s*12/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "charged from power"
+          },
+          {
+            "name": "generator buildTime 14400s",
+            "file": "src/systems/machine-system.js",
+            "pattern": "/buildTimeSeconds\\s*:\\s*14400/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "240 game minutes"
+          },
+          {
+            "name": "build cost checked against power",
+            "file": "src/systems/machine-system.js",
+            "pattern": "/rs\\.power\\s*<\\s*config\\.buildMaterialCost/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "power is the material"
+          },
+          {
+            "name": "heating strength weights",
+            "file": "src/systems/furnace-system.js",
+            "pattern": "/0\\.65[\\s\\S]{0,80}0\\.35/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "wood 0.65 + power 0.35"
+          },
+          {
+            "name": "strength thresholds",
+            "file": "src/systems/furnace-system.js",
+            "pattern": "/0\\.75[\\s\\S]{0,200}0\\.45[\\s\\S]{0,200}0\\.12/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "0.75/0.45/0.12"
+          },
+          {
+            "name": "second furnace removed",
+            "file": "src/systems/furnace-system.js",
+            "pattern": "/已移除/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "furnace competition is gone"
+          },
+          {
+            "name": "D2 -30",
+            "file": "src/systems/weather-system.js",
+            "pattern": "/-30/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "day 2 base temp"
+          },
+          {
+            "name": "D4 -60",
+            "file": "src/systems/weather-system.js",
+            "pattern": "/-60/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "day 4 base temp"
+          },
+          {
+            "name": "wind chill 1.3",
+            "file": "src/systems/weather-system.js",
+            "pattern": "/1\\.3/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "outdoor wind chill"
+          },
+          {
+            "name": "bodyTemp floor 25",
+            "file": "src/npc/npc-body.js",
+            "pattern": "/25/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "hypothermia floor"
+          },
+          {
+            "name": "outdoor cooling rate",
+            "file": "src/npc/npc-body.js",
+            "pattern": "/0\\.00025/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "|temp| * 0.00025 * dt"
+          },
+          {
+            "name": "fifteen original task types",
+            "file": "src/systems/task-system.js",
+            "pattern": "TASK_TYPES",
+            "foundInOriginal": true,
+            "portMatches": true,
+            "note": "all 15 ported"
+          },
+          {
+            "name": "council firewood trigger 15",
+            "file": "src/systems/council-system.js",
+            "pattern": "/15/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "firewood < 15"
+          },
+          {
+            "name": "council food trigger 20",
+            "file": "src/systems/council-system.js",
+            "pattern": "/20/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "food < 20"
+          },
+          {
+            "name": "tie broken by 老钱",
+            "file": "src/systems/council-system.js",
+            "pattern": "/老钱/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "tie break owner"
+          },
+          {
+            "name": "no counter-proposal in original",
+            "file": "src/systems/council-system.js",
+            "pattern": "/反提案|counterProposal/",
+            "foundInOriginal": false,
+            "expectFound": false,
+            "portMatches": true,
+            "note": "the port labels its counter path as a port decision"
+          },
+          {
+            "name": "food conflict threshold 8",
+            "file": "src/systems/event-system.js",
+            "pattern": "/<\\s*8|8\\s*</",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "food < 8"
+          },
+          {
+            "name": "extinction at 2 survivors",
+            "file": "src/systems/event-system.js",
+            "pattern": "/2/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "<=2 triggers extinction crisis"
+          },
+          {
+            "name": "perfect 8 survivors",
+            "file": "src/systems/death-system.js",
+            "pattern": "/minSurvivors\\s*:\\s*8/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "PERFECT"
+          },
+          {
+            "name": "normal 5 survivors",
+            "file": "src/systems/death-system.js",
+            "pattern": "/minSurvivors\\s*:\\s*5/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "NORMAL"
+          },
+          {
+            "name": "bleak 2 survivors",
+            "file": "src/systems/death-system.js",
+            "pattern": "/minSurvivors\\s*:\\s*2/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "BLEAK"
+          },
+          {
+            "name": "ending at day4 18:00",
+            "file": "src/systems/death-ending.js",
+            "pattern": "/hour\\s*>=\\s*18/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "D4 18:00"
+          },
+          {
+            "name": "max 20 past lives",
+            "file": "src/systems/reincarnation-system.js",
+            "pattern": "/MAX_PAST_LIVES\\s*=\\s*20/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "oldest dropped"
+          },
+          {
+            "name": "NPC chat disabled",
+            "file": "src/core/constants.js",
+            "pattern": "/CHAT_ENABLED\\s*=\\s*false/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "original disables NPC-to-NPC chat"
+          }
+        ],
+        "verdict": "match"
+      }
+    },
+    {
+      "gate": "jev-preflight",
+      "status": "blocked",
+      "command": "python research/decision-choice/jev05/action/train.py preflight --json",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8",
+      "exitCode": 0,
+      "sourceHEAD": "07d5df34b296f69aa3c52ce2fe263ffa713e14d5",
+      "path": "research/decision-choice/jev05/action/train.py",
+      "sha256": "33944e17814d308d80cdef261851c54a406affb53df6e31c14979d79327691e8",
+      "evidenceClass": "real-model",
+      "note": "no free GPU can hold a 27B BF16 backbone (need 51498 MiB, best free 6507 MiB; other processes hold the cards); no frozen-feature cache for new inputs; encode is blocked",
+      "observed": {
+        "schema": "frostecho.jev05.action.preflight/1",
+        "checkedAt": "2026-11-16T15:44:09",
+        "renderer": "joint-c-action/1",
+        "hidden": 5120,
+        "head": {
+          "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r7/legacy-reuse/c43-increment-batch4-1/warm-start-17/best.safetensors",
+          "exists": true,
+          "sha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04"
+        },
+        "encoder": {
+          "path": "/data2/model_weights/Qwen3.8-27B",
+          "exists": true,
+          "hiddenSize": 5120,
+          "matchesHead": true
+        },
+        "gpus": [
+          {
+            "index": 0,
+            "name": "NVIDIA A10",
+            "totalMiB": 23028,
+            "usedMiB": 18433,
+            "freeMiB": 4595
+          },
+          {
+            "index": 1,
+            "name": "NVIDIA A10",
+            "totalMiB": 24564,
+            "usedMiB": 18057,
+            "freeMiB": 6507
+          }
+        ],
+        "encoderLoadable": false,
+        "requiredVramMiB": 51498,
+        "features": {
+          "path": null,
+          "exists": false
+        },
+        "blockedReason": "no free GPU can hold a 27B BF16 backbone (need 51498 MiB, best free 6507 MiB; other processes hold the cards); no frozen-feature cache for new inputs; encode is blocked",
+        "readyForScoring": true,
+        "readyForTraining": false,
+        "readyForLiveEncoding": false,
+        "status": "blocked"
+      }
+    },
+    {
+      "gate": "scorer-honesty",
+      "status": "pass",
+      "command": "inline contract assertion",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8",
+      "exitCode": 0,
+      "sourceHEAD": "07d5df34b296f69aa3c52ce2fe263ffa713e14d5",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/honesty.json",
+      "sha256": "a1895f1d063727752ba74dafafe7ebc03e562021b24ae7636df58cafb4fdba63",
+      "evidenceClass": "fixture",
+      "note": "no experimental scorer claims admission"
+    },
+    {
+      "gate": "calendar-contract",
+      "status": "pass",
+      "command": "inline constant check",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8",
+      "exitCode": 0,
+      "sourceHEAD": "07d5df34b296f69aa3c52ce2fe263ffa713e14d5",
+      "path": "src/r7/contracts.ts",
+      "sha256": "ec378091f8e5a6f1ea6b14df8eaabd4aa62f669a41f068b1fe7feb4492b16893",
+      "evidenceClass": "reference",
+      "note": "gospel-5.8.19 elapsed == 4920 minutes"
+    }
+  ],
+  "summary": {
+    "pass": 7,
+    "fail": 0,
+    "blocked": 1,
+    "notRun": 0
+  }
+}

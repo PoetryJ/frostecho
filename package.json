@@ -27,7 +27,12 @@
     "verify:r5": "npm run build && node dist/scripts/verify-r5.js",
     "features:r5": "npm run build && node dist/scripts/r5-features.js",
     "eval:full": "npm run build && node dist/scripts/eval-full.js",
-    "play:r7": "npm run build && node dist/scripts/r7/play-web.js"
+    "play:r7": "npm run build && node dist/scripts/r7/play-web.js",
+    "play:r8": "npm run build && node dist/scripts/r8/playthrough.js --profile gospel-5.8.19 --seed r8-1 --mode reference --out artifacts/sprint-r8/play",
+    "verify:r8": "npm run build && node dist/scripts/r8/verify.js",
+    "cases:r8": "npm run build && node dist/scripts/r8/cases.js",
+    "parity:r8": "node scripts/r8/parity.mjs",
+    "compare:r8": "node dist/scripts/r8/compare.js"
   },
   "devDependencies": {
     "@types/node": "^20",
