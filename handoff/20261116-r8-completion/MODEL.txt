@@ -1,0 +1,11 @@
+给M的精确实施顺序，保持原joint-C路线。
+1. 运行本包probes/jev-probes.py --repo . --out <new.json>，读基线差异。脚本是观察器，exit0不代表系统正确；它使用机制向量，不是实模效果测试。
+2. 原C算法：对每个候选的真实hidden向量 h，z=w·((h-mean(h))/sqrt(mean((h-mean(h))²)+1e-5))；LayerNorm无affine，线性无bias。复用 legacy/runner.py make_head 和本包上一轮 reference/joint_core.py，别再只做features@w。校对真实旧cache的logits/决策和新进程重载。
+3. 一个ChoiceRequest一次joint渲染：完整actor观察/记忆/目标+候选kind/description/parameters/可见preconditions，ID只映射。结构char-span到真实tokenizer offset；每个排列重新渲染编码，超长明确拒绝/上游预算整理，禁止silent truncation。候选token读取同次前向，不能单独编码空context/candidate.text。D当前缺observationText/text，统一适配现有ChoiceRequest而不是补空字符串。
+4. 既有encode_bf16.py已证明冻结27B可以CPU offload。资源判断是GPU分片+CPU RAM承载，不能检查“某张卡≥51GiB”。本次实测（需重查）：GPU0空闲4071MiB、GPU1空闲5974MiB，系统available RAM73874MiB；外部contract2进程不得中止。优先物理GPU1，按空闲减至少1536MiB余量规划max_memory，CPU按可用减至少12GiB及临时加载余量；device_map与实际占用入账。若两卡全空也仍需少量CPU卸载。使用low_cpu_mem_usage/现有加载器避免双份权重；不自动量化换模型。先1条真实新请求→8条批次测秒/条、峰值RAM/VRAM，再决定缓存/批次。显存估计只是预算，实测成功才ready。
+5. 持久serve加载模型一次，新请求实时encode→LN头→softmax(z/T)。feature-map只能作明确缓存回放，缓存键必须绑定encoder/renderer/memory/input/candidate内容/order。改候选参数或观察就重编码，不能让参数传一个任意featureKey充当真实模型。
+6. 数据gate必须在train前重算；只train分区更新、dev选checkpoint，保存四组warm/random×17/43。calT拟T，select定tau，cert只独立一次；复用calibration/math_core.py+policy.py并写joint manifest adapter。现版本cmd_train全分区喂训练及按训练loss选模要删除。
+7. T=0.1 vs100必须改变非相同logit的概率；无证书admitted请求必须拒绝，不能仅按--mode翻countsAsAdmitted。隔离jev-experimental可先产生真实行动，不等正式证书；最终是否正式启用交负责人看效果与成本。
+8. 交新ChoiceRequest完整字节、token/hash/候选位置、model/head身份、logits/概率、真正回执；旧192是缓存头重放，单列headForwardCalls=192、encoderForwardCalls=0。新GPU调用单记。
+当前原算法参考：handoff/20261116-r8-vibe/reference/joint_core.py；旧真实训练：research/decision-choice/jev05/legacy/RUNBOOK.md。
+训练/编码性能不足须报实测瓶颈与预计时间，不再以错误的单卡门结束全部模型工作。
