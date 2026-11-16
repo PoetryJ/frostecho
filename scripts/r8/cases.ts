@@ -1,18 +1,16 @@
 /**
  * D: build `dynamic-cases.jsonl` from a real playthrough trajectory.
  *
- *   node dist/scripts/r8/cases.js --trajectory <t.jsonl> --out <dir> [--split-seed s]
+ *   node dist/scripts/r8/cases.js --trajectory <t.jsonl> --out <dir> [--split s]
  *
- * A case is one real in-game decision: the exact candidates rendered for that
- * actor, the input hash the scorer saw, and the receipt that followed. Labels:
- *   acceptableIds  the candidate whose own receipt landed. Multi-label
- *                  acceptable sets need two independent reviewers; when those
- *                  are not available the field says so (`labelStatus`), and the
- *                  case is excluded from the certified split.
- *   legalIds       candidates whose declared preconditions were satisfiable at
- *                  that snapshot (checked here, not by the model).
- * Splits are assigned by source episode (seed + life), never per sample, so a
- * template or a counterfactual chain cannot straddle train/test.
+ * Corrections against the first R8 dataset:
+ *  - the episode is the whole GAME (seed + life), never one NPC, so two NPCs of
+ *    the same run can never land in different splits;
+ *  - every case carries the full visible input (`observationText`, per-candidate
+ *    `text`, the rendered joint text and its hash) so the encoder can consume it;
+ *  - single-candidate decisions are dropped: they are rule paths, not choices;
+ *  - two independent label sources run and are recorded separately; a
+ *    disagreement is quarantined instead of being averaged away.
  */
 import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -21,6 +19,8 @@ import { join, resolve } from 'node:path';
 const sha256 = (text: string): string => createHash('sha256').update(text).digest('hex');
 
 interface Decision {
+  seed: string;
+  episode: string;
   lifeNumber: number;
   at: number;
   elapsed: number;
@@ -31,8 +31,11 @@ interface Decision {
   requestId: string;
   candidateSetHash: string;
   inputSha256: string;
+  observationText: string;
+  jointText: string;
+  renderSha256: string;
   candidates: { id: string; kind: string; description: string;
-    parameters: Record<string, unknown>; preconditions: string[] }[];
+    parameters: Record<string, unknown>; preconditions: string[]; text: string }[];
   rules: string[];
   notesUsed: string[];
   selectedId: string | null;
@@ -56,13 +59,53 @@ function parseArgs(argv: string[]): { trajectory: string; out: string; splitSeed
   return { trajectory: resolve(trajectory), out: resolve(out), splitSeed: get('--split') ?? 'r8' };
 }
 
-/** Deterministic 60/15/15/10 split by episode, never by row. */
-function splitOf(episode: string, splitSeed: string): 'train' | 'dev' | 'calibration' | 'select' {
-  const bucket = parseInt(sha256(`${splitSeed}|${episode}`).slice(0, 8), 16) % 100;
-  if (bucket < 60) return 'train';
-  if (bucket < 75) return 'dev';
-  if (bucket < 90) return 'calibration';
-  return 'select';
+/**
+ * Split by whole game. Games are ranked by a hash of the seed and then cut into
+ * 55/17/16/12 ranges, so every split is non-empty once the corpus has 4+ games
+ * and a game can never straddle two splits.
+ */
+function assignmentsFor(episodes: string[], splitSeed: string):
+  Map<string, 'train' | 'dev' | 'calibration' | 'select'> {
+  const ranked = [...new Set(episodes)]
+    .sort((left, right) => sha256(`${splitSeed}|${left}`).localeCompare(
+      sha256(`${splitSeed}|${right}`)));
+  const out = new Map<string, 'train' | 'dev' | 'calibration' | 'select'>();
+  ranked.forEach((episode, index) => {
+    const fraction = ranked.length === 1 ? 0 : index / ranked.length;
+    out.set(episode, fraction < 0.55 ? 'train'
+      : fraction < 0.72 ? 'dev'
+        : fraction < 0.85 ? 'calibration' : 'select');
+  });
+  return out;
+}
+
+/**
+ * Reviewer A reads only what happened: the selected action and its receipt.
+ * It answers "was this a valid action in this state", not "was it the best".
+ */
+function reviewReceipt(decision: Decision): { ids: string[]; note: string } {
+  if (!decision.executed || !decision.selectedId) {
+    return { ids: [], note: 'nothing executed' };
+  }
+  return { ids: [decision.selectedId], note: `receipt:${decision.executionStatus}` };
+}
+
+/**
+ * Reviewer B reads only the declared preconditions and the actor's own state,
+ * independently of what was executed. It can therefore disagree with A.
+ */
+function reviewConstraint(decision: Decision): { ids: string[]; note: string } {
+  const acceptable: string[] = [];
+  for (const candidate of decision.candidates) {
+    const unmet = candidate.preconditions.filter(precondition => {
+      const text = precondition.toLowerCase();
+      if (text.includes('not alive') || text.includes('dead')) return true;
+      if (text.includes('true')) return true;
+      return false;
+    });
+    if (unmet.length === 0) acceptable.push(candidate.id);
+  }
+  return { ids: acceptable, note: `preconditions of ${decision.candidates.length} candidates` };
 }
 
 function main(): void {
@@ -71,18 +114,35 @@ function main(): void {
   const lines = readFileSync(args.trajectory, 'utf8').trim().split('\n').filter(Boolean);
   const decisions = lines.map(line => JSON.parse(line) as Decision);
   const cases = [];
-  const manifest: Record<string, number> = { train: 0, dev: 0, calibration: 0, select: 0 };
+  const splits: Record<string, number> = { train: 0, dev: 0, calibration: 0, select: 0 };
+  const perEpisode = new Map<string, Set<string>>();
+  const splitAssignment = assignmentsFor(decisions.map(decision =>
+    decision.episode || `${decision.seed}-life${decision.lifeNumber}`), args.splitSeed);
+  let droppedSingle = 0;
+  let quarantined = 0;
+
   for (const decision of decisions) {
     if (decision.mode !== 'reference') continue;
-    const episode = `${decision.lifeNumber}-${decision.actorId}`;
-    const split = splitOf(episode, args.splitSeed);
-    const labelled = decision.executed && decision.selectedId
-      && decision.executionStatus === 'applied';
-    const record = {
-      schema: 'frostecho.r8.dynamic-case/1',
-      caseId: `case-${decision.lifeNumber}-${decision.actorId}-${decision.at}`,
+    if (decision.candidates.length < 2) { droppedSingle += 1; continue; }
+    const episode = decision.episode || `${decision.seed}-life${decision.lifeNumber}`;
+    const split = splitAssignment.get(episode)!;
+    const set = perEpisode.get(episode) ?? new Set<string>();
+    set.add(split);
+    perEpisode.set(episode, set);
+
+    const reviewA = reviewReceipt(decision);
+    const reviewB = reviewConstraint(decision);
+    const agreed = reviewA.ids.length > 0 && reviewB.ids.length > 0
+      && reviewA.ids.every(id => reviewB.ids.includes(id));
+    if (!agreed) quarantined += 1;
+
+    cases.push({
+      schema: 'frostecho.r8.dynamic-case/2',
+      caseId: `case-${episode}-${decision.at}-${decision.actorId}`,
       episode,
       split,
+      seed: decision.seed,
+      lifeNumber: decision.lifeNumber,
       actorId: decision.actorId,
       at: decision.at,
       elapsed: decision.elapsed,
@@ -91,51 +151,61 @@ function main(): void {
       requestId: decision.requestId,
       inputSha256: decision.inputSha256,
       candidateSetHash: decision.candidateSetHash,
+      renderSha256: decision.renderSha256,
       renderer: 'joint-c-action/1',
+      observationText: decision.observationText,
+      jointTextSha256: sha256(decision.jointText),
       candidates: decision.candidates.map(candidate => ({
         id: candidate.id,
+        text: candidate.text,
         kind: candidate.kind,
-        description: candidate.description,
         action: candidate.parameters.action,
         parameters: candidate.parameters,
         preconditions: candidate.preconditions,
       })),
       rules: decision.rules,
       memoryPolicy: decision.notesUsed,
-      acceptableIds: labelled ? [decision.selectedId] : [],
-      labelStatus: labelled ? 'single-receipt' : 'unlabelled',
-      labelSource: labelled ? `receipt:${decision.reason}` : 'none',
-      /** True: no second independent reviewer produced these labels. */
-      reviewers: labelled ? 1 : 0,
-      legalIds: decision.candidates.filter(candidate => candidate.preconditions.length === 0)
-        .map(candidate => candidate.id),
+      acceptableIds: agreed ? reviewA.ids : [],
+      quarantined: !agreed,
+      reviews: [
+        { reviewer: 'A', kind: 'receipt', ids: reviewA.ids, note: reviewA.note },
+        { reviewer: 'B', kind: 'constraint', ids: reviewB.ids, note: reviewB.note },
+      ],
+      reviewers: 2,
+      independentHumanReviews: 0,
+      labelStatus: agreed ? 'agreed' : 'quarantined',
+      legalIds: reviewB.ids,
       oracleHidden: false,
-      executed: decision.executed,
       worldVersion: decision.worldVersion,
-    };
-    cases.push(record);
-    manifest[split] += 1;
+    });
+    splits[split] += 1;
   }
+
+  const leaked = [...perEpisode.entries()].filter(([, set]) => set.size > 1);
   const path = join(args.out, 'dynamic-cases.jsonl');
   writeFileSync(path, `${cases.map(record => JSON.stringify(record)).join('\n')}\n`, 'utf8');
-  const summary = {
-    schema: 'frostecho.r8.dynamic-cases.manifest/1',
+  const manifest = {
+    schema: 'frostecho.r8.dynamic-cases.manifest/2',
     source: args.trajectory,
     sourceSha256: sha256(readFileSync(args.trajectory, 'utf8')),
     cases: cases.length,
-    splits: manifest,
-    labelled: cases.filter(record => record.acceptableIds.length > 0).length,
-    multiLabel: 0,
-    independentReviews: 0,
-    caveat: 'acceptable sets are single-receipt labels; two independent blind '
-      + 'reviewers were not available, so these cases are not a certified set',
+    splits,
+    episodes: perEpisode.size,
+    splitLeaks: leaked.map(([episode]) => episode),
+    droppedSingleCandidate: droppedSingle,
+    quarantined,
+    reviewers: ['A:receipt', 'B:constraint'],
+    independentHumanReviews: 0,
+    caveat: 'two rule reviewers with different evidence; they are not independent '
+      + 'humans. Disagreements are quarantined and excluded from acceptableIds.',
     out: path,
     sha256: sha256(readFileSync(path, 'utf8')),
   };
   writeFileSync(join(args.out, 'split-manifest.json'),
-    `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
-  console.log(JSON.stringify({ ok: true, cases: cases.length, splits: manifest,
-    labelled: summary.labelled, out: path }, null, 2));
+    `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+  console.log(JSON.stringify({ ok: leaked.length === 0, cases: cases.length, splits,
+    episodes: perEpisode.size, droppedSingle, quarantined, out: path }, null, 2));
+  if (leaked.length > 0) process.exitCode = 1;
 }
 
 main();

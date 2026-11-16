@@ -51,6 +51,12 @@ export interface ExecutionOutcome {
   eventIds: string[];
   postStateVersion: number | null;
   reason: string | null;
+  /**
+   * R8: the typed events this command actually produced. A task may only be
+   * closed by one of these; the ids alone cannot prove what happened.
+   */
+  events?: { eventId: string; type: string; actorId?: string; simTime: number;
+    payload: Record<string, unknown> }[];
 }
 
 export interface ExecutionPort {

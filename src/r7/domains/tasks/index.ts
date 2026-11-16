@@ -68,6 +68,58 @@ export const TASK_CATALOG: Record<TaskTypeId, TaskDefinition> = {
 
 export const TASK_IDS = Object.keys(TASK_CATALOG) as TaskTypeId[];
 
+/**
+ * The committed event types that can close a task. `machine_build_started` is
+ * deliberately absent: starting a build is not finishing it.
+ */
+export const RECEIPT_TYPES: Record<TaskTypeId, string[]> = {
+  COLLECT_WOOD: ['gathered'],
+  COLLECT_FOOD: ['gathered'],
+  MAINTAIN_POWER: ['worked'],
+  COLLECT_MATERIAL: ['gathered', 'worked'],
+  PREPARE_WARMTH: ['refuelled'],
+  PREPARE_MEDICAL: ['treated'],
+  BOOST_MORALE: ['worked'],
+  COORDINATE: ['worked'],
+  DISTRIBUTE_FOOD: ['stock_deposited', 'meal_delivered'],
+  MAINTAIN_ORDER: ['worked'],
+  REST_RECOVER: ['rested'],
+  SCOUT_RUINS: ['gathered', 'traveled', 'worked'],
+  BUILD_GENERATOR: ['machine_built'],
+  BUILD_LUMBER_MILL: ['machine_built'],
+  BUILD_FOOD_COLLECTOR: ['machine_built'],
+};
+
+/** The work a task actually performs; resources come from this, not the close. */
+export interface WorkRule {
+  action: 'gather' | 'work' | 'refuel' | 'medical' | 'deposit' | 'rest';
+  resource?: 'food' | 'firewood';
+  amount?: number;
+  minutes?: number;
+}
+
+export const WORK_RULES: Record<TaskTypeId, WorkRule | null> = {
+  COLLECT_WOOD: { action: 'gather', resource: 'firewood', amount: 2 },
+  COLLECT_FOOD: { action: 'gather', resource: 'food', amount: 2 },
+  MAINTAIN_POWER: { action: 'work', minutes: 40 },
+  COLLECT_MATERIAL: { action: 'work', minutes: 45 },
+  PREPARE_WARMTH: { action: 'refuel', amount: 2 },
+  PREPARE_MEDICAL: { action: 'medical', amount: 1 },
+  BOOST_MORALE: { action: 'work', minutes: 30 },
+  COORDINATE: { action: 'work', minutes: 30 },
+  DISTRIBUTE_FOOD: { action: 'deposit', amount: 1 },
+  MAINTAIN_ORDER: { action: 'work', minutes: 40 },
+  REST_RECOVER: { action: 'rest', minutes: 60 },
+  SCOUT_RUINS: { action: 'work', minutes: 45 },
+  BUILD_GENERATOR: null,
+  BUILD_LUMBER_MILL: null,
+  BUILD_FOOD_COLLECTOR: null,
+};
+
+export function receiptTypesFor(type: TaskTypeId): string[] {
+  return RECEIPT_TYPES[type] ?? [];
+}
+
 export type TaskStatus = 'proposed' | 'accepted' | 'declined' | 'countered'
   | 'reassigned' | 'done' | 'cancelled';
 
@@ -229,31 +281,53 @@ export const tasksDomain: DomainModule<TasksState> = {
           reason: `task ${taskId} is ${task.status}` });
         return result;
       }
-      const receipt = command.payload?.receiptEventId;
-      if (typeof receipt !== 'string' || receipt.length === 0) {
+      const receiptId = command.payload?.receiptEventId;
+      if (typeof receiptId !== 'string' || receiptId.length === 0) {
         result.rejections.push({ intentId: `tasks:${taskId}:complete`, code: 'no_receipt',
           reason: 'a task completes only on its own receipt' });
         return result;
       }
+      // The receipt must be an event that actually landed in the authority,
+      // produced by this assignee, of a type this task can be closed by.
+      const receipt = context.committed(receiptId);
+      if (!receipt) {
+        result.rejections.push({ intentId: `tasks:${taskId}:complete`,
+          code: 'receipt_not_committed',
+          reason: `no committed event ${receiptId}` });
+        return result;
+      }
+      if (receipt.actorId !== task.assigneeId) {
+        result.rejections.push({ intentId: `tasks:${taskId}:complete`,
+          code: 'receipt_actor_mismatch',
+          reason: `${receiptId} was produced by ${receipt.actorId}, task belongs to ${task.assigneeId}` });
+        return result;
+      }
+      const allowed = RECEIPT_TYPES[task.type] ?? [];
+      if (!allowed.includes(receipt.type)) {
+        result.rejections.push({ intentId: `tasks:${taskId}:complete`,
+          code: 'receipt_type_mismatch',
+          reason: `${task.type} needs ${allowed.join('|')}, got ${receipt.type}` });
+        return result;
+      }
+      if (definition.builds) {
+        const machineState = context.snapshot.machines[definition.builds];
+        if (machineState !== 'running') {
+          result.rejections.push({ intentId: `tasks:${taskId}:complete`,
+            code: 'machine_not_running',
+            reason: `${definition.builds} is ${machineState}` });
+          return result;
+        }
+      }
       task.status = 'done';
       task.revision += 1;
-      if (definition.yields) {
-        result.intents.push({ id: `tasks:${taskId}:yield`, kind: 'resource',
-          resource: definition.yields.resource, delta: definition.yields.amount,
-          actorId: task.assigneeId, source: `tasks.${task.type}`,
-          preconditions: [{ kind: 'actor_alive', actorId: task.assigneeId }] });
-      }
-      result.intents.push({ id: `tasks:${taskId}:stamina`, kind: 'actor',
-        actorId: task.assigneeId, delta: { stamina: -definition.staminaCost },
-        source: `tasks.${task.type}`,
-        preconditions: [{ kind: 'actor_alive', actorId: task.assigneeId }] });
+      // No yield and no stamina here: the work command already charged and paid.
       if (definition.dailyLimit) {
         const key = `${task.type}/${task.assigneeId}/d${context.snapshot.day}`;
         next.dailyUsage[key] = (next.dailyUsage[key] ?? 0) + 1;
       }
       result.events.push({ proposalId: `tasks:${taskId}:done`, type: 'task_completed',
         actorId: task.assigneeId, observedBy: 'all',
-        payload: { taskId, type: task.type, receipt } });
+        payload: { taskId, type: task.type, receipt: receiptId, receiptType: receipt.type } });
       return result;
     }
 

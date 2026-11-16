@@ -191,6 +191,30 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
           ['carrying meals'], { meals: 1 }));
         rules.push('task.distribute');
         break;
+      case 'PREPARE_WARMTH':
+        candidates.push(candidate('refuel', '为御寒准备炉火', { amount: 2 },
+          ['firewood >= 1'], { furnaceFuel: 4 }));
+        rules.push('task.prepare-warmth');
+        break;
+      case 'PREPARE_MEDICAL':
+        candidates.push(candidate('medical', '按分工处理伤病', { medicine: 1 },
+          ['medicine >= 1'], { health: 25 }));
+        rules.push('task.prepare-medical');
+        break;
+      case 'BOOST_MORALE':
+      case 'COORDINATE':
+      case 'MAINTAIN_ORDER':
+      case 'SCOUT_RUINS':
+      case 'COLLECT_MATERIAL':
+        candidates.push(candidate('work', `按分工执行${task.type}`, { minutes: 40 },
+          ['stamina > 10'], { power: 6, stamina: -10 }));
+        rules.push('task.work');
+        break;
+      case 'REST_RECOVER':
+        candidates.push(candidate('rest', '按分工休息恢复', { minutes: 60 },
+          ['awake'], { stamina: 20 }));
+        rules.push('task.rest');
+        break;
       default:
         break;
     }

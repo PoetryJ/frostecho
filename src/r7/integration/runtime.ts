@@ -12,8 +12,8 @@ import { PlaySession } from '../../application-v2/session';
 import type { WorldEvent, WorldV2 } from '../../survival/world-v2';
 import {
   DomainRegistry, GOSPEL_PROFILE, absoluteMinute, dayOf, elapsedMinutes,
-  minuteOfDayOf, type DomainContext, type DomainSnapshot, type Rejection,
-  type TimeProfile, type WorldIntent,
+  minuteOfDayOf, type CommittedEventRef, type DomainContext, type DomainSnapshot,
+  type Rejection, type TimeProfile, type WorldIntent,
 } from '../contracts';
 import { commitIntents, ensureR8, snapshotOf } from './intents';
 import { survivalDomain, type SurvivalState } from '../domains/survival/index';
@@ -104,6 +104,8 @@ export class R8Runtime {
   readonly rejections: Rejection[] = [];
   ended = false;
   endingKind: string | null = null;
+  /** Every committed event by id: the only receipts a domain may accept. */
+  private readonly committed = new Map<string, CommittedEventRef>();
 
   constructor(readonly session: PlaySession, profile: TimeProfile = GOSPEL_PROFILE,
     states?: DomainStates) {
@@ -147,6 +149,7 @@ export class R8Runtime {
       profile: this.profile,
       seed: this.session.seed,
       canSee: () => true,
+      committed: (eventId: string) => this.committed.get(eventId) ?? null,
     };
   }
 
@@ -170,7 +173,7 @@ export class R8Runtime {
     this.states[domainId] = result.state as never;
     this.rejections.push(...result.rejections);
     const committed = this.commit(result.intents, result.events);
-    return committed;
+    return { ...committed, rejected: [...result.rejections, ...committed.rejected] };
   }
 
   /**
@@ -301,15 +304,50 @@ export class R8Runtime {
     this.session.world = world;
     this.rejections.push(...outcome.rejected);
     for (const event of outcome.events) {
+      this.committed.set(event.eventId, { eventId: event.eventId, type: event.type,
+        actorId: event.actorId ?? 'system', simTime: event.simTime,
+        payload: event.payload });
       this.session.ingestTeamEvent(event.type, event.payload, event.simTime);
     }
-    const delivered = domainEvents.filter(event => {
+    const delivered: typeof domainEvents = [];
+    const events: WorldEvent[] = [...outcome.events];
+    for (const event of domainEvents) {
+      // A domain event becomes a committed event with its own id, so it can be
+      // used as a receipt ("machine_built") exactly like a world event.
+      const eventId = `d:${this.world.simTime}:${event.type}:${event.actorId}`;
+      const committed = { eventId, type: event.type, actorId: event.actorId,
+        simTime: this.world.simTime, payload: event.payload };
+      this.committed.set(eventId, committed);
+      events.push({ ...committed, actorId: event.actorId } as WorldEvent);
       this.session.ingestTeamEvent(event.type, event.payload, this.world.simTime);
       this.journal.push({ at: this.world.simTime, ...event });
-      return true;
-    });
+      delivered.push(event);
+    }
     return { applied: outcome.applied, rejected: outcome.rejected,
-      events: outcome.events, domainEvents: delivered };
+      events, domainEvents: delivered };
+  }
+
+  /**
+   * Register events produced by the world authority itself (a gather, a walk,
+   * a delivery). Only these can back a task completion receipt.
+   */
+  recordCommitted(events: readonly { eventId: string; type: string;
+    actorId?: string; simTime: number; payload: Record<string, unknown> }[]): void {
+    for (const event of events) {
+      this.committed.set(event.eventId, { eventId: event.eventId, type: event.type,
+        actorId: event.actorId ?? 'system', simTime: event.simTime,
+        payload: event.payload });
+    }
+  }
+
+  /** Every committed event, oldest first; the receipt source of truth. */
+  committedEvents(): CommittedEventRef[] {
+    return [...this.committed.values()];
+  }
+
+  /** Lookup used by tests and by the completion gate. */
+  committedEvent(eventId: string): CommittedEventRef | null {
+    return this.committed.get(eventId) ?? null;
   }
 
   /** Session + runtime sidecar: one save, restored together. */

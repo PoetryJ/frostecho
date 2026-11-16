@@ -207,6 +207,98 @@ function main(): void {
     });
   }
 
+  // 3d. All fifteen original task types through the real work -> receipt path.
+  {
+    const script = join(cwd, 'scripts', 'r8', 'task-matrix.mjs');
+    const result = run(node, [script, cwd], cwd);
+    type Matrix = { types?: number; done?: number; failed?: number; verdict?: string };
+    let parsed: Matrix | null = null;
+    try { parsed = JSON.parse(result.stdout) as Matrix; } catch { parsed = null; }
+    const passed = result.status === 0 && parsed?.verdict === 'match'
+      && parsed?.done === 15;
+    gates.push({
+      gate: 'task-type-matrix', status: passed ? 'pass' : 'fail',
+      command: `${node} ${script}`, cwd, exitCode: result.status, sourceHEAD,
+      path: join(args.out, 'task-matrix.json'), sha256: sha256(result.stdout),
+      evidenceClass: 'reference',
+      note: passed ? '15/15 task types complete on their own receipt; forged receipts rejected'
+        : `matrix failed: ${result.stdout.slice(0, 300)}`,
+      observed: parsed ?? undefined,
+    });
+  }
+
+  // 3e. The web entry must run the same chain (real stdin -> real records).
+  {
+    const result = spawnSync(node, ['dist/scripts/play-sprint.js', '--fresh'], {
+      cwd, encoding: 'utf8', timeout: 120_000, input: 'game-step\nquit\n',
+    });
+    interface WebRecord { candidates?: unknown[]; executionStatus?: string }
+    interface WebStep { records?: WebRecord[] }
+    let step: WebStep | null = null;
+    for (const line of (result.stdout ?? '').split('\n')) {
+      if (!line.includes('"command":"game-step"')) continue;
+      try {
+        step = JSON.parse(line) as WebStep;
+      } catch { step = null; }
+    }
+    const records = step?.records ?? [];
+    const multi = records.filter(record => (record.candidates?.length ?? 0) >= 2).length;
+    const applied = records.filter(record => record.executionStatus === 'applied').length;
+    const passed = result.status === 0 && records.length > 0 && multi > 0 && applied > 0;
+    gates.push({
+      gate: 'web-shared-chain', status: passed ? 'pass' : 'fail',
+      command: `printf 'game-step\\n' | ${node} dist/scripts/play-sprint.js --fresh`,
+      cwd, exitCode: result.status, sourceHEAD,
+      path: join(args.out, 'web-step.json'), sha256: sha256(JSON.stringify(records)),
+      evidenceClass: 'reference',
+      note: passed ? `web step produced ${records.length} records, ${multi} multi-candidate, `
+        + `${applied} applied`
+        : `web step did not run the shared chain: ${(result.stderr ?? '').slice(0, 300)}`,
+      observed: { records: records.length, multi, applied },
+    });
+  }
+
+  // 3f. Data gate: whole-game splits, full observation text, two reviews.
+  {
+    const dataPath = join(cwd, 'artifacts', 'sprint-r8', 'D', 'cases',
+      'dynamic-cases.jsonl');
+    const manifestPath = join(cwd, 'artifacts', 'sprint-r8', 'D', 'cases',
+      'split-manifest.json');
+    interface DataManifest { splitLeaks?: string[]; cases?: number;
+      independentHumanReviews?: number; splits?: Record<string, number> }
+    let manifest: DataManifest | null = null;
+    if (existsSync(manifestPath)) {
+      manifest = JSON.parse(readFileSync(manifestPath, 'utf8')) as DataManifest;
+    }
+    let missingText = 0;
+    let single = 0;
+    let cases = 0;
+    if (existsSync(dataPath)) {
+      for (const line of readFileSync(dataPath, 'utf8').trim().split('\n')) {
+        if (!line) continue;
+        const row = JSON.parse(line) as { observationText?: string; candidates?: unknown[] };
+        cases += 1;
+        if (!row.observationText) missingText += 1;
+        if ((row.candidates?.length ?? 0) < 2) single += 1;
+      }
+    }
+    const splits = manifest?.splits ?? {};
+    const nonEmpty = Object.values(splits).filter(value => value > 0).length;
+    const passed = cases > 0 && missingText === 0 && single === 0
+      && (manifest?.splitLeaks ?? ['x']).length === 0 && nonEmpty >= 4;
+    gates.push({
+      gate: 'data-gate', status: passed ? 'pass' : 'fail',
+      command: 'inline data inspection', cwd, exitCode: passed ? 0 : 1, sourceHEAD,
+      path: manifestPath, sha256: fileSha(manifestPath), evidenceClass: 'fixture',
+      note: passed ? `${cases} cases, 4 non-empty whole-game splits, full observation text, `
+        + 'two rule reviewers (0 independent humans)'
+        : `cases=${cases} missingText=${missingText} single=${single} `
+        + `leaks=${(manifest?.splitLeaks ?? []).length} nonEmptySplits=${nonEmpty}`,
+      observed: { cases, missingText, single, splits,
+        independentHumanReviews: manifest?.independentHumanReviews ?? null },
+    });
+  }
+
   // 4. JEV preflight: real service availability, never faked.
   {
     const trainPy = join('research', 'decision-choice', 'jev05', 'action', 'train.py');

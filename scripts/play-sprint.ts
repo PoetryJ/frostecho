@@ -49,6 +49,9 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { PlaySession, defaultStatePath } from '../src/application-v2/session';
 import type { PlayerJob, PlayerJobKind } from '../src/application-v2/lifecycle';
 import { GameplayLoop, actorCell, MINUTES_PER_TILE } from '../src/gameplay-v2/loop';
+import { R8Runtime } from '../src/r7/integration/runtime';
+import { runStep } from '../src/r7/integration/step';
+import { referenceAgencyScorer } from '../src/r7/agency/reference';
 import { TaskBoard, type GameplayTaskKind } from '../src/gameplay-v2/tasks';
 import { BUILDINGS, MAPS, findPath } from '../src/spatial-v2/map';
 import type { ScorerPort } from '../src/planning/candidates';
@@ -96,6 +99,19 @@ const restoredSession = existsSync(statePath) && !process.argv.includes('--fresh
 const play = existsSync(statePath) && !process.argv.includes('--fresh')
   ? GameplayLoop.load(statePath, {}, customScorer)
   : new GameplayLoop(restoredSession);
+/**
+ * R8: the web entry drives the same decision core and the same authority as the
+ * four-day evaluation. `play` stays the task/commitment ledger; the world and
+ * the domains are the runtime's.
+ */
+const r8 = R8Runtime.create({ session: play.session });
+// The product clock is the original one: D1 08:00. A fresh session starts at
+// 00:00 for legacy saves, so align it once when nothing has happened yet.
+if (play.session.world.simTime === 0) {
+  play.session.world.simTime = 8 * 60;
+  play.session.world.day = 1;
+}
+const r8Scorer = referenceAgencyScorer();
 const session = play.session;
 
 const emit = (value: Record<string, unknown>) => console.log(JSON.stringify(value));
@@ -313,8 +329,11 @@ async function runJob(job: PlayerJob, line: string,
         emit({ command, jobId: job.jobId, status: play.status() });
         break;
       case 'game-step': {
-        const result = play.step();
-        emit({ command, jobId: job.jobId, ...result });
+        // One step through the shared R8 chain: candidates -> ChoiceRequest ->
+        // scorer -> authoritative commit -> receipt-backed completion.
+        const result = await runStep(r8, r8Scorer, { mode: 'reference' });
+        emit({ command, jobId: job.jobId, ...result, executed: result.executed,
+          mode: result.mode });
         break;
       }
       case 'map': {

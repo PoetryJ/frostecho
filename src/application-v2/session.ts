@@ -506,7 +506,8 @@ export class PlaySession {
       this.world = submitted.state;
       this.ingestEvents(actorId, submitted.events, commandId, candidate.id);
       const outcome: ExecutionOutcome = { status: 'applied', eventIds: submitted.eventIds,
-        postStateVersion: submitted.postStateVersion, reason: submitted.reason };
+        postStateVersion: submitted.postStateVersion, reason: submitted.reason,
+        events: submitted.events };
       this.outcomes[commandId] = outcome;
       return outcome;
     }

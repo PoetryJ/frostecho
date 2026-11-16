@@ -21,8 +21,10 @@ import { buildActionOptions, applicableNotes, type MemoryPolicyId,
   type ExperienceNote } from '../../src/r7/agency/options';
 import { ScorerServiceClient } from '../../src/r7/jev/scorer-client';
 import type { ScorePort } from '../../src/r7/contracts';
-import { TASK_CATALOG, type TaskTypeId } from '../../src/r7/domains/tasks/index';
 import { councilShouldOpen } from '../../src/r7/domains/council/index';
+import { WORK_RULES, TASK_CATALOG, type TaskTypeId } from '../../src/r7/domains/tasks/index';
+import { renderRequest, renderCandidateText } from '../../src/r7/jev/render';
+import { BUILDINGS, findPath, MAPS, cellKey } from '../../src/spatial-v2/map';
 
 type Mode = 'reference' | 'jev-experimental' | 'jev-admitted';
 
@@ -68,6 +70,8 @@ function parseArgs(argv: string[]): Args {
 const sha256 = (text: string): string => createHash('sha256').update(text).digest('hex');
 
 interface DecisionRecord {
+  seed: string;
+  episode: string;
   lifeNumber: number;
   at: number;
   elapsed: number;
@@ -79,7 +83,11 @@ interface DecisionRecord {
   candidateSetHash: string;
   inputSha256: string;
   candidates: { id: string; kind: string; description: string;
-    parameters: Record<string, unknown>; preconditions: string[] }[];
+    parameters: Record<string, unknown>; preconditions: string[];
+    text: string }[];
+  observationText: string;
+  renderSha256: string;
+  jointText: string;
   rules: string[];
   notesUsed: string[];
   selectedId: string | null;
@@ -163,7 +171,8 @@ function execute(runtime: R8Runtime, actorId: string, candidate: Candidate,
   const action = candidate.parameters.action;
   if (action === 'build-machine') {
     const machine = String(candidate.parameters.machine);
-    const result = runtime.dispatch('production', 'build-machine', actorId, { machine });
+    const result = runtime.dispatch('production', 'build-machine', actorId,
+      { machine, workerId: actorId });
     return { status: result.applied.length > 0 ? 'applied' : 'rejected',
       reason: result.rejected.map(entry => entry.reason).join('; ') || 'intents applied',
       eventIds: result.events.map(event => event.eventId) };
@@ -175,6 +184,8 @@ function execute(runtime: R8Runtime, actorId: string, candidate: Candidate,
     return { status: 'applied', reason: 'communication recorded', eventIds: observers };
   }
   const outcome = runtime.session.executeCandidate(actorId, candidate, commandId);
+  // Only events that really landed become receipts.
+  if (outcome.events) runtime.recordCommitted(outcome.events);
   return { status: outcome.status, reason: outcome.reason ?? '',
     eventIds: outcome.eventIds };
 }
@@ -215,9 +226,30 @@ function completeTaskOnReceipt(runtime: R8Runtime, actorId: string,
   return result.applied.length > 0 ? task.taskId : null;
 }
 
+/**
+ * The assignee decides for itself: no runner may click accept for it.
+ * A hungry or exhausted actor refuses (or counters) with a recorded reason.
+ */
+function actorVerdict(runtime: R8Runtime, actorId: string, type: TaskTypeId):
+  { verdict: 'accept' | 'decline' | 'counter'; reason: string; counterType?: TaskTypeId } {
+  const npc = runtime.snapshot().npcs[actorId];
+  if (!npc?.alive) return { verdict: 'decline', reason: 'not alive' };
+  if (npc.hunger < 35 && type !== 'COLLECT_FOOD' && type !== 'DISTRIBUTE_FOOD') {
+    return { verdict: 'decline', reason: `饥饿 ${npc.hunger.toFixed(0)} < 35，先找吃的` };
+  }
+  if (npc.stamina < 20 && type !== 'REST_RECOVER') {
+    return { verdict: 'counter', reason: `体力 ${npc.stamina.toFixed(0)} < 20，申请先休息`,
+      counterType: 'REST_RECOVER' };
+  }
+  if (npc.health < 40 && type !== 'PREPARE_MEDICAL') {
+    return { verdict: 'decline', reason: `健康 ${npc.health.toFixed(0)} < 40，先治疗` };
+  }
+  return { verdict: 'accept', reason: '可以接下' };
+}
+
 const morningDone = new Set<number>();
 
-function runCouncilIfDue(runtime: R8Runtime, decisions: DecisionRecord[]): void {
+function runCouncilIfDue(runtime: R8Runtime, decisions: DecisionRecord[], seed: string): void {
   const snapshot = runtime.snapshot();
   const isMorning = snapshot.minuteOfDay === 8 * 60 && !morningDone.has(snapshot.day);
   const reason = isMorning ? 'morning'
@@ -258,8 +290,27 @@ function runCouncilIfDue(runtime: R8Runtime, decisions: DecisionRecord[]): void 
       && (task.status === 'accepted' || task.status === 'proposed'));
   if (alreadyOpen) return;
   const actors = runtime.context().actorIds.filter(id => snapshot.npcs[id]?.alive);
-  const assignments = actors.slice(0, Math.max(1, Math.min(3, actors.length)))
-    .map(actorId => ({ actorId, type }));
+  // Each actor is proposed the assignment that fits its own state; the same
+  // morning can carry several task types, which is what the original does.
+  const needOf = (id: string): TaskTypeId | null => {
+    const npc = snapshot.npcs[id];
+    if (!npc?.alive) return null;
+    if (npc.health < 50) return 'PREPARE_MEDICAL';
+    if (npc.hunger < 45) return 'COLLECT_FOOD';
+    if (npc.san < 40) return 'BOOST_MORALE';
+    if (npc.stamina < 35) return 'REST_RECOVER';
+    if (snapshot.furnace.fuel < 20) return 'PREPARE_WARMTH';
+    if (cover.power < 6) return 'MAINTAIN_POWER';
+    if (cover.firewood < 8) return 'COLLECT_WOOD';
+    if (buildable) return buildable;
+    if (cover.food < 6) return 'COLLECT_FOOD';
+    return 'SCOUT_RUINS';
+  };
+  const assignments = actors.map(actorId => {
+    const own = needOf(actorId);
+    return own ? { actorId, type: own } : null;
+  }).filter((entry): entry is { actorId: string; type: TaskTypeId } => entry !== null)
+    .slice(0, Math.max(1, Math.min(4, actors.length)));
   runtime.dispatch('council', 'propose', 'old_qian',
     { meetingId, assignments, rationale: `${scarcest} is the scarcest resource` });
   const proposalId = (runtime.states.council as { meetings: { proposals: { proposalId: string }[] }[] })
@@ -274,9 +325,44 @@ function runCouncilIfDue(runtime: R8Runtime, decisions: DecisionRecord[]): void 
     const taskId = (runtime.states.tasks as { tasks: { taskId: string }[] })
       .tasks.at(-1)?.taskId;
     if (!taskId || proposed.rejected.length > 0) continue;
+    const verdict = actorVerdict(runtime, assignment.actorId, assignment.type);
     runtime.dispatch('tasks', 'respond', assignment.actorId,
-      { taskId, verdict: 'accept' });
+      { taskId, verdict: verdict.verdict, reason: verdict.reason,
+        counterType: verdict.counterType ?? assignment.type });
+    if (verdict.verdict !== 'accept') {
+      // A refusal goes back to the board and is reassigned, never silently kept.
+      const spare = actors.find(id => id !== assignment.actorId
+        && actorVerdict(runtime, id, assignment.type).verdict === 'accept');
+      if (spare) {
+        runtime.dispatch('tasks', 'reassign', 'old_qian',
+          { taskId, assigneeId: spare });
+      }
+      decisions.push({
+        seed,
+        episode: `${seed}-life${(runtime.states.life as { lifeNumber: number }).lifeNumber}`,
+        lifeNumber: (runtime.states.life as { lifeNumber: number }).lifeNumber,
+        at: runtime.world.simTime, elapsed: runtime.elapsed(), day: snapshot.day,
+        minuteOfDay: snapshot.minuteOfDay, actorId: assignment.actorId, mode: 'reference',
+        requestId: `${meetingId}:${assignment.actorId}:verdict`,
+        candidateSetHash: sha256(`${taskId}|${verdict.verdict}`),
+        inputSha256: sha256(JSON.stringify(verdict)),
+        candidates: [{ id: 'council-verdict', kind: 'commitment',
+          description: `${verdict.verdict}:${verdict.reason}`,
+          parameters: { action: 'task' }, preconditions: [], text: verdict.reason }],
+        observationText: `晨会分工:${assignment.type}`,
+        renderSha256: sha256(`${taskId}|${verdict.reason}`),
+        jointText: verdict.reason,
+        rules: [`council.${verdict.verdict}`], notesUsed: [],
+        selectedId: 'council-verdict', disposition: 'accept',
+        scorerId: 'council-reference/1', latencyMs: 0, executed: true,
+        executionStatus: 'applied', reason: verdict.reason,
+        worldVersion: runtime.world.version,
+      });
+      continue;
+    }
     decisions.push({
+      seed,
+      episode: `${seed}-life${(runtime.states.life as { lifeNumber: number }).lifeNumber}`,
       lifeNumber: (runtime.states.life as { lifeNumber: number }).lifeNumber,
       at: runtime.world.simTime, elapsed: runtime.elapsed(), day: snapshot.day,
       minuteOfDay: snapshot.minuteOfDay, actorId: assignment.actorId, mode: 'reference',
@@ -285,7 +371,11 @@ function runCouncilIfDue(runtime: R8Runtime, decisions: DecisionRecord[]): void 
       inputSha256: sha256(JSON.stringify({ meetingId, assignment })),
       candidates: [{ id: `task:${assignment.type}`,
         kind: 'task', description: TASK_CATALOG[assignment.type].name,
-        parameters: { action: 'task', type: assignment.type }, preconditions: [] }],
+        parameters: { action: 'task', type: assignment.type }, preconditions: [],
+        text: TASK_CATALOG[assignment.type].name }],
+      observationText: `晨会分工:${assignment.type}`,
+      renderSha256: sha256(`${meetingId}|${assignment.actorId}|${assignment.type}`),
+      jointText: TASK_CATALOG[assignment.type].name,
       rules: ['council.assignment'], notesUsed: [], selectedId: `task:${assignment.type}`,
       disposition: 'accept', scorerId: 'council-reference/1', latencyMs: 0,
       executed: true, executionStatus: 'applied', reason: 'council winner applied',
@@ -336,6 +426,7 @@ async function decide(runtime: R8Runtime, scorer: ScorePort,
     memorySnapshotHash: sha256(JSON.stringify(deepSort(belief))),
     memoryPolicyVersion: args.memoryPolicy,
   });
+  const rendered = renderRequest(full);
   const started = Date.now();
   const result = await scorer.score(full);
   const latencyMs = Date.now() - started;
@@ -359,6 +450,8 @@ async function decide(runtime: R8Runtime, scorer: ScorePort,
     }
   }
   decisions.push({
+    seed: args.seed,
+    episode: `${args.seed}-life${(runtime.states.life as { lifeNumber: number }).lifeNumber}`,
     lifeNumber: (runtime.states.life as { lifeNumber: number }).lifeNumber,
     at: runtime.world.simTime, elapsed: runtime.elapsed(), day: snapshot.day,
     minuteOfDay: snapshot.minuteOfDay, actorId, mode: args.mode,
@@ -369,7 +462,10 @@ async function decide(runtime: R8Runtime, scorer: ScorePort,
     }))),
     candidates: full.candidates.map(entry => ({ id: entry.id, kind: entry.kind,
       description: entry.description, parameters: entry.parameters,
-      preconditions: entry.preconditions })),
+      preconditions: entry.preconditions, text: renderCandidateText(entry) })),
+    observationText: rendered.text,
+    renderSha256: sha256(rendered.text),
+    jointText: rendered.text,
     rules: built.rules, notesUsed: built.notesUsed,
     selectedId: result.selectedId, disposition: result.disposition,
     scorerId: result.scorerId, latencyMs, executed: outcome.status === 'applied',
@@ -423,7 +519,7 @@ async function main(): Promise<void> {
     let guard = 0;
     while (!runtime.ended && guard < 1200) {
       guard += 1;
-      runCouncilIfDue(runtime, decisions);
+      runCouncilIfDue(runtime, decisions, args.seed);
       for (const actorId of runtime.context().actorIds) {
         await decide(runtime, scorer, actorId, args, decisions);
         if (runtime.ended) break;
@@ -445,10 +541,20 @@ async function main(): Promise<void> {
           const npc = runtime.world.npcs[actorId];
           if (!npc?.alive) continue;
           const home = actorId.endsWith('2') || actorId.endsWith('4') ? 'dorm-b' : 'dorm-a';
-          if (npc.location !== home) {
-            runtime.session.submitWorldCommand({ commandId: `sleep-${before}-${actorId}`,
-              type: 'move', actorId, to: home });
-          }
+          if (npc.location === home) continue;
+          // Walk home along the real map; no teleport. If no path exists the
+          // actor stays where it is and the night is simply cold.
+          const door = BUILDINGS.find(building => building.id === home)?.door;
+          const from = runtime.world.spatial?.positions[actorId]
+            ?? BUILDINGS.find(building => building.id === npc.location)?.door;
+          if (!door || !from) continue;
+          const closed = new Set(runtime.world.spatial?.closedCells ?? []);
+          const route = findPath(MAPS.village, from, door, closed).path;
+          if (!route || route.length === 0) continue;
+          const command = { commandId: `sleep-${before}-${actorId}`, type: 'travel' as const,
+            actorId, route, minutesPerTile: 2 };
+          const result = runtime.session.submitWorldCommand(command);
+          if (result.status === 'applied') runtime.recordCommitted(result.events);
         }
         const reportSegment = runtime.advanceWorld(to);
         timeline.push(...reportSegment.domainEvents.map(event => ({

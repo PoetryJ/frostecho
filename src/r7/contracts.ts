@@ -274,6 +274,19 @@ export interface DomainContext {
   seed: string;
   /** True when this observer may see the fact/event with this id. */
   canSee: (observerId: string, eventIdOrType: string) => boolean;
+  /**
+   * A committed event, or null. A domain may only complete work on a receipt
+   * that really landed in the authority; an invented id must return null.
+   */
+  committed: (eventId: string) => CommittedEventRef | null;
+}
+
+export interface CommittedEventRef {
+  eventId: string;
+  type: string;
+  actorId: string;
+  simTime: number;
+  payload: Record<string, unknown>;
 }
 
 // ---------------------------------------------------------------------------

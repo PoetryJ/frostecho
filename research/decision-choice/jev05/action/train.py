@@ -112,11 +112,29 @@ def preflight(args) -> dict:
                          "matchesHead": hidden == HIDDEN}
     gpus = gpu_free_mib()
     report["gpus"] = gpus
-    # A 27B BF16 backbone needs ~54 GiB; anything less is not a loadable卡.
+    # A 27B BF16 backbone is ~51 GiB of weights. The plan is GPU shards plus CPU
+    # RAM, not "one card must hold it": shard on every GPU with a reserve, spill
+    # the rest to RAM with its own reserve.
     bf16_gib = 2 * 27e9 / 2**30
-    best_free = max((gpu["freeMiB"] for gpu in gpus), default=0)
-    report["encoderLoadable"] = best_free >= bf16_gib * 1024
-    report["requiredVramMiB"] = int(bf16_gib * 1024)
+    total_free = sum(gpu["freeMiB"] for gpu in gpus)
+    gpu_reserve = 1536  # MiB kept free per card for activations
+    usable_gpu = max(0, total_free - gpu_reserve * max(1, len(gpus)))
+    ram_available = 0
+    try:
+        for line in Path("/proc/meminfo").read_text().splitlines():
+            if line.startswith("MemAvailable:"):
+                ram_available = int(line.split()[1]) // 1024
+    except OSError:
+        ram_available = 0
+    ram_reserve = 12 * 1024
+    usable_ram = max(0, ram_available - ram_reserve)
+    required = int(bf16_gib * 1024)
+    report["capacity"] = {"requiredWeightsMiB": required, "totalGpuFreeMiB": total_free,
+                          "usableGpuMiB": usable_gpu, "ramAvailableMiB": ram_available,
+                          "usableRamMiB": usable_ram,
+                          "plan": "device_map shards across free GPUs, remainder on CPU"}
+    report["encoderLoadable"] = required <= usable_gpu + usable_ram
+    report["requiredVramMiB"] = required
     features = Path(args.features) if args.features else None
     if features and features.exists():
         with np.load(features, allow_pickle=True) as archive:
@@ -174,9 +192,31 @@ def set_nll(logits: np.ndarray, acceptable: list[int]) -> tuple[float, np.ndarra
     return float(loss), gradient
 
 
+def normalize_rows(features: np.ndarray) -> np.ndarray:
+    """Non-affine LayerNorm, eps 1e-5, exactly the original head input.
+
+    `reference/joint_core.py` and `legacy/runner.py make_head` both normalize
+    the candidate hidden vector before the linear score:
+        z = w . ((h - mean(h)) / sqrt(mean((h - mean(h))^2) + 1e-5))
+    The first R8 draft skipped this and produced a different decision.
+    """
+    values = np.asarray(features, dtype=np.float64)
+    if values.ndim < 2:
+        raise SystemExit("features must be at least rank two")
+    centered = values - values.mean(axis=-1, keepdims=True)
+    variance = np.mean(centered ** 2, axis=-1, keepdims=True)
+    return centered / np.sqrt(variance + 1e-5)
+
+
 def score_matrix(weight: np.ndarray, features: np.ndarray) -> np.ndarray:
-    """features: [.., K, 5120] -> logits [.., K]."""
-    return features.astype(np.float64) @ weight
+    """features: [.., K, 5120] -> logits [.., K] with the original LayerNorm."""
+    return normalize_rows(features) @ weight
+
+
+def softmax_temperature(logits: np.ndarray, temperature: float) -> np.ndarray:
+    """Temperature must change the distribution of distinct logits."""
+    scale = max(float(temperature), 1e-6)
+    return softmax(np.asarray(logits, dtype=np.float64) / scale)
 
 
 def evaluate(weight: np.ndarray, cases: list[dict], features: dict) -> dict:
@@ -407,13 +447,17 @@ def cmd_serve(args) -> int:
     """Line protocol: one ChoiceRequest in, one result out. Never invents ids."""
     weight = read_head(Path(args.head))
     feature_map = json.loads(Path(args.feature_map).read_text())
+    certificate = args.data_certificate
+    certified = bool(certificate) and Path(certificate).exists()
+    admitted = args.mode == "jev-admitted" and certified
     identity = {"mode": args.mode, "scorerId": "jev-joint-c/1",
                 "checkpointSha256": sha256(Path(args.head)),
                 "encoderId": str(ENCODER), "rendererId": RENDERER,
                 "memoryPolicyId": args.memory_policy,
-                "dataCertificateSha256": args.data_certificate,
-                "experimental": args.mode == "jev-experimental",
-                "countsAsAdmitted": args.mode == "jev-admitted"}
+                "dataCertificateSha256": certificate if certified else None,
+                "experimental": not admitted,
+                # A mode flag can never mint an admission: a certificate decides.
+                "countsAsAdmitted": admitted}
     for line in sys.stdin:
         line = line.strip()
         if not line:
@@ -437,7 +481,7 @@ def cmd_serve(args) -> int:
                               "missing": missing}, ensure_ascii=False), flush=True)
             continue
         logits = score_matrix(weight, np.asarray(matrix, dtype=np.float32))
-        probabilities = softmax(logits)
+        probabilities = softmax_temperature(logits, args.temperature)
         order = np.argsort(-probabilities)
         print(json.dumps({
             "requestId": request["requestId"],
@@ -448,7 +492,14 @@ def cmd_serve(args) -> int:
                        for index, candidate in enumerate(candidates)],
             "selectedId": candidates[int(order[0])]["id"],
             "disposition": "accept",
-            "reason": f"joint-c argmax at T={args.temperature}",
+            "reason": (f"joint-c argmax at T={args.temperature}"
+                       if admitted else
+                       f"experimental (T={args.temperature}); "
+                       f"admission refused: {'no certificate' if not certified else 'mode not admitted'}"),
+            "admission": {"requested": args.mode, "granted": admitted,
+                          "reason": None if admitted else (
+                              "no data certificate" if not certified
+                              else "mode is not admitted")},
             "identity": identity,
             "latencyMs": round((time.time() - started) * 1000, 3),
         }, ensure_ascii=False), flush=True)

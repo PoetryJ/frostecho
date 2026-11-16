@@ -8,6 +8,9 @@
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
 
 const root = process.cwd();
 const source = join(root, 'handoff/20261113-r7-full-goal/reference-extracted/source/extracted');
@@ -127,6 +130,48 @@ check('max 20 past lives', 'src/systems/reincarnation-system.js', /MAX_PAST_LIVE
 const constants = read('src/core/constants.js');
 check('NPC chat disabled', 'src/core/constants.js', /CHAT_ENABLED\s*=\s*false/,
   /CHAT_ENABLED\s*=\s*false/.test(constants), 'original disables NPC-to-NPC chat');
+
+// --- two-sided comparison: original source value vs the running implementation
+const prod = require(join(root, 'dist/src/r7/domains/production/index.js'));
+const life = require(join(root, 'dist/src/r7/domains/life/index.js'));
+const tasksImpl = require(join(root, 'dist/src/r7/domains/tasks/index.js'));
+
+function numberIn(text, pattern, label) {
+  const match = text.match(pattern);
+  if (!match) throw new Error(`cannot read ${label} from the original`);
+  return Number(match[1]);
+}
+
+const machineText = read('src/systems/machine-system.js');
+const pairs = [
+  ['generator output/h', numberIn(machineText, /powerOutputPerHour:\s*(\d+)/, 'generator output'),
+    prod.MACHINES.generator.produces.perHour],
+  ['lumberMill output/h', numberIn(machineText, /woodOutputPerHour:\s*(\d+)/, 'mill output'),
+    prod.MACHINES.lumberMill.produces.perHour],
+  ['foodCollector output/h', numberIn(machineText, /foodOutputPerHour:\s*(\d+)/, 'food output'),
+    prod.MACHINES.foodCollector.produces.perHour],
+  ['generator wood/h', numberIn(machineText, /woodConsumptionPerHour:\s*([\d.]+)/, 'wood in'),
+    prod.MACHINES.generator.consumes.perHour],
+  ['lumberMill power/h', [...machineText.matchAll(/powerConsumptionPerHour:\s*(\d+)/g)][0]?.[1],
+    prod.MACHINES.lumberMill.consumes.perHour],
+  ['foodCollector power/h', [...machineText.matchAll(/powerConsumptionPerHour:\s*(\d+)/g)][1]?.[1],
+    prod.MACHINES.foodCollector.consumes.perHour],
+  ['generator minWood', numberIn(machineText, /minWoodToRun:\s*(\d+)/, 'min wood'),
+    prod.MACHINES.generator.consumes.minRun],
+  ['generator buildPower', numberIn(machineText, /buildMaterialCost:\s*(\d+)/, 'build power'),
+    prod.MACHINES.generator.buildPower],
+  ['generator buildMinutes', numberIn(machineText, /buildTimeSeconds:\s*(\d+)/, 'build seconds') / 60,
+    prod.MACHINES.generator.buildMinutes],
+  ['perfect survivors', numberIn(read('src/systems/death-system.js'), /minSurvivors:\s*(\d+)/, 'perfect'),
+    life.ENDING_THRESHOLDS.perfect],
+  ['task types', 15, tasksImpl.TASK_IDS.length],
+];
+for (const [name, rawExpected, actual] of pairs) {
+  const expected = Number(rawExpected);
+  checks.push({ name: `port:${name}`, file: 'dist', pattern: String(expected),
+    foundInOriginal: true, expectFound: true, portMatches: expected === actual,
+    note: `original ${expected} vs new ${actual}` });
+}
 
 const failed = checks.filter(entry => {
   const wants = entry.expectFound !== false;
