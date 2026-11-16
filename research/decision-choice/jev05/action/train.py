@@ -98,6 +98,18 @@ def encoder_hidden(path: Path) -> int | None:
     return int(data.get("hidden_size") or data.get("text_config", {}).get("hidden_size") or 0)
 
 
+def architecture_support(encoder: Path) -> tuple[bool, str]:
+    """Ask the local transformers whether it can construct this config."""
+    if not encoder.exists():
+        return False, "encoder directory missing"
+    try:
+        from transformers import AutoConfig
+        config = AutoConfig.from_pretrained(str(encoder), trust_remote_code=True)
+        return True, type(config).__name__
+    except Exception as error:  # noqa: BLE001
+        return False, f"{type(error).__name__}: {error}"
+
+
 def preflight(args) -> dict:
     head = Path(args.head)
     encoder = Path(args.encoder)
@@ -134,6 +146,10 @@ def preflight(args) -> dict:
                           "usableRamMiB": usable_ram,
                           "plan": "device_map shards across free GPUs, remainder on CPU"}
     report["encoderLoadable"] = required <= usable_gpu + usable_ram
+    # Capacity is necessary, not sufficient: the local transformers must also
+    # recognise the architecture, or nothing can be loaded at all.
+    supported, detail = architecture_support(encoder)
+    report["architecture"] = {"supported": supported, "detail": detail}
     report["requiredVramMiB"] = required
     features = Path(args.features) if args.features else None
     if features and features.exists():
@@ -155,13 +171,18 @@ def preflight(args) -> dict:
             f"no free GPU can hold a 27B BF16 backbone "
             f"(need {int(bf16_gib * 1024)} MiB, best free {best_free} MiB; "
             f"other processes hold the cards)")
+    if not report["architecture"]["supported"]:
+        blockers.append(f"local transformers cannot build this architecture: "
+                        f"{report['architecture']['detail']}")
     if not (features and features.exists()):
         blockers.append("no frozen-feature cache for new inputs; encode is blocked")
     report["blockedReason"] = "; ".join(blockers) if blockers else None
     report["readyForScoring"] = report["head"]["exists"]
     report["readyForTraining"] = report["readyForScoring"] and (features is not None
                                                                and features.exists())
-    report["readyForLiveEncoding"] = report["encoderLoadable"] and report["encoder"]["matchesHead"]
+    report["readyForLiveEncoding"] = (report["encoderLoadable"]
+                                      and report["encoder"]["matchesHead"]
+                                      and report["architecture"]["supported"])
     report["status"] = "ready" if report["readyForTraining"] else "blocked"
     return report
 

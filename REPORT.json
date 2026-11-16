@@ -1,96 +1,88 @@
 {
   "schema": "frostecho.r8.report/1",
   "role": "O",
-  "sourceHEAD": "2ce10c610a22d04661fac40b3a0b92bd8657701a",
-  "branch": "codex/r8-integrate",
+  "sourceHEAD": "7bb7cf38497d6aea5cfe0b0db95f7207ee0561c0",
+  "branch": "codex/r8-complete",
   "executorSessions": [
     {
-      "id": "integration-writer-1",
+      "id": "integration-writer-2",
       "kind": "single writer session",
-      "scope": "src/r7/**, src/survival/world-v2.ts, scripts/r8/**, package.json, research/decision-choice/jev05/action/train.py",
-      "note": "只有一个写入槽位；八条线按 契约冻结->领域->运行时->可玩入口->验收 顺序在同一会话内落代码"
-    },
-    {
-      "id": "recon-original-source-1",
-      "kind": "read-only explorer",
-      "scope": "handoff/20261113-r7-full-goal/reference-extracted/source",
-      "note": "给出 file:line 事实表，本轮的移植数值以其为准"
+      "scope": "src/**, scripts/**, research/decision-choice/jev05/action/**",
+      "note": "继续 e21c0ac；八条线仍只有一个写入槽，按 反例->领域->数据->模型->产品门 顺序串行落地；未伪造并行会话"
     },
     {
       "id": "r8-wt-p1..h",
       "kind": "worktrees",
-      "scope": "/data3/DATA/project/project_meishijiang/r8-wt/{p1,p2,p3,p4,a,d,m,h}",
-      "note": "dispatch.py 已从冻结 07d5df3 建好八棵隔离工作树；无独立写入会话，未伪造分波，代码统一在 codex/r8-integrate"
+      "scope": "/data3/DATA/project/project_meishijiang/r8-wt/*",
+      "note": "上一轮的八棵工作树保留；本轮未另开写者"
     }
   ],
-  "problem": "原作四日生存没有进入同一条执行链：gameplay 仍 chooseReference，领域不在权威世界，真实 JEV 行动没有入口。",
-  "classicProblem": "单写入者状态机 + 分阶段迁移：多个领域作为纯 reducer 接一个时钟、一个提交点。",
-  "whyThisSolution": "领域只返回带前置条件的 typed intent；集成层校验后一次提交、world-version 只加一次；advanceWorld 按规则边界切分，同一动作不会把全员演化扣两次。",
-  "decision": "pass",
+  "problem": "PM 复核指出：产品仍是旧引擎、回执可凭空产物、机器产率/停机/恢复不正确、任务只有 3 类、晨会同票/accept 写死、夜间瞬移、模型缺 LayerNorm 且不能在线编码、数据按同局 NPC 分区且无双审。",
+  "classicProblem": "单一权威状态机 + 有效事件驱动完成；异构内存下的精确模型移植；按整局独立分组的选择性预测。",
+  "whyThisSolution": "完成只认已提交事件（id/type/actor 三项匹配），资源只由真实工作命令产生；机器按原作 v4.37 数值与比例产出；分区以整局为单位；头部改回非仿射 LayerNorm 并让温度、准入、容量判断都有实测依据。",
+  "decision": "rework",
   "effectiveResults": [
-    "完整原作日历可玩：D1 08:00 -> D4 18:00，elapsed=4920，335 次真实决策 / 335 次执行 / 0 次拒绝，结局 perfect（8 人存活）",
-    "四结局阈值全部可复现：npc=8 perfect / 5 normal / 3 bleak / 1 extinction，均在 4920 结算一次",
-    "轮回可用：--lives 2 完成第二世，lifeNumber 递增、pastLives 上限 20",
-    "跨进程存档恢复：D2 存档后新进程加载，日历终点与版本一致",
-    "领域闭环真实生效：晨会提案/投票/改派 -> 任务 -> 回执完成（单跑 15 个任务中 9 个完成），自动伐木机真实建成后因缺电 stopped（非假成功）",
-    "原作常量对账 33/33（从 reference-extracted 源码 read-back）；第二暖炉与 NPC 聊天按原作禁用未复活",
-    "D 线真实案件 335 条，episode 分区 train/dev/calibration/select = 205/45/40/45",
-    "M 线真实 C 头（sha256 2a54971…1a4dd04）+ 真实 27B 冻结特征完成 192 个 presentation 的真实前向推理",
-    "真实 JEV 服务已接线：--mode jev-experimental --scorer-command 走 JSONL 服务，并校验 requestId/candidateSetHash/identity 同一输入"
+    "三个领域反例全部关闭：伪造回执被 receipt_not_committed 拒绝（食物 130→130、时间不变、任务仍 open）；build-start 被 receipt_type_mismatch 拒绝；停机后补给 + start-machine 真正恢复产出",
+    "15/15 任务类型逐一走 真实工作→已提交回执→完成，且每类都做了伪回执负控（matrix 15/15，verdict=match）",
+    "机器数值改为原作 v4.37：发电 20/h、伐木 24/h、捕猎 12/h，消耗 3/4/3，minRun 5；双侧对账 44/44 通过（同时读原作源码与运行实现）",
+    "晨会不再替 NPC 点头：每名被指派者按自身饥饿/体力/健康接受、拒绝或反提案，拒绝后改派；夜间沿真实路径回家（findPath），不再瞬移",
+    "模型机制反例关闭：LN 后 logits 与参考完全一致 [0,20.577544]；T=0.1 与 100 概率不同；无证书的 jev-admitted 被拒（countsAsAdmitted=false）",
+    "数据重建：2560 条案件、8 个整局 episode、四分区 {'train': 1600, 'dev': 320, 'calibration': 320, 'select': 320}、splitLeaks=0、缺 observationText=0、单候选=0、双规则审阅（独立人类 0）",
+    "网页侧新增 r8-step，与四日评测共用 buildActionOptions→ChoiceRequest→scorer→提交→回执 的同一链路（r8-step 门真跑 stdin 并核对 ≥2 候选与实际执行）",
+    "真实头推理：192 个真实 27B 特征 presentation 用真实 C 头前向（LN 后），单列 headForwardCalls=192、encoderForwardCalls=0"
   ],
   "errorsAndRootCauses": [
-    "首版 playthrough 在 5400 分钟处空转 4000 轮：advanceWorld 用段起点快照，最后一段永远看不到 18:00。修正：提交后按已提交时钟再判一次终局。",
-    "机器建成后进度不推进：reduce 未把 machines 置 building，onTimeSpan 又只在 building 下推进。修正：reduce 置 building，onTimeSpan 以已提交快照为权威镜像。",
-    "8 候选上限把 BUILD 候选截掉导致建造任务永远选不到：改为按是否清偿在手任务稳定优先，再截断并记录 truncated:N->8。",
-    "同类型任务重复堆积：已有 accepted 同类任务不再提案；机器建成后同类型重复任务被 cancel。",
-    "npm test 777 项 1 项失败（tests/r61-gates.test.ts python 空格路径）：根因是 IDE safe-delete shim 无权限写 /.Trash-1003，属环境问题，该用例自 a86c8a1 起存在，非本轮改动。"
+    "首轮把 r8-step 直接替换 game-step，导致 R2-R5 的 10 个验收故事失败（96h 与任务板语义）。根因是把迁移当成替换；已恢复 game-step 旧路径并新增 r8-step，全套回到 776/777（唯一失败是 safe-delete 环境问题）。",
+    "advanceWorld 首版用段起点快照判终局，5400 分钟处空转；改为提交后按已提交时钟复核。",
+    "领域事件最初不入 committed 表，machine_built 不能作回执；改为统一登记领域事件并参与回执校验。",
+    "预检只看单卡容量，误报 readyForLiveEncoding=true；加入 transformers 架构可构造性检查后真实为 False。"
   ],
   "corrections": [
-    "终局判定改在已提交时钟上复核",
-    "领域对共享状态只做镜像，权威来自已提交世界",
-    "候选截断优先清偿在手任务并记录截断数"
+    "先证据后结论：任何 completed 必须以 committed 事件为凭",
+    "产品命令迁移用新增而非替换，旧门保持",
+    "预检把容量与可构造性分开报告"
   ],
   "unproven": [
-    "真实模型驱动的游戏内行动：27B 编码器需 ~51 GiB 显存，本机两卡被外部进程占用（空闲 4595/6507 MiB），encode 被如实拒绝；故无 in-game JEV 轨迹，也无 reference vs JEV 配对结果（comparison 记 blocked）",
-    "acceptable-set 双盲两审：只有单回执标签（reviewers=1），不构成认证集，未做 multi-label",
-    "行动分布校准与选择性风险保证：无新编码特征，未训练/校准新行动头",
-    "完整原作空间/UI：村庄 50×40 与七室内沿用既有 spatial-v2 三图（village/warehouse/kitchen），其余室内未逐一移植；网页未做浏览器视觉验收",
-    "原作 NPC 自主聊天按原作禁用，未作为玩法补齐"
+    "实时编码仍被阻塞且已实测：tokenizer 可用（观察 345 tokens / 候选 14-32），但本地 transformers（contract2 4.x、kimi_audio 4.57.6）都不识别 qwen3_5，加载 0.0s 即失败；ValueError: The checkpoint you are trying to load has model type `qwen3_5` but T…。因此本轮没有新编码特征、没有游戏内真实 JEV 行动轨迹，也没有既定的 reference vs JEV 配对",
+    "校准与证书：无新特征，train/calT/select/cert 未产出；没有证书，jev-admitted 保持拒绝",
+    "完整空间/UI：七室内与 50×40 村庄未迁移，r8-step 只在 stdin 验证，浏览器视觉未验",
+    "跨进程恢复只比较了时钟与版本号，未逐项比较全部权威状态与承诺关联",
+    "两审是两条不同证据的规则审阅（回执/约束），不是独立人类或独立模型，manifest 明确 independentHumanReviews=0"
   ],
-  "entrypoint": "npm run play:r7 (web) / npm run play:r8 (headless four-day)",
+  "entrypoint": "npm run play:r7（网页，含 r8-step）/ node dist/scripts/r8/playthrough.js --profile gospel-5.8.19 --seed r8-1 --mode reference",
   "evidence": [
     {
       "gate": "original-playthrough",
       "status": "pass",
-      "command": "/data/home/user_00/.local/node22/bin/node dist/scripts/r8/playthrough.js --profile gospel-5.8.19 --seed r8-verify --mode reference --out /data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/playthrough",
-      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8",
+      "command": "/data/home/user_00/.local/node22/bin/node dist/scripts/r8/playthrough.js --profile gospel-5.8.19 --seed r8-verify --mode reference --out /data3/DATA/project/project_meishijiang/FrostEcho-r8c/artifacts/sprint-r8c/H/verify/playthrough",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c",
       "exitCode": 0,
-      "sourceHEAD": "1d85c47ef9c42dcfe2415c2ee478cc349b0e8123",
-      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/playthrough/summary-reference-r8-verify-2026-11-16T07-47-20-308Z.json",
-      "sha256": "e833866a041000b51451fd679d57c7c87582115f1e6b7d1895f5ee7330b8b236",
+      "sourceHEAD": "7bb7cf38497d6aea5cfe0b0db95f7207ee0561c0",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c/artifacts/sprint-r8c/H/verify/playthrough/summary-reference-r8-verify-2026-11-16T09-12-52-528Z.json",
+      "sha256": "c1654c1480faa78ed1e7a0008a428690ea366bdda71e1fd4e1a2e52f0dd7f0bb",
       "evidenceClass": "reference",
       "note": "D1 08:00 -> D4 18:00, elapsed=4920, ending settled"
     },
     {
       "gate": "reincarnation",
       "status": "pass",
-      "command": "/data/home/user_00/.local/node22/bin/node dist/scripts/r8/playthrough.js --seed r8-verify --lives 2 --mode reference --out /data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/reincarnation",
-      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8",
+      "command": "/data/home/user_00/.local/node22/bin/node dist/scripts/r8/playthrough.js --seed r8-verify --lives 2 --mode reference --out /data3/DATA/project/project_meishijiang/FrostEcho-r8c/artifacts/sprint-r8c/H/verify/reincarnation",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c",
       "exitCode": 0,
-      "sourceHEAD": "1d85c47ef9c42dcfe2415c2ee478cc349b0e8123",
-      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/reincarnation/summary-reference-r8-verify-2026-11-16T07-47-21-593Z.json",
-      "sha256": "2e0954246d8b00be8984c88378ad934222b4d3654e05dbf2ed928b3a5ed1bbcf",
+      "sourceHEAD": "7bb7cf38497d6aea5cfe0b0db95f7207ee0561c0",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c/artifacts/sprint-r8c/H/verify/reincarnation/summary-reference-r8-verify-2026-11-16T09-12-53-907Z.json",
+      "sha256": "f5d48d8be8ace56bd3d8786c5e22482e0dbcfedeee991e0df157b146f0843361",
       "evidenceClass": "reference",
       "note": "two settled lives, lifeNumber incremented"
     },
     {
       "gate": "cross-process-restore",
       "status": "pass",
-      "command": "/data/home/user_00/.local/node22/bin/node /data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/restore/restore-probe.js <dist> save|load /data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/restore/life.save",
-      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8",
+      "command": "/data/home/user_00/.local/node22/bin/node /data3/DATA/project/project_meishijiang/FrostEcho-r8c/artifacts/sprint-r8c/H/verify/restore/restore-probe.js <dist> save|load /data3/DATA/project/project_meishijiang/FrostEcho-r8c/artifacts/sprint-r8c/H/verify/restore/life.save",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c",
       "exitCode": 0,
-      "sourceHEAD": "1d85c47ef9c42dcfe2415c2ee478cc349b0e8123",
-      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/restore/life.save",
+      "sourceHEAD": "7bb7cf38497d6aea5cfe0b0db95f7207ee0561c0",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c/artifacts/sprint-r8c/H/verify/restore/life.save",
       "sha256": "d1084bcb8186269448aedba041651fca7d3b9f4a26e2acbc325c919199c89e3e",
       "evidenceClass": "reference",
       "note": "same calendar endpoint 1920 after reload"
@@ -99,10 +91,10 @@
       "gate": "four-endings",
       "status": "pass",
       "command": "/data/home/user_00/.local/node22/bin/node dist/scripts/r8/playthrough.js --npc <n> --food <f>",
-      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c",
       "exitCode": 0,
-      "sourceHEAD": "1d85c47ef9c42dcfe2415c2ee478cc349b0e8123",
-      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/four-endings",
+      "sourceHEAD": "7bb7cf38497d6aea5cfe0b0db95f7207ee0561c0",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c/artifacts/sprint-r8c/H/verify/four-endings",
       "sha256": "",
       "evidenceClass": "reference",
       "note": "thresholds hit: {\"1\":\"extinction\",\"3\":\"bleak\",\"5\":\"normal\",\"8\":\"perfect\"}"
@@ -110,36 +102,72 @@
     {
       "gate": "original-parity",
       "status": "pass",
-      "command": "/data/home/user_00/.local/node22/bin/node /data3/DATA/project/project_meishijiang/FrostEcho-r8/scripts/r8/parity.mjs",
-      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8",
+      "command": "/data/home/user_00/.local/node22/bin/node /data3/DATA/project/project_meishijiang/FrostEcho-r8c/scripts/r8/parity.mjs",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c",
       "exitCode": 0,
-      "sourceHEAD": "1d85c47ef9c42dcfe2415c2ee478cc349b0e8123",
-      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/parity.json",
-      "sha256": "ae316d21809d8bb7227b1e3fcafc83c4e5a744f76d526fbf53750667651ab0b4",
+      "sourceHEAD": "7bb7cf38497d6aea5cfe0b0db95f7207ee0561c0",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c/artifacts/sprint-r8c/H/verify/parity.json",
+      "sha256": "f4371ac9b2c37f6ce97ac319b283b2346bd677b9ab1aa9b2b8afe30f2e610966",
       "evidenceClass": "reference",
-      "note": "33 original constants match"
+      "note": "44 original constants match"
+    },
+    {
+      "gate": "task-type-matrix",
+      "status": "pass",
+      "command": "/data/home/user_00/.local/node22/bin/node /data3/DATA/project/project_meishijiang/FrostEcho-r8c/scripts/r8/task-matrix.mjs",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c",
+      "exitCode": 0,
+      "sourceHEAD": "7bb7cf38497d6aea5cfe0b0db95f7207ee0561c0",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c/artifacts/sprint-r8c/H/verify/task-matrix.json",
+      "sha256": "f34e761c28ecda3a22d5f214605bc85ecb65cc82c74a29d506f77543c6100fe2",
+      "evidenceClass": "reference",
+      "note": "15/15 task types complete on their own receipt; forged receipts rejected"
+    },
+    {
+      "gate": "web-shared-chain",
+      "status": "pass",
+      "command": "printf 'r8-step\\n' | /data/home/user_00/.local/node22/bin/node dist/scripts/play-sprint.js --fresh",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c",
+      "exitCode": 0,
+      "sourceHEAD": "7bb7cf38497d6aea5cfe0b0db95f7207ee0561c0",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c/artifacts/sprint-r8c/H/verify/web-step.json",
+      "sha256": "0f9c744afd8827b6e32cb70ab70f2263a5bde9b46f878ca50e279e090ca1f5bc",
+      "evidenceClass": "reference",
+      "note": "web r8-step produced 8 records, 8 multi-candidate, 8 applied"
+    },
+    {
+      "gate": "data-gate",
+      "status": "pass",
+      "command": "inline data inspection",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c",
+      "exitCode": 0,
+      "sourceHEAD": "7bb7cf38497d6aea5cfe0b0db95f7207ee0561c0",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c/artifacts/sprint-r8/D/cases/split-manifest.json",
+      "sha256": "0bfeeeaf982a933415a5a926285ba0bd7af15658a65d490d39161d3ced38aaa2",
+      "evidenceClass": "fixture",
+      "note": "2560 cases, 4 non-empty whole-game splits, full observation text, two rule reviewers (0 independent humans)"
     },
     {
       "gate": "jev-preflight",
       "status": "blocked",
       "command": "python research/decision-choice/jev05/action/train.py preflight --json",
-      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c",
       "exitCode": 0,
-      "sourceHEAD": "1d85c47ef9c42dcfe2415c2ee478cc349b0e8123",
+      "sourceHEAD": "7bb7cf38497d6aea5cfe0b0db95f7207ee0561c0",
       "path": "research/decision-choice/jev05/action/train.py",
-      "sha256": "33944e17814d308d80cdef261851c54a406affb53df6e31c14979d79327691e8",
+      "sha256": "0e14d0509d2671ff63a710626469358df56a3473f351db2b9731147609a9a4b1",
       "evidenceClass": "real-model",
-      "note": "no free GPU can hold a 27B BF16 backbone (need 51498 MiB, best free 6507 MiB; other processes hold the cards); no frozen-feature cache for new inputs; encode is blocked"
+      "note": "local transformers cannot build this architecture: ValueError: The checkpoint you are trying to load has model type `qwen3_5` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.\n\nYou can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`; no frozen-feature cache for new inputs; encode is blocked"
     },
     {
       "gate": "scorer-honesty",
       "status": "pass",
       "command": "inline contract assertion",
-      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c",
       "exitCode": 0,
-      "sourceHEAD": "1d85c47ef9c42dcfe2415c2ee478cc349b0e8123",
-      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/honesty.json",
-      "sha256": "d5a8e38e21332a913e62128d7d309ac66ed7e20e5eba7b04b7ebb3b335bd667a",
+      "sourceHEAD": "7bb7cf38497d6aea5cfe0b0db95f7207ee0561c0",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c/artifacts/sprint-r8c/H/verify/honesty.json",
+      "sha256": "4e08e37563551888aec8ef7f0e78168c5a6bb0286d00314bc037a4dc9c362739",
       "evidenceClass": "fixture",
       "note": "no experimental scorer claims admission"
     },
@@ -147,11 +175,11 @@
       "gate": "calendar-contract",
       "status": "pass",
       "command": "inline constant check",
-      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c",
       "exitCode": 0,
-      "sourceHEAD": "1d85c47ef9c42dcfe2415c2ee478cc349b0e8123",
+      "sourceHEAD": "7bb7cf38497d6aea5cfe0b0db95f7207ee0561c0",
       "path": "src/r7/contracts.ts",
-      "sha256": "ec378091f8e5a6f1ea6b14df8eaabd4aa62f669a41f068b1fe7feb4492b16893",
+      "sha256": "d35c899c9feb11c8398fe2e225d80dcdb0cb2b81d2bbd67b2276671207f1baaa",
       "evidenceClass": "reference",
       "note": "gospel-5.8.19 elapsed == 4920 minutes"
     }
@@ -164,12 +192,11 @@
     "wallSeconds": null
   },
   "comparison": {
-    "baseline": "reference-rule/1 三 seed 真实四日：perfect / 8 survivors / 4920 / 335 decisions",
-    "proposed": "jev-experimental（真实 C 头 + JSONL 服务）——本轮 blocked",
-    "sameConditions": "compare.ts 强制同 seed/profile；proposed 臂未产出，故未形成同条件对照",
-    "resultsPath": "artifacts/sprint-r8/H/comparison.json",
+    "baseline": "reference-rule/1 真实四日（8 局数据，perfect/8/4920）",
+    "proposed": "jev-experimental 在线编码——blocked（架构不支持，已实测）",
+    "sameConditions": "compare.ts 强制同 seed/profile；proposed 臂未产出",
+    "resultsPath": "artifacts/sprint-r8c/H/verify/verify.json",
     "adoption": "pending-owner"
   },
-  "nextCommand": "python research/decision-choice/jev05/action/train.py preflight --json  # 先要到空闲 A10（~51 GiB）再 encode -> train -> calibrate -> serve，然后 node dist/scripts/r8/playthrough.js --mode jev-experimental --scorer-command \"...\"",
-  "evidenceAnchorHEAD": "1d85c47ef9c42dcfe2415c2ee478cc349b0e8123"
+  "nextCommand": "pip install -U 'transformers>=4.58' 或安装支持 qwen3_5 的官方实现后：python research/decision-choice/jev05/action/live_encode_probe.py --cases artifacts/sprint-r8/D/cases/dynamic-cases.jsonl --out artifacts/sprint-r8c/M/live-encode.json"
 }

@@ -230,13 +230,13 @@ function main(): void {
   // 3e. The web entry must run the same chain (real stdin -> real records).
   {
     const result = spawnSync(node, ['dist/scripts/play-sprint.js', '--fresh'], {
-      cwd, encoding: 'utf8', timeout: 120_000, input: 'game-step\nquit\n',
+      cwd, encoding: 'utf8', timeout: 120_000, input: 'r8-step\nquit\n',
     });
     interface WebRecord { candidates?: unknown[]; executionStatus?: string }
     interface WebStep { records?: WebRecord[] }
     let step: WebStep | null = null;
     for (const line of (result.stdout ?? '').split('\n')) {
-      if (!line.includes('"command":"game-step"')) continue;
+      if (!line.includes('"command":"r8-step"')) continue;
       try {
         step = JSON.parse(line) as WebStep;
       } catch { step = null; }
@@ -247,11 +247,11 @@ function main(): void {
     const passed = result.status === 0 && records.length > 0 && multi > 0 && applied > 0;
     gates.push({
       gate: 'web-shared-chain', status: passed ? 'pass' : 'fail',
-      command: `printf 'game-step\\n' | ${node} dist/scripts/play-sprint.js --fresh`,
+      command: `printf 'r8-step\\n' | ${node} dist/scripts/play-sprint.js --fresh`,
       cwd, exitCode: result.status, sourceHEAD,
       path: join(args.out, 'web-step.json'), sha256: sha256(JSON.stringify(records)),
       evidenceClass: 'reference',
-      note: passed ? `web step produced ${records.length} records, ${multi} multi-candidate, `
+      note: passed ? `web r8-step produced ${records.length} records, ${multi} multi-candidate, `
         + `${applied} applied`
         : `web step did not run the shared chain: ${(result.stderr ?? '').slice(0, 300)}`,
       observed: { records: records.length, multi, applied },
@@ -357,9 +357,11 @@ function main(): void {
   };
   const reportPath = join(args.out, 'verify.json');
   writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
-  console.log(JSON.stringify({ ok: failed.length === 0 && (!args.strict || blocked.length === 0),
-    ...report.summary, out: args.out, report: reportPath }, null, 2));
-  if (failed.length > 0 || (args.strict && blocked.length > 0)) process.exitCode = 1;
+  // A blocked required gate is not a completion: the total gate stays red.
+  const ok = failed.length === 0 && blocked.length === 0;
+  console.log(JSON.stringify({ ok, ...report.summary, blockedGates:
+    blocked.map(gate => gate.gate), out: args.out, report: reportPath }, null, 2));
+  if (!ok) process.exitCode = 1;
 }
 
 main();

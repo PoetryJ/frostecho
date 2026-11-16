@@ -1,0 +1,63 @@
+{
+  "schema": "frostecho.jev05.action.preflight/1",
+  "checkedAt": "2026-11-16T16:50:45",
+  "renderer": "joint-c-action/1",
+  "hidden": 5120,
+  "head": {
+    "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r8c/artifacts/sprint-r7/legacy-reuse/c43-increment-batch4-1/warm-start-17/best.safetensors",
+    "exists": true,
+    "sha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04"
+  },
+  "encoder": {
+    "path": "/data2/model_weights/Qwen3.8-27B",
+    "exists": true,
+    "hiddenSize": 5120,
+    "matchesHead": true
+  },
+  "gpus": [
+    {
+      "index": 0,
+      "name": "NVIDIA A10",
+      "totalMiB": 23028,
+      "usedMiB": 18433,
+      "freeMiB": 4595
+    },
+    {
+      "index": 1,
+      "name": "NVIDIA A10",
+      "totalMiB": 24564,
+      "usedMiB": 18057,
+      "freeMiB": 6507
+    }
+  ],
+  "capacity": {
+    "requiredWeightsMiB": 51498,
+    "totalGpuFreeMiB": 11102,
+    "usableGpuMiB": 8030,
+    "ramAvailableMiB": 73480,
+    "usableRamMiB": 61192,
+    "plan": "device_map shards across free GPUs, remainder on CPU"
+  },
+  "encoderLoadable": true,
+  "architecture": {
+    "supported": false,
+    "detail": "ValueError: The checkpoint you are trying to load has model type `qwen3_5` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.\n\nYou can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`"
+  },
+  "requiredVramMiB": 51498,
+  "features": {
+    "path": "/data3/DATA/project/project_meishijiang/FrostEcho-jev03-r1-behavior/research/decision-choice/jev03/behavior/results/behavior-features.npz",
+    "sha256": "6f4bb95e80f4aa7c75f174d07d5ee580b2414dbc3d0f41b99c52f2115262feb7",
+    "candShape": [
+      768,
+      4,
+      5120
+    ],
+    "dtype": "float32",
+    "rows": 768
+  },
+  "blockedReason": "local transformers cannot build this architecture: ValueError: The checkpoint you are trying to load has model type `qwen3_5` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.\n\nYou can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`",
+  "readyForScoring": true,
+  "readyForTraining": true,
+  "readyForLiveEncoding": false,
+  "status": "ready"
+}

@@ -105,12 +105,6 @@ const play = existsSync(statePath) && !process.argv.includes('--fresh')
  * the domains are the runtime's.
  */
 const r8 = R8Runtime.create({ session: play.session });
-// The product clock is the original one: D1 08:00. A fresh session starts at
-// 00:00 for legacy saves, so align it once when nothing has happened yet.
-if (play.session.world.simTime === 0) {
-  play.session.world.simTime = 8 * 60;
-  play.session.world.day = 1;
-}
 const r8Scorer = referenceAgencyScorer();
 const session = play.session;
 
@@ -329,11 +323,17 @@ async function runJob(job: PlayerJob, line: string,
         emit({ command, jobId: job.jobId, status: play.status() });
         break;
       case 'game-step': {
-        // One step through the shared R8 chain: candidates -> ChoiceRequest ->
-        // scorer -> authoritative commit -> receipt-backed completion.
+        // Legacy task-board step. Kept because the R2-R5 acceptance stories and
+        // saved sessions depend on it; the R8 chain is one command away.
+        const result = play.step();
+        emit({ command, jobId: job.jobId, ...result });
+        break;
+      }
+      case 'r8-step': {
+        // R8 shared chain: candidates -> ChoiceRequest -> scorer -> committed
+        // intent/world command -> receipt-backed completion.
         const result = await runStep(r8, r8Scorer, { mode: 'reference' });
-        emit({ command, jobId: job.jobId, ...result, executed: result.executed,
-          mode: result.mode });
+        emit({ command, jobId: job.jobId, ...result });
         break;
       }
       case 'map': {
