@@ -1,0 +1,87 @@
+{
+  "schema": "frostecho.pm.single-request-placement-comparison/1",
+  "inputSha256": "f6fae18919a5c6ee3a4aedfcf8fff23c2f4fcc9d0429aff36aff7b1802e17b03",
+  "sameTokenIds": true,
+  "cases": 1,
+  "tokens": 307,
+  "candidates": 7,
+  "cpu": {
+    "run": 3,
+    "seconds": 165.0489281117916,
+    "peakRssGiB": 35.47248458862305
+  },
+  "oneLayerOffload": {
+    "run": 6,
+    "seconds": 188.84679279476404,
+    "peakRssGiB": 49.16218948364258,
+    "peakCudaMiB": 3139.02197265625
+  },
+  "featureMaxAbsDifference": 0.875,
+  "logitMaxAbsDifference": 0.5090998352898528,
+  "probabilityMaxAbsDifference": 0.000714635724527438,
+  "sameSelectedId": true,
+  "selectedId": "a-0b3f9fd02e70",
+  "notClaimed": [
+    "general speedup",
+    "numerical equivalence",
+    "calibration",
+    "action quality",
+    "online game"
+  ],
+  "completedEncoderForwards": 2,
+  "completedHeadForwards": 2,
+  "sumProcessWallSeconds": 433.61914682388306,
+  "runs": [
+    {
+      "run": 1,
+      "status": "failed",
+      "reason": "Invalid device argument ",
+      "wallSeconds": 9.17418646812439,
+      "encoderCompleted": 0,
+      "headCompleted": 0
+    },
+    {
+      "run": 2,
+      "status": "failed",
+      "reason": "'Qwen3_5ForCausalLM' object has no attribute 'hf_device_map'",
+      "wallSeconds": 15.486555814743042,
+      "encoderCompleted": 0,
+      "headCompleted": 0
+    },
+    {
+      "run": 3,
+      "status": "encoded",
+      "reason": null,
+      "wallSeconds": 175.2534577846527,
+      "encoderCompleted": 1,
+      "headCompleted": 1
+    },
+    {
+      "run": 4,
+      "status": "failed",
+      "reason": "checkpoint module names do not match the verified text model",
+      "wallSeconds": 11.323346138000488,
+      "encoderCompleted": 0,
+      "headCompleted": 0
+    },
+    {
+      "run": 5,
+      "status": "failed",
+      "reason": "Expected all tensors to be on the same device, but found at least two devices, cpu and cuda:0! (when checking argument for argument mat2 in method wrapper_CUDA_bmm)",
+      "wallSeconds": 24.92155885696411,
+      "encoderCompleted": 0,
+      "headCompleted": 0
+    },
+    {
+      "run": 6,
+      "status": "encoded",
+      "reason": null,
+      "wallSeconds": 197.46004176139832,
+      "encoderCompleted": 1,
+      "headCompleted": 1
+    }
+  ],
+  "failureAccounting": "Run5 attempted encoder forward and failed at RoPE device mismatch; zero completed does not mean zero compute.",
+  "gpuCostScope": "Exact aggregate GPU-hours not sampled; successful offload forward and each wall time are reported separately. Other GPU processes were untouched.",
+  "archiveSha256": "2ace024202845ea4a0321fa9af798acdeaebd1d1d792ea59562774a951898c30"
+}

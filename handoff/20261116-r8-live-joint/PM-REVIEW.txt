@@ -1,0 +1,37 @@
+2026-11-16 独立检查；交付源 8d100c40cbb26c6efa5886a7a57a8f656c036854。
+决定：返工，继续完成原主线。保留已实现的原作规则/领域骨架；下一交付是完整实际产品与真实模型闭环，不是再交一轮局部反例清单。
+
+有效结果（本轮独立复跑）
+- bundle verify 和源码导入成功；原交付已推 GitHub codex/r8-complete，不合 main。
+- npm ci、TypeScript 构建成功；15项任务矩阵通过；旧伪回执/build-start/机器恢复三个领域反例关闭。
+- reference 四日脚本360决策/360执行/0拒绝，perfect、8存活、elapsed4920。原输出sourceHEAD=null，本目录provenance.json绑定这次工作树源8d100c4；不能把它称为网页或实模结果。
+- 原作对账44/44通过，但前33项主要是源码文字核对，不能称44项完整行为等价。
+- 新共享编码器CPU机制测试10/10，含Unicode候选定位、单次joint tokenization、不静默截断、内存byte单位和实测预算规划。完整777套件本轮未重跑，776/777是执行者报告。
+
+产品根因与修正方向（基线复现见repro/product-probes.cjs和evidence/game/）
+1. COLLECT_FOOD 接受采木 gathered 回执，食物130→130而task=done。根因是检查事件类型，未检查目标谓词。修成已提交证据与资源/数量/对象/任务实例绑定；社会任务也需真实效果。
+2. 保存前3条 committed、恢复后0条；合法回执被 receipt_not_committed 拒绝。根因是R8 sidecar缺journal，CLI新建runtime。统一实际产品存取，做D2新进程到D4全部权威状态比较。
+3. 评分等待时取消，generation0→1后释放旧分数仍执行，version0→1。根因是R8 await后直接提交。回归原session事务边界，提交前同步复核，覆盖排队/save/EOF。
+4. 网页单步和自动运行仍发旧game-step；r8-step存在不代表网页已经走新链。R8 runtime任务与旧玩家请求板仍分离。显式profile接同一入口，旧profile单独兼容。
+
+研究根因与修正方向（基线机制复现见repro/model-data-audit.py和evidence/model/）
+- 一条train+一条dev的机制探针实际优化2条；LN前向修复后梯度仍用raw features，偏差2.0298。用既有Torch make_head/autograd和正确分区，而不是继续手写不一致梯度。
+- 空JSON文件 {} 被serve视为正式证书，countsAsAdmitted=true。无证书拒绝测试不能覆盖伪证书；复用已有逐样本重算/完整身份绑定，实验分支不冒称准入。
+- 2560案件确为8个episode且episode不跨split；但148个完全相同可见文本跨split，第二规则审阅2560/2560接受全部候选，最终标签全等于reference已选项。现状可作弱监督原料，不足以证明独立行动真值和风险校准。
+- 实际编码请求memoryFacts为空、relationships为空，长程记忆尚未进入这条决策输入。A/O须接可见记忆与任务，不以数据库有字段替代模型使用证据。
+
+本轮 PM 实际补出的进展
+- 找回已能识别qwen3_5的原.venv（Transformers5.2.0/Torch2.5.1+cu121）；不是缺模型架构，也无需再装一套环境。
+- 写joint_encoder.py/joint_live_probe.py：真正联合候选输入、JS UTF-16→token位置、冻结BF16、同一前向读各候选位置；复用旧C头非仿射LN，不更换算法。
+- 实际游戏请求307token、7候选，经本地27B输出7×5120特征、旧头1次前向。auto实际全CPU，165.049秒前向，175.253秒墙钟、35.47GiB峰值RSS。T=1未校准。
+- 同输入单层驻GPU/CPU卸载也实测成功：188.847秒前向、197.460秒墙钟、GPU峰值3139.022MiB、RSS49.16GiB；没有更快。选择相同但logit最大绝对差0.5091，不能称数值等价或共用校准证书。
+- 把上述真实分数回放到同一初态：选择“去仓库核实存粮”，npc_01 dorm-a→warehouse、体力80→77、version0→1、权威moved回执恰一次。是real-model-score-replay，不是在线服务；尚未发生库存观察或后续履约。
+- 新代码在独立分支；没有更改默认玩法/旧训练器。M接共享编码器到生产训练与持久服务，O接统一提交队列，是下一步最短路径。
+
+边界与资源
+- 未证明完整七室内/浏览器视觉、网页四日完整保存、第二世全状态一致、真实新行动头训练、在线JEV整局、模型优于reference、记忆增益或正式风险证书。
+- 本轮不杀其他GPU进程，不占用完整两卡；单次短输入的运行结果不能推广到大批次/长上下文。模型checkpoint记录config/index身份，未声称本轮重算所有大分片SHA。
+- 两次成功编码/两次真实旧头前向；包括4个失败尝试的进程墙钟合计433.62秒。未采样精确GPU卡时，不填0卡时。CPU/GPU结果分别在同初态回放，新增模型调用0，各游戏提交1。
+- 原失败尝试与后续运行均保留。encoderForwardCalls记录成功完成的前向；run5曾进入前向后RoPE设备不一致失败，不能按0成功前向记为0计算成本。
+- 本轮并行3个真实辅助agent：游戏只读复核、模型/数据复核及机制测试、请求捕获/分数回放工具；主agent完成真实服务器运行与共享编码器，未声称9路实现。
+最终卸载实测和逐run成本见evidence/real-model/comparison.json；CODE-SHA256与原始记录绑定本轮新增实现。
