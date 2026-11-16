@@ -32,7 +32,17 @@ export interface NpcState {
   health: number;
   san: number;
   alive: boolean;
+  /**
+   * R8 additive: original body temperature in degrees Celsius
+   * (`src/npc/npc-body.js:16-69`, floor 25, target 36.5). Absent in pre-R8
+   * snapshots, which keep their frozen behaviour.
+   */
+  bodyTemp?: number;
 }
+
+/** R8 additive: the three original machines (`src/systems/machine-system.js`). */
+export type MachineId = 'generator' | 'lumberMill' | 'foodCollector';
+export type MachineState = 'absent' | 'building' | 'running' | 'stopped' | 'broken';
 
 export interface WorldV2 {
   schema: string;
@@ -63,6 +73,20 @@ export interface WorldV2 {
   ending: 'none' | 'survived' | 'all-dead';
   /** Scenario length in real days; the ending is decided by elapsed simTime. */
   scenarioDays: number;
+  /**
+   * R8 additive domain state, written only through the integrator's intent
+   * commit. Optional so every pre-R8 snapshot restores byte-identically.
+   */
+  r8?: R8WorldState;
+}
+
+export interface R8WorldState {
+  /** Machine states, never a second furnace. */
+  machines: Record<MachineId, MachineState>;
+  /** Machine build progress in minutes remaining, keyed by machine. */
+  machineProgress: Partial<Record<MachineId, number>>;
+  /** Public numeric facts (crisis ids, council ids). No private information. */
+  facts: Record<string, number>;
 }
 
 /** R3 spatial bookkeeping: grid positions, place stocks, carried meals, closed cells. */
