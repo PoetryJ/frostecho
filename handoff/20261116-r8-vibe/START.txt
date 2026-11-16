@@ -1,0 +1,11 @@
+R8：完整原作 + 真实 JEV 行动闭环
+仓库 https://github.com/PoetryJ/frostecho
+任务包分支 codex/r8-execution-pack-20261116；产品基线 6407705c53a462a3d539e582187dd3f6bcb00bf5。
+你是集成 owner，继续已有工程，勿重建仓库。先 git fetch origin，保留现有未提交工作；在本包分支/其后代上执行：
+python handoff/20261116-r8-vibe/dispatch.py verify
+python handoff/20261116-r8-vibe/dispatch.py brief O
+按 O 指令建 codex/r8-integrate，先冻结接口，再开 P1/P2/P3/P4/A/D/M/H 八条工作线。各 agent 只读 dispatch.py brief ROLE 的输出及自己的源码；不要塞整轮历史。D 另开两个互盲审查会话。平台槽位不足就分波，记录实际会话。
+本轮必须交付：原作 D1 08:00→D4 18:00→轮回可玩；自主 NPC 持续任务；真实动态候选 JEV 进入 game-step；独立数据/校准和对照证据。并行做产品，不再把历史边角修补当本轮主产出。
+旧 C 头与真实权重已存在，M 立即做加载/容量探针，D 同时生产数据。不要重新下载 27B 或等待玩法做完才开始模型线。
+owner 每合入一条线即跑贯通故事。目标节奏：首小时接口和现有入口；中段完整游戏+模型接线；后段训练、真实对照和验收。到时交真实完成项、缺口、下一命令，不能用时间到自动判完成。
+仅开功能分支/草稿 PR，不合 main。交付 RUNBOOK.txt、原始记录、权重外部位置与 SHA、同源码提交的验收，以及 REPORT.json 和不超过12行短报。
