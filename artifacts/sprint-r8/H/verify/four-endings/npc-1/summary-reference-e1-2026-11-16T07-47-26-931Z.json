@@ -1,24 +1,24 @@
 {
   "schema": "frostecho.r8.playthrough/1",
   "profile": "gospel-5.8.19",
-  "seed": "e5",
+  "seed": "e1",
   "mode": "reference",
   "memoryPolicy": "conditional-experience",
   "sourceHEAD": null,
-  "startedAt": "2026-11-16T07:44:08.176Z",
+  "startedAt": "2026-11-16T07:47:26.932Z",
   "lives": 1,
   "endings": [
     {
       "lifeNumber": 1,
-      "ending": "normal",
-      "survivors": 5,
+      "ending": "extinction",
+      "survivors": 1,
       "elapsed": 4920,
       "at": 5400
     }
   ],
-  "decisions": 215,
-  "executed": 202,
-  "rejected": 13,
+  "decisions": 47,
+  "executed": 30,
+  "rejected": 17,
   "rejections": [],
   "timeline": [
     {
@@ -30,10 +30,24 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.766667,
-        "band": "hot",
+        "strength": 0.591667,
+        "band": "warm",
         "wood": 1,
         "power": 2
+      }
+    },
+    {
+      "at": 540,
+      "elapsed": 60,
+      "day": 1,
+      "proposalId": "crises:crisis-1:extinction",
+      "type": "crisis_started",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "crisisId": "crisis-1",
+        "kind": "extinction",
+        "alive": 1
       }
     },
     {
@@ -45,8 +59,8 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.752083,
-        "band": "hot",
+        "strength": 0.55,
+        "band": "warm",
         "wood": 1,
         "power": 2
       }
@@ -60,7 +74,7 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.7375,
+        "strength": 0.508333,
         "band": "warm",
         "wood": 1,
         "power": 2
@@ -75,7 +89,7 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.695833,
+        "strength": 0.466667,
         "band": "warm",
         "wood": 1,
         "power": 2
@@ -85,12 +99,12 @@
       "at": 780,
       "elapsed": 300,
       "day": 1,
-      "proposalId": "production:lumberMill:built",
+      "proposalId": "production:foodCollector:built",
       "type": "machine_built",
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "machine": "lumberMill"
+        "machine": "foodCollector"
       }
     },
     {
@@ -102,8 +116,8 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.708333,
-        "band": "warm",
+        "strength": 0.425,
+        "band": "cold",
         "wood": 1,
         "power": 2
       }
@@ -117,24 +131,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.664583,
+        "strength": 0.469792,
         "band": "warm",
         "wood": 1,
         "power": 2
-      }
-    },
-    {
-      "at": 840,
-      "elapsed": 360,
-      "day": 1,
-      "proposalId": "production:lumberMill:stop:840",
-      "type": "machine_stopped",
-      "actorId": "system",
-      "observedBy": "all",
-      "payload": {
-        "machine": "lumberMill",
-        "reason": "missing power",
-        "need": 4
       }
     },
     {
@@ -146,10 +146,24 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.65,
+        "strength": 0.514583,
         "band": "warm",
         "wood": 1,
         "power": 2
+      }
+    },
+    {
+      "at": 900,
+      "elapsed": 420,
+      "day": 1,
+      "proposalId": "production:foodCollector:stop:900",
+      "type": "machine_stopped",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "machine": "foodCollector",
+        "reason": "missing power",
+        "need": 3
       }
     },
     {
@@ -161,7 +175,7 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.65,
+        "strength": 0.595833,
         "band": "warm",
         "wood": 1,
         "power": 0
@@ -176,8 +190,8 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.985417,
-        "band": "hot",
+        "strength": 0.670833,
+        "band": "warm",
         "wood": 1,
         "power": 2
       }
@@ -191,8 +205,8 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.970833,
-        "band": "hot",
+        "strength": 0.629167,
+        "band": "warm",
         "wood": 1,
         "power": 2
       }
@@ -206,8 +220,8 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.95625,
-        "band": "hot",
+        "strength": 0.5875,
+        "band": "warm",
         "wood": 1,
         "power": 2
       }
@@ -221,8 +235,8 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.941667,
-        "band": "hot",
+        "strength": 0.68125,
+        "band": "warm",
         "wood": 1,
         "power": 2
       }
@@ -236,8 +250,8 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.927083,
-        "band": "hot",
+        "strength": 0.69375,
+        "band": "warm",
         "wood": 1,
         "power": 2
       }
@@ -251,8 +265,8 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.885417,
-        "band": "hot",
+        "strength": 0.679167,
+        "band": "warm",
         "wood": 1,
         "power": 2
       }
@@ -266,8 +280,8 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.84375,
-        "band": "hot",
+        "strength": 0.664583,
+        "band": "warm",
         "wood": 1,
         "power": 2
       }
@@ -281,8 +295,8 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.802083,
-        "band": "hot",
+        "strength": 0.622917,
+        "band": "warm",
         "wood": 1,
         "power": 2
       }
@@ -296,10 +310,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.760417,
-        "band": "hot",
+        "strength": 0.595833,
+        "band": "warm",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -311,10 +325,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.71875,
+        "strength": 0.56875,
         "band": "warm",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -326,10 +340,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.677083,
+        "strength": 0.541667,
         "band": "warm",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -341,10 +355,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.635417,
+        "strength": 0.514583,
         "band": "warm",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -356,7 +370,7 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.59375,
+        "strength": 0.589583,
         "band": "warm",
         "wood": 1,
         "power": 2
@@ -371,7 +385,7 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.552083,
+        "strength": 0.547917,
         "band": "warm",
         "wood": 1,
         "power": 2
@@ -386,7 +400,7 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.510417,
+        "strength": 0.50625,
         "band": "warm",
         "wood": 1,
         "power": 2
@@ -401,7 +415,7 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.46875,
+        "strength": 0.464583,
         "band": "warm",
         "wood": 1,
         "power": 2
@@ -416,7 +430,7 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.427083,
+        "strength": 0.422917,
         "band": "cold",
         "wood": 1,
         "power": 2
@@ -431,7 +445,7 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.385417,
+        "strength": 0.38125,
         "band": "cold",
         "wood": 1,
         "power": 2
@@ -446,7 +460,7 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.34375,
+        "strength": 0.339583,
         "band": "cold",
         "wood": 1,
         "power": 2
@@ -461,7 +475,7 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.302083,
+        "strength": 0.297917,
         "band": "cold",
         "wood": 1,
         "power": 2
@@ -476,10 +490,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.566667,
-        "band": "warm",
+        "strength": 0.270833,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -491,10 +505,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.783333,
-        "band": "hot",
+        "strength": 0.24375,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -506,10 +520,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.945833,
-        "band": "hot",
+        "strength": 0.216667,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -521,10 +535,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.91875,
-        "band": "hot",
+        "strength": 0.189583,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -536,10 +550,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.985417,
-        "band": "hot",
+        "strength": 0.1625,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -551,10 +565,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.94375,
-        "band": "hot",
+        "strength": 0.135417,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -566,10 +580,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.95625,
-        "band": "hot",
+        "strength": 0.108333,
+        "band": "none",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -581,10 +595,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.941667,
-        "band": "hot",
+        "strength": 0.08125,
+        "band": "none",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -596,10 +610,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.927083,
-        "band": "hot",
+        "strength": 0.054167,
+        "band": "none",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -611,10 +625,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.885417,
-        "band": "hot",
+        "strength": 0.027083,
+        "band": "none",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -626,10 +640,22 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.84375,
-        "band": "hot",
+        "strength": 0,
+        "band": "none",
         "wood": 1,
-        "power": 2
+        "power": 0
+      }
+    },
+    {
+      "at": 3120,
+      "elapsed": 2640,
+      "day": 3,
+      "proposalId": "council:council-5:expired",
+      "type": "council_expired",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-5"
       }
     },
     {
@@ -641,10 +667,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.802083,
-        "band": "hot",
-        "wood": 1,
-        "power": 2
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
       }
     },
     {
@@ -656,10 +682,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.760417,
-        "band": "hot",
-        "wood": 1,
-        "power": 2
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
       }
     },
     {
@@ -671,10 +697,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.71875,
-        "band": "warm",
-        "wood": 1,
-        "power": 2
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
       }
     },
     {
@@ -686,10 +712,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.677083,
-        "band": "warm",
-        "wood": 1,
-        "power": 2
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
       }
     },
     {
@@ -701,10 +727,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.635417,
-        "band": "warm",
-        "wood": 1,
-        "power": 2
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
       }
     },
     {
@@ -716,10 +742,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.59375,
-        "band": "warm",
+        "strength": 0.352083,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -731,10 +757,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.552083,
-        "band": "warm",
+        "strength": 0.325,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -746,10 +772,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.510417,
-        "band": "warm",
+        "strength": 0.297917,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -761,10 +787,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.46875,
-        "band": "warm",
+        "strength": 0.270833,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -776,10 +802,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.427083,
+        "strength": 0.24375,
         "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -791,10 +817,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.385417,
+        "strength": 0.216667,
         "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -806,10 +832,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.34375,
+        "strength": 0.189583,
         "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -821,10 +847,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.302083,
+        "strength": 0.1625,
         "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -836,10 +862,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.49375,
-        "band": "warm",
+        "strength": 0.135417,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -851,10 +877,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.452083,
-        "band": "warm",
+        "strength": 0.108333,
+        "band": "none",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -866,10 +892,22 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.410417,
-        "band": "cold",
+        "strength": 0.08125,
+        "band": "none",
         "wood": 1,
-        "power": 2
+        "power": 0
+      }
+    },
+    {
+      "at": 3780,
+      "elapsed": 3300,
+      "day": 3,
+      "proposalId": "council:council-7:expired",
+      "type": "council_expired",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-7"
       }
     },
     {
@@ -881,10 +919,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.36875,
-        "band": "cold",
+        "strength": 0.054167,
+        "band": "none",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -896,10 +934,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.435417,
-        "band": "cold",
+        "strength": 0.027083,
+        "band": "none",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -911,10 +949,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.610417,
-        "band": "warm",
+        "strength": 0,
+        "band": "none",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -926,10 +964,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.758333,
-        "band": "hot",
-        "wood": 1,
-        "power": 2
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
       }
     },
     {
@@ -941,10 +979,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.825,
-        "band": "hot",
-        "wood": 1,
-        "power": 2
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
       }
     },
     {
@@ -956,10 +994,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.810417,
-        "band": "hot",
+        "strength": 0.379167,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -971,10 +1009,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.76875,
-        "band": "hot",
+        "strength": 0.352083,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -986,10 +1024,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.727083,
-        "band": "warm",
+        "strength": 0.325,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -1001,10 +1039,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.685417,
-        "band": "warm",
+        "strength": 0.297917,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -1016,22 +1054,22 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.64375,
-        "band": "warm",
+        "strength": 0.270833,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
       "at": 4560,
       "elapsed": 4080,
       "day": 4,
-      "proposalId": "crises:crisis-1:day4",
+      "proposalId": "crises:crisis-2:day4",
       "type": "crisis_started",
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "crisisId": "crisis-1",
+        "crisisId": "crisis-2",
         "kind": "day4_warning",
         "outdoor": "snow"
       }
@@ -1045,10 +1083,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.602083,
-        "band": "warm",
+        "strength": 0.24375,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -1060,10 +1098,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.560417,
-        "band": "warm",
+        "strength": 0.216667,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -1075,10 +1113,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.51875,
-        "band": "warm",
+        "strength": 0.189583,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -1090,10 +1128,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.477083,
-        "band": "warm",
+        "strength": 0.1625,
+        "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -1105,10 +1143,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.435417,
+        "strength": 0.135417,
         "band": "cold",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -1120,10 +1158,22 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.39375,
-        "band": "cold",
+        "strength": 0.108333,
+        "band": "none",
         "wood": 1,
-        "power": 2
+        "power": 0
+      }
+    },
+    {
+      "at": 5040,
+      "elapsed": 4560,
+      "day": 4,
+      "proposalId": "council:council-9:expired",
+      "type": "council_expired",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-9"
       }
     },
     {
@@ -1135,10 +1185,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.352083,
-        "band": "cold",
+        "strength": 0.08125,
+        "band": "none",
         "wood": 1,
-        "power": 2
+        "power": 0
       }
     },
     {
@@ -1150,8 +1200,8 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.325,
-        "band": "cold",
+        "strength": 0.054167,
+        "band": "none",
         "wood": 1,
         "power": 0
       }
@@ -1165,8 +1215,8 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.297917,
-        "band": "cold",
+        "strength": 0.027083,
+        "band": "none",
         "wood": 1,
         "power": 0
       }
@@ -1180,8 +1230,8 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.270833,
-        "band": "cold",
+        "strength": 0,
+        "band": "none",
         "wood": 1,
         "power": 0
       }
@@ -1195,9 +1245,9 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.24375,
-        "band": "cold",
-        "wood": 1,
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
         "power": 0
       }
     },
@@ -1210,9 +1260,9 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.216667,
-        "band": "cold",
-        "wood": 1,
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
         "power": 0
       }
     },
@@ -1225,7 +1275,7 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.189583,
+        "strength": 0.379167,
         "band": "cold",
         "wood": 1,
         "power": 0
@@ -1240,22 +1290,10 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.24375,
+        "strength": 0.352083,
         "band": "cold",
         "wood": 1,
         "power": 0
-      }
-    },
-    {
-      "at": 5220,
-      "elapsed": 4740,
-      "day": 4,
-      "proposalId": "council:council-6:expired",
-      "type": "council_expired",
-      "actorId": "system",
-      "observedBy": "all",
-      "payload": {
-        "meetingId": "council-6"
       }
     },
     {
@@ -1267,8 +1305,8 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.541667,
-        "band": "warm",
+        "strength": 0.325,
+        "band": "cold",
         "wood": 1,
         "power": 0
       }
@@ -1282,8 +1320,8 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.622917,
-        "band": "warm",
+        "strength": 0.297917,
+        "band": "cold",
         "wood": 1,
         "power": 0
       }
@@ -1297,8 +1335,8 @@
       "actorId": "system",
       "observedBy": "all",
       "payload": {
-        "strength": 0.65,
-        "band": "warm",
+        "strength": 0.270833,
+        "band": "cold",
         "wood": 1,
         "power": 0
       }
@@ -1310,8 +1348,8 @@
       "type": "ending_reached",
       "actorId": "system",
       "payload": {
-        "ending": "normal",
-        "survivors": 5,
+        "ending": "extinction",
+        "survivors": 1,
         "elapsed": 4920
       }
     }
@@ -1321,8 +1359,8 @@
     "platform": "linux"
   },
   "files": {
-    "trajectory": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/four-endings/npc-5/trajectory-reference-e5-2026-11-16T07-44-08-175Z.jsonl",
-    "summary": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/four-endings/npc-5/summary-reference-e5-2026-11-16T07-44-08-175Z.json",
-    "runtimeDocument": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/four-endings/npc-5/runtime-reference-e5-2026-11-16T07-44-08-175Z.json"
+    "trajectory": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/four-endings/npc-1/trajectory-reference-e1-2026-11-16T07-47-26-931Z.jsonl",
+    "summary": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/four-endings/npc-1/summary-reference-e1-2026-11-16T07-47-26-931Z.json",
+    "runtimeDocument": "/data3/DATA/project/project_meishijiang/FrostEcho-r8/artifacts/sprint-r8/H/verify/four-endings/npc-1/runtime-reference-e1-2026-11-16T07-47-26-931Z.json"
   }
 }
