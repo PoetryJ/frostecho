@@ -1,0 +1,67 @@
+{
+  "schema": "frostecho.r8.comparison/1",
+  "generatedAt": "2026-11-17T09:37:50.279Z",
+  "baseline": {
+    "arm": "reference",
+    "dir": "/data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/paired/reference",
+    "metrics": {
+      "seed": "live-pair-r9",
+      "profile": "gospel-5.8.19",
+      "mode": "reference",
+      "endings": [
+        {
+          "lifeNumber": 1,
+          "ending": "perfect",
+          "survivors": 8,
+          "elapsed": 4920,
+          "at": 5400
+        }
+      ],
+      "decisions": 344,
+      "executed": 88,
+      "rejected": 0,
+      "multiCandidateDecisions": 296,
+      "meanLatencyMs": 0.026,
+      "trajectorySha256": "2ec999ce15a1c8a9e74653be18540ea2ee7374b3aeba103d1a377ab20014a3dd",
+      "summaries": [
+        {
+          "seed": "live-pair-r9",
+          "ending": "perfect"
+        }
+      ]
+    }
+  },
+  "proposed": {
+    "arm": "proposed",
+    "dir": "/data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/paired/jev",
+    "metrics": {
+      "seed": "live-pair-r9",
+      "profile": "gospel-5.8.19",
+      "mode": "jev-experimental",
+      "endings": [
+        {
+          "lifeNumber": 1,
+          "ending": "perfect",
+          "survivors": 8,
+          "elapsed": 4920,
+          "at": 5400
+        }
+      ],
+      "decisions": 360,
+      "executed": 128,
+      "rejected": 0,
+      "multiCandidateDecisions": 320,
+      "meanLatencyMs": 8678.414,
+      "trajectorySha256": "15036d0073d849c934a8898d3937240f015de463ea8f56006fd6d781b0e26782",
+      "summaries": [
+        {
+          "seed": "live-pair-r9",
+          "ending": "perfect"
+        }
+      ]
+    }
+  },
+  "sameConditions": true,
+  "adoption": "pending-owner",
+  "caveat": "Reference arm is a rule policy, not a model. No claim that the proposed arm is better, and no utility is derived from a probability."
+}

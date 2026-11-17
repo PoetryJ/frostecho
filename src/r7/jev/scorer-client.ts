@@ -9,6 +9,10 @@
  */
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { createInterface } from 'node:readline';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { renderRequest } from './render';
 import {
   makeChoiceResult, validateChoiceRequest, ContractError,
   type ChoiceRequest, type ChoiceResult, type CandidateScore,
@@ -23,12 +27,40 @@ export interface ScorerServiceOptions {
   cwd: string;
   timeoutMs?: number;
   env?: Record<string, string>;
+  /**
+   * Send a joint-encoding envelope (rendered text + UTF-16 spans + hashes)
+   * instead of the bare ChoiceRequest. The persistent 27B service reads
+   * envelopes; a plain request has no text to encode.
+   */
+  envelope?: boolean;
 }
 
 interface Pending {
   resolve: (value: Record<string, unknown>) => void;
   reject: (error: Error) => void;
   timer: NodeJS.Timeout;
+}
+
+/** Exactly the structure `joint_encoder.prepare` validates. */
+export function buildEnvelope(request: ChoiceRequest): Record<string, unknown> {
+  const rendered = renderRequest(request);
+  const requestJson = JSON.stringify(request);
+  const hash = (text: string | Buffer): string =>
+    createHash('sha256').update(text).digest('hex');
+  const source = readFileSync(join(process.cwd(), 'src/r7/jev/render.ts'));
+  const built = readFileSync(join(process.cwd(), 'dist/src/r7/jev/render.js'));
+  return {
+    schema: 'frostecho.joint-encoding-request/1',
+    sourceHEAD: process.env.FROSTECHO_SOURCE_HEAD ?? null,
+    seed: request.requestId, npcCount: 8,
+    request, requestJson,
+    inputSha256: hash(requestJson),
+    rendered: { ...rendered, spanUnit: 'utf16-code-unit' },
+    rendererSourceSha256: hash(source),
+    rendererBuildSha256: hash(built),
+    renderedTextSha256: hash(rendered.text),
+    modelCalls: 0, worldCommits: 0, realModel: false,
+  };
 }
 
 export interface ScorerServiceReply {
@@ -109,7 +141,9 @@ export class ScorerServiceClient implements ScorePort {
         reject(new Error(`scorer timeout after ${this.timeoutMs}ms`));
       }, this.timeoutMs);
       this.pending = { resolve, reject, timer };
-      child.stdin.write(`${JSON.stringify(request)}\n`);
+      child.stdin.write(`${this.options.envelope
+        ? JSON.stringify(buildEnvelope(request))
+        : JSON.stringify(request)}\n`);
     });
     const parsed = this.parse(reply);
     this.transactions.push({ requestId: request.requestId,
