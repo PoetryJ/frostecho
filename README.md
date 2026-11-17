@@ -1,5 +1,13 @@
 # FrostEcho
 
+## 当前可玩与训练入口（2026-11-17）
+
+分支 `codex/r8-train-play-20261117` 已完成双 A10 真实27B编码、新行动头训练、在线承诺履约及原作八张地图的四日实模运行：304次JEV前向 + 40次参考晨会，8人存活，0拒绝。模型为实验模式；完整原作动作工时/采集地点等语义及一般长程智能仍在推进。
+
+从 [本轮报告](artifacts/r8-train-play/REPORT.md)、[运行说明](artifacts/r8-train-play/RUNBOOK.md) 和 [下一轮并行任务](artifacts/r8-train-play/NEXT-VIBE.txt) 开始。已训练小头、输入、真实轨迹摘要和SHA在 `artifacts/r8-train-play/`；27B主干权重不随仓库分发。普通参考模式网页入口为 `npm run play:r7`，先按运行说明构建并恢复原作素材；真实JEV网页与CLI使用同一行动路径。
+
+以下保留 G00 起的历史内核与接口说明，不能把旧 G01 HTTP 示例当作当前 JEV 训练入口。
+
 包名 `frostecho`。展示名 FrostEcho。GitHub 仓库：PoetryJ/frostecho（https://github.com/PoetryJ/frostecho）。
 
 G00 是最小动作执行与事件重放内核。G00 验收时包名曾是 `gospel-rebuild`（历史记录见 ACCEPTANCE.md）。G01 起包名为 `frostecho`。

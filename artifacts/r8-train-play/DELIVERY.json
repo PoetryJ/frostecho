@@ -1,0 +1,44 @@
+{
+  "schema": "frostecho.train-play-delivery/1",
+  "date": "2026-11-17",
+  "branch": "codex/r8-train-play-20261117",
+  "baseHead": "9fba23610f44445b33936f360b63bef81e3e6c49",
+  "experimentSourceHead": "3f8121aaeb7057dc928606cd41a6ce4568fec193",
+  "deliveryTip": "the commit containing this manifest",
+  "verdict": "GPU training and online gameplay milestone passed; complete original gameplay and general long-horizon intelligence remain incomplete",
+  "model": {
+    "class": "Qwen3_5ForCausalLM",
+    "precision": "bfloat16",
+    "placement": "two NVIDIA A10 GPUs with partial CPU offload",
+    "featureIdentityHash": "df1d9e4dc6d433c5e74f0b0db0fcdd4e96d01c7270901fae88502049e8851a4b",
+    "headSha256": "a3a2196a72b081838e3379e86dc2e3bbc27e3b8473cce11eddb04c23e2d909c2",
+    "trainedHeads": 4,
+    "trainDevTest": [64, 16, 16],
+    "labelSource": "weak reference imitation",
+    "oldHeadTestAgreement": [6, 16],
+    "newHeadTestAgreement": [16, 16],
+    "researchTrainReady": false,
+    "mayTrainOnJev": false,
+    "countsAsAdmitted": false,
+    "calibrated": false
+  },
+  "completed": {
+    "realCommitmentStory": {"forwards": 9, "outcome": "fulfilled", "sameTaskInstance": true, "noPolicyFallback": true},
+    "fullMapFourday": {"elapsedMinutes": 4920, "survivors": 8, "ending": "perfect", "decisions": 344, "realForwards": 304, "referenceCouncilDecisions": 40, "executed": 344, "rejected": 0, "wallSeconds": 1152.9240863323212},
+    "web": {"realForwards": 16, "saveRestoreJsonDocumentsEqual": 7, "localUrl": "http://127.0.0.1:18748/", "gpuReleasedAfterVerification": true},
+    "coreTests": {"passed": 780, "failed": 0, "sourceHead": "3f8121aaeb7057dc928606cd41a6ce4568fec193", "firstTemporaryDirectoryConflictPreserved": true},
+    "v2RawFilesIndependentlyHashChecked": 1240
+  },
+  "limitations": [
+    "Reference achieves the same eight survivors; no overall benefit claim.",
+    "Weak short-episode labels do not establish general long-horizon reasoning or calibrated probabilities.",
+    "Action duration differs across CLI, web scheduler and fourday runner.",
+    "Gathering does not yet enforce the original resource-source location.",
+    "Five work-proxy task types, walking rescue and some crisis/gate behavior remain incomplete.",
+    "Council and acceptance/renegotiation are still rule-based.",
+    "Memory source attribution and unobserved-information tests need the next controlled experiment."
+  ],
+  "next": "NEXT-VIBE.txt",
+  "runbook": "RUNBOOK.md",
+  "report": "REPORT.md"
+}

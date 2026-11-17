@@ -1,0 +1,84 @@
+{
+  "source": "9fba23610f44445b33936f360b63bef81e3e6c49+online-deploy-v1:43415a892eb55d6a9f0592e58e31aed21e3e3227127e0f9e177bfcfe6b474e1e",
+  "endings": [
+    {
+      "lifeNumber": 1,
+      "ending": "perfect",
+      "survivors": 8,
+      "elapsed": 4920,
+      "at": 5400
+    }
+  ],
+  "decisions": 360,
+  "executed": 350,
+  "rejected": 10,
+  "environment": {
+    "node": "v22.23.4",
+    "platform": "linux",
+    "fullMap": false,
+    "scorerIdentity": {
+      "certificateSha256": null,
+      "countsAsAdmitted": false,
+      "encoderForwardAttempts": 320,
+      "encoderForwardCalls": 320,
+      "encoderId": "/data2/model_weights/Qwen3.8-27B",
+      "experimental": true,
+      "featureIdentityHash": "df1d9e4dc6d433c5e74f0b0db0fcdd4e96d01c7270901fae88502049e8851a4b",
+      "headSha256": "a7ea65413430f9518b7065643091131104dbf4e0968a15dcd24597f725cfe3f2",
+      "independentReviews": 0,
+      "labelSource": "reference-imitation",
+      "memoryPolicyId": "conditional-experience",
+      "mode": "jev-experimental",
+      "realModel": true,
+      "rendererId": "joint-c-action/1",
+      "requestsFailed": 0,
+      "requestsReceived": 320,
+      "scorerId": "jev-joint-c/1",
+      "scoresSucceeded": 320,
+      "tau": 0,
+      "temperature": 1,
+      "trainingManifestSha256": "caf6ca065f54610e40b132aeedfcb00873b4e38fb9552e7b2b6fa1cc14bb1217",
+      "utility": null
+    },
+    "referenceCouncilDecisions": 40,
+    "actionDecisions": 320
+  },
+  "realForwards": 320,
+  "failedForwards": 0,
+  "latencyMedianMs": 3699.232,
+  "latencyP95Ms": 4065.674,
+  "initialObservation": {
+    "day": 1,
+    "minuteOfDay": 480,
+    "weather": "snow",
+    "resources": {
+      "food": 130,
+      "firewood": 30,
+      "power": 30,
+      "medicine": 3
+    },
+    "furnace": {
+      "lit": true,
+      "fuel": 6,
+      "warmth": 18
+    },
+    "self": {
+      "id": "npc_01",
+      "location": "dorm-a",
+      "alive": true,
+      "hunger": 70,
+      "stamina": 80,
+      "health": 100,
+      "san": 80,
+      "bodyTemp": 36.5,
+      "promises": []
+    },
+    "belief": {
+      "level": null,
+      "rumor": false
+    }
+  },
+  "rejections": {
+    "insufficient_medicine": 10
+  }
+}

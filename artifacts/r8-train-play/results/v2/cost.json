@@ -1,0 +1,46 @@
+{
+  "schema": "frostecho.run-cost/1",
+  "scope": "V2 only; excludes V1 and later web demo",
+  "sampling": "~5s nvidia-smi; residency is allocation>1GiB, not utilization or billing",
+  "gpuResidentSeconds": {
+    "0": 1580.962760925293,
+    "1": 1580.962760925293
+  },
+  "sampledGpuResidentCardHours": 0.8783126449584961,
+  "peakMemoryMiB": {
+    "0": 18865,
+    "1": 22963
+  },
+  "stages": {
+    "encode-exit": {
+      "stage": "encode",
+      "returncode": 0,
+      "wallSeconds": 367.6407709121704
+    },
+    "fourday-exit": {
+      "stage": "fourday",
+      "returncode": 0,
+      "wallSeconds": 1152.9240863323212
+    },
+    "online-exit": {
+      "stage": "online",
+      "returncode": 0,
+      "wallSeconds": 45.43857932090759
+    },
+    "train-exit": {
+      "stage": "train",
+      "returncode": 0,
+      "wallSeconds": 5.031094551086426
+    },
+    "reference-exit": {
+      "stage": "reference",
+      "returncode": 0,
+      "wallSeconds": 55.38208818435669
+    },
+    "story-exit": {
+      "stage": "story",
+      "returncode": 0,
+      "wallSeconds": 60.5408034324646
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "frostecho.independent-head-check/1",
+  "ok": true,
+  "method": "NumPy float64 LayerNorm and dot product; no trainer/torch imports",
+  "headSha256": "a3a2196a72b081838e3379e86dc2e3bbc27e3b8473cce11eddb04c23e2d909c2",
+  "metrics": {
+    "train": {
+      "cases": 64,
+      "agreement": 0.984375,
+      "setNll": 0.3685419514178335
+    },
+    "dev": {
+      "cases": 16,
+      "agreement": 0.9375,
+      "setNll": 0.42396757211328706
+    },
+    "test": {
+      "cases": 16,
+      "agreement": 1.0,
+      "setNll": 0.3695093671996506
+    }
+  },
+  "maxTestLogitDelta": 3.0768060916841478e-06,
+  "weakLabelsOnly": true
+}

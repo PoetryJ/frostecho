@@ -1,0 +1,334 @@
+{
+  "schema": "frostecho.live-commitment-story/1",
+  "mode": "jev-experimental",
+  "seed": "bridge-empty-warehouse",
+  "outcome": "fulfilled",
+  "complete": true,
+  "commitmentId": "cm-304a025a-d803-4eb3-aff5-05cf7c1a9605",
+  "taskId": "task-001-deliver-meal",
+  "originalTaskPreserved": true,
+  "npcSteps": 9,
+  "modelRequests": 9,
+  "maximumModelRequests": 24,
+  "scorerIdentity": {
+    "certificateSha256": null,
+    "countsAsAdmitted": false,
+    "encoderForwardAttempts": 9,
+    "encoderForwardCalls": 9,
+    "encoderId": "/data2/model_weights/Qwen3.8-27B",
+    "experimental": true,
+    "featureIdentityHash": "df1d9e4dc6d433c5e74f0b0db0fcdd4e96d01c7270901fae88502049e8851a4b",
+    "headSha256": "a3a2196a72b081838e3379e86dc2e3bbc27e3b8473cce11eddb04c23e2d909c2",
+    "independentReviews": 0,
+    "labelSource": "reference-imitation",
+    "memoryPolicyId": "conditional-experience",
+    "mode": "jev-experimental",
+    "realModel": true,
+    "rendererId": "joint-c-action/1",
+    "requestsFailed": 0,
+    "requestsReceived": 9,
+    "scorerId": "jev-joint-c/1",
+    "scoresSucceeded": 9,
+    "tau": 0,
+    "temperature": 1,
+    "trainingManifestSha256": "f2ed329fe354de7f55537f11e4af597ddf0529a5ad7fdb3e905a3d56e7db34b1",
+    "utility": null
+  },
+  "realModel": true,
+  "evidenceClass": "real-model-experimental",
+  "countsAsAdmitted": false,
+  "playerResponses": [
+    {
+      "changeId": "chg-c3b4c5c3-c415-48b3-be75-56e0570a74aa",
+      "terms": {
+        "source": "gather",
+        "reason": "亲见仓库缺货，我采集后补仓，再把饭送来"
+      },
+      "response": {
+        "command": "respond-change",
+        "jobId": "job-0004",
+        "commitment": {
+          "commitmentId": "cm-304a025a-d803-4eb3-aff5-05cf7c1a9605",
+          "taskId": "task-001-deliver-meal",
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply",
+            "source:gather"
+          ],
+          "deadline": null,
+          "revision": 2,
+          "status": "active",
+          "evidenceEventIds": [
+            "legacy-observation:3b61014c4270e10584c30733bdfbb591e8cafd3173b18b3b05076241e4996ed2"
+          ],
+          "changes": [
+            {
+              "changeId": "chg-c3b4c5c3-c415-48b3-be75-56e0570a74aa",
+              "proposedRevision": 2,
+              "kind": "alt-source",
+              "terms": {
+                "source": "gather",
+                "reason": "亲见仓库缺货，我采集后补仓，再把饭送来"
+              },
+              "reason": "warehouse-empty",
+              "proposedAt": 501,
+              "status": "accepted",
+              "respondedAt": 501,
+              "responseEventId": "commitment_change_accepted"
+            }
+          ],
+          "createdAt": 480,
+          "updatedAt": 501
+        },
+        "event": {
+          "type": "commitment_change_accepted",
+          "commitmentId": "cm-304a025a-d803-4eb3-aff5-05cf7c1a9605",
+          "revision": 2,
+          "at": 501,
+          "actorId": "npc_01",
+          "payload": {
+            "changeId": "chg-c3b4c5c3-c415-48b3-be75-56e0570a74aa",
+            "kind": "alt-source",
+            "revision": 2,
+            "status": "active"
+          }
+        },
+        "mode": "reference-rules/1"
+      }
+    }
+  ],
+  "boundActions": [
+    {
+      "requestId": "in-2-r8-score-npc_01",
+      "action": "move",
+      "executionStatus": "applied",
+      "eventIds": [
+        "legacy-step:181ff69f92c13ccbab36dcbee39cd26dd5abdce54e609276b4abc0decb7c077f",
+        "legacy-command:181ff69f92c13ccbab36dcbee39cd26dd5abdce54e609276b4abc0decb7c077f",
+        "legacy-step:76805d2dde7768c56148d134f932ccd3b7cd4296c0f98d6f73aac9c879df82e1",
+        "legacy-command:76805d2dde7768c56148d134f932ccd3b7cd4296c0f98d6f73aac9c879df82e1",
+        "legacy-command:2872e9886c4bba654a2f02967db1234d6a07e6e166fc066e98d8b74d5064d8d2",
+        "legacy-step:f28f129a611314a613fa2d7debf8d13c0043ce0c57b37a2e027d8989ef8a73c0",
+        "legacy-command:f28f129a611314a613fa2d7debf8d13c0043ce0c57b37a2e027d8989ef8a73c0",
+        "legacy-step:4ac11fcf9fe28140e2265edfd9a89d76bbfa0f464a8395007bbd7e8ae6973069",
+        "legacy-command:4ac11fcf9fe28140e2265edfd9a89d76bbfa0f464a8395007bbd7e8ae6973069",
+        "legacy-step:61378c80d0a6c9b005633155f1f6a1372e198fcdd49e7e4ef5692b5b0acf91a8",
+        "legacy-command:61378c80d0a6c9b005633155f1f6a1372e198fcdd49e7e4ef5692b5b0acf91a8",
+        "legacy-step:6b3d18a6076fa68f400661bf87fa5c5f258496e875d6690b572803f1b1f024f6",
+        "legacy-command:6b3d18a6076fa68f400661bf87fa5c5f258496e875d6690b572803f1b1f024f6",
+        "legacy-step:4768aa9f1cc7efcba6c473ec7e13b6ac744f95b46313393d4fdd7aa14cdd7889",
+        "legacy-command:4768aa9f1cc7efcba6c473ec7e13b6ac744f95b46313393d4fdd7aa14cdd7889",
+        "legacy-step:0de8a09a67cfead6903893b3778f629dcd10b1962ae95196e0c199ff2ce6b4b7",
+        "legacy-command:0de8a09a67cfead6903893b3778f629dcd10b1962ae95196e0c199ff2ce6b4b7",
+        "legacy-step:baf726c360e04d0a1f143dc640968f798ff3687cd3c28606fb26da5443745885",
+        "legacy-command:baf726c360e04d0a1f143dc640968f798ff3687cd3c28606fb26da5443745885",
+        "legacy-step:76ed6559642358f090f6cf20856090bca34d7e89c7615b000ad43c35d92c0fc2",
+        "legacy-command:76ed6559642358f090f6cf20856090bca34d7e89c7615b000ad43c35d92c0fc2",
+        "legacy-step:63d3fc99ee6262ff04b8653e3ecf7a70821bc2de3319ef44ebfb78db26b03baf",
+        "legacy-command:63d3fc99ee6262ff04b8653e3ecf7a70821bc2de3319ef44ebfb78db26b03baf",
+        "legacy-step:a4e36eb64e3020bd5e8caa0747080f57815a77db35a69eea91b06cf33bdef920",
+        "legacy-command:a4e36eb64e3020bd5e8caa0747080f57815a77db35a69eea91b06cf33bdef920",
+        "legacy-step:b8ad83bb10976c7c17f7451d492d87c896c881eb63c2fba471e69fc79b9696e8",
+        "legacy-command:b8ad83bb10976c7c17f7451d492d87c896c881eb63c2fba471e69fc79b9696e8",
+        "legacy-step:03c426111b7339a2f74385859aaa6169ff033e449e80124cfd265f73b9ad4e2d",
+        "legacy-command:03c426111b7339a2f74385859aaa6169ff033e449e80124cfd265f73b9ad4e2d",
+        "legacy-step:70615701d7a1283fbcddc33bd7dda77b81ec3aa8f325cc1de9de883d3f26a705",
+        "legacy-command:70615701d7a1283fbcddc33bd7dda77b81ec3aa8f325cc1de9de883d3f26a705",
+        "legacy-step:5e91f30f1ed551835943ac4fbbd4a50be5ba0ba7c3c362197843fbcf06618fe6",
+        "legacy-command:5e91f30f1ed551835943ac4fbbd4a50be5ba0ba7c3c362197843fbcf06618fe6",
+        "legacy-step:62cde52d4f0f69c057702866f6301bba93c9991c8403e387ffae64ba03c29871",
+        "legacy-command:62cde52d4f0f69c057702866f6301bba93c9991c8403e387ffae64ba03c29871",
+        "legacy-step:d18a4aae0a95721b09e9232450ec8f68181165f7e245ef0187afc72183b34511",
+        "legacy-command:d18a4aae0a95721b09e9232450ec8f68181165f7e245ef0187afc72183b34511",
+        "legacy-step:90a09ff92d345b704ec6c3d4414ace546b73442785317e287704deeb1bccfbf8",
+        "legacy-command:90a09ff92d345b704ec6c3d4414ace546b73442785317e287704deeb1bccfbf8",
+        "legacy-step:a92078a9418ccf6862104c5197a28f6281167759de2a14d02ca63968d296b5f4",
+        "legacy-command:a92078a9418ccf6862104c5197a28f6281167759de2a14d02ca63968d296b5f4",
+        "legacy-command:27942cb851cb37814091cc35d5152e9633d6bb81ed88a601979b0e1391bca784",
+        "legacy-step:22e3cb6566ccb87fb43f28a774d2cc7128828d6dd8fb9977b66ad4609385bea4",
+        "legacy-observation:3b61014c4270e10584c30733bdfbb591e8cafd3173b18b3b05076241e4996ed2",
+        "legacy-command:3b61014c4270e10584c30733bdfbb591e8cafd3173b18b3b05076241e4996ed2",
+        "legacy-command:22e3cb6566ccb87fb43f28a774d2cc7128828d6dd8fb9977b66ad4609385bea4",
+        "legacy-command:d5991f64af83bfa82fbfd8f6d54c7936a64546a989a2ec056e1c5f70a1bbd056"
+      ]
+    },
+    {
+      "requestId": "in-4-r8-score-npc_01",
+      "action": "gather",
+      "executionStatus": "applied",
+      "eventIds": [
+        "npc_01-r8-65:gathered:65"
+      ]
+    },
+    {
+      "requestId": "in-7-r8-score-npc_01",
+      "action": "deposit",
+      "executionStatus": "applied",
+      "eventIds": [
+        "npc_01-r8-68:stock_deposited:68"
+      ]
+    },
+    {
+      "requestId": "in-8-r8-score-npc_01",
+      "action": "withdraw",
+      "executionStatus": "applied",
+      "eventIds": [
+        "npc_01-r8-69:stock_withdrawn:69"
+      ]
+    },
+    {
+      "requestId": "in-9-r8-score-npc_01",
+      "action": "move",
+      "executionStatus": "applied",
+      "eventIds": [
+        "legacy-step:0f8066ed2afa1af801e3a0933ec4fed5300f4eca9fedd151bb9be53d591883d1",
+        "legacy-command:0f8066ed2afa1af801e3a0933ec4fed5300f4eca9fedd151bb9be53d591883d1",
+        "legacy-step:9c6de05ffc41ece1f847168dec3dcf69b141814b4a2da519fa1de495e192dc7b",
+        "legacy-command:9c6de05ffc41ece1f847168dec3dcf69b141814b4a2da519fa1de495e192dc7b",
+        "legacy-command:2638f548dc1694d0209450b278a9934ff4a85ef24966766a87618cb39c0a542e",
+        "legacy-step:631dc135e7be9340f5b40b465535f071e0689db9c4f8aefbfb035f08dac9f99f",
+        "legacy-command:631dc135e7be9340f5b40b465535f071e0689db9c4f8aefbfb035f08dac9f99f",
+        "legacy-step:45599980e34433aaed0c30ddc6c09571e317ecf7c94d3a8b0c8863ccdb61a346",
+        "legacy-command:45599980e34433aaed0c30ddc6c09571e317ecf7c94d3a8b0c8863ccdb61a346",
+        "legacy-step:9f5d9e4b69423397301b17cee3bbe751ba9960e1b2904be9f91ef19dbd216cf8",
+        "legacy-command:9f5d9e4b69423397301b17cee3bbe751ba9960e1b2904be9f91ef19dbd216cf8",
+        "legacy-step:3fa57ad3b6fa0d28937930516cf79914a1796a5b240a6d84b037961e1df78316",
+        "legacy-command:3fa57ad3b6fa0d28937930516cf79914a1796a5b240a6d84b037961e1df78316",
+        "legacy-step:b0aca6ecf6d624f2c73d1201219abb366df179958436538f5bd7f9dee252620e",
+        "legacy-command:b0aca6ecf6d624f2c73d1201219abb366df179958436538f5bd7f9dee252620e",
+        "legacy-step:156d0ace3d757cef6ca776afe6349a62558ea807d9a75fc525e5ede2f9da2e41",
+        "legacy-command:156d0ace3d757cef6ca776afe6349a62558ea807d9a75fc525e5ede2f9da2e41",
+        "legacy-step:cb572df2d8fe96ecc5010dc8f09c6f7f7850a8edeb4e1a776254e01257c76d30",
+        "legacy-command:cb572df2d8fe96ecc5010dc8f09c6f7f7850a8edeb4e1a776254e01257c76d30",
+        "legacy-step:019a122dd28d85741600025c18efdaa9a51da74a36efe6a69b36122c977ed753",
+        "legacy-command:019a122dd28d85741600025c18efdaa9a51da74a36efe6a69b36122c977ed753",
+        "legacy-step:9c9a371a00bd2a6e896d161e5bdf71f0c7b2f7bf36b413d4672cdfa3cef6a02a",
+        "legacy-command:9c9a371a00bd2a6e896d161e5bdf71f0c7b2f7bf36b413d4672cdfa3cef6a02a",
+        "legacy-step:a290425df08d0b28505ccf1ac857bd67ea78e215ffe488962b2838a5188aba32",
+        "legacy-command:a290425df08d0b28505ccf1ac857bd67ea78e215ffe488962b2838a5188aba32",
+        "legacy-step:57bc518a6f31cd2a66c556f5dbaf01a6ad60433d830f17a3441e872d7589e6df",
+        "legacy-command:57bc518a6f31cd2a66c556f5dbaf01a6ad60433d830f17a3441e872d7589e6df",
+        "legacy-step:f4f029425058572892ef75c3ad3f4846df15588d033527141e7c33c872abdb5d",
+        "legacy-command:f4f029425058572892ef75c3ad3f4846df15588d033527141e7c33c872abdb5d",
+        "legacy-step:606ab2ad30fecb1307bd90440822f73debffd0eca65a6942339c336b52959a79",
+        "legacy-command:606ab2ad30fecb1307bd90440822f73debffd0eca65a6942339c336b52959a79",
+        "legacy-step:725752776a99cef183d9c7367913f4b491f126fa18af550aa8aa0764aa8d0582",
+        "legacy-command:725752776a99cef183d9c7367913f4b491f126fa18af550aa8aa0764aa8d0582",
+        "legacy-step:fe524102a0ec69d65b38da22725088b3ebcc72b242dc0017c91aa9c361bc0240",
+        "legacy-command:fe524102a0ec69d65b38da22725088b3ebcc72b242dc0017c91aa9c361bc0240",
+        "legacy-step:9d2c211e01aa48248e88c9e1ae27f52c6d9b9b01cadd49703e77cd9a3a5ccb32",
+        "legacy-command:9d2c211e01aa48248e88c9e1ae27f52c6d9b9b01cadd49703e77cd9a3a5ccb32",
+        "legacy-step:e879f6cf920445c1853c3f887933a92b34d7e457cef4d71a2e9d144367544a8d",
+        "legacy-command:e879f6cf920445c1853c3f887933a92b34d7e457cef4d71a2e9d144367544a8d",
+        "legacy-step:e5527e36170b369bcb3dae3289d33e475dc95e6c77d2a0081965561802b1669e",
+        "legacy-command:e5527e36170b369bcb3dae3289d33e475dc95e6c77d2a0081965561802b1669e",
+        "legacy-step:f56657e8e3846aff9374737fa107d9452605bd42075837e3ea96921fd102eada",
+        "legacy-command:f56657e8e3846aff9374737fa107d9452605bd42075837e3ea96921fd102eada",
+        "legacy-step:492fe3eaf941964ff0f07149600589d4bbd277e4d18d8cf6d9891a1beb6ed325",
+        "legacy-command:492fe3eaf941964ff0f07149600589d4bbd277e4d18d8cf6d9891a1beb6ed325",
+        "legacy-step:1714cfa48a3e5b44589dfde7b4aebac8093a204653148b6d9a2c6364410df6cb",
+        "legacy-command:1714cfa48a3e5b44589dfde7b4aebac8093a204653148b6d9a2c6364410df6cb",
+        "legacy-step:f2bd0bd82be2424fa6e21d4566ceee0b8ef99d66ff9acb98a7fe699526f56d9f",
+        "legacy-command:f2bd0bd82be2424fa6e21d4566ceee0b8ef99d66ff9acb98a7fe699526f56d9f",
+        "legacy-command:5a1dcbad85dfa7432fde93d6cd7814bd5a6a5a21b8f6487e69a2acb8f04e1b70",
+        "legacy-step:2aeeb9e1bca5b00d99753868eb0af769ee9e660ef968f3ad1875969b6bdb965c",
+        "legacy-command:2aeeb9e1bca5b00d99753868eb0af769ee9e660ef968f3ad1875969b6bdb965c",
+        "legacy-command:8841da484def8a48e574ccbb8b0b4f919e9f6fa03a47241f3b1d08a1662d51b2"
+      ]
+    },
+    {
+      "requestId": "in-11-r8-score-npc_01",
+      "action": "deliver",
+      "executionStatus": "applied",
+      "eventIds": [
+        "npc_01-r8-146:meal_delivered:146"
+      ]
+    }
+  ],
+  "receipts": [
+    {
+      "eventId": "legacy-observation:3b61014c4270e10584c30733bdfbb591e8cafd3173b18b3b05076241e4996ed2",
+      "type": "warehouse_stock_observed",
+      "actorId": "npc_01",
+      "simTime": 501,
+      "payload": {
+        "place": "warehouse",
+        "resource": "food",
+        "remaining": 0,
+        "simTime": 501,
+        "commandId": "npc_01-r8-1:part:3:inspect"
+      }
+    },
+    {
+      "eventId": "npc_01-r8-146:meal_delivered:146",
+      "type": "meal_delivered",
+      "actorId": "npc_01",
+      "simTime": 526,
+      "payload": {
+        "to": "kitchen",
+        "amount": 1,
+        "totalDelivered": 1
+      }
+    }
+  ],
+  "finalCommitment": {
+    "commitmentId": "cm-304a025a-d803-4eb3-aff5-05cf7c1a9605",
+    "taskId": "task-001-deliver-meal",
+    "promisorId": "npc_01",
+    "beneficiaryId": "player",
+    "goal": "deliver-meal",
+    "conditions": [
+      "warehouse-supply",
+      "source:gather"
+    ],
+    "deadline": null,
+    "revision": 2,
+    "status": "fulfilled",
+    "evidenceEventIds": [
+      "legacy-observation:3b61014c4270e10584c30733bdfbb591e8cafd3173b18b3b05076241e4996ed2",
+      "npc_01-r8-146:meal_delivered:146"
+    ],
+    "changes": [
+      {
+        "changeId": "chg-c3b4c5c3-c415-48b3-be75-56e0570a74aa",
+        "proposedRevision": 2,
+        "kind": "alt-source",
+        "terms": {
+          "source": "gather",
+          "reason": "亲见仓库缺货，我采集后补仓，再把饭送来"
+        },
+        "reason": "warehouse-empty",
+        "proposedAt": 501,
+        "status": "accepted",
+        "respondedAt": 501,
+        "responseEventId": "commitment_change_accepted"
+      }
+    ],
+    "createdAt": 480,
+    "updatedAt": 526
+  },
+  "boundTasks": [
+    {
+      "taskId": "task-001-deliver-meal",
+      "actorId": "npc_01",
+      "kind": "deliver-meal",
+      "status": "done",
+      "assignedAt": 480,
+      "commitmentId": "cm-304a025a-d803-4eb3-aff5-05cf7c1a9605",
+      "inputId": "in-1-request:task"
+    }
+  ],
+  "clock": 526,
+  "restoreEqual": true,
+  "error": null,
+  "restoreError": null,
+  "initialScenarioSha256": "922a59c288c51a5e4e96dec4cca842329de801b8b2d277729d478dc95e94c5e5",
+  "files": {
+    "session": "/data/home/user_00/frostecho-r7/workbench/r8-train-play-20261117/source-v2/artifacts/r8-train-play/live-commitment-v2/session.json",
+    "scorerTranscript": "/data/home/user_00/frostecho-r7/workbench/r8-train-play-20261117/source-v2/artifacts/r8-train-play/live-commitment-v2/scorer.jsonl",
+    "cli": "/data/home/user_00/frostecho-r7/workbench/r8-train-play-20261117/source-v2/artifacts/r8-train-play/live-commitment-v2/cli.jsonl",
+    "decisions": "/data/home/user_00/frostecho-r7/workbench/r8-train-play-20261117/source-v2/artifacts/r8-train-play/live-commitment-v2/decisions.jsonl"
+  }
+}

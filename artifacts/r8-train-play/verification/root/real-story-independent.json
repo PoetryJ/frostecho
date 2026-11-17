@@ -1,0 +1,574 @@
+{
+  "schema": "frostecho.real-story-independent-audit/1",
+  "decision": "pass",
+  "scope": "Existing V2 nine-action real-encoder commitment story; independent CPU evidence audit only",
+  "auditor": "r8c_request_capture; did not implement commitment bridge; previously implemented map/runtime movement",
+  "sourceHEAD": "3f8121aaeb7057dc928606cd41a6ce4568fec193",
+  "evidenceSourceHEAD": "3f8121aaeb7057dc928606cd41a6ce4568fec193",
+  "evidenceIndex": {
+    "absolutePath": "C:\\Users\\Administrator\\Documents\\ChatGPT\\工作学习\\research\\FrostEcho\\reviews\\R8LIVE-9fba236-20261117\\audit\\v2-training-story\\EVIDENCE-INDEX.json",
+    "sha256": "846ab742f6989b2108a6b2e78976506eae2e9c8f5a9281e23560c6abdfe65ef9",
+    "filesVerified": 61
+  },
+  "auditMethodSha256": "71ccf779d8d006978152ebb97195111fa3fc74c54eb8896da246692a52512cc5",
+  "sourceHashes": {
+    "src/r7/integration/commitment-bridge.ts": "baf879baa3b5ba9106538b19d7f5b1bd180ee928dc77302f8b9da310d1cf9421",
+    "src/r7/integration/step.ts": "fa7514fefe231d929666c567b4c6e9fb918bd694891eb7fcf707364982824ab2",
+    "src/r7/ui/joint-scorer.ts": "860ece744a1e8bfb40be5b95f54a851cfd62390bd2a72429cb9b09feeec75218",
+    "src/r7/jev/render.ts": "644335acb70da0e0a51bdc899db25c8e054c9f7f5355abc2b8f6488c20f6fdb4",
+    "scripts/r8/live-commitment-story.mjs": "6313448ed6838811f7905aac2440a9ba3a9e72ff453492ef12b2ffd86ee346b9",
+    "research/decision-choice/jev05/action/joint_encoder.py": "1e9f9bfb2271008e9c95da9af9453990b7447151eae80458138243795e6d3d98",
+    "research/decision-choice/jev05/action/serve_joint.py": "d6ba2a3659401fcd46897a84d0c83171022c740b8e1c101a43e647a92dba3e2a"
+  },
+  "numpyVersion": "2.3.5",
+  "newModelCalls": 0,
+  "newWorldActions": 0,
+  "checksPassed": 60,
+  "checksFailed": 0,
+  "checks": [
+    {
+      "check": "source_commit_matches_evidence",
+      "pass": true
+    },
+    {
+      "check": "all_61_manifest_files_size_and_sha",
+      "pass": true,
+      "details": []
+    },
+    {
+      "check": "head_format_and_selected_hash",
+      "pass": true
+    },
+    {
+      "check": "head_is_new_not_old_checkpoint",
+      "pass": true
+    },
+    {
+      "check": "manifest_identity_pinned",
+      "pass": true
+    },
+    {
+      "check": "served_python_sources_match_checkout",
+      "pass": true
+    },
+    {
+      "check": "weak_training_stays_experimental",
+      "pass": true
+    },
+    {
+      "check": "all_original_request_bytes_contracts_and_renderer_recomputed",
+      "pass": true
+    },
+    {
+      "check": "nine_live_requests_replies_and_commits",
+      "pass": true
+    },
+    {
+      "check": "1:input_feature_and_transcript_binding",
+      "pass": true
+    },
+    {
+      "check": "1:raw_and_chat_template_text_binding",
+      "pass": true
+    },
+    {
+      "check": "1:independent_math_and_actual_selection",
+      "pass": true
+    },
+    {
+      "check": "1:selected_action_committed_not_noop",
+      "pass": true
+    },
+    {
+      "check": "1:receipt_semantics_match_selected_action",
+      "pass": true
+    },
+    {
+      "check": "2:input_feature_and_transcript_binding",
+      "pass": true
+    },
+    {
+      "check": "2:raw_and_chat_template_text_binding",
+      "pass": true
+    },
+    {
+      "check": "2:independent_math_and_actual_selection",
+      "pass": true
+    },
+    {
+      "check": "2:selected_action_committed_not_noop",
+      "pass": true
+    },
+    {
+      "check": "2:receipt_semantics_match_selected_action",
+      "pass": true
+    },
+    {
+      "check": "3:input_feature_and_transcript_binding",
+      "pass": true
+    },
+    {
+      "check": "3:raw_and_chat_template_text_binding",
+      "pass": true
+    },
+    {
+      "check": "3:independent_math_and_actual_selection",
+      "pass": true
+    },
+    {
+      "check": "3:selected_action_committed_not_noop",
+      "pass": true
+    },
+    {
+      "check": "3:receipt_semantics_match_selected_action",
+      "pass": true
+    },
+    {
+      "check": "4:input_feature_and_transcript_binding",
+      "pass": true
+    },
+    {
+      "check": "4:raw_and_chat_template_text_binding",
+      "pass": true
+    },
+    {
+      "check": "4:independent_math_and_actual_selection",
+      "pass": true
+    },
+    {
+      "check": "4:selected_action_committed_not_noop",
+      "pass": true
+    },
+    {
+      "check": "4:receipt_semantics_match_selected_action",
+      "pass": true
+    },
+    {
+      "check": "5:input_feature_and_transcript_binding",
+      "pass": true
+    },
+    {
+      "check": "5:raw_and_chat_template_text_binding",
+      "pass": true
+    },
+    {
+      "check": "5:independent_math_and_actual_selection",
+      "pass": true
+    },
+    {
+      "check": "5:selected_action_committed_not_noop",
+      "pass": true
+    },
+    {
+      "check": "5:receipt_semantics_match_selected_action",
+      "pass": true
+    },
+    {
+      "check": "6:input_feature_and_transcript_binding",
+      "pass": true
+    },
+    {
+      "check": "6:raw_and_chat_template_text_binding",
+      "pass": true
+    },
+    {
+      "check": "6:independent_math_and_actual_selection",
+      "pass": true
+    },
+    {
+      "check": "6:selected_action_committed_not_noop",
+      "pass": true
+    },
+    {
+      "check": "6:receipt_semantics_match_selected_action",
+      "pass": true
+    },
+    {
+      "check": "7:input_feature_and_transcript_binding",
+      "pass": true
+    },
+    {
+      "check": "7:raw_and_chat_template_text_binding",
+      "pass": true
+    },
+    {
+      "check": "7:independent_math_and_actual_selection",
+      "pass": true
+    },
+    {
+      "check": "7:selected_action_committed_not_noop",
+      "pass": true
+    },
+    {
+      "check": "7:receipt_semantics_match_selected_action",
+      "pass": true
+    },
+    {
+      "check": "8:input_feature_and_transcript_binding",
+      "pass": true
+    },
+    {
+      "check": "8:raw_and_chat_template_text_binding",
+      "pass": true
+    },
+    {
+      "check": "8:independent_math_and_actual_selection",
+      "pass": true
+    },
+    {
+      "check": "8:selected_action_committed_not_noop",
+      "pass": true
+    },
+    {
+      "check": "8:receipt_semantics_match_selected_action",
+      "pass": true
+    },
+    {
+      "check": "9:input_feature_and_transcript_binding",
+      "pass": true
+    },
+    {
+      "check": "9:raw_and_chat_template_text_binding",
+      "pass": true
+    },
+    {
+      "check": "9:independent_math_and_actual_selection",
+      "pass": true
+    },
+    {
+      "check": "9:selected_action_committed_not_noop",
+      "pass": true
+    },
+    {
+      "check": "9:receipt_semantics_match_selected_action",
+      "pass": true
+    },
+    {
+      "check": "player_did_not_select_npc_actions_or_inject_resources",
+      "pass": true
+    },
+    {
+      "check": "same_instance_and_single_real_fulfil_receipt",
+      "pass": true
+    },
+    {
+      "check": "world_receipt_and_resource_completion_match",
+      "pass": true
+    },
+    {
+      "check": "private_stock_known_only_after_committed_observation",
+      "pass": true
+    },
+    {
+      "check": "goals_and_selected_bridge_candidates_bind_current_revision",
+      "pass": true
+    },
+    {
+      "check": "actual_second_process_restored_raw_domain_state_and_task_binding",
+      "pass": true
+    }
+  ],
+  "math": {
+    "headSha256": "a3a2196a72b081838e3379e86dc2e3bbc27e3b8473cce11eddb04c23e2d909c2",
+    "logitMaxAbsError": 0.0,
+    "probabilityMaxAbsError": 5.551115123125783e-17
+  },
+  "calls": [
+    {
+      "call": 1,
+      "requestId": "in-2-r8-score-npc_01",
+      "inputSha256": "77b0fdeaf8cd2f0748d3d5e4bb947d729247a411200feac12c7573845fcfb7ba",
+      "K": 8,
+      "selectedIndex": 0,
+      "selectedId": "b-d6fe5247c49ea716",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock",
+        "bridgeStep": "to-warehouse",
+        "legacyTaskId": "task-001-deliver-meal",
+        "commitmentId": "cm-304a025a-d803-4eb3-aff5-05cf7c1a9605",
+        "commitmentRevision": 1
+      },
+      "pmax": 0.6333431259010434,
+      "logitMaxAbsError": 0.0,
+      "probabilityMaxAbsError": 0.0,
+      "versionBefore": 1,
+      "versionAfter": 65,
+      "eventCount": 47,
+      "eventTypes": [
+        "legacy_cell_moved",
+        "legacy_door_crossed",
+        "legacy_spatial_command",
+        "warehouse_stock_observed"
+      ]
+    },
+    {
+      "call": 2,
+      "requestId": "in-4-r8-score-npc_01",
+      "inputSha256": "86425c79379078c13c24c192c7e4ea1addecfe9e5f0f924ce6eba291e9b035c1",
+      "K": 8,
+      "selectedIndex": 0,
+      "selectedId": "b-5067555b5de96baa",
+      "parameters": {
+        "action": "gather",
+        "resource": "food",
+        "amount": 2,
+        "bridgeStep": "gather",
+        "legacyTaskId": "task-001-deliver-meal",
+        "commitmentId": "cm-304a025a-d803-4eb3-aff5-05cf7c1a9605",
+        "commitmentRevision": 2
+      },
+      "pmax": 0.6640996246107681,
+      "logitMaxAbsError": 0.0,
+      "probabilityMaxAbsError": 5.551115123125783e-17,
+      "versionBefore": 65,
+      "versionAfter": 66,
+      "eventCount": 1,
+      "eventTypes": [
+        "gathered"
+      ]
+    },
+    {
+      "call": 3,
+      "requestId": "in-5-r8-score-npc_01",
+      "inputSha256": "12fa597726e6ba847c2f5cade6bd0fa575daeb46069e925e32c8958fb16fee0c",
+      "K": 8,
+      "selectedIndex": 6,
+      "selectedId": "a-d587154e5c88",
+      "parameters": {
+        "action": "refuel",
+        "amount": 2,
+        "taskId": "task-1",
+        "taskType": "PREPARE_WARMTH"
+      },
+      "pmax": 0.4465528821278369,
+      "logitMaxAbsError": 0.0,
+      "probabilityMaxAbsError": 1.3877787807814457e-17,
+      "versionBefore": 66,
+      "versionAfter": 67,
+      "eventCount": 1,
+      "eventTypes": [
+        "refuelled"
+      ]
+    },
+    {
+      "call": 4,
+      "requestId": "in-6-r8-score-npc_01",
+      "inputSha256": "bbb3b9796c73b66370592534725b530d217e7ce6e1499becb1e064d908e7262a",
+      "K": 7,
+      "selectedIndex": 3,
+      "selectedId": "a-9dd795e76cba",
+      "parameters": {
+        "action": "gather",
+        "resource": "firewood",
+        "amount": 2
+      },
+      "pmax": 0.38031607493934616,
+      "logitMaxAbsError": 0.0,
+      "probabilityMaxAbsError": 0.0,
+      "versionBefore": 67,
+      "versionAfter": 68,
+      "eventCount": 1,
+      "eventTypes": [
+        "gathered"
+      ]
+    },
+    {
+      "call": 5,
+      "requestId": "in-7-r8-score-npc_01",
+      "inputSha256": "d0558d54aeff800dc70937c9dc9d67e7d4506bfc1e82a6d475fbe97dfd183f42",
+      "K": 7,
+      "selectedIndex": 0,
+      "selectedId": "b-8bcffe4008fe5001",
+      "parameters": {
+        "action": "deposit",
+        "place": "warehouse",
+        "amount": 1,
+        "bridgeStep": "deposit",
+        "legacyTaskId": "task-001-deliver-meal",
+        "commitmentId": "cm-304a025a-d803-4eb3-aff5-05cf7c1a9605",
+        "commitmentRevision": 2
+      },
+      "pmax": 0.42951689567335705,
+      "logitMaxAbsError": 0.0,
+      "probabilityMaxAbsError": 0.0,
+      "versionBefore": 68,
+      "versionAfter": 69,
+      "eventCount": 1,
+      "eventTypes": [
+        "stock_deposited"
+      ]
+    },
+    {
+      "call": 6,
+      "requestId": "in-8-r8-score-npc_01",
+      "inputSha256": "fe059bbe958c16572f990c97d2694993233bd39e384b386de85eaae32b08aba1",
+      "K": 6,
+      "selectedIndex": 0,
+      "selectedId": "b-2a17fac52da2d1a4",
+      "parameters": {
+        "action": "withdraw",
+        "place": "warehouse",
+        "amount": 1,
+        "bridgeStep": "withdraw",
+        "legacyTaskId": "task-001-deliver-meal",
+        "commitmentId": "cm-304a025a-d803-4eb3-aff5-05cf7c1a9605",
+        "commitmentRevision": 2
+      },
+      "pmax": 0.8136205011651833,
+      "logitMaxAbsError": 0.0,
+      "probabilityMaxAbsError": 0.0,
+      "versionBefore": 69,
+      "versionAfter": 70,
+      "eventCount": 1,
+      "eventTypes": [
+        "stock_withdrawn"
+      ]
+    },
+    {
+      "call": 7,
+      "requestId": "in-9-r8-score-npc_01",
+      "inputSha256": "8711cea176ce02b02a2d1af09384275304cc4dcdaea29d6b4f558d8befc9a23c",
+      "K": 7,
+      "selectedIndex": 0,
+      "selectedId": "b-96c5b48243fcb275",
+      "parameters": {
+        "action": "move",
+        "to": "kitchen",
+        "purpose": "travel",
+        "bridgeStep": "to-kitchen",
+        "legacyTaskId": "task-001-deliver-meal",
+        "commitmentId": "cm-304a025a-d803-4eb3-aff5-05cf7c1a9605",
+        "commitmentRevision": 2
+      },
+      "pmax": 0.9397028753292197,
+      "logitMaxAbsError": 0.0,
+      "probabilityMaxAbsError": 0.0,
+      "versionBefore": 70,
+      "versionAfter": 145,
+      "eventCount": 53,
+      "eventTypes": [
+        "legacy_cell_moved",
+        "legacy_door_crossed",
+        "legacy_spatial_command"
+      ]
+    },
+    {
+      "call": 8,
+      "requestId": "in-10-r8-score-npc_01",
+      "inputSha256": "90b7a26bd3b05f5197124510634b484a92ae24f7adf97e66a826dff333eba525",
+      "K": 8,
+      "selectedIndex": 2,
+      "selectedId": "a-63ae70079e2d",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60
+      },
+      "pmax": 0.3812715214630335,
+      "logitMaxAbsError": 0.0,
+      "probabilityMaxAbsError": 0.0,
+      "versionBefore": 145,
+      "versionAfter": 146,
+      "eventCount": 1,
+      "eventTypes": [
+        "rested"
+      ]
+    },
+    {
+      "call": 9,
+      "requestId": "in-11-r8-score-npc_01",
+      "inputSha256": "f901f3e277f3f64658d5e033e7bb9da8f99bd97458fa52957864ed900ac74e76",
+      "K": 7,
+      "selectedIndex": 0,
+      "selectedId": "b-9c1208283f2c5c04",
+      "parameters": {
+        "action": "deliver",
+        "to": "kitchen",
+        "amount": 1,
+        "bridgeStep": "deliver",
+        "legacyTaskId": "task-001-deliver-meal",
+        "commitmentId": "cm-304a025a-d803-4eb3-aff5-05cf7c1a9605",
+        "commitmentRevision": 2
+      },
+      "pmax": 0.4304109957573436,
+      "logitMaxAbsError": 0.0,
+      "probabilityMaxAbsError": 1.3877787807814457e-17,
+      "versionBefore": 146,
+      "versionAfter": 147,
+      "eventCount": 1,
+      "eventTypes": [
+        "meal_delivered"
+      ]
+    }
+  ],
+  "result": {
+    "commitmentId": "cm-304a025a-d803-4eb3-aff5-05cf7c1a9605",
+    "taskId": "task-001-deliver-meal",
+    "status": "fulfilled",
+    "revision": 2,
+    "fulfilledReceipt": {
+      "eventId": "npc_01-r8-146:meal_delivered:146",
+      "type": "meal_delivered",
+      "actorId": "npc_01",
+      "simTime": 526,
+      "payload": {
+        "to": "kitchen",
+        "amount": 1,
+        "totalDelivered": 1
+      }
+    },
+    "rawRestoreDomainEqual": true,
+    "elapsedSimMinutes": 46,
+    "explicitPlayerChangeAcceptances": 1
+  },
+  "observedIssues": [
+    {
+      "id": "manual_action_duration_not_world_elapsed",
+      "status": "observed_existing_gameplay_semantics",
+      "effect": "Rest credits 60 minutes of recovery without advancing simTime; this story does not prove realistic elapsed work/rest cost.",
+      "requestBefore": {
+        "file": "service/000008.request.json",
+        "minuteOfDay": 526,
+        "stamina": 66.76999999999958
+      },
+      "selectedParameters": {
+        "action": "rest",
+        "minutes": 60
+      },
+      "receipt": {
+        "eventId": "npc_01-r8-145:rested:145",
+        "type": "rested",
+        "actorId": "npc_01",
+        "simTime": 526,
+        "payload": {
+          "minutes": 60
+        }
+      },
+      "requestAfter": {
+        "file": "service/000009.request.json",
+        "minuteOfDay": 526,
+        "stamina": 78.76999999999958
+      },
+      "source": "src/survival/world-v2.ts:346; rest applies recovery, simTime is advanced separately",
+      "sourceSha256": "47489a67772151cde0d99378eeecd2e72f192ccbdb88e0670ae8d9ba40b2d24c"
+    }
+  ],
+  "sourceReview": {
+    "actualWorldActionSelection": "All nine selections equal independently recomputed head argmax, 6..8 candidates; three choose non-bridge refuel/gather-wood/rest.",
+    "planningScaffold": "commitment-bridge.ts proposes rule-authored legal progress options; shortage proposal and sentence are rules. One loop; afterCommit closes only on committed typed receipt.",
+    "permission": "Bridge checks accepted active commitment/task/actor/revision and resume readiness; direct player change acceptance advances revision. Input contains actor-local engine stock memory.",
+    "renderHashDifference": "Raw renderer hash differs from encoder hash because encoder hashes chat-template wrapper; all nine exact wrapper hashes recomputed."
+  },
+  "limitations": [
+    "A 46-minute single-actor story is not long-horizon or cross-scenario generalization evidence.",
+    "Initial commitment acceptance is reference-rules/1; change proposal wording and progress candidates are rule-authored. Only world-action selection used the learned head.",
+    "Head is trained on 64 weak reference-imitation examples; independentReviews=0, no formal training admission, calibration or risk guarantee. T=1/tau=0 accepts every finite maximum.",
+    "GPU forwards are supported by preserved requests/features/call/placement logs; this audit independently recomputes the head on stored features, not a second backbone execution or hardware attestation.",
+    "Checkpoint identity covers manifest and local model metadata, not newly hashed full backbone shards.",
+    "Raw CLI pre/post domain state plus commitments/tasks are equal. Distinct pre-restore base-session and long-term-memory bytes were not retained here; full base-save equality is producer assertion, not independently byte-rechecked by this audit.",
+    "No tokenizer assets in this evidence package: chat text hash is independently verified; token IDs/readout token positions remain encoder trace evidence.",
+    "No negative cancellation/spoofed-source experiment was rerun; observed stock provenance and current source binding were inspected.",
+    "visibleMemory projects every record source as engine; this story contains only engine-source records, so it cannot establish correct differentiation of rumor/user/inferred sources. This source-level concern is outside the demonstrated story."
+  ]
+}

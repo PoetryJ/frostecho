@@ -173,7 +173,11 @@ function record(row) {
   const id = `${state.sessionId}:${row.jobId}:${row.command}:${row.event}`;
   if (seen.has(id)) return; seen.add(id);
   let text = row.error ? `操作失败：${row.error}` : row.command ?? row.event;
-  if (['game-step', 'r8-step'].includes(row.command)) text = `居民行动：${row.executed ?? 0} 次已执行 · ${(row.records ?? []).map(entry => `${nameOf(entry.actorId)} ${entry.selectedId ?? '等待'}${entry.executed || entry.executionStatus === 'applied' ? '' : '（未执行）'}`).join('；')}`;
+  if (['game-step', 'r8-step'].includes(row.command)) text = `居民行动：${row.executed ?? 0} 次已执行 · ${(row.records ?? []).map(entry => {
+    const choice = entry.candidates?.find(candidate => candidate.id === entry.selectedId);
+    const action = choice?.description ?? (entry.selectedId ? '完成行动' : '等待');
+    return `${nameOf(entry.actorId)} ${action}${entry.executed || entry.executionStatus === 'applied' ? '' : '（未执行）'}`;
+  }).join('；')}`;
   else if (['r8-walk', 'r8-door'].includes(row.command)) text = `${row.command === 'r8-door' ? '进出房间' : '步行'} · ${row.position ? names[row.position.mapId] ?? row.position.mapId : ''} · ${numeric(row.elapsedMinutes ?? 0)} 分钟${row.status === 'rejected' ? ` · ${row.reason}` : ''}`;
   else if (row.command === 'save' && row.saved) text = `存档已写入 · 世界版本 ${row.version}`;
   else if (row.events?.length) text = `${row.command} · ${row.events.map(event => event.type).join(' / ')}`;
