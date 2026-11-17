@@ -13,6 +13,8 @@ import { createHash } from 'node:crypto';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { R8Runtime } from '../../src/r7/integration/runtime';
+import { GameplayLoop } from '../../src/gameplay-v2/loop';
+import { createCommitmentBridge } from '../../src/r7/integration/commitment-bridge';
 import { GOSPEL_PROFILE, REFERENCE_PROFILE, type TimeProfile } from '../../src/r7/contracts';
 import { referenceAgencyScorer } from '../../src/r7/agency/reference';
 import { applicableNotes, type MemoryPolicyId,
@@ -35,8 +37,12 @@ interface Args {
   npcCount: number;
   food: number;
   memoryPolicy: MemoryPolicyId;
+  /** R10: which bounded-memory arm fills the model input (same token budget). */
+  memorySelection: 'raw-last12' | 'obligation-first';
   scorerCommand: string[] | null;
   fullMap: boolean;
+  /** Skip the four seeded promises (reference arms only). */
+  noCommitments: boolean;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -57,13 +63,19 @@ function parseArgs(argv: string[]): Args {
   if (!out) throw new Error('--out <newDir> is required');
   const lives = Number(get('--lives') ?? 1);
   const memoryPolicy = (get('--memory-policy') ?? 'conditional-experience') as MemoryPolicyId;
+  const memorySelection = (get('--memory-selection') ?? 'obligation-first') as
+    'raw-last12' | 'obligation-first';
+  if (!['raw-last12', 'obligation-first'].includes(memorySelection)) {
+    throw new Error(`unknown memory selection ${memorySelection}`);
+  }
   const scorer = get('--scorer-command-json') ?? process.env.FROSTECHO_SCORER_COMMAND_JSON;
   if (mode === 'jev-admitted') throw new Error('admitted mode requires a verified certificate; use jev-experimental');
   if (mode !== 'reference' && !scorer) throw new Error('jev-experimental requires --scorer-command-json');
   return {
     profile, seed: get('--seed') ?? 'r8-1', mode, out: resolve(out), lives,
     npcCount: Number(get('--npc') ?? 8), food: Number(get('--food') ?? 130),
-    memoryPolicy,
+    memoryPolicy, memorySelection,
+    noCommitments: argv.includes('--no-commitments'),
     fullMap: argv.includes('--full-map'),
     scorerCommand: scorer ? parseScorerCommand(scorer) : null,
   };
@@ -117,6 +129,15 @@ interface RunReport {
   executed: number;
   rejected: number;
   rejections: { code: string; reason: string }[];
+  settlement?: {
+    intents: number; pending: number;
+    terminal: { applied: number; rejected: number; cancelled: number; unresolved: number };
+    decisionStates: Record<string, number>; receipts: number;
+    rejectedAtSettlement: { actorId: string; intentId: string; action: string;
+      reason: string | null }[];
+    unsettledWork: { actorId: string; selectedId: string | null; requestId: string }[];
+    reconciled: boolean;
+  };
   timeline: { at: number; elapsed: number; day: number; type: string;
     actorId: string; payload: Record<string, unknown> }[];
   environment: Record<string, unknown>;
@@ -297,10 +318,13 @@ export function runCouncilIfDue(runtime: R8Runtime, decisions: DecisionRecord[] 
 }
 
 async function decide(runtime: R8Runtime, scorer: ScorePort,
-  actorId: string, args: Args, decisions: DecisionRecord[]): Promise<void> {
+  actorId: string, args: Args, decisions: DecisionRecord[],
+  bridge: ReturnType<typeof createCommitmentBridge>): Promise<void> {
   const snapshot = runtime.snapshot();
   const result = await runStep(runtime, scorer, { actorIds: [actorId], mode: args.mode,
-    memoryPolicy: args.memoryPolicy, notes: id => notesFor(runtime, id, args.memoryPolicy) });
+    memorySelection: args.memorySelection,
+    memoryPolicy: args.memoryPolicy, goalBridge: bridge,
+    notes: id => notesFor(runtime, id, args.memoryPolicy) });
   for (const row of result.records) decisions.push({ ...row, seed: args.seed,
     inputSha256: row.inputSha256 ?? null,
     episode: `${args.seed}-life${runtime.states.life.lifeNumber}`,
@@ -340,12 +364,72 @@ async function main(): Promise<void> {
 
   try {
   for (let life = 1; life <= args.lives; life += 1) {
+    // R10 (B): the four-day runner uses the SAME commitment bridge, task board
+    // and memory projection as the CLI/web entry - not a second policy.
+    const play = new GameplayLoop(runtime.session);
+    const bridge = createCommitmentBridge(runtime, play);
+    // Four long-horizon stories with interference; each actor keeps its own
+    // record of what it was told, so an unheard change cannot leak.
+    if (!args.noCommitments) {
+      const promises = ['npc_01', 'npc_02', 'npc_03', 'npc_04'].map((actorId, index) => {
+        const goal = index < 2 ? 'deliver-meal' : 'supply-warehouse';
+        return play.requestCommitment(actorId, goal, { verdict: 'accept' });
+      });
+      report.environment.commitments = promises.map(entry => ({
+        commitmentId: entry.commitment.commitmentId,
+        goal: entry.commitment.goal, promisorId: entry.commitment.promisorId,
+        taskId: entry.task?.taskId ?? null }));
+    }
+    let interfered = false;
     let guard = 0;
     while (!runtime.ended && guard < 1200) {
       guard += 1;
       runCouncilIfDue(runtime, decisions, args.seed);
+      // The D2 interference: one promise is cancelled by the player and only
+      // npc_02 hears it; another gets a source-change proposal. This is the
+      // story the model must carry across the restart.
+      if (!interfered && runtime.snapshot().day >= 2) {
+        interfered = true;
+        const rows = play.commitments.all().filter(row => row.status === 'active');
+        if (rows[0]) {
+          const cancelled = play.cancelCommitment(rows[0].commitmentId,
+            { heardBy: ['npc_02'], reason: '玩家改主意' });
+          report.environment.interference = {
+            kind: 'private-cancel', commitmentId: rows[0].commitmentId,
+            heardBy: ['npc_02'], status: cancelled.commitment.status,
+            at: runtime.world.simTime };
+        }
+        if (rows[1]) {
+          const proposed = play.commitments.proposeChange(rows[1].commitmentId, {
+            kind: 'alt-source', reason: 'warehouse-empty',
+            terms: { source: 'gather', reason: '先采集再交付' },
+            at: runtime.world.simTime, evidenceEventIds: [] });
+          runtime.session.ingestCommitmentEvent(proposed.event);
+          report.environment.interference2 = {
+            kind: 'change-proposed', commitmentId: rows[1].commitmentId,
+            status: proposed.commitment.status, at: runtime.world.simTime };
+        }
+      }
       for (const actorId of runtime.context().actorIds) {
-        await decide(runtime, scorer, actorId, args, decisions);
+        // A reference arm that never lets a body quit would die holding a
+        // promise; the honest baseline is an explicit, recorded exit.
+        if (args.mode === 'reference') {
+          const npc = runtime.world.npcs[actorId];
+          const danger = npc?.alive && (npc.hunger < 45 || npc.stamina < 35
+            || (npc.bodyTemp ?? 36.5) < 35.9);
+          if (danger) {
+            for (const row of play.commitments.all()) {
+              if (row.promisorId !== actorId || row.status !== 'active') continue;
+              const exited = play.withdrawCommitment(row.commitmentId,
+                { reason: 'survival-exit', inputId: `exit-${row.commitmentId}-${runtime.world.simTime}` });
+              const exits = (report.environment.exits ??= []) as Record<string, unknown>[];
+              exits.push({ commitmentId: row.commitmentId,
+                actorId, at: runtime.world.simTime, status: exited.commitment.status,
+                hunger: Math.round(npc.hunger), stamina: Math.round(npc.stamina) });
+            }
+          }
+        }
+        await decide(runtime, scorer, actorId, args, decisions, bridge);
         if (runtime.ended) break;
       }
       // One game hour, or the night skip when the original window is open.
@@ -439,7 +523,45 @@ async function main(): Promise<void> {
     'utf8');
   report.decisions = decisions.length;
   report.executed = decisions.filter(record => record.executed).length;
-  report.rejected = decisions.filter(record => record.executionStatus === 'rejected').length;
+  // R10: a working decision is not a success, and a settlement refusal is not a
+  // decision refusal. Both are counted, and every queued action must reconcile
+  // to one terminal state.
+  const decisionStates: Record<string, number> = {};
+  for (const record of decisions) {
+    const key = String(record.executionStatus ?? 'none');
+    decisionStates[key] = (decisionStates[key] ?? 0) + 1;
+  }
+  const intents = [...runtime.intents.values()];
+  const terminal = { applied: 0, rejected: 0, cancelled: 0, unresolved: 0 };
+  for (const intent of intents) {
+    if (intent.status === 'working') continue;
+    terminal[intent.status as keyof typeof terminal] += 1;
+  }
+  const unsettled = decisions.filter(record => record.executionStatus === 'working')
+    .filter(record => !intents.some(intent => intent.actorId === record.actorId
+      && intent.candidateId === record.selectedId && intent.status !== 'working'))
+    .map(record => ({ actorId: record.actorId, selectedId: record.selectedId,
+      requestId: record.requestId }));
+  const settlementRejections = intents.filter(intent => intent.status === 'rejected');
+  report.settlement = {
+    intents: intents.length,
+    pending: intents.filter(intent => intent.status === 'working').length,
+    terminal,
+    decisionStates,
+    receipts: runtime.committedEvents().length,
+    rejectedAtSettlement: settlementRejections.map(intent => ({
+      actorId: intent.actorId, intentId: intent.intentId,
+      action: String(intent.candidate.parameters.action),
+      reason: intent.failureReason })),
+    unsettledWork: unsettled,
+    reconciled: unsettled.length === 0
+      && decisions.length === intents.length + decisions.filter(record =>
+        ['applied', 'abstained', 'rejected', 'busy', 'stale'].includes(String(record.executionStatus))
+        && !intents.some(intent => intent.actorId === record.actorId
+          && intent.candidateId === record.selectedId)).length,
+  };
+  report.rejected = decisions.filter(record => record.executionStatus === 'rejected').length
+    + settlementRejections.length;
   report.environment.scorerIdentity = { ...scorer.identity };
   report.environment.referenceCouncilDecisions = decisions.filter(record => record.scorerId === 'council-reference/1').length;
   report.environment.actionDecisions = decisions.filter(record => record.scorerId !== 'council-reference/1').length;

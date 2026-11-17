@@ -204,6 +204,13 @@ export function createCommitmentBridge(runtime: R8Runtime, play: GameplayLoop): 
           conditions: [...commitment.conditions], deadline: commitment.deadline,
           beneficiaryId: commitment.beneficiaryId });
         if (!ready || !task || !npc) continue;
+        // An authorised exit must be choosable by the model, not only by rules.
+        if (npc.hunger < 30 || npc.stamina < 12 || (npc.bodyTemp ?? 36.5) < 35.5) {
+          candidates.push(option(commitment, task, 'withdraw-commitment',
+            '体力/体温过低：按约定退出这份承诺并说明原因',
+            { bridgeStep: 'withdraw', reason: 'survival-exit' },
+            ['alive', 'accepted commitment revision unchanged']));
+        }
         const make = (action: string, description: string, parameters: Record<string, unknown> = {},
           preconditions: string[] = []) => option(commitment, task, action, description, parameters,
           ['alive', 'accepted commitment revision unchanged', ...preconditions]);
@@ -288,6 +295,12 @@ export function createCommitmentBridge(runtime: R8Runtime, play: GameplayLoop): 
       const bound = binding(actorId, candidate);
       if (!bound) return;
       const { commitment } = bound;
+      if (candidate.parameters.bridgeStep === 'withdraw'
+        && candidate.parameters.action === 'withdraw-commitment') {
+        play.withdrawCommitment(commitment.commitmentId,
+          { reason: String(candidate.parameters.reason ?? 'survival-exit') });
+        return;
+      }
       if (candidate.parameters.bridgeStep === 'propose-alt-source'
         && personalStock(runtime, actorId) === 0) {
         proposeShortage(commitment, []);

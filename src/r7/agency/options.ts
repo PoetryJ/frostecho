@@ -11,7 +11,7 @@
  *  - ids are opaque handles for mapping only, never training features.
  */
 import { canonicalJson, sha256Hex, type Candidate } from '../../decision/contracts';
-import { TASK_CATALOG, WORK_RULES, WORK_MODE_PLACE,
+import { requiredPlaceOf, TASK_CATALOG, WORK_RULES, WORK_MODE_PLACE,
   type TaskTypeId } from '../domains/tasks/index';
 
 export interface AgencyView {
@@ -370,6 +370,31 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
     seen.add(key);
     unique.push(entry);
   }
+  // The candidate layer reads the SAME place table as the authority: an action
+  // that could not execute here is replaced by the real walk to its site. This
+  // keeps every offered option executable (a precondition may still fail later,
+  // which is a legitimate observation), and it removes the impossible-option
+  // noise that used to dominate the rejection ledger.
+  const gated: Candidate[] = [];
+  let needsWalk: string | null = null;
+  for (const entry of unique) {
+    const site = requiredPlaceOf(String(entry.parameters.action ?? ''),
+      entry.parameters as Record<string, unknown>);
+    if (site && view.npc.location !== site) {
+      needsWalk = needsWalk ?? site;
+      rules.push(`action.place-blocked:${String(entry.parameters.action)}@${site}`);
+      continue;
+    }
+    gated.push(entry);
+  }
+  if (needsWalk && !gated.some(entry => entry.parameters.action === 'move'
+    && entry.parameters.to === needsWalk)) {
+    gated.push(candidate('move', `前往${needsWalk}`, { to: needsWalk, purpose: 'task-place' },
+      ['alive'], { travelMinutes: 15 }));
+    rules.push('action.walk-to-site');
+  }
+  unique.length = 0;
+  unique.push(...gated);
   if (unique.length > MAX_OPTIONS) {
     // An option that discharges an accepted task outranks a generic need when
     // the ceiling forces a cut; the drop is reported, never silent.
