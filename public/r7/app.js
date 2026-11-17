@@ -1,6 +1,6 @@
 'use strict';
 const $ = id => document.getElementById(id);
-const names = { warehouse: '仓库', medical: '医疗站', 'dorm-a': '宿舍 A', 'dorm-b': '宿舍 B', kitchen: '炊事房', workshop: '工坊', command: '指挥所' };
+const names = { village: '村庄', warehouse: '仓库', medical: '医疗站', 'dorm-a': '宿舍 A', 'dorm-b': '宿舍 B', dorm_a: '宿舍 A', dorm_b: '宿舍 B', kitchen: '炊事房', workshop: '工坊', command: '指挥所' };
 const kinds = { 'gather-food': '采集食物', 'gather-wood': '采集木柴', heating: '维持供暖', 'leave-food': '为人留饭', 'supply-warehouse': '补充仓库', 'deliver-meal': '送饭', 'rest-first': '先休息' };
 const states = { active: '进行中', proposed: '已提出', 'pending-change': '等待改约回应', suspended: '已暂停', fulfilled: '已履约', cancelled: '已取消', declined: '已拒绝', withdrawn: '已退出', done: '已完成', pending: '等待回应', accepted: '已接受', countered: '提出条件', reassigned: '已改派', superseded: '已替代', voting: '投票中', propose: '提案中', resolved: '已决议' };
 let catalog = { npcs: [], buildings: [] }, state = {}, selected = 'npc_01', tab = 'work';
@@ -25,6 +25,7 @@ async function command(line) {
     $('raw-result').textContent = JSON.stringify(response.result ?? response, null, 2);
     if (response.state) render(response.state);
     if (response.result?.error) throw new Error(response.result.error);
+    if (response.result?.status === 'rejected') throw new Error(response.result.reason ?? '当前行动不可执行；状态已显示实际进度。');
     if (response.result?.command === 'knowledge') { lastKnowledge = response.result; renderMemory(); }
     notice(response.result?.saved ? '已保存世界、任务、承诺与记忆。' : `收到真实回执：${line}`);
     return response.result;
@@ -51,13 +52,14 @@ function render(next) {
   $('continue-game').disabled = !state.canContinue;
   $('run').textContent = state.running ? 'Ⅱ 暂停行动' : '▶ 开始行动';
   $('speed').value = String(state.speed ?? 1);
-  $('mode').textContent = observation ? (status.mode ?? 'reference-rules/1') : '未运行';
+  $('mode').textContent = observation ? `${state.profile === 'gospel-5.8.19' ? '原作四日 · ' : ''}${status.mode === 'jev-experimental' ? 'JEV 实验决策' : '参考规则'}` : '未运行';
   $('save-status').textContent = state.savedAt ? `已保存 ${new Date(state.savedAt).toLocaleTimeString()}` : '尚未保存';
   for (const id of ['run', 'one-step', 'save', 'save-exit', 'assign-task', 'request-supply', 'request-delivery', 'withdraw', 'deposit', 'deliver', 'tell-restock']) $(id).disabled = !state.active;
   if (!observation) { renderRoster([]); return; }
   const minutes = Math.floor(observation.simTime ?? 0), day = observation.day ?? 1;
   const clock = `${String(Math.floor(minutes / 60) % 24).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
-  $('calendar').innerHTML = `第 ${day} 日 · ${clock}<small>${escape(observation.weather)} · 已经过 ${numeric(minutes / 60)} 小时</small>`;
+  const elapsed = state.profile === 'gospel-5.8.19' ? Math.max(0, minutes - 480) : minutes;
+  $('calendar').innerHTML = `第 ${day} 日 · ${clock}<small>${escape(observation.weather)} · 已经过 ${numeric(elapsed / 60)} 小时</small>`;
   const resources = observation.resources ?? {};
   const resourceRows = [['◈', '食物', resources.food], ['♨', '木柴', resources.firewood], ['ϟ', '电力', resources.power], ['✚', '药品', resources.medicine], ['♨', '炉内燃料', observation.furnace?.fuel], ['▣', '仓库存粮', status.spatial?.warehouseFood ?? '—']];
   $('resources').innerHTML = resourceRows.map(([icon, label, value]) => `<div class="resource"><i>${icon}</i><div><label>${label}</label><br><b>${numeric(value)}</b></div></div>`).join('');
@@ -66,7 +68,7 @@ function render(next) {
   $('ending').classList.toggle('hidden', !ending || ending === 'none');
   if (ending && ending !== 'none') {
     const alive = (observation.npcs ?? []).filter(npc => npc.alive).length;
-    $('ending').innerHTML = `<div class="eyebrow">本局结算</div><h2>${ending === 'all-dead' ? '雪镇失去了所有居民' : '这一段寒冬结束了'}</h2><p>${alive} 位居民仍然存活<br>已履约 ${(status.commitments ?? []).filter(row => row.status === 'fulfilled').length} 份承诺</p><p class="small muted">结算来自当前权威世界。完整原作结局与轮回模块接入后，以该模块实际结果为准。</p>${commandButton('保存这一局', 'save')}`;
+    $('ending').innerHTML = `<div class="eyebrow">本局结算</div><h2>${ending === 'all-dead' ? '雪镇失去了所有居民' : '这一段寒冬结束了'}</h2><p>${alive} 位居民仍然存活<br>已履约 ${(status.commitments ?? []).filter(row => row.status === 'fulfilled').length} 份承诺</p><p class="small muted">结局：${escape(ending)}。结算来自当前权威世界与保存的结局记录。</p>${commandButton('保存这一局', 'save')}`;
   }
   if (state.lastError) notice(state.lastError, true);
 }
@@ -77,7 +79,43 @@ function renderRoster(npcs) {
     return `<button class="roster-item ${selected === meta.id ? 'selected' : ''} ${alive ? '' : 'dead'}" data-npc="${meta.id}"><img class="portrait" src="${meta.portrait}" alt="${meta.name}"><div><strong>${meta.name}</strong><small>${npc ? escape(alive ? names[npc.location] ?? npc.location : '已死亡') : escape(meta.occupation)}</small><div class="mini-bars">${[npc?.hunger, npc?.stamina, npc?.health, npc?.san].map(value => `<i class="${value >= 35 ? 'healthy' : ''}"></i>`).join('')}</div></div></button>`;
   }).join('');
 }
+function renderLegacyMap(position) {
+  const map = catalog.legacyMaps?.maps[position.mapId];
+  if (!map) return false;
+  const stage = $('map-stage'), base = stage.querySelector('.world-base');
+  stage.style.aspectRatio = `${map.w}/${map.h}`;
+  stage.dataset.mapId = position.mapId;
+  $('map-title').textContent = `${names[position.mapId] ?? map.name} · ${map.w} × ${map.h}`;
+  $('selected-hint').textContent = `${nameOf(selected)} · 点击地面行走，点击门进出`;
+  $('enable-full-map').classList.add('hidden');
+  base.classList.toggle('hidden', !map.assetFile);
+  if (map.assetFile) base.src = '/assets/' + map.assetFile.split('/').map(encodeURIComponent).join('/');
+  const rect = item => `left:${item.x / map.w * 100}%;top:${item.y / map.h * 100}%;width:${item.w / map.w * 100}%;height:${item.h / map.h * 100}%`;
+  $('geometry-layer').innerHTML = map.assetFile ? '' : map.solids.map(item => `<div class="legacy-wall" style="${rect(item)}"></div>`).join('') + map.furniture.map(item => `<div class="legacy-furniture" style="${rect(item)};background:${escape(item.color)}">${escape(item.name)}</div>`).join('');
+  $('building-layer').innerHTML = (map.buildings ?? []).map(building => `<div class="building" style="${rect(building)}"><img src="/assets/asset/buildings/${escape(building.id.replace('-', '_'))}.png" alt="${escape(building.name)}" draggable="false"><span>${escape(building.name)}</span></div>`).join('');
+  $('door-layer').innerHTML = map.triggers.map(trigger => `<button class="legacy-door" data-door-x="${trigger.x}" data-door-y="${trigger.y}" style="${rect(trigger)}" title="前往${escape(names[trigger.target] ?? trigger.target)}">↗</button>`).join('');
+  $('road-layer').innerHTML = '';
+  $('npc-layer').innerHTML = (state.observation?.npcs ?? []).filter(npc => npc.alive).map(npc => {
+    const at = state.positions?.[npc.id]?.legacyPosition;
+    const meta = catalog.npcs.find(row => row.id === npc.id);
+    if (!at || at.mapId !== position.mapId || !meta) return '';
+    return `<button class="map-npc ${selected === npc.id ? 'selected' : ''}" data-npc="${npc.id}" style="left:${(at.cell.x + .5) / map.w * 100}%;top:${(at.cell.y + .5) / map.h * 100}%" title="${escape(meta.name)} · (${at.cell.x}, ${at.cell.y})"><img src="${meta.portrait}" alt=""><span>${escape(meta.name)}</span></button>`;
+  }).join('');
+  return true;
+}
 function renderMap() {
+  const legacyPosition = state.positions?.[selected]?.legacyPosition;
+  if (legacyPosition && renderLegacyMap(legacyPosition)) return;
+  $('enable-full-map').classList.toggle('hidden', state.profile !== 'gospel-5.8.19');
+  const stage = $('map-stage');
+  if (stage.dataset.mapId) {
+    delete stage.dataset.mapId; stage.style.aspectRatio = '1.25';
+    const base = stage.querySelector('.world-base');
+    base.classList.remove('hidden'); base.src = '/assets/asset/map/village_base_clean.png';
+    $('geometry-layer').innerHTML = ''; $('door-layer').innerHTML = '';
+    $('map-title').textContent = '村庄 · 50 × 40';
+    renderBuildings();
+  }
   $('selected-hint').textContent = `${nameOf(selected)} · 点击建筑可指挥移动`;
   const npcs = state.observation?.npcs ?? [];
   $('npc-layer').innerHTML = npcs.filter(npc => npc.alive).map((npc, index) => {
@@ -94,21 +132,32 @@ function renderMap() {
 }
 function renderDetail() {
   const meta = identity(); if (!meta) return;
+  $('inspect-stock').classList.toggle('hidden', state.positions?.[selected]?.legacyPosition?.mapId !== 'warehouse');
   const npc = state.observation?.npcs?.find(row => row.id === selected);
   $('npc-detail').innerHTML = `<div class="identity"><img class="portrait" src="${meta.portrait}" alt="${escape(meta.name)}"><div><h2>${escape(meta.name)}</h2><p>${escape(meta.occupation)}<br>${escape(meta.id)} · ${escape(meta.legacyId)}</p></div></div>${npc ? `<div class="vitals">${[['hunger', '饱食'], ['stamina', '体力'], ['health', '健康'], ['san', '精神']].map(([key, label]) => `<div class="vital"><label>${label}<span>${numeric(npc[key])}</span></label><progress max="100" value="${Number(npc[key]) || 0}"></progress></div>`).join('')}</div><div class="detail-location">${npc.alive ? '● 存活' : '● 已死亡'} · ${escape(names[npc.location] ?? npc.location)} · 携带 ${numeric(state.status?.spatial?.carry?.[selected]?.meals ?? 0)} 份饭</div>` : '<p class="small muted">开始游戏后查看居民状态。</p>'}`;
 }
 function renderWork() {
   const tasks = (state.status?.tasks ?? []).filter(row => row.actorId === selected);
+  const taskSelect = $('task-kind');
+  if (state.status?.taskCatalog && taskSelect.dataset.profile !== 'gospel') {
+    taskSelect.innerHTML = Object.values(state.status.taskCatalog).map(task => `<option value="${escape(task.id)}">${escape(task.name)}</option>`).join('');
+    taskSelect.dataset.profile = 'gospel';
+  }
   const commitments = (state.status?.commitments ?? []).filter(row => row.promisorId === selected);
   const rows = commitments.map(row => {
     const open = (row.changes ?? []).filter(change => change.status === 'open');
     const terminal = ['fulfilled', 'cancelled', 'withdrawn', 'declined'].includes(row.status);
     return `<article class="card"><div class="card-heading"><strong>${escape(kinds[row.goal] ?? row.goal)} · 承诺 r${row.revision}</strong><span class="badge ${row.status}">${escape(states[row.status] ?? row.status)}</span></div><p>${escape((row.conditions ?? []).join(' / ') || '无附加条件')}</p>${open.map(change => `<p>改约：${escape(change.reason)}<br>${escape(JSON.stringify(change.terms))}</p><div class="actions">${commandButton('接受改约', `respond-change ${row.commitmentId} accept`)}${commandButton('拒绝改约', `respond-change ${row.commitmentId} reject`)}</div>`).join('')}<code>${escape(row.commitmentId)}</code>${row.evidenceEventIds?.length ? `<p>履约依据：${row.evidenceEventIds.map(escape).join('<br>')}</p>` : ''}<div class="actions">${terminal ? '' : commandButton('取消承诺', `cancel-commitment ${row.commitmentId}`)}${row.status === 'suspended' ? commandButton('请求恢复', `resume-commitment ${row.commitmentId}`) : ''}</div></article>`;
   });
-  rows.push(...tasks.map(row => `<article class="card"><div class="card-heading"><strong>${escape(kinds[row.kind] ?? row.kind)}</strong><span class="badge ${row.status}">${escape(states[row.status] ?? row.status)}</span></div><p>${row.commitmentId ? '关联承诺的执行任务' : '直接派工任务'}</p><code>${escape(row.taskId)}</code>${row.status === 'active' ? `<div class="actions">${commandButton('取消任务', `cancel-task ${row.taskId}`)}</div>` : ''}</article>`));
+  rows.push(...tasks.map(row => `<article class="card"><div class="card-heading"><strong>${escape(kinds[row.kind] ?? row.kind)}</strong><span class="badge ${row.status}">${escape(states[row.status] ?? row.status)}</span></div><p>${row.commitmentId ? '关联承诺的执行任务' : '直接派工任务'}</p><code>${escape(row.taskId)}</code>${row.domain === 'r8' && row.status === 'proposed' ? `<div class="actions">${commandButton('居民接受', `r8-respond ${selected} ${row.taskId} accept`)}${commandButton('居民拒绝', `r8-respond ${selected} ${row.taskId} decline`)}</div>` : ''}${['active', 'accepted', 'proposed'].includes(row.status) ? `<div class="actions">${commandButton('取消任务', `cancel-task ${row.taskId}`)}</div>` : ''}</article>`));
   $('work-list').innerHTML = rows.reverse().join('') || '<p class="empty">还没有任务。可以直接派工，或先向居民提出补仓、送饭请求。</p>';
 }
 function renderCouncil() {
+  if (state.status?.r8) {
+    const meetings = [...state.status.r8.states.council.meetings].reverse();
+    $('council-list').innerHTML = meetings.map(row => `<article class="card"><div class="card-heading"><strong>晨会 ${escape(row.meetingId)}</strong><span class="badge">${escape(states[row.status] ?? row.status)}</span></div><p>参考分工规则 · ${escape(row.reason)}</p>${row.proposals.map(proposal => `<p>${escape(proposal.rationale)}</p>${proposal.assignments.map(item => `<p>${escape(nameOf(item.actorId))}：${escape(state.status.taskCatalog?.[item.type]?.name ?? item.type)}</p>`).join('')}`).join('')}<p>投票 ${Object.keys(row.votes).length} 份 · 胜出 ${escape(row.winnerProposalId ?? '待定')}</p></article>`).join('') || '<p class="empty">晨会在当天工作开始或资源危机时召开。</p>';
+    return;
+  }
   const councils = [...(state.status?.council ?? [])].reverse();
   $('council-list').innerHTML = councils.map(row => `<article class="card"><div class="card-heading"><strong>第 ${row.day} 日晨会</strong><span class="badge">${escape(states[row.status] ?? row.status)}</span></div><p>议会模式：${escape(row.resolution?.source ?? row.votes?.[0]?.source ?? 'fixture-reference/1')}</p>${(row.proposals ?? []).map(proposal => `<h3>${escape(proposal.name)}</h3><p>${escape(proposal.description)}<br>预计 ${proposal.cost?.estimatedMinutes ?? '?'} 分钟 · ${proposal.cost?.restBlocks ?? 0} 个休息时段</p><p>${(proposal.assignments ?? []).map(item => `${escape(nameOf(item.actorId))}：${escape(kinds[item.taskKind] ?? item.taskKind)}`).join('<br>')}</p>${row.status !== 'resolved' ? commandButton('支持这个方案', `council-vote ${proposal.proposalId}`) : ''}`).join('')}${(row.requests ?? []).map(request => `<h3>${escape(nameOf(request.actorId))} · ${escape(kinds[request.taskKind] ?? request.taskKind)}</h3><p>请求：${escape(states[request.status] ?? request.status)} · 承诺：${escape(states[request.commitmentStatus] ?? request.commitmentStatus ?? '尚未建立')}<br>执行任务：${escape(states[request.taskStatus] ?? request.taskStatus ?? '尚未建立')}</p>${request.status === 'pending' ? `<p class="muted">当前引擎需显式居民回应；此处为角色操作。</p><div class="actions">${commandButton('居民接受', `council-respond ${request.requestId} accept`)}${commandButton('居民拒绝', `council-respond ${request.requestId} decline`)}${commandButton('提出条件', `council-respond ${request.requestId} counter`)}</div>` : ''}<div class="actions">${commandButton(`请求改派给${nameOf(selected)}`, `council-reassign ${request.requestId} ${selected}`)}</div>`).join('')}</article>`).join('') || '<p class="empty">召开晨会，比较真实成本不同的分工方案，再形成决议与居民请求。</p>';
 }
@@ -124,7 +173,8 @@ function record(row) {
   const id = `${state.sessionId}:${row.jobId}:${row.command}:${row.event}`;
   if (seen.has(id)) return; seen.add(id);
   let text = row.error ? `操作失败：${row.error}` : row.command ?? row.event;
-  if (row.command === 'game-step') text = `居民行动：${row.executed ?? 0} 次已执行 · ${(row.records ?? []).map(entry => `${nameOf(entry.actorId)} ${entry.selectedId}${entry.executed ? '' : '（未执行）'}`).join('；')}`;
+  if (['game-step', 'r8-step'].includes(row.command)) text = `居民行动：${row.executed ?? 0} 次已执行 · ${(row.records ?? []).map(entry => `${nameOf(entry.actorId)} ${entry.selectedId ?? '等待'}${entry.executed || entry.executionStatus === 'applied' ? '' : '（未执行）'}`).join('；')}`;
+  else if (['r8-walk', 'r8-door'].includes(row.command)) text = `${row.command === 'r8-door' ? '进出房间' : '步行'} · ${row.position ? names[row.position.mapId] ?? row.position.mapId : ''} · ${numeric(row.elapsedMinutes ?? 0)} 分钟${row.status === 'rejected' ? ` · ${row.reason}` : ''}`;
   else if (row.command === 'save' && row.saved) text = `存档已写入 · 世界版本 ${row.version}`;
   else if (row.events?.length) text = `${row.command} · ${row.events.map(event => event.type).join(' / ')}`;
   else if (row.status) text += ` · ${row.status}`;
@@ -136,6 +186,14 @@ function record(row) {
 
 document.addEventListener('click', event => {
   const target = event.target.closest('button'); if (!target) return;
+  if (target.dataset.doorX !== undefined) {
+    const actor = selected;
+    void (async () => {
+      const walked = await command(`r8-walk ${actor} ${target.dataset.doorX} ${target.dataset.doorY}`);
+      if (walked && !walked.error && walked.status !== 'rejected') await command(`r8-door ${actor}`);
+    })();
+    return;
+  }
   if (target.dataset.npc) choose(target.dataset.npc);
   if (target.dataset.command) void command(target.dataset.command);
   if (target.dataset.building) void command(`travel ${selected} ${target.dataset.building}`);
@@ -144,6 +202,17 @@ document.addEventListener('click', event => {
     document.querySelectorAll('[data-tab]').forEach(button => button.classList.toggle('active', button.dataset.tab === tab));
     ['work', 'council', 'memory'].forEach(key => $(`tab-${key}`).classList.toggle('hidden', tab !== key));
   }
+});
+$('enable-full-map').onclick = () => void command('r8-map-enable');
+$('map-stage').addEventListener('click', event => {
+  if (event.target.closest('button') || !state.active) return;
+  const position = state.positions?.[selected]?.legacyPosition;
+  const map = catalog.legacyMaps?.maps[position?.mapId];
+  if (!map) return;
+  const bounds = $('map-stage').getBoundingClientRect();
+  const x = Math.floor((event.clientX - bounds.left) / bounds.width * map.w);
+  const y = Math.floor((event.clientY - bounds.top) / bounds.height * map.h);
+  void command(`r8-walk ${selected} ${x} ${y}`);
 });
 $('new-game').onclick = () => { if (!state.active || confirm('当前游戏会先保存。确定开始一个独立的新游戏？')) void session('new'); };
 $('welcome-start').onclick = () => void session('new');
@@ -160,6 +229,7 @@ $('withdraw').onclick = () => void command(`withdraw ${selected} 1`);
 $('deposit').onclick = () => void command(`deposit ${selected} 1`);
 $('deliver').onclick = () => void command(`deliver ${selected} 1`);
 $('tell-restock').onclick = () => void command(`tell-restock ${selected}`);
+$('inspect-stock').onclick = () => void command(`r8-inspect ${selected}`);
 $('load-memory').onclick = () => void command('knowledge');
 $('command-form').onsubmit = event => { event.preventDefault(); const value = $('command-input').value.trim(); if (value) void command(value); };
 $('music').onclick = async () => {
@@ -167,10 +237,13 @@ $('music').onclick = async () => {
   if (!bgm.paused) { bgm.pause(); $('music').textContent = '♫ 音乐'; }
   else { try { await bgm.play(); $('music').textContent = '♫ 静音'; } catch (error) { notice(`音乐暂不可用：${error.message}`, true); } }
 };
+function renderBuildings() {
+$('building-layer').innerHTML = catalog.buildings.map(building => `<button class="building" data-building="${building.id}" style="left:${building.x / 50 * 100}%;top:${building.y / 40 * 100}%;width:${building.w / 50 * 100}%;height:${building.h / 40 * 100}%" title="前往${names[building.id]}"><img src="/assets/asset/buildings/${building.id.replace('-', '_')}.png" alt="${names[building.id]}" draggable="false"><span>${names[building.id]}</span></button>`).join('');
+}
 async function init() {
   try {
     catalog = await api('/api/catalog');
-    $('building-layer').innerHTML = catalog.buildings.map(building => `<button class="building" data-building="${building.id}" style="left:${building.x / 50 * 100}%;top:${building.y / 40 * 100}%;width:${building.w / 50 * 100}%;height:${building.h / 40 * 100}%" title="前往${names[building.id]}"><img src="/assets/asset/buildings/${building.id.replace('-', '_')}.png" alt="${names[building.id]}" draggable="false"><span>${names[building.id]}</span></button>`).join('');
+    renderBuildings();
     render(await api('/api/state')); renderDetail();
     if (!catalog.assetsReady) notice('原作素材未解包。请运行任务包 bootstrap.py 后刷新。', true);
     else notice('本地服务已连接。可以开始新游戏，或继续上次保存的世界。');

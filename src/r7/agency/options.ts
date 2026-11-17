@@ -11,6 +11,7 @@
  *  - ids are opaque handles for mapping only, never training features.
  */
 import { canonicalJson, sha256Hex, type Candidate } from '../../decision/contracts';
+import { TASK_CATALOG, WORK_RULES, type TaskTypeId } from '../domains/tasks/index';
 
 export interface AgencyView {
   actorId: string;
@@ -77,12 +78,46 @@ export interface OptionBuild {
 export const MAX_OPTIONS = 8;
 export const MIN_OPTIONS = 2;
 
+export const WORK_PROXY_TASKS: ReadonlySet<TaskTypeId> = new Set([
+  'COLLECT_MATERIAL', 'BOOST_MORALE', 'COORDINATE', 'MAINTAIN_ORDER', 'SCOUT_RUINS',
+]);
+
+/** Explicit goal identity, validated against the existing executable primitive.
+ * The five work proxies prove spent work and the existing receipt contract;
+ * they do not prove scouting discoveries, social persuasion, or material yield.
+ */
+export function taskBindingOfCandidate(entry: Candidate): {
+  taskId: string; type: TaskTypeId; evidenceClass: 'task-primitive' | 'work-proxy';
+} | null {
+  const { taskId, taskType, action } = entry.parameters;
+  if (typeof taskId !== 'string' || !taskId || typeof taskType !== 'string'
+    || !Object.prototype.hasOwnProperty.call(TASK_CATALOG, taskType)) return null;
+  const type = taskType as TaskTypeId;
+  const definition = TASK_CATALOG[type], rule = WORK_RULES[type];
+  const matches = definition.builds
+    ? action === 'build-machine' && entry.parameters.machine === definition.builds
+    : type === 'DISTRIBUTE_FOOD' ? action === 'deposit' || action === 'deliver'
+      : rule !== null && action === rule.action
+        && (!rule.resource || entry.parameters.resource === rule.resource);
+  if (!matches) return null;
+  return { taskId, type, evidenceClass: WORK_PROXY_TASKS.has(type) ? 'work-proxy' : 'task-primitive' };
+}
+
+function bindTask(entry: Candidate, task: AgencyView['tasks'][number]): Candidate {
+  const parameters = { ...entry.parameters, taskId: task.taskId, taskType: task.type };
+  return { ...entry, parameters,
+    id: `a-${sha256Hex(canonicalJson({ kind: entry.kind, parameters,
+      preconditions: entry.preconditions })).slice(0, 12)}` };
+}
+
 /**
  * Deterministic option construction. Ordering is stable, so the same context
  * always renders the same candidate set (and the same set hash).
  */
 /** Task type an action discharges; mirrors the reference/goal binding. */
 export function taskTypeOfCandidate(candidate: Candidate): string | null {
+  const binding = taskBindingOfCandidate(candidate);
+  if (binding) return binding.type;
   const action = candidate.parameters.action;
   if (action === 'gather') {
     return candidate.parameters.resource === 'food' ? 'COLLECT_FOOD' : 'COLLECT_WOOD';
@@ -155,6 +190,7 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
   }
   for (const task of view.tasks) {
     if (task.status !== 'accepted') continue;
+    const firstTaskCandidate = candidates.length;
     switch (task.type) {
       case 'COLLECT_FOOD':
         candidates.push(candidate('gather', '执行食物采集任务', { resource: 'food', amount: 2 },
@@ -209,6 +245,7 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
         candidates.push(candidate('work', `按分工执行${task.type}`, { minutes: 40 },
           ['stamina > 10'], { power: 6, stamina: -10 }));
         rules.push('task.work');
+        rules.push(`task.work-proxy:${task.type}`);
         break;
       case 'REST_RECOVER':
         candidates.push(candidate('rest', '按分工休息恢复', { minutes: 60 },
@@ -217,6 +254,14 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
         break;
       default:
         break;
+    }
+    for (let index = firstTaskCandidate; index < candidates.length; index += 1) {
+      const entry = candidates[index];
+      if (WORK_PROXY_TASKS.has(task.type as TaskTypeId)) {
+        // Use the already declared work primitive, not a fabricated task effect.
+        entry.parameters.minutes = WORK_RULES[task.type as TaskTypeId]?.minutes ?? 40;
+      }
+      candidates[index] = bindTask(entry, task);
     }
   }
   // A refusal with an alternative is a real action, not a message.
@@ -251,8 +296,11 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
   if (unique.length > MAX_OPTIONS) {
     // An option that discharges an accepted task outranks a generic need when
     // the ceiling forces a cut; the drop is reported, never silent.
-    const obligated = (entry: Candidate): boolean => view.tasks.some(task =>
-      task.status === 'accepted' && taskTypeOfCandidate(entry) === task.type);
+    const obligated = (entry: Candidate): boolean => {
+      const binding = taskBindingOfCandidate(entry);
+      return binding !== null && view.tasks.some(task => task.status === 'accepted'
+        && task.taskId === binding.taskId && task.type === binding.type);
+    };
     const ordered = [...unique].sort((left, right) =>
       Number(obligated(right)) - Number(obligated(left)));
     rules.push(`truncated:${unique.length}->${MAX_OPTIONS}`);

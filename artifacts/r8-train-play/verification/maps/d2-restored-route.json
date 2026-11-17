@@ -1,0 +1,2094 @@
+[
+  {
+    "name": "rest-kitchen",
+    "before": {
+      "version": 139,
+      "time": 1920,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "medical",
+        "cell": {
+          "x": 5,
+          "y": 6
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "medical",
+        "hunger": 48.39999999999998,
+        "stamina": 37.54999999999973,
+        "health": 85.30000000000013,
+        "san": 73.04000000000008,
+        "alive": true,
+        "bodyTemp": 36.5
+      }
+    },
+    "result": {
+      "status": "applied",
+      "reason": null,
+      "eventIds": [
+        "rest-before-kitchen:rested:139"
+      ],
+      "events": [
+        {
+          "eventId": "rest-before-kitchen:rested:139",
+          "type": "rested",
+          "simTime": 1920,
+          "actorId": "npc_01",
+          "payload": {
+            "minutes": 120
+          }
+        }
+      ],
+      "observedBy": [
+        "npc_01"
+      ]
+    },
+    "after": {
+      "version": 140,
+      "time": 1920,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "medical",
+        "cell": {
+          "x": 5,
+          "y": 6
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "medical",
+        "hunger": 48.39999999999998,
+        "stamina": 61.54999999999973,
+        "health": 88.30000000000013,
+        "san": 79.04000000000008,
+        "alive": true,
+        "bodyTemp": 36.5
+      }
+    }
+  },
+  {
+    "name": "rest-clock-kitchen",
+    "before": {
+      "version": 140,
+      "time": 1920,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "medical",
+        "cell": {
+          "x": 5,
+          "y": 6
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "medical",
+        "hunger": 48.39999999999998,
+        "stamina": 61.54999999999973,
+        "health": 88.30000000000013,
+        "san": 79.04000000000008,
+        "alive": true,
+        "bodyTemp": 36.5
+      }
+    },
+    "result": {
+      "from": 1920,
+      "to": 2040,
+      "reachedEnd": false,
+      "segments": [
+        {
+          "from": 1920,
+          "to": 1980,
+          "minutes": 60,
+          "applied": [
+            "survival:npc_01:span:1980",
+            "survival:npc_02:span:1980",
+            "survival:npc_03:span:1980",
+            "survival:npc_04:span:1980",
+            "survival:npc_05:span:1980",
+            "survival:npc_06:span:1980",
+            "survival:npc_07:span:1980",
+            "survival:npc_08:span:1980",
+            "production:heating:wood:1980",
+            "production:heating:warmth:1980"
+          ],
+          "rejected": [],
+          "events": [
+            "v141:actor:survival:npc_01:span:1980",
+            "v141:actor:survival:npc_02:span:1980",
+            "v141:actor:survival:npc_03:span:1980",
+            "v141:actor:survival:npc_04:span:1980",
+            "v141:actor:survival:npc_05:span:1980",
+            "v141:actor:survival:npc_06:span:1980",
+            "v141:actor:survival:npc_07:span:1980",
+            "v141:actor:survival:npc_08:span:1980",
+            "v141:resource:production:heating:wood:1980",
+            "v141:intent-note:production:heating:warmth:1980",
+            "d:1920:heating_settled:system",
+            "heating_settled@system"
+          ]
+        },
+        {
+          "from": 1980,
+          "to": 2040,
+          "minutes": 60,
+          "applied": [
+            "survival:npc_01:span:2040",
+            "survival:npc_02:span:2040",
+            "survival:npc_03:span:2040",
+            "survival:npc_04:span:2040",
+            "survival:npc_05:span:2040",
+            "survival:npc_06:span:2040",
+            "survival:npc_07:span:2040",
+            "survival:npc_08:span:2040",
+            "production:heating:wood:2040",
+            "production:heating:warmth:2040"
+          ],
+          "rejected": [],
+          "events": [
+            "v143:actor:survival:npc_01:span:2040",
+            "v143:actor:survival:npc_02:span:2040",
+            "v143:actor:survival:npc_03:span:2040",
+            "v143:actor:survival:npc_04:span:2040",
+            "v143:actor:survival:npc_05:span:2040",
+            "v143:actor:survival:npc_06:span:2040",
+            "v143:actor:survival:npc_07:span:2040",
+            "v143:actor:survival:npc_08:span:2040",
+            "v143:resource:production:heating:wood:2040",
+            "v143:intent-note:production:heating:warmth:2040",
+            "d:1980:heating_settled:system",
+            "heating_settled@system"
+          ]
+        }
+      ],
+      "rejections": [],
+      "events": [
+        {
+          "eventId": "v141:actor:survival:npc_01:span:1980",
+          "type": "r8_actor",
+          "simTime": 1920,
+          "actorId": "npc_01",
+          "payload": {
+            "intentId": "survival:npc_01:span:1980",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v141:actor:survival:npc_02:span:1980",
+          "type": "r8_actor",
+          "simTime": 1920,
+          "actorId": "npc_02",
+          "payload": {
+            "intentId": "survival:npc_02:span:1980",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v141:actor:survival:npc_03:span:1980",
+          "type": "r8_actor",
+          "simTime": 1920,
+          "actorId": "npc_03",
+          "payload": {
+            "intentId": "survival:npc_03:span:1980",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v141:actor:survival:npc_04:span:1980",
+          "type": "r8_actor",
+          "simTime": 1920,
+          "actorId": "npc_04",
+          "payload": {
+            "intentId": "survival:npc_04:span:1980",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v141:actor:survival:npc_05:span:1980",
+          "type": "r8_actor",
+          "simTime": 1920,
+          "actorId": "npc_05",
+          "payload": {
+            "intentId": "survival:npc_05:span:1980",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v141:actor:survival:npc_06:span:1980",
+          "type": "r8_actor",
+          "simTime": 1920,
+          "actorId": "npc_06",
+          "payload": {
+            "intentId": "survival:npc_06:span:1980",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v141:actor:survival:npc_07:span:1980",
+          "type": "r8_actor",
+          "simTime": 1920,
+          "actorId": "npc_07",
+          "payload": {
+            "intentId": "survival:npc_07:span:1980",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v141:actor:survival:npc_08:span:1980",
+          "type": "r8_actor",
+          "simTime": 1920,
+          "actorId": "npc_08",
+          "payload": {
+            "intentId": "survival:npc_08:span:1980",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v141:resource:production:heating:wood:1980",
+          "type": "r8_resource",
+          "simTime": 1920,
+          "actorId": "system",
+          "payload": {
+            "intentId": "production:heating:wood:1980",
+            "source": "production.heating",
+            "resource": "firewood",
+            "delta": -1
+          }
+        },
+        {
+          "eventId": "v141:intent-note:production:heating:warmth:1980",
+          "type": "r8_intent-note",
+          "simTime": 1920,
+          "actorId": "system",
+          "payload": {
+            "intentId": "production:heating:warmth:1980",
+            "source": "production.heating",
+            "key": "heatingStrength",
+            "value": 0.135416
+          }
+        },
+        {
+          "eventId": "d:1920:heating_settled:system",
+          "type": "heating_settled",
+          "actorId": "system",
+          "simTime": 1920,
+          "payload": {
+            "strength": 0.135416,
+            "band": "cold",
+            "wood": 1,
+            "power": 0
+          }
+        },
+        {
+          "eventId": "v143:actor:survival:npc_01:span:2040",
+          "type": "r8_actor",
+          "simTime": 1980,
+          "actorId": "npc_01",
+          "payload": {
+            "intentId": "survival:npc_01:span:2040",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v143:actor:survival:npc_02:span:2040",
+          "type": "r8_actor",
+          "simTime": 1980,
+          "actorId": "npc_02",
+          "payload": {
+            "intentId": "survival:npc_02:span:2040",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v143:actor:survival:npc_03:span:2040",
+          "type": "r8_actor",
+          "simTime": 1980,
+          "actorId": "npc_03",
+          "payload": {
+            "intentId": "survival:npc_03:span:2040",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v143:actor:survival:npc_04:span:2040",
+          "type": "r8_actor",
+          "simTime": 1980,
+          "actorId": "npc_04",
+          "payload": {
+            "intentId": "survival:npc_04:span:2040",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v143:actor:survival:npc_05:span:2040",
+          "type": "r8_actor",
+          "simTime": 1980,
+          "actorId": "npc_05",
+          "payload": {
+            "intentId": "survival:npc_05:span:2040",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v143:actor:survival:npc_06:span:2040",
+          "type": "r8_actor",
+          "simTime": 1980,
+          "actorId": "npc_06",
+          "payload": {
+            "intentId": "survival:npc_06:span:2040",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v143:actor:survival:npc_07:span:2040",
+          "type": "r8_actor",
+          "simTime": 1980,
+          "actorId": "npc_07",
+          "payload": {
+            "intentId": "survival:npc_07:span:2040",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v143:actor:survival:npc_08:span:2040",
+          "type": "r8_actor",
+          "simTime": 1980,
+          "actorId": "npc_08",
+          "payload": {
+            "intentId": "survival:npc_08:span:2040",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v143:resource:production:heating:wood:2040",
+          "type": "r8_resource",
+          "simTime": 1980,
+          "actorId": "system",
+          "payload": {
+            "intentId": "production:heating:wood:2040",
+            "source": "production.heating",
+            "resource": "firewood",
+            "delta": -1
+          }
+        },
+        {
+          "eventId": "v143:intent-note:production:heating:warmth:2040",
+          "type": "r8_intent-note",
+          "simTime": 1980,
+          "actorId": "system",
+          "payload": {
+            "intentId": "production:heating:warmth:2040",
+            "source": "production.heating",
+            "key": "heatingStrength",
+            "value": 0.108333
+          }
+        },
+        {
+          "eventId": "d:1980:heating_settled:system",
+          "type": "heating_settled",
+          "actorId": "system",
+          "simTime": 1980,
+          "payload": {
+            "strength": 0.108333,
+            "band": "none",
+            "wood": 1,
+            "power": 0
+          }
+        }
+      ],
+      "domainEvents": [
+        {
+          "proposalId": "production:heating:1980",
+          "type": "heating_settled",
+          "actorId": "system",
+          "observedBy": "all",
+          "payload": {
+            "strength": 0.135416,
+            "band": "cold",
+            "wood": 1,
+            "power": 0
+          }
+        },
+        {
+          "proposalId": "production:heating:2040",
+          "type": "heating_settled",
+          "actorId": "system",
+          "observedBy": "all",
+          "payload": {
+            "strength": 0.108333,
+            "band": "none",
+            "wood": 1,
+            "power": 0
+          }
+        }
+      ]
+    },
+    "after": {
+      "version": 144,
+      "time": 2040,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "medical",
+        "cell": {
+          "x": 5,
+          "y": 6
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "medical",
+        "hunger": 46.59999999999998,
+        "stamina": 58.54999999999973,
+        "health": 85.90000000000012,
+        "san": 78.64000000000007,
+        "alive": true,
+        "bodyTemp": 36.5
+      }
+    }
+  },
+  {
+    "name": "walk-kitchen",
+    "before": {
+      "version": 144,
+      "time": 2040,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "medical",
+        "cell": {
+          "x": 5,
+          "y": 6
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "medical",
+        "hunger": 46.59999999999998,
+        "stamina": 58.54999999999973,
+        "health": 85.90000000000012,
+        "san": 78.64000000000007,
+        "alive": true,
+        "bodyTemp": 36.5
+      }
+    },
+    "result": {
+      "status": "applied",
+      "reason": "original_maps_traversed",
+      "eventIds": [
+        "legacy-step:dc6e006b188424962c7cb8329056c7e1e5c386618b35018dd8efd4cd5379c8bc",
+        "legacy-command:dc6e006b188424962c7cb8329056c7e1e5c386618b35018dd8efd4cd5379c8bc",
+        "legacy-step:2bf8b36ac9d784a1fdcc6869f695059d2eebb6b9f35034f7dd4d7f5bf19fc053",
+        "legacy-command:2bf8b36ac9d784a1fdcc6869f695059d2eebb6b9f35034f7dd4d7f5bf19fc053",
+        "legacy-command:5a50ba5f8ba5a106433920b8202e6ab4fe905ccad87c873230b095d56d537e1e",
+        "legacy-step:6afba571c57b8f40680ffa19481ee78cf43b3ee3d8a4fcf272a2577ea8992f10",
+        "legacy-command:6afba571c57b8f40680ffa19481ee78cf43b3ee3d8a4fcf272a2577ea8992f10",
+        "legacy-step:66aa3d4ad044e43fe86097097922465e360e112c15c5e8cd8db4410a20f72067",
+        "legacy-command:66aa3d4ad044e43fe86097097922465e360e112c15c5e8cd8db4410a20f72067",
+        "legacy-step:ab02d3a7f29b03f926dd73b38966a8c708808082e71202e2765f80fa9042b81e",
+        "legacy-command:ab02d3a7f29b03f926dd73b38966a8c708808082e71202e2765f80fa9042b81e",
+        "legacy-step:b7577333ee0cd80b09bcb76c8668d3e13c6d10af279145d3e819008cd0d471f0",
+        "legacy-command:b7577333ee0cd80b09bcb76c8668d3e13c6d10af279145d3e819008cd0d471f0",
+        "legacy-step:2a0d1a84d183f830b109c835bd54d472150e0fb6a164559b9d06f05f900ee57e",
+        "legacy-command:2a0d1a84d183f830b109c835bd54d472150e0fb6a164559b9d06f05f900ee57e",
+        "legacy-step:56687e3374c84d2d5c0ef2006a4c361c847c12685f4eea53093590c0fb9bbd6b",
+        "legacy-command:56687e3374c84d2d5c0ef2006a4c361c847c12685f4eea53093590c0fb9bbd6b",
+        "legacy-step:35d89aeb9cf6dadef68d7012af2d7720796e68fc7d825f1c344142ea97596b02",
+        "legacy-command:35d89aeb9cf6dadef68d7012af2d7720796e68fc7d825f1c344142ea97596b02",
+        "legacy-step:dd1cea1d08a8f699172b0ba782508aa2818fb34a07f4fb898406706edf40f4aa",
+        "legacy-command:dd1cea1d08a8f699172b0ba782508aa2818fb34a07f4fb898406706edf40f4aa",
+        "legacy-step:0a9573b72b017f197e998d7fa77a6bbf74b7e160f1b7eba1d84fa8b71944ebc7",
+        "legacy-command:0a9573b72b017f197e998d7fa77a6bbf74b7e160f1b7eba1d84fa8b71944ebc7",
+        "legacy-step:8a18fb70302dba3ad1586b0327ad2e22e89789e075dd02dcbc0f37c6b8b46602",
+        "legacy-command:8a18fb70302dba3ad1586b0327ad2e22e89789e075dd02dcbc0f37c6b8b46602",
+        "legacy-step:cd35cbcb8efde2bbee681725c144a051dfcbe579e2c501e85599e0cbf68cdca0",
+        "legacy-command:cd35cbcb8efde2bbee681725c144a051dfcbe579e2c501e85599e0cbf68cdca0",
+        "legacy-step:697295677e5da992253bc287f328156bfc5bd154794ac8e09f94129d26c48cab",
+        "legacy-command:697295677e5da992253bc287f328156bfc5bd154794ac8e09f94129d26c48cab",
+        "legacy-step:03d84e2ecf678e046e951cfd030afb33d5f6f1d7527b6d92b2098cf4ce58d2f3",
+        "legacy-command:03d84e2ecf678e046e951cfd030afb33d5f6f1d7527b6d92b2098cf4ce58d2f3",
+        "legacy-step:3950bc50609df35e3908f4a5c237e56d49f7fe994c65501b092c8dc94b1e4d4d",
+        "legacy-command:3950bc50609df35e3908f4a5c237e56d49f7fe994c65501b092c8dc94b1e4d4d",
+        "legacy-step:e497963fa636c58b476de9773f27b36f9022b02f913b36c6b4e873818c7eddd8",
+        "legacy-command:e497963fa636c58b476de9773f27b36f9022b02f913b36c6b4e873818c7eddd8",
+        "legacy-step:6d855416b6ea191a1c043d64c6e2248b139d3bd7e5a1fed3c5aa6228f2de1c30",
+        "legacy-command:6d855416b6ea191a1c043d64c6e2248b139d3bd7e5a1fed3c5aa6228f2de1c30",
+        "legacy-step:f0ab6246377cf85f1177c68668c43cd5b14a5241b548eb6ea3c500213c46c2af",
+        "legacy-command:f0ab6246377cf85f1177c68668c43cd5b14a5241b548eb6ea3c500213c46c2af",
+        "legacy-step:b1efe39036e9d0a7e31afdbcaa5665204fd4fe80fb432f325849d12229007a56",
+        "legacy-command:b1efe39036e9d0a7e31afdbcaa5665204fd4fe80fb432f325849d12229007a56",
+        "legacy-step:e9171f2f96b904f348019e067195752b14b00f30bf228f2613c840eb34c17ee6",
+        "legacy-command:e9171f2f96b904f348019e067195752b14b00f30bf228f2613c840eb34c17ee6",
+        "legacy-step:752e3a56bf2fbd77af0109fae2bec7f8567562a929455f4c1064a63528dd5d71",
+        "legacy-command:752e3a56bf2fbd77af0109fae2bec7f8567562a929455f4c1064a63528dd5d71",
+        "legacy-step:fdcfb02e2c521462f6b7bc84b9dd795f3363270f092c5d220759a962114c9a22",
+        "legacy-command:fdcfb02e2c521462f6b7bc84b9dd795f3363270f092c5d220759a962114c9a22",
+        "legacy-step:717ee3c0bfe1f0089562f93a99dc1bfb2642ddf209bc617797f904357f725843",
+        "legacy-command:717ee3c0bfe1f0089562f93a99dc1bfb2642ddf209bc617797f904357f725843",
+        "legacy-step:27d9da18c734c4d69aa9442fa2c6cc71f836e162026ffd897a43ca2f603561ee",
+        "legacy-command:27d9da18c734c4d69aa9442fa2c6cc71f836e162026ffd897a43ca2f603561ee",
+        "legacy-step:e5da108742ee4c55e2aa75cdc3d5d19ae9fc0cfa19bdd294400f6fadf0a6dafc",
+        "legacy-command:e5da108742ee4c55e2aa75cdc3d5d19ae9fc0cfa19bdd294400f6fadf0a6dafc",
+        "legacy-step:aaf01f9a975451b9df52004d49319f172196a5291657f6708aeecd879e7016ca",
+        "legacy-command:aaf01f9a975451b9df52004d49319f172196a5291657f6708aeecd879e7016ca",
+        "legacy-step:fc2f730a0447a7a878480a6cfd58a82b51fed363a1cb913f89e8241af5fe7065",
+        "legacy-command:fc2f730a0447a7a878480a6cfd58a82b51fed363a1cb913f89e8241af5fe7065",
+        "legacy-step:6798db8f50bdcca7cfca271dea0957175d5273b7efd8a3553e64aa3aae05c5a6",
+        "legacy-command:6798db8f50bdcca7cfca271dea0957175d5273b7efd8a3553e64aa3aae05c5a6",
+        "legacy-step:47572ba1b29598a1fb2b7cb46560f5b383abd4d5ac1ef0dc82f02d8034dc971b",
+        "legacy-command:47572ba1b29598a1fb2b7cb46560f5b383abd4d5ac1ef0dc82f02d8034dc971b",
+        "legacy-step:6f44500ac188e06d09cb76dfb2d100496700672e5248e3a8c488b23c7a988465",
+        "legacy-command:6f44500ac188e06d09cb76dfb2d100496700672e5248e3a8c488b23c7a988465",
+        "legacy-step:25cae992d2e6ce26224424d74bd6ec47fd95fbf287efb62a02259d0d26c33316",
+        "legacy-command:25cae992d2e6ce26224424d74bd6ec47fd95fbf287efb62a02259d0d26c33316",
+        "legacy-step:e3728746806150ab677968562dc5a96f59e3caf2c7c3564567dd87af53664bc0",
+        "legacy-command:e3728746806150ab677968562dc5a96f59e3caf2c7c3564567dd87af53664bc0",
+        "legacy-step:124d6c5246153b6fa499eb7d4942f6f4788c223bf8d3db15d33694f9f1c7a5a2",
+        "legacy-command:124d6c5246153b6fa499eb7d4942f6f4788c223bf8d3db15d33694f9f1c7a5a2",
+        "legacy-step:2b033d832b0c8cc136acf4d5fee87ce51da36c32c552408619369cf54c8cd8c0",
+        "legacy-command:2b033d832b0c8cc136acf4d5fee87ce51da36c32c552408619369cf54c8cd8c0",
+        "legacy-command:b66eca554ef3efd4d6ad888b74a9dfee1fd296a0f16403089ccf9a3411d121f6",
+        "legacy-step:cbf89e431936bbde0ce220ff0ba9c06ed534eb8d625d34b91f76f5557030b26f",
+        "legacy-command:cbf89e431936bbde0ce220ff0ba9c06ed534eb8d625d34b91f76f5557030b26f",
+        "legacy-command:447c546d4c142d5e22c2fcbdfdb49cd2d88456f29d091cd79c489b6754e0fff7"
+      ],
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "kitchen",
+        "cell": {
+          "x": 3,
+          "y": 3
+        }
+      },
+      "postStateVersion": 252,
+      "elapsedMinutes": 36
+    },
+    "after": {
+      "version": 252,
+      "time": 2076,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "kitchen",
+        "cell": {
+          "x": 3,
+          "y": 3
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "kitchen",
+        "hunger": 46.05999999999996,
+        "stamina": 33.31999999999989,
+        "health": 70.16500000000032,
+        "san": 67.79500000000009,
+        "alive": true,
+        "bodyTemp": 36.37825000000011
+      }
+    }
+  },
+  {
+    "name": "rest-warehouse",
+    "before": {
+      "version": 252,
+      "time": 2076,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "kitchen",
+        "cell": {
+          "x": 3,
+          "y": 3
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "kitchen",
+        "hunger": 46.05999999999996,
+        "stamina": 33.31999999999989,
+        "health": 70.16500000000032,
+        "san": 67.79500000000009,
+        "alive": true,
+        "bodyTemp": 36.37825000000011
+      }
+    },
+    "result": {
+      "status": "applied",
+      "reason": null,
+      "eventIds": [
+        "rest-before-warehouse:rested:252"
+      ],
+      "events": [
+        {
+          "eventId": "rest-before-warehouse:rested:252",
+          "type": "rested",
+          "simTime": 2076,
+          "actorId": "npc_01",
+          "payload": {
+            "minutes": 120
+          }
+        }
+      ],
+      "observedBy": [
+        "npc_01"
+      ]
+    },
+    "after": {
+      "version": 253,
+      "time": 2076,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "kitchen",
+        "cell": {
+          "x": 3,
+          "y": 3
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "kitchen",
+        "hunger": 46.05999999999996,
+        "stamina": 57.31999999999989,
+        "health": 73.16500000000032,
+        "san": 73.79500000000009,
+        "alive": true,
+        "bodyTemp": 36.37825000000011
+      }
+    }
+  },
+  {
+    "name": "rest-clock-warehouse",
+    "before": {
+      "version": 253,
+      "time": 2076,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "kitchen",
+        "cell": {
+          "x": 3,
+          "y": 3
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "kitchen",
+        "hunger": 46.05999999999996,
+        "stamina": 57.31999999999989,
+        "health": 73.16500000000032,
+        "san": 73.79500000000009,
+        "alive": true,
+        "bodyTemp": 36.37825000000011
+      }
+    },
+    "result": {
+      "from": 2076,
+      "to": 2196,
+      "reachedEnd": false,
+      "segments": [
+        {
+          "from": 2076,
+          "to": 2100,
+          "minutes": 24,
+          "applied": [
+            "survival:npc_01:span:2100",
+            "survival:npc_02:span:2100",
+            "survival:npc_03:span:2100",
+            "survival:npc_04:span:2100",
+            "survival:npc_05:span:2100",
+            "survival:npc_06:span:2100",
+            "survival:npc_07:span:2100",
+            "survival:npc_08:span:2100",
+            "production:heating:wood:2100",
+            "production:heating:warmth:2100"
+          ],
+          "rejected": [],
+          "events": [
+            "v254:actor:survival:npc_01:span:2100",
+            "v254:actor:survival:npc_02:span:2100",
+            "v254:actor:survival:npc_03:span:2100",
+            "v254:actor:survival:npc_04:span:2100",
+            "v254:actor:survival:npc_05:span:2100",
+            "v254:actor:survival:npc_06:span:2100",
+            "v254:actor:survival:npc_07:span:2100",
+            "v254:actor:survival:npc_08:span:2100",
+            "v254:resource:production:heating:wood:2100",
+            "v254:intent-note:production:heating:warmth:2100",
+            "d:2076:heating_settled:system",
+            "heating_settled@system"
+          ]
+        },
+        {
+          "from": 2100,
+          "to": 2160,
+          "minutes": 60,
+          "applied": [
+            "survival:npc_01:span:2160",
+            "survival:npc_02:span:2160",
+            "survival:npc_03:span:2160",
+            "survival:npc_04:span:2160",
+            "survival:npc_05:span:2160",
+            "survival:npc_06:span:2160",
+            "survival:npc_07:span:2160",
+            "survival:npc_08:span:2160",
+            "production:heating:wood:2160",
+            "production:heating:warmth:2160"
+          ],
+          "rejected": [],
+          "events": [
+            "v256:actor:survival:npc_01:span:2160",
+            "v256:actor:survival:npc_02:span:2160",
+            "v256:actor:survival:npc_03:span:2160",
+            "v256:actor:survival:npc_04:span:2160",
+            "v256:actor:survival:npc_05:span:2160",
+            "v256:actor:survival:npc_06:span:2160",
+            "v256:actor:survival:npc_07:span:2160",
+            "v256:actor:survival:npc_08:span:2160",
+            "v256:resource:production:heating:wood:2160",
+            "v256:intent-note:production:heating:warmth:2160",
+            "d:2100:heating_settled:system",
+            "heating_settled@system"
+          ]
+        },
+        {
+          "from": 2160,
+          "to": 2196,
+          "minutes": 36,
+          "applied": [
+            "survival:npc_01:span:2196",
+            "survival:npc_02:span:2196",
+            "survival:npc_03:span:2196",
+            "survival:npc_04:span:2196",
+            "survival:npc_05:span:2196",
+            "survival:npc_06:span:2196",
+            "survival:npc_07:span:2196",
+            "survival:npc_08:span:2196",
+            "production:heating:wood:2196",
+            "production:heating:warmth:2196"
+          ],
+          "rejected": [],
+          "events": [
+            "v258:actor:survival:npc_01:span:2196",
+            "v258:actor:survival:npc_02:span:2196",
+            "v258:actor:survival:npc_03:span:2196",
+            "v258:actor:survival:npc_04:span:2196",
+            "v258:actor:survival:npc_05:span:2196",
+            "v258:actor:survival:npc_06:span:2196",
+            "v258:actor:survival:npc_07:span:2196",
+            "v258:actor:survival:npc_08:span:2196",
+            "v258:resource:production:heating:wood:2196",
+            "v258:intent-note:production:heating:warmth:2196",
+            "d:2160:heating_settled:system",
+            "heating_settled@system"
+          ]
+        }
+      ],
+      "rejections": [],
+      "events": [
+        {
+          "eventId": "v254:actor:survival:npc_01:span:2100",
+          "type": "r8_actor",
+          "simTime": 2076,
+          "actorId": "npc_01",
+          "payload": {
+            "intentId": "survival:npc_01:span:2100",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0.12174999999989211}"
+          }
+        },
+        {
+          "eventId": "v254:actor:survival:npc_02:span:2100",
+          "type": "r8_actor",
+          "simTime": 2076,
+          "actorId": "npc_02",
+          "payload": {
+            "intentId": "survival:npc_02:span:2100",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v254:actor:survival:npc_03:span:2100",
+          "type": "r8_actor",
+          "simTime": 2076,
+          "actorId": "npc_03",
+          "payload": {
+            "intentId": "survival:npc_03:span:2100",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v254:actor:survival:npc_04:span:2100",
+          "type": "r8_actor",
+          "simTime": 2076,
+          "actorId": "npc_04",
+          "payload": {
+            "intentId": "survival:npc_04:span:2100",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v254:actor:survival:npc_05:span:2100",
+          "type": "r8_actor",
+          "simTime": 2076,
+          "actorId": "npc_05",
+          "payload": {
+            "intentId": "survival:npc_05:span:2100",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v254:actor:survival:npc_06:span:2100",
+          "type": "r8_actor",
+          "simTime": 2076,
+          "actorId": "npc_06",
+          "payload": {
+            "intentId": "survival:npc_06:span:2100",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v254:actor:survival:npc_07:span:2100",
+          "type": "r8_actor",
+          "simTime": 2076,
+          "actorId": "npc_07",
+          "payload": {
+            "intentId": "survival:npc_07:span:2100",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v254:actor:survival:npc_08:span:2100",
+          "type": "r8_actor",
+          "simTime": 2076,
+          "actorId": "npc_08",
+          "payload": {
+            "intentId": "survival:npc_08:span:2100",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v254:resource:production:heating:wood:2100",
+          "type": "r8_resource",
+          "simTime": 2076,
+          "actorId": "system",
+          "payload": {
+            "intentId": "production:heating:wood:2100",
+            "source": "production.heating",
+            "resource": "firewood",
+            "delta": -0.4
+          }
+        },
+        {
+          "eventId": "v254:intent-note:production:heating:warmth:2100",
+          "type": "r8_intent-note",
+          "simTime": 2076,
+          "actorId": "system",
+          "payload": {
+            "intentId": "production:heating:warmth:2100",
+            "source": "production.heating",
+            "key": "heatingStrength",
+            "value": 0.081249
+          }
+        },
+        {
+          "eventId": "d:2076:heating_settled:system",
+          "type": "heating_settled",
+          "actorId": "system",
+          "simTime": 2076,
+          "payload": {
+            "strength": 0.081249,
+            "band": "none",
+            "wood": 0.4,
+            "power": 0
+          }
+        },
+        {
+          "eventId": "v256:actor:survival:npc_01:span:2160",
+          "type": "r8_actor",
+          "simTime": 2100,
+          "actorId": "npc_01",
+          "payload": {
+            "intentId": "survival:npc_01:span:2160",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v256:actor:survival:npc_02:span:2160",
+          "type": "r8_actor",
+          "simTime": 2100,
+          "actorId": "npc_02",
+          "payload": {
+            "intentId": "survival:npc_02:span:2160",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v256:actor:survival:npc_03:span:2160",
+          "type": "r8_actor",
+          "simTime": 2100,
+          "actorId": "npc_03",
+          "payload": {
+            "intentId": "survival:npc_03:span:2160",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v256:actor:survival:npc_04:span:2160",
+          "type": "r8_actor",
+          "simTime": 2100,
+          "actorId": "npc_04",
+          "payload": {
+            "intentId": "survival:npc_04:span:2160",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v256:actor:survival:npc_05:span:2160",
+          "type": "r8_actor",
+          "simTime": 2100,
+          "actorId": "npc_05",
+          "payload": {
+            "intentId": "survival:npc_05:span:2160",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v256:actor:survival:npc_06:span:2160",
+          "type": "r8_actor",
+          "simTime": 2100,
+          "actorId": "npc_06",
+          "payload": {
+            "intentId": "survival:npc_06:span:2160",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v256:actor:survival:npc_07:span:2160",
+          "type": "r8_actor",
+          "simTime": 2100,
+          "actorId": "npc_07",
+          "payload": {
+            "intentId": "survival:npc_07:span:2160",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v256:actor:survival:npc_08:span:2160",
+          "type": "r8_actor",
+          "simTime": 2100,
+          "actorId": "npc_08",
+          "payload": {
+            "intentId": "survival:npc_08:span:2160",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v256:resource:production:heating:wood:2160",
+          "type": "r8_resource",
+          "simTime": 2100,
+          "actorId": "system",
+          "payload": {
+            "intentId": "production:heating:wood:2160",
+            "source": "production.heating",
+            "resource": "firewood",
+            "delta": -1
+          }
+        },
+        {
+          "eventId": "v256:intent-note:production:heating:warmth:2160",
+          "type": "r8_intent-note",
+          "simTime": 2100,
+          "actorId": "system",
+          "payload": {
+            "intentId": "production:heating:warmth:2160",
+            "source": "production.heating",
+            "key": "heatingStrength",
+            "value": 0.054166
+          }
+        },
+        {
+          "eventId": "d:2100:heating_settled:system",
+          "type": "heating_settled",
+          "actorId": "system",
+          "simTime": 2100,
+          "payload": {
+            "strength": 0.054166,
+            "band": "none",
+            "wood": 1,
+            "power": 0
+          }
+        },
+        {
+          "eventId": "v258:actor:survival:npc_01:span:2196",
+          "type": "r8_actor",
+          "simTime": 2160,
+          "actorId": "npc_01",
+          "payload": {
+            "intentId": "survival:npc_01:span:2196",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v258:actor:survival:npc_02:span:2196",
+          "type": "r8_actor",
+          "simTime": 2160,
+          "actorId": "npc_02",
+          "payload": {
+            "intentId": "survival:npc_02:span:2196",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v258:actor:survival:npc_03:span:2196",
+          "type": "r8_actor",
+          "simTime": 2160,
+          "actorId": "npc_03",
+          "payload": {
+            "intentId": "survival:npc_03:span:2196",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v258:actor:survival:npc_04:span:2196",
+          "type": "r8_actor",
+          "simTime": 2160,
+          "actorId": "npc_04",
+          "payload": {
+            "intentId": "survival:npc_04:span:2196",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v258:actor:survival:npc_05:span:2196",
+          "type": "r8_actor",
+          "simTime": 2160,
+          "actorId": "npc_05",
+          "payload": {
+            "intentId": "survival:npc_05:span:2196",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v258:actor:survival:npc_06:span:2196",
+          "type": "r8_actor",
+          "simTime": 2160,
+          "actorId": "npc_06",
+          "payload": {
+            "intentId": "survival:npc_06:span:2196",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v258:actor:survival:npc_07:span:2196",
+          "type": "r8_actor",
+          "simTime": 2160,
+          "actorId": "npc_07",
+          "payload": {
+            "intentId": "survival:npc_07:span:2196",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v258:actor:survival:npc_08:span:2196",
+          "type": "r8_actor",
+          "simTime": 2160,
+          "actorId": "npc_08",
+          "payload": {
+            "intentId": "survival:npc_08:span:2196",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v258:resource:production:heating:wood:2196",
+          "type": "r8_resource",
+          "simTime": 2160,
+          "actorId": "system",
+          "payload": {
+            "intentId": "production:heating:wood:2196",
+            "source": "production.heating",
+            "resource": "firewood",
+            "delta": -0.6
+          }
+        },
+        {
+          "eventId": "v258:intent-note:production:heating:warmth:2196",
+          "type": "r8_intent-note",
+          "simTime": 2160,
+          "actorId": "system",
+          "payload": {
+            "intentId": "production:heating:warmth:2196",
+            "source": "production.heating",
+            "key": "heatingStrength",
+            "value": 0.037916
+          }
+        },
+        {
+          "eventId": "d:2160:heating_settled:system",
+          "type": "heating_settled",
+          "actorId": "system",
+          "simTime": 2160,
+          "payload": {
+            "strength": 0.037916,
+            "band": "none",
+            "wood": 0.6,
+            "power": 0
+          }
+        }
+      ],
+      "domainEvents": [
+        {
+          "proposalId": "production:heating:2100",
+          "type": "heating_settled",
+          "actorId": "system",
+          "observedBy": "all",
+          "payload": {
+            "strength": 0.081249,
+            "band": "none",
+            "wood": 0.4,
+            "power": 0
+          }
+        },
+        {
+          "proposalId": "production:heating:2160",
+          "type": "heating_settled",
+          "actorId": "system",
+          "observedBy": "all",
+          "payload": {
+            "strength": 0.054166,
+            "band": "none",
+            "wood": 1,
+            "power": 0
+          }
+        },
+        {
+          "proposalId": "production:heating:2196",
+          "type": "heating_settled",
+          "actorId": "system",
+          "observedBy": "all",
+          "payload": {
+            "strength": 0.037916,
+            "band": "none",
+            "wood": 0.6,
+            "power": 0
+          }
+        }
+      ]
+    },
+    "after": {
+      "version": 259,
+      "time": 2196,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "kitchen",
+        "cell": {
+          "x": 3,
+          "y": 3
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "kitchen",
+        "hunger": 44.25999999999996,
+        "stamina": 54.31999999999989,
+        "health": 70.76500000000031,
+        "san": 73.39500000000008,
+        "alive": true,
+        "bodyTemp": 36.5
+      }
+    }
+  },
+  {
+    "name": "walk-warehouse",
+    "before": {
+      "version": 259,
+      "time": 2196,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "kitchen",
+        "cell": {
+          "x": 3,
+          "y": 3
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "kitchen",
+        "hunger": 44.25999999999996,
+        "stamina": 54.31999999999989,
+        "health": 70.76500000000031,
+        "san": 73.39500000000008,
+        "alive": true,
+        "bodyTemp": 36.5
+      }
+    },
+    "result": {
+      "status": "applied",
+      "reason": "original_maps_traversed",
+      "eventIds": [
+        "legacy-step:7bbd9fe5d8fcdfca4b6dccceeaae187e4e86cf8975d92ae0156d29cd3023a44c",
+        "legacy-command:7bbd9fe5d8fcdfca4b6dccceeaae187e4e86cf8975d92ae0156d29cd3023a44c",
+        "legacy-step:98dcc64216dd3941ff51c5609ca8584823b40d93f27a13261248756af32f95e5",
+        "legacy-command:98dcc64216dd3941ff51c5609ca8584823b40d93f27a13261248756af32f95e5",
+        "legacy-step:e867f73daf920f7f7a5b7048a99f4fe97fbdb22801bda93cb6de32fa4e40036e",
+        "legacy-command:e867f73daf920f7f7a5b7048a99f4fe97fbdb22801bda93cb6de32fa4e40036e",
+        "legacy-step:4cad9a1966625f2d4d2298958a563ee45742d945490253cdcb746dd40a4b8dbd",
+        "legacy-command:4cad9a1966625f2d4d2298958a563ee45742d945490253cdcb746dd40a4b8dbd",
+        "legacy-step:20a0ec0f399e56e5e391af1b28f55d79032fc746cbbb11201d03b600371a03f2",
+        "legacy-command:20a0ec0f399e56e5e391af1b28f55d79032fc746cbbb11201d03b600371a03f2",
+        "legacy-step:88c5bcb75868aac4d8739e7ef1a1cb1ccea386707d3c8b6c9227740fbbabfa05",
+        "legacy-command:88c5bcb75868aac4d8739e7ef1a1cb1ccea386707d3c8b6c9227740fbbabfa05",
+        "legacy-step:941e9436474889ae6af3432fa0db8020d15fef9d52306757ad38a725e6afbce0",
+        "legacy-command:941e9436474889ae6af3432fa0db8020d15fef9d52306757ad38a725e6afbce0",
+        "legacy-step:1eeff59a35b7610e883b1416f73db622926f1374e99635e68bde1fdf78ed218a",
+        "legacy-command:1eeff59a35b7610e883b1416f73db622926f1374e99635e68bde1fdf78ed218a",
+        "legacy-command:0adc25ad697ffdb82550b5fc203630bbe66ef8ecd0718092f463f80079edf23e",
+        "legacy-step:75dda44a5b8afbb1fdb282cf0fe0ffaa35c2206b590428130488472943d8c6ba",
+        "legacy-command:75dda44a5b8afbb1fdb282cf0fe0ffaa35c2206b590428130488472943d8c6ba",
+        "legacy-step:ba5c11aff1d8dfa23d2fe5777c0899a87ff8b771ad66b3b3375179b693cf6e0c",
+        "legacy-command:ba5c11aff1d8dfa23d2fe5777c0899a87ff8b771ad66b3b3375179b693cf6e0c",
+        "legacy-step:4d078f99b11b2c3175987722feadbbd1f34f0ca23a75e7746ad28e9e4eae5185",
+        "legacy-command:4d078f99b11b2c3175987722feadbbd1f34f0ca23a75e7746ad28e9e4eae5185",
+        "legacy-step:9fe63e67f8ee999051462468070dddeaad1c816ed7c337dc1d40b6e25cd35fa1",
+        "legacy-command:9fe63e67f8ee999051462468070dddeaad1c816ed7c337dc1d40b6e25cd35fa1",
+        "legacy-step:1f25baa935f0088cf4de6e758d3526df88d3d5f56ef52ec2f0c274050de8eec3",
+        "legacy-command:1f25baa935f0088cf4de6e758d3526df88d3d5f56ef52ec2f0c274050de8eec3",
+        "legacy-step:55b5d9d951c35e5453266293f3699080874f83fd938e8e5278909a12456c5ae6",
+        "legacy-command:55b5d9d951c35e5453266293f3699080874f83fd938e8e5278909a12456c5ae6",
+        "legacy-step:45ad2c66688b17caee26a96646cdd166eb6f02fdb566f0a3ce7036ff4c85af4f",
+        "legacy-command:45ad2c66688b17caee26a96646cdd166eb6f02fdb566f0a3ce7036ff4c85af4f",
+        "legacy-step:804acdcf2297aaab1a2fb026748f61b31b0313df5d2a2a28d7856a7e107efc5f",
+        "legacy-command:804acdcf2297aaab1a2fb026748f61b31b0313df5d2a2a28d7856a7e107efc5f",
+        "legacy-step:8f2657fe11accdcb6eb756aeb12ccdc4688a9fdeb260ec91cf95d49d94f72c71",
+        "legacy-command:8f2657fe11accdcb6eb756aeb12ccdc4688a9fdeb260ec91cf95d49d94f72c71",
+        "legacy-step:16a68e99c6083e24f0960df65712aa792a6e2863d881ef4cd91f8187446b93cb",
+        "legacy-command:16a68e99c6083e24f0960df65712aa792a6e2863d881ef4cd91f8187446b93cb",
+        "legacy-step:96793a64d61d654fe21a2b304b6d4815ea9e61a932e13743968d09aa6c7618e5",
+        "legacy-command:96793a64d61d654fe21a2b304b6d4815ea9e61a932e13743968d09aa6c7618e5",
+        "legacy-step:9fd898a4943070b54adfc314607ab752694e545a00481d4013cd4c1992b3503d",
+        "legacy-command:9fd898a4943070b54adfc314607ab752694e545a00481d4013cd4c1992b3503d",
+        "legacy-step:c14174d05738576ac16108b38b00677540dc732c03e0c319776ae8fbd45ab593",
+        "legacy-command:c14174d05738576ac16108b38b00677540dc732c03e0c319776ae8fbd45ab593",
+        "legacy-step:aa6bc24f512b195caa48697cdafe62dada8a4d854f379b3746fb93f9c3d5ac90",
+        "legacy-command:aa6bc24f512b195caa48697cdafe62dada8a4d854f379b3746fb93f9c3d5ac90",
+        "legacy-step:ec14ea2990cb147db3fe679dd2a039913df1f38b12dee1c2dd80a32afd04c410",
+        "legacy-command:ec14ea2990cb147db3fe679dd2a039913df1f38b12dee1c2dd80a32afd04c410",
+        "legacy-step:108bd87bb3dfb28dd55c0219d1872f30d5b6343409428a6e1617250b8022c3e7",
+        "legacy-command:108bd87bb3dfb28dd55c0219d1872f30d5b6343409428a6e1617250b8022c3e7",
+        "legacy-step:aa40e1f346ada28fe10e5e65eba66ad6f95e4e39f57ecd14942c6a619eb5ef35",
+        "legacy-command:aa40e1f346ada28fe10e5e65eba66ad6f95e4e39f57ecd14942c6a619eb5ef35",
+        "legacy-step:9513728292371d5e7126a8b5e97c6d153559d3856a8255fdfdfa275047a1ba37",
+        "legacy-command:9513728292371d5e7126a8b5e97c6d153559d3856a8255fdfdfa275047a1ba37",
+        "legacy-step:f4b5716b24702e2714b74e3c98b5e24a317a9c07e953d6ff251abd908fe2b85a",
+        "legacy-command:f4b5716b24702e2714b74e3c98b5e24a317a9c07e953d6ff251abd908fe2b85a",
+        "legacy-step:71ba8a52e172ad042195c4b169a5fdba6146bc4dc82458a2e9adec0d67931470",
+        "legacy-command:71ba8a52e172ad042195c4b169a5fdba6146bc4dc82458a2e9adec0d67931470",
+        "legacy-step:8ffc1da43783311944a62390e138b1e05d49d2ce6fad7380415e2369dd55755b",
+        "legacy-command:8ffc1da43783311944a62390e138b1e05d49d2ce6fad7380415e2369dd55755b",
+        "legacy-step:d8519f6887e355389b2309ac2e3ee095aa3c1e5180a5c495659d7b7190e74a37",
+        "legacy-command:d8519f6887e355389b2309ac2e3ee095aa3c1e5180a5c495659d7b7190e74a37",
+        "legacy-step:4220d0eb6ceefc21f0f76b2196ef1fb8bb3a5f26bfe516f0440e35345d38b840",
+        "legacy-command:4220d0eb6ceefc21f0f76b2196ef1fb8bb3a5f26bfe516f0440e35345d38b840",
+        "legacy-command:c8895757232f928e49ac6219a9ce4953aadf5bac840b11bd6d41c999887474d0",
+        "legacy-step:f735834a32bb5ac826939b6e3e25b3ed79b13f7aaa7c8da659b5ff5b8ec9b9ba",
+        "legacy-observation:53f550471b325744a0dc85526e06dec417cbd582d1b8419f412c07da71fcfadf",
+        "legacy-command:53f550471b325744a0dc85526e06dec417cbd582d1b8419f412c07da71fcfadf",
+        "legacy-command:f735834a32bb5ac826939b6e3e25b3ed79b13f7aaa7c8da659b5ff5b8ec9b9ba",
+        "legacy-command:40a9c69b774ca3ad357d1afce4d534924f2599728bba13d96754889ec08c0a05"
+      ],
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "warehouse",
+        "cell": {
+          "x": 5,
+          "y": 6
+        }
+      },
+      "postStateVersion": 356,
+      "elapsedMinutes": 32
+    },
+    "after": {
+      "version": 356,
+      "time": 2228,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "warehouse",
+        "cell": {
+          "x": 5,
+          "y": 6
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "warehouse",
+        "hunger": 43.779999999999944,
+        "stamina": 36.01000000000002,
+        "health": 59.6600000000004,
+        "san": 65.81333333333345,
+        "alive": true,
+        "bodyTemp": 36.475750000000076
+      }
+    }
+  },
+  {
+    "name": "rest-dorm-a",
+    "before": {
+      "version": 356,
+      "time": 2228,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "warehouse",
+        "cell": {
+          "x": 5,
+          "y": 6
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "warehouse",
+        "hunger": 43.779999999999944,
+        "stamina": 36.01000000000002,
+        "health": 59.6600000000004,
+        "san": 65.81333333333345,
+        "alive": true,
+        "bodyTemp": 36.475750000000076
+      }
+    },
+    "result": {
+      "status": "applied",
+      "reason": null,
+      "eventIds": [
+        "rest-before-dorm-a:rested:356"
+      ],
+      "events": [
+        {
+          "eventId": "rest-before-dorm-a:rested:356",
+          "type": "rested",
+          "simTime": 2228,
+          "actorId": "npc_01",
+          "payload": {
+            "minutes": 120
+          }
+        }
+      ],
+      "observedBy": [
+        "npc_01"
+      ]
+    },
+    "after": {
+      "version": 357,
+      "time": 2228,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "warehouse",
+        "cell": {
+          "x": 5,
+          "y": 6
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "warehouse",
+        "hunger": 43.779999999999944,
+        "stamina": 60.01000000000002,
+        "health": 62.6600000000004,
+        "san": 71.81333333333345,
+        "alive": true,
+        "bodyTemp": 36.475750000000076
+      }
+    }
+  },
+  {
+    "name": "rest-clock-dorm-a",
+    "before": {
+      "version": 357,
+      "time": 2228,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "warehouse",
+        "cell": {
+          "x": 5,
+          "y": 6
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "warehouse",
+        "hunger": 43.779999999999944,
+        "stamina": 60.01000000000002,
+        "health": 62.6600000000004,
+        "san": 71.81333333333345,
+        "alive": true,
+        "bodyTemp": 36.475750000000076
+      }
+    },
+    "result": {
+      "from": 2228,
+      "to": 2348,
+      "reachedEnd": false,
+      "segments": [
+        {
+          "from": 2228,
+          "to": 2280,
+          "minutes": 52,
+          "applied": [
+            "survival:npc_01:span:2280",
+            "survival:npc_02:span:2280",
+            "survival:npc_03:span:2280",
+            "survival:npc_04:span:2280",
+            "survival:npc_05:span:2280",
+            "survival:npc_06:span:2280",
+            "survival:npc_07:span:2280",
+            "survival:npc_08:span:2280",
+            "production:heating:wood:2280",
+            "production:heating:warmth:2280"
+          ],
+          "rejected": [],
+          "events": [
+            "v358:actor:survival:npc_01:span:2280",
+            "v358:actor:survival:npc_02:span:2280",
+            "v358:actor:survival:npc_03:span:2280",
+            "v358:actor:survival:npc_04:span:2280",
+            "v358:actor:survival:npc_05:span:2280",
+            "v358:actor:survival:npc_06:span:2280",
+            "v358:actor:survival:npc_07:span:2280",
+            "v358:actor:survival:npc_08:span:2280",
+            "v358:resource:production:heating:wood:2280",
+            "v358:intent-note:production:heating:warmth:2280",
+            "d:2228:heating_settled:system",
+            "heating_settled@system"
+          ]
+        },
+        {
+          "from": 2280,
+          "to": 2340,
+          "minutes": 60,
+          "applied": [
+            "survival:npc_01:span:2340",
+            "survival:npc_02:span:2340",
+            "survival:npc_03:span:2340",
+            "survival:npc_04:span:2340",
+            "survival:npc_05:span:2340",
+            "survival:npc_06:span:2340",
+            "survival:npc_07:span:2340",
+            "survival:npc_08:span:2340",
+            "production:heating:warmth:2340"
+          ],
+          "rejected": [],
+          "events": [
+            "v360:actor:survival:npc_01:span:2340",
+            "v360:actor:survival:npc_02:span:2340",
+            "v360:actor:survival:npc_03:span:2340",
+            "v360:actor:survival:npc_04:span:2340",
+            "v360:actor:survival:npc_05:span:2340",
+            "v360:actor:survival:npc_06:span:2340",
+            "v360:actor:survival:npc_07:span:2340",
+            "v360:actor:survival:npc_08:span:2340",
+            "v360:intent-note:production:heating:warmth:2340",
+            "d:2280:heating_settled:system",
+            "heating_settled@system"
+          ]
+        },
+        {
+          "from": 2340,
+          "to": 2348,
+          "minutes": 8,
+          "applied": [
+            "survival:npc_01:span:2348",
+            "survival:npc_02:span:2348",
+            "survival:npc_03:span:2348",
+            "survival:npc_04:span:2348",
+            "survival:npc_05:span:2348",
+            "survival:npc_06:span:2348",
+            "survival:npc_07:span:2348",
+            "survival:npc_08:span:2348",
+            "production:heating:warmth:2348"
+          ],
+          "rejected": [],
+          "events": [
+            "v362:actor:survival:npc_01:span:2348",
+            "v362:actor:survival:npc_02:span:2348",
+            "v362:actor:survival:npc_03:span:2348",
+            "v362:actor:survival:npc_04:span:2348",
+            "v362:actor:survival:npc_05:span:2348",
+            "v362:actor:survival:npc_06:span:2348",
+            "v362:actor:survival:npc_07:span:2348",
+            "v362:actor:survival:npc_08:span:2348",
+            "v362:intent-note:production:heating:warmth:2348",
+            "d:2340:heating_settled:system",
+            "heating_settled@system"
+          ]
+        }
+      ],
+      "rejections": [],
+      "events": [
+        {
+          "eventId": "v358:actor:survival:npc_01:span:2280",
+          "type": "r8_actor",
+          "simTime": 2228,
+          "actorId": "npc_01",
+          "payload": {
+            "intentId": "survival:npc_01:span:2280",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0.024249999999923944}"
+          }
+        },
+        {
+          "eventId": "v358:actor:survival:npc_02:span:2280",
+          "type": "r8_actor",
+          "simTime": 2228,
+          "actorId": "npc_02",
+          "payload": {
+            "intentId": "survival:npc_02:span:2280",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v358:actor:survival:npc_03:span:2280",
+          "type": "r8_actor",
+          "simTime": 2228,
+          "actorId": "npc_03",
+          "payload": {
+            "intentId": "survival:npc_03:span:2280",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v358:actor:survival:npc_04:span:2280",
+          "type": "r8_actor",
+          "simTime": 2228,
+          "actorId": "npc_04",
+          "payload": {
+            "intentId": "survival:npc_04:span:2280",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v358:actor:survival:npc_05:span:2280",
+          "type": "r8_actor",
+          "simTime": 2228,
+          "actorId": "npc_05",
+          "payload": {
+            "intentId": "survival:npc_05:span:2280",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v358:actor:survival:npc_06:span:2280",
+          "type": "r8_actor",
+          "simTime": 2228,
+          "actorId": "npc_06",
+          "payload": {
+            "intentId": "survival:npc_06:span:2280",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v358:actor:survival:npc_07:span:2280",
+          "type": "r8_actor",
+          "simTime": 2228,
+          "actorId": "npc_07",
+          "payload": {
+            "intentId": "survival:npc_07:span:2280",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v358:actor:survival:npc_08:span:2280",
+          "type": "r8_actor",
+          "simTime": 2228,
+          "actorId": "npc_08",
+          "payload": {
+            "intentId": "survival:npc_08:span:2280",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v358:resource:production:heating:wood:2280",
+          "type": "r8_resource",
+          "simTime": 2228,
+          "actorId": "system",
+          "payload": {
+            "intentId": "production:heating:wood:2280",
+            "source": "production.heating",
+            "resource": "firewood",
+            "delta": -0.866634
+          }
+        },
+        {
+          "eventId": "v358:intent-note:production:heating:warmth:2280",
+          "type": "r8_intent-note",
+          "simTime": 2228,
+          "actorId": "system",
+          "payload": {
+            "intentId": "production:heating:warmth:2280",
+            "source": "production.heating",
+            "key": "heatingStrength",
+            "value": 0
+          }
+        },
+        {
+          "eventId": "d:2228:heating_settled:system",
+          "type": "heating_settled",
+          "actorId": "system",
+          "simTime": 2228,
+          "payload": {
+            "strength": 0,
+            "band": "none",
+            "wood": 0.867,
+            "power": 0
+          }
+        },
+        {
+          "eventId": "v360:actor:survival:npc_01:span:2340",
+          "type": "r8_actor",
+          "simTime": 2280,
+          "actorId": "npc_01",
+          "payload": {
+            "intentId": "survival:npc_01:span:2340",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v360:actor:survival:npc_02:span:2340",
+          "type": "r8_actor",
+          "simTime": 2280,
+          "actorId": "npc_02",
+          "payload": {
+            "intentId": "survival:npc_02:span:2340",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v360:actor:survival:npc_03:span:2340",
+          "type": "r8_actor",
+          "simTime": 2280,
+          "actorId": "npc_03",
+          "payload": {
+            "intentId": "survival:npc_03:span:2340",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v360:actor:survival:npc_04:span:2340",
+          "type": "r8_actor",
+          "simTime": 2280,
+          "actorId": "npc_04",
+          "payload": {
+            "intentId": "survival:npc_04:span:2340",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v360:actor:survival:npc_05:span:2340",
+          "type": "r8_actor",
+          "simTime": 2280,
+          "actorId": "npc_05",
+          "payload": {
+            "intentId": "survival:npc_05:span:2340",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v360:actor:survival:npc_06:span:2340",
+          "type": "r8_actor",
+          "simTime": 2280,
+          "actorId": "npc_06",
+          "payload": {
+            "intentId": "survival:npc_06:span:2340",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v360:actor:survival:npc_07:span:2340",
+          "type": "r8_actor",
+          "simTime": 2280,
+          "actorId": "npc_07",
+          "payload": {
+            "intentId": "survival:npc_07:span:2340",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v360:actor:survival:npc_08:span:2340",
+          "type": "r8_actor",
+          "simTime": 2280,
+          "actorId": "npc_08",
+          "payload": {
+            "intentId": "survival:npc_08:span:2340",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v360:intent-note:production:heating:warmth:2340",
+          "type": "r8_intent-note",
+          "simTime": 2280,
+          "actorId": "system",
+          "payload": {
+            "intentId": "production:heating:warmth:2340",
+            "source": "production.heating",
+            "key": "heatingStrength",
+            "value": 0
+          }
+        },
+        {
+          "eventId": "d:2280:heating_settled:system",
+          "type": "heating_settled",
+          "actorId": "system",
+          "simTime": 2280,
+          "payload": {
+            "strength": 0,
+            "band": "none",
+            "wood": 0,
+            "power": 0
+          }
+        },
+        {
+          "eventId": "v362:actor:survival:npc_01:span:2348",
+          "type": "r8_actor",
+          "simTime": 2340,
+          "actorId": "npc_01",
+          "payload": {
+            "intentId": "survival:npc_01:span:2348",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v362:actor:survival:npc_02:span:2348",
+          "type": "r8_actor",
+          "simTime": 2340,
+          "actorId": "npc_02",
+          "payload": {
+            "intentId": "survival:npc_02:span:2348",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v362:actor:survival:npc_03:span:2348",
+          "type": "r8_actor",
+          "simTime": 2340,
+          "actorId": "npc_03",
+          "payload": {
+            "intentId": "survival:npc_03:span:2348",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v362:actor:survival:npc_04:span:2348",
+          "type": "r8_actor",
+          "simTime": 2340,
+          "actorId": "npc_04",
+          "payload": {
+            "intentId": "survival:npc_04:span:2348",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v362:actor:survival:npc_05:span:2348",
+          "type": "r8_actor",
+          "simTime": 2340,
+          "actorId": "npc_05",
+          "payload": {
+            "intentId": "survival:npc_05:span:2348",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v362:actor:survival:npc_06:span:2348",
+          "type": "r8_actor",
+          "simTime": 2340,
+          "actorId": "npc_06",
+          "payload": {
+            "intentId": "survival:npc_06:span:2348",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v362:actor:survival:npc_07:span:2348",
+          "type": "r8_actor",
+          "simTime": 2340,
+          "actorId": "npc_07",
+          "payload": {
+            "intentId": "survival:npc_07:span:2348",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v362:actor:survival:npc_08:span:2348",
+          "type": "r8_actor",
+          "simTime": 2340,
+          "actorId": "npc_08",
+          "payload": {
+            "intentId": "survival:npc_08:span:2348",
+            "source": "survival.onTimeSpan",
+            "delta": "{\"bodyTemp\":0}"
+          }
+        },
+        {
+          "eventId": "v362:intent-note:production:heating:warmth:2348",
+          "type": "r8_intent-note",
+          "simTime": 2340,
+          "actorId": "system",
+          "payload": {
+            "intentId": "production:heating:warmth:2348",
+            "source": "production.heating",
+            "key": "heatingStrength",
+            "value": 0
+          }
+        },
+        {
+          "eventId": "d:2340:heating_settled:system",
+          "type": "heating_settled",
+          "actorId": "system",
+          "simTime": 2340,
+          "payload": {
+            "strength": 0,
+            "band": "none",
+            "wood": 0,
+            "power": 0
+          }
+        }
+      ],
+      "domainEvents": [
+        {
+          "proposalId": "production:heating:2280",
+          "type": "heating_settled",
+          "actorId": "system",
+          "observedBy": "all",
+          "payload": {
+            "strength": 0,
+            "band": "none",
+            "wood": 0.867,
+            "power": 0
+          }
+        },
+        {
+          "proposalId": "production:heating:2340",
+          "type": "heating_settled",
+          "actorId": "system",
+          "observedBy": "all",
+          "payload": {
+            "strength": 0,
+            "band": "none",
+            "wood": 0,
+            "power": 0
+          }
+        },
+        {
+          "proposalId": "production:heating:2348",
+          "type": "heating_settled",
+          "actorId": "system",
+          "observedBy": "all",
+          "payload": {
+            "strength": 0,
+            "band": "none",
+            "wood": 0,
+            "power": 0
+          }
+        }
+      ]
+    },
+    "after": {
+      "version": 363,
+      "time": 2348,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "warehouse",
+        "cell": {
+          "x": 5,
+          "y": 6
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "warehouse",
+        "hunger": 41.97999999999995,
+        "stamina": 57.01000000000002,
+        "health": 60.2600000000004,
+        "san": 71.41333333333344,
+        "alive": true,
+        "bodyTemp": 36.5
+      }
+    }
+  },
+  {
+    "name": "walk-dorm-a",
+    "before": {
+      "version": 363,
+      "time": 2348,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "warehouse",
+        "cell": {
+          "x": 5,
+          "y": 6
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "warehouse",
+        "hunger": 41.97999999999995,
+        "stamina": 57.01000000000002,
+        "health": 60.2600000000004,
+        "san": 71.41333333333344,
+        "alive": true,
+        "bodyTemp": 36.5
+      }
+    },
+    "result": {
+      "status": "applied",
+      "reason": "original_maps_traversed",
+      "eventIds": [
+        "legacy-step:b310f7c60a68a26d7264029cb8bc7fe174fdeff5c279f7fc0667b1087b58d6a2",
+        "legacy-command:b310f7c60a68a26d7264029cb8bc7fe174fdeff5c279f7fc0667b1087b58d6a2",
+        "legacy-step:a02ebc623e70d6e6504662339571c3898f941febdf7ebff17e148f09459a6f50",
+        "legacy-command:a02ebc623e70d6e6504662339571c3898f941febdf7ebff17e148f09459a6f50",
+        "legacy-command:2a2fc9f6f1a0dd1427b80d5cf716aabd4b02e709d241595ca933dc3f4809a634",
+        "legacy-step:115da6cc0eb8234b84fbf1f70f391cd755e1ebddd41cc45f5fe90bea96edc66f",
+        "legacy-command:115da6cc0eb8234b84fbf1f70f391cd755e1ebddd41cc45f5fe90bea96edc66f",
+        "legacy-step:6485b5f3d99ae0b095127d03ea4f2a4fc172ee911161abca9c573f9383352f44",
+        "legacy-command:6485b5f3d99ae0b095127d03ea4f2a4fc172ee911161abca9c573f9383352f44",
+        "legacy-step:956c2dbbb5c24ae30b11b5efa16360c67ed36aa2ab82e1d872d600a2a50b26bd",
+        "legacy-command:956c2dbbb5c24ae30b11b5efa16360c67ed36aa2ab82e1d872d600a2a50b26bd",
+        "legacy-step:8f5a8e378b6f4c5745b880474a0f74ed95f45ae96259ddad646d48f20acc07d1",
+        "legacy-command:8f5a8e378b6f4c5745b880474a0f74ed95f45ae96259ddad646d48f20acc07d1",
+        "legacy-step:9ee4869a23e2b97c59fdd213b0d670659e0284d903ee77c19988ab7c4a61ba58",
+        "legacy-command:9ee4869a23e2b97c59fdd213b0d670659e0284d903ee77c19988ab7c4a61ba58",
+        "legacy-step:b5234135f761546d7b0bbe65f89b771c68d18631221a76e8396e79061faa751a",
+        "legacy-command:b5234135f761546d7b0bbe65f89b771c68d18631221a76e8396e79061faa751a",
+        "legacy-step:bcfe5e932b3f9720064842a771f4b1e6ff2c8c3dc4ab3b51daf9056f968f9b96",
+        "legacy-command:bcfe5e932b3f9720064842a771f4b1e6ff2c8c3dc4ab3b51daf9056f968f9b96",
+        "legacy-step:3cf71bbbbd15dafe86401d1ca565ab3e224d5e5cc807adb9fd5f348f16921414",
+        "legacy-command:3cf71bbbbd15dafe86401d1ca565ab3e224d5e5cc807adb9fd5f348f16921414",
+        "legacy-step:465733c0cec8a178e2cad74711845c61febff524fec452e05726b72d17cbb502",
+        "legacy-command:465733c0cec8a178e2cad74711845c61febff524fec452e05726b72d17cbb502",
+        "legacy-step:e972b749185aa9c2687282a70e81c221f975f67a56e632f85a3e1092a74b385d",
+        "legacy-command:e972b749185aa9c2687282a70e81c221f975f67a56e632f85a3e1092a74b385d",
+        "legacy-step:5d66a4ec948db14c600519a7229ddaa9c6aafb1ce49ea0f061e52e814ef9df30",
+        "legacy-command:5d66a4ec948db14c600519a7229ddaa9c6aafb1ce49ea0f061e52e814ef9df30",
+        "legacy-step:ad42dd535b2843f0dc0d9d8c5ef40189aa5e6ae5221ac68e6ac25d12022b6d5f",
+        "legacy-command:ad42dd535b2843f0dc0d9d8c5ef40189aa5e6ae5221ac68e6ac25d12022b6d5f",
+        "legacy-step:1d93b9a38db0d46f5e6192d0d21aa276315b7ee4d51a4351e0c149efe740d990",
+        "legacy-command:1d93b9a38db0d46f5e6192d0d21aa276315b7ee4d51a4351e0c149efe740d990",
+        "legacy-step:2178284e2f25c2dc253a23d36aac1460e276d40386906d435325cecb8e0ff4a6",
+        "legacy-command:2178284e2f25c2dc253a23d36aac1460e276d40386906d435325cecb8e0ff4a6",
+        "legacy-step:10075c3da548b3940b1f0a8bd5a89b1bb003f706e7e4bf18e2192369b3adc233",
+        "legacy-command:10075c3da548b3940b1f0a8bd5a89b1bb003f706e7e4bf18e2192369b3adc233",
+        "legacy-step:b96f38e1b4079bac560d8bd009c59d38650e43fafe709a2928c7557bb140f37c",
+        "legacy-command:b96f38e1b4079bac560d8bd009c59d38650e43fafe709a2928c7557bb140f37c",
+        "legacy-command:4c5bb99f5badd79d0813e731934678feb05fce3d4d2cc1b9eadf528540e905c0",
+        "legacy-step:6384b32d764469b6f84193109d5eb4dd6a0f0181001dd87fe3a947ed9fed51fe",
+        "legacy-command:6384b32d764469b6f84193109d5eb4dd6a0f0181001dd87fe3a947ed9fed51fe",
+        "legacy-command:fc6b43617fd2e83572186289077695c3deee14eeb652a47fe020b8e017280799"
+      ],
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "dorm_a",
+        "cell": {
+          "x": 6,
+          "y": 6
+        }
+      },
+      "postStateVersion": 420,
+      "elapsedMinutes": 19
+    },
+    "after": {
+      "version": 420,
+      "time": 2367,
+      "position": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "dorm_a",
+        "cell": {
+          "x": 6,
+          "y": 6
+        }
+      },
+      "npc": {
+        "id": "npc_01",
+        "location": "dorm-a",
+        "hunger": 41.694999999999936,
+        "stamina": 44.6150000000001,
+        "health": 52.60000000000037,
+        "san": 66.15000000000012,
+        "alive": true,
+        "bodyTemp": 36.5
+      }
+    }
+  }
+]

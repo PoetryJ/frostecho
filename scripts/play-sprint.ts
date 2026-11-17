@@ -55,6 +55,10 @@ import { referenceAgencyScorer } from '../src/r7/agency/reference';
 import { TaskBoard, type GameplayTaskKind } from '../src/gameplay-v2/tasks';
 import { BUILDINGS, MAPS, findPath } from '../src/spatial-v2/map';
 import type { ScorerPort } from '../src/planning/candidates';
+import { JointScorerClient, parseScorerCommand } from '../src/r7/ui/joint-scorer';
+import { TASK_CATALOG, type TaskTypeId } from '../src/r7/domains/tasks';
+import { runCouncilIfDue, notesFor } from './r8/playthrough';
+import { createCommitmentBridge } from '../src/r7/integration/commitment-bridge';
 
 declare const require: (modulePath: string) => {
   createScorer: () => ScorerPort;
@@ -86,30 +90,44 @@ const npcCount = Number(argValue('--npc') ?? 8);
 const days = Number(argValue('--days') ?? 4);
 const food = argValue('--food') === undefined ? undefined : Number(argValue('--food'));
 const customScorer = scorerProvider();
-
-// The session ALWAYS comes from the gameplay loop (which owns the restore
-// path), so `session` and `play.session` can never diverge.
-const restoredSession = existsSync(statePath) && !process.argv.includes('--fresh')
-  ? PlaySession.load(statePath, customScorer)
-  : PlaySession.create(npcCount, { days, food, seed: argValue('--seed') ?? `play-${npcCount}`,
-    scorerProvider: customScorer });
-
-// R4: session + task board + experience + commitments all live beside the
-// session file and are written together by `save` / read together by `load`.
-const play = existsSync(statePath) && !process.argv.includes('--fresh')
-  ? GameplayLoop.load(statePath, {}, customScorer)
-  : new GameplayLoop(restoredSession);
-/**
- * R8: the web entry drives the same decision core and the same authority as the
- * four-day evaluation. `play` stays the task/commitment ledger; the world and
- * the domains are the runtime's.
- */
-const r8 = R8Runtime.create({ session: play.session });
-const r8Scorer = referenceAgencyScorer();
+const restoring = existsSync(statePath) && !process.argv.includes('--fresh');
+const profile = argValue('--profile') ?? (restoring && existsSync(`${statePath}.r8.json`)
+  ? 'gospel-5.8.19' : 'legacy');
+if (!['legacy', 'gospel-5.8.19'].includes(profile)) throw new Error(`unknown profile ${profile}`);
+const gospel = profile === 'gospel-5.8.19';
+if (gospel && restoring && !existsSync(`${statePath}.r8.json`))
+  throw new Error('Gospel restore requires the R8 domain sidecar; use legacy profile for older saves');
+const mode = argValue('--mode') ?? 'reference';
+if (!['reference', 'jev-experimental'].includes(mode)) throw new Error('mode must be reference or jev-experimental; admitted requires a verified certificate');
+const scorerCommand = argValue('--scorer-command-json') ?? process.env.FROSTECHO_SCORER_COMMAND_JSON;
+if (mode !== 'reference' && (!gospel || !scorerCommand)) throw new Error('jev-experimental requires Gospel profile and scorer-command-json');
+const scorerService = mode === 'jev-experimental' ? new JointScorerClient(process.cwd(),
+  parseScorerCommand(scorerCommand!), Number(argValue('--scorer-timeout-ms') ?? 300000),
+  argValue('--scorer-transcript') ?? `${statePath}.scores.jsonl`) : null;
+// The restored R8 session is the sole active authority. The legacy sidecars
+// are reconstructed around that same object, never a second live world.
+const legacy = restoring ? GameplayLoop.load(statePath, {}, customScorer) : null;
+const r8 = gospel ? (restoring ? R8Runtime.load(statePath) : R8Runtime.create({
+  npcCount, seed: argValue('--seed') ?? `play-${npcCount}`, resources: { food } }))
+  : R8Runtime.create({ session: legacy?.session ?? PlaySession.create(npcCount,
+    { days, food, seed: argValue('--seed') ?? `play-${npcCount}`, scorerProvider: customScorer }) });
+const play = gospel ? new GameplayLoop(r8.session, legacy?.board, legacy ? {
+  experience: legacy.experience, commitments: legacy.commitments, council: legacy.council,
+  longTermMemory: legacy.longTermMemory, memoryArm: legacy.memoryArm,
+  decisionMemoryMode: legacy.decisionMemoryMode,
+  decisionMemoryTokenBudget: legacy.decisionMemoryTokenBudget } : {})
+  : legacy ?? new GameplayLoop(r8.session);
+const r8Scorer = scorerService ?? referenceAgencyScorer();
 const session = play.session;
+const commitmentBridge = gospel ? createCommitmentBridge(r8, play) : undefined;
+// Runners and web shutdown must not leave a model holding GPU memory.
+for (const signal of ['SIGTERM', 'SIGINT'] as const) process.once(signal, () => {
+  scorerService?.close(); process.exit(1);
+});
 
 const emit = (value: Record<string, unknown>) => console.log(JSON.stringify(value));
 emit({ schema: 'frostecho.play/2', event: 'ready', statePath,
+  profile, mode, scorer: r8Scorer.identity,
   restored: existsSync(statePath) && !process.argv.includes('--fresh'),
   day: session.world.day, simTime: session.world.simTime, npcs: session.npcIds });
 
@@ -125,6 +143,7 @@ let closed = false;
 let quitRequested = false;
 
 function kindOf(command: string): PlayerJobKind {
+  if (command === 'r8-step' || (gospel && command === 'game-step')) return 'step';
   const known: PlayerJobKind[] = ['observe', 'promise', 'cancel', 'tell', 'advance',
     'step', 'knowledge', 'save', 'quit', 'assign', 'cancel-task', 'task-status',
     'game-step', 'map', 'where', 'travel', 'withdraw', 'deliver', 'restock',
@@ -264,7 +283,7 @@ async function runJob(job: PlayerJob, line: string,
   try {
     switch (command) {
       case 'observe':
-        emit({ command, jobId: job.jobId, ...session.observe() });
+        emit({ command, jobId: job.jobId, ...session.observe(), profile, mode });
         break;
       case 'promise': {
         // R4 (G1): a fresh persistent id for a new request; the second argument
@@ -285,7 +304,9 @@ async function runJob(job: PlayerJob, line: string,
         emit({ command, jobId: job.jobId, ...session.playerTell(rest[0], rest[1]) });
         break;
       case 'advance':
-        emit({ command, jobId: job.jobId, ...session.advance(Number(rest[0] ?? 60)) });
+        emit({ command, jobId: job.jobId, ...(gospel
+          ? r8.advanceWorld(r8.world.simTime + Number(rest[0] ?? 60))
+          : session.advance(Number(rest[0] ?? 60))) });
         break;
       case 'step': {
         if (rest.length > 0) {
@@ -312,17 +333,48 @@ async function runJob(job: PlayerJob, line: string,
           plans: session.plans, instances: session.instances });
         break;
       case 'assign': {
+        if (gospel) {
+          const aliases: Record<string, TaskTypeId> = { 'gather-food': 'COLLECT_FOOD',
+            'gather-wood': 'COLLECT_WOOD', heating: 'PREPARE_WARMTH',
+            'supply-warehouse': 'DISTRIBUTE_FOOD', 'rest-first': 'REST_RECOVER' };
+          const type = aliases[rest[1]] ?? rest[1] as TaskTypeId;
+          if (!TASK_CATALOG[type]) throw new Error('Gospel task must name one of the 15 task types; use request for delivery commitments');
+          const result = r8.dispatch('tasks', 'propose', 'player', { type, assigneeId: rest[0] });
+          const task = r8.states.tasks.tasks.at(-1);
+          emit({ command, jobId: job.jobId, task, ...result, mode });
+          break;
+        }
         const task = play.assign(rest[0], rest[1] as GameplayTaskKind);
         emit({ command, jobId: job.jobId, task, mode: 'reference-rules/1' });
         break;
       }
       case 'cancel-task':
-        emit({ command, jobId: job.jobId, cancelled: play.cancelTask(rest[0]) });
+        emit({ command, jobId: job.jobId, ...(gospel && r8.states.tasks.tasks.some(task => task.taskId === rest[0])
+          ? r8.dispatch('tasks', 'cancel', 'player', { taskId: rest[0] })
+          : { cancelled: play.cancelTask(rest[0]) }) });
         break;
       case 'task-status':
-        emit({ command, jobId: job.jobId, status: play.status() });
+        emit({ command, jobId: job.jobId, status: gospel ? { ...play.status(), profile, mode,
+          scorer: r8Scorer.identity, ending: r8.endingKind ?? 'none',
+          tasks: [...play.board.tasks, ...r8.states.tasks.tasks.map(task => ({ ...task,
+            actorId: task.assigneeId, kind: TASK_CATALOG[task.type].name, domain: 'r8' }))],
+          r8: r8.toDocument(), taskCatalog: TASK_CATALOG } : play.status() });
         break;
       case 'game-step': {
+        if (gospel) {
+          if (r8.ended) { emit({ command, jobId: job.jobId, profile, mode,
+            records: [], executed: 0, reason: 'life_ended' }); break; }
+          if (typeof expected === 'number' ? session.generationFor(rest[0]) === expected
+            : Object.entries(expected).some(([id, generation]) => session.generationFor(id) === generation))
+            runCouncilIfDue(r8, [], session.seed);
+          const result = await runStep(r8, r8Scorer, { mode: mode as 'reference' | 'jev-experimental',
+            goalBridge: commitmentBridge,
+            actorIds: rest.length ? [rest[0]] : undefined,
+            expectedGenerations: typeof expected === 'number' ? { [rest[0]]: expected } : expected,
+            notes: id => notesFor(r8, id, 'conditional-experience') });
+          emit({ command, jobId: job.jobId, profile, ...result });
+          break;
+        }
         // Legacy task-board step. Kept because the R2-R5 acceptance stories and
         // saved sessions depend on it; the R8 chain is one command away.
         const result = play.step();
@@ -330,12 +382,51 @@ async function runJob(job: PlayerJob, line: string,
         break;
       }
       case 'r8-step': {
+        if (gospel && r8.ended) { emit({ command, jobId: job.jobId, profile, mode,
+          records: [], executed: 0, reason: 'life_ended' }); break; }
         // R8 shared chain: candidates -> ChoiceRequest -> scorer -> committed
         // intent/world command -> receipt-backed completion.
-        const result = await runStep(r8, r8Scorer, { mode: 'reference' });
+        if (gospel && (typeof expected === 'number' ? session.generationFor(rest[0]) === expected
+          : Object.entries(expected).some(([id, generation]) => session.generationFor(id) === generation)))
+          runCouncilIfDue(r8, [], session.seed);
+        const result = await runStep(r8, r8Scorer, { mode: mode as 'reference' | 'jev-experimental',
+          goalBridge: commitmentBridge,
+          actorIds: rest.length ? [rest[0]] : undefined,
+          expectedGenerations: typeof expected === 'number' ? { [rest[0]]: expected } : expected,
+          notes: id => notesFor(r8, id, 'conditional-experience') });
         emit({ command, jobId: job.jobId, ...result });
         break;
       }
+      case 'r8-status':
+        emit({ command, jobId: job.jobId, runtime: r8.toDocument() });
+        break;
+      case 'r8-map-enable':
+        if (!gospel) throw new Error('full original maps require the Gospel profile');
+        r8.enableLegacySpatial();
+        emit({ command, jobId: job.jobId, enabled: true,
+          positions: Object.fromEntries(session.npcIds.map(id => [id, r8.legacyPosition(id)])) });
+        break;
+      case 'r8-walk': {
+        const input = inputIdFor(command, rest);
+        const result = r8.walkLegacy(input.parts[0],
+          { x: Number(input.parts[1]), y: Number(input.parts[2]) }, input.id);
+        emit({ command, jobId: job.jobId, ...result });
+        break;
+      }
+      case 'r8-door': {
+        const input = inputIdFor(command, rest);
+        emit({ command, jobId: job.jobId, ...r8.transitionLegacy(input.parts[0], input.id) });
+        break;
+      }
+      case 'r8-inspect': {
+        const input = inputIdFor(command, rest);
+        emit({ command, jobId: job.jobId, ...r8.observeLegacyStock(input.parts[0], input.id) });
+        break;
+      }
+      case 'r8-respond':
+        emit({ command, jobId: job.jobId, ...r8.dispatch('tasks', 'respond', rest[0],
+          { taskId: rest[1], verdict: rest[2] ?? 'accept', reason: 'player role response' }) });
+        break;
       case 'map': {
         const mapId = (rest[0] ?? 'village') as keyof typeof MAPS;
         const map = MAPS[mapId];
@@ -350,6 +441,7 @@ async function runJob(job: PlayerJob, line: string,
         const npc = session.world.npcs[rest[0]];
         if (!npc) throw new Error(`unknown npc ${String(rest[0])}`);
         emit({ command, jobId: job.jobId, npcId: rest[0], location: npc.location,
+          legacyPosition: gospel ? r8.legacyPosition(rest[0]) : null,
           cell: actorCell(session.world, rest[0]), alive: npc.alive });
         break;
       }
@@ -358,6 +450,11 @@ async function runJob(job: PlayerJob, line: string,
         const actorId = input.parts[0];
         const npc = session.world.npcs[actorId];
         if (!npc) throw new Error(`unknown npc ${String(actorId)}`);
+        if (gospel && r8.legacyPosition(actorId)) {
+          emit({ command, jobId: job.jobId, ...r8.travelLegacyTo(actorId, input.parts[1], input.id),
+            location: session.world.npcs[actorId].location });
+          break;
+        }
         const target = BUILDINGS.find(entry => entry.id === input.parts[1]);
         if (!target) throw new Error(`unknown building ${String(input.parts[1])} `
           + `(${BUILDINGS.map(entry => entry.id).join('|')})`);
@@ -483,6 +580,11 @@ async function runJob(job: PlayerJob, line: string,
         break;
       }
       case 'council-open': {
+        if (gospel) {
+          runCouncilIfDue(r8, [], session.seed);
+          emit({ command, jobId: job.jobId, council: r8.states.council, mode: 'council-reference/1' });
+          break;
+        }
         const opened = play.openCouncil();
         emit({ command, jobId: job.jobId, ...opened, mode: 'fixture-reference/1' });
         break;
@@ -498,7 +600,7 @@ async function runJob(job: PlayerJob, line: string,
         break;
       }
       case 'council-status':
-        emit({ command, jobId: job.jobId, council: play.councilStatus(),
+        emit({ command, jobId: job.jobId, council: gospel ? r8.states.council : play.councilStatus(),
           mode: 'fixture-reference/1' });
         break;
       case 'council-respond': {
@@ -514,6 +616,7 @@ async function runJob(job: PlayerJob, line: string,
         break;
       case 'save':
         play.save(statePath);
+        if (gospel) r8.save(statePath);
         emit({ command, jobId: job.jobId, saved: statePath, version: session.world.version,
           tasks: play.board.tasks.length,
           commitments: play.commitments.all().map(row => ({ commitmentId: row.commitmentId,
@@ -555,7 +658,7 @@ rl.on('line', line => {
     kind: kindOf(command), status: 'pending', terminal: false, commandId: null };
   jobs.push(job);
 
-  if (command === 'step') {
+  if (command === 'step' || command === 'r8-step' || (gospel && command === 'game-step')) {
     // Start after everything already submitted (control commands queued before
     // this step, and the previous step), but do NOT block later control input.
     // The commit generation is captured HERE: a cancel accepted after this
@@ -636,6 +739,7 @@ rl.on('close', () => {
       settled });
     // An explicitly revoked (timed-out) job is a recorded terminal state, not
     // a silent drop: exit nonzero only for jobs that never reached a terminal.
-    process.exit(open.length > 0 ? 1 : 0);
+    scorerService?.close();
+    process.exit(open.length > 0 || (gospel && jobs.some(job => job.status === 'failed')) ? 1 : 0);
   });
 });

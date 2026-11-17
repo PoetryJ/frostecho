@@ -23,8 +23,8 @@ export interface IndoorFurniture {
 
 export type MapId = 'village' | 'warehouse' | 'kitchen';
 
-export interface GridMap {
-  id: MapId;
+export interface GridMap<Id extends string = MapId> {
+  id: Id;
   w: number;
   h: number;
   /** Solid rectangles (building footprints in the village, furniture indoors). */
@@ -120,11 +120,11 @@ export function parseCellKey(key: string): Cell {
   return { x, y };
 }
 
-export function inBounds(map: GridMap, cell: Cell): boolean {
+export function inBounds(map: GridMap<string>, cell: Cell): boolean {
   return cell.x >= 0 && cell.y >= 0 && cell.x < map.w && cell.y < map.h;
 }
 
-export function isWalkable(map: GridMap, cell: Cell, closedCells: ReadonlySet<string>): boolean {
+export function isWalkable(map: GridMap<string>, cell: Cell, closedCells: ReadonlySet<string>): boolean {
   if (!inBounds(map, cell)) return false;
   const key = cellKey(cell);
   if (closedCells.has(key)) return false;
@@ -139,7 +139,7 @@ export function isWalkable(map: GridMap, cell: Cell, closedCells: ReadonlySet<st
   return true;
 }
 
-function neighbours(map: GridMap, cell: Cell): Cell[] {
+function neighbours(map: GridMap<string>, cell: Cell): Cell[] {
   return [{ x: cell.x + 1, y: cell.y }, { x: cell.x - 1, y: cell.y },
     { x: cell.x, y: cell.y + 1 }, { x: cell.x, y: cell.y - 1 }];
 }
@@ -149,7 +149,7 @@ function manhattan(from: Cell, to: Cell): number {
 }
 
 /** Nearest walkable cell to a goal (legacy goal-correction behaviour). */
-export function nearestWalkable(map: GridMap, goal: Cell,
+export function nearestWalkable(map: GridMap<string>, goal: Cell,
   closedCells: ReadonlySet<string>): Cell | null {
   if (isWalkable(map, goal, closedCells)) return goal;
   for (let radius = 1; radius < Math.max(map.w, map.h); radius += 1) {
@@ -177,7 +177,7 @@ export interface PathResult {
  * including the start cell, or null with a reason when closed roads make the
  * goal unreachable.
  */
-export function findPath(map: GridMap, from: Cell, to: Cell,
+export function findPath(map: GridMap<string>, from: Cell, to: Cell,
   closedCells: ReadonlySet<string> = new Set()): PathResult {
   const goal = nearestWalkable(map, to, closedCells);
   if (!goal) return { path: null, blockedBy: 'no-goal', corridor: [] };

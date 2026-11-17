@@ -10,6 +10,7 @@ import {
   makeChoiceResult, type Candidate, type ChoiceRequest, type ChoiceResult,
 } from '../../decision/contracts';
 import type { ScorePort, ScorerIdentity } from '../contracts';
+import { taskBindingOfCandidate } from './options';
 
 export const REFERENCE_ID = 'reference-rule/1';
 export const REFERENCE_NORMALIZED_ID = 'reference-rule-normalized/1';
@@ -96,23 +97,6 @@ export function referenceUtility(candidate: Candidate, request: ChoiceRequest): 
   }
 }
 
-/** Task types an action discharges, used for the obligation bonus only. */
-function taskTypeOf(candidate: Candidate): string | null {
-  const action = candidate.parameters.action;
-  if (action === 'gather') {
-    return candidate.parameters.resource === 'food' ? 'COLLECT_FOOD' : 'COLLECT_WOOD';
-  }
-  if (action === 'work') return 'MAINTAIN_POWER';
-  if (action === 'rest') return 'REST_RECOVER';
-  if (action === 'medical') return 'PREPARE_MEDICAL';
-  if (action === 'build-machine') {
-    const machine = String(candidate.parameters.machine);
-    return machine === 'generator' ? 'BUILD_GENERATOR'
-      : machine === 'lumberMill' ? 'BUILD_LUMBER_MILL' : 'BUILD_FOOD_COLLECTOR';
-  }
-  return null;
-}
-
 /**
  * Reference utility = need + an explicit obligation bonus for an accepted task.
  * Both terms are rule constants, recorded here and absent from the candidate.
@@ -120,10 +104,25 @@ function taskTypeOf(candidate: Candidate): string | null {
 export function referenceUtilityWithGoals(candidate: Candidate,
   request: ChoiceRequest): number {
   const base = referenceUtility(candidate, request);
-  const type = taskTypeOf(candidate);
-  if (!type) return base;
-  const goals = Array.isArray(request.goals) ? request.goals as { type?: string }[] : [];
-  return goals.some(goal => goal?.type === type) ? Number((base + 0.25).toFixed(6)) : base;
+  const goals = Array.isArray(request.goals) ? request.goals as {
+    taskId?: string; type?: string; status?: string; source?: string;
+    commitmentId?: string; revision?: number;
+  }[] : [];
+  const { legacyTaskId, commitmentId, commitmentRevision } = candidate.parameters;
+  const observation = observationOf(request);
+  const immediateNeed = ((observation.self?.hunger ?? 100) < 40 && (observation.resources?.food ?? 0) >= 1)
+    || (observation.self?.stamina ?? 100) < 30
+    || ((observation.self?.health ?? 100) < 40 && (observation.resources?.medicine ?? 0) >= 1);
+  if (!immediateNeed && typeof legacyTaskId === 'string' && typeof commitmentId === 'string'
+    && typeof commitmentRevision === 'number' && goals.some(goal => goal.source === 'legacy-commitment'
+      && goal.status === 'active' && goal.taskId === legacyTaskId
+      && goal.commitmentId === commitmentId && goal.revision === commitmentRevision)) {
+    return Number((base + 0.25).toFixed(6));
+  }
+  const binding = taskBindingOfCandidate(candidate);
+  if (!binding) return base;
+  return goals.some(goal => goal?.taskId === binding.taskId && goal.type === binding.type
+    && goal.status === 'accepted') ? Number((base + 0.25).toFixed(6)) : base;
 }
 
 function softmax(logits: number[]): number[] {

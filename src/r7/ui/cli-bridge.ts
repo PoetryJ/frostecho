@@ -9,6 +9,13 @@ export type CliRecord = Record<string, any>;
 type Pending = { resolve: (record: CliRecord) => void; reject: (error: Error) => void;
   timer: NodeJS.Timeout };
 
+export interface BridgeOptions {
+  profile?: 'legacy' | 'gospel-5.8.19';
+  mode?: 'reference' | 'jev-experimental';
+  scorerCommand?: string[];
+  scorerTimeoutMs?: number;
+}
+
 /** Transport only: the existing CLI owns every job, rule, clock and save. */
 export class CliBridge extends EventEmitter {
   private child?: ChildProcessWithoutNullStreams;
@@ -28,14 +35,22 @@ export class CliBridge extends EventEmitter {
   private records: CliRecord[] = [];
   private savedAt: string | null = null;
   private lastError: string | null = null;
+  private profile: 'legacy' | 'gospel-5.8.19';
+  private readonly mode: 'reference' | 'jev-experimental';
+  private readonly scorerTimeoutMs: number;
 
-  constructor(readonly root: string, readonly saveRoot = join(root, 'saves', 'r7')) {
+  constructor(readonly root: string, readonly saveRoot = join(root, 'saves', 'r7'),
+    readonly options: BridgeOptions = {}) {
     super();
+    this.profile = options.profile ?? (process.env.FROSTECHO_PROFILE as BridgeOptions['profile']) ?? 'gospel-5.8.19';
+    this.mode = options.mode ?? (process.env.FROSTECHO_MODE as BridgeOptions['mode']) ?? 'reference';
+    this.scorerTimeoutMs = options.scorerTimeoutMs ?? Number(process.env.FROSTECHO_SCORER_TIMEOUT_MS ?? 300000);
     mkdirSync(saveRoot, { recursive: true });
   }
 
   snapshot(): CliRecord {
     return { active: Boolean(this.child), sessionId: this.sessionId,
+      profile: this.profile, mode: this.mode,
       running: this.running, speed: this.speed, observation: this.observation,
       status: this.status, positions: this.positions, records: this.records.slice(-80),
       savedAt: this.savedAt, lastError: this.lastError,
@@ -69,7 +84,10 @@ export class CliBridge extends EventEmitter {
     this.starting = true;
     try {
       if (this.child) await this.stop(true);
-      if (fresh) this.sessionId = `${Date.now()}-${randomUUID().slice(0, 8)}`;
+      if (fresh) {
+        this.profile = this.options.profile ?? (process.env.FROSTECHO_PROFILE as BridgeOptions['profile']) ?? 'gospel-5.8.19';
+        this.sessionId = `${Date.now()}-${randomUUID().slice(0, 8)}`;
+      }
       else {
         const pointer = join(this.saveRoot, 'last-session.json');
         if (!existsSync(pointer)) throw new Error('还没有可继续的存档。请先开始新游戏。');
@@ -78,6 +96,8 @@ export class CliBridge extends EventEmitter {
           throw new Error('Invalid saved session identity.');
         }
         this.sessionId = saved.sessionId;
+        // Old pointers predate Gospel and must keep their legacy clock/ledger.
+        this.profile = saved.profile ?? 'legacy';
       }
       const directory = join(this.saveRoot, this.sessionId!);
       mkdirSync(directory, { recursive: true });
@@ -93,7 +113,9 @@ export class CliBridge extends EventEmitter {
       this.lastError = null;
       this.recordPath = join(directory, 'web-cli.jsonl');
       const args = [entry, '--state', statePath, '--npc', '8', '--days', '4',
-        '--food', '120', '--seed', 'r7-player'];
+        '--food', this.profile === 'gospel-5.8.19' ? '130' : '120', '--seed', 'r7-player', '--profile', this.profile,
+        '--mode', this.mode, '--scorer-timeout-ms', String(this.scorerTimeoutMs)];
+      if (this.options.scorerCommand) args.push('--scorer-command-json', JSON.stringify(this.options.scorerCommand));
       if (fresh) args.push('--fresh');
       const child = spawn(process.execPath, args, { cwd: this.root,
         stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true });
@@ -128,7 +150,7 @@ export class CliBridge extends EventEmitter {
       await ready;
       await this.command('save');
       writeFileSync(join(this.saveRoot, 'last-session.json'),
-        JSON.stringify({ sessionId: this.sessionId }, null, 2) + '\n', 'utf8');
+        JSON.stringify({ sessionId: this.sessionId, profile: this.profile, mode: this.mode }, null, 2) + '\n', 'utf8');
       await this.refresh();
       this.broadcast();
       return this.snapshot();
@@ -150,7 +172,9 @@ export class CliBridge extends EventEmitter {
         this.pending.delete(jobId);
         // Timeout is transport uncertainty, never evidence that the command was cancelled.
         reject(new Error(`等待 ${jobId} 超时；结果仍可能到达，请勿盲目重试。`));
-      }, 35_000);
+      // A batch scores up to eight residents. Control and save stay bounded by
+      // the CLI's independent barrier; a legitimate encoder call may be slow.
+      }, /^(game-step|r8-step)\b/.test(line) ? this.scorerTimeoutMs * 8 + 10_000 : 35_000);
       this.pending.set(jobId, { resolve, reject, timer });
       this.child!.stdin.write(line.trim() + '\n', error => {
         if (!error) return;
@@ -198,7 +222,8 @@ export class CliBridge extends EventEmitter {
       if (!this.running || !this.child) return;
       try {
         const before = Number(this.observation?.simTime ?? 0);
-        await this.command('game-step');
+        const decision = await this.command('game-step');
+        if (decision.error) throw new Error(String(decision.error));
         await this.refresh();
         // Some choices (eating, gathering, waiting) do not advance the clock.
         // Use the existing authoritative time command only when no action did.

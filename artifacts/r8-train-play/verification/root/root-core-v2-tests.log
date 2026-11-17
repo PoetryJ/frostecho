@@ -1,0 +1,42 @@
+✔ original spatial profile is explicit; reference profile refuses it without changing state (8.3982ms)
+✔ one adjacent cell commits coordinate/location and charges one world minute plus original effort once (8.9183ms)
+✔ wall, remote door, invalid actor and unsupported old travel have zero authoritative effects (2.8409ms)
+✔ macro candidate move traverses the real map; all seven interiors remain accessible (261.9477ms)
+✔ same command replay is exact, conflicting content does not walk or advance time (3.959ms)
+✔ warehouse entrance observes real stock only for the arriving actor; remote observation is rejected (38.2274ms)
+✔ runtime number encoding preserves live domain state and reads pre-encoding v1 sidecars (5.4112ms)
+✔ D2 save restored in a new process preserves all authority and door receipts through three-room return (550.6812ms)
+✔ road closure blocks the real original village route, and rescue cannot silently teleport (7.1181ms)
+✔ two same-type tasks close only the selected task and report the committed completion (13.9287ms)
+✔ terminal tasks disappear from goals and cannot confer a reference obligation bonus (2.3623ms)
+✔ COLLECT_MATERIAL closes only its explicitly bound existing worked-receipt contract; proxy is marked (0.9105ms)
+✔ BOOST_MORALE closes only its explicitly bound existing worked-receipt contract; proxy is marked (1.5325ms)
+✔ COORDINATE closes only its explicitly bound existing worked-receipt contract; proxy is marked (1.1812ms)
+✔ MAINTAIN_ORDER closes only its explicitly bound existing worked-receipt contract; proxy is marked (1.1439ms)
+✔ SCOUT_RUINS closes only its explicitly bound existing worked-receipt contract; proxy is marked (0.9417ms)
+✔ a forged task type cannot bind the wrong execution primitive or reuse an earlier receipt (1.4915ms)
+✔ bridge goal changes during scoring void the result without a second task queue (0.5835ms)
+✔ reference commitment bonus binds exact task/revision and yields to immediate survival needs (0.5337ms)
+✔ explicit original profile retains default three maps and all 2,560 original collision cells (7.1595ms)
+✔ real village route, command door conversion, interior path and coordinate save restore (2.6056ms)
+✔ real village route, dorm_a door conversion, interior path and coordinate save restore (0.8645ms)
+✔ real village route, dorm_b door conversion, interior path and coordinate save restore (0.969ms)
+✔ real village route, kitchen door conversion, interior path and coordinate save restore (1.2704ms)
+✔ real village route, warehouse door conversion, interior path and coordinate save restore (0.4874ms)
+✔ real village route, workshop door conversion, interior path and coordinate save restore (0.5955ms)
+✔ real village route, medical door conversion, interior path and coordinate save restore (0.4442ms)
+✔ original village walls/furnace/decorations and indoor furniture cannot be crossed (0.6533ms)
+✔ closed original gates cut outdoor resources off while internal buildings remain reachable (6.3498ms)
+✔ closed door and malformed save cannot teleport through wall or invent a profile (0.7091ms)
+✔ source defects and missing command indoor art are explicit, registry instances are isolated (1.099ms)
+✔ queued R8 work revoked before start never invokes the scorer (2.4809ms)
+✔ new visible information without a world version change invalidates an in-flight score (9.5121ms)
+✔ repeated abstentions have distinct persisted input identities without advancing the world (1.4998ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1017.8736

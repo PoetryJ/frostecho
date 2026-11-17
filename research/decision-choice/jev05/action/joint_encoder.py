@@ -95,7 +95,11 @@ def prepare(tokenizer, envelope: dict, max_tokens: int = 2048) -> dict:
     }
 
 
-def memory_plan(physical_gpu: int) -> dict:
+def memory_plan(physical_gpu: int | list[int]) -> dict:
+    physical_gpus = [physical_gpu] if type(physical_gpu) is int else list(physical_gpu)
+    if (not physical_gpus or len(set(physical_gpus)) != len(physical_gpus)
+            or any(type(gpu) is not int or gpu < 0 for gpu in physical_gpus)):
+        raise ValueError("require unique physical GPU indices in visible-device order")
     result = subprocess.run(
         ["nvidia-smi", "--query-gpu=index,memory.free", "--format=csv,noheader,nounits"],
         capture_output=True, text=True, check=True, timeout=20)
@@ -103,28 +107,72 @@ def memory_plan(physical_gpu: int) -> dict:
             for row in result.stdout.strip().splitlines()}
     mem = {line.split(":")[0]: int(line.split()[1]) for line in
            Path("/proc/meminfo").read_text().splitlines() if len(line.split()) >= 2}
-    gpu_mib = free[physical_gpu] - 1536
+    if any(gpu not in free for gpu in physical_gpus):
+        raise RuntimeError("a selected physical GPU is absent from nvidia-smi")
+    gpu_mib = [free[gpu] - 1536 for gpu in physical_gpus]
     cpu_bytes = min(55 * GIB, mem["MemAvailable"] * 1024 - 12 * GIB)
-    if gpu_mib < 1024 or cpu_bytes < 16 * GIB:
+    if min(gpu_mib) < 1024 or cpu_bytes < 16 * GIB:
         raise RuntimeError("insufficient measured memory after reserves")
     # HF integer memory limits are BYTES, not MiB.
-    return {"physicalGpu": physical_gpu, "freeGpuMiB": free[physical_gpu],
+    return {"physicalGpu": physical_gpus[0] if len(physical_gpus) == 1 else None,
+            "physicalGpus": physical_gpus,
+            "freeGpuMiB": free[physical_gpus[0]] if len(physical_gpus) == 1 else None,
+            "freeGpuMiBByPhysical": {str(gpu): free[gpu] for gpu in physical_gpus},
+            "logicalToPhysical": {str(i): gpu for i, gpu in enumerate(physical_gpus)},
             "availableRamMiB": mem["MemAvailable"] // 1024,
-            "maxMemoryBytes": {0: gpu_mib * MIB, "cpu": cpu_bytes}}
+            "maxMemoryBytes": {**{i: mib * MIB for i, mib in enumerate(gpu_mib)}, "cpu": cpu_bytes}}
+
+
+def padded_batch(rows: list[dict], pad_token_id: int, pad_multiple: int = 8) -> dict:
+    """Right padding never changes the structural readout indices in each row."""
+    if not rows or type(pad_token_id) is not int or type(pad_multiple) is not int or pad_multiple < 1:
+        raise ValueError("nonempty batch, integer pad token, and positive pad multiple required")
+    lengths = []
+    for row in rows:
+        tokens, positions, ids = row["tokenIds"], row["positions"], row["candidateIds"]
+        if (not tokens or any(type(token) is not int or token < 0 for token in tokens)
+                or not 2 <= len(ids) <= 8 or len(set(ids)) != len(ids)
+                or len(positions) != len(ids) or len(set(positions)) != len(positions)
+                or any(type(pos) is not int or not 0 <= pos < len(tokens) for pos in positions)):
+            raise ValueError("invalid tokens or per-row candidate endpoints")
+        lengths.append(len(tokens))
+    width = math.ceil(max(lengths) / pad_multiple) * pad_multiple
+    ids = np.full((len(rows), width), pad_token_id, dtype=np.int64)
+    mask = np.zeros_like(ids)
+    position_ids = np.zeros_like(ids)
+    for index, (row, length) in enumerate(zip(rows, lengths)):
+        ids[index, :length] = row["tokenIds"]
+        mask[index, :length] = 1
+        position_ids[index, :length] = np.arange(length, dtype=np.int64)
+    return {"inputIds": ids, "attentionMask": mask, "positionIds": position_ids,
+            "lengths": lengths, "shape": list(ids.shape)}
+
+
+def gather_candidate_rows(hidden, rows: list[dict]) -> list[np.ndarray]:
+    """CPU equivalent of the tensor gather, also useful for cache validation."""
+    if hidden.ndim != 3 or hidden.shape[0] != len(rows):
+        raise ValueError("hidden batch shape mismatch")
+    result = []
+    for index, row in enumerate(rows):
+        if any(pos >= len(row["tokenIds"]) for pos in row["positions"]):
+            raise ValueError("candidate endpoint points into padding")
+        result.append(np.asarray(hidden[index, row["positions"]], dtype=np.float32))
+    return result
 
 
 class JointEncoder:
     """Persistent loader reusable by the online scorer and corpus encoder."""
 
     def __init__(self, model_path: Path, output: Path, physical_gpu: int = 1,
-                 placement: str = "auto"):
-        if os.environ.get("CUDA_VISIBLE_DEVICES") != str(physical_gpu):
+                 placement: str = "auto", physical_gpus: list[int] | None = None):
+        physical_gpus = list(physical_gpus) if physical_gpus is not None else [physical_gpu]
+        if os.environ.get("CUDA_VISIBLE_DEVICES") != ",".join(map(str, physical_gpus)):
             raise ValueError("set CUDA_VISIBLE_DEVICES before importing torch")
         import torch
         import transformers
         from transformers import AutoModelForCausalLM, AutoTokenizer
-        if torch.cuda.device_count() != 1:
-            raise ValueError("exactly one explicitly selected GPU must be visible")
+        if torch.cuda.device_count() != len(physical_gpus):
+            raise ValueError("only the explicitly selected physical GPUs must be visible")
         self.torch = torch
         torch.set_num_threads(min(8, os.cpu_count() or 1))
         self.tokenizer = AutoTokenizer.from_pretrained(
@@ -132,13 +180,22 @@ class JointEncoder:
         # device_count can use NVML without creating an allocator/context.
         # PyTorch 2.5 requires an initialized device before resetting its stats.
         torch.cuda.init()
-        plan = memory_plan(physical_gpu)
+        # Establish each CUDA context before measuring the remaining memory.
+        for index in range(len(physical_gpus)):
+            with torch.cuda.device(index):
+                torch.empty(0, device=f"cuda:{index}")
+        plan = memory_plan(physical_gpus)
         device_map, placement_evidence = "auto", {"strategy": "auto"}
         if placement == "one-layer-offload":
+            if len(physical_gpus) != 1:
+                raise ValueError("one-layer-offload requires one selected GPU; use auto for multiple GPUs")
             device_map, placement_evidence = one_layer_plan(model_path, plan["maxMemoryBytes"][0])
         elif placement != "auto":
             raise ValueError("unknown placement strategy")
-        torch.cuda.reset_peak_memory_stats(0)
+        self.gpu_count = len(physical_gpus)
+        self.forward_calls = 0
+        for index in range(self.gpu_count):
+            torch.cuda.reset_peak_memory_stats(index)
         started = time.monotonic()
         model, loading = AutoModelForCausalLM.from_pretrained(
             str(model_path), torch_dtype=torch.bfloat16, device_map=device_map,
@@ -156,7 +213,7 @@ class JointEncoder:
         embeddings = model.get_input_embeddings()
         hook_device = getattr(getattr(embeddings, "_hf_hook", None), "execution_device", None)
         self.input_device = hook_device if hook_device is not None else embeddings.weight.device
-        if placement == "one-layer-offload":
+        if hasattr(self.base, "rotary_emb"):
             # RoPE has nonpersistent buffers, absent from the checkpoint index.
             # Calling the text base directly bypasses a parent dispatch hook;
             # keep these small buffers beside the embedding execution output.
@@ -179,18 +236,37 @@ class JointEncoder:
                               ("config.json", "tokenizer_config.json", "model.safetensors.index.json")
                               if (model_path / name).exists()},
             "weightIdentityScope": "local checkpoint metadata; no new full-shard hash claim",
+            "physicalGpus": physical_gpus,
+            "encoderSourceSha256": file_sha(Path(__file__)),
         }
+
+    def feature_identity(self, pad_multiple: int = 8) -> dict:
+        """Stable shared corpus/online fingerprint; excludes transient resources.
+
+        Batch size belongs to execution evidence. The corpus qualification checks
+        the single-row online path against the production batch size.
+        """
+        keys = ("modelPath", "class", "torch", "transformers", "precision", "quantization",
+                "attention", "deviceMap", "actualParameterBytesByDevice", "rotaryBufferDevices",
+                "physicalGpus", "metadataSha256", "encoderSourceSha256", "weightIdentityScope")
+        return {"schema": "frostecho.joint-c-feature-identity/1",
+                **{key: self.identity[key] for key in keys},
+                "readout": "joint-candidate-end-token", "dimension": 5120,
+                "padding": "right-masked-position-ids/1", "padMultiple": pad_multiple,
+                "rendererSourceSha256": file_sha(ROOT / "src/r7/jev/render.ts")}
 
     def encode(self, prepared: dict):
         torch = self.torch
         ids = torch.tensor([prepared["tokenIds"]], device=self.input_device, dtype=torch.long)
         started = time.monotonic()
+        self.forward_calls += 1
         with torch.inference_mode():
             hidden = self.base(input_ids=ids, use_cache=False, return_dict=True).last_hidden_state
             if tuple(hidden.shape) != (1, len(prepared["tokenIds"]), 5120):
                 raise ValueError(f"unexpected real hidden shape: {tuple(hidden.shape)}")
             vectors = hidden[0, prepared["positions"]].float().cpu().numpy()
-        torch.cuda.synchronize()
+        for index in range(self.gpu_count):
+            torch.cuda.synchronize(index)
         if not np.isfinite(vectors).all():
             raise ValueError("real features contain nonfinite values")
         trace = {
@@ -202,6 +278,41 @@ class JointEncoder:
             "encoderForwardCalls": 1, "readout": "joint-candidate-end-token",
         }
         return vectors, trace
+
+    def encode_batch(self, rows: list[dict], pad_multiple: int = 8):
+        """One real forward for a batch; each request keeps its own candidates."""
+        torch = self.torch
+        pad_id = self.tokenizer.pad_token_id
+        if pad_id is None:
+            pad_id = self.tokenizer.eos_token_id
+        batch = padded_batch(rows, pad_id, pad_multiple)
+        tensors = {name: torch.as_tensor(batch[source], dtype=torch.long, device=self.input_device)
+                   for name, source in (("input_ids", "inputIds"), ("attention_mask", "attentionMask"),
+                                        ("position_ids", "positionIds"))}
+        started = time.monotonic()
+        self.forward_calls += 1
+        with torch.inference_mode():
+            hidden = self.base(**tensors, use_cache=False, return_dict=True).last_hidden_state
+            if tuple(hidden.shape) != (*batch["shape"], 5120):
+                raise ValueError(f"unexpected real hidden shape: {tuple(hidden.shape)}")
+            features = [hidden[i, row["positions"]].float().cpu().numpy()
+                        for i, row in enumerate(rows)]
+        for index in range(self.gpu_count):
+            torch.cuda.synchronize(index)
+        if any(not np.isfinite(value).all() for value in features):
+            raise ValueError("real batch features contain nonfinite values")
+        elapsed = time.monotonic() - started
+        row_traces = [{**{key: value for key, value in row.items() if key != "tokenIds"},
+                       "tokens": len(row["tokenIds"]), "shape": list(value.shape),
+                       "featureSha256": digest_bytes(value.tobytes()), "batchRow": index}
+                      for index, (row, value) in enumerate(zip(rows, features))]
+        return features, {"rows": row_traces, "batchShape": batch["shape"],
+                          "realTokens": sum(batch["lengths"]),
+                          "paddingTokens": int(batch["attentionMask"].size - batch["attentionMask"].sum()),
+                          "forwardSeconds": elapsed, "encoderForwardCalls": 1,
+                          "peakCudaAllocatedMiBByLogical": {str(index): torch.cuda.max_memory_allocated(index) / MIB
+                                                            for index in range(self.gpu_count)},
+                          "readout": "joint-candidate-end-token", "padding": "right-masked-position-ids/1"}
 
 
 def one_layer_plan(model_path: Path, gpu_budget_bytes: int):

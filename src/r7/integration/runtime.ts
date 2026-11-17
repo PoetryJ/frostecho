@@ -22,6 +22,9 @@ import { tasksDomain, type TasksState } from '../domains/tasks/index';
 import { councilDomain, type CouncilState } from '../domains/council/index';
 import { crisesDomain, type CrisesState } from '../domains/crises/index';
 import { lifeDomain, type LifeState } from '../domains/life/index';
+import { LegacySpatialController, type LegacyMovementResult } from './spatial';
+import type { Cell } from '../../spatial-v2/map';
+import type { LegacyPosition } from '../../spatial-v2/legacy-profile';
 
 export interface DomainStates {
   survival: SurvivalState;
@@ -106,12 +109,14 @@ export class R8Runtime {
   endingKind: string | null = null;
   /** Every committed event by id: the only receipts a domain may accept. */
   private readonly committed = new Map<string, CommittedEventRef>();
+  private readonly legacySpatial: LegacySpatialController;
 
   constructor(readonly session: PlaySession, profile: TimeProfile = GOSPEL_PROFILE,
     states?: DomainStates) {
     this.profile = profile;
     const context = this.context();
     this.states = states ?? (this.registry.initialise(context) as unknown as DomainStates);
+    this.legacySpatial = new LegacySpatialController(this, (intents, events) => this.commit(intents, events));
   }
 
   static create(options: RuntimeOptions = {}): R8Runtime {
@@ -158,10 +163,40 @@ export class R8Runtime {
     return elapsedMinutes(this.profile, day, minuteOfDayOf(this.profile, this.world.simTime));
   }
 
+  /** Explicit opt-in. No coordinate changes occur in the legacy/default flow. */
+  enableLegacySpatial(): ReturnType<LegacySpatialController['enable']> {
+    return this.legacySpatial.enable();
+  }
+  legacyPosition(actorId: string): LegacyPosition | null { return this.legacySpatial.position(actorId); }
+  moveLegacy(actorId: string, to: Cell, commandId?: string): LegacyMovementResult {
+    return this.legacySpatial.move(actorId, to, commandId);
+  }
+  transitionLegacy(actorId: string, commandId?: string): LegacyMovementResult {
+    return this.legacySpatial.door(actorId, commandId);
+  }
+  walkLegacy(actorId: string, to: Cell, commandId?: string): LegacyMovementResult {
+    return this.legacySpatial.walk(actorId, to, commandId);
+  }
+  travelLegacyTo(actorId: string, location: string, commandId?: string): LegacyMovementResult {
+    return this.legacySpatial.travelTo(actorId, location, commandId);
+  }
+  observeLegacyStock(actorId: string, commandId?: string): LegacyMovementResult {
+    return this.legacySpatial.observeStock(actorId, commandId);
+  }
+
   /** Dispatch one domain command and commit its intents. */
   dispatch(domainId: DomainId, type: string, actorId: string,
     payload: Record<string, unknown> = {}): { applied: string[]; rejected: Rejection[];
       events: WorldEvent[] } {
+    // The old rescue command teleports a victim. The original-map profile
+    // requires an explicit routed rescue implementation; never leave its
+    // authoritative coordinates stale while claiming the rescue succeeded.
+    if (this.legacySpatial.enabled() && domainId === 'crises' && type === 'rescue') {
+      const rejected = { intentId: `crises:${actorId}:rescue`, code: 'original_map_requires_routed_rescue',
+        reason: 'Legacy teleport rescue is unavailable while original-map coordinates are active.' };
+      this.rejections.push(rejected);
+      return { applied: [], rejected: [rejected], events: [] };
+    }
     const module = this.registry.get<DomainStates[DomainId]>(domainId);
     const context = this.context();
     const result = module.reduce(this.states[domainId] as never,
@@ -292,6 +327,7 @@ export class R8Runtime {
     (next.states.life as LifeState).lifeNumber = (this.states.life as LifeState).lifeNumber;
     (next.states.life as LifeState).pastLives = (this.states.life as LifeState).pastLives
       .map(record => ({ ...record, lessons: [...record.lessons] }));
+    if (this.legacySpatial.enabled()) next.enableLegacySpatial();
     void lessons;
     return next;
   }
@@ -356,7 +392,16 @@ export class R8Runtime {
     const document = this.toDocument();
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { writeFileSync } = require('node:fs') as typeof import('node:fs');
-    writeFileSync(`${path}.r8.json`, `${JSON.stringify(document, null, 2)}\n`, 'utf8');
+    // Original-map restoration compares live authority, not a lossy JSON
+    // projection. The crisis cooldown starts at -Infinity; ordinary JSON
+    // turns it into null and changes the resumed domain state.
+    document.numberEncoding = 'frostecho.nonfinite-number/1';
+    const text = JSON.stringify(document, (_key, value: unknown) => {
+      if (typeof value !== 'number' || Number.isFinite(value)) return value;
+      if (value === Number.NEGATIVE_INFINITY) return { $frostechoNumber: '-Infinity' };
+      throw new Error('unsupported_nonfinite_runtime_number');
+    }, 2);
+    writeFileSync(`${path}.r8.json`, `${text}\n`, 'utf8');
   }
 
   static load(path: string, profile: TimeProfile = GOSPEL_PROFILE): R8Runtime {
@@ -364,8 +409,16 @@ export class R8Runtime {
     const { existsSync, readFileSync } = require('node:fs') as typeof import('node:fs');
     const session = PlaySession.load(path);
     const sidecar = `${path}.r8.json`;
-    if (!existsSync(sidecar)) return new R8Runtime(session, profile);
-    const document = JSON.parse(readFileSync(sidecar, 'utf8')) as {
+    if (!existsSync(sidecar)) {
+      const runtime = new R8Runtime(session, profile);
+      if (runtime.legacySpatial.enabled()) throw new Error('missing_r8_sidecar_for_original_map_receipts');
+      return runtime;
+    }
+    const document = JSON.parse(readFileSync(sidecar, 'utf8'), (_key, value: unknown) => {
+      if (value && typeof value === 'object' && Object.keys(value).length === 1
+        && (value as { $frostechoNumber?: string }).$frostechoNumber === '-Infinity') return Number.NEGATIVE_INFINITY;
+      return value;
+    }) as {
       schema: string; clock: number; ended: boolean;
       endingKind: string | null; states: DomainStates;
       journal?: R8Runtime['journal']; rejections?: Rejection[];
@@ -374,6 +427,10 @@ export class R8Runtime {
     if (document.schema !== 'frostecho.r8-runtime/1') {
       throw new Error(`unsupported runtime sidecar ${document.schema}`);
     }
+    // Pre-encoding v1 sidecars wrote the initial -Infinity sentinel as null.
+    // Finite cooldown times were already JSON-safe; repair only that field.
+    if (document.states.crises.lastFoodConflictMinute === null)
+      document.states.crises.lastFoodConflictMinute = Number.NEGATIVE_INFINITY;
     const runtime = new R8Runtime(session, profile, document.states);
     runtime.ended = Boolean(document.ended);
     runtime.endingKind = document.endingKind ?? null;
@@ -382,6 +439,10 @@ export class R8Runtime {
       runtime.committed.set(event.eventId, event);
     }
     if (document.rejections) runtime.rejections.push(...document.rejections);
+    if (runtime.legacySpatial.enabled()) {
+      if (profile.id !== 'gospel-5.8.19') throw new Error('original_map_save_requires_gospel_profile');
+      for (const actorId of runtime.session.npcIds) runtime.legacyPosition(actorId);
+    }
     return runtime;
   }
 

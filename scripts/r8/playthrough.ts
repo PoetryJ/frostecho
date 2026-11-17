@@ -14,17 +14,15 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { R8Runtime } from '../../src/r7/integration/runtime';
 import { GOSPEL_PROFILE, REFERENCE_PROFILE, type TimeProfile } from '../../src/r7/contracts';
-import { makeChoiceRequest, type Candidate, type ChoiceRequest,
-  type ChoiceResult } from '../../src/decision/contracts';
 import { referenceAgencyScorer } from '../../src/r7/agency/reference';
-import { buildActionOptions, applicableNotes, type MemoryPolicyId,
+import { applicableNotes, type MemoryPolicyId,
   type ExperienceNote } from '../../src/r7/agency/options';
-import { ScorerServiceClient } from '../../src/r7/jev/scorer-client';
+import { JointScorerClient, parseScorerCommand } from '../../src/r7/ui/joint-scorer';
+import { runStep } from '../../src/r7/integration/step';
 import type { ScorePort } from '../../src/r7/contracts';
 import { councilShouldOpen } from '../../src/r7/domains/council/index';
-import { WORK_RULES, TASK_CATALOG, type TaskTypeId } from '../../src/r7/domains/tasks/index';
-import { renderRequest, renderCandidateText } from '../../src/r7/jev/render';
-import { BUILDINGS, findPath, MAPS, cellKey } from '../../src/spatial-v2/map';
+import { TASK_CATALOG, type TaskTypeId } from '../../src/r7/domains/tasks/index';
+import { BUILDINGS, findPath, MAPS } from '../../src/spatial-v2/map';
 
 type Mode = 'reference' | 'jev-experimental' | 'jev-admitted';
 
@@ -38,6 +36,7 @@ interface Args {
   food: number;
   memoryPolicy: MemoryPolicyId;
   scorerCommand: string[] | null;
+  fullMap: boolean;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -58,12 +57,15 @@ function parseArgs(argv: string[]): Args {
   if (!out) throw new Error('--out <newDir> is required');
   const lives = Number(get('--lives') ?? 1);
   const memoryPolicy = (get('--memory-policy') ?? 'conditional-experience') as MemoryPolicyId;
-  const scorer = get('--scorer-command');
+  const scorer = get('--scorer-command-json') ?? process.env.FROSTECHO_SCORER_COMMAND_JSON;
+  if (mode === 'jev-admitted') throw new Error('admitted mode requires a verified certificate; use jev-experimental');
+  if (mode !== 'reference' && !scorer) throw new Error('jev-experimental requires --scorer-command-json');
   return {
     profile, seed: get('--seed') ?? 'r8-1', mode, out: resolve(out), lives,
     npcCount: Number(get('--npc') ?? 8), food: Number(get('--food') ?? 130),
     memoryPolicy,
-    scorerCommand: scorer ? scorer.split(' ') : null,
+    fullMap: argv.includes('--full-map'),
+    scorerCommand: scorer ? parseScorerCommand(scorer) : null,
   };
 }
 
@@ -81,7 +83,7 @@ interface DecisionRecord {
   mode: Mode;
   requestId: string;
   candidateSetHash: string;
-  inputSha256: string;
+  inputSha256: string | null;
   candidates: { id: string; kind: string; description: string;
     parameters: Record<string, unknown>; preconditions: string[];
     text: string }[];
@@ -121,33 +123,8 @@ interface RunReport {
   files: Record<string, string>;
 }
 
-function actorBelief(runtime: R8Runtime, actorId: string):
-  { level: number | null; rumor: boolean } {
-  const store = runtime.session.memories.get(actorId);
-  if (!store) return { level: null, rumor: false };
-  const records = store.toJSON().records.filter(record => record.observerId === actorId);
-  let level: number | null = null;
-  let rumor = false;
-  let sawDirect = false;
-  for (let index = records.length - 1; index >= 0; index -= 1) {
-    const record = records[index];
-    if (record.kind === 'restock_rumor') { if (!sawDirect) rumor = true; continue; }
-    if (['stock_withdrawn', 'out_of_stock', 'stock_restocked', 'stock_deposited']
-      .includes(record.kind)) {
-      sawDirect = true;
-      if (level === null) {
-        const payload = record.payload as Record<string, unknown>;
-        if (typeof payload.remaining === 'number') level = payload.remaining;
-        else if (typeof payload.total === 'number') level = payload.total;
-        else if (record.kind === 'out_of_stock') level = 0;
-      }
-    }
-  }
-  return { level, rumor };
-}
-
 /** Notes this actor holds. Built from its own records, never from world truth. */
-function notesFor(runtime: R8Runtime, actorId: string, policy: MemoryPolicyId):
+export function notesFor(runtime: R8Runtime, actorId: string, policy: MemoryPolicyId):
   ExperienceNote[] {
   const store = runtime.session.memories.get(actorId);
   if (!store) return [];
@@ -166,70 +143,6 @@ function notesFor(runtime: R8Runtime, actorId: string, policy: MemoryPolicyId):
   return applicableNotes(notes, policy, { place: 'warehouse', taskState: 'declined' });
 }
 
-function execute(runtime: R8Runtime, actorId: string, candidate: Candidate,
-  commandId: string): { status: string; reason: string; eventIds: string[] } {
-  const action = candidate.parameters.action;
-  if (action === 'build-machine') {
-    const machine = String(candidate.parameters.machine);
-    const result = runtime.dispatch('production', 'build-machine', actorId,
-      { machine, workerId: actorId });
-    return { status: result.applied.length > 0 ? 'applied' : 'rejected',
-      reason: result.rejected.map(entry => entry.reason).join('; ') || 'intents applied',
-      eventIds: result.events.map(event => event.eventId) };
-  }
-  if (action === 'council-counter' || action === 'report-delay') {
-    // A counter/report is a communication record, not a world write.
-    const observers = runtime.session.ingestTeamEvent(String(action),
-      { actorId, note: String(candidate.parameters.note ?? '') }, runtime.world.simTime);
-    return { status: 'applied', reason: 'communication recorded', eventIds: observers };
-  }
-  const outcome = runtime.session.executeCandidate(actorId, candidate, commandId);
-  // Only events that really landed become receipts.
-  if (outcome.events) runtime.recordCommitted(outcome.events);
-  return { status: outcome.status, reason: outcome.reason ?? '',
-    eventIds: outcome.eventIds };
-}
-
-/** The task type an executed action discharges, if any. */
-function taskTypeFor(candidate: Candidate): TaskTypeId | null {
-  const action = candidate.parameters.action;
-  if (action === 'gather') {
-    return candidate.parameters.resource === 'food' ? 'COLLECT_FOOD' : 'COLLECT_WOOD';
-  }
-  if (action === 'rest') return 'REST_RECOVER';
-  if (action === 'work') return 'MAINTAIN_POWER';
-  if (action === 'medical') return 'PREPARE_MEDICAL';
-  if (action === 'build-machine') {
-    const machine = String(candidate.parameters.machine);
-    return machine === 'generator' ? 'BUILD_GENERATOR'
-      : machine === 'lumberMill' ? 'BUILD_LUMBER_MILL' : 'BUILD_FOOD_COLLECTOR';
-  }
-  if (action === 'deposit') return 'DISTRIBUTE_FOOD';
-  return null;
-}
-
-/**
- * A task completes only on the receipt of its own command (P3). No receipt,
- * no completion; the task stays open and is visible in the report.
- */
-function completeTaskOnReceipt(runtime: R8Runtime, actorId: string,
-  candidate: Candidate, eventIds: string[]): string | null {
-  const type = taskTypeFor(candidate);
-  if (!type || eventIds.length === 0) return null;
-  const tasks = (runtime.states.tasks as { tasks: { taskId: string; type: string;
-    status: string; assigneeId: string }[] }).tasks;
-  const task = tasks.find(entry => entry.assigneeId === actorId
-    && entry.status === 'accepted' && entry.type === type);
-  if (!task) return null;
-  const result = runtime.dispatch('tasks', 'complete', actorId,
-    { taskId: task.taskId, receiptEventId: eventIds[0] });
-  return result.applied.length > 0 ? task.taskId : null;
-}
-
-/**
- * The assignee decides for itself: no runner may click accept for it.
- * A hungry or exhausted actor refuses (or counters) with a recorded reason.
- */
 function actorVerdict(runtime: R8Runtime, actorId: string, type: TaskTypeId):
   { verdict: 'accept' | 'decline' | 'counter'; reason: string; counterType?: TaskTypeId } {
   const npc = runtime.snapshot().npcs[actorId];
@@ -247,16 +160,15 @@ function actorVerdict(runtime: R8Runtime, actorId: string, type: TaskTypeId):
   return { verdict: 'accept', reason: '可以接下' };
 }
 
-const morningDone = new Set<number>();
-
-function runCouncilIfDue(runtime: R8Runtime, decisions: DecisionRecord[], seed: string): void {
+export function runCouncilIfDue(runtime: R8Runtime, decisions: DecisionRecord[] = [], seed = runtime.session.seed): void {
   const snapshot = runtime.snapshot();
-  const isMorning = snapshot.minuteOfDay === 8 * 60 && !morningDone.has(snapshot.day);
+  const seenMorning = runtime.states.council.meetings.some(meeting => meeting.reason === 'morning'
+    && Math.floor((meeting.openedAtMinute + runtime.profile.startMinuteOfDay) / runtime.profile.minutesPerDay) + runtime.profile.startDay === snapshot.day);
+  const isMorning = snapshot.minuteOfDay >= 8 * 60 && snapshot.minuteOfDay < 10 * 60 && !seenMorning;
   const reason = isMorning ? 'morning'
     : councilShouldOpen(snapshot.resources, Number(snapshot.facts.tension ?? 0),
       snapshot.elapsed, (runtime.states.council as { cooldownUntil: number }).cooldownUntil);
   if (!reason) return;
-  if (isMorning) morningDone.add(snapshot.day);
   const opened = runtime.dispatch('council', 'open', 'old_qian',
     { tension: 0, force: isMorning });
   const meetingId = (runtime.states.council as { meetings: { meetingId: string }[] })
@@ -387,101 +299,15 @@ function runCouncilIfDue(runtime: R8Runtime, decisions: DecisionRecord[], seed: 
 async function decide(runtime: R8Runtime, scorer: ScorePort,
   actorId: string, args: Args, decisions: DecisionRecord[]): Promise<void> {
   const snapshot = runtime.snapshot();
-  const npc = snapshot.npcs[actorId];
-  if (!npc?.alive) return;
-  const belief = actorBelief(runtime, actorId);
-  const notes = notesFor(runtime, actorId, args.memoryPolicy);
-  const tasks = (runtime.states.tasks as { tasks: { taskId: string; type: string;
-    status: string; assigneeId: string }[] }).tasks
-    .filter(task => task.assigneeId === actorId);
-  const built = buildActionOptions({
-    actorId,
-    npc: { id: npc.id, location: npc.location, hunger: npc.hunger,
-      stamina: npc.stamina, health: npc.health, san: npc.san,
-      bodyTemp: npc.bodyTemp, alive: npc.alive },
-    resources: snapshot.resources,
-    furnace: snapshot.furnace,
-    weather: snapshot.weather,
-    machines: snapshot.machines,
-    tasks: tasks.map(task => ({ taskId: task.taskId, type: task.type,
-      status: task.status })),
-    stockBelief: belief,
-    notes,
-    truncated: false,
-  });
-  if (built.candidates.length === 0) return;
-  const full = makeChoiceRequest({
-    requestId: `${runtime.world.version}-${actorId}`,
-    task: 'choose_action',
-    actorId,
-    stateVersion: runtime.world.version,
-    observation: { day: snapshot.day, minuteOfDay: snapshot.minuteOfDay,
-      weather: snapshot.weather, resources: snapshot.resources,
-      furnace: snapshot.furnace, self: npc, belief },
-    question: '现在最该做什么？',
-    memoryFacts: [],
-    relationships: {},
-    goals: tasks.map(task => ({ taskId: task.taskId, type: task.type })),
-    candidates: built.candidates,
-    memorySnapshotHash: sha256(JSON.stringify(deepSort(belief))),
-    memoryPolicyVersion: args.memoryPolicy,
-  });
-  const rendered = renderRequest(full);
-  const started = Date.now();
-  const result = await scorer.score(full);
-  const latencyMs = Date.now() - started;
-  const selected = full.candidates.find(entry => entry.id === result.selectedId);
-  const commandId = `${actorId}-r8-${runtime.world.version}`;
-  const outcome = selected && result.disposition === 'accept'
-    ? execute(runtime, actorId, selected, commandId)
-    : { status: 'abstained', reason: result.reason, eventIds: [] as string[] };
-  if (outcome.status === 'applied' && selected) {
-    const done = completeTaskOnReceipt(runtime, actorId, selected, outcome.eventIds);
-    // One machine exists once: duplicate build assignments are cancelled, not
-    // left accepted forever.
-    if (done && selected.parameters.action === 'build-machine') {
-      const tasks = (runtime.states.tasks as { tasks: { taskId: string; type: string;
-        status: string }[] }).tasks;
-      for (const task of tasks) {
-        if (task.status === 'accepted' && task.type === taskTypeFor(selected)) {
-          runtime.dispatch('tasks', 'cancel', 'old_qian', { taskId: task.taskId });
-        }
-      }
-    }
-  }
-  decisions.push({
-    seed: args.seed,
-    episode: `${args.seed}-life${(runtime.states.life as { lifeNumber: number }).lifeNumber}`,
-    lifeNumber: (runtime.states.life as { lifeNumber: number }).lifeNumber,
-    at: runtime.world.simTime, elapsed: runtime.elapsed(), day: snapshot.day,
-    minuteOfDay: snapshot.minuteOfDay, actorId, mode: args.mode,
-    requestId: full.requestId, candidateSetHash: full.candidateSetHash,
-    inputSha256: sha256(JSON.stringify(deepSort({
-      observation: full.observation, candidates: full.candidates,
-      memoryFacts: full.memoryFacts, policy: full.memoryPolicyVersion,
-    }))),
-    candidates: full.candidates.map(entry => ({ id: entry.id, kind: entry.kind,
-      description: entry.description, parameters: entry.parameters,
-      preconditions: entry.preconditions, text: renderCandidateText(entry) })),
-    observationText: rendered.text,
-    renderSha256: sha256(rendered.text),
-    jointText: rendered.text,
-    rules: built.rules, notesUsed: built.notesUsed,
-    selectedId: result.selectedId, disposition: result.disposition,
-    scorerId: result.scorerId, latencyMs, executed: outcome.status === 'applied',
-    executionStatus: outcome.status, reason: outcome.reason,
-    worldVersion: runtime.world.version,
-  });
-}
-
-function deepSort(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(deepSort);
-  if (value && typeof value === 'object') {
-    return Object.fromEntries(Object.entries(value as Record<string, unknown>)
-      .sort(([left], [right]) => left.localeCompare(right))
-      .map(([key, entry]) => [key, deepSort(entry)]));
-  }
-  return value;
+  const result = await runStep(runtime, scorer, { actorIds: [actorId], mode: args.mode,
+    memoryPolicy: args.memoryPolicy, notes: id => notesFor(runtime, id, args.memoryPolicy) });
+  for (const row of result.records) decisions.push({ ...row, seed: args.seed,
+    inputSha256: row.inputSha256 ?? null,
+    episode: `${args.seed}-life${runtime.states.life.lifeNumber}`,
+    lifeNumber: runtime.states.life.lifeNumber, at: runtime.world.simTime,
+    elapsed: runtime.elapsed(), day: snapshot.day, minuteOfDay: snapshot.minuteOfDay,
+    mode: args.mode, notesUsed: notesFor(runtime, actorId, args.memoryPolicy).map(note => note.noteId),
+    executed: row.executionStatus === 'applied' });
 }
 
 async function main(): Promise<void> {
@@ -495,15 +321,12 @@ async function main(): Promise<void> {
   const scenario = { seed: args.seed, profile: args.profile,
     npcCount: args.npcCount, resources: { food: args.food } };
   let runtime = R8Runtime.create(scenario);
+  if (args.fullMap) runtime.enableLegacySpatial();
 
-  const service = args.mode === 'reference' || !args.scorerCommand ? null
-    : new ScorerServiceClient({
-      command: args.scorerCommand, cwd: process.cwd(), timeoutMs: 180_000,
-    }, {
-      mode: args.mode, scorerId: 'jev-joint-c/1', experimental: args.mode === 'jev-experimental',
-      countsAsAdmitted: args.mode === 'jev-admitted', rendererId: 'joint-c-action/1',
-      memoryPolicyId: args.memoryPolicy,
-    });
+  const service = args.mode === 'reference' ? null
+    : new JointScorerClient(process.cwd(), args.scorerCommand!,
+      Number(process.env.FROSTECHO_SCORER_TIMEOUT_MS ?? 300000),
+      join(args.out, `scorer-${runId}.jsonl`));
   const scorer = service ?? referenceAgencyScorer();
   const report: RunReport = {
     schema: 'frostecho.r8.playthrough/1', profile: args.profile.id, seed: args.seed,
@@ -511,10 +334,11 @@ async function main(): Promise<void> {
     sourceHEAD: process.env.FROSTECHO_SOURCE_HEAD ?? null,
     startedAt: new Date().toISOString(), lives: args.lives, endings,
     decisions: 0, executed: 0, rejected: 0, rejections: [], timeline,
-    environment: { node: process.version, platform: process.platform },
+    environment: { node: process.version, platform: process.platform, fullMap: args.fullMap },
     files: {},
   };
 
+  try {
   for (let life = 1; life <= args.lives; life += 1) {
     let guard = 0;
     while (!runtime.ended && guard < 1200) {
@@ -542,6 +366,10 @@ async function main(): Promise<void> {
           if (!npc?.alive) continue;
           const home = actorId.endsWith('2') || actorId.endsWith('4') ? 'dorm-b' : 'dorm-a';
           if (npc.location === home) continue;
+          if (runtime.legacyPosition(actorId)) {
+            runtime.travelLegacyTo(actorId, home, `sleep-${before}-${actorId}`);
+            continue;
+          }
           // Walk home along the real map; no teleport. If no path exists the
           // actor stays where it is and the night is simply cold.
           const door = BUILDINGS.find(building => building.id === home)?.door;
@@ -598,19 +426,31 @@ async function main(): Promise<void> {
         actorId: 'system', payload: { lifeNumber: life + 1 } });
     }
   }
-  service?.close();
+  } catch (error) {
+    writeFileSync(join(args.out, `failure-${runId}.json`), JSON.stringify({
+      error: (error as Error).message, decisions: decisions.length,
+      simTime: runtime.world.simTime, mode: args.mode, countsAsAdmitted: false }, null, 2) + '\n');
+    writeFileSync(trajectoryPath, decisions.map(row => JSON.stringify(row)).join('\n') + '\n');
+    runtime.save(join(args.out, `partial-${runId}.json`));
+    throw error;
+  } finally { service?.close(); }
 
   writeFileSync(trajectoryPath, `${decisions.map(record => JSON.stringify(record)).join('\n')}\n`,
     'utf8');
   report.decisions = decisions.length;
   report.executed = decisions.filter(record => record.executed).length;
   report.rejected = decisions.filter(record => record.executionStatus === 'rejected').length;
+  report.environment.scorerIdentity = { ...scorer.identity };
+  report.environment.referenceCouncilDecisions = decisions.filter(record => record.scorerId === 'council-reference/1').length;
+  report.environment.actionDecisions = decisions.filter(record => record.scorerId !== 'council-reference/1').length;
   report.rejections = runtime.rejections.map(entry => ({ code: entry.code,
     reason: entry.reason }));
   report.files.trajectory = trajectoryPath;
   const summaryPath = join(args.out, `summary-${runId}.json`);
   report.files.summary = summaryPath;
   report.files.runtimeDocument = join(args.out, `runtime-${runId}.json`);
+  report.files.session = join(args.out, `session-${runId}.json`);
+  runtime.save(report.files.session);
   writeFileSync(summaryPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
   writeFileSync(report.files.runtimeDocument,
     `${JSON.stringify(runtime.toDocument(), null, 2)}\n`, 'utf8');
@@ -623,7 +463,7 @@ async function main(): Promise<void> {
   if (!last) process.exitCode = 1;
 }
 
-main().catch(error => {
+if (require.main === module) main().catch(error => {
   console.error(error);
   process.exit(1);
 });

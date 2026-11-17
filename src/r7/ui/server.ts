@@ -2,7 +2,8 @@ import { createServer, IncomingMessage, ServerResponse } from 'node:http';
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { extname, join, resolve, sep } from 'node:path';
 import { BUILDINGS } from '../../spatial-v2/map';
-import { CliBridge } from './cli-bridge';
+import { legacyMapCatalog } from '../../spatial-v2/legacy-profile';
+import { CliBridge, type BridgeOptions } from './cli-bridge';
 
 const NPCS = [
   ['li_shen', '李婶', '物资总管 / 炊事长', '李婶'],
@@ -40,8 +41,8 @@ function json(res: ServerResponse, value: unknown, code = 200): void {
   res.end(JSON.stringify(value));
 }
 
-export function createPlayWebServer(root: string, saveRoot?: string) {
-  const bridge = new CliBridge(root, saveRoot);
+export function createPlayWebServer(root: string, saveRoot?: string, options: BridgeOptions = {}) {
+  const bridge = new CliBridge(root, saveRoot, options);
   const publicRoot = join(root, 'public', 'r7');
   const assetRoot = join(root, 'handoff', '20261113-r7-full-goal', 'reference-extracted', 'assets');
   const clients = new Set<ServerResponse>();
@@ -64,6 +65,7 @@ export function createPlayWebServer(root: string, saveRoot?: string) {
       }
       if (url.pathname === '/api/catalog' && req.method === 'GET') {
         return json(res, { npcs: NPCS, buildings: BUILDINGS,
+          legacyMaps: legacyMapCatalog(),
           assetsReady: existsSync(join(assetRoot, 'asset', 'map', 'village_base_clean.png')),
           identitySource: 'gospel-5.8.19/data/npc-configs.js (ordered mapping; authority IDs unchanged)' });
       }

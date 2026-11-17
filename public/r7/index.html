@@ -22,10 +22,10 @@
     <aside class="roster-panel panel"><div class="panel-heading"><h2>居民</h2><span id="living-count">8 位</span></div><div id="roster"></div><p class="small muted">选择居民查看状态，再点击地图建筑指挥移动。居民持续行动时，你仍可取消或调整安排。</p></aside>
 
     <section class="world-column">
-      <div class="map-toolbar"><span id="map-title">村庄 · 50 × 40</span><span id="selected-hint">选择一位居民</span></div>
+      <div class="map-toolbar"><span id="map-title">村庄 · 50 × 40</span><button id="enable-full-map">启用完整地图</button><span id="selected-hint">选择一位居民</span></div>
       <div id="map-stage" class="map-stage" aria-label="村庄地图">
         <img class="world-base" src="/assets/asset/map/village_base_clean.png" alt="原作雪镇地图" draggable="false">
-        <div id="building-layer"></div><div id="npc-layer"></div><div id="road-layer"></div>
+        <div id="geometry-layer"></div><div id="building-layer"></div><div id="npc-layer"></div><div id="road-layer"></div><div id="door-layer"></div>
         <div id="welcome" class="welcome"><div class="eyebrow">FROSTECHO · 生存与承诺</div><h2>雪还在下。<br>镇子需要每一个人。</h2><p>安排物资生产，与居民协商任务，召开晨会。每次行动、履约与失约都留下真实记录。</p><button id="welcome-start" class="primary">开始新的四日</button><p class="small">当前以规则驱动居民行动；真实 JEV 接入后将单独显示。</p></div>
         <div id="ending" class="ending hidden"></div>
       </div>
@@ -42,6 +42,7 @@
         <div class="section-label">提出承诺请求</div>
         <div class="button-grid"><button id="request-supply">请求补仓</button><button id="request-delivery">请求送饭</button></div>
         <div class="section-label">当前位置行动</div>
+        <button id="inspect-stock" class="hidden">亲眼查看仓库存粮</button>
         <div class="button-grid"><button id="withdraw">取 1 份食物</button><button id="deposit">交存 1 份食物</button><button id="deliver">交付 1 份饭</button><button id="tell-restock">告知补货传闻</button></div>
         <h3>任务与承诺</h3><div id="work-list" class="cards"></div>
       </div>
