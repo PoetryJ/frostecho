@@ -1,0 +1,130 @@
+{
+  "schema": "frostecho.r8.joint-live-probe/2",
+  "status": "encoded",
+  "sourceHEAD": null,
+  "requestFileSha256": "a1aff38796a04bc170658eae4b22cfea817bcc3c4030a2f1c2e6be94f7e7c1e7",
+  "input": {
+    "inputSha256": "791d006384f8a2c4f87b828db8493d93c6f22da52b13831a3d755b88577e8ace",
+    "candidateSetHash": "6b122c9b4dcb07e86b6a3baaf78fb970824f7c16871cf425c7526638128cf7d1",
+    "candidateIds": [
+      "a-bae1f2dab8ef",
+      "a-9b818e599fca",
+      "a-9dd795e76cba",
+      "a-d83f6a3b1e99",
+      "a-0b3f9fd02e70",
+      "a-4de955ab3c0e",
+      "a-3bc7f19405a7"
+    ],
+    "rendererId": "joint-c-action/1",
+    "rendererSourceSha256": "644335acb70da0e0a51bdc899db25c8e054c9f7f5355abc2b8f6488c20f6fdb4",
+    "rendererBuildSha256": "ecf61f53ba67c961a7dd742e57af050e12cd38b81b79a791bd289aafa9b257a4",
+    "tokens": 307
+  },
+  "scores": [
+    {
+      "candidateId": "a-bae1f2dab8ef",
+      "logit": 2.5755662600590505,
+      "probability": 0.00034963452012960104
+    },
+    {
+      "candidateId": "a-9b818e599fca",
+      "logit": -5.915547346222563,
+      "probability": 7.177455696225625e-8
+    },
+    {
+      "candidateId": "a-9dd795e76cba",
+      "logit": -5.354724053902297,
+      "probability": 1.2575723545284667e-7
+    },
+    {
+      "candidateId": "a-d83f6a3b1e99",
+      "logit": 5.165389600692379,
+      "probability": 0.004659725041130039
+    },
+    {
+      "candidateId": "a-0b3f9fd02e70",
+      "logit": 10.529159928155883,
+      "probability": 0.9949841126158888
+    },
+    {
+      "candidateId": "a-4de955ab3c0e",
+      "logit": -3.11182434785455,
+      "probability": 0.0000011847097084241159
+    },
+    {
+      "candidateId": "a-3bc7f19405a7",
+      "logit": -1.6431837643969724,
+      "probability": 0.000005145581350721118
+    }
+  ],
+  "selectedId": "a-0b3f9fd02e70",
+  "disposition": "accept",
+  "forward": {
+    "shape": [
+      7,
+      5120
+    ],
+    "featureSha256": "1deb1f348fd298c8e3058e488385c7a8de729f0ab27d89aa21acc932f4e1dab5"
+  },
+  "encoder": {
+    "positions": [
+      124,
+      156,
+      191,
+      227,
+      255,
+      279,
+      297
+    ],
+    "candidateIds": [
+      "a-bae1f2dab8ef",
+      "a-9b818e599fca",
+      "a-9dd795e76cba",
+      "a-d83f6a3b1e99",
+      "a-0b3f9fd02e70",
+      "a-4de955ab3c0e",
+      "a-3bc7f19405a7"
+    ],
+    "inputSha256": "791d006384f8a2c4f87b828db8493d93c6f22da52b13831a3d755b88577e8ace",
+    "rendererId": "joint-c-action/1",
+    "rendererSourceSha256": "644335acb70da0e0a51bdc899db25c8e054c9f7f5355abc2b8f6488c20f6fdb4",
+    "renderedTextSha256": "8a791256189403159bec70fdbeca673b8debd50be0fd1222c5613d29dcfb0454",
+    "tokenIdsSha256": "45e78a32fe581f79f4f9eb544316b7db2f3ee00ca5edcd4e280f6543678c87ee",
+    "candidateSetHash": "6b122c9b4dcb07e86b6a3baaf78fb970824f7c16871cf425c7526638128cf7d1",
+    "tokens": 307,
+    "shape": [
+      7,
+      5120
+    ],
+    "forwardSeconds": 100.76503525674343,
+    "featureSha256": "1deb1f348fd298c8e3058e488385c7a8de729f0ab27d89aa21acc932f4e1dab5",
+    "peakCudaAllocatedMiB": 0,
+    "encoderForwardCalls": 1,
+    "readout": "joint-candidate-end-token"
+  },
+  "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+  "encoderForwardCalls": 1,
+  "headForwardCalls": 1,
+  "gameCommits": 0,
+  "experimental": true,
+  "countsAsAdmitted": false,
+  "calibrated": false,
+  "temperature": 1,
+  "tau": 0,
+  "identity": {
+    "scorerId": "jev-joint-c/1",
+    "mode": "jev-experimental",
+    "encoderId": "/data2/model_weights/Qwen3.8-27B",
+    "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+    "rendererId": "joint-c-action/1",
+    "memoryPolicyId": "conditional-experience",
+    "temperature": 1,
+    "tau": 0,
+    "certificateSha256": null,
+    "experimental": true,
+    "countsAsAdmitted": false,
+    "encoderForwardCalls": 1
+  },
+  "latencyMs": 100824.673,
+  "note": "produced by the persistent serve_joint.py process; admission requires a certificate"
+}

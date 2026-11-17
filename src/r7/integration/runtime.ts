@@ -369,6 +369,7 @@ export class R8Runtime {
       schema: string; clock: number; ended: boolean;
       endingKind: string | null; states: DomainStates;
       journal?: R8Runtime['journal']; rejections?: Rejection[];
+      committed?: CommittedEventRef[];
     };
     if (document.schema !== 'frostecho.r8-runtime/1') {
       throw new Error(`unsupported runtime sidecar ${document.schema}`);
@@ -377,6 +378,9 @@ export class R8Runtime {
     runtime.ended = Boolean(document.ended);
     runtime.endingKind = document.endingKind ?? null;
     if (document.journal) runtime.journal.push(...document.journal);
+    for (const event of document.committed ?? []) {
+      runtime.committed.set(event.eventId, event);
+    }
     if (document.rejections) runtime.rejections.push(...document.rejections);
     return runtime;
   }
@@ -391,6 +395,7 @@ export class R8Runtime {
       endingKind: this.endingKind,
       states: this.states,
       journal: this.journal,
+      committed: [...this.committed.values()],
       rejections: this.rejections.slice(-200),
     };
   }

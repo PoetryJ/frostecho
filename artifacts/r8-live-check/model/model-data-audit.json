@@ -1,0 +1,115 @@
+{
+  "sourceHEAD": "3ab54a37a4671398f7ad22d051305cd8610d65b7",
+  "scope": "CPU-mechanism-fixtures and delivered-data inspection; no real model run",
+  "data": {
+    "cases": 2560,
+    "splits": {
+      "train": 1922,
+      "dev": 236,
+      "select": 180,
+      "calibration": 222
+    },
+    "episodes": 8,
+    "episodeSplitLeaks": 5,
+    "distinctVisibleTexts": 1477,
+    "visibleTextsCrossingSplits": 0,
+    "reviewBEqualsAllCandidates": 2560,
+    "labelEqualsReceiptOnly": 2560,
+    "quarantined": 0,
+    "ruleReviewKinds": [
+      "constraint",
+      "receipt"
+    ]
+  },
+  "training": {
+    "fixtureTrainRows": 1,
+    "fixtureDevRows": 1,
+    "rowsOptimized": 1,
+    "gradientRelativeError": 2.0297967326273954,
+    "command": [
+      "/data/home/user_00/frostecho-r7/.venv/bin/python",
+      "-B",
+      "/data3/DATA/project/project_meishijiang/FrostEcho-r8l/research/decision-choice/jev05/action/train.py",
+      "--cases",
+      "/data3/DATA/project/project_meishijiang/FrostEcho-r8l/artifacts/r8-live-check/model/mechanism-inputs/cases.jsonl",
+      "--features",
+      "/data3/DATA/project/project_meishijiang/FrostEcho-r8l/artifacts/r8-live-check/model/mechanism-inputs/features.npz",
+      "train",
+      "--epochs",
+      "1",
+      "--out",
+      "/data3/DATA/project/project_meishijiang/FrostEcho-r8l/artifacts/r8-live-check/model/mechanism-inputs/trained-mechanism-head"
+    ],
+    "rawResult": {
+      "init": "warm",
+      "seed": 17,
+      "cases": 1,
+      "trainCases": 1,
+      "devCases": 1,
+      "selectedEpoch": 1,
+      "dev": {
+        "cases": 1,
+        "meanLoss": 0.098923,
+        "top1InAcceptable": 1.0
+      }
+    }
+  },
+  "admission": {
+    "emptyJsonFileAdmitted": false,
+    "command": [
+      "/data/home/user_00/frostecho-r7/.venv/bin/python",
+      "-B",
+      "/data3/DATA/project/project_meishijiang/FrostEcho-r8l/research/decision-choice/jev05/action/train.py",
+      "serve",
+      "--feature-map",
+      "/data3/DATA/project/project_meishijiang/FrostEcho-r8l/artifacts/r8-live-check/model/mechanism-inputs/features.json",
+      "--mode",
+      "jev-admitted",
+      "--data-certificate",
+      "/data3/DATA/project/project_meishijiang/FrostEcho-r8l/artifacts/r8-live-check/model/mechanism-inputs/not-a-certificate.json"
+    ],
+    "rawResponse": {
+      "requestId": "cpu-mechanism-audit",
+      "candidateSetHash": "mechanism-fixture",
+      "scores": [
+        {
+          "candidateId": "a",
+          "logit": -4.833843,
+          "probability": 0.00115
+        },
+        {
+          "candidateId": "b",
+          "logit": 1.932651,
+          "probability": 0.99885
+        }
+      ],
+      "selectedId": "b",
+      "disposition": "accept",
+      "reason": "experimental (T=1.0); admission refused: no certificate",
+      "admission": {
+        "requested": "jev-admitted",
+        "granted": false,
+        "reason": "no data certificate"
+      },
+      "identity": {
+        "mode": "jev-admitted",
+        "scorerId": "jev-joint-c/1",
+        "checkpointSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+        "encoderId": "/data2/model_weights/Qwen3.8-27B",
+        "rendererId": "joint-c-action/1",
+        "memoryPolicyId": "conditional-experience",
+        "dataCertificateSha256": null,
+        "experimental": true,
+        "countsAsAdmitted": false
+      },
+      "latencyMs": 0.735
+    }
+  },
+  "encoderCodeFindings": [
+    "live_encode_probe max_memory contains MiB integers passed as byte counts",
+    "live_encode_probe batches observation/candidates independently",
+    "cmd_encode still uses AutoModel/cuda:0/truncation and no joint readout",
+    "serve only uses static featureKey lookup"
+  ],
+  "gpuUsed": false
+}

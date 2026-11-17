@@ -1,0 +1,594 @@
+{
+  "schema": "frostecho.session/1",
+  "world": {
+    "schema": "frostecho.world-v2/2",
+    "rulesVersion": "survival-rules/2",
+    "day": 1,
+    "simTime": 480,
+    "version": 1,
+    "rngSeed": "restore-receipt",
+    "weather": "snow",
+    "npcs": {
+      "npc_01": {
+        "id": "npc_01",
+        "location": "dorm-a",
+        "hunger": 69.6,
+        "stamina": 78.8,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_02": {
+        "id": "npc_02",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_03": {
+        "id": "npc_03",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_04": {
+        "id": "npc_04",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_05": {
+        "id": "npc_05",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_06": {
+        "id": "npc_06",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_07": {
+        "id": "npc_07",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_08": {
+        "id": "npc_08",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      }
+    },
+    "resources": {
+      "food": 130,
+      "firewood": 34,
+      "power": 30,
+      "medicine": 3
+    },
+    "furnace": {
+      "lit": true,
+      "fuel": 6,
+      "warmth": 18
+    },
+    "commandLog": [
+      "wood-for-food-probe"
+    ],
+    "dead": [],
+    "ending": "none",
+    "scenarioDays": 4,
+    "r8": {
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "machineProgress": {},
+      "facts": {}
+    },
+    "receipts": {
+      "wood-for-food-probe": {
+        "digest": "ee2cc74b81b9f93b57ab1d2132d67a26a7f819abe75c45eb5225b682b48b6453",
+        "eventIds": [
+          "wood-for-food-probe:gathered:0"
+        ],
+        "postStateVersion": 1
+      }
+    }
+  },
+  "memories": {
+    "npc_01": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "team-task_proposed-0",
+          "occurredAt": 480,
+          "observedAt": 480,
+          "kind": "task_proposed",
+          "subjectIds": [
+            "npc_01",
+            "council"
+          ],
+          "payload": {
+            "taskId": "task-1",
+            "type": "COLLECT_WOOD",
+            "assigneeId": "npc_01"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "team-task_proposed-0"
+          ],
+          "recordId": "m-7ac09bf9bf6c66c1",
+          "revision": 1
+        },
+        {
+          "eventId": "team-task_accepted-1",
+          "occurredAt": 480,
+          "observedAt": 480,
+          "kind": "task_accepted",
+          "subjectIds": [
+            "npc_01",
+            "council"
+          ],
+          "payload": {
+            "taskId": "task-1",
+            "revision": 2
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "team-task_accepted-1"
+          ],
+          "recordId": "m-6cb31c5021040d91",
+          "revision": 2
+        },
+        {
+          "eventId": "wood-for-food-probe:gathered:0",
+          "occurredAt": 480,
+          "observedAt": 480,
+          "kind": "gathered",
+          "subjectIds": [
+            "npc_01",
+            "world"
+          ],
+          "payload": {
+            "resource": "firewood",
+            "amount": 4
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "wood-for-food-probe:gathered:0"
+          ],
+          "recordId": "m-32962065ead8de07",
+          "revision": 3
+        }
+      ]
+    },
+    "npc_02": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "team-task_proposed-0",
+          "occurredAt": 480,
+          "observedAt": 480,
+          "kind": "task_proposed",
+          "subjectIds": [
+            "npc_02",
+            "council"
+          ],
+          "payload": {
+            "taskId": "task-1",
+            "type": "COLLECT_WOOD",
+            "assigneeId": "npc_01"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "team-task_proposed-0"
+          ],
+          "recordId": "m-e6fef4405dc0ac2a",
+          "revision": 1
+        },
+        {
+          "eventId": "team-task_accepted-1",
+          "occurredAt": 480,
+          "observedAt": 480,
+          "kind": "task_accepted",
+          "subjectIds": [
+            "npc_02",
+            "council"
+          ],
+          "payload": {
+            "taskId": "task-1",
+            "revision": 2
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "team-task_accepted-1"
+          ],
+          "recordId": "m-4489a0f173e90975",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_03": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "team-task_proposed-0",
+          "occurredAt": 480,
+          "observedAt": 480,
+          "kind": "task_proposed",
+          "subjectIds": [
+            "npc_03",
+            "council"
+          ],
+          "payload": {
+            "taskId": "task-1",
+            "type": "COLLECT_WOOD",
+            "assigneeId": "npc_01"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "team-task_proposed-0"
+          ],
+          "recordId": "m-18ff9281d6bcfc98",
+          "revision": 1
+        },
+        {
+          "eventId": "team-task_accepted-1",
+          "occurredAt": 480,
+          "observedAt": 480,
+          "kind": "task_accepted",
+          "subjectIds": [
+            "npc_03",
+            "council"
+          ],
+          "payload": {
+            "taskId": "task-1",
+            "revision": 2
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "team-task_accepted-1"
+          ],
+          "recordId": "m-90a9f87203aefcd3",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_04": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "team-task_proposed-0",
+          "occurredAt": 480,
+          "observedAt": 480,
+          "kind": "task_proposed",
+          "subjectIds": [
+            "npc_04",
+            "council"
+          ],
+          "payload": {
+            "taskId": "task-1",
+            "type": "COLLECT_WOOD",
+            "assigneeId": "npc_01"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "",
+          "observerId": "npc_04",
+          "sourceEventIds": [
+            "team-task_proposed-0"
+          ],
+          "recordId": "m-b6c7275057e992fc",
+          "revision": 1
+        },
+        {
+          "eventId": "team-task_accepted-1",
+          "occurredAt": 480,
+          "observedAt": 480,
+          "kind": "task_accepted",
+          "subjectIds": [
+            "npc_04",
+            "council"
+          ],
+          "payload": {
+            "taskId": "task-1",
+            "revision": 2
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "",
+          "observerId": "npc_04",
+          "sourceEventIds": [
+            "team-task_accepted-1"
+          ],
+          "recordId": "m-2e07a3830296a4af",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_05": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "team-task_proposed-0",
+          "occurredAt": 480,
+          "observedAt": 480,
+          "kind": "task_proposed",
+          "subjectIds": [
+            "npc_05",
+            "council"
+          ],
+          "payload": {
+            "taskId": "task-1",
+            "type": "COLLECT_WOOD",
+            "assigneeId": "npc_01"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "",
+          "observerId": "npc_05",
+          "sourceEventIds": [
+            "team-task_proposed-0"
+          ],
+          "recordId": "m-495f91a958e625ed",
+          "revision": 1
+        },
+        {
+          "eventId": "team-task_accepted-1",
+          "occurredAt": 480,
+          "observedAt": 480,
+          "kind": "task_accepted",
+          "subjectIds": [
+            "npc_05",
+            "council"
+          ],
+          "payload": {
+            "taskId": "task-1",
+            "revision": 2
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "",
+          "observerId": "npc_05",
+          "sourceEventIds": [
+            "team-task_accepted-1"
+          ],
+          "recordId": "m-75f8f069d5fd6640",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_06": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "team-task_proposed-0",
+          "occurredAt": 480,
+          "observedAt": 480,
+          "kind": "task_proposed",
+          "subjectIds": [
+            "npc_06",
+            "council"
+          ],
+          "payload": {
+            "taskId": "task-1",
+            "type": "COLLECT_WOOD",
+            "assigneeId": "npc_01"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "",
+          "observerId": "npc_06",
+          "sourceEventIds": [
+            "team-task_proposed-0"
+          ],
+          "recordId": "m-9bbc23382770a798",
+          "revision": 1
+        },
+        {
+          "eventId": "team-task_accepted-1",
+          "occurredAt": 480,
+          "observedAt": 480,
+          "kind": "task_accepted",
+          "subjectIds": [
+            "npc_06",
+            "council"
+          ],
+          "payload": {
+            "taskId": "task-1",
+            "revision": 2
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "",
+          "observerId": "npc_06",
+          "sourceEventIds": [
+            "team-task_accepted-1"
+          ],
+          "recordId": "m-d8f56b2df31c0e6a",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_07": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "team-task_proposed-0",
+          "occurredAt": 480,
+          "observedAt": 480,
+          "kind": "task_proposed",
+          "subjectIds": [
+            "npc_07",
+            "council"
+          ],
+          "payload": {
+            "taskId": "task-1",
+            "type": "COLLECT_WOOD",
+            "assigneeId": "npc_01"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "",
+          "observerId": "npc_07",
+          "sourceEventIds": [
+            "team-task_proposed-0"
+          ],
+          "recordId": "m-4f3e4276893bb0bf",
+          "revision": 1
+        },
+        {
+          "eventId": "team-task_accepted-1",
+          "occurredAt": 480,
+          "observedAt": 480,
+          "kind": "task_accepted",
+          "subjectIds": [
+            "npc_07",
+            "council"
+          ],
+          "payload": {
+            "taskId": "task-1",
+            "revision": 2
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "",
+          "observerId": "npc_07",
+          "sourceEventIds": [
+            "team-task_accepted-1"
+          ],
+          "recordId": "m-78f42a4f9b5f4a24",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_08": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "team-task_proposed-0",
+          "occurredAt": 480,
+          "observedAt": 480,
+          "kind": "task_proposed",
+          "subjectIds": [
+            "npc_08",
+            "council"
+          ],
+          "payload": {
+            "taskId": "task-1",
+            "type": "COLLECT_WOOD",
+            "assigneeId": "npc_01"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "",
+          "observerId": "npc_08",
+          "sourceEventIds": [
+            "team-task_proposed-0"
+          ],
+          "recordId": "m-d875d23ee63edfcb",
+          "revision": 1
+        },
+        {
+          "eventId": "team-task_accepted-1",
+          "occurredAt": 480,
+          "observedAt": 480,
+          "kind": "task_accepted",
+          "subjectIds": [
+            "npc_08",
+            "council"
+          ],
+          "payload": {
+            "taskId": "task-1",
+            "revision": 2
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "council",
+          "relatedRequestId": "",
+          "observerId": "npc_08",
+          "sourceEventIds": [
+            "team-task_accepted-1"
+          ],
+          "recordId": "m-bc0fc2856323d425",
+          "revision": 2
+        }
+      ]
+    }
+  },
+  "outcomes": {},
+  "plans": [],
+  "instances": [],
+  "generations": {},
+  "sequence": 2,
+  "seed": "restore-receipt",
+  "inputSequence": 0,
+  "inputReceipts": {}
+}

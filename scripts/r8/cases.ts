@@ -181,6 +181,26 @@ function main(): void {
     splits[split] += 1;
   }
 
+  // A completely identical visible input must not appear in two splits: it is
+  // the same decision seen twice. Keep the first occurrence, count the rest.
+  const byText = new Map<string, string>();
+  const duplicates: string[] = [];
+  for (const record of cases) {
+    const key = `${record.observationText}\u0000${record.candidates
+      .map((candidate: { text: string }) => candidate.text).join('\u0001')}`;
+    const existing = byText.get(key);
+    if (existing && existing !== record.split) {
+      record.split = existing as typeof record.split;
+      duplicates.push(record.caseId);
+    } else if (!existing) {
+      byText.set(key, record.split);
+    }
+  }
+  const splitsAfter: Record<string, number> = { train: 0, dev: 0, calibration: 0, select: 0 };
+  for (const record of cases) {
+    splitsAfter[record.split as keyof typeof splitsAfter] += 1;
+  }
+
   const leaked = [...perEpisode.entries()].filter(([, set]) => set.size > 1);
   const path = join(args.out, 'dynamic-cases.jsonl');
   writeFileSync(path, `${cases.map(record => JSON.stringify(record)).join('\n')}\n`, 'utf8');
@@ -189,8 +209,11 @@ function main(): void {
     source: args.trajectory,
     sourceSha256: sha256(readFileSync(args.trajectory, 'utf8')),
     cases: cases.length,
-    splits,
+    splits: splitsAfter,
     episodes: perEpisode.size,
+    crossSplitVisibleDuplicatesMoved: duplicates.length,
+    weakLabels: 'labels come from the reference action plus two rule reviewers; '
+      + 'not an independent truth set',
     splitLeaks: leaked.map(([episode]) => episode),
     droppedSingleCandidate: droppedSingle,
     quarantined,
@@ -203,7 +226,8 @@ function main(): void {
   };
   writeFileSync(join(args.out, 'split-manifest.json'),
     `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
-  console.log(JSON.stringify({ ok: leaked.length === 0, cases: cases.length, splits,
+  console.log(JSON.stringify({ ok: leaked.length === 0, cases: cases.length,
+    splits: splitsAfter, duplicatesMoved: duplicates.length,
     episodes: perEpisode.size, droppedSingle, quarantined, out: path }, null, 2));
   if (leaked.length > 0) process.exitCode = 1;
 }

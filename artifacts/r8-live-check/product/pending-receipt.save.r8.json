@@ -1,0 +1,124 @@
+{
+  "schema": "frostecho.r8-runtime/1",
+  "profile": "gospel-5.8.19",
+  "clock": 480,
+  "ended": false,
+  "endingKind": null,
+  "states": {
+    "survival": {
+      "outdoorMinutes": {},
+      "hypothermic": [],
+      "lastMinute": 0,
+      "reportedDeaths": []
+    },
+    "production": {
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "buildRemaining": {},
+      "buildWorker": {},
+      "ranMinutes": {},
+      "lastMinute": 0
+    },
+    "tasks": {
+      "tasks": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_WOOD",
+          "proposerId": "npc_01",
+          "assigneeId": "npc_01",
+          "status": "accepted",
+          "revision": 2,
+          "workedMinutes": 0,
+          "createdAtMinute": 0,
+          "goal": {
+            "resource": "firewood",
+            "amount": 1
+          }
+        }
+      ],
+      "seq": 1,
+      "dailyUsage": {},
+      "usedReceipts": []
+    },
+    "council": {
+      "meetings": [],
+      "seq": 0,
+      "cooldownUntil": 0
+    },
+    "crises": {
+      "active": [],
+      "history": [],
+      "seq": 0,
+      "lastFoodConflictMinute": null,
+      "foodConflictCooldownMinutes": 60
+    },
+    "life": {
+      "lifeNumber": 1,
+      "pastLives": [],
+      "ending": null,
+      "settled": false
+    }
+  },
+  "journal": [
+    {
+      "at": 480,
+      "proposalId": "tasks:task-1:proposed",
+      "type": "task_proposed",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-1",
+        "type": "COLLECT_WOOD",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "tasks:task-1:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-1",
+        "revision": 2
+      }
+    }
+  ],
+  "committed": [
+    {
+      "eventId": "d:480:task_proposed:npc_01",
+      "type": "task_proposed",
+      "actorId": "npc_01",
+      "simTime": 480,
+      "payload": {
+        "taskId": "task-1",
+        "type": "COLLECT_WOOD",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "eventId": "d:480:task_accepted:npc_01",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "simTime": 480,
+      "payload": {
+        "taskId": "task-1",
+        "revision": 2
+      }
+    },
+    {
+      "eventId": "wood-for-food-probe:gathered:0",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 480,
+      "payload": {
+        "resource": "firewood",
+        "amount": 4
+      }
+    }
+  ],
+  "rejections": []
+}

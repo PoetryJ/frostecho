@@ -7,7 +7,8 @@
  * `PlaySession.executeCandidate`; a domain action goes through
  * `R8Runtime.dispatch`; both land in the same versioned authority.
  */
-import { makeChoiceRequest, type Candidate, type ChoiceRequest } from '../../decision/contracts';
+import { makeChoiceRequest, type Candidate, type ChoiceRequest,
+  type ObservedFact } from '../../decision/contracts';
 import type { ScorePort } from '../contracts';
 import { buildActionOptions, type MemoryPolicyId, type ExperienceNote } from '../agency/options';
 import { renderRequest } from '../jev/render';
@@ -70,6 +71,31 @@ function beliefOf(runtime: R8Runtime, actorId: string): { level: number | null; 
     }
   }
   return { level, rumor };
+}
+
+/**
+ * The actor's own visible memory, bounded. `memoryFacts` used to be empty, which
+ * meant the model never saw a single promise or relationship; it now carries the
+ * actor's own records only.
+ */
+export function visibleMemory(runtime: R8Runtime, actorId: string, topK = 12):
+  { facts: ObservedFact[]; relationships: unknown; truncated: boolean } {
+  const store = runtime.session.memories.get(actorId);
+  if (!store) return { facts: [], relationships: {}, truncated: false };
+  const records = store.toJSON().records.filter(record => record.observerId === actorId);
+  const facts: ObservedFact[] = records.slice(-topK).map(record => ({
+    eventId: record.sourceEventIds[0] ?? record.recordId,
+    observerId: actorId,
+    simTime: Number((record.payload as Record<string, unknown> | undefined)?.simTime
+      ?? runtime.world.simTime),
+    subjectIds: [actorId],
+    kind: record.kind,
+    payload: record.payload,
+    source: 'engine',
+  }));
+  const knowledge = runtime.session.knowledge();
+  const relationships = knowledge[actorId] ?? { promises: [], relation: null };
+  return { facts, relationships, truncated: records.length > facts.length };
 }
 
 function taskTypeOf(candidate: Candidate): TaskTypeId | null {
@@ -155,6 +181,7 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
       notes: options.notes?.(actorId) ?? [],
     });
     if (built.candidates.length === 0) continue;
+    const memory = visibleMemory(runtime, actorId);
     const request = makeChoiceRequest({
       requestId: `${runtime.world.version}-${actorId}`,
       task: 'choose_action',
@@ -164,16 +191,36 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
         weather: snapshot.weather, resources: snapshot.resources,
         furnace: snapshot.furnace, self: npc, belief: beliefOf(runtime, actorId) },
       question: '现在最该做什么？',
-      memoryFacts: [],
-      relationships: {},
-      goals: tasks.map(task => ({ taskId: task.taskId, type: task.type })),
+      memoryFacts: memory.facts,
+      relationships: memory.relationships,
+      goals: tasks.map(task => ({ taskId: task.taskId, type: task.type,
+        memoryTruncated: memory.truncated })),
       candidates: built.candidates,
       memoryPolicyVersion: memoryPolicy,
     });
     const rendered = renderRequest(request);
+    const startedVersion = runtime.world.version;
+    const startedGeneration = runtime.session.generationFor(actorId);
     const started = Date.now();
     const result = await scorer.score(request);
     const latencyMs = Date.now() - started;
+    // The score arrived after an await. Re-check synchronously, before any
+    // commit: a cancel/timeout or a newer world version voids this result.
+    const fresh = runtime.world.version === startedVersion
+      && runtime.session.generationFor(actorId) === startedGeneration;
+    if (!fresh) {
+      records.push({
+        actorId, requestId: request.requestId,
+        candidateSetHash: request.candidateSetHash,
+        renderSha256: `${rendered.text.length}`,
+        observationText: rendered.text, jointText: rendered.text,
+        candidates: [], rules: built.rules, selectedId: null,
+        disposition: 'stale', scorerId: result.scorerId, latencyMs,
+        executionStatus: 'stale', reason: 'generation_or_version_changed',
+        eventIds: [], taskCompleted: null, worldVersion: runtime.world.version,
+      });
+      continue;
+    }
     const selected = request.candidates.find(entry => entry.id === result.selectedId);
     const outcome = selected && result.disposition === 'accept'
       ? executeCandidate(runtime, actorId, selected,

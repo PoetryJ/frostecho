@@ -123,8 +123,19 @@ export function receiptTypesFor(type: TaskTypeId): string[] {
 export type TaskStatus = 'proposed' | 'accepted' | 'declined' | 'countered'
   | 'reassigned' | 'done' | 'cancelled';
 
+export interface TaskGoal {
+  /** The resource this task must actually produce/move, when it is one. */
+  resource?: 'food' | 'firewood' | 'power' | 'medicine';
+  /** Minimum amount the receipt must carry. */
+  amount?: number;
+  /** The place/object the receipt must name. */
+  place?: 'warehouse' | 'kitchen';
+}
+
 export interface TaskRecord {
   taskId: string;
+  /** What this instance must actually achieve; receipts are checked against it. */
+  goal?: TaskGoal;
   type: TaskTypeId;
   proposerId: string;
   assigneeId: string;
@@ -143,7 +154,28 @@ export interface TasksState {
   seq: number;
   /** Daily usage counters for limited tasks (key: type/actor/day). */
   dailyUsage: Record<string, number>;
+  /** Receipts already spent by some task: one receipt closes one instance. */
+  usedReceipts: string[];
 }
+
+/** The goal each type must really reach; social types state their own effect. */
+export const TASK_GOALS: Record<TaskTypeId, TaskGoal> = {
+  COLLECT_WOOD: { resource: 'firewood', amount: 1 },
+  COLLECT_FOOD: { resource: 'food', amount: 1 },
+  MAINTAIN_POWER: { resource: 'power', amount: 1 },
+  COLLECT_MATERIAL: { resource: 'power', amount: 1 },
+  PREPARE_WARMTH: { amount: 1 },
+  PREPARE_MEDICAL: { amount: 1 },
+  BOOST_MORALE: {},
+  COORDINATE: {},
+  DISTRIBUTE_FOOD: { place: 'warehouse', amount: 1 },
+  MAINTAIN_ORDER: {},
+  REST_RECOVER: {},
+  SCOUT_RUINS: {},
+  BUILD_GENERATOR: {},
+  BUILD_LUMBER_MILL: {},
+  BUILD_FOOD_COLLECTOR: {},
+};
 
 function find(state: TasksState, taskId: string): TaskRecord | undefined {
   return state.tasks.find(task => task.taskId === taskId);
@@ -152,7 +184,7 @@ function find(state: TasksState, taskId: string): TaskRecord | undefined {
 export const tasksDomain: DomainModule<TasksState> = {
   id: 'tasks',
   initial(): TasksState {
-    return { tasks: [], seq: 0, dailyUsage: {} };
+    return { tasks: [], seq: 0, dailyUsage: {}, usedReceipts: [] };
   },
 
   reduce(state, command: DomainCommand, context): DomainResult<TasksState> {
@@ -160,6 +192,7 @@ export const tasksDomain: DomainModule<TasksState> = {
       tasks: state.tasks.map(task => ({ ...task })),
       seq: state.seq,
       dailyUsage: { ...state.dailyUsage },
+      usedReceipts: [...state.usedReceipts],
     };
     const result = emptyResult(next);
     const now = context.snapshot.elapsed;
@@ -190,6 +223,7 @@ export const tasksDomain: DomainModule<TasksState> = {
       const task: TaskRecord = {
         taskId: `task-${next.seq}`, type, proposerId: command.actorId, assigneeId,
         status: 'proposed', revision: 1, workedMinutes: 0, createdAtMinute: now,
+        goal: TASK_GOALS[type] ?? {},
       };
       next.tasks.push(task);
       result.requests.push({ requestId: `req-${task.taskId}`, kind: 'commitment',
@@ -309,6 +343,58 @@ export const tasksDomain: DomainModule<TasksState> = {
           reason: `${task.type} needs ${allowed.join('|')}, got ${receipt.type}` });
         return result;
       }
+      if (next.usedReceipts.includes(receiptId)) {
+        result.rejections.push({ intentId: `tasks:${taskId}:complete`,
+          code: 'receipt_already_used',
+          reason: `${receiptId} already closed another task` });
+        return result;
+      }
+      if (receipt.simTime < task.createdAtMinute) {
+        result.rejections.push({ intentId: `tasks:${taskId}:complete`,
+          code: 'receipt_before_task',
+          reason: `${receiptId} predates task ${taskId}` });
+        return result;
+      }
+      // Goal predicate: the receipt must name the right resource/place and
+      // carry real amount, not merely be of an accepted type.
+      const goal = task.goal ?? {};
+      const payload = receipt.payload as Record<string, unknown>;
+      if (goal.resource) {
+        // A receipt may name the resource explicitly (`resource: food`) or carry
+        // it as a numeric field (`worked` reports `power`). Both are real
+        // evidence; a different resource is not.
+        const named = payload.resource;
+        const carried = typeof payload[goal.resource] === 'number'
+          ? Number(payload[goal.resource]) : null;
+        if (named !== undefined && named !== goal.resource) {
+          result.rejections.push({ intentId: `tasks:${taskId}:complete`,
+            code: 'receipt_goal_resource_mismatch',
+            reason: `${task.type} needs ${goal.resource}, receipt is ${String(named)}` });
+          return result;
+        }
+        if (named === undefined && carried === null) {
+          result.rejections.push({ intentId: `tasks:${taskId}:complete`,
+            code: 'receipt_goal_resource_missing',
+            reason: `receipt names no ${goal.resource} amount` });
+          return result;
+        }
+        const amount = Number(payload.amount ?? carried ?? 0);
+        if (!(amount >= (goal.amount ?? 1))) {
+          result.rejections.push({ intentId: `tasks:${taskId}:complete`,
+            code: 'receipt_goal_amount', reason: `amount ${amount} < ${goal.amount ?? 1}` });
+          return result;
+        }
+      }
+      if (goal.place) {
+        const place = payload.place ?? payload.to;
+        if (place !== goal.place) {
+          result.rejections.push({ intentId: `tasks:${taskId}:complete`,
+            code: 'receipt_goal_place_mismatch',
+            reason: `${task.type} needs ${goal.place}, receipt is ${String(place)}` });
+          return result;
+        }
+      }
+      next.usedReceipts.push(receiptId);
       if (definition.builds) {
         const machineState = context.snapshot.machines[definition.builds];
         if (machineState !== 'running') {
@@ -349,6 +435,7 @@ export const tasksDomain: DomainModule<TasksState> = {
       tasks: state.tasks.map(task => ({ ...task })),
       seq: state.seq,
       dailyUsage: { ...state.dailyUsage },
+      usedReceipts: [...state.usedReceipts],
     };
     const result = emptyResult(next);
     const minutes = Math.max(0, toMinute - fromMinute);

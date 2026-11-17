@@ -308,10 +308,15 @@ function main(): void {
         sourceHEAD, path: trainPy, sha256: '', evidenceClass: 'real-model',
         note: 'train.py is not present; JEV gate cannot run' });
     } else {
-      const result = run('python', [trainPy, 'preflight', '--json'], cwd);
+      const python = process.env.FROSTECHO_PYTHON ?? 'python';
+      const result = run(python, [trainPy, 'preflight', '--json'], cwd);
       let parsed: Record<string, unknown> | null = null;
       try { parsed = JSON.parse(result.stdout) as Record<string, unknown>; } catch { parsed = null; }
-      const ready = parsed?.readyForTraining === true;
+      // The gate is about the live path: an encoder that loads and an
+      // architecture the local transformers understands. A missing training
+      // cache blocks training, not live scoring.
+      const ready = parsed?.readyForLiveEncoding === true
+        || parsed?.readyForTraining === true;
       gates.push({
         gate: 'jev-preflight', status: result.status === 0 ? (ready ? 'pass' : 'blocked') : 'fail',
         command, cwd, exitCode: result.status, sourceHEAD, path: trainPy,

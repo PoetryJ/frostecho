@@ -1,0 +1,32 @@
+{
+  "schema": "frostecho.jev05.action.train/2",
+  "init": "warm",
+  "cases": 1,
+  "seed": 17,
+  "epochs": 1,
+  "lr": 0.05,
+  "trainCases": 1,
+  "devCases": 1,
+  "selectedEpoch": 1,
+  "dev": {
+    "cases": 1,
+    "meanLoss": 0.098923,
+    "top1InAcceptable": 1.0
+  },
+  "curve": [
+    {
+      "epoch": 1,
+      "trainLoss": 6.767645,
+      "dev": {
+        "cases": 1,
+        "meanLoss": 0.098923,
+        "top1InAcceptable": 1.0
+      }
+    }
+  ],
+  "headInSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+  "renderer": "joint-c-action/1",
+  "featureCacheSha256": "f1ae58ea4e2df6522e5b75ec887cdc57e6d903bc6d72e848ed9aff9ed303ad1d",
+  "normalisation": "non-affine LayerNorm eps=1e-5 inside autograd",
+  "note": "only train rows reached the optimiser; dev selected the checkpoint"
+}

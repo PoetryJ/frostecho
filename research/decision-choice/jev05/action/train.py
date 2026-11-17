@@ -340,48 +340,102 @@ def features_for(cases: list[dict], archive_path: Path,
 
 
 def cmd_train(args) -> int:
-    weight = read_head(Path(args.head))
+    """Torch autograd on the real head, non-affine LayerNorm inside the graph.
+
+    Only rows whose split is `train` reach the optimiser; `dev` picks the
+    checkpoint. The old version fed every split to training and selected on
+    training loss, which is why its numbers were not an experiment.
+    """
+    import torch
+
     cases = load_cases(Path(args.cases))
     features = features_for(cases, Path(args.features), args.order)
-    train_cases = [case for case in cases if features.get(case["caseId"]) is not None
-                   and case.get("acceptableIds")]
-    if not train_cases:
-        print(json.dumps({"status": "blocked",
-                          "reason": "no labelled case has bound features"}))
+    base = read_head(Path(args.head))
+
+    def labelled(case):
+        return features.get(case.get("caseId")) is not None and case.get("acceptableIds")
+
+    train_rows = [c for c in cases if labelled(c) and (c.get("split") in (None, "train"))]
+    dev_rows = [c for c in cases if labelled(c) and c.get("split") == "dev"]
+    if not train_rows:
+        print(json.dumps({"status": "blocked", "reason": "no train row with bound features"}))
         return 3
-    rng = np.random.default_rng(args.seed)
-    current = weight.copy() if args.init == "warm" else rng.normal(
-        0, 0.02, size=weight.shape[0])
-    best = current.copy()
-    best_loss = float("inf")
+
+    def indices_for(case):
+        ids = [candidate["id"] for candidate in case["candidates"]]
+        return [ids.index(value) for value in case["acceptableIds"]]
+
+    def loss_of(weight, case):
+        hidden = torch.from_numpy(
+            np.asarray(features[case["caseId"]], dtype=np.float32)).to(torch.float64)
+        centered = hidden - hidden.mean(dim=-1, keepdim=True)
+        variance = (centered ** 2).mean(dim=-1, keepdim=True)
+        normalised = centered / torch.sqrt(variance + 1e-5)
+        logits = normalised @ weight
+        acceptable = torch.tensor(indices_for(case), dtype=torch.long)
+        return (torch.logsumexp(logits, dim=0)
+                - torch.logsumexp(logits[acceptable], dim=0))
+
+    def evaluate(weight, rows):
+        if not rows:
+            return {"cases": 0, "meanLoss": None, "top1InAcceptable": None}
+        total, correct = 0.0, 0
+        with torch.no_grad():
+            for case in rows:
+                hidden = torch.from_numpy(
+                    np.asarray(features[case["caseId"]], dtype=np.float32)).to(torch.float64)
+                centered = hidden - hidden.mean(dim=-1, keepdim=True)
+                variance = (centered ** 2).mean(dim=-1, keepdim=True)
+                logits = (centered / torch.sqrt(variance + 1e-5)) @ weight
+                total += float(loss_of(weight, case))
+                correct += int(int(torch.argmax(logits)) in indices_for(case))
+        return {"cases": len(rows), "meanLoss": round(total / len(rows), 6),
+                "top1InAcceptable": correct / len(rows)}
+
+    torch.manual_seed(args.seed)
+    initial = (torch.from_numpy(base.astype(np.float32)).to(torch.float64)
+               if args.init == "warm"
+               else torch.randn(base.shape[0], dtype=torch.float64) * 0.02)
+    weight = torch.nn.Parameter(initial.clone())
+    optimiser = torch.optim.Adam([weight], lr=args.lr)
+    best = {"epoch": 0, "weight": weight.detach().clone(),
+            "dev": evaluate(weight.detach(), dev_rows)}
     curve = []
     for epoch in range(args.epochs):
-        order = rng.permutation(len(train_cases))
+        order = np.random.default_rng(args.seed + epoch).permutation(len(train_rows))
         total = 0.0
         for index in order:
-            case = train_cases[index]
-            ids = [candidate["id"] for candidate in case["candidates"]]
-            acceptable = [ids.index(value) for value in case["acceptableIds"]]
-            logits = score_matrix(current, features[case["caseId"]])
-            loss, gradient = set_nll(logits, acceptable)
-            current -= args.lr * (features[case["caseId"]].astype(np.float64).T @ gradient)
-            total += loss
-        mean = total / len(train_cases)
-        curve.append({"epoch": epoch + 1, "loss": round(mean, 6)})
-        if mean < best_loss:
-            best_loss = mean
-            best = current.copy()
-    result = {"schema": "frostecho.jev05.action.train/1", "init": args.init,
+            case = train_rows[int(index)]
+            optimiser.zero_grad()
+            loss = loss_of(weight, case)
+            loss.backward()
+            optimiser.step()
+            total += float(loss)
+        entry = {"epoch": epoch + 1, "trainLoss": round(total / len(train_rows), 6),
+                 "dev": evaluate(weight.detach(), dev_rows)}
+        curve.append(entry)
+        dev_loss = entry["dev"]["meanLoss"]
+        current = best["dev"]["meanLoss"]
+        if dev_loss is not None and (current is None or dev_loss < current):
+            best = {"epoch": epoch + 1, "weight": weight.detach().clone(), "dev": entry["dev"]}
+    result = {"schema": "frostecho.jev05.action.train/2", "init": args.init,
+              "cases": len(train_rows),
               "seed": args.seed, "epochs": args.epochs, "lr": args.lr,
-              "cases": len(train_cases), "bestLoss": round(best_loss, 6),
+              "trainCases": len(train_rows), "devCases": len(dev_rows),
+              "selectedEpoch": best["epoch"], "dev": best["dev"],
               "curve": curve, "headInSha256": sha256(Path(args.head)),
-              "renderer": RENDERER, "featureCacheSha256": sha256(Path(args.features))}
+              "renderer": RENDERER, "featureCacheSha256": sha256(Path(args.features)),
+              "normalisation": "non-affine LayerNorm eps=1e-5 inside autograd",
+              "note": "only train rows reached the optimiser; dev selected the checkpoint"}
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    np.save(out / f"weight-{args.init}-{args.seed}.npy", best.astype(np.float32))
+    np.save(out / f"weight-{args.init}-{args.seed}.npy",
+            best["weight"].numpy().astype(np.float32))
     (out / f"result-{args.init}-{args.seed}.json").write_text(
         json.dumps(result, ensure_ascii=False, indent=2))
-    print(json.dumps(result, ensure_ascii=False))
+    print(json.dumps({key: result[key] for key in
+                      ("init", "seed", "cases", "trainCases", "devCases",
+                       "selectedEpoch", "dev")}, ensure_ascii=False))
     return 0
 
 
@@ -469,7 +523,17 @@ def cmd_serve(args) -> int:
     weight = read_head(Path(args.head))
     feature_map = json.loads(Path(args.feature_map).read_text())
     certificate = args.data_certificate
-    certified = bool(certificate) and Path(certificate).exists()
+    certified = False
+    if certificate and Path(certificate).exists():
+        try:
+            document = json.loads(Path(certificate).read_text(encoding="utf-8"))
+            certified = (document.get("schema") == "frostecho.jev.certificate/1"
+                         and isinstance(document.get("samples"), int)
+                         and document.get("samples", 0) > 0
+                         and document.get("perSampleRecomputeSha256") not in (None, "", "0" * 64)
+                         and document.get("headSha256") == sha256(Path(args.head)))
+        except (OSError, ValueError):
+            certified = False
     admitted = args.mode == "jev-admitted" and certified
     identity = {"mode": args.mode, "scorerId": "jev-joint-c/1",
                 "checkpointSha256": sha256(Path(args.head)),
