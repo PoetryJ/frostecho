@@ -67,6 +67,16 @@ export interface AdvanceReport {
   domainEvents: { type: string; actorId: string; payload: Record<string, unknown> }[];
 }
 
+/** A time-consuming action that occupies its actor until `endsAt`. */
+export interface WorkItem {
+  actorId: string;
+  kind: string;
+  commandId: string;
+  candidate: import('../../decision/contracts').Candidate;
+  startedAt: number;
+  endsAt: number;
+}
+
 export interface RuntimeOptions {
   npcCount?: number;
   seed?: string;
@@ -98,6 +108,20 @@ export function boundariesBetween(profile: TimeProfile, from: number, to: number
   return [...points].sort((left, right) => left - right);
 }
 
+/** Which task an action discharges, for closure on the real receipt. */
+function workTaskType(candidate: { parameters: Record<string, unknown> }): string | null {
+  const action = String(candidate.parameters.action ?? '');
+  if (action === 'gather') {
+    return candidate.parameters.resource === 'food' ? 'COLLECT_FOOD' : 'COLLECT_WOOD';
+  }
+  if (action === 'work') return 'MAINTAIN_POWER';
+  if (action === 'rest') return 'REST_RECOVER';
+  if (action === 'medical') return 'PREPARE_MEDICAL';
+  if (action === 'refuel') return 'PREPARE_WARMTH';
+  if (action === 'deposit' || action === 'deliver') return 'DISTRIBUTE_FOOD';
+  return null;
+}
+
 export class R8Runtime {
   readonly registry = createDomainRegistry();
   readonly profile: TimeProfile;
@@ -107,6 +131,11 @@ export class R8Runtime {
   readonly rejections: Rejection[] = [];
   ended = false;
   endingKind: string | null = null;
+  /** Occupancy: one work item per actor; several actors overlap in time. */
+  readonly work = new Map<string, WorkItem>();
+  /** Completed work items, in commit order (evidence for the time story). */
+  readonly workLog: { actorId: string; kind: string; startedAt: number; endsAt: number;
+    status: string; eventIds: string[] }[] = [];
   /** Every committed event by id: the only receipts a domain may accept. */
   private readonly committed = new Map<string, CommittedEventRef>();
   private readonly legacySpatial: LegacySpatialController;
@@ -253,6 +282,7 @@ export class R8Runtime {
       }
       const committed = this.commit(intents, domainEvents);
       const step = this.session.advance(minutes);
+      const completedWork = this.settleWork();
       report.segments.push({
         from: segmentFrom, to: segmentTo, minutes,
         applied: [...committed.applied, ...(step.status === 'applied' ? [] : [step.status])],
@@ -364,6 +394,72 @@ export class R8Runtime {
   }
 
   /**
+   * Start a time-consuming action. Nothing is applied until the clock reaches
+   * `endsAt`; the actor cannot start a second action meanwhile. Two actors'
+   * work overlaps instead of being serialised onto one another.
+   */
+  beginWork(actorId: string, kind: string, commandId: string,
+    candidate: import('../../decision/contracts').Candidate, minutes: number):
+    { startedAt: number; endsAt: number } | { rejected: string } {
+    if (this.work.has(actorId)) {
+      return { rejected: `actor ${actorId} is busy until ${this.work.get(actorId)!.endsAt}` };
+    }
+    if (!Number.isFinite(minutes) || minutes <= 0) {
+      return { rejected: `invalid work duration ${minutes}` };
+    }
+    const startedAt = this.world.simTime;
+    const endsAt = startedAt + minutes;
+    this.work.set(actorId, { actorId, kind, commandId, candidate, startedAt, endsAt });
+    return { startedAt, endsAt };
+  }
+
+  busyUntil(actorId: string): number | null {
+    return this.work.get(actorId)?.endsAt ?? null;
+  }
+
+  /**
+   * Complete every work item the committed clock has passed. Called by
+   * advanceWorld only, so CLI, web and the four-day runner finish work at the
+   * same authoritative moment.
+   */
+  settleWork(): { actorId: string; kind: string; status: string; eventIds: string[] }[] {
+    const done: { actorId: string; kind: string; status: string; eventIds: string[] }[] = [];
+    for (const item of [...this.work.values()]) {
+      if (this.world.simTime < item.endsAt) continue;
+      this.work.delete(item.actorId);
+      let status = 'applied';
+      let eventIds: string[] = [];
+      try {
+        const outcome = this.session.executeCandidate(item.actorId, item.candidate,
+          item.commandId);
+        if (outcome.events) this.recordCommitted(outcome.events);
+        status = outcome.status;
+        eventIds = outcome.eventIds;
+      } catch (error) {
+        status = `error:${(error as Error).message}`;
+      }
+      // A finished work item closes its own task on its own receipt.
+      if (status === 'applied' && eventIds.length > 0) {
+        const type = workTaskType(item.candidate);
+        if (type) {
+          const tasks = (this.states.tasks as { tasks: { taskId: string; type: string;
+            status: string; assigneeId: string }[] }).tasks;
+          const task = tasks.find(entry => entry.assigneeId === item.actorId
+            && entry.status === 'accepted' && entry.type === type);
+          if (task) {
+            this.dispatch('tasks', 'complete', item.actorId,
+              { taskId: task.taskId, receiptEventId: eventIds[eventIds.length - 1] });
+          }
+        }
+      }
+      this.workLog.push({ actorId: item.actorId, kind: item.kind,
+        startedAt: item.startedAt, endsAt: item.endsAt, status, eventIds });
+      done.push({ actorId: item.actorId, kind: item.kind, status, eventIds });
+    }
+    return done;
+  }
+
+  /**
    * Register events produced by the world authority itself (a gather, a walk,
    * a delivery). Only these can back a task completion receipt.
    */
@@ -423,6 +519,8 @@ export class R8Runtime {
       endingKind: string | null; states: DomainStates;
       journal?: R8Runtime['journal']; rejections?: Rejection[];
       committed?: CommittedEventRef[];
+      work?: WorkItem[];
+      workLog?: R8Runtime['workLog'];
     };
     if (document.schema !== 'frostecho.r8-runtime/1') {
       throw new Error(`unsupported runtime sidecar ${document.schema}`);
@@ -438,6 +536,8 @@ export class R8Runtime {
     for (const event of document.committed ?? []) {
       runtime.committed.set(event.eventId, event);
     }
+    for (const item of document.work ?? []) runtime.work.set(item.actorId, item);
+    if (document.workLog) runtime.workLog.push(...document.workLog);
     if (document.rejections) runtime.rejections.push(...document.rejections);
     if (runtime.legacySpatial.enabled()) {
       if (profile.id !== 'gospel-5.8.19') throw new Error('original_map_save_requires_gospel_profile');
@@ -457,6 +557,8 @@ export class R8Runtime {
       states: this.states,
       journal: this.journal,
       committed: [...this.committed.values()],
+      work: [...this.work.values()],
+      workLog: this.workLog,
       rejections: this.rejections.slice(-200),
     };
   }

@@ -75,6 +75,17 @@ export interface OptionBuild {
   notesUsed: string[];
 }
 
+/** Where each task's work has to happen. */
+export const PLACE_FOR_TASK: Record<string, string | null> = {
+  COLLECT_FOOD: 'village', COLLECT_WOOD: 'village', SCOUT_RUINS: 'village',
+  MAINTAIN_POWER: 'workshop', COLLECT_MATERIAL: 'workshop',
+  PREPARE_WARMTH: 'workshop', PREPARE_MEDICAL: 'medical',
+  DISTRIBUTE_FOOD: 'warehouse',
+  BUILD_GENERATOR: 'workshop', BUILD_LUMBER_MILL: 'workshop',
+  BUILD_FOOD_COLLECTOR: 'workshop',
+  BOOST_MORALE: null, COORDINATE: null, MAINTAIN_ORDER: null, REST_RECOVER: null,
+};
+
 export const MAX_OPTIONS = 8;
 export const MIN_OPTIONS = 2;
 
@@ -187,6 +198,15 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
         ['alive'], { food: 8, stamina: -12 }));
       rules.push('stock.fallback-gather');
     }
+  }
+  // If an accepted task needs a place this actor is not standing in, walking
+  // there is the honest next option, not an impossible action.
+  const needed = view.tasks.filter(task => task.status === 'accepted')
+    .map(task => PLACE_FOR_TASK[task.type]).find(place => place && place !== npc.location);
+  if (needed) {
+    candidates.push(candidate('move', `前往${needed}`, { to: needed, purpose: 'task-place' },
+      ['alive'], { travelMinutes: 15 }));
+    rules.push('spatial.task-place');
   }
   for (const task of view.tasks) {
     if (task.status !== 'accepted') continue;

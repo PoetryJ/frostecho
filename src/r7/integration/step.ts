@@ -109,11 +109,49 @@ export function visibleMemory(runtime: R8Runtime, actorId: string, topK = 12):
   return { facts, relationships, truncated: records.length > facts.length };
 }
 
+/**
+ * How long an action really occupies its actor. Nothing is applied before that
+ * time has passed on the authoritative clock; the three front-ends share it.
+ */
+export const ACTION_MINUTES: Record<string, number> = {
+  rest: 60, work: 40, gather: 30, medical: 20, refuel: 10, deposit: 15, deliver: 15,
+  move: 15,
+};
+
+/**
+ * Where a real action must physically happen. The authority checks this before
+ * spending any time or resource: standing in the warehouse cannot gather wood
+ * at the lumber camp.
+ */
+export const REQUIRED_PLACE: Record<string, string> = {
+  gather: 'village', work: 'workshop', medical: 'medical',
+  deposit: 'warehouse', deliver: 'kitchen',
+};
+
+export function durationOf(candidate: Candidate): number {
+  const action = String(candidate.parameters.action ?? '');
+  if (action === 'build-machine') return 0; // production owns its build clock
+  if (action === 'rest' || action === 'work') {
+    const minutes = Number(candidate.parameters.minutes);
+    return Number.isFinite(minutes) && minutes > 0 ? minutes : (ACTION_MINUTES[action] ?? 0);
+  }
+  return ACTION_MINUTES[action] ?? 0;
+}
+
 /** Execute one selected candidate; returns what really landed. */
 export function executeCandidate(runtime: R8Runtime, actorId: string,
   candidate: Candidate, commandId: string):
   { status: string; reason: string; eventIds: string[] } {
   const action = candidate.parameters.action;
+  const place = REQUIRED_PLACE[String(action ?? '')];
+  if (place) {
+    const here = runtime.world.npcs[actorId]?.location;
+    if (here !== place) {
+      return { status: 'rejected',
+        reason: `wrong_location: ${action} needs ${place}, actor is at ${String(here)}`,
+        eventIds: [] };
+    }
+  }
   if (action === 'build-machine') {
     const machine = String(candidate.parameters.machine);
     const result = runtime.dispatch('production', 'build-machine', actorId,
@@ -181,6 +219,18 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
     const snapshot = runtime.snapshot();
     const npc = snapshot.npcs[actorId];
     if (!npc?.alive) continue;
+    const busyUntil = runtime.busyUntil(actorId);
+    if (busyUntil !== null) {
+      records.push({
+        actorId, requestId: `${runtime.world.version}-${actorId}-busy`,
+        candidateSetHash: '', renderSha256: '', observationText: '', jointText: '',
+        candidates: [], rules: ['occupancy.busy'], selectedId: null,
+        disposition: 'busy', scorerId: 'none', latencyMs: 0,
+        executionStatus: 'busy', reason: `busy until ${busyUntil}`,
+        eventIds: [], taskCompleted: null, worldVersion: runtime.world.version,
+      });
+      continue;
+    }
     const tasks = (runtime.states.tasks as { tasks: { taskId: string; type: string;
       status: string; assigneeId: string }[] }).tasks
       .filter(task => task.assigneeId === actorId);
@@ -255,10 +305,23 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
       continue;
     }
     const selected = request.candidates.find(entry => entry.id === result.selectedId);
-    const outcome = selected && result.disposition === 'accept'
-      ? executeCandidate(runtime, actorId, selected,
-        `${actorId}-r8-${runtime.world.version}`)
-      : { status: 'abstained', reason: result.reason, eventIds: [] as string[] };
+    let outcome: { status: string; reason: string; eventIds: string[] };
+    if (!selected || result.disposition !== 'accept') {
+      outcome = { status: 'abstained', reason: result.reason, eventIds: [] };
+    } else {
+      const minutes = durationOf(selected);
+      const commandId = `${actorId}-r8-${runtime.world.version}`;
+      if (minutes > 0) {
+        // Occupy the actor; the effect lands when the clock reaches endsAt.
+        const begun = runtime.beginWork(actorId, String(selected.parameters.action),
+          commandId, selected, minutes);
+        outcome = 'rejected' in begun
+          ? { status: 'rejected', reason: begun.rejected, eventIds: [] }
+          : { status: 'working', reason: `until ${begun.endsAt}`, eventIds: [] };
+      } else {
+        outcome = executeCandidate(runtime, actorId, selected, commandId);
+      }
+    }
     const taskCompleted = outcome.status === 'applied' && selected
       ? closeTaskOnReceipt(runtime, actorId, selected, outcome.eventIds) : null;
     if (outcome.status === 'applied' && selected)

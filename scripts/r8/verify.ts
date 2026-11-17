@@ -243,7 +243,10 @@ function main(): void {
     }
     const records = step?.records ?? [];
     const multi = records.filter(record => (record.candidates?.length ?? 0) >= 2).length;
-    const applied = records.filter(record => record.executionStatus === 'applied').length;
+    // With the occupancy contract a step may legitimately end as `working`:
+    // the chain ran, the effect lands when the clock reaches it.
+    const applied = records.filter(record => record.executionStatus === 'applied'
+      || record.executionStatus === 'working').length;
     const passed = result.status === 0 && records.length > 0 && multi > 0 && applied > 0;
     gates.push({
       gate: 'web-shared-chain', status: passed ? 'pass' : 'fail',

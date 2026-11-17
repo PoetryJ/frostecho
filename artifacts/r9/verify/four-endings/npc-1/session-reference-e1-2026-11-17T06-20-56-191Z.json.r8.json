@@ -1,0 +1,7363 @@
+{
+  "schema": "frostecho.r8-runtime/1",
+  "profile": "gospel-5.8.19",
+  "clock": 5400,
+  "ended": true,
+  "endingKind": "extinction",
+  "states": {
+    "survival": {
+      "outdoorMinutes": {
+        "npc_01": 0
+      },
+      "hypothermic": [],
+      "lastMinute": 5400,
+      "reportedDeaths": []
+    },
+    "production": {
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "buildRemaining": {},
+      "buildWorker": {},
+      "ranMinutes": {},
+      "lastMinute": 5400
+    },
+    "tasks": {
+      "tasks": [
+        {
+          "taskId": "task-1",
+          "type": "PREPARE_WARMTH",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "done",
+          "revision": 3,
+          "workedMinutes": 0,
+          "createdAtMinute": 0,
+          "goal": {
+            "amount": 1
+          }
+        },
+        {
+          "taskId": "task-2",
+          "type": "PREPARE_WARMTH",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "done",
+          "revision": 3,
+          "workedMinutes": 0,
+          "createdAtMinute": 660,
+          "goal": {
+            "amount": 1
+          }
+        },
+        {
+          "taskId": "task-3",
+          "type": "REST_RECOVER",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "done",
+          "revision": 3,
+          "workedMinutes": 0,
+          "createdAtMinute": 1200,
+          "goal": {}
+        },
+        {
+          "taskId": "task-4",
+          "type": "COLLECT_FOOD",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "done",
+          "revision": 3,
+          "workedMinutes": 0,
+          "createdAtMinute": 1680,
+          "goal": {
+            "resource": "food",
+            "amount": 1
+          }
+        },
+        {
+          "taskId": "task-5",
+          "type": "COLLECT_FOOD",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "accepted",
+          "revision": 2,
+          "workedMinutes": 0,
+          "createdAtMinute": 2160,
+          "goal": {
+            "resource": "food",
+            "amount": 1
+          }
+        },
+        {
+          "taskId": "task-6",
+          "type": "COLLECT_FOOD",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "countered",
+          "revision": 2,
+          "workedMinutes": 0,
+          "createdAtMinute": 2640,
+          "goal": {
+            "resource": "food",
+            "amount": 1
+          }
+        },
+        {
+          "taskId": "task-7",
+          "type": "REST_RECOVER",
+          "proposerId": "npc_01",
+          "assigneeId": "npc_01",
+          "status": "proposed",
+          "revision": 1,
+          "counterOf": "task-6",
+          "reason": "体力 20 < 20，申请先休息",
+          "workedMinutes": 0,
+          "createdAtMinute": 2640
+        },
+        {
+          "taskId": "task-8",
+          "type": "COLLECT_FOOD",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "countered",
+          "revision": 2,
+          "workedMinutes": 0,
+          "createdAtMinute": 3120,
+          "goal": {
+            "resource": "food",
+            "amount": 1
+          }
+        },
+        {
+          "taskId": "task-9",
+          "type": "REST_RECOVER",
+          "proposerId": "npc_01",
+          "assigneeId": "npc_01",
+          "status": "proposed",
+          "revision": 1,
+          "counterOf": "task-8",
+          "reason": "体力 8 < 20，申请先休息",
+          "workedMinutes": 0,
+          "createdAtMinute": 3120
+        },
+        {
+          "taskId": "task-10",
+          "type": "REST_RECOVER",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "done",
+          "revision": 3,
+          "workedMinutes": 0,
+          "createdAtMinute": 3600,
+          "goal": {}
+        },
+        {
+          "taskId": "task-11",
+          "type": "COLLECT_FOOD",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "accepted",
+          "revision": 2,
+          "workedMinutes": 0,
+          "createdAtMinute": 4080,
+          "goal": {
+            "resource": "food",
+            "amount": 1
+          }
+        },
+        {
+          "taskId": "task-12",
+          "type": "COLLECT_FOOD",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "countered",
+          "revision": 2,
+          "workedMinutes": 0,
+          "createdAtMinute": 4560,
+          "goal": {
+            "resource": "food",
+            "amount": 1
+          }
+        },
+        {
+          "taskId": "task-13",
+          "type": "REST_RECOVER",
+          "proposerId": "npc_01",
+          "assigneeId": "npc_01",
+          "status": "proposed",
+          "revision": 1,
+          "counterOf": "task-12",
+          "reason": "体力 18 < 20，申请先休息",
+          "workedMinutes": 0,
+          "createdAtMinute": 4560
+        }
+      ],
+      "seq": 13,
+      "dailyUsage": {},
+      "usedReceipts": [
+        "npc_01-r8-0:refuelled:2",
+        "npc_01-r8-33:refuelled:35",
+        "npc_01-r8-54:rested:56",
+        "npc_01-r8-129:gathered:131",
+        "npc_01-r8-153:rested:155"
+      ]
+    },
+    "council": {
+      "meetings": [
+        {
+          "meetingId": "council-1",
+          "openedAtMinute": 0,
+          "reason": "morning",
+          "proposals": [
+            {
+              "proposalId": "p-council-1-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "PREPARE_WARMTH"
+                }
+              ],
+              "rationale": "food is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-1-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-1-1"
+        },
+        {
+          "meetingId": "council-2",
+          "openedAtMinute": 660,
+          "reason": "power_low",
+          "proposals": [
+            {
+              "proposalId": "p-council-2-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "PREPARE_WARMTH"
+                }
+              ],
+              "rationale": "food is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-2-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-2-1"
+        },
+        {
+          "meetingId": "council-3",
+          "openedAtMinute": 1200,
+          "reason": "power_low",
+          "proposals": [
+            {
+              "proposalId": "p-council-3-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "REST_RECOVER"
+                }
+              ],
+              "rationale": "power is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-3-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-3-1"
+        },
+        {
+          "meetingId": "council-4",
+          "openedAtMinute": 1680,
+          "reason": "firewood_low",
+          "proposals": [
+            {
+              "proposalId": "p-council-4-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "COLLECT_FOOD"
+                }
+              ],
+              "rationale": "power is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-4-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-4-1"
+        },
+        {
+          "meetingId": "council-5",
+          "openedAtMinute": 2160,
+          "reason": "power_low",
+          "proposals": [
+            {
+              "proposalId": "p-council-5-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "COLLECT_FOOD"
+                }
+              ],
+              "rationale": "power is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-5-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-5-1"
+        },
+        {
+          "meetingId": "council-6",
+          "openedAtMinute": 2640,
+          "reason": "power_low",
+          "proposals": [
+            {
+              "proposalId": "p-council-6-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "COLLECT_FOOD"
+                }
+              ],
+              "rationale": "power is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-6-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-6-1"
+        },
+        {
+          "meetingId": "council-7",
+          "openedAtMinute": 3120,
+          "reason": "firewood_low",
+          "proposals": [
+            {
+              "proposalId": "p-council-7-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "COLLECT_FOOD"
+                }
+              ],
+              "rationale": "power is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-7-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-7-1"
+        },
+        {
+          "meetingId": "council-8",
+          "openedAtMinute": 3600,
+          "reason": "firewood_low",
+          "proposals": [
+            {
+              "proposalId": "p-council-8-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "REST_RECOVER"
+                }
+              ],
+              "rationale": "power is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-8-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-8-1"
+        },
+        {
+          "meetingId": "council-9",
+          "openedAtMinute": 4080,
+          "reason": "firewood_low",
+          "proposals": [
+            {
+              "proposalId": "p-council-9-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "COLLECT_FOOD"
+                }
+              ],
+              "rationale": "power is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-9-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-9-1"
+        },
+        {
+          "meetingId": "council-10",
+          "openedAtMinute": 4560,
+          "reason": "firewood_low",
+          "proposals": [
+            {
+              "proposalId": "p-council-10-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "COLLECT_FOOD"
+                }
+              ],
+              "rationale": "firewood is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-10-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-10-1"
+        }
+      ],
+      "seq": 10,
+      "cooldownUntil": 5040
+    },
+    "crises": {
+      "active": [
+        {
+          "crisisId": "crisis-1",
+          "kind": "extinction",
+          "startedAtMinute": 0,
+          "resolvedAtMinute": null,
+          "subjectIds": [
+            "npc_01"
+          ],
+          "detail": "1 survivors"
+        },
+        {
+          "crisisId": "crisis-2",
+          "kind": "day4_warning",
+          "startedAtMinute": 3840,
+          "resolvedAtMinute": null,
+          "subjectIds": [],
+          "detail": "final day lockdown"
+        }
+      ],
+      "history": [],
+      "seq": 2,
+      "lastFoodConflictMinute": {
+        "$frostechoNumber": "-Infinity"
+      },
+      "foodConflictCooldownMinutes": 60
+    },
+    "life": {
+      "lifeNumber": 1,
+      "pastLives": [
+        {
+          "lifeNumber": 1,
+          "ending": "extinction",
+          "survivors": 1,
+          "endedAtElapsed": 4920,
+          "lessons": []
+        }
+      ],
+      "ending": {
+        "kind": "extinction",
+        "survivors": 1,
+        "settledAtElapsed": 4920
+      },
+      "settled": true
+    }
+  },
+  "journal": [
+    {
+      "at": 480,
+      "proposalId": "council:council-1:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-1",
+        "reason": "morning"
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "council:council-1:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-1",
+        "winner": "p-council-1-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "tasks:task-1:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-1",
+        "type": "PREPARE_WARMTH",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "tasks:task-1:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-1",
+        "revision": 2
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "production:heating:540",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.854167,
+        "band": "hot",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "crises:crisis-1:extinction",
+      "type": "crisis_started",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "crisisId": "crisis-1",
+        "kind": "extinction",
+        "alive": 1
+      }
+    },
+    {
+      "at": 540,
+      "proposalId": "tasks:task-1:done",
+      "type": "task_completed",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-1",
+        "type": "PREPARE_WARMTH",
+        "receipt": "npc_01-r8-0:refuelled:2",
+        "receiptType": "refuelled"
+      }
+    },
+    {
+      "at": 540,
+      "proposalId": "production:heating:600",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.839583,
+        "band": "hot",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 600,
+      "proposalId": "production:heating:660",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.825,
+        "band": "hot",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 660,
+      "proposalId": "production:heating:720",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.810417,
+        "band": "hot",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 720,
+      "proposalId": "production:heating:780",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.76875,
+        "band": "hot",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 780,
+      "proposalId": "production:heating:840",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.727083,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 840,
+      "proposalId": "production:heating:900",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.766667,
+        "band": "hot",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 900,
+      "proposalId": "production:heating:960",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.752083,
+        "band": "hot",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 960,
+      "proposalId": "production:heating:1020",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.710417,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1020,
+      "proposalId": "production:heating:1080",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.66875,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1080,
+      "proposalId": "production:heating:1140",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.708333,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1140,
+      "proposalId": "council:council-2:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-2",
+        "reason": "power_low"
+      }
+    },
+    {
+      "at": 1140,
+      "proposalId": "council:council-2:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-2",
+        "winner": "p-council-2-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "at": 1140,
+      "proposalId": "tasks:task-2:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-2",
+        "type": "PREPARE_WARMTH",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 1140,
+      "proposalId": "tasks:task-2:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-2",
+        "revision": 2
+      }
+    },
+    {
+      "at": 1140,
+      "proposalId": "production:heating:1200",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.666667,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1200,
+      "proposalId": "tasks:task-2:done",
+      "type": "task_completed",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-2",
+        "type": "PREPARE_WARMTH",
+        "receipt": "npc_01-r8-33:refuelled:35",
+        "receiptType": "refuelled"
+      }
+    },
+    {
+      "at": 1232,
+      "proposalId": "production:heating:1260",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.593056,
+        "band": "warm",
+        "wood": 0.467,
+        "power": 0.933
+      }
+    },
+    {
+      "at": 1260,
+      "proposalId": "production:heating:1320",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.672361,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1320,
+      "proposalId": "production:heating:1380",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.645139,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "at": 1380,
+      "proposalId": "production:heating:1440",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.610278,
+        "band": "warm",
+        "wood": 1,
+        "power": 1.067
+      }
+    },
+    {
+      "at": 1440,
+      "proposalId": "production:heating:1500",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.583194,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 1500,
+      "proposalId": "production:heating:1560",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.556111,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 1560,
+      "proposalId": "production:heating:1620",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.529028,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 1620,
+      "proposalId": "production:heating:1680",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.501944,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 1680,
+      "proposalId": "council:council-3:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-3",
+        "reason": "power_low"
+      }
+    },
+    {
+      "at": 1680,
+      "proposalId": "council:council-3:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-3",
+        "winner": "p-council-3-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "at": 1680,
+      "proposalId": "tasks:task-3:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-3",
+        "type": "REST_RECOVER",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 1680,
+      "proposalId": "tasks:task-3:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-3",
+        "revision": 2
+      }
+    },
+    {
+      "at": 1680,
+      "proposalId": "production:heating:1740",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.474861,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 1740,
+      "proposalId": "tasks:task-3:done",
+      "type": "task_completed",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-3",
+        "type": "REST_RECOVER",
+        "receipt": "npc_01-r8-54:rested:56",
+        "receiptType": "rested"
+      }
+    },
+    {
+      "at": 1740,
+      "proposalId": "production:heating:1800",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.447778,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 1800,
+      "proposalId": "production:heating:1860",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.420694,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 1860,
+      "proposalId": "production:heating:1920",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.393611,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 1920,
+      "proposalId": "production:heating:1980",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.366528,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 1980,
+      "proposalId": "production:heating:2040",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.339444,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2040,
+      "proposalId": "production:heating:2100",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.312361,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2100,
+      "proposalId": "production:heating:2160",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.285278,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2160,
+      "proposalId": "council:council-4:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-4",
+        "reason": "firewood_low"
+      }
+    },
+    {
+      "at": 2160,
+      "proposalId": "council:council-4:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-4",
+        "winner": "p-council-4-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "at": 2160,
+      "proposalId": "tasks:task-4:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-4",
+        "type": "COLLECT_FOOD",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 2160,
+      "proposalId": "tasks:task-4:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-4",
+        "revision": 2
+      }
+    },
+    {
+      "at": 2160,
+      "proposalId": "production:heating:2220",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.258194,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2220,
+      "proposalId": "production:heating:2280",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.231111,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2280,
+      "proposalId": "production:heating:2340",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.312361,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2340,
+      "proposalId": "production:heating:2400",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.420694,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2400,
+      "proposalId": "production:heating:2460",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.393611,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2460,
+      "proposalId": "production:heating:2520",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.474861,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2520,
+      "proposalId": "production:heating:2580",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.447778,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2580,
+      "proposalId": "production:heating:2640",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.529028,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2640,
+      "proposalId": "council:council-5:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-5",
+        "reason": "power_low"
+      }
+    },
+    {
+      "at": 2640,
+      "proposalId": "council:council-5:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-5",
+        "winner": "p-council-5-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "at": 2640,
+      "proposalId": "tasks:task-5:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-5",
+        "type": "COLLECT_FOOD",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 2640,
+      "proposalId": "tasks:task-5:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-5",
+        "revision": 2
+      }
+    },
+    {
+      "at": 2640,
+      "proposalId": "production:heating:2700",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.610278,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2700,
+      "proposalId": "production:heating:2760",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.65,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2760,
+      "proposalId": "production:heating:2820",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.65,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2820,
+      "proposalId": "production:heating:2880",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.65,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2880,
+      "proposalId": "production:heating:2940",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.637361,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 2940,
+      "proposalId": "production:heating:3000",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.610278,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3000,
+      "proposalId": "production:heating:3060",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.583194,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3060,
+      "proposalId": "production:heating:3120",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.556111,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3120,
+      "proposalId": "council:council-6:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-6",
+        "reason": "power_low"
+      }
+    },
+    {
+      "at": 3120,
+      "proposalId": "council:council-6:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-6",
+        "winner": "p-council-6-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "at": 3120,
+      "proposalId": "tasks:task-6:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-6",
+        "type": "COLLECT_FOOD",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 3120,
+      "proposalId": "tasks:task-6:countered",
+      "type": "task_countered",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-6",
+        "counterTaskId": "task-7",
+        "counterType": "REST_RECOVER",
+        "reason": "体力 20 < 20，申请先休息"
+      }
+    },
+    {
+      "at": 3120,
+      "proposalId": "production:heating:3180",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.529028,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3180,
+      "proposalId": "production:heating:3240",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.501944,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3240,
+      "proposalId": "production:heating:3300",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.474861,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3300,
+      "proposalId": "production:heating:3360",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.447778,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3360,
+      "proposalId": "production:heating:3420",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.420694,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3420,
+      "proposalId": "production:heating:3480",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.393611,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3480,
+      "proposalId": "production:heating:3540",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.366528,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3540,
+      "proposalId": "production:heating:3600",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.339444,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3600,
+      "proposalId": "council:council-7:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-7",
+        "reason": "firewood_low"
+      }
+    },
+    {
+      "at": 3600,
+      "proposalId": "council:council-7:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-7",
+        "winner": "p-council-7-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "at": 3600,
+      "proposalId": "tasks:task-8:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-8",
+        "type": "COLLECT_FOOD",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 3600,
+      "proposalId": "tasks:task-8:countered",
+      "type": "task_countered",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-8",
+        "counterTaskId": "task-9",
+        "counterType": "REST_RECOVER",
+        "reason": "体力 8 < 20，申请先休息"
+      }
+    },
+    {
+      "at": 3600,
+      "proposalId": "production:heating:3660",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.312361,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3660,
+      "proposalId": "tasks:task-4:done",
+      "type": "task_completed",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-4",
+        "type": "COLLECT_FOOD",
+        "receipt": "npc_01-r8-129:gathered:131",
+        "receiptType": "gathered"
+      }
+    },
+    {
+      "at": 3660,
+      "proposalId": "production:heating:3720",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.285278,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3720,
+      "proposalId": "production:heating:3780",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.258194,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3780,
+      "proposalId": "production:heating:3840",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.231111,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3840,
+      "proposalId": "production:heating:3900",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.204028,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3900,
+      "proposalId": "production:heating:3960",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.176944,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 3960,
+      "proposalId": "production:heating:4020",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.258194,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4020,
+      "proposalId": "production:heating:4080",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.231111,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4080,
+      "proposalId": "council:council-8:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-8",
+        "reason": "firewood_low"
+      }
+    },
+    {
+      "at": 4080,
+      "proposalId": "council:council-8:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-8",
+        "winner": "p-council-8-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "at": 4080,
+      "proposalId": "tasks:task-10:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-10",
+        "type": "REST_RECOVER",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 4080,
+      "proposalId": "tasks:task-10:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-10",
+        "revision": 2
+      }
+    },
+    {
+      "at": 4080,
+      "proposalId": "production:heating:4140",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.285278,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4140,
+      "proposalId": "tasks:task-10:done",
+      "type": "task_completed",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-10",
+        "type": "REST_RECOVER",
+        "receipt": "npc_01-r8-153:rested:155",
+        "receiptType": "rested"
+      }
+    },
+    {
+      "at": 4140,
+      "proposalId": "production:heating:4200",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.258194,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4200,
+      "proposalId": "production:heating:4260",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.231111,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4260,
+      "proposalId": "production:heating:4320",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.204028,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4320,
+      "proposalId": "production:heating:4380",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.176944,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4320,
+      "proposalId": "crises:crisis-2:day4",
+      "type": "crisis_started",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "crisisId": "crisis-2",
+        "kind": "day4_warning",
+        "outdoor": "snow"
+      }
+    },
+    {
+      "at": 4380,
+      "proposalId": "production:heating:4440",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.149861,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4440,
+      "proposalId": "production:heating:4500",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.122778,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4500,
+      "proposalId": "production:heating:4560",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.095694,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4560,
+      "proposalId": "council:council-9:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-9",
+        "reason": "firewood_low"
+      }
+    },
+    {
+      "at": 4560,
+      "proposalId": "council:council-9:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-9",
+        "winner": "p-council-9-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "at": 4560,
+      "proposalId": "tasks:task-11:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-11",
+        "type": "COLLECT_FOOD",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 4560,
+      "proposalId": "tasks:task-11:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-11",
+        "revision": 2
+      }
+    },
+    {
+      "at": 4560,
+      "proposalId": "production:heating:4620",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.068611,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4620,
+      "proposalId": "production:heating:4680",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.041528,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4680,
+      "proposalId": "production:heating:4740",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.014444,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 4740,
+      "proposalId": "production:heating:4800",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0.533,
+        "power": 0
+      }
+    },
+    {
+      "at": 4800,
+      "proposalId": "production:heating:4860",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 4860,
+      "proposalId": "production:heating:4920",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 4920,
+      "proposalId": "production:heating:4980",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 4980,
+      "proposalId": "production:heating:5040",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 5040,
+      "proposalId": "council:council-10:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-10",
+        "reason": "firewood_low"
+      }
+    },
+    {
+      "at": 5040,
+      "proposalId": "council:council-10:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-10",
+        "winner": "p-council-10-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "at": 5040,
+      "proposalId": "tasks:task-12:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-12",
+        "type": "COLLECT_FOOD",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 5040,
+      "proposalId": "tasks:task-12:countered",
+      "type": "task_countered",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-12",
+        "counterTaskId": "task-13",
+        "counterType": "REST_RECOVER",
+        "reason": "体力 18 < 20，申请先休息"
+      }
+    },
+    {
+      "at": 5040,
+      "proposalId": "production:heating:5100",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 5100,
+      "proposalId": "production:heating:5160",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 5160,
+      "proposalId": "production:heating:5220",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 5220,
+      "proposalId": "production:heating:5280",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 5280,
+      "proposalId": "production:heating:5340",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "at": 5340,
+      "proposalId": "production:heating:5400",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.08125,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "at": 5400,
+      "proposalId": "life:1:ended",
+      "type": "ending_reached",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "lifeNumber": 1,
+        "ending": "extinction",
+        "survivors": 1,
+        "elapsed": 4920
+      }
+    },
+    {
+      "at": 5400,
+      "type": "ending_reached",
+      "actorId": "system",
+      "payload": {
+        "ending": "extinction",
+        "survivors": 1,
+        "elapsed": 4920
+      }
+    }
+  ],
+  "committed": [
+    {
+      "eventId": "d:480:council_opened:old_qian",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "simTime": 480,
+      "payload": {
+        "meetingId": "council-1",
+        "reason": "morning"
+      }
+    },
+    {
+      "eventId": "d:480:council_resolved:old_qian",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "simTime": 480,
+      "payload": {
+        "meetingId": "council-1",
+        "winner": "p-council-1-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "eventId": "d:480:task_proposed:old_qian",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "simTime": 480,
+      "payload": {
+        "taskId": "task-1",
+        "type": "PREPARE_WARMTH",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "eventId": "d:480:task_accepted:npc_01",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "simTime": 480,
+      "payload": {
+        "taskId": "task-1",
+        "revision": 2
+      }
+    },
+    {
+      "eventId": "v1:actor:survival:npc_01:span:540",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 480,
+      "payload": {
+        "intentId": "survival:npc_01:span:540",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v1:resource:production:heating:wood:540",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 480,
+      "payload": {
+        "intentId": "production:heating:wood:540",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v1:resource:production:heating:power:540",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 480,
+      "payload": {
+        "intentId": "production:heating:power:540",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -2
+      }
+    },
+    {
+      "eventId": "v1:intent-note:production:heating:warmth:540",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 480,
+      "payload": {
+        "intentId": "production:heating:warmth:540",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.854167
+      }
+    },
+    {
+      "eventId": "d:480:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 480,
+      "payload": {
+        "strength": 0.854167,
+        "band": "hot",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "eventId": "d:480:crisis_started:system",
+      "type": "crisis_started",
+      "actorId": "system",
+      "simTime": 480,
+      "payload": {
+        "crisisId": "crisis-1",
+        "kind": "extinction",
+        "alive": 1
+      }
+    },
+    {
+      "eventId": "npc_01-r8-0:refuelled:2",
+      "type": "refuelled",
+      "actorId": "npc_01",
+      "simTime": 540,
+      "payload": {
+        "amount": 2
+      }
+    },
+    {
+      "eventId": "d:540:task_completed:npc_01",
+      "type": "task_completed",
+      "actorId": "npc_01",
+      "simTime": 540,
+      "payload": {
+        "taskId": "task-1",
+        "type": "PREPARE_WARMTH",
+        "receipt": "npc_01-r8-0:refuelled:2",
+        "receiptType": "refuelled"
+      }
+    },
+    {
+      "eventId": "v4:actor:survival:npc_01:span:600",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 540,
+      "payload": {
+        "intentId": "survival:npc_01:span:600",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v4:resource:production:heating:wood:600",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 540,
+      "payload": {
+        "intentId": "production:heating:wood:600",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v4:resource:production:heating:power:600",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 540,
+      "payload": {
+        "intentId": "production:heating:power:600",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -2
+      }
+    },
+    {
+      "eventId": "v4:intent-note:production:heating:warmth:600",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 540,
+      "payload": {
+        "intentId": "production:heating:warmth:600",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.839583
+      }
+    },
+    {
+      "eventId": "d:540:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 540,
+      "payload": {
+        "strength": 0.839583,
+        "band": "hot",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "eventId": "npc_01-r8-3:gathered:5",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 600,
+      "payload": {
+        "resource": "food",
+        "amount": 4
+      }
+    },
+    {
+      "eventId": "v7:actor:survival:npc_01:span:660",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 600,
+      "payload": {
+        "intentId": "survival:npc_01:span:660",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v7:resource:production:heating:wood:660",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 600,
+      "payload": {
+        "intentId": "production:heating:wood:660",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v7:resource:production:heating:power:660",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 600,
+      "payload": {
+        "intentId": "production:heating:power:660",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -2
+      }
+    },
+    {
+      "eventId": "v7:intent-note:production:heating:warmth:660",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 600,
+      "payload": {
+        "intentId": "production:heating:warmth:660",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.825
+      }
+    },
+    {
+      "eventId": "d:600:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 600,
+      "payload": {
+        "strength": 0.825,
+        "band": "hot",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "eventId": "npc_01-r8-6:gathered:8",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 660,
+      "payload": {
+        "resource": "food",
+        "amount": 5
+      }
+    },
+    {
+      "eventId": "v10:actor:survival:npc_01:span:720",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 660,
+      "payload": {
+        "intentId": "survival:npc_01:span:720",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v10:resource:production:heating:wood:720",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 660,
+      "payload": {
+        "intentId": "production:heating:wood:720",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v10:resource:production:heating:power:720",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 660,
+      "payload": {
+        "intentId": "production:heating:power:720",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -2
+      }
+    },
+    {
+      "eventId": "v10:intent-note:production:heating:warmth:720",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 660,
+      "payload": {
+        "intentId": "production:heating:warmth:720",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.810417
+      }
+    },
+    {
+      "eventId": "d:660:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 660,
+      "payload": {
+        "strength": 0.810417,
+        "band": "hot",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "eventId": "npc_01-r8-9:gathered:11",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 720,
+      "payload": {
+        "resource": "food",
+        "amount": 4
+      }
+    },
+    {
+      "eventId": "v13:actor:survival:npc_01:span:780",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 720,
+      "payload": {
+        "intentId": "survival:npc_01:span:780",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v13:resource:production:heating:wood:780",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 720,
+      "payload": {
+        "intentId": "production:heating:wood:780",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v13:resource:production:heating:power:780",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 720,
+      "payload": {
+        "intentId": "production:heating:power:780",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -2
+      }
+    },
+    {
+      "eventId": "v13:intent-note:production:heating:warmth:780",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 720,
+      "payload": {
+        "intentId": "production:heating:warmth:780",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.76875
+      }
+    },
+    {
+      "eventId": "d:720:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 720,
+      "payload": {
+        "strength": 0.76875,
+        "band": "hot",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "eventId": "npc_01-r8-12:moved:14",
+      "type": "moved",
+      "actorId": "npc_01",
+      "simTime": 780,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "v16:actor:survival:npc_01:span:840",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 780,
+      "payload": {
+        "intentId": "survival:npc_01:span:840",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v16:resource:production:heating:wood:840",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 780,
+      "payload": {
+        "intentId": "production:heating:wood:840",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v16:resource:production:heating:power:840",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 780,
+      "payload": {
+        "intentId": "production:heating:power:840",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -2
+      }
+    },
+    {
+      "eventId": "v16:intent-note:production:heating:warmth:840",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 780,
+      "payload": {
+        "intentId": "production:heating:warmth:840",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.727083
+      }
+    },
+    {
+      "eventId": "d:780:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 780,
+      "payload": {
+        "strength": 0.727083,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "eventId": "npc_01-r8-15:gathered:17",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 840,
+      "payload": {
+        "resource": "firewood",
+        "amount": 4
+      }
+    },
+    {
+      "eventId": "v19:actor:survival:npc_01:span:900",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 840,
+      "payload": {
+        "intentId": "survival:npc_01:span:900",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v19:resource:production:heating:wood:900",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 840,
+      "payload": {
+        "intentId": "production:heating:wood:900",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v19:resource:production:heating:power:900",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 840,
+      "payload": {
+        "intentId": "production:heating:power:900",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -2
+      }
+    },
+    {
+      "eventId": "v19:intent-note:production:heating:warmth:900",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 840,
+      "payload": {
+        "intentId": "production:heating:warmth:900",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.766667
+      }
+    },
+    {
+      "eventId": "d:840:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 840,
+      "payload": {
+        "strength": 0.766667,
+        "band": "hot",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "eventId": "npc_01-r8-18:moved:20",
+      "type": "moved",
+      "actorId": "npc_01",
+      "simTime": 900,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "v22:actor:survival:npc_01:span:960",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 900,
+      "payload": {
+        "intentId": "survival:npc_01:span:960",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v22:resource:production:heating:wood:960",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 900,
+      "payload": {
+        "intentId": "production:heating:wood:960",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v22:resource:production:heating:power:960",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 900,
+      "payload": {
+        "intentId": "production:heating:power:960",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -2
+      }
+    },
+    {
+      "eventId": "v22:intent-note:production:heating:warmth:960",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 900,
+      "payload": {
+        "intentId": "production:heating:warmth:960",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.752083
+      }
+    },
+    {
+      "eventId": "d:900:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 900,
+      "payload": {
+        "strength": 0.752083,
+        "band": "hot",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "eventId": "npc_01-r8-21:moved:23",
+      "type": "moved",
+      "actorId": "npc_01",
+      "simTime": 960,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "v25:actor:survival:npc_01:span:1020",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 960,
+      "payload": {
+        "intentId": "survival:npc_01:span:1020",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v25:resource:production:heating:wood:1020",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 960,
+      "payload": {
+        "intentId": "production:heating:wood:1020",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v25:resource:production:heating:power:1020",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 960,
+      "payload": {
+        "intentId": "production:heating:power:1020",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -2
+      }
+    },
+    {
+      "eventId": "v25:intent-note:production:heating:warmth:1020",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 960,
+      "payload": {
+        "intentId": "production:heating:warmth:1020",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.710417
+      }
+    },
+    {
+      "eventId": "d:960:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 960,
+      "payload": {
+        "strength": 0.710417,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "eventId": "npc_01-r8-24:moved:26",
+      "type": "moved",
+      "actorId": "npc_01",
+      "simTime": 1020,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "v28:actor:survival:npc_01:span:1080",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 1020,
+      "payload": {
+        "intentId": "survival:npc_01:span:1080",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v28:resource:production:heating:wood:1080",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1020,
+      "payload": {
+        "intentId": "production:heating:wood:1080",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v28:resource:production:heating:power:1080",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1020,
+      "payload": {
+        "intentId": "production:heating:power:1080",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -2
+      }
+    },
+    {
+      "eventId": "v28:intent-note:production:heating:warmth:1080",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 1020,
+      "payload": {
+        "intentId": "production:heating:warmth:1080",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.66875
+      }
+    },
+    {
+      "eventId": "d:1020:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 1020,
+      "payload": {
+        "strength": 0.66875,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "eventId": "npc_01-r8-27:gathered:29",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 1080,
+      "payload": {
+        "resource": "firewood",
+        "amount": 3
+      }
+    },
+    {
+      "eventId": "v31:actor:survival:npc_01:span:1140",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 1080,
+      "payload": {
+        "intentId": "survival:npc_01:span:1140",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v31:resource:production:heating:wood:1140",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1080,
+      "payload": {
+        "intentId": "production:heating:wood:1140",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v31:resource:production:heating:power:1140",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1080,
+      "payload": {
+        "intentId": "production:heating:power:1140",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -2
+      }
+    },
+    {
+      "eventId": "v31:intent-note:production:heating:warmth:1140",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 1080,
+      "payload": {
+        "intentId": "production:heating:warmth:1140",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.708333
+      }
+    },
+    {
+      "eventId": "d:1080:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 1080,
+      "payload": {
+        "strength": 0.708333,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "eventId": "npc_01-r8-30:moved:32",
+      "type": "moved",
+      "actorId": "npc_01",
+      "simTime": 1140,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "d:1140:council_opened:old_qian",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "simTime": 1140,
+      "payload": {
+        "meetingId": "council-2",
+        "reason": "power_low"
+      }
+    },
+    {
+      "eventId": "d:1140:council_resolved:old_qian",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "simTime": 1140,
+      "payload": {
+        "meetingId": "council-2",
+        "winner": "p-council-2-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "eventId": "d:1140:task_proposed:old_qian",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "simTime": 1140,
+      "payload": {
+        "taskId": "task-2",
+        "type": "PREPARE_WARMTH",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "eventId": "d:1140:task_accepted:npc_01",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "simTime": 1140,
+      "payload": {
+        "taskId": "task-2",
+        "revision": 2
+      }
+    },
+    {
+      "eventId": "v34:actor:survival:npc_01:span:1200",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 1140,
+      "payload": {
+        "intentId": "survival:npc_01:span:1200",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v34:resource:production:heating:wood:1200",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1140,
+      "payload": {
+        "intentId": "production:heating:wood:1200",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v34:resource:production:heating:power:1200",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1140,
+      "payload": {
+        "intentId": "production:heating:power:1200",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -2
+      }
+    },
+    {
+      "eventId": "v34:intent-note:production:heating:warmth:1200",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 1140,
+      "payload": {
+        "intentId": "production:heating:warmth:1200",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.666667
+      }
+    },
+    {
+      "eventId": "d:1140:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 1140,
+      "payload": {
+        "strength": 0.666667,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "eventId": "npc_01-r8-33:refuelled:35",
+      "type": "refuelled",
+      "actorId": "npc_01",
+      "simTime": 1200,
+      "payload": {
+        "amount": 2
+      }
+    },
+    {
+      "eventId": "d:1200:task_completed:npc_01",
+      "type": "task_completed",
+      "actorId": "npc_01",
+      "simTime": 1200,
+      "payload": {
+        "taskId": "task-2",
+        "type": "PREPARE_WARMTH",
+        "receipt": "npc_01-r8-33:refuelled:35",
+        "receiptType": "refuelled"
+      }
+    },
+    {
+      "eventId": "sleep-1200-npc_01:traveled:36",
+      "type": "traveled",
+      "actorId": "npc_01",
+      "simTime": 1232,
+      "payload": {
+        "tiles": 16,
+        "minutes": 32,
+        "arrivedAt": "dorm-a"
+      }
+    },
+    {
+      "eventId": "v38:actor:survival:npc_01:span:1260",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 1232,
+      "payload": {
+        "intentId": "survival:npc_01:span:1260",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v38:resource:production:heating:wood:1260",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1232,
+      "payload": {
+        "intentId": "production:heating:wood:1260",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -0.4666666666666667
+      }
+    },
+    {
+      "eventId": "v38:resource:production:heating:power:1260",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1232,
+      "payload": {
+        "intentId": "production:heating:power:1260",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -0.9333333333333333
+      }
+    },
+    {
+      "eventId": "v38:intent-note:production:heating:warmth:1260",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 1232,
+      "payload": {
+        "intentId": "production:heating:warmth:1260",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.593056
+      }
+    },
+    {
+      "eventId": "d:1232:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 1232,
+      "payload": {
+        "strength": 0.593056,
+        "band": "warm",
+        "wood": 0.467,
+        "power": 0.933
+      }
+    },
+    {
+      "eventId": "npc_01-r8-36:gathered:39",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 1260,
+      "payload": {
+        "resource": "firewood",
+        "amount": 5
+      }
+    },
+    {
+      "eventId": "v41:actor:survival:npc_01:span:1320",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 1260,
+      "payload": {
+        "intentId": "survival:npc_01:span:1320",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v41:resource:production:heating:wood:1320",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1260,
+      "payload": {
+        "intentId": "production:heating:wood:1320",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v41:resource:production:heating:power:1320",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1260,
+      "payload": {
+        "intentId": "production:heating:power:1320",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -2
+      }
+    },
+    {
+      "eventId": "v41:intent-note:production:heating:warmth:1320",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 1260,
+      "payload": {
+        "intentId": "production:heating:warmth:1320",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.672361
+      }
+    },
+    {
+      "eventId": "d:1260:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 1260,
+      "payload": {
+        "strength": 0.672361,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "eventId": "v43:actor:survival:npc_01:span:1380",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 1320,
+      "payload": {
+        "intentId": "survival:npc_01:span:1380",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v43:resource:production:heating:wood:1380",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1320,
+      "payload": {
+        "intentId": "production:heating:wood:1380",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v43:resource:production:heating:power:1380",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1320,
+      "payload": {
+        "intentId": "production:heating:power:1380",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -2
+      }
+    },
+    {
+      "eventId": "v43:intent-note:production:heating:warmth:1380",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 1320,
+      "payload": {
+        "intentId": "production:heating:warmth:1380",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.645139
+      }
+    },
+    {
+      "eventId": "d:1320:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 1320,
+      "payload": {
+        "strength": 0.645139,
+        "band": "warm",
+        "wood": 1,
+        "power": 2
+      }
+    },
+    {
+      "eventId": "v45:actor:survival:npc_01:span:1440",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 1380,
+      "payload": {
+        "intentId": "survival:npc_01:span:1440",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v45:resource:production:heating:wood:1440",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1380,
+      "payload": {
+        "intentId": "production:heating:wood:1440",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v45:resource:production:heating:power:1440",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1380,
+      "payload": {
+        "intentId": "production:heating:power:1440",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -1.066667
+      }
+    },
+    {
+      "eventId": "v45:intent-note:production:heating:warmth:1440",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 1380,
+      "payload": {
+        "intentId": "production:heating:warmth:1440",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.610278
+      }
+    },
+    {
+      "eventId": "d:1380:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 1380,
+      "payload": {
+        "strength": 0.610278,
+        "band": "warm",
+        "wood": 1,
+        "power": 1.067
+      }
+    },
+    {
+      "eventId": "v47:actor:survival:npc_01:span:1500",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 1440,
+      "payload": {
+        "intentId": "survival:npc_01:span:1500",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v47:resource:production:heating:wood:1500",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1440,
+      "payload": {
+        "intentId": "production:heating:wood:1500",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v47:intent-note:production:heating:warmth:1500",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 1440,
+      "payload": {
+        "intentId": "production:heating:warmth:1500",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.583194
+      }
+    },
+    {
+      "eventId": "d:1440:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 1440,
+      "payload": {
+        "strength": 0.583194,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v49:actor:survival:npc_01:span:1560",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 1500,
+      "payload": {
+        "intentId": "survival:npc_01:span:1560",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v49:resource:production:heating:wood:1560",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1500,
+      "payload": {
+        "intentId": "production:heating:wood:1560",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v49:intent-note:production:heating:warmth:1560",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 1500,
+      "payload": {
+        "intentId": "production:heating:warmth:1560",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.556111
+      }
+    },
+    {
+      "eventId": "d:1500:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 1500,
+      "payload": {
+        "strength": 0.556111,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v51:actor:survival:npc_01:span:1620",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 1560,
+      "payload": {
+        "intentId": "survival:npc_01:span:1620",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v51:resource:production:heating:wood:1620",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1560,
+      "payload": {
+        "intentId": "production:heating:wood:1620",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v51:intent-note:production:heating:warmth:1620",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 1560,
+      "payload": {
+        "intentId": "production:heating:warmth:1620",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.529028
+      }
+    },
+    {
+      "eventId": "d:1560:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 1560,
+      "payload": {
+        "strength": 0.529028,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v53:actor:survival:npc_01:span:1680",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 1620,
+      "payload": {
+        "intentId": "survival:npc_01:span:1680",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v53:resource:production:heating:wood:1680",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1620,
+      "payload": {
+        "intentId": "production:heating:wood:1680",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v53:intent-note:production:heating:warmth:1680",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 1620,
+      "payload": {
+        "intentId": "production:heating:warmth:1680",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.501944
+      }
+    },
+    {
+      "eventId": "d:1620:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 1620,
+      "payload": {
+        "strength": 0.501944,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "d:1680:council_opened:old_qian",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "simTime": 1680,
+      "payload": {
+        "meetingId": "council-3",
+        "reason": "power_low"
+      }
+    },
+    {
+      "eventId": "d:1680:council_resolved:old_qian",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "simTime": 1680,
+      "payload": {
+        "meetingId": "council-3",
+        "winner": "p-council-3-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "eventId": "d:1680:task_proposed:old_qian",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "simTime": 1680,
+      "payload": {
+        "taskId": "task-3",
+        "type": "REST_RECOVER",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "eventId": "d:1680:task_accepted:npc_01",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "simTime": 1680,
+      "payload": {
+        "taskId": "task-3",
+        "revision": 2
+      }
+    },
+    {
+      "eventId": "v55:actor:survival:npc_01:span:1740",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 1680,
+      "payload": {
+        "intentId": "survival:npc_01:span:1740",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v55:resource:production:heating:wood:1740",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1680,
+      "payload": {
+        "intentId": "production:heating:wood:1740",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v55:intent-note:production:heating:warmth:1740",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 1680,
+      "payload": {
+        "intentId": "production:heating:warmth:1740",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.474861
+      }
+    },
+    {
+      "eventId": "d:1680:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 1680,
+      "payload": {
+        "strength": 0.474861,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-54:rested:56",
+      "type": "rested",
+      "actorId": "npc_01",
+      "simTime": 1740,
+      "payload": {
+        "minutes": 60
+      }
+    },
+    {
+      "eventId": "d:1740:task_completed:npc_01",
+      "type": "task_completed",
+      "actorId": "npc_01",
+      "simTime": 1740,
+      "payload": {
+        "taskId": "task-3",
+        "type": "REST_RECOVER",
+        "receipt": "npc_01-r8-54:rested:56",
+        "receiptType": "rested"
+      }
+    },
+    {
+      "eventId": "v58:actor:survival:npc_01:span:1800",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 1740,
+      "payload": {
+        "intentId": "survival:npc_01:span:1800",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v58:resource:production:heating:wood:1800",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1740,
+      "payload": {
+        "intentId": "production:heating:wood:1800",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v58:intent-note:production:heating:warmth:1800",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 1740,
+      "payload": {
+        "intentId": "production:heating:warmth:1800",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.447778
+      }
+    },
+    {
+      "eventId": "d:1740:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 1740,
+      "payload": {
+        "strength": 0.447778,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v60:actor:survival:npc_01:span:1860",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 1800,
+      "payload": {
+        "intentId": "survival:npc_01:span:1860",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v60:resource:production:heating:wood:1860",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1800,
+      "payload": {
+        "intentId": "production:heating:wood:1860",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v60:intent-note:production:heating:warmth:1860",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 1800,
+      "payload": {
+        "intentId": "production:heating:warmth:1860",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.420694
+      }
+    },
+    {
+      "eventId": "d:1800:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 1800,
+      "payload": {
+        "strength": 0.420694,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v62:actor:survival:npc_01:span:1920",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 1860,
+      "payload": {
+        "intentId": "survival:npc_01:span:1920",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v62:resource:production:heating:wood:1920",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1860,
+      "payload": {
+        "intentId": "production:heating:wood:1920",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v62:intent-note:production:heating:warmth:1920",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 1860,
+      "payload": {
+        "intentId": "production:heating:warmth:1920",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.393611
+      }
+    },
+    {
+      "eventId": "d:1860:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 1860,
+      "payload": {
+        "strength": 0.393611,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v64:actor:survival:npc_01:span:1980",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 1920,
+      "payload": {
+        "intentId": "survival:npc_01:span:1980",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v64:resource:production:heating:wood:1980",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1920,
+      "payload": {
+        "intentId": "production:heating:wood:1980",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v64:intent-note:production:heating:warmth:1980",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 1920,
+      "payload": {
+        "intentId": "production:heating:warmth:1980",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.366528
+      }
+    },
+    {
+      "eventId": "d:1920:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 1920,
+      "payload": {
+        "strength": 0.366528,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v66:actor:survival:npc_01:span:2040",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 1980,
+      "payload": {
+        "intentId": "survival:npc_01:span:2040",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v66:resource:production:heating:wood:2040",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 1980,
+      "payload": {
+        "intentId": "production:heating:wood:2040",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v66:intent-note:production:heating:warmth:2040",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 1980,
+      "payload": {
+        "intentId": "production:heating:warmth:2040",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.339444
+      }
+    },
+    {
+      "eventId": "d:1980:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 1980,
+      "payload": {
+        "strength": 0.339444,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v68:actor:survival:npc_01:span:2100",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 2040,
+      "payload": {
+        "intentId": "survival:npc_01:span:2100",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v68:resource:production:heating:wood:2100",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 2040,
+      "payload": {
+        "intentId": "production:heating:wood:2100",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v68:intent-note:production:heating:warmth:2100",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 2040,
+      "payload": {
+        "intentId": "production:heating:warmth:2100",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.312361
+      }
+    },
+    {
+      "eventId": "d:2040:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 2040,
+      "payload": {
+        "strength": 0.312361,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v70:actor:survival:npc_01:span:2160",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 2100,
+      "payload": {
+        "intentId": "survival:npc_01:span:2160",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v70:resource:production:heating:wood:2160",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 2100,
+      "payload": {
+        "intentId": "production:heating:wood:2160",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v70:intent-note:production:heating:warmth:2160",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 2100,
+      "payload": {
+        "intentId": "production:heating:warmth:2160",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.285278
+      }
+    },
+    {
+      "eventId": "d:2100:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 2100,
+      "payload": {
+        "strength": 0.285278,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "d:2160:council_opened:old_qian",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "simTime": 2160,
+      "payload": {
+        "meetingId": "council-4",
+        "reason": "firewood_low"
+      }
+    },
+    {
+      "eventId": "d:2160:council_resolved:old_qian",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "simTime": 2160,
+      "payload": {
+        "meetingId": "council-4",
+        "winner": "p-council-4-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "eventId": "d:2160:task_proposed:old_qian",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "simTime": 2160,
+      "payload": {
+        "taskId": "task-4",
+        "type": "COLLECT_FOOD",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "eventId": "d:2160:task_accepted:npc_01",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "simTime": 2160,
+      "payload": {
+        "taskId": "task-4",
+        "revision": 2
+      }
+    },
+    {
+      "eventId": "v72:actor:survival:npc_01:span:2220",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 2160,
+      "payload": {
+        "intentId": "survival:npc_01:span:2220",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v72:resource:production:heating:wood:2220",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 2160,
+      "payload": {
+        "intentId": "production:heating:wood:2220",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v72:intent-note:production:heating:warmth:2220",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 2160,
+      "payload": {
+        "intentId": "production:heating:warmth:2220",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.258194
+      }
+    },
+    {
+      "eventId": "d:2160:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 2160,
+      "payload": {
+        "strength": 0.258194,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-71:rested:73",
+      "type": "rested",
+      "actorId": "npc_01",
+      "simTime": 2220,
+      "payload": {
+        "minutes": 60
+      }
+    },
+    {
+      "eventId": "v75:actor:survival:npc_01:span:2280",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 2220,
+      "payload": {
+        "intentId": "survival:npc_01:span:2280",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v75:resource:production:heating:wood:2280",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 2220,
+      "payload": {
+        "intentId": "production:heating:wood:2280",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v75:intent-note:production:heating:warmth:2280",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 2220,
+      "payload": {
+        "intentId": "production:heating:warmth:2280",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.231111
+      }
+    },
+    {
+      "eventId": "d:2220:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 2220,
+      "payload": {
+        "strength": 0.231111,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-74:gathered:76",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 2280,
+      "payload": {
+        "resource": "firewood",
+        "amount": 4
+      }
+    },
+    {
+      "eventId": "v78:actor:survival:npc_01:span:2340",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 2280,
+      "payload": {
+        "intentId": "survival:npc_01:span:2340",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v78:resource:production:heating:wood:2340",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 2280,
+      "payload": {
+        "intentId": "production:heating:wood:2340",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v78:intent-note:production:heating:warmth:2340",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 2280,
+      "payload": {
+        "intentId": "production:heating:warmth:2340",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.312361
+      }
+    },
+    {
+      "eventId": "d:2280:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 2280,
+      "payload": {
+        "strength": 0.312361,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-77:gathered:79",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 2340,
+      "payload": {
+        "resource": "firewood",
+        "amount": 5
+      }
+    },
+    {
+      "eventId": "npc_01-r8-80:ate:80",
+      "type": "ate",
+      "actorId": "npc_01",
+      "simTime": 2340,
+      "payload": {
+        "amount": 1
+      }
+    },
+    {
+      "eventId": "v82:actor:survival:npc_01:span:2400",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 2340,
+      "payload": {
+        "intentId": "survival:npc_01:span:2400",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v82:resource:production:heating:wood:2400",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 2340,
+      "payload": {
+        "intentId": "production:heating:wood:2400",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v82:intent-note:production:heating:warmth:2400",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 2340,
+      "payload": {
+        "intentId": "production:heating:warmth:2400",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.420694
+      }
+    },
+    {
+      "eventId": "d:2340:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 2340,
+      "payload": {
+        "strength": 0.420694,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v84:actor:survival:npc_01:span:2460",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 2400,
+      "payload": {
+        "intentId": "survival:npc_01:span:2460",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v84:resource:production:heating:wood:2460",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 2400,
+      "payload": {
+        "intentId": "production:heating:wood:2460",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v84:intent-note:production:heating:warmth:2460",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 2400,
+      "payload": {
+        "intentId": "production:heating:warmth:2460",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.393611
+      }
+    },
+    {
+      "eventId": "d:2400:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 2400,
+      "payload": {
+        "strength": 0.393611,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-83:gathered:85",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 2460,
+      "payload": {
+        "resource": "firewood",
+        "amount": 4
+      }
+    },
+    {
+      "eventId": "v87:actor:survival:npc_01:span:2520",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 2460,
+      "payload": {
+        "intentId": "survival:npc_01:span:2520",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v87:resource:production:heating:wood:2520",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 2460,
+      "payload": {
+        "intentId": "production:heating:wood:2520",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v87:intent-note:production:heating:warmth:2520",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 2460,
+      "payload": {
+        "intentId": "production:heating:warmth:2520",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.474861
+      }
+    },
+    {
+      "eventId": "d:2460:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 2460,
+      "payload": {
+        "strength": 0.474861,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-86:rested:88",
+      "type": "rested",
+      "actorId": "npc_01",
+      "simTime": 2520,
+      "payload": {
+        "minutes": 60
+      }
+    },
+    {
+      "eventId": "v90:actor:survival:npc_01:span:2580",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 2520,
+      "payload": {
+        "intentId": "survival:npc_01:span:2580",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v90:resource:production:heating:wood:2580",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 2520,
+      "payload": {
+        "intentId": "production:heating:wood:2580",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v90:intent-note:production:heating:warmth:2580",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 2520,
+      "payload": {
+        "intentId": "production:heating:warmth:2580",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.447778
+      }
+    },
+    {
+      "eventId": "d:2520:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 2520,
+      "payload": {
+        "strength": 0.447778,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-89:gathered:91",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 2580,
+      "payload": {
+        "resource": "firewood",
+        "amount": 4
+      }
+    },
+    {
+      "eventId": "v93:actor:survival:npc_01:span:2640",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 2580,
+      "payload": {
+        "intentId": "survival:npc_01:span:2640",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v93:resource:production:heating:wood:2640",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 2580,
+      "payload": {
+        "intentId": "production:heating:wood:2640",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v93:intent-note:production:heating:warmth:2640",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 2580,
+      "payload": {
+        "intentId": "production:heating:warmth:2640",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.529028
+      }
+    },
+    {
+      "eventId": "d:2580:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 2580,
+      "payload": {
+        "strength": 0.529028,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-92:gathered:94",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 2640,
+      "payload": {
+        "resource": "firewood",
+        "amount": 4
+      }
+    },
+    {
+      "eventId": "d:2640:council_opened:old_qian",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "simTime": 2640,
+      "payload": {
+        "meetingId": "council-5",
+        "reason": "power_low"
+      }
+    },
+    {
+      "eventId": "d:2640:council_resolved:old_qian",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "simTime": 2640,
+      "payload": {
+        "meetingId": "council-5",
+        "winner": "p-council-5-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "eventId": "d:2640:task_proposed:old_qian",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "simTime": 2640,
+      "payload": {
+        "taskId": "task-5",
+        "type": "COLLECT_FOOD",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "eventId": "d:2640:task_accepted:npc_01",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "simTime": 2640,
+      "payload": {
+        "taskId": "task-5",
+        "revision": 2
+      }
+    },
+    {
+      "eventId": "v96:actor:survival:npc_01:span:2700",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 2640,
+      "payload": {
+        "intentId": "survival:npc_01:span:2700",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v96:resource:production:heating:wood:2700",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 2640,
+      "payload": {
+        "intentId": "production:heating:wood:2700",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v96:intent-note:production:heating:warmth:2700",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 2640,
+      "payload": {
+        "intentId": "production:heating:warmth:2700",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.610278
+      }
+    },
+    {
+      "eventId": "d:2640:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 2640,
+      "payload": {
+        "strength": 0.610278,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-95:gathered:97",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 2700,
+      "payload": {
+        "resource": "firewood",
+        "amount": 5
+      }
+    },
+    {
+      "eventId": "v99:actor:survival:npc_01:span:2760",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 2700,
+      "payload": {
+        "intentId": "survival:npc_01:span:2760",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v99:resource:production:heating:wood:2760",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 2700,
+      "payload": {
+        "intentId": "production:heating:wood:2760",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v99:intent-note:production:heating:warmth:2760",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 2700,
+      "payload": {
+        "intentId": "production:heating:warmth:2760",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.65
+      }
+    },
+    {
+      "eventId": "d:2700:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 2700,
+      "payload": {
+        "strength": 0.65,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v101:actor:survival:npc_01:span:2820",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 2760,
+      "payload": {
+        "intentId": "survival:npc_01:span:2820",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v101:resource:production:heating:wood:2820",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 2760,
+      "payload": {
+        "intentId": "production:heating:wood:2820",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v101:intent-note:production:heating:warmth:2820",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 2760,
+      "payload": {
+        "intentId": "production:heating:warmth:2820",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.65
+      }
+    },
+    {
+      "eventId": "d:2760:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 2760,
+      "payload": {
+        "strength": 0.65,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v103:actor:survival:npc_01:span:2880",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 2820,
+      "payload": {
+        "intentId": "survival:npc_01:span:2880",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v103:resource:production:heating:wood:2880",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 2820,
+      "payload": {
+        "intentId": "production:heating:wood:2880",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v103:intent-note:production:heating:warmth:2880",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 2820,
+      "payload": {
+        "intentId": "production:heating:warmth:2880",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.65
+      }
+    },
+    {
+      "eventId": "d:2820:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 2820,
+      "payload": {
+        "strength": 0.65,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v105:actor:survival:npc_01:span:2940",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 2880,
+      "payload": {
+        "intentId": "survival:npc_01:span:2940",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v105:resource:production:heating:wood:2940",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 2880,
+      "payload": {
+        "intentId": "production:heating:wood:2940",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v105:intent-note:production:heating:warmth:2940",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 2880,
+      "payload": {
+        "intentId": "production:heating:warmth:2940",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.637361
+      }
+    },
+    {
+      "eventId": "d:2880:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 2880,
+      "payload": {
+        "strength": 0.637361,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v107:actor:survival:npc_01:span:3000",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 2940,
+      "payload": {
+        "intentId": "survival:npc_01:span:3000",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v107:resource:production:heating:wood:3000",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 2940,
+      "payload": {
+        "intentId": "production:heating:wood:3000",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v107:intent-note:production:heating:warmth:3000",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 2940,
+      "payload": {
+        "intentId": "production:heating:warmth:3000",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.610278
+      }
+    },
+    {
+      "eventId": "d:2940:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 2940,
+      "payload": {
+        "strength": 0.610278,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v109:actor:survival:npc_01:span:3060",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 3000,
+      "payload": {
+        "intentId": "survival:npc_01:span:3060",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v109:resource:production:heating:wood:3060",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 3000,
+      "payload": {
+        "intentId": "production:heating:wood:3060",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v109:intent-note:production:heating:warmth:3060",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 3000,
+      "payload": {
+        "intentId": "production:heating:warmth:3060",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.583194
+      }
+    },
+    {
+      "eventId": "d:3000:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 3000,
+      "payload": {
+        "strength": 0.583194,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v111:actor:survival:npc_01:span:3120",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 3060,
+      "payload": {
+        "intentId": "survival:npc_01:span:3120",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v111:resource:production:heating:wood:3120",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 3060,
+      "payload": {
+        "intentId": "production:heating:wood:3120",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v111:intent-note:production:heating:warmth:3120",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 3060,
+      "payload": {
+        "intentId": "production:heating:warmth:3120",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.556111
+      }
+    },
+    {
+      "eventId": "d:3060:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 3060,
+      "payload": {
+        "strength": 0.556111,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "d:3120:council_opened:old_qian",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "simTime": 3120,
+      "payload": {
+        "meetingId": "council-6",
+        "reason": "power_low"
+      }
+    },
+    {
+      "eventId": "d:3120:council_resolved:old_qian",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "simTime": 3120,
+      "payload": {
+        "meetingId": "council-6",
+        "winner": "p-council-6-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "eventId": "d:3120:task_proposed:old_qian",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "simTime": 3120,
+      "payload": {
+        "taskId": "task-6",
+        "type": "COLLECT_FOOD",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "eventId": "d:3120:task_countered:npc_01",
+      "type": "task_countered",
+      "actorId": "npc_01",
+      "simTime": 3120,
+      "payload": {
+        "taskId": "task-6",
+        "counterTaskId": "task-7",
+        "counterType": "REST_RECOVER",
+        "reason": "体力 20 < 20，申请先休息"
+      }
+    },
+    {
+      "eventId": "npc_01-r8-112:ate:112",
+      "type": "ate",
+      "actorId": "npc_01",
+      "simTime": 3120,
+      "payload": {
+        "amount": 1
+      }
+    },
+    {
+      "eventId": "v114:actor:survival:npc_01:span:3180",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 3120,
+      "payload": {
+        "intentId": "survival:npc_01:span:3180",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v114:resource:production:heating:wood:3180",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 3120,
+      "payload": {
+        "intentId": "production:heating:wood:3180",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v114:intent-note:production:heating:warmth:3180",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 3120,
+      "payload": {
+        "intentId": "production:heating:warmth:3180",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.529028
+      }
+    },
+    {
+      "eventId": "d:3120:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 3120,
+      "payload": {
+        "strength": 0.529028,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v116:actor:survival:npc_01:span:3240",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 3180,
+      "payload": {
+        "intentId": "survival:npc_01:span:3240",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v116:resource:production:heating:wood:3240",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 3180,
+      "payload": {
+        "intentId": "production:heating:wood:3240",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v116:intent-note:production:heating:warmth:3240",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 3180,
+      "payload": {
+        "intentId": "production:heating:warmth:3240",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.501944
+      }
+    },
+    {
+      "eventId": "d:3180:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 3180,
+      "payload": {
+        "strength": 0.501944,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v118:actor:survival:npc_01:span:3300",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 3240,
+      "payload": {
+        "intentId": "survival:npc_01:span:3300",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v118:resource:production:heating:wood:3300",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 3240,
+      "payload": {
+        "intentId": "production:heating:wood:3300",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v118:intent-note:production:heating:warmth:3300",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 3240,
+      "payload": {
+        "intentId": "production:heating:warmth:3300",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.474861
+      }
+    },
+    {
+      "eventId": "d:3240:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 3240,
+      "payload": {
+        "strength": 0.474861,
+        "band": "warm",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v120:actor:survival:npc_01:span:3360",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 3300,
+      "payload": {
+        "intentId": "survival:npc_01:span:3360",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v120:resource:production:heating:wood:3360",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 3300,
+      "payload": {
+        "intentId": "production:heating:wood:3360",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v120:intent-note:production:heating:warmth:3360",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 3300,
+      "payload": {
+        "intentId": "production:heating:warmth:3360",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.447778
+      }
+    },
+    {
+      "eventId": "d:3300:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 3300,
+      "payload": {
+        "strength": 0.447778,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v122:actor:survival:npc_01:span:3420",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 3360,
+      "payload": {
+        "intentId": "survival:npc_01:span:3420",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v122:resource:production:heating:wood:3420",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 3360,
+      "payload": {
+        "intentId": "production:heating:wood:3420",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v122:intent-note:production:heating:warmth:3420",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 3360,
+      "payload": {
+        "intentId": "production:heating:warmth:3420",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.420694
+      }
+    },
+    {
+      "eventId": "d:3360:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 3360,
+      "payload": {
+        "strength": 0.420694,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v124:actor:survival:npc_01:span:3480",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 3420,
+      "payload": {
+        "intentId": "survival:npc_01:span:3480",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v124:resource:production:heating:wood:3480",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 3420,
+      "payload": {
+        "intentId": "production:heating:wood:3480",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v124:intent-note:production:heating:warmth:3480",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 3420,
+      "payload": {
+        "intentId": "production:heating:warmth:3480",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.393611
+      }
+    },
+    {
+      "eventId": "d:3420:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 3420,
+      "payload": {
+        "strength": 0.393611,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v126:actor:survival:npc_01:span:3540",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 3480,
+      "payload": {
+        "intentId": "survival:npc_01:span:3540",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v126:resource:production:heating:wood:3540",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 3480,
+      "payload": {
+        "intentId": "production:heating:wood:3540",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v126:intent-note:production:heating:warmth:3540",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 3480,
+      "payload": {
+        "intentId": "production:heating:warmth:3540",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.366528
+      }
+    },
+    {
+      "eventId": "d:3480:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 3480,
+      "payload": {
+        "strength": 0.366528,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v128:actor:survival:npc_01:span:3600",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 3540,
+      "payload": {
+        "intentId": "survival:npc_01:span:3600",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v128:resource:production:heating:wood:3600",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 3540,
+      "payload": {
+        "intentId": "production:heating:wood:3600",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v128:intent-note:production:heating:warmth:3600",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 3540,
+      "payload": {
+        "intentId": "production:heating:warmth:3600",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.339444
+      }
+    },
+    {
+      "eventId": "d:3540:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 3540,
+      "payload": {
+        "strength": 0.339444,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "d:3600:council_opened:old_qian",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "simTime": 3600,
+      "payload": {
+        "meetingId": "council-7",
+        "reason": "firewood_low"
+      }
+    },
+    {
+      "eventId": "d:3600:council_resolved:old_qian",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "simTime": 3600,
+      "payload": {
+        "meetingId": "council-7",
+        "winner": "p-council-7-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "eventId": "d:3600:task_proposed:old_qian",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "simTime": 3600,
+      "payload": {
+        "taskId": "task-8",
+        "type": "COLLECT_FOOD",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "eventId": "d:3600:task_countered:npc_01",
+      "type": "task_countered",
+      "actorId": "npc_01",
+      "simTime": 3600,
+      "payload": {
+        "taskId": "task-8",
+        "counterTaskId": "task-9",
+        "counterType": "REST_RECOVER",
+        "reason": "体力 8 < 20，申请先休息"
+      }
+    },
+    {
+      "eventId": "v130:actor:survival:npc_01:span:3660",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 3600,
+      "payload": {
+        "intentId": "survival:npc_01:span:3660",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v130:resource:production:heating:wood:3660",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 3600,
+      "payload": {
+        "intentId": "production:heating:wood:3660",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v130:intent-note:production:heating:warmth:3660",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 3600,
+      "payload": {
+        "intentId": "production:heating:warmth:3660",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.312361
+      }
+    },
+    {
+      "eventId": "d:3600:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 3600,
+      "payload": {
+        "strength": 0.312361,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-129:gathered:131",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 3660,
+      "payload": {
+        "resource": "food",
+        "amount": 5
+      }
+    },
+    {
+      "eventId": "d:3660:task_completed:npc_01",
+      "type": "task_completed",
+      "actorId": "npc_01",
+      "simTime": 3660,
+      "payload": {
+        "taskId": "task-4",
+        "type": "COLLECT_FOOD",
+        "receipt": "npc_01-r8-129:gathered:131",
+        "receiptType": "gathered"
+      }
+    },
+    {
+      "eventId": "npc_01-r8-132:ate:132",
+      "type": "ate",
+      "actorId": "npc_01",
+      "simTime": 3660,
+      "payload": {
+        "amount": 1
+      }
+    },
+    {
+      "eventId": "v134:actor:survival:npc_01:span:3720",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 3660,
+      "payload": {
+        "intentId": "survival:npc_01:span:3720",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v134:resource:production:heating:wood:3720",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 3660,
+      "payload": {
+        "intentId": "production:heating:wood:3720",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v134:intent-note:production:heating:warmth:3720",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 3660,
+      "payload": {
+        "intentId": "production:heating:warmth:3720",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.285278
+      }
+    },
+    {
+      "eventId": "d:3660:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 3660,
+      "payload": {
+        "strength": 0.285278,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v136:actor:survival:npc_01:span:3780",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 3720,
+      "payload": {
+        "intentId": "survival:npc_01:span:3780",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v136:resource:production:heating:wood:3780",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 3720,
+      "payload": {
+        "intentId": "production:heating:wood:3780",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v136:intent-note:production:heating:warmth:3780",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 3720,
+      "payload": {
+        "intentId": "production:heating:warmth:3780",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.258194
+      }
+    },
+    {
+      "eventId": "d:3720:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 3720,
+      "payload": {
+        "strength": 0.258194,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-135:rested:137",
+      "type": "rested",
+      "actorId": "npc_01",
+      "simTime": 3780,
+      "payload": {
+        "minutes": 60
+      }
+    },
+    {
+      "eventId": "v139:actor:survival:npc_01:span:3840",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 3780,
+      "payload": {
+        "intentId": "survival:npc_01:span:3840",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v139:resource:production:heating:wood:3840",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 3780,
+      "payload": {
+        "intentId": "production:heating:wood:3840",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v139:intent-note:production:heating:warmth:3840",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 3780,
+      "payload": {
+        "intentId": "production:heating:warmth:3840",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.231111
+      }
+    },
+    {
+      "eventId": "d:3780:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 3780,
+      "payload": {
+        "strength": 0.231111,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-138:rested:140",
+      "type": "rested",
+      "actorId": "npc_01",
+      "simTime": 3840,
+      "payload": {
+        "minutes": 60
+      }
+    },
+    {
+      "eventId": "v142:actor:survival:npc_01:span:3900",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 3840,
+      "payload": {
+        "intentId": "survival:npc_01:span:3900",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v142:resource:production:heating:wood:3900",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 3840,
+      "payload": {
+        "intentId": "production:heating:wood:3900",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v142:intent-note:production:heating:warmth:3900",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 3840,
+      "payload": {
+        "intentId": "production:heating:warmth:3900",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.204028
+      }
+    },
+    {
+      "eventId": "d:3840:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 3840,
+      "payload": {
+        "strength": 0.204028,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-141:rested:143",
+      "type": "rested",
+      "actorId": "npc_01",
+      "simTime": 3900,
+      "payload": {
+        "minutes": 60
+      }
+    },
+    {
+      "eventId": "v145:actor:survival:npc_01:span:3960",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 3900,
+      "payload": {
+        "intentId": "survival:npc_01:span:3960",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v145:resource:production:heating:wood:3960",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 3900,
+      "payload": {
+        "intentId": "production:heating:wood:3960",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v145:intent-note:production:heating:warmth:3960",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 3900,
+      "payload": {
+        "intentId": "production:heating:warmth:3960",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.176944
+      }
+    },
+    {
+      "eventId": "d:3900:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 3900,
+      "payload": {
+        "strength": 0.176944,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-144:gathered:146",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 3960,
+      "payload": {
+        "resource": "firewood",
+        "amount": 4
+      }
+    },
+    {
+      "eventId": "npc_01-r8-147:ate:147",
+      "type": "ate",
+      "actorId": "npc_01",
+      "simTime": 3960,
+      "payload": {
+        "amount": 1
+      }
+    },
+    {
+      "eventId": "v149:actor:survival:npc_01:span:4020",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 3960,
+      "payload": {
+        "intentId": "survival:npc_01:span:4020",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v149:resource:production:heating:wood:4020",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 3960,
+      "payload": {
+        "intentId": "production:heating:wood:4020",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v149:intent-note:production:heating:warmth:4020",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 3960,
+      "payload": {
+        "intentId": "production:heating:warmth:4020",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.258194
+      }
+    },
+    {
+      "eventId": "d:3960:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 3960,
+      "payload": {
+        "strength": 0.258194,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v151:actor:survival:npc_01:span:4080",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 4020,
+      "payload": {
+        "intentId": "survival:npc_01:span:4080",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v151:resource:production:heating:wood:4080",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 4020,
+      "payload": {
+        "intentId": "production:heating:wood:4080",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v151:intent-note:production:heating:warmth:4080",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 4020,
+      "payload": {
+        "intentId": "production:heating:warmth:4080",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.231111
+      }
+    },
+    {
+      "eventId": "d:4020:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 4020,
+      "payload": {
+        "strength": 0.231111,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-150:gathered:152",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 4080,
+      "payload": {
+        "resource": "firewood",
+        "amount": 3
+      }
+    },
+    {
+      "eventId": "d:4080:council_opened:old_qian",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "simTime": 4080,
+      "payload": {
+        "meetingId": "council-8",
+        "reason": "firewood_low"
+      }
+    },
+    {
+      "eventId": "d:4080:council_resolved:old_qian",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "simTime": 4080,
+      "payload": {
+        "meetingId": "council-8",
+        "winner": "p-council-8-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "eventId": "d:4080:task_proposed:old_qian",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "simTime": 4080,
+      "payload": {
+        "taskId": "task-10",
+        "type": "REST_RECOVER",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "eventId": "d:4080:task_accepted:npc_01",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "simTime": 4080,
+      "payload": {
+        "taskId": "task-10",
+        "revision": 2
+      }
+    },
+    {
+      "eventId": "v154:actor:survival:npc_01:span:4140",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 4080,
+      "payload": {
+        "intentId": "survival:npc_01:span:4140",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v154:resource:production:heating:wood:4140",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 4080,
+      "payload": {
+        "intentId": "production:heating:wood:4140",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v154:intent-note:production:heating:warmth:4140",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 4080,
+      "payload": {
+        "intentId": "production:heating:warmth:4140",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.285278
+      }
+    },
+    {
+      "eventId": "d:4080:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 4080,
+      "payload": {
+        "strength": 0.285278,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-153:rested:155",
+      "type": "rested",
+      "actorId": "npc_01",
+      "simTime": 4140,
+      "payload": {
+        "minutes": 60
+      }
+    },
+    {
+      "eventId": "d:4140:task_completed:npc_01",
+      "type": "task_completed",
+      "actorId": "npc_01",
+      "simTime": 4140,
+      "payload": {
+        "taskId": "task-10",
+        "type": "REST_RECOVER",
+        "receipt": "npc_01-r8-153:rested:155",
+        "receiptType": "rested"
+      }
+    },
+    {
+      "eventId": "v157:actor:survival:npc_01:span:4200",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 4140,
+      "payload": {
+        "intentId": "survival:npc_01:span:4200",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v157:resource:production:heating:wood:4200",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 4140,
+      "payload": {
+        "intentId": "production:heating:wood:4200",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v157:intent-note:production:heating:warmth:4200",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 4140,
+      "payload": {
+        "intentId": "production:heating:warmth:4200",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.258194
+      }
+    },
+    {
+      "eventId": "d:4140:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 4140,
+      "payload": {
+        "strength": 0.258194,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v159:actor:survival:npc_01:span:4260",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 4200,
+      "payload": {
+        "intentId": "survival:npc_01:span:4260",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v159:resource:production:heating:wood:4260",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 4200,
+      "payload": {
+        "intentId": "production:heating:wood:4260",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v159:intent-note:production:heating:warmth:4260",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 4200,
+      "payload": {
+        "intentId": "production:heating:warmth:4260",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.231111
+      }
+    },
+    {
+      "eventId": "d:4200:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 4200,
+      "payload": {
+        "strength": 0.231111,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v161:actor:survival:npc_01:span:4320",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 4260,
+      "payload": {
+        "intentId": "survival:npc_01:span:4320",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v161:resource:production:heating:wood:4320",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 4260,
+      "payload": {
+        "intentId": "production:heating:wood:4320",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v161:intent-note:production:heating:warmth:4320",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 4260,
+      "payload": {
+        "intentId": "production:heating:warmth:4320",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.204028
+      }
+    },
+    {
+      "eventId": "d:4260:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 4260,
+      "payload": {
+        "strength": 0.204028,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v163:actor:survival:npc_01:span:4380",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 4320,
+      "payload": {
+        "intentId": "survival:npc_01:span:4380",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v163:resource:production:heating:wood:4380",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 4320,
+      "payload": {
+        "intentId": "production:heating:wood:4380",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v163:intent-note:production:heating:warmth:4380",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 4320,
+      "payload": {
+        "intentId": "production:heating:warmth:4380",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.176944
+      }
+    },
+    {
+      "eventId": "d:4320:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 4320,
+      "payload": {
+        "strength": 0.176944,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "d:4320:crisis_started:system",
+      "type": "crisis_started",
+      "actorId": "system",
+      "simTime": 4320,
+      "payload": {
+        "crisisId": "crisis-2",
+        "kind": "day4_warning",
+        "outdoor": "snow"
+      }
+    },
+    {
+      "eventId": "v165:actor:survival:npc_01:span:4440",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 4380,
+      "payload": {
+        "intentId": "survival:npc_01:span:4440",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v165:resource:production:heating:wood:4440",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 4380,
+      "payload": {
+        "intentId": "production:heating:wood:4440",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v165:intent-note:production:heating:warmth:4440",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 4380,
+      "payload": {
+        "intentId": "production:heating:warmth:4440",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.149861
+      }
+    },
+    {
+      "eventId": "d:4380:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 4380,
+      "payload": {
+        "strength": 0.149861,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v167:actor:survival:npc_01:span:4500",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 4440,
+      "payload": {
+        "intentId": "survival:npc_01:span:4500",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v167:resource:production:heating:wood:4500",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 4440,
+      "payload": {
+        "intentId": "production:heating:wood:4500",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v167:intent-note:production:heating:warmth:4500",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 4440,
+      "payload": {
+        "intentId": "production:heating:warmth:4500",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.122778
+      }
+    },
+    {
+      "eventId": "d:4440:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 4440,
+      "payload": {
+        "strength": 0.122778,
+        "band": "cold",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v169:actor:survival:npc_01:span:4560",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 4500,
+      "payload": {
+        "intentId": "survival:npc_01:span:4560",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v169:resource:production:heating:wood:4560",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 4500,
+      "payload": {
+        "intentId": "production:heating:wood:4560",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v169:intent-note:production:heating:warmth:4560",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 4500,
+      "payload": {
+        "intentId": "production:heating:warmth:4560",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.095694
+      }
+    },
+    {
+      "eventId": "d:4500:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 4500,
+      "payload": {
+        "strength": 0.095694,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "d:4560:council_opened:old_qian",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "simTime": 4560,
+      "payload": {
+        "meetingId": "council-9",
+        "reason": "firewood_low"
+      }
+    },
+    {
+      "eventId": "d:4560:council_resolved:old_qian",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "simTime": 4560,
+      "payload": {
+        "meetingId": "council-9",
+        "winner": "p-council-9-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "eventId": "d:4560:task_proposed:old_qian",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "simTime": 4560,
+      "payload": {
+        "taskId": "task-11",
+        "type": "COLLECT_FOOD",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "eventId": "d:4560:task_accepted:npc_01",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "simTime": 4560,
+      "payload": {
+        "taskId": "task-11",
+        "revision": 2
+      }
+    },
+    {
+      "eventId": "npc_01-r8-170:ate:170",
+      "type": "ate",
+      "actorId": "npc_01",
+      "simTime": 4560,
+      "payload": {
+        "amount": 1
+      }
+    },
+    {
+      "eventId": "v172:actor:survival:npc_01:span:4620",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 4560,
+      "payload": {
+        "intentId": "survival:npc_01:span:4620",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v172:resource:production:heating:wood:4620",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 4560,
+      "payload": {
+        "intentId": "production:heating:wood:4620",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v172:intent-note:production:heating:warmth:4620",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 4560,
+      "payload": {
+        "intentId": "production:heating:warmth:4620",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.068611
+      }
+    },
+    {
+      "eventId": "d:4560:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 4560,
+      "payload": {
+        "strength": 0.068611,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v174:actor:survival:npc_01:span:4680",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 4620,
+      "payload": {
+        "intentId": "survival:npc_01:span:4680",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v174:resource:production:heating:wood:4680",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 4620,
+      "payload": {
+        "intentId": "production:heating:wood:4680",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v174:intent-note:production:heating:warmth:4680",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 4620,
+      "payload": {
+        "intentId": "production:heating:warmth:4680",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.041528
+      }
+    },
+    {
+      "eventId": "d:4620:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 4620,
+      "payload": {
+        "strength": 0.041528,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v176:actor:survival:npc_01:span:4740",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 4680,
+      "payload": {
+        "intentId": "survival:npc_01:span:4740",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v176:resource:production:heating:wood:4740",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 4680,
+      "payload": {
+        "intentId": "production:heating:wood:4740",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v176:intent-note:production:heating:warmth:4740",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 4680,
+      "payload": {
+        "intentId": "production:heating:warmth:4740",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.014444
+      }
+    },
+    {
+      "eventId": "d:4680:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 4680,
+      "payload": {
+        "strength": 0.014444,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v178:actor:survival:npc_01:span:4800",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 4740,
+      "payload": {
+        "intentId": "survival:npc_01:span:4800",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v178:resource:production:heating:wood:4800",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 4740,
+      "payload": {
+        "intentId": "production:heating:wood:4800",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -0.533333
+      }
+    },
+    {
+      "eventId": "v178:intent-note:production:heating:warmth:4800",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 4740,
+      "payload": {
+        "intentId": "production:heating:warmth:4800",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0
+      }
+    },
+    {
+      "eventId": "d:4740:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 4740,
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0.533,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v180:actor:survival:npc_01:span:4860",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 4800,
+      "payload": {
+        "intentId": "survival:npc_01:span:4860",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v180:intent-note:production:heating:warmth:4860",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 4800,
+      "payload": {
+        "intentId": "production:heating:warmth:4860",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0
+      }
+    },
+    {
+      "eventId": "d:4800:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 4800,
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v182:actor:survival:npc_01:span:4920",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 4860,
+      "payload": {
+        "intentId": "survival:npc_01:span:4920",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v182:intent-note:production:heating:warmth:4920",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 4860,
+      "payload": {
+        "intentId": "production:heating:warmth:4920",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0
+      }
+    },
+    {
+      "eventId": "d:4860:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 4860,
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v184:actor:survival:npc_01:span:4980",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 4920,
+      "payload": {
+        "intentId": "survival:npc_01:span:4980",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v184:intent-note:production:heating:warmth:4980",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 4920,
+      "payload": {
+        "intentId": "production:heating:warmth:4980",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0
+      }
+    },
+    {
+      "eventId": "d:4920:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 4920,
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v186:actor:survival:npc_01:span:5040",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 4980,
+      "payload": {
+        "intentId": "survival:npc_01:span:5040",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v186:intent-note:production:heating:warmth:5040",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 4980,
+      "payload": {
+        "intentId": "production:heating:warmth:5040",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0
+      }
+    },
+    {
+      "eventId": "d:4980:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 4980,
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "d:5040:council_opened:old_qian",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "simTime": 5040,
+      "payload": {
+        "meetingId": "council-10",
+        "reason": "firewood_low"
+      }
+    },
+    {
+      "eventId": "d:5040:council_resolved:old_qian",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "simTime": 5040,
+      "payload": {
+        "meetingId": "council-10",
+        "winner": "p-council-10-1",
+        "tieBreakBy": "",
+        "votes": 1
+      }
+    },
+    {
+      "eventId": "d:5040:task_proposed:old_qian",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "simTime": 5040,
+      "payload": {
+        "taskId": "task-12",
+        "type": "COLLECT_FOOD",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "eventId": "d:5040:task_countered:npc_01",
+      "type": "task_countered",
+      "actorId": "npc_01",
+      "simTime": 5040,
+      "payload": {
+        "taskId": "task-12",
+        "counterTaskId": "task-13",
+        "counterType": "REST_RECOVER",
+        "reason": "体力 18 < 20，申请先休息"
+      }
+    },
+    {
+      "eventId": "v188:actor:survival:npc_01:span:5100",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 5040,
+      "payload": {
+        "intentId": "survival:npc_01:span:5100",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v188:intent-note:production:heating:warmth:5100",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 5040,
+      "payload": {
+        "intentId": "production:heating:warmth:5100",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0
+      }
+    },
+    {
+      "eventId": "d:5040:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 5040,
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-187:rested:189",
+      "type": "rested",
+      "actorId": "npc_01",
+      "simTime": 5100,
+      "payload": {
+        "minutes": 60
+      }
+    },
+    {
+      "eventId": "npc_01-r8-190:ate:190",
+      "type": "ate",
+      "actorId": "npc_01",
+      "simTime": 5100,
+      "payload": {
+        "amount": 1
+      }
+    },
+    {
+      "eventId": "v192:actor:survival:npc_01:span:5160",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 5100,
+      "payload": {
+        "intentId": "survival:npc_01:span:5160",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v192:intent-note:production:heating:warmth:5160",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 5100,
+      "payload": {
+        "intentId": "production:heating:warmth:5160",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0
+      }
+    },
+    {
+      "eventId": "d:5100:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 5100,
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "v194:actor:survival:npc_01:span:5220",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 5160,
+      "payload": {
+        "intentId": "survival:npc_01:span:5220",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v194:intent-note:production:heating:warmth:5220",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 5160,
+      "payload": {
+        "intentId": "production:heating:warmth:5220",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0
+      }
+    },
+    {
+      "eventId": "d:5160:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 5160,
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-193:rested:195",
+      "type": "rested",
+      "actorId": "npc_01",
+      "simTime": 5220,
+      "payload": {
+        "minutes": 60
+      }
+    },
+    {
+      "eventId": "v197:actor:survival:npc_01:span:5280",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 5220,
+      "payload": {
+        "intentId": "survival:npc_01:span:5280",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v197:intent-note:production:heating:warmth:5280",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 5220,
+      "payload": {
+        "intentId": "production:heating:warmth:5280",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0
+      }
+    },
+    {
+      "eventId": "d:5220:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 5220,
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-196:treated:198",
+      "type": "treated",
+      "actorId": "npc_01",
+      "simTime": 5280,
+      "payload": {
+        "targetId": "npc_01",
+        "amount": 1
+      }
+    },
+    {
+      "eventId": "v200:actor:survival:npc_01:span:5340",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 5280,
+      "payload": {
+        "intentId": "survival:npc_01:span:5340",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v200:intent-note:production:heating:warmth:5340",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 5280,
+      "payload": {
+        "intentId": "production:heating:warmth:5340",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0
+      }
+    },
+    {
+      "eventId": "d:5280:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 5280,
+      "payload": {
+        "strength": 0,
+        "band": "none",
+        "wood": 0,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-199:gathered:201",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 5340,
+      "payload": {
+        "resource": "firewood",
+        "amount": 4
+      }
+    },
+    {
+      "eventId": "v203:actor:survival:npc_01:span:5400",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 5340,
+      "payload": {
+        "intentId": "survival:npc_01:span:5400",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0}"
+      }
+    },
+    {
+      "eventId": "v203:resource:production:heating:wood:5400",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 5340,
+      "payload": {
+        "intentId": "production:heating:wood:5400",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -1
+      }
+    },
+    {
+      "eventId": "v203:intent-note:production:heating:warmth:5400",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 5340,
+      "payload": {
+        "intentId": "production:heating:warmth:5400",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.08125
+      }
+    },
+    {
+      "eventId": "d:5340:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 5340,
+      "payload": {
+        "strength": 0.08125,
+        "band": "none",
+        "wood": 1,
+        "power": 0
+      }
+    },
+    {
+      "eventId": "npc_01-r8-202:gathered:204",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 5400,
+      "payload": {
+        "resource": "firewood",
+        "amount": 4
+      }
+    },
+    {
+      "eventId": "v206:intent-note:life:1:ending-note",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 5400,
+      "payload": {
+        "intentId": "life:1:ending-note",
+        "source": "life.settle",
+        "key": "ending",
+        "value": 1
+      }
+    },
+    {
+      "eventId": "d:5400:ending_reached:system",
+      "type": "ending_reached",
+      "actorId": "system",
+      "simTime": 5400,
+      "payload": {
+        "lifeNumber": 1,
+        "ending": "extinction",
+        "survivors": 1,
+        "elapsed": 4920
+      }
+    }
+  ],
+  "work": [],
+  "workLog": [
+    {
+      "actorId": "npc_01",
+      "kind": "refuel",
+      "startedAt": 480,
+      "endsAt": 490,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-0:refuelled:2"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "gather",
+      "startedAt": 540,
+      "endsAt": 570,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-3:gathered:5"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "gather",
+      "startedAt": 600,
+      "endsAt": 630,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-6:gathered:8"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "gather",
+      "startedAt": 660,
+      "endsAt": 690,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-9:gathered:11"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "move",
+      "startedAt": 720,
+      "endsAt": 735,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-12:moved:14"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "gather",
+      "startedAt": 780,
+      "endsAt": 810,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-15:gathered:17"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "move",
+      "startedAt": 840,
+      "endsAt": 855,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-18:moved:20"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "move",
+      "startedAt": 900,
+      "endsAt": 915,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-21:moved:23"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "move",
+      "startedAt": 960,
+      "endsAt": 975,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-24:moved:26"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "gather",
+      "startedAt": 1020,
+      "endsAt": 1050,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-27:gathered:29"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "move",
+      "startedAt": 1080,
+      "endsAt": 1095,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-30:moved:32"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "refuel",
+      "startedAt": 1140,
+      "endsAt": 1150,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-33:refuelled:35"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "gather",
+      "startedAt": 1200,
+      "endsAt": 1230,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-36:gathered:39"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "rest",
+      "startedAt": 1680,
+      "endsAt": 1740,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-54:rested:56"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "rest",
+      "startedAt": 2160,
+      "endsAt": 2220,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-71:rested:73"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "gather",
+      "startedAt": 2220,
+      "endsAt": 2250,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-74:gathered:76"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "gather",
+      "startedAt": 2280,
+      "endsAt": 2310,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-77:gathered:79"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "gather",
+      "startedAt": 2400,
+      "endsAt": 2430,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-83:gathered:85"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "rest",
+      "startedAt": 2460,
+      "endsAt": 2520,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-86:rested:88"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "gather",
+      "startedAt": 2520,
+      "endsAt": 2550,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-89:gathered:91"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "gather",
+      "startedAt": 2580,
+      "endsAt": 2610,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-92:gathered:94"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "gather",
+      "startedAt": 2640,
+      "endsAt": 2670,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-95:gathered:97"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "gather",
+      "startedAt": 3600,
+      "endsAt": 3630,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-129:gathered:131"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "rest",
+      "startedAt": 3720,
+      "endsAt": 3780,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-135:rested:137"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "rest",
+      "startedAt": 3780,
+      "endsAt": 3840,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-138:rested:140"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "rest",
+      "startedAt": 3840,
+      "endsAt": 3900,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-141:rested:143"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "gather",
+      "startedAt": 3900,
+      "endsAt": 3930,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-144:gathered:146"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "gather",
+      "startedAt": 4020,
+      "endsAt": 4050,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-150:gathered:152"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "rest",
+      "startedAt": 4080,
+      "endsAt": 4140,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-153:rested:155"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "rest",
+      "startedAt": 5040,
+      "endsAt": 5100,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-187:rested:189"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "rest",
+      "startedAt": 5160,
+      "endsAt": 5220,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-193:rested:195"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "medical",
+      "startedAt": 5220,
+      "endsAt": 5240,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-196:treated:198"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "gather",
+      "startedAt": 5280,
+      "endsAt": 5310,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-199:gathered:201"
+      ]
+    },
+    {
+      "actorId": "npc_01",
+      "kind": "gather",
+      "startedAt": 5340,
+      "endsAt": 5370,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-202:gathered:204"
+      ]
+    }
+  ],
+  "rejections": [],
+  "numberEncoding": "frostecho.nonfinite-number/1"
+}

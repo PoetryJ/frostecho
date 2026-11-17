@@ -1,0 +1,42 @@
+{
+  "schema": "frostecho.r9.report/1",
+  "role": "O",
+  "branch": "codex/r9-long-horizon",
+  "baseCommit": "586034f (codex/r8-train-play-20261117)",
+  "executorSessions": [
+    {"id": "integration-writer-4", "kind": "single writer session",
+     "scope": "src/r7/integration/{runtime,step}.ts, src/r7/agency/options.ts, src/r7/domains/tasks, scripts/r8/*",
+     "note": "只有 1 个写入槽，A/D 两条线由本会话串行落地；未虚报并行人数"}
+  ],
+  "frozenExperiment": {
+    "commit": "3f8121aaeb7057dc928606cd41a6ce4568fec193",
+    "files": 213, "unchanged": true,
+    "manifest": "artifacts/r9/freeze-3f8121a.json",
+    "note": "results 原始字节未改动；本轮新代码不参与该对照"
+  },
+  "effectiveResults": [
+    "A 线工时契约：动作不再即时生效。rest(60) 在 simTime=526 只登记占用，clock 保持 526、体力保持 18；advanceWorld 到 586 才结算 +12 体力并产生真实回执 npc_01-r8-0:rested:4",
+    "并发不是串行：8 名居民同一步各登记自己的 60 分钟工作（work.size=8），一次时钟推进同时完成，不把 8×1h 串成 8h",
+    "四日脚本改走同一契约：278 条工作时长记录，30 个任务凭完成回执结案（此前 0 个），仍 D1 08:00→D4 18:00 elapsed=4920、8 存活 perfect",
+    "工作跨进程可恢复：work/workLog 写入 r8 sidecar，restore 后继续计时（load 时回填）",
+    "D 线地点前置：gather/work/medical/deposit/deliver 必须人在对应地点，否则 wrong_location 直接拒绝；任务所需地点会生成真实步行候选（15 分钟占用）",
+    "总门 11/11 通过（0 fail / 0 blocked）；全套测试 779/780（唯一失败为 safe-delete shim 无法写 /.Trash-1003 的环境问题）"
+  ],
+  "errorsAndRootCauses": [
+    "首版把 beginWork 只接进 step.ts，四日脚本仍走自己的 execute()，导致工时契约只覆盖网页；已让 playthrough 共用 durationOf/beginWork/advanceWorld",
+    "工时完成时不结任务：settleWork 只发事件不闭环，任务停在 accepted；改为在 settleWork 内按回执结任务",
+    "地点前置首版把所有 gather 判定为 village，导致仓库内取货类任务被误拒；按动作而非任务收紧映射",
+    "verify 的 web 门仍只认 applied，接入占用契约后单步合法地停在 working；判据改为 applied 或 working"
+  ],
+  "unproven": [
+    "B 线长程记忆：来源/observedAt/听者/条件依赖未接入 ChoiceRequest；raw-last12 对照与四个故事未完成",
+    "C 线训练：未采集 on-policy 失败状态，未重训四头，未给新旧头同 test 指标；医疗零资源/争资源/取消反例未入库",
+    "D 线剩余 5 类 work-proxy 语义、真实步行救援、门/危机细节未完成",
+    "未跑 reference/新头/记忆新头三臂同 seed 四日对照，未做 D2 退出实模整局恢复",
+    "本轮未占 GPU：无新增前向，沿用 3f8121a 的模型证据"
+  ],
+  "entrypoint": "npm run play:r7 (web, r8-step) / node dist/scripts/r8/playthrough.js --profile gospel-5.8.19 --seed r8-1 --mode reference",
+  "cost": {"gpuHours": 0, "modelCalls": 0, "wallSeconds": null,
+           "note": "本轮纯 CPU；模型证据全部来自冻结的 3f8121a"},
+  "nextCommand": "node dist/scripts/r8/playthrough.js --seed r9-time --out artifacts/r9/run && node dist/scripts/r8/verify.js --out artifacts/r9/verify"
+}
