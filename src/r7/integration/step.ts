@@ -11,7 +11,8 @@ import { makeChoiceRequest, type Candidate, type ChoiceRequest,
   type ObservedFact } from '../../decision/contracts';
 import { createHash } from 'node:crypto';
 import type { ScorePort } from '../contracts';
-import { buildActionOptions, taskBindingOfCandidate, type MemoryPolicyId, type ExperienceNote } from '../agency/options';
+import { applicableNotes, buildActionOptions, taskBindingOfCandidate,
+  type MemoryPolicyId, type ExperienceNote } from '../agency/options';
 import { renderRequest } from '../jev/render';
 import { TASK_CATALOG, receiptTypesFor } from '../domains/tasks/index';
 import type { R8Runtime } from './runtime';
@@ -85,6 +86,62 @@ function beliefOf(runtime: R8Runtime, actorId: string): { level: number | null; 
 }
 
 /**
+ * Conditional notes this actor actually holds, from its own records. A note
+ * carries its conditions, so a changed condition wakes only the learner.
+ */
+/**
+ * What the actor currently believes about the warehouse: `restocked` only if it
+ * personally saw a restock newer than the shortage it remembers.
+ */
+export function latestStockCondition(runtime: R8Runtime, actorId: string):
+  'shortage' | 'restocked' | 'unknown' {
+  const store = runtime.session.memories.get(actorId);
+  if (!store) return 'unknown';
+  const records = store.toJSON().records.filter(record => record.observerId === actorId);
+  // Order in the actor's own store is the honest observation clock: two events
+  // can share a simTime, so index order decides which came later.
+  let shortageIndex = -1;
+  let restockIndex = -1;
+  records.forEach((record, index) => {
+    if (record.kind === 'out_of_stock') shortageIndex = index;
+    if (record.kind === 'stock_restocked' || record.kind === 'stock_deposited') {
+      restockIndex = index;
+    }
+  });
+  if (restockIndex >= 0 && restockIndex > shortageIndex) return 'restocked';
+  if (shortageIndex >= 0) return 'shortage';
+  return 'unknown';
+}
+
+export function notesFor(runtime: R8Runtime, actorId: string): ExperienceNote[] {
+  const store = runtime.session.memories.get(actorId);
+  if (!store) return [];
+  const records = store.toJSON().records.filter(record => record.observerId === actorId);
+  const notes: ExperienceNote[] = [];
+  const shortage = [...records].reverse().find(record => record.kind === 'out_of_stock');
+  if (shortage) {
+    notes.push({ noteId: `note-shortage-${actorId}`,
+      sourceEventIds: [...shortage.sourceEventIds],
+      conditions: { place: 'warehouse', stock: 'shortage' },
+      lesson: 'delay-should-be-reported', version: 1 });
+  }
+  const restock = [...records].reverse().find(record => record.kind === 'stock_restocked');
+  if (restock && shortage && restock.observedAt > shortage.observedAt) {
+    notes.push({ noteId: `note-restock-${actorId}`,
+      sourceEventIds: [...restock.sourceEventIds],
+      conditions: { place: 'warehouse', stock: 'restocked' },
+      lesson: 'shortage-condition-lifted', version: 1 });
+  }
+  const refusal = [...records].reverse().find(record => record.kind === 'task_declined');
+  if (refusal) {
+    notes.push({ noteId: `note-refusal-${actorId}`,
+      sourceEventIds: [...refusal.sourceEventIds], conditions: { taskState: 'declined' },
+      lesson: 'conflict', version: 1 });
+  }
+  return notes;
+}
+
+/**
  * The actor's own visible memory, bounded. `memoryFacts` used to be empty, which
  * meant the model never saw a single promise or relationship; it now carries the
  * actor's own records only.
@@ -97,12 +154,21 @@ export function visibleMemory(runtime: R8Runtime, actorId: string, topK = 12):
   const facts: ObservedFact[] = records.slice(-topK).map(record => ({
     eventId: record.sourceEventIds[0] ?? record.recordId,
     observerId: actorId,
-    simTime: Number((record.payload as Record<string, unknown> | undefined)?.simTime
-      ?? runtime.world.simTime),
-    subjectIds: [actorId],
+    // When THIS actor learned it, not when the event happened.
+    simTime: record.observedAt,
+    subjectIds: record.subjectIds.length > 0 ? [...record.subjectIds] : [actorId],
     kind: record.kind,
-    payload: record.payload,
-    source: 'engine',
+    payload: {
+      ...((record.payload as Record<string, unknown> | undefined) ?? {}),
+      occurredAt: record.occurredAt,
+      authority: record.authority,
+      speakerId: record.speakerId ?? null,
+      sourceEventIds: [...record.sourceEventIds],
+    },
+    // Provenance is carried, never forced: a player statement stays a player
+    // statement and an inference stays an inference.
+    source: record.source === 'player_statement' ? 'player_statement'
+      : record.source === 'inference' ? 'inference' : 'engine',
   }));
   const knowledge = runtime.session.knowledge();
   const relationships = knowledge[actorId] ?? { promises: [], relation: null };
@@ -246,7 +312,14 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
       tasks: tasks.map(task => ({ taskId: task.taskId, type: task.type,
         status: task.status })),
       stockBelief: beliefOf(runtime, actorId),
-      notes: options.notes?.(actorId) ?? [],
+      notes: applicableNotes(options.notes?.(actorId) ?? notesFor(runtime, actorId),
+        memoryPolicy, {
+          place: 'warehouse',
+          taskState: 'declined',
+          // The condition the actor can see right now: a witnessed restock
+          // lifts the shortage lesson; otherwise it still applies.
+          stock: latestStockCondition(runtime, actorId),
+        }),
     });
     const bridgeView = options.goalBridge?.view(actorId) ?? { goals: [], candidates: [] };
     if (bridgeView.candidates.length > 0) {

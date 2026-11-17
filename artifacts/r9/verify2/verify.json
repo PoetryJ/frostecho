@@ -1,0 +1,850 @@
+{
+  "schema": "frostecho.r8.verify/1",
+  "sourceHEAD": "f17ca0c88d1a930abd0bace83d8aae36b424f42b",
+  "generatedAt": "2026-11-17T06:28:46.824Z",
+  "strict": false,
+  "gates": [
+    {
+      "gate": "original-playthrough",
+      "status": "pass",
+      "command": "/data/home/user_00/.local/node22/bin/node dist/scripts/r8/playthrough.js --profile gospel-5.8.19 --seed r8-verify --mode reference --out /data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/verify2/playthrough",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r9",
+      "exitCode": 0,
+      "sourceHEAD": "f17ca0c88d1a930abd0bace83d8aae36b424f42b",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/verify2/playthrough/summary-reference-r8-verify-2026-11-17T06-28-19-817Z.json",
+      "sha256": "6705d9fabe45232f2248642414cad4e8851febad5040ba9e8d7c23d9264b8a91",
+      "evidenceClass": "reference",
+      "note": "D1 08:00 -> D4 18:00, elapsed=4920, ending settled",
+      "observed": {
+        "ok": true,
+        "profile": "gospel-5.8.19",
+        "seed": "r8-verify",
+        "mode": "reference",
+        "lives": 1,
+        "ending": "perfect",
+        "survivors": 8,
+        "elapsed": 4920,
+        "decisions": 360,
+        "executed": 82,
+        "rejected": 0,
+        "out": "/data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/verify2/playthrough",
+        "summary": "/data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/verify2/playthrough/summary-reference-r8-verify-2026-11-17T06-28-19-817Z.json"
+      }
+    },
+    {
+      "gate": "reincarnation",
+      "status": "pass",
+      "command": "/data/home/user_00/.local/node22/bin/node dist/scripts/r8/playthrough.js --seed r8-verify --lives 2 --mode reference --out /data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/verify2/reincarnation",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r9",
+      "exitCode": 0,
+      "sourceHEAD": "f17ca0c88d1a930abd0bace83d8aae36b424f42b",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/verify2/reincarnation/summary-reference-r8-verify-2026-11-17T06-28-24-822Z.json",
+      "sha256": "33255b2b9f9499a178cbe712de4a3a9a475552057d3efd6104d4e82ca321ab8a",
+      "evidenceClass": "reference",
+      "note": "two settled lives, lifeNumber incremented"
+    },
+    {
+      "gate": "cross-process-restore",
+      "status": "pass",
+      "command": "/data/home/user_00/.local/node22/bin/node /data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/verify2/restore/restore-probe.js <dist> save|load /data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/verify2/restore/life.save",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r9",
+      "exitCode": 0,
+      "sourceHEAD": "f17ca0c88d1a930abd0bace83d8aae36b424f42b",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/verify2/restore/life.save",
+      "sha256": "d1084bcb8186269448aedba041651fca7d3b9f4a26e2acbc325c919199c89e3e",
+      "evidenceClass": "reference",
+      "note": "same calendar endpoint 1920 after reload"
+    },
+    {
+      "gate": "four-endings",
+      "status": "pass",
+      "command": "/data/home/user_00/.local/node22/bin/node dist/scripts/r8/playthrough.js --npc <n> --food <f>",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r9",
+      "exitCode": 0,
+      "sourceHEAD": "f17ca0c88d1a930abd0bace83d8aae36b424f42b",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/verify2/four-endings",
+      "sha256": "",
+      "evidenceClass": "reference",
+      "note": "thresholds hit: {\"1\":\"extinction\",\"3\":\"bleak\",\"5\":\"normal\",\"8\":\"perfect\"}",
+      "observed": {
+        "1": "extinction",
+        "3": "bleak",
+        "5": "normal",
+        "8": "perfect"
+      }
+    },
+    {
+      "gate": "original-parity",
+      "status": "pass",
+      "command": "/data/home/user_00/.local/node22/bin/node /data3/DATA/project/project_meishijiang/FrostEcho-r9/scripts/r8/parity.mjs",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r9",
+      "exitCode": 0,
+      "sourceHEAD": "f17ca0c88d1a930abd0bace83d8aae36b424f42b",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/verify2/parity.json",
+      "sha256": "ccf7a557cadc2d48b28b6b3735b781db8b0d1874f89b4212e593bbbf03e727f5",
+      "evidenceClass": "reference",
+      "note": "44 original constants match",
+      "observed": {
+        "schema": "frostecho.r8.parity/1",
+        "generatedAt": "2026-11-17T06:28:43.533Z",
+        "originalRoot": "/data3/DATA/project/project_meishijiang/FrostEcho-r9/handoff/20261113-r7-full-goal/reference-extracted/source/extracted",
+        "checks": 44,
+        "failed": 0,
+        "failures": [],
+        "results": [
+          {
+            "name": "day boundary is 24h",
+            "file": "src/core/game.js",
+            "pattern": "/24\\s*\\*\\s*3600/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "day length 1440 minutes"
+          },
+          {
+            "name": "start 08:00",
+            "file": "src/core/game.js",
+            "pattern": "/gameTimeSeconds\\s*=\\s*8\\s*\\*\\s*3600/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "D1 08:00 start"
+          },
+          {
+            "name": "timeSpeed 60",
+            "file": "src/core/game.js",
+            "pattern": "/timeSpeed\\s*=\\s*60/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "1 real second = 1 game minute"
+          },
+          {
+            "name": "firewood default 30",
+            "file": "src/systems/resource-system.js",
+            "pattern": "/woodFuel\\s*:\\s*30/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "RESOURCE_DEFAULTS"
+          },
+          {
+            "name": "food default 130",
+            "file": "src/systems/resource-system.js",
+            "pattern": "/food\\s*:\\s*130/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "RESOURCE_DEFAULTS"
+          },
+          {
+            "name": "power default 30",
+            "file": "src/systems/resource-system.js",
+            "pattern": "/power\\s*:\\s*30/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "RESOURCE_DEFAULTS"
+          },
+          {
+            "name": "heating wood 1.0/h",
+            "file": "src/systems/resource-system.js",
+            "pattern": "/1\\.0/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "heating wood per hour"
+          },
+          {
+            "name": "town power 2.0/h",
+            "file": "src/systems/resource-system.js",
+            "pattern": "/2\\.0/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "town power per hour"
+          },
+          {
+            "name": "generator buildPower 10",
+            "file": "src/systems/machine-system.js",
+            "pattern": "/buildMaterialCost\\s*:\\s*10/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "charged from power"
+          },
+          {
+            "name": "lumberMill buildPower 12",
+            "file": "src/systems/machine-system.js",
+            "pattern": "/buildMaterialCost\\s*:\\s*12/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "charged from power"
+          },
+          {
+            "name": "generator buildTime 14400s",
+            "file": "src/systems/machine-system.js",
+            "pattern": "/buildTimeSeconds\\s*:\\s*14400/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "240 game minutes"
+          },
+          {
+            "name": "build cost checked against power",
+            "file": "src/systems/machine-system.js",
+            "pattern": "/rs\\.power\\s*<\\s*config\\.buildMaterialCost/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "power is the material"
+          },
+          {
+            "name": "heating strength weights",
+            "file": "src/systems/furnace-system.js",
+            "pattern": "/0\\.65[\\s\\S]{0,80}0\\.35/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "wood 0.65 + power 0.35"
+          },
+          {
+            "name": "strength thresholds",
+            "file": "src/systems/furnace-system.js",
+            "pattern": "/0\\.75[\\s\\S]{0,200}0\\.45[\\s\\S]{0,200}0\\.12/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "0.75/0.45/0.12"
+          },
+          {
+            "name": "second furnace removed",
+            "file": "src/systems/furnace-system.js",
+            "pattern": "/已移除/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "furnace competition is gone"
+          },
+          {
+            "name": "D2 -30",
+            "file": "src/systems/weather-system.js",
+            "pattern": "/-30/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "day 2 base temp"
+          },
+          {
+            "name": "D4 -60",
+            "file": "src/systems/weather-system.js",
+            "pattern": "/-60/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "day 4 base temp"
+          },
+          {
+            "name": "wind chill 1.3",
+            "file": "src/systems/weather-system.js",
+            "pattern": "/1\\.3/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "outdoor wind chill"
+          },
+          {
+            "name": "bodyTemp floor 25",
+            "file": "src/npc/npc-body.js",
+            "pattern": "/25/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "hypothermia floor"
+          },
+          {
+            "name": "outdoor cooling rate",
+            "file": "src/npc/npc-body.js",
+            "pattern": "/0\\.00025/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "|temp| * 0.00025 * dt"
+          },
+          {
+            "name": "fifteen original task types",
+            "file": "src/systems/task-system.js",
+            "pattern": "TASK_TYPES",
+            "foundInOriginal": true,
+            "portMatches": true,
+            "note": "all 15 ported"
+          },
+          {
+            "name": "council firewood trigger 15",
+            "file": "src/systems/council-system.js",
+            "pattern": "/15/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "firewood < 15"
+          },
+          {
+            "name": "council food trigger 20",
+            "file": "src/systems/council-system.js",
+            "pattern": "/20/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "food < 20"
+          },
+          {
+            "name": "tie broken by 老钱",
+            "file": "src/systems/council-system.js",
+            "pattern": "/老钱/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "tie break owner"
+          },
+          {
+            "name": "no counter-proposal in original",
+            "file": "src/systems/council-system.js",
+            "pattern": "/反提案|counterProposal/",
+            "foundInOriginal": false,
+            "expectFound": false,
+            "portMatches": true,
+            "note": "the port labels its counter path as a port decision"
+          },
+          {
+            "name": "food conflict threshold 8",
+            "file": "src/systems/event-system.js",
+            "pattern": "/<\\s*8|8\\s*</",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "food < 8"
+          },
+          {
+            "name": "extinction at 2 survivors",
+            "file": "src/systems/event-system.js",
+            "pattern": "/2/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "<=2 triggers extinction crisis"
+          },
+          {
+            "name": "perfect 8 survivors",
+            "file": "src/systems/death-system.js",
+            "pattern": "/minSurvivors\\s*:\\s*8/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "PERFECT"
+          },
+          {
+            "name": "normal 5 survivors",
+            "file": "src/systems/death-system.js",
+            "pattern": "/minSurvivors\\s*:\\s*5/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "NORMAL"
+          },
+          {
+            "name": "bleak 2 survivors",
+            "file": "src/systems/death-system.js",
+            "pattern": "/minSurvivors\\s*:\\s*2/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "BLEAK"
+          },
+          {
+            "name": "ending at day4 18:00",
+            "file": "src/systems/death-ending.js",
+            "pattern": "/hour\\s*>=\\s*18/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "D4 18:00"
+          },
+          {
+            "name": "max 20 past lives",
+            "file": "src/systems/reincarnation-system.js",
+            "pattern": "/MAX_PAST_LIVES\\s*=\\s*20/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "oldest dropped"
+          },
+          {
+            "name": "NPC chat disabled",
+            "file": "src/core/constants.js",
+            "pattern": "/CHAT_ENABLED\\s*=\\s*false/",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "original disables NPC-to-NPC chat"
+          },
+          {
+            "name": "port:generator output/h",
+            "file": "dist",
+            "pattern": "20",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "original 20 vs new 20"
+          },
+          {
+            "name": "port:lumberMill output/h",
+            "file": "dist",
+            "pattern": "24",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "original 24 vs new 24"
+          },
+          {
+            "name": "port:foodCollector output/h",
+            "file": "dist",
+            "pattern": "12",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "original 12 vs new 12"
+          },
+          {
+            "name": "port:generator wood/h",
+            "file": "dist",
+            "pattern": "3",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "original 3 vs new 3"
+          },
+          {
+            "name": "port:lumberMill power/h",
+            "file": "dist",
+            "pattern": "4",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "original 4 vs new 4"
+          },
+          {
+            "name": "port:foodCollector power/h",
+            "file": "dist",
+            "pattern": "3",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "original 3 vs new 3"
+          },
+          {
+            "name": "port:generator minWood",
+            "file": "dist",
+            "pattern": "5",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "original 5 vs new 5"
+          },
+          {
+            "name": "port:generator buildPower",
+            "file": "dist",
+            "pattern": "10",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "original 10 vs new 10"
+          },
+          {
+            "name": "port:generator buildMinutes",
+            "file": "dist",
+            "pattern": "240",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "original 240 vs new 240"
+          },
+          {
+            "name": "port:perfect survivors",
+            "file": "dist",
+            "pattern": "8",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "original 8 vs new 8"
+          },
+          {
+            "name": "port:task types",
+            "file": "dist",
+            "pattern": "15",
+            "foundInOriginal": true,
+            "expectFound": true,
+            "portMatches": true,
+            "note": "original 15 vs new 15"
+          }
+        ],
+        "verdict": "match"
+      }
+    },
+    {
+      "gate": "task-type-matrix",
+      "status": "pass",
+      "command": "/data/home/user_00/.local/node22/bin/node /data3/DATA/project/project_meishijiang/FrostEcho-r9/scripts/r8/task-matrix.mjs",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r9",
+      "exitCode": 0,
+      "sourceHEAD": "f17ca0c88d1a930abd0bace83d8aae36b424f42b",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/verify2/task-matrix.json",
+      "sha256": "f34e761c28ecda3a22d5f214605bc85ecb65cc82c74a29d506f77543c6100fe2",
+      "evidenceClass": "reference",
+      "note": "15/15 task types complete on their own receipt; forged receipts rejected",
+      "observed": {
+        "schema": "frostecho.r8.task-matrix/1",
+        "types": 15,
+        "done": 15,
+        "failed": 0,
+        "results": [
+          {
+            "type": "COLLECT_WOOD",
+            "proposed": true,
+            "accepted": true,
+            "workStatus": "applied",
+            "receiptId": "work-COLLECT_WOOD:gathered:0",
+            "completedStatus": "done",
+            "completedRejections": [],
+            "forgedRejected": [
+              "receipt_not_committed"
+            ],
+            "forgedStillOpen": true
+          },
+          {
+            "type": "COLLECT_FOOD",
+            "proposed": true,
+            "accepted": true,
+            "workStatus": "applied",
+            "receiptId": "work-COLLECT_FOOD:gathered:0",
+            "completedStatus": "done",
+            "completedRejections": [],
+            "forgedRejected": [
+              "receipt_not_committed"
+            ],
+            "forgedStillOpen": true
+          },
+          {
+            "type": "MAINTAIN_POWER",
+            "proposed": true,
+            "accepted": true,
+            "workStatus": "applied",
+            "receiptId": "work-MAINTAIN_POWER:worked:0",
+            "completedStatus": "done",
+            "completedRejections": [],
+            "forgedRejected": [
+              "receipt_not_committed"
+            ],
+            "forgedStillOpen": true
+          },
+          {
+            "type": "COLLECT_MATERIAL",
+            "proposed": true,
+            "accepted": true,
+            "workStatus": "applied",
+            "receiptId": "work-COLLECT_MATERIAL:worked:0",
+            "completedStatus": "done",
+            "completedRejections": [],
+            "forgedRejected": [
+              "receipt_not_committed"
+            ],
+            "forgedStillOpen": true
+          },
+          {
+            "type": "PREPARE_WARMTH",
+            "proposed": true,
+            "accepted": true,
+            "workStatus": "applied",
+            "receiptId": "work-PREPARE_WARMTH:refuelled:0",
+            "completedStatus": "done",
+            "completedRejections": [],
+            "forgedRejected": [
+              "receipt_not_committed"
+            ],
+            "forgedStillOpen": true
+          },
+          {
+            "type": "PREPARE_MEDICAL",
+            "proposed": true,
+            "accepted": true,
+            "workStatus": "applied",
+            "receiptId": "work-PREPARE_MEDICAL:treated:0",
+            "completedStatus": "done",
+            "completedRejections": [],
+            "forgedRejected": [
+              "receipt_not_committed"
+            ],
+            "forgedStillOpen": true
+          },
+          {
+            "type": "BOOST_MORALE",
+            "proposed": true,
+            "accepted": true,
+            "workStatus": "applied",
+            "receiptId": "work-BOOST_MORALE:worked:0",
+            "completedStatus": "done",
+            "completedRejections": [],
+            "forgedRejected": [
+              "receipt_not_committed"
+            ],
+            "forgedStillOpen": true
+          },
+          {
+            "type": "COORDINATE",
+            "proposed": true,
+            "accepted": true,
+            "workStatus": "applied",
+            "receiptId": "work-COORDINATE:worked:0",
+            "completedStatus": "done",
+            "completedRejections": [],
+            "forgedRejected": [
+              "receipt_not_committed"
+            ],
+            "forgedStillOpen": true
+          },
+          {
+            "type": "DISTRIBUTE_FOOD",
+            "proposed": true,
+            "accepted": true,
+            "workStatus": "applied",
+            "receiptId": "work-DISTRIBUTE_FOOD:stock_deposited:1",
+            "completedStatus": "done",
+            "completedRejections": [],
+            "forgedRejected": [
+              "receipt_not_committed"
+            ],
+            "forgedStillOpen": true
+          },
+          {
+            "type": "MAINTAIN_ORDER",
+            "proposed": true,
+            "accepted": true,
+            "workStatus": "applied",
+            "receiptId": "work-MAINTAIN_ORDER:worked:0",
+            "completedStatus": "done",
+            "completedRejections": [],
+            "forgedRejected": [
+              "receipt_not_committed"
+            ],
+            "forgedStillOpen": true
+          },
+          {
+            "type": "REST_RECOVER",
+            "proposed": true,
+            "accepted": true,
+            "workStatus": "applied",
+            "receiptId": "work-REST_RECOVER:rested:0",
+            "completedStatus": "done",
+            "completedRejections": [],
+            "forgedRejected": [
+              "receipt_not_committed"
+            ],
+            "forgedStillOpen": true
+          },
+          {
+            "type": "SCOUT_RUINS",
+            "proposed": true,
+            "accepted": true,
+            "workStatus": "applied",
+            "receiptId": "work-SCOUT_RUINS:worked:0",
+            "completedStatus": "done",
+            "completedRejections": [],
+            "forgedRejected": [
+              "receipt_not_committed"
+            ],
+            "forgedStillOpen": true
+          },
+          {
+            "type": "BUILD_GENERATOR",
+            "proposed": true,
+            "accepted": true,
+            "workStatus": "applied",
+            "receiptId": "d:660:machine_built:npc_01",
+            "completedStatus": "done",
+            "completedRejections": [],
+            "forgedRejected": [
+              "receipt_not_committed"
+            ],
+            "forgedStillOpen": true
+          },
+          {
+            "type": "BUILD_LUMBER_MILL",
+            "proposed": true,
+            "accepted": true,
+            "workStatus": "applied",
+            "receiptId": "d:720:machine_built:npc_01",
+            "completedStatus": "done",
+            "completedRejections": [],
+            "forgedRejected": [
+              "receipt_not_committed"
+            ],
+            "forgedStillOpen": true
+          },
+          {
+            "type": "BUILD_FOOD_COLLECTOR",
+            "proposed": true,
+            "accepted": true,
+            "workStatus": "applied",
+            "receiptId": "d:720:machine_built:npc_01",
+            "completedStatus": "done",
+            "completedRejections": [],
+            "forgedRejected": [
+              "receipt_not_committed"
+            ],
+            "forgedStillOpen": true
+          }
+        ],
+        "verdict": "match"
+      }
+    },
+    {
+      "gate": "web-shared-chain",
+      "status": "pass",
+      "command": "printf 'r8-step\\n' | /data/home/user_00/.local/node22/bin/node dist/scripts/play-sprint.js --fresh",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r9",
+      "exitCode": 0,
+      "sourceHEAD": "f17ca0c88d1a930abd0bace83d8aae36b424f42b",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/verify2/web-step.json",
+      "sha256": "c95b3e821abca3b7b0f3a72f4071cf45c03e0309300ec0a941e075894228b0df",
+      "evidenceClass": "reference",
+      "note": "web r8-step produced 8 records, 8 multi-candidate, 8 applied",
+      "observed": {
+        "records": 8,
+        "multi": 8,
+        "applied": 8
+      }
+    },
+    {
+      "gate": "data-gate",
+      "status": "pass",
+      "command": "inline data inspection",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r9",
+      "exitCode": 0,
+      "sourceHEAD": "f17ca0c88d1a930abd0bace83d8aae36b424f42b",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/sprint-r8/D/cases/split-manifest.json",
+      "sha256": "7ad4603040bdd986370744ba308c621d3335c8f6d4bc3a2a805b6b838264b955",
+      "evidenceClass": "fixture",
+      "note": "2560 cases, 4 non-empty whole-game splits, full observation text, two rule reviewers (0 independent humans)",
+      "observed": {
+        "cases": 2560,
+        "missingText": 0,
+        "single": 0,
+        "splits": {
+          "train": 1922,
+          "dev": 236,
+          "calibration": 222,
+          "select": 180
+        },
+        "independentHumanReviews": 0
+      }
+    },
+    {
+      "gate": "jev-preflight",
+      "status": "pass",
+      "command": "python research/decision-choice/jev05/action/train.py preflight --json",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r9",
+      "exitCode": 0,
+      "sourceHEAD": "f17ca0c88d1a930abd0bace83d8aae36b424f42b",
+      "path": "research/decision-choice/jev05/action/train.py",
+      "sha256": "a129595a9b4b1b02693fd0c9fa8b07c69f184198bfa868fd2f1db4a01341438f",
+      "evidenceClass": "real-model",
+      "note": "no frozen-feature cache for new inputs; encode is blocked",
+      "observed": {
+        "schema": "frostecho.jev05.action.preflight/1",
+        "checkedAt": "2026-11-17T14:28:44",
+        "renderer": "joint-c-action/1",
+        "hidden": 5120,
+        "head": {
+          "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/sprint-r7/legacy-reuse/c43-increment-batch4-1/warm-start-17/best.safetensors",
+          "exists": true,
+          "sha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04"
+        },
+        "encoder": {
+          "path": "/data2/model_weights/Qwen3.8-27B",
+          "exists": true,
+          "hiddenSize": 5120,
+          "matchesHead": true
+        },
+        "gpus": [
+          {
+            "index": 0,
+            "name": "NVIDIA A10",
+            "totalMiB": 23028,
+            "usedMiB": 17653,
+            "freeMiB": 5375
+          },
+          {
+            "index": 1,
+            "name": "NVIDIA A10",
+            "totalMiB": 24564,
+            "usedMiB": 4,
+            "freeMiB": 24560
+          }
+        ],
+        "capacity": {
+          "requiredWeightsMiB": 51498,
+          "totalGpuFreeMiB": 29935,
+          "usableGpuMiB": 26863,
+          "ramAvailableMiB": 76092,
+          "usableRamMiB": 63804,
+          "plan": "device_map shards across free GPUs, remainder on CPU"
+        },
+        "encoderLoadable": true,
+        "architecture": {
+          "supported": true,
+          "detail": "Qwen3_5Config"
+        },
+        "requiredVramMiB": 51498,
+        "features": {
+          "path": null,
+          "exists": false
+        },
+        "blockedReason": "no frozen-feature cache for new inputs; encode is blocked",
+        "readyForScoring": true,
+        "readyForTraining": false,
+        "readyForLiveEncoding": true,
+        "status": "blocked"
+      }
+    },
+    {
+      "gate": "scorer-honesty",
+      "status": "pass",
+      "command": "inline contract assertion",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r9",
+      "exitCode": 0,
+      "sourceHEAD": "f17ca0c88d1a930abd0bace83d8aae36b424f42b",
+      "path": "/data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/verify2/honesty.json",
+      "sha256": "8e3abb845f8e4002a06655a1bf7e2eac7e5450e1b151e8afa0fdbc54b981ca45",
+      "evidenceClass": "fixture",
+      "note": "no experimental scorer claims admission"
+    },
+    {
+      "gate": "calendar-contract",
+      "status": "pass",
+      "command": "inline constant check",
+      "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r9",
+      "exitCode": 0,
+      "sourceHEAD": "f17ca0c88d1a930abd0bace83d8aae36b424f42b",
+      "path": "src/r7/contracts.ts",
+      "sha256": "d35c899c9feb11c8398fe2e225d80dcdb0cb2b81d2bbd67b2276671207f1baaa",
+      "evidenceClass": "reference",
+      "note": "gospel-5.8.19 elapsed == 4920 minutes"
+    }
+  ],
+  "summary": {
+    "pass": 11,
+    "fail": 0,
+    "blocked": 0,
+    "notRun": 0
+  }
+}
