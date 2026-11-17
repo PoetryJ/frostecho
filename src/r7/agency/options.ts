@@ -11,7 +11,8 @@
  *  - ids are opaque handles for mapping only, never training features.
  */
 import { canonicalJson, sha256Hex, type Candidate } from '../../decision/contracts';
-import { TASK_CATALOG, WORK_RULES, type TaskTypeId } from '../domains/tasks/index';
+import { TASK_CATALOG, WORK_RULES, WORK_MODE_PLACE,
+  type TaskTypeId } from '../domains/tasks/index';
 
 export interface AgencyView {
   actorId: string;
@@ -75,15 +76,21 @@ export interface OptionBuild {
   notesUsed: string[];
 }
 
-/** Where each task's work has to happen. */
+/**
+ * Where each task's work has to happen (the original `targetLocation`). The
+ * five non-resource tasks used to be place-free (or `workshop`), which let a
+ * resident do dormitory morale work from the warehouse; they now carry the
+ * real room, and the authority enforces the same table.
+ */
 export const PLACE_FOR_TASK: Record<string, string | null> = {
   COLLECT_FOOD: 'village', COLLECT_WOOD: 'village', SCOUT_RUINS: 'village',
-  MAINTAIN_POWER: 'workshop', COLLECT_MATERIAL: 'workshop',
+  MAINTAIN_POWER: 'workshop', COLLECT_MATERIAL: 'village',
   PREPARE_WARMTH: 'workshop', PREPARE_MEDICAL: 'medical',
   DISTRIBUTE_FOOD: 'warehouse',
   BUILD_GENERATOR: 'workshop', BUILD_LUMBER_MILL: 'workshop',
   BUILD_FOOD_COLLECTOR: 'workshop',
-  BOOST_MORALE: null, COORDINATE: null, MAINTAIN_ORDER: null, REST_RECOVER: null,
+  BOOST_MORALE: 'dorm-a', COORDINATE: 'dorm-a', MAINTAIN_ORDER: 'dorm-a',
+  REST_RECOVER: null,
 };
 
 export const MAX_OPTIONS = 8;
@@ -109,7 +116,8 @@ export function taskBindingOfCandidate(entry: Candidate): {
     ? action === 'build-machine' && entry.parameters.machine === definition.builds
     : type === 'DISTRIBUTE_FOOD' ? action === 'deposit' || action === 'deliver'
       : rule !== null && action === rule.action
-        && (!rule.resource || entry.parameters.resource === rule.resource);
+        && (!rule.resource || entry.parameters.resource === rule.resource)
+        && (!rule.mode || entry.parameters.mode === rule.mode);
   if (!matches) return null;
   return { taskId, type, evidenceClass: WORK_PROXY_TASKS.has(type) ? 'work-proxy' : 'task-primitive' };
 }
@@ -261,12 +269,39 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
       case 'COORDINATE':
       case 'MAINTAIN_ORDER':
       case 'SCOUT_RUINS':
-      case 'COLLECT_MATERIAL':
-        candidates.push(candidate('work', `按分工执行${task.type}`, { minutes: 40 },
-          ['stamina > 10'], { power: 6, stamina: -10 }));
+      case 'COLLECT_MATERIAL': {
+        // Real original semantics, not a generic power shift: the candidate
+        // names the work mode, the real duration and the effect it will cause.
+        const rule = WORK_RULES[task.type as TaskTypeId]!;
+        const definition = TASK_CATALOG[task.type as TaskTypeId];
+        const mode = rule.mode!;
+        // The site is visible to the actor, so an impossible instant action is
+        // never offered: walking there is the offered option instead (the
+        // executor would refuse it anyway, but the model should not be invited
+        // to spend an hour on a doomed command).
+        const required = WORK_MODE_PLACE[mode];
+        if (npc.location !== required) {
+          rules.push(`task.work-place-blocked:${task.type}@${required}`);
+          break;
+        }
+        const text: Record<string, string> = {
+          morale: '在宿舍唱歌鼓舞士气', coordinate: '在宿舍统筹协调、安抚同屋',
+          order: '在宿舍维持秩序、调解冲突', scout: '深入废墟侦察稀有物资',
+          explore: '去废墟探索可用物资',
+        };
+        const expected: Record<string, number> = mode === 'morale'
+          ? { sanityOthers: 36, sanity: 5 }
+          : mode === 'coordinate' ? { sanityOthers: 36, sanity: 5 }
+            : mode === 'order' ? { sanityOthers: 54, sanity: 5 }
+              : mode === 'scout' ? { sanity: 5, scoutRolls: definition.minutes }
+                : { sanity: 5 };
+        candidates.push(candidate('work', text[mode] ?? `按分工执行${task.type}`,
+          { minutes: definition.minutes, mode }, [`stamina > ${Math.max(10, definition.staminaCost)}`],
+          expected));
         rules.push('task.work');
         rules.push(`task.work-proxy:${task.type}`);
         break;
+      }
       case 'REST_RECOVER':
         candidates.push(candidate('rest', '按分工休息恢复', { minutes: 60 },
           ['awake'], { stamina: 20 }));

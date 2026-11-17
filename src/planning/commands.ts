@@ -23,7 +23,18 @@ export function candidateCommand(candidate: Candidate, actorId: string, commandI
     case 'eat': return { commandId, type: 'eat', actorId, amount: Number(parameters.amount ?? 1) };
     case 'refuel': return { commandId, type: 'refuel', actorId, amount: Number(parameters.amount ?? 1) };
     case 'rest': return { commandId, type: 'rest', actorId, minutes: Number(parameters.minutes ?? 60) };
-    case 'work': return { commandId, type: 'work', actorId, minutes: Number(parameters.minutes ?? 60) };
+    case 'work': {
+      // The original five non-resource tasks share the `work` primitive; the
+      // mode is part of the authoritative command, never a rendering hint.
+      const mode = parameters.mode;
+      if (mode !== undefined && (typeof mode !== 'string'
+        || !['power', 'explore', 'morale', 'coordinate', 'order', 'scout'].includes(mode))) {
+        throw new UnsupportedActionError(candidate.id, `work mode:${String(mode)}`);
+      }
+      return { commandId, type: 'work', actorId, minutes: Number(parameters.minutes ?? 60),
+        ...(mode ? { mode: mode as 'power' | 'explore' | 'morale' | 'coordinate' | 'order' | 'scout' }
+          : {}) };
+    }
     case 'gather': {
       const resource = parameters.resource;
       if (resource !== 'food' && resource !== 'firewood') {

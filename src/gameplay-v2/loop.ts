@@ -367,14 +367,48 @@ export class GameplayLoop {
     }
   }
 
-  /** The beneficiary cancels; every later attempt stops (independent terminal). */
+  /**
+   * The beneficiary cancels; every later attempt stops (independent terminal).
+   * `heardBy` is the real audience of the telling: a cancellation spoken to one
+   * resident is a player statement only those residents remember, and the
+   * others keep acting on what they actually heard.
+   */
   cancelCommitment(commitmentId: string, options: { inputId?: string;
-    reason?: string } = {}): { commitment: Commitment; event: CommitmentEvent } {
+    reason?: string; heardBy?: string[] } = {}):
+    { commitment: Commitment; event: CommitmentEvent } {
     const result = this.commitments.cancel(commitmentId,
       { at: this.session.world.simTime, inputId: options.inputId, reason: options.reason });
-    this.session.ingestCommitmentEvent(result.event);
+    this.session.ingestCommitmentEvent(result.event, {
+      ...(options.heardBy ? { audience: options.heardBy } : {}),
+      source: 'player_statement', authority: 'player', speakerId: 'player' });
     this.closeBoundTasks(result.commitment);
     return { commitment: result.commitment, event: result.event };
+  }
+
+  /**
+   * An NPC relays a cancellation it actually heard to the residents present.
+   * The teller must hold the cancellation record itself, so a relay can never
+   * invent knowledge; the audience learns it as a player statement reported by
+   * that NPC, not as a new engine fact.
+   */
+  relayCancellation(commitmentId: string, options: { tellerId: string; audience: string[];
+    text?: string }): { commitment: Commitment; told: string[]; event: CommitmentEvent } | null {
+    const commitment = this.commitments.find(commitmentId);
+    if (!commitment) throw new Error(`unknown commitment ${commitmentId}`);
+    const records = this.session.memories.get(options.tellerId)?.toJSON().records ?? [];
+    const heard = [...records].reverse().find(record => record.observerId === options.tellerId
+      && record.kind === 'commitment_cancelled'
+      && String((record.payload as Record<string, unknown>).commitmentId) === commitmentId);
+    if (!heard) return null;
+    const event: CommitmentEvent = { type: 'commitment_cancelled', commitmentId,
+      revision: commitment.revision, at: this.session.world.simTime,
+      actorId: commitment.promisorId,
+      payload: { fromId: commitment.beneficiaryId, toId: commitment.promisorId,
+        text: options.text ?? '玩家当面说已经取消了',
+        relayedBy: options.tellerId, originalEventId: heard.sourceEventIds[0] ?? '' } };
+    const told = this.session.ingestCommitmentEvent(event, { audience: options.audience,
+      source: 'player_statement', authority: 'npc', speakerId: options.tellerId });
+    return { commitment, told, event };
   }
 
   /** The promisor exits explicitly; the relation moves on this evidence. */

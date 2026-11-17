@@ -12,6 +12,10 @@
  */
 import type { DomainCommand, DomainModule, DomainResult, ResourceId } from '../../contracts';
 import { emptyResult } from '../../contracts';
+import { WORK_MODE_PLACE, type WorkMode } from '../../../survival/world-v2';
+
+export type { WorkMode };
+export { WORK_MODE_PLACE };
 
 export type TaskTypeId =
   | 'COLLECT_WOOD' | 'COLLECT_FOOD' | 'MAINTAIN_POWER' | 'COLLECT_MATERIAL'
@@ -32,7 +36,13 @@ export interface TaskDefinition {
   dailyLimit?: number;
 }
 
-/** `task-system.js:39-190`; baseYield / duration / stamina cost kept verbatim. */
+/**
+ * `task-system.js:39-190`; baseYield / duration / stamina cost kept verbatim.
+ * The five work-proxy rows carry the original `baseDuration` in minutes
+ * (3600s explore/coordinate/order, 1800s morale, 2400s scout) and the original
+ * `staminaCost`; their `place` is the original `targetLocation`, so the
+ * authority can demand the real work site instead of any indoor room.
+ */
 export const TASK_CATALOG: Record<TaskTypeId, TaskDefinition> = {
   COLLECT_WOOD: { id: 'COLLECT_WOOD', name: '🪵 收集木柴', minutes: 30,
     staminaCost: 15, place: 'lumber_camp', yields: { resource: 'firewood', amount: 10 } },
@@ -40,24 +50,24 @@ export const TASK_CATALOG: Record<TaskTypeId, TaskDefinition> = {
     staminaCost: 12, place: 'frozen_lake', yields: { resource: 'food', amount: 8 } },
   MAINTAIN_POWER: { id: 'MAINTAIN_POWER', name: '⚡ 维护电力', minutes: 40,
     staminaCost: 10, place: 'workshop_door', yields: { resource: 'power', amount: 15 } },
-  COLLECT_MATERIAL: { id: 'COLLECT_MATERIAL', name: '🔍 探索废墟', minutes: 45,
-    staminaCost: 18, place: 'ruins', dailyLimit: 3 },
+  COLLECT_MATERIAL: { id: 'COLLECT_MATERIAL', name: '🔍 探索废墟', minutes: 60,
+    staminaCost: 18, place: 'ruins_site', dailyLimit: 3 },
   PREPARE_WARMTH: { id: 'PREPARE_WARMTH', name: '🧥 准备御寒物资', minutes: 30,
     staminaCost: 8, place: 'workshop' },
   PREPARE_MEDICAL: { id: 'PREPARE_MEDICAL', name: '💊 医疗救治', minutes: 40,
     staminaCost: 10, place: 'medical' },
   BOOST_MORALE: { id: 'BOOST_MORALE', name: '🎵 鼓舞士气', minutes: 30,
-    staminaCost: 5, place: 'command' },
-  COORDINATE: { id: 'COORDINATE', name: '📢 统筹协调', minutes: 30,
-    staminaCost: 5, place: 'command' },
+    staminaCost: 8, place: 'dorm_a_door' },
+  COORDINATE: { id: 'COORDINATE', name: '📢 统筹协调', minutes: 60,
+    staminaCost: 5, place: 'dorm_a_door' },
   DISTRIBUTE_FOOD: { id: 'DISTRIBUTE_FOOD', name: '🍲 分配食物', minutes: 20,
     staminaCost: 5, place: 'kitchen' },
-  MAINTAIN_ORDER: { id: 'MAINTAIN_ORDER', name: '🛡️ 维持秩序', minutes: 40,
-    staminaCost: 10, place: 'village' },
+  MAINTAIN_ORDER: { id: 'MAINTAIN_ORDER', name: '🛡️ 维持秩序', minutes: 60,
+    staminaCost: 5, place: 'dorm_a_door' },
   REST_RECOVER: { id: 'REST_RECOVER', name: '🛏️ 休息恢复', minutes: 60,
     staminaCost: -20, place: 'dorm' },
-  SCOUT_RUINS: { id: 'SCOUT_RUINS', name: '🔍 废墟侦察', minutes: 45,
-    staminaCost: 15, place: 'ruins' },
+  SCOUT_RUINS: { id: 'SCOUT_RUINS', name: '🔍 废墟侦察', minutes: 40,
+    staminaCost: 20, place: 'ruins_site' },
   BUILD_GENERATOR: { id: 'BUILD_GENERATOR', name: '⚡ 建造自动发电机', minutes: 240,
     staminaCost: 20, place: 'workshop', builds: 'generator' },
   BUILD_LUMBER_MILL: { id: 'BUILD_LUMBER_MILL', name: '🪵 建造自动伐木机', minutes: 300,
@@ -90,9 +100,14 @@ export const RECEIPT_TYPES: Record<TaskTypeId, string[]> = {
   BUILD_FOOD_COLLECTOR: ['machine_built'],
 };
 
-/** The work a task actually performs; resources come from this, not the close. */
+/**
+ * The work a task actually performs; resources come from this, not the close.
+ * The five non-resource tasks carry the original `task-effects.js` mode, so a
+ * power repair can never close a morale task.
+ */
 export interface WorkRule {
   action: 'gather' | 'work' | 'refuel' | 'medical' | 'deposit' | 'rest';
+  mode?: WorkMode;
   resource?: 'food' | 'firewood';
   amount?: number;
   minutes?: number;
@@ -101,20 +116,46 @@ export interface WorkRule {
 export const WORK_RULES: Record<TaskTypeId, WorkRule | null> = {
   COLLECT_WOOD: { action: 'gather', resource: 'firewood', amount: 2 },
   COLLECT_FOOD: { action: 'gather', resource: 'food', amount: 2 },
-  MAINTAIN_POWER: { action: 'work', minutes: 40 },
-  COLLECT_MATERIAL: { action: 'work', minutes: 45 },
+  MAINTAIN_POWER: { action: 'work', mode: 'power', minutes: 40 },
+  COLLECT_MATERIAL: { action: 'work', mode: 'explore', minutes: 60 },
   PREPARE_WARMTH: { action: 'refuel', amount: 2 },
   PREPARE_MEDICAL: { action: 'medical', amount: 1 },
-  BOOST_MORALE: { action: 'work', minutes: 30 },
-  COORDINATE: { action: 'work', minutes: 30 },
+  BOOST_MORALE: { action: 'work', mode: 'morale', minutes: 30 },
+  COORDINATE: { action: 'work', mode: 'coordinate', minutes: 60 },
   DISTRIBUTE_FOOD: { action: 'deposit', amount: 1 },
-  MAINTAIN_ORDER: { action: 'work', minutes: 40 },
+  MAINTAIN_ORDER: { action: 'work', mode: 'order', minutes: 60 },
   REST_RECOVER: { action: 'rest', minutes: 60 },
-  SCOUT_RUINS: { action: 'work', minutes: 45 },
+  SCOUT_RUINS: { action: 'work', mode: 'scout', minutes: 40 },
   BUILD_GENERATOR: null,
   BUILD_LUMBER_MILL: null,
   BUILD_FOOD_COLLECTOR: null,
 };
+
+/** work mode -> the task it discharges (the authority's completion mapping). */
+export const WORK_MODE_TASK: Record<WorkMode, TaskTypeId> = {
+  power: 'MAINTAIN_POWER', explore: 'COLLECT_MATERIAL', morale: 'BOOST_MORALE',
+  coordinate: 'COORDINATE', order: 'MAINTAIN_ORDER', scout: 'SCOUT_RUINS',
+};
+
+/**
+ * The ONE place gate shared by the step executor and the agency layer. A
+ * command that spends time at the wrong site is refused before the clock or a
+ * resource moves; the candidate layer only proposes the walk to the right site.
+ */
+export function requiredPlaceOf(action: string, parameters: Record<string, unknown> = {}):
+  string | null {
+  switch (action) {
+    case 'gather': return 'village';
+    case 'work': {
+      const mode = String(parameters.mode ?? 'power') as WorkMode;
+      return WORK_MODE_PLACE[mode] ?? 'workshop';
+    }
+    case 'medical': return 'medical';
+    case 'deposit': return 'warehouse';
+    case 'deliver': return 'kitchen';
+    default: return null;
+  }
+}
 
 export function receiptTypesFor(type: TaskTypeId): string[] {
   return RECEIPT_TYPES[type] ?? [];
@@ -130,6 +171,8 @@ export interface TaskGoal {
   amount?: number;
   /** The place/object the receipt must name. */
   place?: 'warehouse' | 'kitchen';
+  /** The work mode the receipt must prove (the five non-resource tasks). */
+  mode?: WorkMode;
 }
 
 export interface TaskRecord {
@@ -158,20 +201,26 @@ export interface TasksState {
   usedReceipts: string[];
 }
 
-/** The goal each type must really reach; social types state their own effect. */
+/**
+ * The goal each type must really reach. The five non-resource tasks are not
+ * closed by a generic `worked` receipt: the receipt must carry the original
+ * work mode, which is the committed proof that the right work happened.
+ * (`COLLECT_MATERIAL` used to demand `power`; the original `explore` source
+ * yields no public resource, so that goal was never the real one.)
+ */
 export const TASK_GOALS: Record<TaskTypeId, TaskGoal> = {
   COLLECT_WOOD: { resource: 'firewood', amount: 1 },
   COLLECT_FOOD: { resource: 'food', amount: 1 },
   MAINTAIN_POWER: { resource: 'power', amount: 1 },
-  COLLECT_MATERIAL: { resource: 'power', amount: 1 },
+  COLLECT_MATERIAL: { mode: 'explore', amount: 1 },
   PREPARE_WARMTH: { amount: 1 },
   PREPARE_MEDICAL: { amount: 1 },
-  BOOST_MORALE: {},
-  COORDINATE: {},
+  BOOST_MORALE: { mode: 'morale' },
+  COORDINATE: { mode: 'coordinate' },
   DISTRIBUTE_FOOD: { place: 'warehouse', amount: 1 },
-  MAINTAIN_ORDER: {},
+  MAINTAIN_ORDER: { mode: 'order' },
   REST_RECOVER: {},
-  SCOUT_RUINS: {},
+  SCOUT_RUINS: { mode: 'scout' },
   BUILD_GENERATOR: {},
   BUILD_LUMBER_MILL: {},
   BUILD_FOOD_COLLECTOR: {},
@@ -391,6 +440,23 @@ export const tasksDomain: DomainModule<TasksState> = {
           result.rejections.push({ intentId: `tasks:${taskId}:complete`,
             code: 'receipt_goal_place_mismatch',
             reason: `${task.type} needs ${goal.place}, receipt is ${String(place)}` });
+          return result;
+        }
+      }
+      // The five non-resource tasks are proven by the real work mode the
+      // receipt carries (morale/coordinate/order/explore/scout), not by any
+      // `worked` event: a power repair stays a power repair.
+      if (goal.mode) {
+        if (payload.mode !== goal.mode) {
+          result.rejections.push({ intentId: `tasks:${taskId}:complete`,
+            code: 'receipt_goal_mode_mismatch',
+            reason: `${task.type} needs work mode ${goal.mode}, receipt is ${String(payload.mode)}` });
+          return result;
+        }
+        if (goal.amount !== undefined && !(Number(payload.amount ?? 0) >= goal.amount)) {
+          result.rejections.push({ intentId: `tasks:${taskId}:complete`,
+            code: 'receipt_goal_amount',
+            reason: `amount ${String(payload.amount)} < ${goal.amount}` });
           return result;
         }
       }

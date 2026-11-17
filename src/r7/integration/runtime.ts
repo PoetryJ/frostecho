@@ -18,7 +18,7 @@ import {
 import { commitIntents, ensureR8, snapshotOf } from './intents';
 import { survivalDomain, type SurvivalState } from '../domains/survival/index';
 import { productionDomain, type ProductionState } from '../domains/production/index';
-import { tasksDomain, type TasksState } from '../domains/tasks/index';
+import { tasksDomain, WORK_MODE_TASK, type TasksState, type WorkMode } from '../domains/tasks/index';
 import { councilDomain, type CouncilState } from '../domains/council/index';
 import { crisesDomain, type CrisesState } from '../domains/crises/index';
 import { lifeDomain, type LifeState } from '../domains/life/index';
@@ -108,13 +108,20 @@ export function boundariesBetween(profile: TimeProfile, from: number, to: number
   return [...points].sort((left, right) => left - right);
 }
 
-/** Which task an action discharges, for closure on the real receipt. */
+/**
+ * Which task an action discharges, for closure on the real receipt. The work
+ * mode decides the five non-resource tasks; a caller-supplied `taskType` is
+ * never trusted here, so a power receipt cannot close a morale task.
+ */
 function workTaskType(candidate: { parameters: Record<string, unknown> }): string | null {
   const action = String(candidate.parameters.action ?? '');
   if (action === 'gather') {
     return candidate.parameters.resource === 'food' ? 'COLLECT_FOOD' : 'COLLECT_WOOD';
   }
-  if (action === 'work') return 'MAINTAIN_POWER';
+  if (action === 'work') {
+    const mode = String(candidate.parameters.mode ?? 'power') as WorkMode;
+    return WORK_MODE_TASK[mode] ?? 'MAINTAIN_POWER';
+  }
   if (action === 'rest') return 'REST_RECOVER';
   if (action === 'medical') return 'PREPARE_MEDICAL';
   if (action === 'refuel') return 'PREPARE_WARMTH';
@@ -133,6 +140,14 @@ export class R8Runtime {
   endingKind: string | null = null;
   /** Occupancy: one work item per actor; several actors overlap in time. */
   readonly work = new Map<string, WorkItem>();
+  /**
+   * Per-command settlement hooks. An occupied action has no immediate receipt,
+   * so the entry that started it registers here how to learn about the real
+   * one (the commitment bridge must fulfil on the committed receipt, not on the
+   * intent). Hooks are process-local and re-registered by whoever starts work.
+   */
+  private readonly settleHooks = new Map<string, (actorId: string,
+    candidate: import('../../decision/contracts').Candidate, eventIds: string[]) => void>();
   /** Completed work items, in commit order (evidence for the time story). */
   readonly workLog: { actorId: string; kind: string; startedAt: number; endsAt: number;
     status: string; eventIds: string[] }[] = [];
@@ -417,6 +432,12 @@ export class R8Runtime {
     return this.work.get(actorId)?.endsAt ?? null;
   }
 
+  /** Register the one settlement hook for a started work command. */
+  onWorkSettled(commandId: string, hook: (actorId: string,
+    candidate: import('../../decision/contracts').Candidate, eventIds: string[]) => void): void {
+    this.settleHooks.set(commandId, hook);
+  }
+
   /**
    * Complete every work item the committed clock has passed. Called by
    * advanceWorld only, so CLI, web and the four-day runner finish work at the
@@ -437,6 +458,15 @@ export class R8Runtime {
         eventIds = outcome.eventIds;
       } catch (error) {
         status = `error:${(error as Error).message}`;
+      }
+      const hook = this.settleHooks.get(item.commandId);
+      this.settleHooks.delete(item.commandId);
+      if (hook && status === 'applied' && eventIds.length > 0) {
+        try {
+          hook(item.actorId, item.candidate, eventIds);
+        } catch (error) {
+          status = `hook_error:${(error as Error).message}`;
+        }
       }
       // A finished work item closes its own task on its own receipt.
       if (status === 'applied' && eventIds.length > 0) {

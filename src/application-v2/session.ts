@@ -424,8 +424,10 @@ export class PlaySession {
 
   /**
    * R4 (G4): a commitment event is a real communication record: sender,
-   * recipient, content, revision and the supporting receipt. It is ingested
-   * into every living NPC's memory (social events are public here); the
+   * recipient, content, revision and the supporting receipt. By default it is
+   * a public team event ingested by every living NPC; a caller may pass an
+   * explicit `audience` (a private face-to-face message) and the real
+   * `source`/`speaker` (a player statement is not an engine fact). The
    * promisor additionally gets the relation-bearing records:
    *  - commitment_fulfilled  -> promise_kept  (trust +, only with the receipt)
    *  - commitment_withdrawn  -> promise_broken (trust -, grievance +)
@@ -434,8 +436,16 @@ export class PlaySession {
   ingestCommitmentEvent(event: {
     type: string; commitmentId: string; revision: number; at: number;
     actorId: string; payload: Record<string, unknown>;
-  }): string[] {
-    const observers = this.npcIds.filter(id => this.world.npcs[id]?.alive);
+  }, options: {
+    /** Who actually heard it; omitted = every living NPC (public event). */
+    audience?: string[];
+    source?: 'engine' | 'player_statement';
+    authority?: 'engine' | 'player' | 'npc' | 'third_party' | 'inference';
+    speakerId?: string;
+  } = {}): string[] {
+    const observers = options.audience
+      ? options.audience.filter(id => this.world.npcs[id]?.alive)
+      : this.npcIds.filter(id => this.world.npcs[id]?.alive);
     const eventId = `cmt-${event.type}-${event.commitmentId}-${this.sequence++}`;
     const recipient = String(event.payload.toId ?? 'player');
     for (const observer of observers) {
@@ -443,8 +453,13 @@ export class PlaySession {
         eventId, occurredAt: event.at, observedAt: this.world.simTime, kind: event.type,
         subjectIds: [event.actorId, recipient],
         payload: { ...event.payload, commitmentId: event.commitmentId,
-          revision: event.revision },
-        source: 'engine', authority: 'engine', speakerId: event.actorId,
+          revision: event.revision,
+          // Provenance of the telling: who heard it, and from whom.
+          heardBy: observers.join(';'),
+          toldBy: options.speakerId ?? event.actorId },
+        source: options.source ?? 'engine',
+        authority: options.authority ?? 'engine',
+        speakerId: options.speakerId ?? event.actorId,
         relatedRequestId: event.commitmentId,
       };
       this.ingest(observer, base);

@@ -44,7 +44,10 @@ def load_bound(corpus, directory):
         split = source['split']
         if split not in ('train', 'dev', 'test') or rec['split'] != split:
             raise ValueError('wrong split')
-        if source.get('labelSource') != 'reference-imitation' or source.get('researchTrainReady') is not False:
+        # Weak-label sources are an explicit allowlist: a new source must be
+        # named here instead of silently widening the gate.
+        if source.get('labelSource') not in ('reference-imitation', 'on-policy-failure') \
+                or source.get('researchTrainReady') is not False:
             raise ValueError('this tool only runs explicitly labelled weak-reference experiments')
         if hashlib.sha256(env['requestJson'].encode()).hexdigest() != rec['inputSha256']:
             raise ValueError('original model input mismatch')

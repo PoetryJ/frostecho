@@ -11,7 +11,8 @@ import { resolve } from 'node:path';
 const require = createRequire(import.meta.url);
 const root = process.argv[2] ?? process.cwd();
 const { R8Runtime } = require(resolve(root, 'dist/src/r7/integration/runtime.js'));
-const { TASK_IDS, WORK_RULES } = require(resolve(root, 'dist/src/r7/domains/tasks/index.js'));
+const { TASK_IDS, WORK_RULES, WORK_MODE_PLACE } =
+  require(resolve(root, 'dist/src/r7/domains/tasks/index.js'));
 
 const results = [];
 
@@ -19,7 +20,8 @@ function commandFor(rule, actorId, commandId) {
   switch (rule.action) {
     case 'gather': return { commandId, type: 'gather', actorId, resource: rule.resource,
       amount: rule.amount ?? 1 };
-    case 'work': return { commandId, type: 'work', actorId, minutes: rule.minutes ?? 40 };
+    case 'work': return { commandId, type: 'work', actorId, minutes: rule.minutes ?? 40,
+      ...(rule.mode ? { mode: rule.mode } : {}) };
     case 'refuel': return { commandId, type: 'refuel', actorId, amount: rule.amount ?? 1 };
     case 'medical': return { commandId, type: 'medical', actorId, targetId: actorId,
       amount: rule.amount ?? 1 };
@@ -61,6 +63,14 @@ for (const type of TASK_IDS) {
     runtime.advanceWorld(runtime.world.simTime + spec);
   } else {
     const rule = WORK_RULES[type];
+    // The authority checks the real work site: walk there first, exactly like
+    // a candidate would (the human-handled matrix never patches coordinates).
+    const place = rule.action === 'work' && rule.mode ? WORK_MODE_PLACE[rule.mode] : null;
+    if (place && runtime.world.npcs[actorId].location !== place) {
+      const walked = runtime.session.submitWorldCommand({ commandId: `walk-${type}`,
+        type: 'move', actorId, to: place });
+      if (walked.events) runtime.recordCommitted(walked.events);
+    }
     const command = commandFor(rule, actorId, `work-${type}`);
     work = runtime.session.submitWorldCommand(command);
     if (work.events) runtime.recordCommitted(work.events);

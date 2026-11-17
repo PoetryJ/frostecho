@@ -49,12 +49,40 @@ function option(commitment: Commitment, task: GameplayTask, action: string,
     description, parameters: bound, preconditions, expectedEffects: {}, utilityComponents: {} };
 }
 
+/** The terminal kinds a promisor can only know because it was told. */
+const TERMINAL_KINDS = ['commitment_cancelled', 'commitment_declined',
+  'commitment_withdrawn', 'commitment_fulfilled'];
+
+/**
+ * Did THIS actor hear the event that ended the commitment? A terminal ledger
+ * row is world truth; without its own record the actor still believes the
+ * promise is alive and keeps working — that is the unheard-cancellation case,
+ * not a bug to be papered over by reading the truth.
+ */
+function heardTerminal(runtime: R8Runtime, actorId: string,
+  commitment: Commitment): boolean {
+  const records = runtime.session.memories.get(actorId)?.toJSON().records ?? [];
+  return records.some(record => record.observerId === actorId
+    && TERMINAL_KINDS.includes(record.kind)
+    && String((record.payload as Record<string, unknown>).commitmentId) === commitment.commitmentId
+    && Number((record.payload as Record<string, unknown>).revision ?? -1) === commitment.revision);
+}
+
 export function createCommitmentBridge(runtime: R8Runtime, play: GameplayLoop): CommitmentGoalBridge {
   if (runtime.session !== play.session) throw new Error('commitment bridge requires one shared session');
+  /**
+   * The actor's own view of its commitments: a terminal row it never heard
+   * still counts as live, and is marked so the candidate path cannot settle it.
+   */
   const rows = (actorId: string) => play.commitments.all()
     .filter(row => row.promisorId === actorId
-      && ['deliver-meal', 'supply-warehouse'].includes(row.goal) && !isTerminal(row.status))
-    .sort((a, b) => a.createdAt - b.createdAt || a.commitmentId.localeCompare(b.commitmentId));
+      && ['deliver-meal', 'supply-warehouse'].includes(row.goal))
+    // Every row stays visible: a heard terminal is reported as terminal, an
+    // unheard one as the still-live state this actor believes in.
+    .map(row => ({ row, unheardTerminal: isTerminal(row.status)
+      && !heardTerminal(runtime, actorId, row) }))
+    .sort((a, b) => a.row.createdAt - b.row.createdAt
+      || a.row.commitmentId.localeCompare(b.row.commitmentId));
 
   const binding = (actorId: string, candidate: Candidate) => {
     const p = candidate.parameters;
@@ -69,8 +97,10 @@ export function createCommitmentBridge(runtime: R8Runtime, play: GameplayLoop): 
   };
 
   const proposeShortage = (commitment: Commitment, eventIds: string[]) => {
+    // One source proposal per commitment, ever: a rejected proposal is the
+    // beneficiary's explicit answer ("按原约定"), not an invitation to re-ask.
     if (commitment.status !== 'active' || commitment.goal !== 'deliver-meal'
-      || commitment.changes.some(change => change.kind === 'alt-source' && change.status !== 'rejected')) return;
+      || commitment.changes.some(change => change.kind === 'alt-source')) return;
     const result = play.commitments.proposeChange(commitment.commitmentId, {
       kind: 'alt-source', reason: 'warehouse-empty',
       terms: { source: 'gather', reason: '亲见仓库缺货，我采集后补仓，再把饭送来' },
@@ -82,15 +112,27 @@ export function createCommitmentBridge(runtime: R8Runtime, play: GameplayLoop): 
     view(actorId) {
       const npc = runtime.world.npcs[actorId];
       const goals: unknown[] = [], candidates: Candidate[] = [];
-      for (const commitment of rows(actorId)) {
+      for (const { row: commitment, unheardTerminal } of rows(actorId)) {
         const task = commitment.taskId ? play.board.find(commitment.taskId) : undefined;
-        const ready = Boolean(npc?.alive && task?.status === 'active'
-          && task.commitmentId === commitment.commitmentId && task.actorId === actorId
-          && commitment.status === 'active' && resumeReady(npc, commitment));
+        // While a change is pending the promisor is NOT working under the new
+        // terms: only the originally agreed path may be offered.
+        const pendingChange = commitment.status === 'pending-change';
+        const lastKnownActive = commitment.status === 'active' || pendingChange || unheardTerminal;
+        const taskUsable = unheardTerminal
+          ? task !== undefined
+          : task?.status === 'active' && task.commitmentId === commitment.commitmentId
+            && task.actorId === actorId;
+        const ready = Boolean(npc?.alive && taskUsable && lastKnownActive
+          && resumeReady(npc, commitment));
         goals.push({ source: 'legacy-commitment', taskId: commitment.taskId,
           legacyTaskId: commitment.taskId, commitmentId: commitment.commitmentId,
           revision: commitment.revision, type: commitment.goal === 'deliver-meal' ? 'DELIVER_MEAL' : 'SUPPLY_WAREHOUSE',
-          status: commitment.status, taskStatus: task?.status ?? 'missing', ready,
+          // The status this actor can actually establish. `observedTerminal`
+          // says whether the engine truth is inside its own memory.
+          status: unheardTerminal ? 'active' : commitment.status,
+          observedTerminal: !unheardTerminal,
+          belief: unheardTerminal ? 'unheard-cancellation' : 'observed',
+          taskStatus: unheardTerminal ? 'active' : task?.status ?? 'missing', ready,
           conditions: [...commitment.conditions], deadline: commitment.deadline,
           beneficiaryId: commitment.beneficiaryId });
         if (!ready || !task || !npc) continue;
@@ -115,12 +157,30 @@ export function createCommitmentBridge(runtime: R8Runtime, play: GameplayLoop): 
         }
         const alternative = commitment.changes.some(change => change.kind === 'alt-source'
           && change.status === 'accepted' && change.terms.source === 'gather');
+        const rejectedAlternative = commitment.changes.some(change =>
+          change.kind === 'alt-source' && change.status === 'rejected');
         if (stock === 0 && !alternative) {
+          if (pendingChange) {
+            // The proposal is already open and unanswered: never act on the
+            // un-agreed source, and never re-run the withdraw that just failed
+            // (a second identical out_of_stock is a repeated invalid action).
+            candidates.push(make('report-delay', '改源答复未到，说明现状并等待，不再空取',
+              { note: 'await-change-answer', bridgeStep: 'await-answer' }));
+            continue;
+          }
+          if (rejectedAlternative) {
+            // The beneficiary refused the new source: stay on the original
+            // terms, report the shortage, and do not spend another attempt on
+            // a withdrawal that is known to fail.
+            candidates.push(make('report-delay', '按原约定等待补货，并说明当前无法取餐',
+              { note: 'rejected-source-shortage', bridgeStep: 'rejected-source-shortage' }));
+            continue;
+          }
           candidates.push(make('report-delay', '说明亲见缺货，提议改为采集后送饭，等待玩家同意',
             { note: 'warehouse-empty', bridgeStep: 'propose-alt-source' }));
           continue;
         }
-        if (alternative) {
+        if (alternative && !pendingChange) {
           const last = progressEvents(runtime, commitment).filter(event =>
             ['gathered', 'stock_deposited', 'stock_withdrawn', 'out_of_stock'].includes(event!.type)).at(-1);
           if (!last || !['gathered', 'stock_deposited'].includes(last.type)) {

@@ -5,7 +5,7 @@ import { runStep, closeTaskOnReceipt } from './step';
 import { makeChoiceResult, type ChoiceRequest, type Candidate } from '../../decision/contracts';
 import { referenceAgencyScorer, referenceUtility, referenceUtilityWithGoals } from '../agency/reference';
 import { taskBindingOfCandidate, WORK_PROXY_TASKS } from '../agency/options';
-import type { TaskTypeId } from '../domains/tasks/index';
+import { WORK_RULES, WORK_MODE_PLACE, type TaskTypeId } from '../domains/tasks/index';
 
 function assign(runtime: R8Runtime, type: TaskTypeId) {
   const actor = runtime.context().actorIds[0];
@@ -63,17 +63,25 @@ test('terminal tasks disappear from goals and cannot confer a reference obligati
   assert.equal(referenceUtilityWithGoals(activeCandidate, terminalRequest), referenceUtility(activeCandidate, terminalRequest));
 });
 
-for (const type of WORK_PROXY_TASKS) test(`${type} closes only its explicitly bound existing worked-receipt contract; proxy is marked`, async () => {
+for (const type of WORK_PROXY_TASKS) test(`${type} closes only its explicitly bound worked receipt at its real work mode; proxy is marked`, async () => {
   const runtime = R8Runtime.create({ seed: `work-proxy-${type}` });
   const taskId = assign(runtime, type);
+  const rule = WORK_RULES[type]!;
+  const place = WORK_MODE_PLACE[rule.mode!];
+  if (runtime.world.npcs['npc_01'].location !== place) {
+    runtime.session.submitWorldCommand({ commandId: `walk-${type}`, type: 'move',
+      actorId: 'npc_01', to: place as never });
+  }
   const result = await runStep(runtime, forced(request => request.candidates.find(row => row.parameters.taskId === taskId)), { actorIds: ['npc_01'] });
-  assert.equal(result.executed, 1);
-  assert.equal(result.records[0].taskCompleted, taskId);
-  assert.equal(result.records[0].taskCompletionEvidence, 'work-proxy');
-  const receipts = result.records[0].eventIds.map(id => runtime.committedEvent(id)!);
-  assert.ok(receipts.some(row => row.type === 'worked'));
+  // R9: the work occupies its actor and settles on the authoritative clock.
+  assert.equal(result.records[0].executionStatus, 'working');
+  runtime.advanceWorld(runtime.busyUntil('npc_01')!);
+  const task = runtime.states.tasks.tasks.find(row => row.taskId === taskId)!;
+  assert.equal(task.status, 'done');
+  const receipts = runtime.committedEvents().filter(row => row.actorId === 'npc_01');
+  const worked = receipts.find(row => row.type === 'worked')!;
+  assert.equal(worked.payload.mode, rule.mode);
   assert.equal(receipts.some(row => ['scouted', 'morale_boosted', 'materials_collected'].includes(row.type)), false);
-  assert.equal(runtime.states.tasks.tasks.find(row => row.taskId === taskId)!.status, 'done');
 });
 
 test('a forged task type cannot bind the wrong execution primitive or reuse an earlier receipt', async () => {

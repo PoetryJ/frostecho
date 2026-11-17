@@ -23,6 +23,44 @@ export const TRAVEL_STAMINA_PER_TILE = 0.08;
 export type Weather = 'clear' | 'snow' | 'storm' | 'cold-snap';
 export type LocationId = 'dorm-a' | 'dorm-b' | 'kitchen' | 'warehouse' | 'workshop' | 'medical' | 'command' | 'village';
 
+/**
+ * R9: the original splits five non-resource tasks inside
+ * `task-effects.js:_applyTaskEffect`. The executor keeps one `work` primitive
+ * and carries the mode, so the authority — not a caller's label — decides what
+ * the work produces and where it may happen.
+ */
+export const WORK_MODES = ['power', 'explore', 'morale', 'coordinate', 'order', 'scout'] as const;
+export type WorkMode = (typeof WORK_MODES)[number];
+
+/** Original `targetLocation` -> the engine room that work must happen in. */
+export const WORK_MODE_PLACE: Record<WorkMode, LocationId> = {
+  power: 'workshop', explore: 'village', scout: 'village',
+  morale: 'dorm-a', coordinate: 'dorm-a', order: 'dorm-a',
+};
+
+/**
+ * The original per-second task effects converted to per-minute rates (the
+ * original clock is 1 real second = 1 game minute):
+ *  - staminaCost spread over baseDuration (`task-effects.js:144,168`);
+ *  - morale +0.02/s, coordinate +0.01/s, order +0.015/s to the same scene
+ *    (`:191-214`), completion grants the actor +5 sanity (`:157,180`);
+ *  - scout loot chance 0.002/s, medicine 5 / food 8 / power 5 (`:274-290`);
+ *  - explore (`COLLECT_MATERIAL`) has no public resource in the original: the
+ *    `explore` gather rate is absent from GATHER_RATES, so only the
+ *    completion sanity is real.
+ */
+export const WORK_MODE_SPEC: Record<WorkMode, {
+  staminaPerMinute: number; sanitySelf: number; sanityOthersPerMinute: number;
+  lootPerMinute: number;
+}> = {
+  power: { staminaPerMinute: 14 / 60, sanitySelf: 0, sanityOthersPerMinute: 0, lootPerMinute: 0 },
+  explore: { staminaPerMinute: 18 / 60, sanitySelf: 5, sanityOthersPerMinute: 0, lootPerMinute: 0 },
+  morale: { staminaPerMinute: 8 / 30, sanitySelf: 5, sanityOthersPerMinute: 0.02 * 60, lootPerMinute: 0 },
+  coordinate: { staminaPerMinute: 5 / 60, sanitySelf: 5, sanityOthersPerMinute: 0.01 * 60, lootPerMinute: 0 },
+  order: { staminaPerMinute: 5 / 60, sanitySelf: 5, sanityOthersPerMinute: 0.015 * 60, lootPerMinute: 0 },
+  scout: { staminaPerMinute: 20 / 40, sanitySelf: 5, sanityOthersPerMinute: 0, lootPerMinute: 0.002 * 60 },
+};
+
 export interface NpcState {
   id: string;
   location: LocationId;
@@ -104,7 +142,7 @@ export type Command =
   | { commandId: string; type: 'gather'; actorId: string; resource: 'food' | 'firewood'; amount: number }
   | { commandId: string; type: 'eat'; actorId: string; amount: number }
   | { commandId: string; type: 'rest'; actorId: string; minutes: number }
-  | { commandId: string; type: 'work'; actorId: string; minutes: number }
+  | { commandId: string; type: 'work'; actorId: string; minutes: number; mode?: WorkMode }
   | { commandId: string; type: 'refuel'; actorId: string; amount: number }
   | { commandId: string; type: 'medical'; actorId: string; targetId: string; amount: number }
   | { commandId: string; type: 'move'; actorId: string; to: LocationId }
@@ -362,11 +400,67 @@ export function applyCommand(state: WorldV2, command: Command): { state: WorldV2
       }
       const hours = command.minutes / MINUTES_PER_HOUR;
       if (npc.stamina < 5) throw new SurvivalError('too_tired', `${npc.id} has no stamina to work`);
-      const produced = Math.max(1, Math.round(hours * 2));
-      resources.power = clamp(resources.power + produced, 0, 1000);
-      npcs[npc.id] = { ...npc, stamina: clamp(npc.stamina - 14 * hours, 0, 100),
-        hunger: clamp(npc.hunger - 4 * hours, 0, 100) };
-      events.push(event(next, command, 'worked', { minutes: command.minutes, power: produced }));
+      const mode = (command.mode ?? 'power') as WorkMode;
+      if (!WORK_MODES.includes(mode)) {
+        throw new SurvivalError('bad_work_mode', `unknown work mode ${String(command.mode)}`);
+      }
+      if (mode === 'power') {
+        // Frozen survival-rules/2 behaviour: a power shift.
+        const produced = Math.max(1, Math.round(hours * 2));
+        resources.power = clamp(resources.power + produced, 0, 1000);
+        npcs[npc.id] = { ...npc, stamina: clamp(npc.stamina - 14 * hours, 0, 100),
+          hunger: clamp(npc.hunger - 4 * hours, 0, 100) };
+        events.push(event(next, command, 'worked', { minutes: command.minutes,
+          mode, power: produced }));
+        break;
+      }
+      // The authority checks the work site itself: a direct CLI command cannot
+      // do dormitory morale work from the warehouse either.
+      const place = WORK_MODE_PLACE[mode];
+      if (npc.location !== place) {
+        throw new SurvivalError('bad_location',
+          `work mode ${mode} requires standing at ${place}`);
+      }
+      const spec = WORK_MODE_SPEC[mode];
+      const stamina = spec.staminaPerMinute * command.minutes;
+      const others = Object.values(npcs).filter(other => other.alive
+        && other.id !== npc.id && other.location === npc.location);
+      const boosted: string[] = [];
+      if (spec.sanityOthersPerMinute > 0) {
+        const gain = spec.sanityOthersPerMinute * command.minutes;
+        for (const other of others) {
+          const before = other.san;
+          npcs[other.id] = { ...other, san: clamp(other.san + gain, 0, 100) };
+          if (npcs[other.id].san !== before) boosted.push(other.id);
+        }
+      }
+      let lootMedicine = 0, lootFood = 0, lootPower = 0, rolls = 0;
+      if (spec.lootPerMinute > 0) {
+        // Identity is the work interval's start, not the current world version:
+        // a restore or a different step size cannot re-roll the same search.
+        const counter = Math.round(next.simTime - command.minutes) * 1000 + command.minutes;
+        for (let minute = 1; minute <= command.minutes; minute += 1) {
+          rolls += 1;
+          if (hashUnit(next.rngSeed, counter, `scout:${npc.id}:${minute}`) >= spec.lootPerMinute) continue;
+          const pick = hashUnit(next.rngSeed, counter, `scout-loot:${npc.id}:${minute}`);
+          if (pick < 1 / 3) lootMedicine += 5;
+          else if (pick < 2 / 3) lootFood += 8;
+          else lootPower += 5;
+        }
+        resources.medicine += lootMedicine;
+        resources.food += lootFood;
+        resources.power = clamp(resources.power + lootPower, 0, 1000);
+      }
+      npcs[npc.id] = { ...npc, stamina: clamp(npc.stamina - stamina, 0, 100),
+        san: clamp(npc.san + spec.sanitySelf, 0, 100) };
+      events.push(event(next, command, 'worked', {
+        // One completed work unit, so a task goal that needs a count is real.
+        amount: 1, minutes: command.minutes, mode,
+        stamina: -Math.round(stamina * 100) / 100,
+        sanitySelf: spec.sanitySelf,
+        sanityOthers: boosted.length > 0
+          ? Math.round(spec.sanityOthersPerMinute * command.minutes * 100) / 100 : 0,
+        boosted: boosted.join(';'), rolls, lootMedicine, lootFood, lootPower }));
       break;
     }
     case 'refuel': {
