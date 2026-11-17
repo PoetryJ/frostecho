@@ -2,7 +2,7 @@
 import json, os, pathlib, signal, subprocess, time
 
 base=pathlib.Path(__file__).resolve().parent
-source=base/'source'
+source=base/'source-v2'
 output=base/'runs/round-v2'
 output.mkdir(parents=True,exist_ok=False)
 python='/data/home/user_00/frostecho-r7/.venv/bin/python'
@@ -27,12 +27,15 @@ commands=[
   '--seed','live-pair-2','--out','artifacts/r8-train-play/reference-fullmap-v2'],
  ['online',node,'scripts/r8/online-play.mjs','--mode','jev-experimental','--fresh','--full-map',
   '--steps','6','--actors','npc_01,npc_02','--seed','live-pair-2','--out','artifacts/r8-train-play/live-fullmap-restore-v2'],
+ ['story',node,'scripts/r8/live-commitment-story.mjs','--mode','jev-experimental','--max-steps','24',
+  '--out','artifacts/r8-train-play/live-commitment-v2'],
  ['fourday',node,'dist/scripts/r8/playthrough.js','--mode','jev-experimental','--full-map',
   '--seed','live-pair-2','--out','artifacts/r8-train-play/live-fullmap-fourday-v2']]
 (output/'commands.json').write_text(json.dumps({'commands':commands,'source':deployment},indent=2)+'\n')
+incomplete=[]
 with (output/'resources.jsonl').open('x') as monitor:
  for stage,*argv in commands:
-  if stage in ('online','fourday'):
+  if stage in ('online','story','fourday'):
    selected=json.loads((trained/'selected.json').read_text())
    service=[python,'-u','research/decision-choice/jev05/action/serve_joint.py','--encoder','/data2/model_weights/Qwen3.8-27B',
     '--physical-gpus','0,1','--placement','auto','--max-length','4096','--temperature','1','--tau','0',
@@ -56,6 +59,11 @@ with (output/'resources.jsonl').open('x') as monitor:
     time.sleep(5)
    result={'stage':stage,'returncode':p.returncode,'wallSeconds':time.time()-started}
    (output/f'{stage}-exit.json').write_text(json.dumps(result))
+   if stage=='story' and p.returncode==2:
+    story=json.loads((experiment/'live-commitment-v2/report.json').read_text())
+    if story['outcome']=='incomplete' and story['restoreEqual']:
+     incomplete.append({'stage':stage,'outcome':'incomplete','report':str(experiment/'live-commitment-v2/report.json')})
+     continue
    if p.returncode:
     (output/'status.json').write_text(json.dumps({'status':'failed',**result}));raise SystemExit(p.returncode)
-(output/'status.json').write_text(json.dumps({'status':'complete'}))
+(output/'status.json').write_text(json.dumps({'status':'complete' if not incomplete else 'complete-with-incomplete-scenarios','incompleteScenarios':incomplete}))
