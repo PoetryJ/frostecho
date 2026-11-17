@@ -1,0 +1,369 @@
+{
+  "story": "story3-old-failure-lifted",
+  "passed": true,
+  "checks": [
+    {
+      "name": "the witnessed shortage is a conditional lesson (not a permanent rule)",
+      "passed": true,
+      "detail": {
+        "notes": 1,
+        "applicable": [
+          "note-shortage-npc_01"
+        ]
+      }
+    },
+    {
+      "name": "the conditional lesson survives the D2 restart",
+      "passed": true,
+      "detail": {
+        "applicable": [
+          "note-shortage-npc_01"
+        ]
+      }
+    },
+    {
+      "name": "pending work survives the D2 exit and settles once in the new process",
+      "passed": true,
+      "detail": {
+        "restoredStatus": "working",
+        "finalStatus": "applied",
+        "receipts": 1,
+        "settleRecords": 1,
+        "laterRecords": 1,
+        "failureReason": null,
+        "dueAt": 1950
+      }
+    },
+    {
+      "name": "the witnessed restock lifts the shortage lesson for this actor",
+      "passed": true,
+      "detail": {
+        "condition": "restocked",
+        "applicable": [
+          "note-restock-npc_01"
+        ]
+      }
+    },
+    {
+      "name": "the unconditioned arm keeps the stale lesson (real contrast)",
+      "passed": true,
+      "detail": {
+        "applicable": [
+          "note-shortage-npc_01",
+          "note-restock-npc_01"
+        ]
+      }
+    },
+    {
+      "name": "the new memory policy keeps the condition change inside the same budget",
+      "passed": true,
+      "detail": {
+        "raw": [
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter"
+        ],
+        "obligationFirst": [
+          "commitment_proposed",
+          "commitment_accepted",
+          "out_of_stock",
+          "stock_restocked",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter"
+        ],
+        "tokens": {
+          "raw": 636,
+          "obligationFirst": 623
+        },
+        "budget": {
+          "raw": 640,
+          "obligationFirst": 640
+        }
+      }
+    },
+    {
+      "name": "the lifted condition leads to a real fulfilment",
+      "passed": true,
+      "detail": {
+        "status": "fulfilled",
+        "evidence": [
+          "npc_01-r8-67:meal_delivered:69"
+        ],
+        "receipts": [
+          "npc_01-r8-67:meal_delivered:69"
+        ]
+      }
+    },
+    {
+      "name": "the stale lesson costs a real gathering trip in the control arm",
+      "passed": true,
+      "detail": {
+        "status": "working",
+        "workStatus": "applied",
+        "kind": "gather",
+        "minutes": 30
+      }
+    }
+  ],
+  "outcome": {
+    "conditionBefore": "shortage",
+    "conditionAfter": "restocked",
+    "finalStatus": "fulfilled",
+    "evidence": [
+      "npc_01-r8-67:meal_delivered:69"
+    ],
+    "staleArmWastedMinutes": 30
+  },
+  "memory": {
+    "lifted": {
+      "raw": {
+        "kinds": [
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter"
+        ],
+        "kept": 12,
+        "dropped": 356,
+        "bytes": 3510,
+        "tokens": 636,
+        "budget": 640
+      },
+      "obligationFirst": {
+        "kinds": [
+          "commitment_proposed",
+          "commitment_accepted",
+          "out_of_stock",
+          "stock_restocked",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter"
+        ],
+        "kept": 9,
+        "dropped": 359,
+        "bytes": 3338,
+        "tokens": 623,
+        "budget": 640
+      },
+      "keptOnlyByNewPolicy": [
+        "commitment_proposed",
+        "commitment_accepted",
+        "out_of_stock",
+        "stock_restocked"
+      ],
+      "notesTotal": 2,
+      "notesApplicable": [
+        "note-restock-npc_01"
+      ],
+      "condition": "restocked",
+      "observedAt": [
+        {
+          "kind": "commitment_proposed",
+          "observedAt": 480,
+          "source": "engine",
+          "speakerId": "npc_01",
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+        },
+        {
+          "kind": "commitment_accepted",
+          "observedAt": 480,
+          "source": "engine",
+          "speakerId": "npc_01",
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+        },
+        {
+          "kind": "out_of_stock",
+          "observedAt": 480,
+          "source": "engine",
+          "speakerId": "engine",
+          "heardBy": null
+        },
+        {
+          "kind": "stock_restocked",
+          "observedAt": 2070,
+          "source": "engine",
+          "speakerId": "engine",
+          "heardBy": null
+        },
+        {
+          "kind": "team_chatter",
+          "observedAt": 2070,
+          "source": "engine",
+          "speakerId": "council",
+          "heardBy": null
+        },
+        {
+          "kind": "team_chatter",
+          "observedAt": 2070,
+          "source": "engine",
+          "speakerId": "council",
+          "heardBy": null
+        },
+        {
+          "kind": "team_chatter",
+          "observedAt": 2070,
+          "source": "engine",
+          "speakerId": "council",
+          "heardBy": null
+        },
+        {
+          "kind": "team_chatter",
+          "observedAt": 2070,
+          "source": "engine",
+          "speakerId": "council",
+          "heardBy": null
+        },
+        {
+          "kind": "team_chatter",
+          "observedAt": 2070,
+          "source": "engine",
+          "speakerId": "council",
+          "heardBy": null
+        }
+      ]
+    },
+    "staleArm": {
+      "raw": {
+        "kinds": [
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter"
+        ],
+        "kept": 12,
+        "dropped": 356,
+        "bytes": 3510,
+        "tokens": 636,
+        "budget": 640
+      },
+      "obligationFirst": {
+        "kinds": [
+          "commitment_proposed",
+          "commitment_accepted",
+          "out_of_stock",
+          "stock_restocked",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter",
+          "team_chatter"
+        ],
+        "kept": 9,
+        "dropped": 359,
+        "bytes": 3338,
+        "tokens": 623,
+        "budget": 640
+      },
+      "keptOnlyByNewPolicy": [
+        "commitment_proposed",
+        "commitment_accepted",
+        "out_of_stock",
+        "stock_restocked"
+      ],
+      "notesTotal": 2,
+      "notesApplicable": [
+        "note-shortage-npc_01",
+        "note-restock-npc_01"
+      ],
+      "condition": "restocked",
+      "observedAt": [
+        {
+          "kind": "commitment_proposed",
+          "observedAt": 480,
+          "source": "engine",
+          "speakerId": "npc_01",
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+        },
+        {
+          "kind": "commitment_accepted",
+          "observedAt": 480,
+          "source": "engine",
+          "speakerId": "npc_01",
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+        },
+        {
+          "kind": "out_of_stock",
+          "observedAt": 480,
+          "source": "engine",
+          "speakerId": "engine",
+          "heardBy": null
+        },
+        {
+          "kind": "stock_restocked",
+          "observedAt": 2070,
+          "source": "engine",
+          "speakerId": "engine",
+          "heardBy": null
+        },
+        {
+          "kind": "team_chatter",
+          "observedAt": 2070,
+          "source": "engine",
+          "speakerId": "council",
+          "heardBy": null
+        },
+        {
+          "kind": "team_chatter",
+          "observedAt": 2070,
+          "source": "engine",
+          "speakerId": "council",
+          "heardBy": null
+        },
+        {
+          "kind": "team_chatter",
+          "observedAt": 2070,
+          "source": "engine",
+          "speakerId": "council",
+          "heardBy": null
+        },
+        {
+          "kind": "team_chatter",
+          "observedAt": 2070,
+          "source": "engine",
+          "speakerId": "council",
+          "heardBy": null
+        },
+        {
+          "kind": "team_chatter",
+          "observedAt": 2070,
+          "source": "engine",
+          "speakerId": "council",
+          "heardBy": null
+        }
+      ]
+    }
+  },
+  "files": [
+    "/data3/DATA/project/project_meishijiang/r10-evidence/final-memory-stories2/story3-old-failure-lifted/story3-old-failure-lifted.json"
+  ]
+}

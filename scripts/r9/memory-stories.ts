@@ -555,12 +555,14 @@ async function story2(): Promise<void> {
   const gather = await step(control, 'npc_01',
     request => request.candidates.find(row => row.parameters.bridgeStep === 'gather'));
   const gatheredReceipt = receiptsOf(control, 'npc_01', 'gathered');
+  const agreedSteps = agreedCandidates.candidates.map(row => row.parameters.bridgeStep);
   checks.push(note('an explicit acceptance is what makes the new source executable',
     agreed.status === 'active' && agreed.conditions.includes('source:gather')
-    && agreedCandidates.candidates.some(row => row.parameters.bridgeStep === 'gather')
+    // The source is gathered at its real site: the offer is either the gather
+    // itself or the walk there, and the receipt below must really exist.
+    && (agreedSteps.includes('gather') || agreedSteps.includes('to-village-alt'))
     && gatheredReceipt.length === 1 && control.runtime.workLog.at(-1)?.status === 'applied',
-    { status: agreed.status, conditions: agreed.conditions,
-      steps: agreedCandidates.candidates.map(row => row.parameters.bridgeStep),
+    { status: agreed.status, conditions: agreed.conditions, steps: agreedSteps,
       receipts: gatheredReceipt.map(event => event.eventId) }));
 
   const memory = memoryArmReport(restored, 'npc_01', 'conditional-experience');

@@ -1,0 +1,146 @@
+{
+  "schema": "frostecho.r10.delivery/1",
+  "generatedAt": "2026-11-17T14:25:04.497Z",
+  "source": {
+    "repository": "https://github.com/PoetryJ/frostecho",
+    "branch": "codex/r10-commitment",
+    "head": "361e1242ea6fd1ecaf9296b7fe40250a6afd3304",
+    "tree": "fc7d253b0cce6257cec8bc3d551dbf8f3cfc798c",
+    "base": "55c92ae (main, merged R9 + approved R10 plan)",
+    "dirtyFiles": [
+      "M scripts/r9/memory-stories.ts",
+      "?? DELIVERY.json",
+      "?? artifacts/r10/",
+      "?? scripts/r10/"
+    ]
+  },
+  "identity": {
+    "renderer": "joint-c-action/2",
+    "serviceRenderer": "joint-c-action/2",
+    "rendererMatchesService": true,
+    "encoder": {
+      "path": "/data2/model_weights/Qwen3.8-27B",
+      "configSha256": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab",
+      "revision": "local-unknown"
+    },
+    "heads": [
+      {
+        "path": "artifacts/r8-train-play/results/v2/training/warm-17.safetensors",
+        "sha256": "0355f184872e263e42775280d1d29bc9e4136862dbe9870ace890f8484ea7f99",
+        "bytes": 20568
+      },
+      {
+        "path": "artifacts/r8-train-play/results/v2/training/selected.json",
+        "sha256": "f2ed329fe354de7f55537f11e4af597ddf0529a5ad7fdb3e905a3d56e7db34b1",
+        "bytes": 18329
+      }
+    ],
+    "memory": {
+      "arms": [
+        "raw-last12",
+        "obligation-first"
+      ],
+      "budgetTokens": 640,
+      "selection": "src/r7/integration/step.ts visibleMemory"
+    },
+    "node": "v22.23.4",
+    "python": "/data/home/user_00/frostecho-r7/.venv/bin/python",
+    "gpu": "NVIDIA A10 (GPU1 free; GPU0 held by an unrelated service)"
+  },
+  "commands": {
+    "build": "npm run build",
+    "tests": "npm test",
+    "audit": "FROSTECHO_AUDIT_OUT=<dir> node scripts/r9/audit-work-lifecycle.cjs --strict",
+    "memoryStories": "node dist/scripts/r9/memory-stories.js --out <dir>",
+    "referenceFourDay": "node dist/scripts/r8/playthrough.js --profile gospel-5.8.19 --seed r10-ref-final --out artifacts/r10/reference-arm/final",
+    "liveScorer": "python research/decision-choice/jev05/action/serve_joint.py --encoder /data2/model_weights/Qwen3.8-27B --physical-gpus 1 --placement one-layer-offload --head <new head trained on joint-c-action/2> --training-manifest <manifest> --output-dir <dir>"
+  },
+  "results": {
+    "passed": [
+      {
+        "name": "seven independent lifecycle counterexamples",
+        "evidence": "artifacts/r10/audit/independent-runtime.json",
+        "detail": "audit-work-lifecycle --strict exits 0; every case reports issueReproduced=false and the parallel positive control still passes"
+      },
+      {
+        "name": "full test suite",
+        "evidence": "artifacts/r10/tests/npm-test.log",
+        "detail": "822 tests, 821 pass, 0 skip; the single failure is the environment safe-delete shim refusing /.Trash-1003 for a temp symlink, not a product path"
+      },
+      {
+        "name": "four memory/commitment stories across a D2 exit",
+        "evidence": "artifacts/r10/memory-stories/summary.json",
+        "detail": "allPassed; each story queues real work, exits with it pending, and settles it once in a new process; unheard cancellation leaves no marker in the input"
+      },
+      {
+        "name": "four-day reference arm on one clock",
+        "evidence": "artifacts/r10/reference-arm/final/summary-reference-r10-ref-final-2026-11-17T14-23-52-410Z.json",
+        "detail": "252 decisions, 190 queued actions all terminal (183 applied, 7 refused for insufficient firewood), 8-NPC D1 08:00 to D4 18:00, reconciled=true"
+      }
+    ],
+    "failed": [
+      {
+        "name": "four-day reference survival",
+        "detail": "ending bleak, 4/8 survivors: with honest sites the reference policy cannot keep firewood up while holding four promises, so the furnace dies and the four promisors freeze. Recorded, not papered over."
+      },
+      {
+        "name": "python gate under the IDE shim",
+        "detail": "r61-gates test 3 fails only because the injected fs shim tries to move a temp symlink into /.Trash-1003"
+      }
+    ],
+    "unfinished": [
+      {
+        "name": "new corpus + 4 heads (warm/random x 17/43)",
+        "detail": "NOT trained. The R10 renderer (joint-c-action/2) changes the input text, so R9 features/heads are an old-renderer control only; a new head needs a re-encode of the corpus on the 27B, which was not run in this round."
+      },
+      {
+        "name": "eight live four-day games (old/new head x raw/conditional, 2 seeds)",
+        "detail": "NOT run. It needs the new head (above). Nothing in this round is a live-model result; the only four-day numbers are the CPU reference arm."
+      },
+      {
+        "name": "D2 save -> new process -> D4 live recovery",
+        "detail": "Verified on CPU with the persisted intent queue (memory stories + audit), not with a live scorer."
+      },
+      {
+        "name": "WebGPU/3D entry",
+        "detail": "NOT done: no browser binary on this host, so no real recording could be made. The 2D CLI/web entry is unchanged and reportable."
+      },
+      {
+        "name": "parity items of D beyond sites/walking",
+        "detail": "walking rescue, door/crisis timing and the five work modes are covered by the existing CPU gates; the original effect-by-effect parity list is not fully re-audited this round."
+      }
+    ],
+    "budget": {
+      "gpuHoursCap": 10,
+      "gpuHoursUsed": 0,
+      "note": "No new GPU job was started. The measured R9 rate is 9.45 s per real forward; an 8-game matrix at 160 forwards per arm would need about 7.6 GPU-hours before loading and re-encoding, which the un-trained new head blocks anyway."
+    }
+  },
+  "evidence": [
+    {
+      "path": "artifacts/r10/audit/independent-runtime.json",
+      "sha256": "fba6ed40c74028883f1d992e3726fc3d5f88487313a0ad02028adf2dec6bdef5",
+      "bytes": 49878
+    },
+    {
+      "path": "artifacts/r10/audit/strict-exit.log",
+      "sha256": "79aecadd58059059982c26e3e794a2c7819eaff2f84c90655163177229caf4a2",
+      "bytes": 798
+    },
+    {
+      "path": "artifacts/r10/memory-stories/summary.json",
+      "sha256": "a66fda773ada5040d6b3f609fe496b4e709581207c1263ec1644b19830c30878",
+      "bytes": 837
+    },
+    {
+      "path": "artifacts/r10/tests/npm-test.log",
+      "sha256": "2c611e9a73da3e6ad64db8e9730efdfea77c5ceb253f9378671eb91b470c13c4",
+      "bytes": 176960
+    },
+    {
+      "path": "artifacts/r10/reference-arm/final/summary-reference-r10-ref-final-2026-11-17T14-23-52-410Z.json",
+      "sha256": "d1b25fc5bf31f43476cbcf420aac56cc16c240f14dd9b2e048a0d3c421d452c3",
+      "bytes": 41580
+    }
+  ]
+}

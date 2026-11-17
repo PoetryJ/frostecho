@@ -1,0 +1,56 @@
+{
+  "commitments": [
+    {
+      "commitmentId": "cm-0632e2d8-9dda-4ad4-bc03-e632dbef9b17",
+      "taskId": "task-001-deliver-meal",
+      "promisorId": "npc_01",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "active",
+      "evidenceEventIds": [],
+      "changes": [],
+      "createdAt": 480,
+      "updatedAt": 480
+    },
+    {
+      "commitmentId": "cm-7c60eae8-54e0-484d-9bae-b57f9622fbcf",
+      "taskId": "task-002-deliver-meal",
+      "promisorId": "npc_02",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "pending-change",
+      "evidenceEventIds": [
+        "npc_02-r8-5:out_of_stock:5"
+      ],
+      "changes": [
+        {
+          "changeId": "chg-2677569f-9332-403d-b6aa-93f33dffacdf",
+          "proposedRevision": 2,
+          "kind": "alt-source",
+          "terms": {
+            "source": "gather",
+            "reason": "亲见仓库缺货，我采集后补仓，再把饭送来"
+          },
+          "reason": "warehouse-empty",
+          "proposedAt": 480,
+          "status": "open",
+          "respondedAt": null,
+          "responseEventId": null
+        }
+      ],
+      "createdAt": 480,
+      "updatedAt": 480
+    }
+  ],
+  "receipts": {}
+}
