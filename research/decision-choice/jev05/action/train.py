@@ -36,7 +36,7 @@ HEAD = (ROOT / "artifacts/sprint-r7/legacy-reuse/c43-increment-batch4-1"
         / "warm-start-17/best.safetensors")
 ENCODER = Path("/data2/model_weights/Qwen3.8-27B")
 HIDDEN = 5120
-RENDERER = "joint-c-action/1"
+RENDERER = "joint-c-action/2"
 
 
 def sha256(path: Path) -> str:

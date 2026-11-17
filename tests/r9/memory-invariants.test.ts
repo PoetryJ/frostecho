@@ -50,12 +50,20 @@ test('a private cancellation stops only the hearer until a legitimate relay', ()
   play.cancelCommitment(own.commitment.commitmentId, { heardBy: ['npc_02'], reason: '取消' });
   play.cancelCommitment(other.commitment.commitmentId, { heardBy: ['npc_02'], reason: '取消' });
 
+  // A still-active promise of a third actor is the reference: an unheard
+  // terminal must be INDISTINGUISHABLE from it, not merely "still active".
+  const live = play.requestCommitment('npc_03', 'deliver-meal', { verdict: 'accept' });
   const unheard = bridge.view('npc_01');
   const heard = bridge.view('npc_02');
+  const reference = bridge.view('npc_03');
   assert.ok(unheard.candidates.length > 0);
-  assert.equal((unheard.goals[0] as { belief: string }).belief, 'unheard-cancellation');
+  assert.deepEqual(Object.keys(unheard.goals[0] as object).sort(),
+    Object.keys(reference.goals[0] as object).sort());
+  assert.equal((unheard.goals[0] as { status: string }).status, 'active');
+  assert.equal(/unheard|cancel|observedTerminal/i.test(JSON.stringify(unheard.goals)), false);
   assert.equal(heard.candidates.length, 0);
   assert.equal((heard.goals[0] as { status: string }).status, 'cancelled');
+  void live;
 
   // Never relay what was not heard.
   assert.equal(play.relayCancellation(own.commitment.commitmentId,
@@ -80,7 +88,10 @@ test('both memory arms keep the same budget and only the new one keeps the oblig
   }
   const raw = visibleMemory(runtime, 'npc_01', 12, 'raw-last12');
   const ranked = visibleMemory(runtime, 'npc_01', 12, 'obligation-first');
-  assert.equal(raw.kept, ranked.kept);
+  // Same budget: equal counts are NOT required once the renderer shows
+  // provenance, because records differ in size.
+  assert.equal(raw.budgetTokens, ranked.budgetTokens);
+  assert.ok(raw.tokens <= raw.budgetTokens && ranked.tokens <= ranked.budgetTokens);
   const rawKinds = raw.facts.map(fact => fact.kind);
   const rankedKinds = ranked.facts.map(fact => fact.kind);
   assert.equal(rawKinds.includes('commitment_accepted'), false);

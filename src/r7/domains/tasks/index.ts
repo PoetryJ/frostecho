@@ -138,24 +138,11 @@ export const WORK_MODE_TASK: Record<WorkMode, TaskTypeId> = {
 };
 
 /**
- * The ONE place gate shared by the step executor and the agency layer. A
- * command that spends time at the wrong site is refused before the clock or a
- * resource moves; the candidate layer only proposes the walk to the right site.
+ * The place/duration table is shared with the authority: see
+ * `src/execution/place-rules.ts`. Re-exported here so the agency layer keeps one
+ * import and cannot drift from `PlaySession.executeCandidate`.
  */
-export function requiredPlaceOf(action: string, parameters: Record<string, unknown> = {}):
-  string | null {
-  switch (action) {
-    case 'gather': return 'village';
-    case 'work': {
-      const mode = String(parameters.mode ?? 'power') as WorkMode;
-      return WORK_MODE_PLACE[mode] ?? 'workshop';
-    }
-    case 'medical': return 'medical';
-    case 'deposit': return 'warehouse';
-    case 'deliver': return 'kitchen';
-    default: return null;
-  }
-}
+export { requiredPlaceOf, durationOf, ACTION_MINUTES } from '../../../execution/place-rules';
 
 export function receiptTypesFor(type: TaskTypeId): string[] {
   return RECEIPT_TYPES[type] ?? [];

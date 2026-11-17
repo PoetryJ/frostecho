@@ -16,6 +16,8 @@ import { makeChoiceResult, type Candidate, type ChoiceRequest } from '../decisio
 import { buildPlanningRequest, referenceScorer, type PromiseRef, type PlanningView,
   type ScorerPort } from '../planning/candidates';
 import { candidateCommand, UnsupportedActionError } from '../planning/commands';
+import { isWorkGrant, requiredPlaceOf, requiresWorkIntent, type WorkGrant }
+  from '../execution/place-rules';
 import { FairScheduler, type TaskLease, type TaskOutcome } from '../scheduler-v2/scheduler';
 import type { PromiseInstance } from './lifecycle';
 import {
@@ -501,8 +503,32 @@ export class PlaySession {
   /**
    * The single command execution path: candidate -> command -> authority ->
    * trusted memory ingest. A rejected command never writes promise_kept.
+   *
+   * Two conditions are checked here, before the command is built, so no entry
+   * path (CLI, web, four-day runner, a direct caller) can skip them:
+   *   - the one place table (`execution/place-rules`);
+   *   - the work contract: a work action is queued as an intent, not executed
+   *     inline with zero elapsed time.
    */
-  executeCandidate(actorId: string, candidate: Candidate, commandId: string): ExecutionOutcome {
+  executeCandidate(actorId: string, candidate: Candidate, commandId: string,
+    grant?: WorkGrant): ExecutionOutcome {
+    const acting = this.world.npcs[actorId];
+    if (!acting) {
+      return { status: 'rejected', eventIds: [], postStateVersion: this.world.version,
+        reason: `unknown_actor:${actorId}` };
+    }
+    const action = String(candidate.parameters.action ?? '');
+    const place = requiredPlaceOf(action, candidate.parameters as Record<string, unknown>);
+    if (place && acting.location !== place) {
+      return { status: 'rejected', eventIds: [], postStateVersion: this.world.version,
+        reason: `wrong_location: ${action}${candidate.parameters.mode
+          ? `(${String(candidate.parameters.mode)})` : ''} needs ${place}, actor is at ${acting.location}` };
+    }
+    if (requiresWorkIntent(candidate) && grant !== undefined
+      && !(isWorkGrant(grant) && grant.actorId === actorId)) {
+      return { status: 'rejected', eventIds: [], postStateVersion: this.world.version,
+        reason: `work_grant_mismatch: ${action} was not authorised for this actor` };
+    }
     let command: Command | null;
     try {
       command = candidateCommand(candidate, actorId, commandId);

@@ -9,7 +9,7 @@
  */
 import type { Candidate, ChoiceRequest } from '../../decision/contracts';
 
-export const RENDERER_ID = 'joint-c-action/1';
+export const RENDERER_ID = 'joint-c-action/2';
 
 export type SegmentKind = 'observation' | 'question' | 'memory' | 'goal' | 'candidate';
 
@@ -95,8 +95,17 @@ export function renderRequest(request: ChoiceRequest): RenderedRequest {
   push(parts, segments, 'observation', renderObservationText(request.observation), null);
   push(parts, segments, 'question', `\n问题:${request.question}`, null);
   if (request.memoryFacts.length > 0) {
-    const memory = request.memoryFacts.slice(0, 12).map(fact =>
-      `- ${fact.kind}@${fact.simTime} ${JSON.stringify(fact.payload)}`).join('\n');
+    // Provenance is part of the input, not a debug annotation: the actor must
+    // be able to tell its own inference from a player statement from an engine
+    // observation, and when it learned it versus when it happened.
+    const memory = request.memoryFacts.slice(0, 12).map(fact => {
+      const payload = fact.payload as Record<string, unknown>;
+      const occurredAt = payload?.occurredAt ?? null;
+      const subjects = fact.subjectIds.length > 0 ? fact.subjectIds.join(',') : '-';
+      return `- [${fact.source}] ${fact.kind} 知于${fact.simTime}`
+        + `${occurredAt === null ? '' : ` 发生于${scalar(occurredAt)}`}`
+        + ` 关于${subjects} ${JSON.stringify(fact.payload)}`;
+    }).join('\n');
     push(parts, segments, 'memory', `\n记忆:\n${memory}`, null);
   }
   const goals = Array.isArray(request.goals) ? request.goals as unknown[] : [];

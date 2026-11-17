@@ -177,7 +177,9 @@ export async function runArm(dir: string, segmented: boolean): Promise<StoryResu
   const day1 = await send('council-resolve');
   const day1Supply = day1.requests.find((request: Row) => request.role === 'supply');
   for (const request of day1.requests) await send(`council-respond ${request.requestId} accept`);
-  for (let step = 0; step < 4; step += 1) await send('game-step');
+  // R10: an action really occupies its actor, so a decision round must also
+  // move the clock; a step alone cannot finish a 15-60 minute job.
+  for (let step = 0; step < 4; step += 1) { await send('game-step'); await send('advance 30'); }
   await checkpoint('day1-done');
   await pace(send, 1440);
 
@@ -198,7 +200,7 @@ export async function runArm(dir: string, segmented: boolean): Promise<StoryResu
   const late = await send(`council-respond ${supply.requestId} accept`);
   if (late.ignored !== true) throw new Error('old supply response was not ignored');
   if (deliver) await send(`council-respond ${deliver.requestId} accept`);
-  for (let step = 0; step < 6; step += 1) await send('game-step');
+  for (let step = 0; step < 6; step += 1) { await send('game-step'); await send('advance 30'); }
   await checkpoint('day2-done');
   await pace(send, 2880);
 
@@ -224,10 +226,28 @@ export async function runArm(dir: string, segmented: boolean): Promise<StoryResu
   await checkpoint('day3-shortage');
 
   let delivered = false;
-  for (let step = 0; step < 12 && !delivered; step += 1) {
+  let lastRow: Row | undefined;
+  // R10: every work action costs real minutes, so the old twelve rounds are not
+  // enough for walk→gather→walk→deposit→withdraw→walk→deliver on one actor.
+  for (let step = 0; step < 24 && !delivered; step += 1) {
     await send('game-step');
+    // Walk/work steps cost real minutes; settle them on the same clock.
+    await send('advance 30');
     const board = await send('commitment-status');
     const row = board.commitments.find((item: Row) => item.commitmentId === commitmentId);
+    const doc = (await send('task-status')).status?.r8 as Row | undefined;
+    lastRow = { status: row?.status, revision: row?.revision,
+      intents: ((doc?.intents ?? []) as Row[]).filter(intent => intent.actorId === d3deliver.actorId)
+        .slice(-3).map(intent => ({ status: intent.status, dueAt: intent.dueAt,
+          action: (intent.candidate as Row)?.parameters?.action,
+          bridgeStep: (intent.candidate as Row)?.parameters?.bridgeStep,
+          reason: intent.failureReason })),
+      workLog: ((doc?.workLog ?? []) as Row[]).filter(entry => entry.actorId === d3deliver.actorId)
+        .slice(-6).map(entry => `${entry.kind}:${entry.status}`),
+      actor: d3deliver.actorId,
+      changes: (row?.changes ?? []).map((change: Row) => `${change.kind}:${change.status}`),
+      tasks: (board.tasks ?? []).filter((task: Row) => task.commitmentId === commitmentId)
+        .map((task: Row) => `${task.kind}:${task.status}`) };
     const open = (row?.changes ?? []).filter((change: Row) => change.status === 'open');
     if (open.length > 0) {
       const verdict = open.some((change: Row) => change.kind === 'suspend') ? 'reject' : 'accept';
@@ -235,7 +255,10 @@ export async function runArm(dir: string, segmented: boolean): Promise<StoryResu
     }
     delivered = row?.status === 'fulfilled';
   }
-  if (!delivered) throw new Error('day3 delivery did not settle from gather→deposit→withdraw→deliver');
+  if (!delivered) {
+    throw new Error('day3 delivery did not settle from gather→deposit→withdraw→deliver'
+      + `: last=${JSON.stringify(lastRow ?? null)}`);
+  }
   await checkpoint('day3-recovered');
   await pace(send, 4320);
 

@@ -138,7 +138,11 @@ for (const [type, mode] of Object.entries(MODE_OF)) {
         const path = join(dir, 'session.json');
         runtime.save(path);
         const control = R8Runtime.load(path);
-        control.work.clear(); // control arm: same state, no work item
+        // Control arm: the same pre-work state, but the queued action never
+        // settles (cancel it through the authority, not by clearing a view).
+        for (const intent of [...control.intents.values()]) {
+          if (intent.status === 'working') control.cancelIntent(intent.intentId, 'control-arm');
+        }
 
         runtime.advanceWorld(until!);
         control.advanceWorld(until!);

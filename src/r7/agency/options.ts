@@ -221,16 +221,30 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
     const firstTaskCandidate = candidates.length;
     switch (task.type) {
       case 'COLLECT_FOOD':
+        // The candidate layer reads the same place table as the authority: an
+        // action the executor would refuse is never offered; the walk is.
+        if (npc.location !== 'village') {
+          rules.push(`task.work-place-blocked:${task.type}@village`);
+          break;
+        }
         candidates.push(candidate('gather', '执行食物采集任务', { resource: 'food', amount: 2 },
           ['stamina > 15'], { food: 8 }));
         rules.push('task.collect-food');
         break;
       case 'COLLECT_WOOD':
+        if (npc.location !== 'village') {
+          rules.push(`task.work-place-blocked:${task.type}@village`);
+          break;
+        }
         candidates.push(candidate('gather', '执行伐木任务', { resource: 'firewood', amount: 2 },
           ['stamina > 15'], { firewood: 10 }));
         rules.push('task.collect-wood');
         break;
       case 'MAINTAIN_POWER':
+        if (npc.location !== WORK_MODE_PLACE.power) {
+          rules.push(`task.work-place-blocked:${task.type}@${WORK_MODE_PLACE.power}`);
+          break;
+        }
         candidates.push(candidate('work', '去车间维护电力', { minutes: 40 },
           ['stamina > 10'], { power: 15, stamina: -10 }));
         rules.push('task.maintain-power');
@@ -249,11 +263,19 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
         break;
       }
       case 'DISTRIBUTE_FOOD':
-        candidates.push(candidate('deposit', '把粮食送进仓库', { amount: 1 },
-          ['carrying food'], { warehouse: 1 }));
-        candidates.push(candidate('deliver', '把饭送进厨房', { amount: 1 },
-          ['carrying meals'], { meals: 1 }));
-        rules.push('task.distribute');
+        if (npc.location === 'warehouse') {
+          candidates.push(candidate('deposit', '把粮食送进仓库', { amount: 1 },
+            ['carrying food'], { warehouse: 1 }));
+          rules.push('task.distribute');
+          break;
+        }
+        if (npc.location === 'kitchen') {
+          candidates.push(candidate('deliver', '把饭送进厨房', { amount: 1 },
+            ['carrying meals'], { meals: 1 }));
+          rules.push('task.distribute');
+          break;
+        }
+        rules.push(`task.work-place-blocked:${task.type}@warehouse|kitchen`);
         break;
       case 'PREPARE_WARMTH':
         candidates.push(candidate('refuel', '为御寒准备炉火', { amount: 2 },

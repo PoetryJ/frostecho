@@ -33,7 +33,7 @@ import { referenceAgencyScorer } from '../../src/r7/agency/reference';
 import { createCommitmentBridge,
   type CommitmentGoalBridge } from '../../src/r7/integration/commitment-bridge';
 import { R8Runtime } from '../../src/r7/integration/runtime';
-import { executeCandidate, latestStockCondition, notesFor, runStep,
+import { durationOf, executeCandidate, latestStockCondition, notesFor, runStep,
   visibleMemory, type MemorySelection } from '../../src/r7/integration/step';
 import { DEFAULT_WAREHOUSE_FOOD, type LocationId } from '../../src/survival/world-v2';
 
@@ -169,8 +169,28 @@ function hash(value: unknown): string {
   return createHash('sha256').update(JSON.stringify(value)).digest('hex');
 }
 
+function fingerprintParts(env: Env, actorIds: string[]): Record<string, string> {
+  return {
+    commitments: hash(env.play.commitments.toJSON()),
+    tasks: hash(env.play.board.toJSON()),
+    memories: hash(actorIds.map(id => memoryOf(env, id).map(record => ({
+      eventId: record.eventId, kind: record.kind, observedAt: record.observedAt,
+      source: record.source, speakerId: record.speakerId,
+      heardBy: (record.payload as Record<string, unknown>).heardBy ?? null })))),
+    clock: hash(env.runtime.world.simTime),
+  };
+}
+
 function stateFingerprint(env: Env, actorIds: string[]): string {
   return hash({ commitments: env.play.commitments.toJSON(), tasks: env.play.board.toJSON(),
+    // The queued execution records are part of the authoritative state: a
+    // restart that drops them would settle a different run.
+    intents: [...env.runtime.intents.values()].filter(intent => intent.status === 'working')
+      .map(intent => ({ intentId: intent.intentId, dueAt: intent.dueAt,
+        generation: intent.generation, taskId: intent.taskId,
+        commitmentId: intent.commitmentId, revision: intent.commitmentRevision,
+        candidateId: intent.candidateId })).sort((left, right) =>
+        left.intentId.localeCompare(right.intentId)),
     memories: actorIds.map(id => memoryOf(env, id).map(record => ({
       eventId: record.eventId, kind: record.kind, observedAt: record.observedAt,
       source: record.source, speakerId: record.speakerId,
@@ -183,6 +203,60 @@ function chatter(env: Env, count: number, tag: string): void {
     env.runtime.session.ingestTeamEvent('team_chatter', { tag, index },
       env.runtime.world.simTime);
   }
+}
+
+/**
+ * Queue one real action and leave the process with it still due: the D2 exit
+ * must hand the SAME execution record to the new process, which settles it
+ * exactly once on the authoritative clock.
+ */
+function pendingWorkAtExit(env: Env, actorId: string): { intentId: string; dueAt: number } | null {
+  const offered = env.bridge.view(actorId).candidates
+    .find(row => durationOf(row) > 0);
+  const candidate: Candidate = offered ?? { id: `pending-rest-${actorId}`,
+    kind: 'rest' as Candidate['kind'], description: '仍在休息，进程即将退出',
+    parameters: { action: 'rest', minutes: 30 }, preconditions: [], expectedEffects: {},
+    utilityComponents: {} };
+  const parameters = candidate.parameters as Record<string, unknown>;
+  const began = env.runtime.beginIntent({ intentId: `pending:${actorId}`,
+    commandId: `pending:${actorId}`, actorId, candidate, minutes: durationOf(candidate),
+    taskId: typeof parameters.taskId === 'string' ? parameters.taskId : null,
+    taskType: typeof parameters.taskType === 'string' ? parameters.taskType : null,
+    commitmentId: typeof parameters.commitmentId === 'string' ? parameters.commitmentId : null,
+    commitmentRevision: typeof parameters.commitmentRevision === 'number'
+      ? parameters.commitmentRevision : null });
+  if ('rejected' in began) {
+    (globalThis as Record<string, unknown>).__pendingReject = began.rejected;
+    return null;
+  }
+  return { intentId: began.intent.intentId, dueAt: began.intent.dueAt };
+}
+
+function checkPendingResume(restored: Env, pending: { intentId: string; dueAt: number } | null,
+  checks: StoryResult['checks']): void {
+  if (!pending) {
+    checks.push(note('pending work survives the D2 exit and settles once in the new process',
+      false, { reason: 'could not queue work before the exit',
+        rejection: (globalThis as Record<string, unknown>).__pendingReject ?? null }));
+    return;
+  }
+  const settledBefore = restored.runtime.intents.get(pending.intentId)?.status ?? 'missing';
+  restored.runtime.advanceWorld(pending.dueAt);
+  const intent = restored.runtime.intents.get(pending.intentId);
+  const logs = restored.runtime.workLog.filter(row => row.intentId === pending.intentId);
+  const receiptsAfter = intent?.receiptIds.length ?? 0;
+  const terminal = intent?.status;
+  // Advancing further must never settle the same record twice.
+  restored.runtime.advanceWorld(Math.min(pending.dueAt + 120,
+    restored.runtime.world.simTime + 120));
+  const logsLater = restored.runtime.workLog.filter(row => row.intentId === pending.intentId);
+  checks.push(note('pending work survives the D2 exit and settles once in the new process',
+    settledBefore === 'working' && (terminal === 'applied' || terminal === 'rejected')
+    && logs.length === 1 && logsLater.length === 1
+    && (terminal !== 'applied' || receiptsAfter >= 1),
+    { restoredStatus: settledBefore, finalStatus: terminal ?? 'missing',
+      receipts: receiptsAfter, settleRecords: logs.length, laterRecords: logsLater.length,
+      failureReason: intent?.failureReason ?? null, dueAt: pending.dueAt }));
 }
 
 function note(name: string, passed: boolean, detail: unknown = null): StoryResult['checks'][number] {
@@ -216,9 +290,10 @@ function memoryArmReport(env: Env, actorId: string, policy: MemoryPolicyId) {
   const notes = notesFor(env.runtime, actorId);
   return {
     raw: { kinds: raw.facts.map(fact => fact.kind), kept: raw.kept,
-      dropped: raw.dropped, bytes: raw.bytes },
+      dropped: raw.dropped, bytes: raw.bytes, tokens: raw.tokens, budget: raw.budgetTokens },
     obligationFirst: { kinds: ranked.facts.map(fact => fact.kind), kept: ranked.kept,
-      dropped: ranked.dropped, bytes: ranked.bytes },
+      dropped: ranked.dropped, bytes: ranked.bytes, tokens: ranked.tokens,
+      budget: ranked.budgetTokens },
     keptOnlyByNewPolicy: ranked.facts.map(fact => fact.kind)
       .filter(kind => !raw.facts.map(fact => fact.kind).includes(kind)),
     notesTotal: notes.length,
@@ -257,16 +332,22 @@ async function story1(): Promise<void> {
   const heard = candidatesOf(env, 'npc_02');
   const unheard = candidatesOf(env, 'npc_01');
   checks.push(note('the present NPC heard the cancellation and stops',
-    heard.goals.length === 1
-    && heard.goals.every(goal => goal.status === 'cancelled' && goal.observedTerminal === true)
+    heard.goals.length === 1 && heard.goals.every(goal => goal.status === 'cancelled')
     && heard.candidates.length === 0,
-    { goals: heard.goals.map(goal => ({ status: goal.status, belief: goal.belief })) }));
+    { goals: heard.goals.map(goal => ({ status: goal.status })) }));
+  const unheardText = JSON.stringify(unheard.goals);
   checks.push(note('the absent NPC never heard it and still holds a live goal',
-    unheard.goals[0]?.status === 'active' && unheard.candidates.length > 0,
-    { goals: unheard.goals.map(goal => ({ status: goal.status, belief: goal.belief })),
+    unheard.goals[0]?.status === 'active' && unheard.candidates.length > 0
+    // No hidden-terminal marker of any kind may reach the input.
+    && !/unheard|cancel|observedTerminal/i.test(unheardText),
+    { goals: unheard.goals.map(goal => ({ status: goal.status })),
+      leaked: /unheard|cancel|observedTerminal/i.test(unheardText),
       candidates: unheard.candidates.map(row => row.parameters.bridgeStep) }));
 
-  // It keeps working: walk back to the warehouse, then take the meal.
+  // It keeps trying: the actor still believes the promise is alive, so it walks
+  // to the warehouse. The world has withdrawn the authorisation, so the attempt
+  // is REFUSED and the refusal becomes its own observation - never a hidden
+  // "cancelled" marker in its input.
   const actions: { step: unknown; status: string }[] = [];
   for (const pick of [
     (request: ChoiceRequest) => request.candidates.find(row => row.parameters.bridgeStep === 'to-warehouse'),
@@ -275,30 +356,43 @@ async function story1(): Promise<void> {
     const record = await step(env, 'npc_01', pick);
     actions.push({ step: record.record?.selectedId ?? null, status: statusOf(record) });
   }
-  const receiptsWhileUnheard = env.runtime.committedEvents()
-    .filter(event => event.actorId === 'npc_01').map(event => event.eventId);
+  const rejections = memoryOf(env, 'npc_01').filter(record => record.kind === 'action_rejected');
   const unheardCancellationInMemory = memoryOf(env, 'npc_01')
     .filter(record => record.kind === 'commitment_cancelled');
-  checks.push(note('unheard cancellation did not stop the work (real receipts)',
-    actions.length === 2 && receiptsWhileUnheard.length >= 1
-    && unheardCancellationInMemory.length === 0,
-    { actions, receipts: receiptsWhileUnheard,
+  const rejectionText = JSON.stringify(rejections.map(record => record.payload));
+  checks.push(note('the unheard attempt is refused with a real, non-leaking observation',
+    actions.length === 2 && rejections.length >= 1
+    && unheardCancellationInMemory.length === 0
+    && !/cancel|commitment_(declined|withdrawn|fulfilled)/i.test(rejectionText),
+    { actions, rejections: rejections.map(record => record.payload),
       cancellationsKnownToNpc01: unheardCancellationInMemory.length }));
+  // Outdoors in a snowstorm is lethal for 24h; the actor walks inside on its
+  // own business, which is not an action of the withdrawn promise.
+  move(env, 'npc_01', 'warehouse');
 
   // D2 exit + new process.
   env.runtime.advanceWorld(DAY2_START);
+  const pendingAtExit = pendingWorkAtExit(env, 'npc_01');
   const fingerprintBeforeExit = stateFingerprint(env, ['npc_01', 'npc_02']);
   const restored = newProcess(env);
   const fingerprintAfterExit = stateFingerprint(restored, ['npc_01', 'npc_02']);
   checks.push(note('D2 exit restores the same commitment + memory state',
     fingerprintBeforeExit === fingerprintAfterExit,
     { before: fingerprintBeforeExit.slice(0, 16), after: fingerprintAfterExit.slice(0, 16),
+      partsBefore: fingerprintParts(env, ['npc_01', 'npc_02']),
+      partsAfter: fingerprintParts(restored, ['npc_01', 'npc_02']),
       commitment: restored.play.commitments.find(commitmentId)?.status,
       clock: restored.runtime.world.simTime }));
+  checkPendingResume(restored, pendingAtExit, checks);
   const stillUnheard = candidatesOf(restored, 'npc_01');
   checks.push(note('after the restart the absent NPC still acts on its belief',
-    stillUnheard.candidates.length > 0 && stillUnheard.goals[0]?.belief === 'unheard-cancellation',
-    { candidates: stillUnheard.candidates.map(row => row.parameters.bridgeStep) }));
+    stillUnheard.candidates.length > 0 && stillUnheard.goals[0]?.status === 'active'
+    && !/unheard|cancel|observedTerminal/i.test(JSON.stringify(stillUnheard.goals)),
+    { candidates: stillUnheard.candidates.map(row => row.parameters.bridgeStep),
+      goals: stillUnheard.goals, actor: restored.runtime.world.npcs.npc_01?.location,
+      busy: restored.runtime.busyUntil('npc_01'),
+      commitment: restored.play.commitments.all().map(row => ({ id: row.commitmentId,
+        status: row.status, promisor: row.promisorId, task: row.taskId })) }));
 
   // A relay is legitimate only from an NPC that actually heard it.
   const illegalRelay = restored.play.relayCancellation(commitmentId,
@@ -393,6 +487,7 @@ async function story2(): Promise<void> {
 
   // D2 exit before the beneficiary answers.
   env.runtime.advanceWorld(DAY2_START);
+  const pendingAtExit = pendingWorkAtExit(env, 'npc_01');
   const before = stateFingerprint(env, ['npc_01']);
   const restored = newProcess(env);
   const after = stateFingerprint(restored, ['npc_01']);
@@ -401,6 +496,7 @@ async function story2(): Promise<void> {
     before === after && restoredPending.status === 'pending-change'
     && restoredPending.changes.filter(change => change.status === 'open').length === 1,
     { status: restoredPending.status, changes: restoredPending.changes.map(change => change.status) }));
+  checkPendingResume(restored, pendingAtExit, checks);
 
   // Still no un-agreed source action after the restart.
   const stillPending = candidatesOf(restored, 'npc_01');
@@ -498,10 +594,12 @@ async function story3(): Promise<void> {
 
   chatter(env, 20, 's3-noise-a');
   env.runtime.advanceWorld(DAY2_START);
+  const pendingAtExit = pendingWorkAtExit(env, 'npc_01');
   const restored = newProcess(env);
   const afterRestart = memoryArmReport(restored, 'npc_01', 'conditional-experience');
   checks.push(note('the conditional lesson survives the D2 restart',
     afterRestart.notesApplicable.length === 1, { applicable: afterRestart.notesApplicable }));
+  checkPendingResume(restored, pendingAtExit, checks);
 
   // Interference after the restart, then the condition really changes.
   chatter(restored, 4, 's3-noise-b');
@@ -523,9 +621,14 @@ async function story3(): Promise<void> {
   checks.push(note('the new memory policy keeps the condition change inside the same budget',
     lifted.obligationFirst.kinds.includes('stock_restocked')
     && !lifted.raw.kinds.includes('stock_restocked')
-    && lifted.obligationFirst.kept === lifted.raw.kept,
+    // Identical budget, not identical count: the difference must come from the
+    // selection rule, never from one arm being fed more memory.
+    && lifted.obligationFirst.budget === lifted.raw.budget
+    && lifted.obligationFirst.tokens <= lifted.obligationFirst.budget
+    && lifted.raw.tokens <= lifted.raw.budget,
     { raw: lifted.raw.kinds, obligationFirst: lifted.obligationFirst.kinds,
-      bytes: { raw: lifted.raw.bytes, obligationFirst: lifted.obligationFirst.bytes } }));
+      tokens: { raw: lifted.raw.tokens, obligationFirst: lifted.obligationFirst.tokens },
+      budget: { raw: lifted.raw.budget, obligationFirst: lifted.obligationFirst.budget } }));
 
   // Two arms from the SAME post-restock state, in separate processes:
   //  - conditional arm: the shortage lesson expired, so go to the warehouse;
@@ -611,12 +714,14 @@ async function story4(): Promise<void> {
   // Interference + D2 exit while the proposal is unanswered.
   chatter(env, 6, 's4-noise');
   env.runtime.advanceWorld(DAY2_START);
+  const pendingAtExit = pendingWorkAtExit(env, 'npc_01');
   const before = stateFingerprint(env, ['npc_01', 'npc_02']);
   const restored = newProcess(env);
   const after = stateFingerprint(restored, ['npc_01', 'npc_02']);
   checks.push(note('both promises and the shortage evidence survive the D2 restart',
     before === after && restored.play.commitments.find(second.commitment.commitmentId)?.status
       === 'pending-change', { before: before.slice(0, 16), after: after.slice(0, 16) }));
+  checkPendingResume(restored, pendingAtExit, checks);
 
   // The loser must not repeat the invalid action while the answer is pending.
   const repeatSteps: string[] = [];

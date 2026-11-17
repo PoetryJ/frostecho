@@ -28,30 +28,54 @@ function forced(select: (request: ChoiceRequest) => Candidate | undefined) {
 test('two same-type tasks close only the selected task and report the committed completion', async () => {
   const runtime = R8Runtime.create({ seed: 'bound-two' });
   const first = assign(runtime, 'COLLECT_FOOD'), second = assign(runtime, 'COLLECT_FOOD');
+  // Gather only exists at the village site; the candidate layer now offers the
+  // walk instead of an impossible instant action, so walk there first.
+  runtime.session.submitWorldCommand({ commandId: 'to-village',
+    type: 'move', actorId: 'npc_01', to: 'village' });
   let captured!: ChoiceRequest, selected!: Candidate;
   const result = await runStep(runtime, forced(request => {
     captured = request;
     selected = request.candidates.find(row => row.parameters.taskId === second)!;
     return selected;
   }), { actorIds: ['npc_01'] });
-  assert.equal(result.executed, 1);
-  assert.equal(result.records[0].taskCompleted, second);
-  assert.equal(result.records[0].taskCompletionEvidence, 'task-primitive');
+  // R10: the action is queued, so nothing is applied and no task closes before
+  // the authoritative clock reaches its due time.
+  assert.equal(result.executed, 0);
+  assert.equal(result.records[0].executionStatus, 'working');
+  assert.equal(result.records[0].taskCompleted, null);
+  assert.equal(runtime.states.tasks.tasks.find(row => row.taskId === first)!.status, 'accepted');
+  assert.equal(runtime.states.tasks.tasks.find(row => row.taskId === second)!.status, 'accepted');
+  const due = runtime.busyUntil('npc_01')!;
+  assert.ok(due > runtime.world.simTime);
+  runtime.advanceWorld(due);
+  // Settlement closes ONLY the bound instance, on its own committed receipt.
+  const settled = runtime.workLog.at(-1)!;
+  assert.equal(settled.status, 'applied');
   assert.equal(runtime.states.tasks.tasks.find(row => row.taskId === first)!.status, 'accepted');
   assert.equal(runtime.states.tasks.tasks.find(row => row.taskId === second)!.status, 'done');
+  const completion = runtime.committedEvents().find(event => event.type === 'task_completed')!;
+  assert.equal(completion.payload.taskId, second);
+  assert.equal(completion.payload.receipt, settled.eventIds.at(-1));
   assert.equal(referenceUtilityWithGoals(selected, captured), Number((referenceUtility(selected, captured) + .25).toFixed(6)));
   const wrongGoal = { ...captured, goals: [{ taskId: first, type: 'COLLECT_FOOD', status: 'accepted' }] };
   assert.equal(referenceUtilityWithGoals(selected, wrongGoal), referenceUtility(selected, wrongGoal));
-  assert.equal(closeTaskOnReceipt(runtime, 'npc_01', selected, result.records[0].eventIds), null);
+  assert.equal(closeTaskOnReceipt(runtime, 'npc_01', selected, settled.eventIds), null);
 });
 
 test('terminal tasks disappear from goals and cannot confer a reference obligation bonus', async () => {
   const runtime = R8Runtime.create({ seed: 'no-terminal-goals' });
   const done = assign(runtime, 'COLLECT_FOOD');
+  runtime.session.submitWorldCommand({ commandId: 'to-village',
+    type: 'move', actorId: 'npc_01', to: 'village' });
   await runStep(runtime, forced(request => request.candidates.find(row => row.parameters.taskId === done)), { actorIds: ['npc_01'] });
+  // The queued work must actually finish before the task is terminal.
+  runtime.advanceWorld(runtime.busyUntil('npc_01')!);
   const cancelled = assign(runtime, 'COLLECT_WOOD');
   runtime.dispatch('tasks', 'cancel', 'npc_01', { taskId: cancelled });
   const active = assign(runtime, 'MAINTAIN_POWER');
+  // The workshop is the only site where power work may be offered.
+  runtime.session.submitWorldCommand({ commandId: 'to-workshop',
+    type: 'move', actorId: 'npc_01', to: 'workshop' });
   let captured!: ChoiceRequest;
   await runStep(runtime, forced(request => { captured = request; return undefined; }), { actorIds: ['npc_01'] });
   const goals = captured.goals as { taskId: string; status: string }[];
@@ -87,18 +111,25 @@ for (const type of WORK_PROXY_TASKS) test(`${type} closes only its explicitly bo
 test('a forged task type cannot bind the wrong execution primitive or reuse an earlier receipt', async () => {
   const runtime = R8Runtime.create({ seed: 'bound-negative' });
   const food = assign(runtime, 'COLLECT_FOOD');
+  runtime.session.submitWorldCommand({ commandId: 'to-village',
+    type: 'move', actorId: 'npc_01', to: 'village' });
   let selected!: Candidate;
-  const result = await runStep(runtime, forced(request => {
+  await runStep(runtime, forced(request => {
     selected = request.candidates.find(row => row.parameters.taskId === food)!;
     return selected;
   }), { actorIds: ['npc_01'] });
+  // The real receipt only exists after the queued work settles on the clock.
+  assert.equal(runtime.workLog.length, 0);
+  runtime.advanceWorld(runtime.busyUntil('npc_01')!);
+  const receiptIds = runtime.workLog[runtime.workLog.length - 1].eventIds;
+  assert.ok(receiptIds.length > 0);
   const power = assign(runtime, 'MAINTAIN_POWER');
   const forged = { ...selected, parameters: { ...selected.parameters, taskId: power, taskType: 'MAINTAIN_POWER' } };
   assert.equal(taskBindingOfCandidate(forged), null);
-  assert.equal(closeTaskOnReceipt(runtime, 'npc_01', forged, result.records[0].eventIds), null);
+  assert.equal(closeTaskOnReceipt(runtime, 'npc_01', forged, receiptIds), null);
   const anotherFood = assign(runtime, 'COLLECT_FOOD');
   const replay = { ...selected, parameters: { ...selected.parameters, taskId: anotherFood } };
-  assert.equal(closeTaskOnReceipt(runtime, 'npc_01', replay, result.records[0].eventIds), null);
+  assert.equal(closeTaskOnReceipt(runtime, 'npc_01', replay, receiptIds), null);
   assert.equal(runtime.states.tasks.tasks.find(row => row.taskId === anotherFood)!.status, 'accepted');
 });
 

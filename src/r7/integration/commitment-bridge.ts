@@ -1,11 +1,20 @@
 /** Existing commitment/task ledgers become goals of the one R8 choice loop.
  * This adapter has no queue and never chooses or executes a world action.
+ *
+ * Two rules make the adapter honest:
+ *   - the goal/candidate view is a pure function of THIS actor's own records,
+ *     never of engine truth, so an unheard terminal state cannot leak through a
+ *     marker such as `unheard-cancellation`;
+ *   - the committed receipt, not the offered candidate, is what fulfils the
+ *     promise, and that projection is replayed from the persisted intent after
+ *     a restore instead of relying on a process-local callback.
  */
 import { canonicalJson, sha256Hex, type Candidate } from '../../decision/contracts';
 import type { GameplayLoop } from '../../gameplay-v2/loop';
 import { isTerminal, type Commitment } from '../../gameplay-v2/commitments';
 import { resumeReady } from '../../gameplay-v2/negotiation';
 import type { GameplayTask } from '../../gameplay-v2/tasks';
+import type { ActionIntent } from './action-intent';
 import type { R8Runtime } from './runtime';
 
 export interface CommitmentGoalBridge {
@@ -49,38 +58,37 @@ function option(commitment: Commitment, task: GameplayTask, action: string,
     description, parameters: bound, preconditions, expectedEffects: {}, utilityComponents: {} };
 }
 
-/** The terminal kinds a promisor can only know because it was told. */
+/** The terminal kinds a promisor can only know because it was told/observed. */
 const TERMINAL_KINDS = ['commitment_cancelled', 'commitment_declined',
   'commitment_withdrawn', 'commitment_fulfilled'];
 
+const TERMINAL_STATUS: Record<string, string> = {
+  commitment_cancelled: 'cancelled', commitment_declined: 'declined',
+  commitment_withdrawn: 'withdrawn', commitment_fulfilled: 'fulfilled',
+};
+
 /**
- * Did THIS actor hear the event that ended the commitment? A terminal ledger
- * row is world truth; without its own record the actor still believes the
- * promise is alive and keeps working — that is the unheard-cancellation case,
- * not a bug to be papered over by reading the truth.
+ * What THIS actor's own memory says about the end of this commitment. A null
+ * answer means it has no terminal evidence, so for it the promise is still
+ * alive; the engine row may be terminal and that must not be visible here.
  */
-function heardTerminal(runtime: R8Runtime, actorId: string,
-  commitment: Commitment): boolean {
+function ownTerminalKind(runtime: R8Runtime, actorId: string,
+  commitment: Commitment): string | null {
   const records = runtime.session.memories.get(actorId)?.toJSON().records ?? [];
-  return records.some(record => record.observerId === actorId
-    && TERMINAL_KINDS.includes(record.kind)
-    && String((record.payload as Record<string, unknown>).commitmentId) === commitment.commitmentId
-    && Number((record.payload as Record<string, unknown>).revision ?? -1) === commitment.revision);
+  const record = [...records].reverse().find(entry => entry.observerId === actorId
+    && TERMINAL_KINDS.includes(entry.kind)
+    && String((entry.payload as Record<string, unknown>).commitmentId) === commitment.commitmentId);
+  return record ? record.kind : null;
 }
 
 export function createCommitmentBridge(runtime: R8Runtime, play: GameplayLoop): CommitmentGoalBridge {
   if (runtime.session !== play.session) throw new Error('commitment bridge requires one shared session');
-  /**
-   * The actor's own view of its commitments: a terminal row it never heard
-   * still counts as live, and is marked so the candidate path cannot settle it.
-   */
+
+  /** The actor's own view of its commitments, derived from its records only. */
   const rows = (actorId: string) => play.commitments.all()
     .filter(row => row.promisorId === actorId
       && ['deliver-meal', 'supply-warehouse'].includes(row.goal))
-    // Every row stays visible: a heard terminal is reported as terminal, an
-    // unheard one as the still-live state this actor believes in.
-    .map(row => ({ row, unheardTerminal: isTerminal(row.status)
-      && !heardTerminal(runtime, actorId, row) }))
+    .map(row => ({ row, terminal: ownTerminalKind(runtime, actorId, row) }))
     .sort((a, b) => a.row.createdAt - b.row.createdAt
       || a.row.commitmentId.localeCompare(b.row.commitmentId));
 
@@ -108,31 +116,91 @@ export function createCommitmentBridge(runtime: R8Runtime, play: GameplayLoop): 
     runtime.session.ingestCommitmentEvent(result.event);
   };
 
+  /**
+   * Apply one committed receipt to the commitment/task ledger. Deterministic
+   * from (commitmentId, revision, receiptId), so replay after a restore is
+   * safe; the memory write is de-duplicated by its own event id.
+   */
+  const applyReceipt = (claim: NonNullable<ActionIntent['projections'][number]>,
+    intent: Pick<ActionIntent, 'actorId' | 'candidate'> & { commitmentRevision?: number | null;
+      intentId?: string }): boolean => {
+    const commitment = play.commitments.find(claim.id);
+    if (!commitment) return false;
+    const task = commitment.taskId ? play.board.find(commitment.taskId) : undefined;
+    const receipt = runtime.committedEvent(claim.receiptId);
+    if (!receipt || receipt.actorId !== intent.actorId) return false;
+    // Record the real action in the actor's own memory, carrying provenance.
+    runtime.session.memories.get(intent.actorId)?.append({
+      eventId: `bridge:${commitment.commitmentId}:r${intent.commitmentRevision ?? commitment.revision}`
+        + `:${receipt.eventId}`,
+      observerId: intent.actorId, occurredAt: receipt.simTime, observedAt: runtime.world.simTime,
+      kind: 'commitment_action_committed', source: 'engine', authority: 'engine',
+      subjectIds: [intent.actorId, commitment.beneficiaryId],
+      sourceEventIds: [receipt.eventId],
+      relatedRequestId: commitment.commitmentId,
+      payload: { commitmentId: commitment.commitmentId,
+        revision: intent.commitmentRevision ?? commitment.revision,
+        legacyTaskId: task?.taskId ?? null, action: intent.candidate.parameters.action } });
+    const shortage = receipt.type === 'out_of_stock'
+      || (receipt.type === 'warehouse_stock_observed' && Number(receipt.payload.remaining) === 0);
+    if (shortage) proposeShortage(commitment, [receipt.eventId]);
+    const receiptType = commitment.goal === 'deliver-meal' ? 'meal_delivered' : 'stock_deposited';
+    const matches = receipt.type === receiptType
+      && Number.isFinite(Number(receipt.payload.amount)) && Number(receipt.payload.amount) >= 1
+      && (receiptType === 'meal_delivered' ? receipt.payload.to === 'kitchen'
+        : receipt.payload.place === 'warehouse');
+    if (!matches || task === undefined) return false;
+    // A withdrawn authorisation keeps the world's answer: no fulfilment.
+    if (commitment.status !== 'active') return false;
+    const result = play.commitments.fulfil(commitment.commitmentId, {
+      eventId: receipt.eventId, commandId: receipt.eventId.split(`:${receipt.type}:`)[0],
+      at: runtime.world.simTime, amount: Number(receipt.payload.amount),
+      inputId: `bridge-fulfil:${receipt.eventId}` });
+    if (result.commitment.status !== 'fulfilled'
+      || !result.commitment.evidenceEventIds.includes(receipt.eventId)) return false;
+    play.board.complete(task.taskId);
+    runtime.session.ingestCommitmentEvent(result.event);
+    return true;
+  };
+
+  // Authorisation: the world withdraws it on cancel/timeout/revision change;
+  // the promisor's belief is a separate, own-record question handled in `view`.
+  runtime.registerIntentGuard(intent => {
+    if (!intent.commitmentId) return null;
+    const commitment = play.commitments.find(intent.commitmentId);
+    if (!commitment) return 'commitment_missing';
+    if (isTerminal(commitment.status)) return `commitment_${commitment.status}`;
+    if (intent.commitmentRevision !== null && commitment.revision !== intent.commitmentRevision)
+      return 'commitment_revision_changed';
+    return null;
+  });
+  runtime.registerIntentProjector((claim, intent) =>
+    claim.kind === 'commitment' ? applyReceipt(claim, intent) : false);
+  // A new process restores the intent queue; replay what the ledger still owes.
+  runtime.replayPendingProjections();
+  play.onCommitmentCancelled(commitmentId => runtime.cancelForCommitment(commitmentId,
+    'commitment_cancelled'));
+
   return {
     view(actorId) {
       const npc = runtime.world.npcs[actorId];
       const goals: unknown[] = [], candidates: Candidate[] = [];
-      for (const { row: commitment, unheardTerminal } of rows(actorId)) {
+      for (const { row: commitment, terminal } of rows(actorId)) {
         const task = commitment.taskId ? play.board.find(commitment.taskId) : undefined;
         // While a change is pending the promisor is NOT working under the new
         // terms: only the originally agreed path may be offered.
         const pendingChange = commitment.status === 'pending-change';
-        const lastKnownActive = commitment.status === 'active' || pendingChange || unheardTerminal;
-        const taskUsable = unheardTerminal
-          ? task !== undefined
-          : task?.status === 'active' && task.commitmentId === commitment.commitmentId
-            && task.actorId === actorId;
-        const ready = Boolean(npc?.alive && taskUsable && lastKnownActive
-          && resumeReady(npc, commitment));
+        // The actor's own status: what its records establish, nothing more.
+        const heardStatus = terminal ? TERMINAL_STATUS[terminal] ?? 'active' : 'active';
+        // An actor that has not heard the end still believes the promise is
+        // alive, so its task stays usable for it; a heard terminal stops it.
+        const taskUsable = !terminal && task !== undefined;
+        const ready = Boolean(npc?.alive && taskUsable
+          && (terminal === null) && resumeReady(npc, commitment));
         goals.push({ source: 'legacy-commitment', taskId: commitment.taskId,
           legacyTaskId: commitment.taskId, commitmentId: commitment.commitmentId,
           revision: commitment.revision, type: commitment.goal === 'deliver-meal' ? 'DELIVER_MEAL' : 'SUPPLY_WAREHOUSE',
-          // The status this actor can actually establish. `observedTerminal`
-          // says whether the engine truth is inside its own memory.
-          status: unheardTerminal ? 'active' : commitment.status,
-          observedTerminal: !unheardTerminal,
-          belief: unheardTerminal ? 'unheard-cancellation' : 'observed',
-          taskStatus: unheardTerminal ? 'active' : task?.status ?? 'missing', ready,
+          status: heardStatus, ready,
           conditions: [...commitment.conditions], deadline: commitment.deadline,
           beneficiaryId: commitment.beneficiaryId });
         if (!ready || !task || !npc) continue;
@@ -143,10 +211,16 @@ export function createCommitmentBridge(runtime: R8Runtime, play: GameplayLoop): 
         const carry = runtime.world.spatial?.carry[actorId]?.meals ?? 0;
         const stock = personalStock(runtime, actorId);
         if (commitment.goal === 'supply-warehouse') {
-          candidates.push(runtime.world.resources.food < 1
-            ? make('gather', '为已接受的补仓承诺采集食物', { resource: 'food', amount: 2, bridgeStep: 'gather' })
-            : !atWarehouse ? make('move', '前往仓库履行补仓承诺', { to: 'warehouse', purpose: 'travel', bridgeStep: 'to-warehouse' })
-              : make('deposit', '将一份公共食物实际交存仓库', { place: 'warehouse', amount: 1, bridgeStep: 'deposit' }, ['public food >= 1']));
+          if (runtime.world.resources.food < 1) {
+            // Gathering happens at the village site: walk there first.
+            candidates.push(npc.location === 'village'
+              ? make('gather', '为已接受的补仓承诺采集食物', { resource: 'food', amount: 2, bridgeStep: 'gather' })
+              : make('move', '去村里为补仓承诺采集食物', { to: 'village', purpose: 'travel', bridgeStep: 'to-village-alt' }));
+            continue;
+          }
+          candidates.push(!atWarehouse
+            ? make('move', '前往仓库履行补仓承诺', { to: 'warehouse', purpose: 'travel', bridgeStep: 'to-warehouse' })
+            : make('deposit', '将一份公共食物实际交存仓库', { place: 'warehouse', amount: 1, bridgeStep: 'deposit' }, ['public food >= 1']));
           continue;
         }
         if (carry >= 1) {
@@ -184,8 +258,13 @@ export function createCommitmentBridge(runtime: R8Runtime, play: GameplayLoop): 
           const last = progressEvents(runtime, commitment).filter(event =>
             ['gathered', 'stock_deposited', 'stock_withdrawn', 'out_of_stock'].includes(event!.type)).at(-1);
           if (!last || !['gathered', 'stock_deposited'].includes(last.type)) {
-            candidates.push(make('gather', '按已同意的新来源采集食物',
-              { resource: 'food', amount: 2, bridgeStep: 'gather' }));
+            // The agreed new source is gathered at its real site; the walk is a
+            // real action, not an instant teleport inside the work step.
+            candidates.push(npc.location === 'village'
+              ? make('gather', '按已同意的新来源采集食物',
+                { resource: 'food', amount: 2, bridgeStep: 'gather' })
+              : make('move', '按已同意的新来源去村里采集食物',
+                { to: 'village', purpose: 'travel', bridgeStep: 'to-village-alt' }));
             continue;
           }
           if (last.type === 'gathered') {
@@ -204,42 +283,31 @@ export function createCommitmentBridge(runtime: R8Runtime, play: GameplayLoop): 
       return { goals, candidates };
     },
 
+    /** Instant (zero-duration) actions still report their own receipt here. */
     afterCommit(actorId, candidate, eventIds) {
       const bound = binding(actorId, candidate);
       if (!bound) return;
-      const { commitment, task } = bound;
-      const events = eventIds.map(id => runtime.committedEvent(id))
-        .filter(event => event !== null && event.actorId === actorId);
-      if (candidate.parameters.bridgeStep === 'propose-alt-source' && personalStock(runtime, actorId) === 0) {
+      const { commitment } = bound;
+      if (candidate.parameters.bridgeStep === 'propose-alt-source'
+        && personalStock(runtime, actorId) === 0) {
         proposeShortage(commitment, []);
         return;
       }
-      if (!events.length) return;
-      const at = runtime.world.simTime;
-      // Provenance, not a separate plan/state machine: replay the real receipts
-      // to discover whether the agreed gather/deposit phase already happened.
-      runtime.session.memories.get(actorId)!.append({
-        eventId: `bridge:${commitment.commitmentId}:r${commitment.revision}:${events[0]!.eventId}`,
-        observerId: actorId, occurredAt: at, observedAt: at,
-        kind: 'commitment_action_committed', source: 'engine', authority: 'engine',
-        subjectIds: [actorId, commitment.beneficiaryId], sourceEventIds: events.map(event => event!.eventId),
-        relatedRequestId: commitment.commitmentId,
-        payload: { commitmentId: commitment.commitmentId, revision: commitment.revision,
-          legacyTaskId: task.taskId, action: candidate.parameters.action } });
+      const events = eventIds.map(id => runtime.committedEvent(id))
+        .filter(event => event !== null && event.actorId === actorId);
+      // Shortage first: a real out_of_stock is what opens the source change.
       const shortage = events.find(event => event!.type === 'out_of_stock'
-        || (event!.type === 'warehouse_stock_observed' && Number(event!.payload.remaining) === 0));
-      if (shortage) proposeShortage(commitment, [shortage.eventId]);
-      const receiptType = commitment.goal === 'deliver-meal' ? 'meal_delivered' : 'stock_deposited';
-      const receipt = events.find(event => event!.type === receiptType
-        && Number.isFinite(event!.payload.amount) && Number(event!.payload.amount) >= 1
-        && (receiptType === 'meal_delivered' ? event!.payload.to === 'kitchen' : event!.payload.place === 'warehouse'));
-      if (!receipt || commitment.status !== 'active') return;
-      const result = play.commitments.fulfil(commitment.commitmentId, {
-        eventId: receipt.eventId, commandId: receipt.eventId.split(`:${receipt.type}:`)[0],
-        at, amount: Number(receipt.payload.amount), inputId: `bridge-fulfil:${receipt.eventId}` });
-      if (result.commitment.status !== 'fulfilled' || !result.commitment.evidenceEventIds.includes(receipt.eventId)) return;
-      play.board.complete(task.taskId);
-      runtime.session.ingestCommitmentEvent(result.event);
+        || (event!.type === 'warehouse_stock_observed'
+          && Number(event!.payload.remaining) === 0));
+      const fulfilment = events.find(event => event!.type === (commitment.goal === 'deliver-meal'
+        ? 'meal_delivered' : 'stock_deposited'));
+      for (const receipt of [shortage, fulfilment]) {
+        if (!receipt) continue;
+        applyReceipt({ kind: 'commitment', id: commitment.commitmentId,
+          revision: commitment.revision, receiptId: receipt.eventId, applied: false,
+          appliedAt: null }, { intentId: `instant:${receipt.eventId}`, actorId,
+          commitmentRevision: commitment.revision, candidate });
+      }
     },
   };
 }

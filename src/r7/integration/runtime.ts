@@ -16,6 +16,9 @@ import {
   type Rejection, type TimeProfile, type WorldIntent,
 } from '../contracts';
 import { commitIntents, ensureR8, snapshotOf } from './intents';
+import { mintWorkGrant, requiredPlaceOf } from '../../execution/place-rules';
+import { createIntent, projectionOf, type ActionIntent, type ActionStatus,
+  type ProjectionClaim } from './action-intent';
 import { survivalDomain, type SurvivalState } from '../domains/survival/index';
 import { productionDomain, type ProductionState } from '../domains/production/index';
 import { tasksDomain, WORK_MODE_TASK, type TasksState, type WorkMode } from '../domains/tasks/index';
@@ -67,15 +70,30 @@ export interface AdvanceReport {
   domainEvents: { type: string; actorId: string; payload: Record<string, unknown> }[];
 }
 
-/** A time-consuming action that occupies its actor until `endsAt`. */
+/**
+ * Read-only view of an actor's occupied interval. `work` is derived from the
+ * persistent intents so existing status/CLI surfaces keep working while the
+ * intent record stays the single source of truth.
+ */
 export interface WorkItem {
+  intentId: string;
   actorId: string;
   kind: string;
   commandId: string;
   candidate: import('../../decision/contracts').Candidate;
+  taskId: string | null;
+  commitmentId: string | null;
+  commitmentRevision: number | null;
+  generation: number;
   startedAt: number;
   endsAt: number;
 }
+
+/** Can this queued action still be settled? Returning a string revokes it. */
+export type IntentGuard = (intent: ActionIntent) => string | null;
+/** Applies a committed receipt to an external ledger (task board/commitments). */
+export type IntentProjector = (claim: ProjectionClaim,
+  intent: ActionIntent) => boolean;
 
 export interface RuntimeOptions {
   npcCount?: number;
@@ -88,9 +106,15 @@ export interface RuntimeOptions {
 
 /**
  * Rule boundaries in absolute minutes: every hour, every day start, the
- * night-skip window edges, the settlement hour and the profile end.
+ * night-skip window edges, the settlement hour, the profile end and every
+ * pending work `due`.
+ *
+ * Including the due times is what makes the outcome independent of how a caller
+ * chopped the wait: a 10-minute job due at 490 settles at 490 whether the caller
+ * advanced to 490 or straight to 540.
  */
-export function boundariesBetween(profile: TimeProfile, from: number, to: number): number[] {
+export function boundariesBetween(profile: TimeProfile, from: number, to: number,
+  duePoints: readonly number[] = []): number[] {
   const points = new Set<number>([from, to]);
   const hourStart = Math.ceil(from / 60) * 60;
   for (let at = hourStart; at < to; at += 60) {
@@ -102,6 +126,9 @@ export function boundariesBetween(profile: TimeProfile, from: number, to: number
       const at = (day - 1) * profile.minutesPerDay + minuteOfDay;
       if (at > from && at < to) points.add(at);
     }
+  }
+  for (const at of duePoints) {
+    if (at > from && at < to) points.add(at);
   }
   const end = absoluteMinute(profile, profile.endDay, profile.endMinuteOfDay);
   if (end > from && end < to) points.add(end);
@@ -138,19 +165,25 @@ export class R8Runtime {
   readonly rejections: Rejection[] = [];
   ended = false;
   endingKind: string | null = null;
-  /** Occupancy: one work item per actor; several actors overlap in time. */
-  readonly work = new Map<string, WorkItem>();
   /**
-   * Per-command settlement hooks. An occupied action has no immediate receipt,
-   * so the entry that started it registers here how to learn about the real
-   * one (the commitment bridge must fulfil on the committed receipt, not on the
-   * intent). Hooks are process-local and re-registered by whoever starts work.
+   * Every execution record, including terminal ones (bounded). This is the
+   * single source of truth for "who is busy, until when, under which
+   * authorisation and for which instance".
    */
-  private readonly settleHooks = new Map<string, (actorId: string,
-    candidate: import('../../decision/contracts').Candidate, eventIds: string[]) => void>();
+  readonly intents = new Map<string, ActionIntent>();
+  /** Occupancy view derived from `intents`; several actors overlap in time. */
+  readonly work = new Map<string, WorkItem>();
   /** Completed work items, in commit order (evidence for the time story). */
-  readonly workLog: { actorId: string; kind: string; startedAt: number; endsAt: number;
-    status: string; eventIds: string[] }[] = [];
+  readonly workLog: { intentId: string; actorId: string; kind: string; startedAt: number;
+    endsAt: number; status: string; eventIds: string[]; failureReason: string | null }[] = [];
+  /**
+   * Authorisation guards and ledger projectors are behaviour, not state: they
+   * are re-registered by the owning subsystem after a restore, and every
+   * pending projection is replayed from the persisted intent, never from a
+   * process-local closure.
+   */
+  private readonly intentGuards: IntentGuard[] = [];
+  private readonly projectors: IntentProjector[] = [];
   /** Every committed event by id: the only receipts a domain may accept. */
   private readonly committed = new Map<string, CommittedEventRef>();
   private readonly legacySpatial: LegacySpatialController;
@@ -161,6 +194,9 @@ export class R8Runtime {
     const context = this.context();
     this.states = states ?? (this.registry.initialise(context) as unknown as DomainStates);
     this.legacySpatial = new LegacySpatialController(this, (intents, events) => this.commit(intents, events));
+    // Work only lands through `settleDueIntents`: the R8 entry helper refuses
+    // an un-queued time-consuming action (see `executeCandidate` in step.ts).
+    // The frozen legacy reference loop keeps its historical command path.
   }
 
   static create(options: RuntimeOptions = {}): R8Runtime {
@@ -268,7 +304,9 @@ export class R8Runtime {
     const profileEnd = absoluteMinute(this.profile, this.profile.endDay,
       this.profile.endMinuteOfDay);
     const target = Math.min(to, profileEnd);
-    const points = boundariesBetween(this.profile, from, target);
+    // Every pending `due` is a clock boundary, so a job never waits for the
+    // next hour and its settlement cannot depend on the caller's chunking.
+    const points = boundariesBetween(this.profile, from, target, this.pendingDuePoints());
     const report: AdvanceReport = {
       from, to: target, reachedEnd: target >= profileEnd, segments: [],
       rejections: [], events: [], domainEvents: [],
@@ -297,7 +335,7 @@ export class R8Runtime {
       }
       const committed = this.commit(intents, domainEvents);
       const step = this.session.advance(minutes);
-      const completedWork = this.settleWork();
+      const completedWork = this.settleDueIntents();
       report.segments.push({
         from: segmentFrom, to: segmentTo, minutes,
         applied: [...committed.applied, ...(step.status === 'applied' ? [] : [step.status])],
@@ -409,84 +447,302 @@ export class R8Runtime {
   }
 
   /**
-   * Start a time-consuming action. Nothing is applied until the clock reaches
-   * `endsAt`; the actor cannot start a second action meanwhile. Two actors'
-   * work overlaps instead of being serialised onto one another.
+   * Queue a persistent, resumable action. Nothing is applied until the clock
+   * reaches `dueAt`; the actor cannot start a second action meanwhile, while
+   * two actors' work overlaps instead of being serialised.
+   *
+   * The authorisation token, the place premise and the exact task/commitment
+   * instance are captured HERE, so settlement can re-validate them from data.
    */
+  beginIntent(input: {
+    intentId: string; commandId: string; actorId: string;
+    candidate: import('../../decision/contracts').Candidate; minutes: number;
+    inputSha256?: string | null; taskId?: string | null; taskType?: string | null;
+    commitmentId?: string | null; commitmentRevision?: number | null;
+  }): { intent: ActionIntent } | { rejected: string } {
+    const npc = this.world.npcs[input.actorId];
+    if (!npc) return { rejected: `unknown actor ${input.actorId}` };
+    if (!npc.alive) return { rejected: `actor ${input.actorId} is not alive` };
+    const busy = this.work.get(input.actorId);
+    if (busy) return { rejected: `actor ${input.actorId} is busy until ${busy.endsAt}` };
+    if (!Number.isFinite(input.minutes) || input.minutes <= 0)
+      return { rejected: `invalid work duration ${input.minutes}` };
+    if (this.intents.has(input.intentId))
+      return { rejected: `intent ${input.intentId} already exists` };
+    const action = String(input.candidate.parameters.action ?? '');
+    const place = requiredPlaceOf(action, input.candidate.parameters as Record<string, unknown>);
+    if (place && npc.location !== place) {
+      return { rejected: `wrong_location: ${action} needs ${place}, actor is at ${npc.location}` };
+    }
+    const intent = createIntent({ ...input, generation: this.session.generationFor(input.actorId) },
+      this.world.simTime, place, npc.location);
+    this.intents.set(intent.intentId, intent);
+    this.syncWorkView();
+    return { intent };
+  }
+
+  /** Compatibility wrapper: no explicit instance binding. */
   beginWork(actorId: string, kind: string, commandId: string,
     candidate: import('../../decision/contracts').Candidate, minutes: number):
     { startedAt: number; endsAt: number } | { rejected: string } {
-    if (this.work.has(actorId)) {
-      return { rejected: `actor ${actorId} is busy until ${this.work.get(actorId)!.endsAt}` };
-    }
-    if (!Number.isFinite(minutes) || minutes <= 0) {
-      return { rejected: `invalid work duration ${minutes}` };
-    }
-    const startedAt = this.world.simTime;
-    const endsAt = startedAt + minutes;
-    this.work.set(actorId, { actorId, kind, commandId, candidate, startedAt, endsAt });
-    return { startedAt, endsAt };
+    const begun = this.beginIntent({ intentId: commandId, commandId, actorId, candidate, minutes,
+      taskId: typeof candidate.parameters.taskId === 'string' ? candidate.parameters.taskId : null,
+      taskType: workTaskType(candidate) });
+    if ('rejected' in begun) return { rejected: begun.rejected };
+    void kind;
+    return { startedAt: begun.intent.startedAt, endsAt: begun.intent.dueAt };
   }
 
   busyUntil(actorId: string): number | null {
     return this.work.get(actorId)?.endsAt ?? null;
   }
 
-  /** Register the one settlement hook for a started work command. */
-  onWorkSettled(commandId: string, hook: (actorId: string,
-    candidate: import('../../decision/contracts').Candidate, eventIds: string[]) => void): void {
-    this.settleHooks.set(commandId, hook);
+  activeIntent(actorId: string): ActionIntent | null {
+    const view = this.work.get(actorId);
+    return view ? this.intents.get(view.intentId) ?? null : null;
+  }
+
+  /** Authorisation guards are behaviour: re-register them after a restore. */
+  registerIntentGuard(guard: IntentGuard): void {
+    this.intentGuards.push(guard);
+  }
+
+  /** Ledger projector for a committed receipt; replayable, never a closure. */
+  registerIntentProjector(projector: IntentProjector): void {
+    this.projectors.push(projector);
+  }
+
+  /** Due times of every queued action: they are clock boundaries. */
+  pendingDuePoints(): number[] {
+    return [...this.intents.values()].filter(intent => intent.status === 'working')
+      .map(intent => intent.dueAt);
   }
 
   /**
-   * Complete every work item the committed clock has passed. Called by
-   * advanceWorld only, so CLI, web and the four-day runner finish work at the
-   * same authoritative moment.
+   * Cancel a queued action before it commits: zero late physical effect, and
+   * the cancelled record stays readable (reason + time).
    */
-  settleWork(): { actorId: string; kind: string; status: string; eventIds: string[] }[] {
+  cancelIntent(intentId: string, reason: string): boolean {
+    const intent = this.intents.get(intentId);
+    if (!intent || intent.status !== 'working') return false;
+    this.finishIntent(intent, 'cancelled', reason);
+    return true;
+  }
+
+  /** Revoke every queued action bound to a commitment instance/revision. */
+  cancelForCommitment(commitmentId: string, reason: string): string[] {
+    const cancelled: string[] = [];
+    for (const intent of [...this.intents.values()]) {
+      if (intent.status !== 'working' || intent.commitmentId !== commitmentId) continue;
+      this.finishIntent(intent, 'cancelled', reason);
+      cancelled.push(intent.intentId);
+    }
+    return cancelled;
+  }
+
+  /**
+   * Complete every queued action the committed clock has reached, in a fixed
+   * order (due, then id). Called by advanceWorld only, so CLI, web, the
+   * four-day runner and a resumed process settle at the same authoritative
+   * moment.
+   */
+  settleDueIntents(): { actorId: string; kind: string; status: string; eventIds: string[] }[] {
+    const due = [...this.intents.values()]
+      .filter(intent => intent.status === 'working' && this.world.simTime >= intent.dueAt)
+      .sort((left, right) => left.dueAt - right.dueAt
+        || left.intentId.localeCompare(right.intentId));
     const done: { actorId: string; kind: string; status: string; eventIds: string[] }[] = [];
-    for (const item of [...this.work.values()]) {
-      if (this.world.simTime < item.endsAt) continue;
-      this.work.delete(item.actorId);
-      let status = 'applied';
+    for (const intent of due) {
+      let status: ActionStatus = 'applied';
+      let reason: string | null = null;
       let eventIds: string[] = [];
-      try {
-        const outcome = this.session.executeCandidate(item.actorId, item.candidate,
-          item.commandId);
-        if (outcome.events) this.recordCommitted(outcome.events);
-        status = outcome.status;
-        eventIds = outcome.eventIds;
-      } catch (error) {
-        status = `error:${(error as Error).message}`;
-      }
-      const hook = this.settleHooks.get(item.commandId);
-      this.settleHooks.delete(item.commandId);
-      if (hook && status === 'applied' && eventIds.length > 0) {
-        try {
-          hook(item.actorId, item.candidate, eventIds);
-        } catch (error) {
-          status = `hook_error:${(error as Error).message}`;
+      const npc = this.world.npcs[intent.actorId];
+      if (!npc || !npc.alive) {
+        status = 'cancelled'; reason = 'actor_not_alive';
+      } else if (this.session.generationFor(intent.actorId) !== intent.generation) {
+        status = 'cancelled'; reason = 'generation_revoked';
+      } else if (intent.requiredPlace && npc.location !== intent.requiredPlace) {
+        status = 'rejected';
+        reason = `wrong_location: ${String(intent.candidate.parameters.action)} needs `
+          + `${intent.requiredPlace}, actor is at ${npc.location}`;
+      } else {
+        // A withdrawn authorisation is a REFUSAL the actor really receives, not
+        // a silent cancellation: the world keeps its answer, and the actor gets
+        // its own observation of the failed attempt.
+        for (const guard of this.intentGuards) {
+          const revoked = guard(intent);
+          if (revoked) { status = 'rejected'; reason = revoked; break; }
         }
-      }
-      // A finished work item closes its own task on its own receipt.
-      if (status === 'applied' && eventIds.length > 0) {
-        const type = workTaskType(item.candidate);
-        if (type) {
-          const tasks = (this.states.tasks as { tasks: { taskId: string; type: string;
-            status: string; assigneeId: string }[] }).tasks;
-          const task = tasks.find(entry => entry.assigneeId === item.actorId
-            && entry.status === 'accepted' && entry.type === type);
-          if (task) {
-            this.dispatch('tasks', 'complete', item.actorId,
-              { taskId: task.taskId, receiptEventId: eventIds[eventIds.length - 1] });
+        if (status === 'applied' && intent.taskId && intent.taskType) {
+          const task = this.taskRow(intent.taskId);
+          if (!task || task.status !== 'accepted' || task.assigneeId !== intent.actorId) {
+            status = 'cancelled'; reason = 'task_not_open';
           }
         }
       }
-      this.workLog.push({ actorId: item.actorId, kind: item.kind,
-        startedAt: item.startedAt, endsAt: item.endsAt, status, eventIds });
-      done.push({ actorId: item.actorId, kind: item.kind, status, eventIds });
+      if (status === 'applied') {
+        try {
+          const grant = mintWorkGrant(intent.intentId, intent.actorId, intent.candidateId);
+          const outcome = this.session.executeCandidate(intent.actorId, intent.candidate,
+            intent.commandId, grant);
+          if (outcome.events) this.recordCommitted(outcome.events);
+          status = outcome.status === 'applied' ? 'applied'
+            : outcome.status === 'rejected' ? 'rejected' : 'unresolved';
+          eventIds = outcome.eventIds;
+          reason = outcome.reason ?? null;
+        } catch (error) {
+          status = 'rejected';
+          reason = `error:${(error as Error).message}`;
+        }
+      }
+      intent.status = status;
+      intent.receiptIds = eventIds;
+      intent.failureReason = reason;
+      intent.settledAt = this.world.simTime;
+      if (status === 'rejected' && reason) this.recordRejection(intent, reason);
+      if (status === 'applied' && eventIds.length > 0) {
+        this.applyProjection(intent, eventIds);
+      }
+      this.logIntent(intent);
+      done.push({ actorId: intent.actorId, kind: String(intent.candidate.parameters.action),
+        status, eventIds });
     }
     return done;
+  }
+
+  /** Alias kept for callers that name the R9 method. */
+  settleWork(): { actorId: string; kind: string; status: string; eventIds: string[] }[] {
+    return this.settleDueIntents();
+  }
+
+  /**
+   * Apply (or retry) the ledger projection of an already committed receipt.
+   * Safe to call repeatedly: a claim records whether it was applied.
+   */
+  replayPendingProjections(): number {
+    let applied = 0;
+    for (const intent of this.intents.values()) {
+      for (const claim of intent.projections) {
+        if (claim.applied) continue;
+        if (this.runProjection(intent, claim)) applied += 1;
+      }
+    }
+    return applied;
+  }
+
+  /**
+   * A refused attempt is an observation of THIS actor, phrased so it cannot
+   * reveal a terminal state the actor never heard: the precise reason stays in
+   * the engine record (`failureReason`), the personal note says only that the
+   * attempt was not authorised.
+   */
+  private recordRejection(intent: ActionIntent, reason: string): void {
+    const neutral = reason.startsWith('commitment_') ? 'authorisation_withdrawn'
+      : reason === 'task_not_open' ? 'task_no_longer_open' : reason;
+    const eventId = `d:${this.world.simTime}:action_rejected:${intent.actorId}:${intent.intentId}`;
+    const payload = { intentId: intent.intentId,
+      action: String(intent.candidate.parameters.action), reason: neutral };
+    this.committed.set(eventId, { eventId, type: 'action_rejected',
+      actorId: intent.actorId, simTime: this.world.simTime, payload });
+    this.journal.push({ at: this.world.simTime, type: 'action_rejected',
+      actorId: intent.actorId, payload });
+    this.session.memories.get(intent.actorId)?.append({
+      eventId, observerId: intent.actorId, occurredAt: this.world.simTime,
+      observedAt: this.world.simTime, kind: 'action_rejected', source: 'engine',
+      authority: 'engine', subjectIds: [intent.actorId], sourceEventIds: [eventId],
+      payload });
+  }
+
+  private taskRow(taskId: string): { taskId: string; type: string; status: string;
+    assigneeId: string } | undefined {
+    return (this.states.tasks as { tasks: { taskId: string; type: string; status: string;
+      assigneeId: string }[] }).tasks.find(entry => entry.taskId === taskId);
+  }
+
+  /**
+   * One action can commit several receipts (a shortage observation and a later
+   * delivery). Each gets its own claim, so the ledger absorbs the real ones and
+   * an unrelated last event cannot hide the delivery.
+   */
+  private applyProjection(intent: ActionIntent, receiptIds: string[]): void {
+    for (const receiptId of [...new Set([...receiptIds].reverse())]) {
+      const claim = projectionOf(intent, receiptId);
+      if (!claim) continue;
+      intent.projections.push(claim);
+      this.runProjection(intent, claim);
+    }
+  }
+
+  private runProjection(intent: ActionIntent, claim: ProjectionClaim): boolean {
+    if (claim.applied) return false;
+    if (claim.kind === 'task') {
+      // A receipt closes the EXACT task instance this action was queued for,
+      // never the first task of the same type.
+      if (!intent.taskType) return false;
+      const task = this.taskRow(claim.id);
+      if (!task || task.status !== 'accepted' || task.assigneeId !== intent.actorId) return false;
+      if (task.type !== intent.taskType) return false;
+      const result = this.dispatch('tasks', 'complete', intent.actorId,
+        { taskId: task.taskId, receiptEventId: claim.receiptId });
+      const after = this.taskRow(task.taskId);
+      const closed = result.rejected.length === 0 && after?.status === 'done'
+        && result.events.some(event => event.type === 'task_completed'
+          && event.payload.taskId === task.taskId && event.payload.receipt === claim.receiptId);
+      if (!closed) return false;
+      claim.applied = true;
+      claim.appliedAt = this.world.simTime;
+      return true;
+    }
+    for (const projector of this.projectors) {
+      let ok = false;
+      try { ok = projector(claim, intent); } catch { ok = false; }
+      if (ok) {
+        claim.applied = true;
+        claim.appliedAt = this.world.simTime;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /** Cancel/fail a queued action with zero late physical effect. */
+  private finishIntent(intent: ActionIntent, status: ActionStatus, reason: string | null): void {
+    intent.status = status;
+    intent.failureReason = reason;
+    intent.receiptIds = [];
+    intent.settledAt = this.world.simTime;
+    this.logIntent(intent);
+  }
+
+  private logIntent(intent: ActionIntent): void {
+    this.workLog.push({ intentId: intent.intentId, actorId: intent.actorId,
+      kind: String(intent.candidate.parameters.action), startedAt: intent.startedAt,
+      endsAt: intent.dueAt, status: intent.status, eventIds: [...intent.receiptIds],
+      failureReason: intent.failureReason });
+    this.syncWorkView();
+    this.pruneTerminalIntents();
+  }
+
+  private syncWorkView(): void {
+    this.work.clear();
+    for (const intent of this.intents.values()) {
+      if (intent.status !== 'working') continue;
+      this.work.set(intent.actorId, { intentId: intent.intentId, actorId: intent.actorId,
+        kind: String(intent.candidate.parameters.action), commandId: intent.commandId,
+        candidate: intent.candidate, taskId: intent.taskId, commitmentId: intent.commitmentId,
+        commitmentRevision: intent.commitmentRevision, generation: intent.generation,
+        startedAt: intent.startedAt, endsAt: intent.dueAt });
+    }
+  }
+
+  /** Terminal records are evidence, but the file cannot grow without bound. */
+  private pruneTerminalIntents(keep = 200): void {
+    const terminal = [...this.intents.values()].filter(intent => intent.status !== 'working')
+      .sort((left, right) => (left.settledAt ?? 0) - (right.settledAt ?? 0)
+        || left.intentId.localeCompare(right.intentId));
+    for (const intent of terminal.slice(0, Math.max(0, terminal.length - keep))) {
+      this.intents.delete(intent.intentId);
+    }
   }
 
   /**
@@ -549,6 +805,7 @@ export class R8Runtime {
       endingKind: string | null; states: DomainStates;
       journal?: R8Runtime['journal']; rejections?: Rejection[];
       committed?: CommittedEventRef[];
+      intents?: ActionIntent[];
       work?: WorkItem[];
       workLog?: R8Runtime['workLog'];
     };
@@ -566,7 +823,29 @@ export class R8Runtime {
     for (const event of document.committed ?? []) {
       runtime.committed.set(event.eventId, event);
     }
-    for (const item of document.work ?? []) runtime.work.set(item.actorId, item);
+    for (const intent of document.intents ?? []) runtime.intents.set(intent.intentId, intent);
+    // R9 sidecars only stored the occupancy tuple. Migrate it into a real
+    // intent so the resumed process settles from data, not from a closure.
+    for (const item of document.work ?? []) {
+      if (runtime.intents.has(item.intentId ?? item.commandId)) continue;
+      const intentId = (item as WorkItem).intentId ?? item.commandId;
+      runtime.intents.set(intentId, {
+        intentId, commandId: item.commandId, actorId: item.actorId,
+        candidateId: item.candidate.id, candidate: item.candidate, inputSha256: null,
+        generation: runtime.session.generationFor(item.actorId),
+        taskId: (item as WorkItem).taskId ?? null,
+        taskType: workTaskType(item.candidate),
+        commitmentId: (item as WorkItem).commitmentId ?? null,
+        commitmentRevision: (item as WorkItem).commitmentRevision ?? null,
+        startedAt: item.startedAt, dueAt: item.endsAt,
+        requiredPlace: requiredPlaceOf(String(item.candidate.parameters.action ?? ''),
+          item.candidate.parameters as Record<string, unknown>),
+        startPlace: runtime.world.npcs[item.actorId]?.location ?? 'village',
+        status: 'working', receiptIds: [], failureReason: null, projections: [],
+        settledAt: null,
+      });
+    }
+    runtime.syncWorkView();
     if (document.workLog) runtime.workLog.push(...document.workLog);
     if (document.rejections) runtime.rejections.push(...document.rejections);
     if (runtime.legacySpatial.enabled()) {
@@ -587,6 +866,8 @@ export class R8Runtime {
       states: this.states,
       journal: this.journal,
       committed: [...this.committed.values()],
+      intents: [...this.intents.values()],
+      // Derived view kept for readers of the R9 sidecar shape.
       work: [...this.work.values()],
       workLog: this.workLog,
       rejections: this.rejections.slice(-200),

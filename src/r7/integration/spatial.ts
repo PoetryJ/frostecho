@@ -41,8 +41,10 @@ export class LegacySpatialController {
         reason: result.reason, eventIds: result.eventIds,
         events: this.events(result.eventIds), observedBy: result.eventIds.length ? [command.actorId] : [] };
     };
-    session.executeCandidate = (actorId, candidate, commandId) => {
-      if (!this.enabled() || candidate.parameters.action !== 'move') return execute(actorId, candidate, commandId);
+    session.executeCandidate = (actorId, candidate, commandId, grant) => {
+      if (!this.enabled() || candidate.parameters.action !== 'move') {
+        return execute(actorId, candidate, commandId, grant);
+      }
       const result = candidate.parameters.purpose === 'verify-stock'
         && this.position(actorId)?.mapId === 'warehouse'
         ? this.observeStock(actorId, commandId)

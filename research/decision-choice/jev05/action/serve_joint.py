@@ -27,7 +27,7 @@ from joint_encoder import JointEncoder, ROOT, file_sha, prepare
 HEAD = ROOT / "artifacts/sprint-r7/legacy-reuse/c43-increment-batch4-1/warm-start-17/best.safetensors"
 ENCODER = Path("/data2/model_weights/Qwen3.8-27B")
 EPS = 1e-5
-RENDERER = "joint-c-action/1"
+RENDERER = "joint-c-action/2"
 
 
 def canonical(value):

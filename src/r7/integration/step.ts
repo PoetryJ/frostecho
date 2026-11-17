@@ -30,6 +30,8 @@ export interface StepOptions {
   mode?: 'reference' | 'jev-experimental' | 'jev-admitted';
   /** Conditional notes per actor; empty by default. */
   notes?: (actorId: string) => ExperienceNote[];
+  /** Same token budget for both memory arms (default 640). */
+  memoryTokenBudget?: number;
   /** Projection over an existing task/commitment ledger, never a second queue. */
   goalBridge?: {
     view(actorId: string): { goals: unknown[]; candidates: Candidate[] };
@@ -62,6 +64,8 @@ export interface StepRecord {
   memoryKept?: number;
   memoryDropped?: number;
   memoryBytes?: number;
+  memoryTokens?: number;
+  memoryBudget?: number;
   worldVersion: number;
 }
 
@@ -180,25 +184,69 @@ export function memoryPriority(kind: string): number {
  * actor's own records only. Selection is explicit so the raw window stays a
  * real control arm rather than being silently replaced.
  */
+function estimateTokens(text: string): number {
+  let tokens = 0;
+  for (const char of text) tokens += /[\u3000-\u9fff\uff00-\uffef]/.test(char) ? 1 : 0.25;
+  return Math.ceil(tokens);
+}
+
+/** Cost of one memory fact exactly as the renderer will show it. */
+export function memoryFactTokens(fact: ObservedFact): number {
+  const payload = fact.payload as Record<string, unknown>;
+  return estimateTokens(`- [${fact.source}] ${fact.kind} 知于${fact.simTime} `
+    + `发生于${String(payload?.occurredAt ?? '')} 关于${fact.subjectIds.join(',')} `
+    + `${JSON.stringify(fact.payload)}`);
+}
+
+/**
+ * The actor's own visible memory, bounded by COUNT and by an explicit token
+ * budget. Both arms get the same budget; only the selection rule differs, so a
+ * difference between them comes from what the actor was allowed to know, not
+ * from one arm being fed more text.
+ */
 export function visibleMemory(runtime: R8Runtime, actorId: string, topK = 12,
-  selection: MemorySelection = 'obligation-first'):
+  selection: MemorySelection = 'obligation-first', budgetTokens = 640):
   { facts: ObservedFact[]; relationships: unknown; truncated: boolean;
-    selection: MemorySelection; kept: number; dropped: number; bytes: number } {
+    selection: MemorySelection; kept: number; dropped: number; bytes: number;
+    tokens: number; budgetTokens: number } {
   const store = runtime.session.memories.get(actorId);
   if (!store) return { facts: [], relationships: {}, truncated: false,
-    selection, kept: 0, dropped: 0, bytes: 0 };
+    selection, kept: 0, dropped: 0, bytes: 0, tokens: 0, budgetTokens };
   const records = store.toJSON().records.filter(record => record.observerId === actorId);
-  // Same budget (same number of facts) for both arms: only the choice differs.
-  const chosen = selection === 'raw-last12'
+  // Same count AND same token budget for both arms; only the choice differs.
+  const candidates = selection === 'raw-last12'
     ? records.slice(-topK).map((record, index) => ({ record,
-      index: Math.max(0, records.length - topK) + index }))
+      index: Math.max(0, records.length - topK) + index })).reverse()
     : records.map((record, index) => ({ record, index }))
       .sort((left, right) => memoryPriority(right.record.kind) - memoryPriority(left.record.kind)
         || right.index - left.index
-        || left.record.recordId.localeCompare(right.record.recordId))
-      .slice(0, topK)
-      .sort((left, right) => left.index - right.index);
-  const facts: ObservedFact[] = chosen.map(({ record }) => ({
+        || left.record.recordId.localeCompare(right.record.recordId));
+  const chosen: { record: typeof records[number]; index: number }[] = [];
+  let tokens = 0;
+  for (const entry of candidates) {
+    if (chosen.length >= topK) break;
+    const fact = factOf(actorId, entry.record);
+    const cost = memoryFactTokens(fact);
+    if (chosen.length > 0 && tokens + cost > budgetTokens) continue;
+    tokens += cost;
+    chosen.push(entry);
+  }
+  chosen.sort((left, right) => left.index - right.index);
+  const facts: ObservedFact[] = chosen.map(({ record }) => factOf(actorId, record));
+  const knowledge = runtime.session.knowledge();
+  const relationships = knowledge[actorId] ?? { promises: [], relation: null };
+  return { facts, relationships, truncated: records.length > facts.length,
+    selection, kept: facts.length, dropped: Math.max(0, records.length - facts.length),
+    bytes: Buffer.byteLength(JSON.stringify(facts), 'utf8'),
+    tokens: facts.reduce((sum, fact) => sum + memoryFactTokens(fact), 0), budgetTokens };
+}
+
+/** One stored record as the actor may see it, with its provenance intact. */
+function factOf(actorId: string, record: {
+  recordId: string; kind: string; observedAt: number; occurredAt: number;
+  authority: string; speakerId?: string | null; source: string;
+  sourceEventIds: string[]; subjectIds: string[]; payload: unknown }): ObservedFact {
+  return {
     eventId: record.sourceEventIds[0] ?? record.recordId,
     observerId: actorId,
     // When THIS actor learned it, not when the event happened.
@@ -216,42 +264,19 @@ export function visibleMemory(runtime: R8Runtime, actorId: string, topK = 12,
     // statement and an inference stays an inference.
     source: record.source === 'player_statement' ? 'player_statement'
       : record.source === 'inference' ? 'inference' : 'engine',
-  }));
-  const knowledge = runtime.session.knowledge();
-  const relationships = knowledge[actorId] ?? { promises: [], relation: null };
-  return { facts, relationships, truncated: records.length > facts.length,
-    selection, kept: facts.length, dropped: Math.max(0, records.length - facts.length),
-    bytes: Buffer.byteLength(JSON.stringify(facts), 'utf8') };
+  };
 }
 
 /**
  * How long an action really occupies its actor. Nothing is applied before that
  * time has passed on the authoritative clock; the three front-ends share it.
+ * The table itself lives in `execution/place-rules` so the authority reads the
+ * same numbers as the proposal layer.
  */
-export const ACTION_MINUTES: Record<string, number> = {
-  rest: 60, work: 40, gather: 30, medical: 20, refuel: 10, deposit: 15, deliver: 15,
-  move: 15,
-};
+import { durationOf, isWorkGrant, requiresWorkIntent, type WorkGrant }
+  from '../../execution/place-rules';
 
-/**
- * Where a real action must physically happen. The authority checks this before
- * spending any time or resource: standing in the warehouse cannot gather wood
- * at the lumber camp, and a `work` command carries its mode so dormitory
- * morale work cannot be done from the workshop either. One table, shared with
- * the candidate layer (`requiredPlaceOf`) so a proposal never promises a site
- * the executor would refuse.
- */
-export { requiredPlaceOf } from '../domains/tasks/index';
-
-export function durationOf(candidate: Candidate): number {
-  const action = String(candidate.parameters.action ?? '');
-  if (action === 'build-machine') return 0; // production owns its build clock
-  if (action === 'rest' || action === 'work') {
-    const minutes = Number(candidate.parameters.minutes);
-    return Number.isFinite(minutes) && minutes > 0 ? minutes : (ACTION_MINUTES[action] ?? 0);
-  }
-  return ACTION_MINUTES[action] ?? 0;
-}
+export { ACTION_MINUTES, durationOf, requiredPlaceOf } from '../../execution/place-rules';
 
 /** The one place gate: `work` resolves by its mode, never by a caller label. */
 function requiredPlace(candidate: Candidate): string | null {
@@ -259,9 +284,15 @@ function requiredPlace(candidate: Candidate): string | null {
     candidate.parameters as Record<string, unknown>);
 }
 
-/** Execute one selected candidate; returns what really landed. */
+/**
+ * Execute one selected candidate; returns what really landed.
+ *
+ * This is the R8 execution helper. A time-consuming action is refused here
+ * unless the settled intent minted the grant, so no new-profile entry can run
+ * work inline; the legacy low-level `PlaySession` command path is unchanged.
+ */
 export function executeCandidate(runtime: R8Runtime, actorId: string,
-  candidate: Candidate, commandId: string):
+  candidate: Candidate, commandId: string, grant?: WorkGrant):
   { status: string; reason: string; eventIds: string[] } {
   const action = candidate.parameters.action;
   const place = requiredPlace(candidate);
@@ -287,6 +318,11 @@ export function executeCandidate(runtime: R8Runtime, actorId: string,
     runtime.session.ingestTeamEvent(String(action),
       { actorId, note: String(candidate.parameters.note ?? '') }, runtime.world.simTime);
     return { status: 'applied', reason: 'communication recorded', eventIds: [] };
+  }
+  if (requiresWorkIntent(candidate) && !(isWorkGrant(grant) && grant.actorId === actorId)) {
+    return { status: 'rejected', eventIds: [],
+      reason: `work_requires_intent: ${String(action)} spends authoritative time; `
+        + 'queue it and settle on the clock' };
   }
   const outcome = runtime.session.executeCandidate(actorId, candidate, commandId);
   if (outcome.events) runtime.recordCommitted(outcome.events);
@@ -386,7 +422,8 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
     }
     if (built.candidates.length === 0) continue;
     const memorySelection = options.memorySelection ?? 'obligation-first';
-    const memory = visibleMemory(runtime, actorId, 12, memorySelection);
+    const memoryBudget = options.memoryTokenBudget ?? 640;
+    const memory = visibleMemory(runtime, actorId, 12, memorySelection, memoryBudget);
     const request = makeChoiceRequest({
       requestId: runtime.session.nextInputId('r8-score', actorId),
       task: 'choose_action',
@@ -419,7 +456,7 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
     // commit: a cancel/timeout or a newer world version voids this result.
     const fresh = runtime.world.version === startedVersion
       && runtime.session.generationFor(actorId) === startedGeneration
-      && memoryHash(visibleMemory(runtime, actorId, 12, memorySelection)) === startedMemory
+      && memoryHash(visibleMemory(runtime, actorId, 12, memorySelection, memoryBudget)) === startedMemory
       && memoryHash(options.goalBridge?.view(actorId) ?? { goals: [], candidates: [] }) === startedBridge;
     if (!fresh) {
       records.push({
@@ -432,7 +469,8 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
         executionStatus: 'stale', reason: 'generation_version_or_memory_changed',
         eventIds: [], taskCompleted: null,
         memorySelection, memoryKept: memory.kept, memoryDropped: memory.dropped,
-        memoryBytes: memory.bytes, worldVersion: runtime.world.version,
+        memoryBytes: memory.bytes, memoryTokens: memory.tokens,
+        memoryBudget: memory.budgetTokens, worldVersion: runtime.world.version,
       });
       continue;
     }
@@ -444,17 +482,26 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
       const minutes = durationOf(selected);
       const commandId = `${actorId}-r8-${runtime.world.version}`;
       if (minutes > 0) {
-        // Occupy the actor; the effect lands when the clock reaches endsAt, and
-        // the commitment/task side learns about it on the committed receipt.
-        if (options.goalBridge) {
-          runtime.onWorkSettled(commandId, (settledActor, settledCandidate, settledEvents) =>
-            options.goalBridge!.afterCommit(settledActor, settledCandidate, settledEvents));
-        }
-        const begun = runtime.beginWork(actorId, String(selected.parameters.action),
-          commandId, selected, minutes);
+        // Occupy the actor through ONE persistent intent: it carries the
+        // authorisation generation, the place premise and the exact
+        // task/commitment instance, so settlement (also in a new process) can
+        // re-validate them instead of replaying a captured closure.
+        const binding = taskBindingOfCandidate(selected);
+        const parameters = selected.parameters as Record<string, unknown>;
+        const begun = runtime.beginIntent({
+          intentId: commandId, commandId, actorId, candidate: selected, minutes,
+          inputSha256,
+          taskId: binding?.taskId ?? (typeof parameters.legacyTaskId === 'string'
+            ? parameters.legacyTaskId : null),
+          taskType: binding?.type ?? null,
+          commitmentId: typeof parameters.commitmentId === 'string'
+            ? parameters.commitmentId : null,
+          commitmentRevision: typeof parameters.commitmentRevision === 'number'
+            ? parameters.commitmentRevision : null,
+        });
         outcome = 'rejected' in begun
           ? { status: 'rejected', reason: begun.rejected, eventIds: [] }
-          : { status: 'working', reason: `until ${begun.endsAt}`, eventIds: [] };
+          : { status: 'working', reason: `until ${begun.intent.dueAt}`, eventIds: [] };
       } else {
         outcome = executeCandidate(runtime, actorId, selected, commandId);
       }
@@ -481,7 +528,8 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
       eventIds: outcome.eventIds, taskCompleted,
       taskCompletionEvidence: taskCompleted && selected ? taskBindingOfCandidate(selected)?.evidenceClass ?? null : null,
       memorySelection, memoryKept: memory.kept, memoryDropped: memory.dropped,
-      memoryBytes: memory.bytes,
+      memoryBytes: memory.bytes, memoryTokens: memory.tokens,
+      memoryBudget: memory.budgetTokens,
       worldVersion: runtime.world.version,
     });
   }

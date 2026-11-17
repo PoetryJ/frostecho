@@ -10,6 +10,8 @@
  * personally witnessed / unverified player rumors), never from world truth.
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { requiredPlaceOf } from '../execution/place-rules';
+import type { Candidate } from '../decision/contracts';
 import { PlaySession } from '../application-v2/session';
 import type { ScorerPort } from '../planning/candidates';
 import { TaskBoard, type GameplayTask, type GameplayTaskKind } from './tasks';
@@ -150,6 +152,12 @@ export class GameplayLoop {
   readonly decisionMemoryTokenBudget: number;
   private readonly memoryCursor = new Map<string, number>();
   private readonly onDecisionContext?: (context: MemoryContext) => void;
+  /**
+   * R10: a terminal ledger row withdraws the world's authorisation, so any
+   * queued action bound to that instance must stop before it commits. The
+   * runtime registers here; nothing else may silently keep the work alive.
+   */
+  private readonly cancelListeners: ((commitmentId: string, reason: string) => void)[] = [];
 
   constructor(readonly session: PlaySession,
     readonly board: TaskBoard = new TaskBoard(),
@@ -373,6 +381,11 @@ export class GameplayLoop {
    * resident is a player statement only those residents remember, and the
    * others keep acting on what they actually heard.
    */
+  /** Register a world-side cancellation listener (the R10 execution runtime). */
+  onCommitmentCancelled(listener: (commitmentId: string, reason: string) => void): void {
+    this.cancelListeners.push(listener);
+  }
+
   cancelCommitment(commitmentId: string, options: { inputId?: string;
     reason?: string; heardBy?: string[] } = {}):
     { commitment: Commitment; event: CommitmentEvent } {
@@ -382,6 +395,11 @@ export class GameplayLoop {
       ...(options.heardBy ? { audience: options.heardBy } : {}),
       source: 'player_statement', authority: 'player', speakerId: 'player' });
     this.closeBoundTasks(result.commitment);
+    // Queued work for this instance loses its authorisation immediately: no
+    // late physical effect after the player cancelled.
+    for (const listener of this.cancelListeners) {
+      try { listener(commitmentId, options.reason ?? 'commitment_cancelled'); } catch { /* keep going */ }
+    }
     return { commitment: result.commitment, event: result.event };
   }
 
@@ -418,6 +436,9 @@ export class GameplayLoop {
       { at: this.session.world.simTime, inputId: options.inputId, reason: options.reason });
     this.session.ingestCommitmentEvent(result.event);
     this.closeBoundTasks(result.commitment);
+    for (const listener of this.cancelListeners) {
+      try { listener(commitmentId, options.reason ?? 'commitment_withdrawn'); } catch { /* keep going */ }
+    }
     return { commitment: result.commitment, event: result.event };
   }
 
@@ -748,8 +769,28 @@ export class GameplayLoop {
         memoryContext,
       });
       const chosen = chooseReference(candidates);
+      // The reference loop reads the SAME place table as the authority: if the
+      // chosen action must happen elsewhere, this turn is the real walk there.
+      // It never gets to run a work action at the wrong site.
+      const site = requiredPlaceOf(String(chosen.candidate.parameters.action ?? ''),
+        chosen.candidate.parameters as Record<string, unknown>);
       const commandId = `${actorId}-game-${this.session.world.version}-${chosen.candidate.id}`;
-      const outcome = this.session.executeCandidate(actorId, chosen.candidate, commandId);
+      let outcome: ReturnType<PlaySession['executeCandidate']>;
+      if (site && npc.location !== site) {
+        // The turn is a real walk to the task site followed by the task itself:
+        // the actor never performs a work action from the wrong place, and the
+        // plan is not silently replaced by a wait.
+        const walk = { id: `walk-${site}` as Candidate['id'], kind: 'move' as Candidate['kind'],
+          description: `前往${site}`, parameters: { action: 'move', to: site, purpose: 'task-place' },
+          preconditions: ['alive'], expectedEffects: {}, utilityComponents: {} };
+        const moved = this.session.executeCandidate(actorId, walk,
+          `${actorId}-walk-${this.session.world.version}-${site}`);
+        outcome = moved.status === 'applied'
+          ? this.session.executeCandidate(actorId, chosen.candidate, commandId)
+          : moved;
+      } else {
+        outcome = this.session.executeCandidate(actorId, chosen.candidate, commandId);
+      }
       const items = outcome.status === 'applied'
         ? this.itemsOfEvents(actorId, outcome.eventIds) : [];
       if (items.length > 0 && this.memoryArm === 'experience') {

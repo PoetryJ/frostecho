@@ -57,10 +57,22 @@ test('game-step supplies the real pre-action context while the default reference
     { onDecisionContext: context => contexts.push(context) });
   const control = GameplayLoop.create(2, { seed: 'same-reference' });
   for (const loop of [observed, control]) loop.assign('npc_01', 'gather-food');
-  assert.deepEqual(observed.step(), control.step());
-  assert.equal(contexts.length, 2);
+  // R10: the reference loop walks to the task site before working, so the plan
+  // spans several rounds; both arms must agree on every one of them until the
+  // real gathered receipt exists.
+  let rounds = 0;
+  for (; rounds < 5; rounds += 1) {
+    assert.deepEqual(observed.step(), control.step());
+    if (observed.session.memories.get('npc_01')!.toJSON().records
+      .some(record => record.kind === 'gathered')) break;
+  }
+  assert.ok(observed.session.memories.get('npc_01')!.toJSON().records
+    .some(record => record.kind === 'gathered'), 'the loop really gathered after walking');
+  void rounds;
   assert.equal(contexts[0].actorId, 'npc_01');
   assert.deepEqual(observed.session.world, control.session.world);
+  // Ingestion happens at the next decision, so read the store at that point.
+  observed.syncLongTermMemory();
   const after = observed.decisionContext('npc_01', { tokenBudget: 5000 });
   assert.ok(after.evidenceIds.length > contexts[0].evidenceIds.length);
   assert.ok(observed.longTermMemory.evidence('npc_01', after.evidenceIds,
