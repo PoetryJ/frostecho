@@ -70,7 +70,10 @@ function testsIn(dir, out = []) {
   return out;
 }
 
-const files = testsIn('dist/tests');
+// Colocated runtime tests protect the current game entry as well as the
+// historical integration suite. Compiling src tests without discovering them
+// hid the delayed-work regressions introduced in R9.
+const files = [...testsIn('dist/tests'), ...(existsSync('dist/src') ? testsIn('dist/src') : [])];
 if (files.length === 0) {
   console.error('no compiled tests under dist/tests');
   process.exit(1);

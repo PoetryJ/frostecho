@@ -1,4 +1,12 @@
-# STATUS — R8 真实 GPU 训练与在线玩法（2026-11-17）
+# STATUS — R9独立核查（2026-11-17）
+
+核查a669890；结论：保留实模与训练进展，返工长程履约交付。本分支只补测试发现、遗漏测试、诊断与规则，生产策略未更改。当前唯一审计入口：[DECISION](docs/r9-audit/DECISION.md)，原始证据与环境：[DELIVERY](artifacts/r9-independent-audit/DELIVERY.json)，后续：[VIBE](docs/r9-audit/VIBE.md)。
+
+独立CPU：并行工作正控通过、7反例复现；工作中取消仍送达、新进程恢复丢履约投影、错任务结案、非整点推进不一致等尚未修复。完整822项819过/1skip/2fail，strict生命周期门exit1。R9旧摘要漏报15次JEV与12次参考工作结算失败，整局没有承诺输入；小样本双审满分不能作长程收益结论。本轮0新增GPU/模型API调用、未合main。建议选择方案B，统一执行契约后一次交2×2长程履约对照、新训练和四日工作中保存恢复。
+
+---
+
+# 历史 STATUS — R8 真实 GPU 训练与在线玩法（2026-11-17）
 
 **真实GPU训练、在线履约与整局运行里程碑通过；完整原作/一般长程智能未完成。** 分支 `codex/r8-train-play-20261117`，冻结运行源码 `3f8121aaeb7057dc928606cd41a6ce4568fec193`，未合main。报告与证据在 [REPORT](artifacts/r8-train-play/REPORT.md)，接续 [RUNBOOK](artifacts/r8-train-play/RUNBOOK.md) 与 [NEXT-VIBE](artifacts/r8-train-play/NEXT-VIBE.txt)。
 
