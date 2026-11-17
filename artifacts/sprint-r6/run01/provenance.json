@@ -1,0 +1,33 @@
+{
+  "schema": "frostecho.r6.provenance/1",
+  "productBaseline": "f4739493b9dcec7214f04ab68c05f92bd5a8ea21",
+  "baselineTag": "r5-saved-20261112",
+  "taskPackageHead": "040f90c1d5c31e5ad55090f52368d35e231faf61",
+  "taskPackageTag": "r6-taskpack-20261113",
+  "implementationHead": "ac7aa4b801d50fae6ddcd6eb2f5524129a40c866",
+  "branch": "codex/sprint-r6",
+  "executor": "Grok session",
+  "workerCount": 1,
+  "independentReview": false,
+  "startedUtc": "2026-11-13T03:22:28Z",
+  "environment": {
+    "os": "Linux 6.12.113+ x86_64",
+    "node": "v22.23.4",
+    "npm": "10.9.9",
+    "python": "3.12.3",
+    "git": "2.43.0",
+    "gpu": false,
+    "modelWeightsDownloaded": false,
+    "paidModelApi": false
+  },
+  "commands": [
+    {"cmd": "preflight first", "out": "artifacts/sprint-r6/run01/preflight", "exit": 2, "note": "local clone lacked tag r5-saved-20261112; tag was fetched from the git remote and points at f473949"},
+    {"cmd": "preflight after tag", "out": "artifacts/sprint-r6/run01/preflight-tag-present", "exit": 0},
+    {"cmd": "repro --expect baseline", "out": "artifacts/sprint-r6/run01/baseline", "exit": 0, "note": "four defectObserved true; not a product pass"},
+    {"cmd": "repro --expect fixed", "out": "artifacts/sprint-r6/run01/fixed", "exit": 0, "head": "0828e312b4ee97651162b169f26b58287fd23161"},
+    {"cmd": "repro --expect fixed", "out": "artifacts/sprint-r6/run01/fixed-final", "exit": 0, "head": "ac7aa4b801d50fae6ddcd6eb2f5524129a40c866"},
+    {"cmd": "verify-r6 integration", "out": "artifacts/sprint-r6/run01/integration", "exit": 1, "note": "play passed; first JS temperature fit disagreed by 0.0018 on a flat NLL"},
+    {"cmd": "verify-r6 integration-refit", "out": "artifacts/sprint-r6/run01/integration-refit", "exit": 0},
+    {"cmd": "final_check", "out": "artifacts/sprint-r6/run01/full", "exit": 1, "note": "eval-full exceeded the frozen 900s cap; historical g04 live CLI test did not return"}
+  ]
+}

@@ -1,0 +1,1865 @@
+{
+  "schema": "frostecho.jev02r1.results/1",
+  "at": "2026-11-10T13:07:30+08:00",
+  "test": {
+    "cases": 256,
+    "families": 32,
+    "unsealCount": 2
+  },
+  "scoringPass": {
+    "attempt": 2,
+    "reason": "integrity comparison compared per-order argmax with the sealed decision; fixed to compare decide() output. Sealed prediction bytes are unchanged (hash-verified before scoring); no threshold, temperature or data was re-selected.",
+    "sealedPredictionsUnchanged": true
+  },
+  "calibration": {
+    "schema": "frostecho.jev02r1.calibration/1",
+    "at": "2026-11-10T12:51:34+08:00",
+    "temperatureFit": {
+      "T": 2.01861622,
+      "nll": 0.51485008,
+      "nllAt1": 0.64944212,
+      "rows": 512
+    },
+    "calPolicyT1": {
+      "n": 512,
+      "nll": 0.6667207643443654,
+      "brier": 0.292522933891015
+    },
+    "calPolicyTFit": {
+      "n": 512,
+      "nll": 0.5132766,
+      "brier": 0.27271821
+    },
+    "adoptedTfit": true,
+    "temperature": 2.0186162197192403,
+    "rule": "Tfit adopted only if NLL and Brier on cal-policy are both not worse than T=1",
+    "calTemperatureSha256": "b8f95f3418151a4060feeb213e40616417f2aca011ced1b96d96843c771c9126",
+    "calPolicySha256": "df7a1d8eea8a1b0fac2737228faebf1a30dd2efaa2d0a6b6e7dbb1af5e0b786c",
+    "cases": {
+      "temperature": 128,
+      "policy": 128
+    },
+    "grid": [
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.85,
+      0.9,
+      0.925,
+      0.95,
+      0.975,
+      0.99,
+      0.995
+    ]
+  },
+  "policies": {
+    "single_pass": {
+      "policyValid": false,
+      "coverage": 0.0,
+      "accepted": 0,
+      "risk": null,
+      "decision": "unavailable",
+      "note": "no frozen threshold satisfied every gate on cal-policy; the test split does not get to choose one",
+      "sealedPredictionMismatches": 0,
+      "ungated": {
+        "perSupported": {
+          "0": {
+            "correct": 227,
+            "n": 256,
+            "accuracy": 0.886719
+          },
+          "1": {
+            "correct": 203,
+            "n": 256,
+            "accuracy": 0.792969
+          },
+          "2": {
+            "correct": 149,
+            "n": 256,
+            "accuracy": 0.582031
+          },
+          "3": {
+            "correct": 223,
+            "n": 256,
+            "accuracy": 0.871094
+          }
+        },
+        "combined": {
+          "correct": 802,
+          "n": 1024,
+          "accuracy": 0.783203
+        },
+        "perClass": {
+          "PLAYER_FIRST": {
+            "correct": 216,
+            "n": 256,
+            "recall": 0.84375
+          },
+          "NPC_FIRST": {
+            "correct": 213,
+            "n": 260,
+            "recall": 0.819231
+          },
+          "NO_PRIORITY_REQUEST": {
+            "correct": 244,
+            "n": 260,
+            "recall": 0.938462
+          },
+          "NEEDS_CLARIFICATION": {
+            "correct": 129,
+            "n": 248,
+            "recall": 0.520161
+          }
+        },
+        "perFamily": {
+          "test-01-父亲下厨": {
+            "correct": 24,
+            "n": 32,
+            "accuracy": 0.75
+          },
+          "test-02-妹妹长寿面": {
+            "correct": 25,
+            "n": 32,
+            "accuracy": 0.78125
+          },
+          "test-03-室友减脂餐": {
+            "correct": 24,
+            "n": 32,
+            "accuracy": 0.75
+          },
+          "test-04-清吧小食": {
+            "correct": 27,
+            "n": 32,
+            "accuracy": 0.84375
+          },
+          "test-05-旅馆前台夜宵": {
+            "correct": 30,
+            "n": 32,
+            "accuracy": 0.9375
+          },
+          "test-06-登山营地泡面": {
+            "correct": 26,
+            "n": 32,
+            "accuracy": 0.8125
+          },
+          "test-07-庙会小吃": {
+            "correct": 23,
+            "n": 32,
+            "accuracy": 0.71875
+          },
+          "test-08-早餐店豆浆油条": {
+            "correct": 23,
+            "n": 32,
+            "accuracy": 0.71875
+          },
+          "test-09-加班披萨": {
+            "correct": 23,
+            "n": 32,
+            "accuracy": 0.71875
+          },
+          "test-10-闺蜜下午茶": {
+            "correct": 29,
+            "n": 32,
+            "accuracy": 0.90625
+          },
+          "test-11-相亲餐厅": {
+            "correct": 27,
+            "n": 32,
+            "accuracy": 0.84375
+          },
+          "test-12-爷爷早饭": {
+            "correct": 29,
+            "n": 32,
+            "accuracy": 0.90625
+          },
+          "test-13-表哥婚宴": {
+            "correct": 20,
+            "n": 32,
+            "accuracy": 0.625
+          },
+          "test-14-病号饭": {
+            "correct": 31,
+            "n": 32,
+            "accuracy": 0.96875
+          },
+          "test-15-拉练干粮": {
+            "correct": 27,
+            "n": 32,
+            "accuracy": 0.84375
+          },
+          "test-16-化妆间盒饭": {
+            "correct": 24,
+            "n": 32,
+            "accuracy": 0.75
+          },
+          "test-17-宠物店隔壁咖啡": {
+            "correct": 25,
+            "n": 32,
+            "accuracy": 0.78125
+          },
+          "test-18-后台三明治": {
+            "correct": 25,
+            "n": 32,
+            "accuracy": 0.78125
+          },
+          "test-19-天桥分饭": {
+            "correct": 28,
+            "n": 32,
+            "accuracy": 0.875
+          },
+          "test-20-出租车夜宵": {
+            "correct": 26,
+            "n": 32,
+            "accuracy": 0.8125
+          },
+          "test-21-民宿早餐": {
+            "correct": 24,
+            "n": 32,
+            "accuracy": 0.75
+          },
+          "test-22-食堂加菜": {
+            "correct": 24,
+            "n": 32,
+            "accuracy": 0.75
+          },
+          "test-23-元宵汤圆": {
+            "correct": 25,
+            "n": 32,
+            "accuracy": 0.78125
+          },
+          "test-24-清明家宴": {
+            "correct": 24,
+            "n": 32,
+            "accuracy": 0.75
+          },
+          "test-25-高考夜宵": {
+            "correct": 25,
+            "n": 32,
+            "accuracy": 0.78125
+          },
+          "test-26-义工斋饭": {
+            "correct": 24,
+            "n": 32,
+            "accuracy": 0.75
+          },
+          "test-27-餐车盒饭": {
+            "correct": 23,
+            "n": 32,
+            "accuracy": 0.71875
+          },
+          "test-28-微波炉排队": {
+            "correct": 21,
+            "n": 32,
+            "accuracy": 0.65625
+          },
+          "test-29-散场火锅": {
+            "correct": 25,
+            "n": 32,
+            "accuracy": 0.78125
+          },
+          "test-30-修水管便饭": {
+            "correct": 22,
+            "n": 32,
+            "accuracy": 0.6875
+          },
+          "test-31-相亲水果": {
+            "correct": 25,
+            "n": 32,
+            "accuracy": 0.78125
+          },
+          "test-32-健身蛋白餐": {
+            "correct": 24,
+            "n": 32,
+            "accuracy": 0.75
+          }
+        }
+      },
+      "calibrationQuality": {
+        "atT1": {
+          "n": 1024,
+          "nll": 0.8114793678147134,
+          "brier": 0.3500567113227331,
+          "ece": 0.12364248984832148
+        },
+        "atAdoptedT": {
+          "n": 1024,
+          "nll": 0.5946866504806105,
+          "brier": 0.32332194831958433,
+          "ece": 0.0437651712740492
+        }
+      }
+    },
+    "reverse_pair_consensus": {
+      "policyValid": false,
+      "coverage": 0.0,
+      "accepted": 0,
+      "risk": null,
+      "decision": "unavailable",
+      "note": "no frozen threshold satisfied every gate on cal-policy; the test split does not get to choose one",
+      "sealedPredictionMismatches": 0,
+      "ungated": {
+        "perSupported": {
+          "0": {
+            "correct": 230,
+            "n": 256,
+            "accuracy": 0.898438
+          },
+          "2": {
+            "correct": 198,
+            "n": 256,
+            "accuracy": 0.773438
+          }
+        },
+        "combined": {
+          "correct": 428,
+          "n": 512,
+          "accuracy": 0.835938
+        },
+        "perClass": {
+          "PLAYER_FIRST": {
+            "correct": 116,
+            "n": 128,
+            "recall": 0.90625
+          },
+          "NPC_FIRST": {
+            "correct": 126,
+            "n": 130,
+            "recall": 0.969231
+          },
+          "NO_PRIORITY_REQUEST": {
+            "correct": 127,
+            "n": 130,
+            "recall": 0.976923
+          },
+          "NEEDS_CLARIFICATION": {
+            "correct": 59,
+            "n": 124,
+            "recall": 0.475806
+          }
+        },
+        "perFamily": {
+          "test-01-父亲下厨": {
+            "correct": 12,
+            "n": 16,
+            "accuracy": 0.75
+          },
+          "test-02-妹妹长寿面": {
+            "correct": 15,
+            "n": 16,
+            "accuracy": 0.9375
+          },
+          "test-03-室友减脂餐": {
+            "correct": 14,
+            "n": 16,
+            "accuracy": 0.875
+          },
+          "test-04-清吧小食": {
+            "correct": 14,
+            "n": 16,
+            "accuracy": 0.875
+          },
+          "test-05-旅馆前台夜宵": {
+            "correct": 14,
+            "n": 16,
+            "accuracy": 0.875
+          },
+          "test-06-登山营地泡面": {
+            "correct": 14,
+            "n": 16,
+            "accuracy": 0.875
+          },
+          "test-07-庙会小吃": {
+            "correct": 13,
+            "n": 16,
+            "accuracy": 0.8125
+          },
+          "test-08-早餐店豆浆油条": {
+            "correct": 12,
+            "n": 16,
+            "accuracy": 0.75
+          },
+          "test-09-加班披萨": {
+            "correct": 13,
+            "n": 16,
+            "accuracy": 0.8125
+          },
+          "test-10-闺蜜下午茶": {
+            "correct": 15,
+            "n": 16,
+            "accuracy": 0.9375
+          },
+          "test-11-相亲餐厅": {
+            "correct": 15,
+            "n": 16,
+            "accuracy": 0.9375
+          },
+          "test-12-爷爷早饭": {
+            "correct": 15,
+            "n": 16,
+            "accuracy": 0.9375
+          },
+          "test-13-表哥婚宴": {
+            "correct": 12,
+            "n": 16,
+            "accuracy": 0.75
+          },
+          "test-14-病号饭": {
+            "correct": 16,
+            "n": 16,
+            "accuracy": 1.0
+          },
+          "test-15-拉练干粮": {
+            "correct": 13,
+            "n": 16,
+            "accuracy": 0.8125
+          },
+          "test-16-化妆间盒饭": {
+            "correct": 12,
+            "n": 16,
+            "accuracy": 0.75
+          },
+          "test-17-宠物店隔壁咖啡": {
+            "correct": 14,
+            "n": 16,
+            "accuracy": 0.875
+          },
+          "test-18-后台三明治": {
+            "correct": 12,
+            "n": 16,
+            "accuracy": 0.75
+          },
+          "test-19-天桥分饭": {
+            "correct": 15,
+            "n": 16,
+            "accuracy": 0.9375
+          },
+          "test-20-出租车夜宵": {
+            "correct": 12,
+            "n": 16,
+            "accuracy": 0.75
+          },
+          "test-21-民宿早餐": {
+            "correct": 13,
+            "n": 16,
+            "accuracy": 0.8125
+          },
+          "test-22-食堂加菜": {
+            "correct": 14,
+            "n": 16,
+            "accuracy": 0.875
+          },
+          "test-23-元宵汤圆": {
+            "correct": 13,
+            "n": 16,
+            "accuracy": 0.8125
+          },
+          "test-24-清明家宴": {
+            "correct": 14,
+            "n": 16,
+            "accuracy": 0.875
+          },
+          "test-25-高考夜宵": {
+            "correct": 13,
+            "n": 16,
+            "accuracy": 0.8125
+          },
+          "test-26-义工斋饭": {
+            "correct": 12,
+            "n": 16,
+            "accuracy": 0.75
+          },
+          "test-27-餐车盒饭": {
+            "correct": 13,
+            "n": 16,
+            "accuracy": 0.8125
+          },
+          "test-28-微波炉排队": {
+            "correct": 11,
+            "n": 16,
+            "accuracy": 0.6875
+          },
+          "test-29-散场火锅": {
+            "correct": 13,
+            "n": 16,
+            "accuracy": 0.8125
+          },
+          "test-30-修水管便饭": {
+            "correct": 11,
+            "n": 16,
+            "accuracy": 0.6875
+          },
+          "test-31-相亲水果": {
+            "correct": 16,
+            "n": 16,
+            "accuracy": 1.0
+          },
+          "test-32-健身蛋白餐": {
+            "correct": 13,
+            "n": 16,
+            "accuracy": 0.8125
+          }
+        }
+      },
+      "consensus": {
+        "pairs": 512,
+        "agreed": 361,
+        "agreementRate": 0.705078,
+        "accuracyAmongAgreed": 0.914127,
+        "disagreementRate": 0.294922
+      },
+      "calibrationQuality": {
+        "atT1": {
+          "n": 512,
+          "nll": 0.4658425762488108,
+          "brier": 0.25472722738288844,
+          "ece": 0.04086030851429212
+        },
+        "atAdoptedT": {
+          "n": 512,
+          "nll": 0.46960693868236947,
+          "brier": 0.2559520781184425,
+          "ece": 0.08135022064282062
+        }
+      }
+    }
+  },
+  "arms": {
+    "single_pass@T1": {
+      "temperature": 1.0,
+      "diagnosticOnly": true,
+      "note": "pre-registered grid applied for comparison; not an approved operating point",
+      "curve": [
+        {
+          "tau": 0.5,
+          "meanCoverage": 0.977539,
+          "pooledRisk": 0.207792,
+          "accepted": 1001,
+          "perSupported": {
+            "0": {
+              "risk": 0.106719,
+              "coverage": 0.988281,
+              "accepted": 253
+            },
+            "1": {
+              "risk": 0.190283,
+              "coverage": 0.964844,
+              "accepted": 247
+            },
+            "2": {
+              "risk": 0.407258,
+              "coverage": 0.96875,
+              "accepted": 248
+            },
+            "3": {
+              "risk": 0.130435,
+              "coverage": 0.988281,
+              "accepted": 253
+            }
+          }
+        },
+        {
+          "tau": 0.6,
+          "meanCoverage": 0.928711,
+          "pooledRisk": 0.193481,
+          "accepted": 951,
+          "perSupported": {
+            "0": {
+              "risk": 0.086777,
+              "coverage": 0.945312,
+              "accepted": 242
+            },
+            "1": {
+              "risk": 0.17094,
+              "coverage": 0.914062,
+              "accepted": 234
+            },
+            "2": {
+              "risk": 0.398268,
+              "coverage": 0.902344,
+              "accepted": 231
+            },
+            "3": {
+              "risk": 0.127049,
+              "coverage": 0.953125,
+              "accepted": 244
+            }
+          }
+        },
+        {
+          "tau": 0.7,
+          "meanCoverage": 0.874023,
+          "pooledRisk": 0.176536,
+          "accepted": 895,
+          "perSupported": {
+            "0": {
+              "risk": 0.070175,
+              "coverage": 0.890625,
+              "accepted": 228
+            },
+            "1": {
+              "risk": 0.151376,
+              "coverage": 0.851562,
+              "accepted": 218
+            },
+            "2": {
+              "risk": 0.378995,
+              "coverage": 0.855469,
+              "accepted": 219
+            },
+            "3": {
+              "risk": 0.113043,
+              "coverage": 0.898438,
+              "accepted": 230
+            }
+          }
+        },
+        {
+          "tau": 0.8,
+          "meanCoverage": 0.800781,
+          "pooledRisk": 0.164634,
+          "accepted": 820,
+          "perSupported": {
+            "0": {
+              "risk": 0.063348,
+              "coverage": 0.863281,
+              "accepted": 221
+            },
+            "1": {
+              "risk": 0.127551,
+              "coverage": 0.765625,
+              "accepted": 196
+            },
+            "2": {
+              "risk": 0.383838,
+              "coverage": 0.773438,
+              "accepted": 198
+            },
+            "3": {
+              "risk": 0.097561,
+              "coverage": 0.800781,
+              "accepted": 205
+            }
+          }
+        },
+        {
+          "tau": 0.85,
+          "meanCoverage": 0.762695,
+          "pooledRisk": 0.15493,
+          "accepted": 781,
+          "perSupported": {
+            "0": {
+              "risk": 0.060465,
+              "coverage": 0.839844,
+              "accepted": 215
+            },
+            "1": {
+              "risk": 0.10989,
+              "coverage": 0.710938,
+              "accepted": 182
+            },
+            "2": {
+              "risk": 0.373684,
+              "coverage": 0.742188,
+              "accepted": 190
+            },
+            "3": {
+              "risk": 0.087629,
+              "coverage": 0.757812,
+              "accepted": 194
+            }
+          }
+        },
+        {
+          "tau": 0.9,
+          "meanCoverage": 0.716797,
+          "pooledRisk": 0.138965,
+          "accepted": 734,
+          "perSupported": {
+            "0": {
+              "risk": 0.058537,
+              "coverage": 0.800781,
+              "accepted": 205
+            },
+            "1": {
+              "risk": 0.091954,
+              "coverage": 0.679688,
+              "accepted": 174
+            },
+            "2": {
+              "risk": 0.348315,
+              "coverage": 0.695312,
+              "accepted": 178
+            },
+            "3": {
+              "risk": 0.067797,
+              "coverage": 0.691406,
+              "accepted": 177
+            }
+          }
+        },
+        {
+          "tau": 0.925,
+          "meanCoverage": 0.678711,
+          "pooledRisk": 0.129496,
+          "accepted": 695,
+          "perSupported": {
+            "0": {
+              "risk": 0.050761,
+              "coverage": 0.769531,
+              "accepted": 197
+            },
+            "1": {
+              "risk": 0.095808,
+              "coverage": 0.652344,
+              "accepted": 167
+            },
+            "2": {
+              "risk": 0.325153,
+              "coverage": 0.636719,
+              "accepted": 163
+            },
+            "3": {
+              "risk": 0.065476,
+              "coverage": 0.65625,
+              "accepted": 168
+            }
+          }
+        },
+        {
+          "tau": 0.95,
+          "meanCoverage": 0.636719,
+          "pooledRisk": 0.124233,
+          "accepted": 652,
+          "perSupported": {
+            "0": {
+              "risk": 0.047872,
+              "coverage": 0.734375,
+              "accepted": 188
+            },
+            "1": {
+              "risk": 0.09434,
+              "coverage": 0.621094,
+              "accepted": 159
+            },
+            "2": {
+              "risk": 0.306667,
+              "coverage": 0.585938,
+              "accepted": 150
+            },
+            "3": {
+              "risk": 0.070968,
+              "coverage": 0.605469,
+              "accepted": 155
+            }
+          }
+        },
+        {
+          "tau": 0.975,
+          "meanCoverage": 0.561524,
+          "pooledRisk": 0.106087,
+          "accepted": 575,
+          "perSupported": {
+            "0": {
+              "risk": 0.040936,
+              "coverage": 0.667969,
+              "accepted": 171
+            },
+            "1": {
+              "risk": 0.085714,
+              "coverage": 0.546875,
+              "accepted": 140
+            },
+            "2": {
+              "risk": 0.285714,
+              "coverage": 0.519531,
+              "accepted": 133
+            },
+            "3": {
+              "risk": 0.030534,
+              "coverage": 0.511719,
+              "accepted": 131
+            }
+          }
+        },
+        {
+          "tau": 0.99,
+          "meanCoverage": 0.458984,
+          "pooledRisk": 0.091489,
+          "accepted": 470,
+          "perSupported": {
+            "0": {
+              "risk": 0.034722,
+              "coverage": 0.5625,
+              "accepted": 144
+            },
+            "1": {
+              "risk": 0.061947,
+              "coverage": 0.441406,
+              "accepted": 113
+            },
+            "2": {
+              "risk": 0.266055,
+              "coverage": 0.425781,
+              "accepted": 109
+            },
+            "3": {
+              "risk": 0.019231,
+              "coverage": 0.40625,
+              "accepted": 104
+            }
+          }
+        },
+        {
+          "tau": 0.995,
+          "meanCoverage": 0.389648,
+          "pooledRisk": 0.077694,
+          "accepted": 399,
+          "perSupported": {
+            "0": {
+              "risk": 0.03125,
+              "coverage": 0.5,
+              "accepted": 128
+            },
+            "1": {
+              "risk": 0.051546,
+              "coverage": 0.378906,
+              "accepted": 97
+            },
+            "2": {
+              "risk": 0.23913,
+              "coverage": 0.359375,
+              "accepted": 92
+            },
+            "3": {
+              "risk": 0.0,
+              "coverage": 0.320312,
+              "accepted": 82
+            }
+          }
+        }
+      ],
+      "chosenTau": null,
+      "ungated": {
+        "correct": 802,
+        "n": 1024,
+        "accuracy": 0.783203
+      }
+    },
+    "reverse_pair_consensus@T1": {
+      "temperature": 1.0,
+      "diagnosticOnly": true,
+      "note": "pre-registered grid applied for comparison; not an approved operating point",
+      "curve": [
+        {
+          "tau": 0.5,
+          "meanCoverage": 0.691407,
+          "pooledRisk": 0.084746,
+          "accepted": 354,
+          "perSupported": {
+            "0": {
+              "risk": 0.055556,
+              "coverage": 0.773438,
+              "accepted": 198
+            },
+            "2": {
+              "risk": 0.121795,
+              "coverage": 0.609375,
+              "accepted": 156
+            }
+          }
+        },
+        {
+          "tau": 0.6,
+          "meanCoverage": 0.650391,
+          "pooledRisk": 0.081081,
+          "accepted": 333,
+          "perSupported": {
+            "0": {
+              "risk": 0.048128,
+              "coverage": 0.730469,
+              "accepted": 187
+            },
+            "2": {
+              "risk": 0.123288,
+              "coverage": 0.570312,
+              "accepted": 146
+            }
+          }
+        },
+        {
+          "tau": 0.7,
+          "meanCoverage": 0.591797,
+          "pooledRisk": 0.069307,
+          "accepted": 303,
+          "perSupported": {
+            "0": {
+              "risk": 0.030303,
+              "coverage": 0.644531,
+              "accepted": 165
+            },
+            "2": {
+              "risk": 0.115942,
+              "coverage": 0.539062,
+              "accepted": 138
+            }
+          }
+        },
+        {
+          "tau": 0.8,
+          "meanCoverage": 0.509765,
+          "pooledRisk": 0.05364,
+          "accepted": 261,
+          "perSupported": {
+            "0": {
+              "risk": 0.013423,
+              "coverage": 0.582031,
+              "accepted": 149
+            },
+            "2": {
+              "risk": 0.107143,
+              "coverage": 0.4375,
+              "accepted": 112
+            }
+          }
+        },
+        {
+          "tau": 0.85,
+          "meanCoverage": 0.470704,
+          "pooledRisk": 0.049793,
+          "accepted": 241,
+          "perSupported": {
+            "0": {
+              "risk": 0.014388,
+              "coverage": 0.542969,
+              "accepted": 139
+            },
+            "2": {
+              "risk": 0.098039,
+              "coverage": 0.398438,
+              "accepted": 102
+            }
+          }
+        },
+        {
+          "tau": 0.9,
+          "meanCoverage": 0.435547,
+          "pooledRisk": 0.040359,
+          "accepted": 223,
+          "perSupported": {
+            "0": {
+              "risk": 0.015385,
+              "coverage": 0.507812,
+              "accepted": 130
+            },
+            "2": {
+              "risk": 0.075269,
+              "coverage": 0.363281,
+              "accepted": 93
+            }
+          }
+        },
+        {
+          "tau": 0.925,
+          "meanCoverage": 0.398438,
+          "pooledRisk": 0.039216,
+          "accepted": 204,
+          "perSupported": {
+            "0": {
+              "risk": 0.008403,
+              "coverage": 0.464844,
+              "accepted": 119
+            },
+            "2": {
+              "risk": 0.082353,
+              "coverage": 0.332031,
+              "accepted": 85
+            }
+          }
+        },
+        {
+          "tau": 0.95,
+          "meanCoverage": 0.363282,
+          "pooledRisk": 0.037634,
+          "accepted": 186,
+          "perSupported": {
+            "0": {
+              "risk": 0.009091,
+              "coverage": 0.429688,
+              "accepted": 110
+            },
+            "2": {
+              "risk": 0.078947,
+              "coverage": 0.296875,
+              "accepted": 76
+            }
+          }
+        },
+        {
+          "tau": 0.975,
+          "meanCoverage": 0.283203,
+          "pooledRisk": 0.02069,
+          "accepted": 145,
+          "perSupported": {
+            "0": {
+              "risk": 0.0,
+              "coverage": 0.34375,
+              "accepted": 88
+            },
+            "2": {
+              "risk": 0.052632,
+              "coverage": 0.222656,
+              "accepted": 57
+            }
+          }
+        },
+        {
+          "tau": 0.99,
+          "meanCoverage": 0.195313,
+          "pooledRisk": 0.02,
+          "accepted": 100,
+          "perSupported": {
+            "0": {
+              "risk": 0.0,
+              "coverage": 0.242188,
+              "accepted": 62
+            },
+            "2": {
+              "risk": 0.052632,
+              "coverage": 0.148438,
+              "accepted": 38
+            }
+          }
+        },
+        {
+          "tau": 0.995,
+          "meanCoverage": 0.136718,
+          "pooledRisk": 0.0,
+          "accepted": 70,
+          "perSupported": {
+            "0": {
+              "risk": 0.0,
+              "coverage": 0.175781,
+              "accepted": 45
+            },
+            "2": {
+              "risk": 0.0,
+              "coverage": 0.097656,
+              "accepted": 25
+            }
+          }
+        }
+      ],
+      "chosenTau": null,
+      "ungated": {
+        "correct": 427,
+        "n": 512,
+        "accuracy": 0.833984
+      }
+    },
+    "single_pass@TFit": {
+      "temperature": 2.01861622,
+      "diagnosticOnly": true,
+      "note": "pre-registered grid applied for comparison; not an approved operating point",
+      "curve": [
+        {
+          "tau": 0.5,
+          "meanCoverage": 0.916016,
+          "pooledRisk": 0.189765,
+          "accepted": 938,
+          "perSupported": {
+            "0": {
+              "risk": 0.084746,
+              "coverage": 0.921875,
+              "accepted": 236
+            },
+            "1": {
+              "risk": 0.168831,
+              "coverage": 0.902344,
+              "accepted": 231
+            },
+            "2": {
+              "risk": 0.390351,
+              "coverage": 0.890625,
+              "accepted": 228
+            },
+            "3": {
+              "risk": 0.123457,
+              "coverage": 0.949219,
+              "accepted": 243
+            }
+          }
+        },
+        {
+          "tau": 0.6,
+          "meanCoverage": 0.819336,
+          "pooledRisk": 0.168057,
+          "accepted": 839,
+          "perSupported": {
+            "0": {
+              "risk": 0.067265,
+              "coverage": 0.871094,
+              "accepted": 223
+            },
+            "1": {
+              "risk": 0.136364,
+              "coverage": 0.773438,
+              "accepted": 198
+            },
+            "2": {
+              "risk": 0.382353,
+              "coverage": 0.796875,
+              "accepted": 204
+            },
+            "3": {
+              "risk": 0.098131,
+              "coverage": 0.835938,
+              "accepted": 214
+            }
+          }
+        },
+        {
+          "tau": 0.7,
+          "meanCoverage": 0.724609,
+          "pooledRisk": 0.140162,
+          "accepted": 742,
+          "perSupported": {
+            "0": {
+              "risk": 0.058252,
+              "coverage": 0.804688,
+              "accepted": 206
+            },
+            "1": {
+              "risk": 0.090909,
+              "coverage": 0.6875,
+              "accepted": 176
+            },
+            "2": {
+              "risk": 0.351955,
+              "coverage": 0.699219,
+              "accepted": 179
+            },
+            "3": {
+              "risk": 0.071823,
+              "coverage": 0.707031,
+              "accepted": 181
+            }
+          }
+        },
+        {
+          "tau": 0.8,
+          "meanCoverage": 0.602539,
+          "pooledRisk": 0.116694,
+          "accepted": 617,
+          "perSupported": {
+            "0": {
+              "risk": 0.05,
+              "coverage": 0.703125,
+              "accepted": 180
+            },
+            "1": {
+              "risk": 0.087248,
+              "coverage": 0.582031,
+              "accepted": 149
+            },
+            "2": {
+              "risk": 0.308219,
+              "coverage": 0.570312,
+              "accepted": 146
+            },
+            "3": {
+              "risk": 0.035211,
+              "coverage": 0.554688,
+              "accepted": 142
+            }
+          }
+        },
+        {
+          "tau": 0.85,
+          "meanCoverage": 0.521485,
+          "pooledRisk": 0.104869,
+          "accepted": 534,
+          "perSupported": {
+            "0": {
+              "risk": 0.03681,
+              "coverage": 0.636719,
+              "accepted": 163
+            },
+            "1": {
+              "risk": 0.076923,
+              "coverage": 0.507812,
+              "accepted": 130
+            },
+            "2": {
+              "risk": 0.292683,
+              "coverage": 0.480469,
+              "accepted": 123
+            },
+            "3": {
+              "risk": 0.033898,
+              "coverage": 0.460938,
+              "accepted": 118
+            }
+          }
+        },
+        {
+          "tau": 0.9,
+          "meanCoverage": 0.418945,
+          "pooledRisk": 0.081585,
+          "accepted": 429,
+          "perSupported": {
+            "0": {
+              "risk": 0.029197,
+              "coverage": 0.535156,
+              "accepted": 137
+            },
+            "1": {
+              "risk": 0.04902,
+              "coverage": 0.398438,
+              "accepted": 102
+            },
+            "2": {
+              "risk": 0.257426,
+              "coverage": 0.394531,
+              "accepted": 101
+            },
+            "3": {
+              "risk": 0.0,
+              "coverage": 0.347656,
+              "accepted": 89
+            }
+          }
+        },
+        {
+          "tau": 0.925,
+          "meanCoverage": 0.363281,
+          "pooledRisk": 0.075269,
+          "accepted": 372,
+          "perSupported": {
+            "0": {
+              "risk": 0.025862,
+              "coverage": 0.453125,
+              "accepted": 116
+            },
+            "1": {
+              "risk": 0.043956,
+              "coverage": 0.355469,
+              "accepted": 91
+            },
+            "2": {
+              "risk": 0.238636,
+              "coverage": 0.34375,
+              "accepted": 88
+            },
+            "3": {
+              "risk": 0.0,
+              "coverage": 0.300781,
+              "accepted": 77
+            }
+          }
+        },
+        {
+          "tau": 0.95,
+          "meanCoverage": 0.288086,
+          "pooledRisk": 0.067797,
+          "accepted": 295,
+          "perSupported": {
+            "0": {
+              "risk": 0.0,
+              "coverage": 0.355469,
+              "accepted": 91
+            },
+            "1": {
+              "risk": 0.040541,
+              "coverage": 0.289062,
+              "accepted": 74
+            },
+            "2": {
+              "risk": 0.236111,
+              "coverage": 0.28125,
+              "accepted": 72
+            },
+            "3": {
+              "risk": 0.0,
+              "coverage": 0.226562,
+              "accepted": 58
+            }
+          }
+        },
+        {
+          "tau": 0.975,
+          "meanCoverage": 0.191406,
+          "pooledRisk": 0.056122,
+          "accepted": 196,
+          "perSupported": {
+            "0": {
+              "risk": 0.0,
+              "coverage": 0.210938,
+              "accepted": 54
+            },
+            "1": {
+              "risk": 0.016667,
+              "coverage": 0.234375,
+              "accepted": 60
+            },
+            "2": {
+              "risk": 0.208333,
+              "coverage": 0.1875,
+              "accepted": 48
+            },
+            "3": {
+              "risk": 0.0,
+              "coverage": 0.132812,
+              "accepted": 34
+            }
+          }
+        },
+        {
+          "tau": 0.99,
+          "meanCoverage": 0.081055,
+          "pooledRisk": 0.024096,
+          "accepted": 83,
+          "perSupported": {
+            "0": {
+              "risk": 0.0,
+              "coverage": 0.050781,
+              "accepted": 13
+            },
+            "1": {
+              "risk": 0.0,
+              "coverage": 0.152344,
+              "accepted": 39
+            },
+            "2": {
+              "risk": 0.111111,
+              "coverage": 0.070312,
+              "accepted": 18
+            },
+            "3": {
+              "risk": 0.0,
+              "coverage": 0.050781,
+              "accepted": 13
+            }
+          }
+        },
+        {
+          "tau": 0.995,
+          "meanCoverage": 0.042969,
+          "pooledRisk": 0.0,
+          "accepted": 44,
+          "perSupported": {
+            "0": {
+              "risk": 0.0,
+              "coverage": 0.03125,
+              "accepted": 8
+            },
+            "1": {
+              "risk": 0.0,
+              "coverage": 0.101562,
+              "accepted": 26
+            },
+            "2": {
+              "risk": 0.0,
+              "coverage": 0.023438,
+              "accepted": 6
+            },
+            "3": {
+              "risk": 0.0,
+              "coverage": 0.015625,
+              "accepted": 4
+            }
+          }
+        }
+      ],
+      "chosenTau": null,
+      "ungated": {
+        "correct": 802,
+        "n": 1024,
+        "accuracy": 0.783203
+      }
+    },
+    "reverse_pair_consensus@TFit": {
+      "temperature": 2.01861622,
+      "diagnosticOnly": true,
+      "note": "pre-registered grid applied for comparison; not an approved operating point",
+      "curve": [
+        {
+          "tau": 0.5,
+          "meanCoverage": 0.636718,
+          "pooledRisk": 0.082822,
+          "accepted": 326,
+          "perSupported": {
+            "0": {
+              "risk": 0.044444,
+              "coverage": 0.703125,
+              "accepted": 180
+            },
+            "2": {
+              "risk": 0.130137,
+              "coverage": 0.570312,
+              "accepted": 146
+            }
+          }
+        },
+        {
+          "tau": 0.6,
+          "meanCoverage": 0.53125,
+          "pooledRisk": 0.058824,
+          "accepted": 272,
+          "perSupported": {
+            "0": {
+              "risk": 0.019868,
+              "coverage": 0.589844,
+              "accepted": 151
+            },
+            "2": {
+              "risk": 0.107438,
+              "coverage": 0.472656,
+              "accepted": 121
+            }
+          }
+        },
+        {
+          "tau": 0.7,
+          "meanCoverage": 0.445313,
+          "pooledRisk": 0.039474,
+          "accepted": 228,
+          "perSupported": {
+            "0": {
+              "risk": 0.014925,
+              "coverage": 0.523438,
+              "accepted": 134
+            },
+            "2": {
+              "risk": 0.074468,
+              "coverage": 0.367188,
+              "accepted": 94
+            }
+          }
+        },
+        {
+          "tau": 0.8,
+          "meanCoverage": 0.324218,
+          "pooledRisk": 0.024096,
+          "accepted": 166,
+          "perSupported": {
+            "0": {
+              "risk": 0.01,
+              "coverage": 0.390625,
+              "accepted": 100
+            },
+            "2": {
+              "risk": 0.045455,
+              "coverage": 0.257812,
+              "accepted": 66
+            }
+          }
+        },
+        {
+          "tau": 0.85,
+          "meanCoverage": 0.246093,
+          "pooledRisk": 0.02381,
+          "accepted": 126,
+          "perSupported": {
+            "0": {
+              "risk": 0.0,
+              "coverage": 0.320312,
+              "accepted": 82
+            },
+            "2": {
+              "risk": 0.068182,
+              "coverage": 0.171875,
+              "accepted": 44
+            }
+          }
+        },
+        {
+          "tau": 0.9,
+          "meanCoverage": 0.152344,
+          "pooledRisk": 0.0,
+          "accepted": 78,
+          "perSupported": {
+            "0": {
+              "risk": 0.0,
+              "coverage": 0.199219,
+              "accepted": 51
+            },
+            "2": {
+              "risk": 0.0,
+              "coverage": 0.105469,
+              "accepted": 27
+            }
+          }
+        },
+        {
+          "tau": 0.925,
+          "meanCoverage": 0.126953,
+          "pooledRisk": 0.0,
+          "accepted": 65,
+          "perSupported": {
+            "0": {
+              "risk": 0.0,
+              "coverage": 0.164062,
+              "accepted": 42
+            },
+            "2": {
+              "risk": 0.0,
+              "coverage": 0.089844,
+              "accepted": 23
+            }
+          }
+        },
+        {
+          "tau": 0.95,
+          "meanCoverage": 0.082032,
+          "pooledRisk": 0.0,
+          "accepted": 42,
+          "perSupported": {
+            "0": {
+              "risk": 0.0,
+              "coverage": 0.109375,
+              "accepted": 28
+            },
+            "2": {
+              "risk": 0.0,
+              "coverage": 0.054688,
+              "accepted": 14
+            }
+          }
+        },
+        {
+          "tau": 0.975,
+          "meanCoverage": 0.033203,
+          "pooledRisk": 0.0,
+          "accepted": 17,
+          "perSupported": {
+            "0": {
+              "risk": 0.0,
+              "coverage": 0.050781,
+              "accepted": 13
+            },
+            "2": {
+              "risk": 0.0,
+              "coverage": 0.015625,
+              "accepted": 4
+            }
+          }
+        },
+        {
+          "tau": 0.99,
+          "meanCoverage": 0.005859,
+          "pooledRisk": 0.0,
+          "accepted": 3,
+          "perSupported": {
+            "0": {
+              "risk": 0.0,
+              "coverage": 0.007812,
+              "accepted": 2
+            },
+            "2": {
+              "risk": 0.0,
+              "coverage": 0.003906,
+              "accepted": 1
+            }
+          }
+        },
+        {
+          "tau": 0.995,
+          "meanCoverage": 0.0,
+          "pooledRisk": null,
+          "accepted": 0,
+          "perSupported": {
+            "0": {
+              "risk": null,
+              "coverage": 0.0,
+              "accepted": 0
+            },
+            "2": {
+              "risk": null,
+              "coverage": 0.0,
+              "accepted": 0
+            }
+          }
+        }
+      ],
+      "chosenTau": null,
+      "ungated": {
+        "correct": 428,
+        "n": 512,
+        "accuracy": 0.835938
+      }
+    }
+  },
+  "jsonBaseline": {
+    "perSupported": {
+      "0": {
+        "correct": 208,
+        "n": 256,
+        "accuracy": 0.8125
+      },
+      "1": {
+        "correct": 241,
+        "n": 256,
+        "accuracy": 0.941406
+      },
+      "2": {
+        "correct": 214,
+        "n": 256,
+        "accuracy": 0.835938
+      },
+      "3": {
+        "correct": 207,
+        "n": 256,
+        "accuracy": 0.808594
+      }
+    },
+    "combined": {
+      "correct": 870,
+      "n": 1024,
+      "accuracy": 0.849609
+    },
+    "perClass": {
+      "PLAYER_FIRST": {
+        "correct": 206,
+        "n": 256,
+        "recall": 0.804688
+      },
+      "NPC_FIRST": {
+        "correct": 250,
+        "n": 260,
+        "recall": 0.961538
+      },
+      "NO_PRIORITY_REQUEST": {
+        "correct": 254,
+        "n": 260,
+        "recall": 0.976923
+      },
+      "NEEDS_CLARIFICATION": {
+        "correct": 160,
+        "n": 248,
+        "recall": 0.645161
+      }
+    },
+    "perFamily": {
+      "test-01-父亲下厨": {
+        "correct": 25,
+        "n": 32,
+        "accuracy": 0.78125
+      },
+      "test-02-妹妹长寿面": {
+        "correct": 27,
+        "n": 32,
+        "accuracy": 0.84375
+      },
+      "test-03-室友减脂餐": {
+        "correct": 25,
+        "n": 32,
+        "accuracy": 0.78125
+      },
+      "test-04-清吧小食": {
+        "correct": 27,
+        "n": 32,
+        "accuracy": 0.84375
+      },
+      "test-05-旅馆前台夜宵": {
+        "correct": 28,
+        "n": 32,
+        "accuracy": 0.875
+      },
+      "test-06-登山营地泡面": {
+        "correct": 26,
+        "n": 32,
+        "accuracy": 0.8125
+      },
+      "test-07-庙会小吃": {
+        "correct": 30,
+        "n": 32,
+        "accuracy": 0.9375
+      },
+      "test-08-早餐店豆浆油条": {
+        "correct": 27,
+        "n": 32,
+        "accuracy": 0.84375
+      },
+      "test-09-加班披萨": {
+        "correct": 28,
+        "n": 32,
+        "accuracy": 0.875
+      },
+      "test-10-闺蜜下午茶": {
+        "correct": 28,
+        "n": 32,
+        "accuracy": 0.875
+      },
+      "test-11-相亲餐厅": {
+        "correct": 29,
+        "n": 32,
+        "accuracy": 0.90625
+      },
+      "test-12-爷爷早饭": {
+        "correct": 27,
+        "n": 32,
+        "accuracy": 0.84375
+      },
+      "test-13-表哥婚宴": {
+        "correct": 24,
+        "n": 32,
+        "accuracy": 0.75
+      },
+      "test-14-病号饭": {
+        "correct": 30,
+        "n": 32,
+        "accuracy": 0.9375
+      },
+      "test-15-拉练干粮": {
+        "correct": 30,
+        "n": 32,
+        "accuracy": 0.9375
+      },
+      "test-16-化妆间盒饭": {
+        "correct": 22,
+        "n": 32,
+        "accuracy": 0.6875
+      },
+      "test-17-宠物店隔壁咖啡": {
+        "correct": 29,
+        "n": 32,
+        "accuracy": 0.90625
+      },
+      "test-18-后台三明治": {
+        "correct": 27,
+        "n": 32,
+        "accuracy": 0.84375
+      },
+      "test-19-天桥分饭": {
+        "correct": 27,
+        "n": 32,
+        "accuracy": 0.84375
+      },
+      "test-20-出租车夜宵": {
+        "correct": 29,
+        "n": 32,
+        "accuracy": 0.90625
+      },
+      "test-21-民宿早餐": {
+        "correct": 26,
+        "n": 32,
+        "accuracy": 0.8125
+      },
+      "test-22-食堂加菜": {
+        "correct": 31,
+        "n": 32,
+        "accuracy": 0.96875
+      },
+      "test-23-元宵汤圆": {
+        "correct": 28,
+        "n": 32,
+        "accuracy": 0.875
+      },
+      "test-24-清明家宴": {
+        "correct": 27,
+        "n": 32,
+        "accuracy": 0.84375
+      },
+      "test-25-高考夜宵": {
+        "correct": 27,
+        "n": 32,
+        "accuracy": 0.84375
+      },
+      "test-26-义工斋饭": {
+        "correct": 26,
+        "n": 32,
+        "accuracy": 0.8125
+      },
+      "test-27-餐车盒饭": {
+        "correct": 27,
+        "n": 32,
+        "accuracy": 0.84375
+      },
+      "test-28-微波炉排队": {
+        "correct": 26,
+        "n": 32,
+        "accuracy": 0.8125
+      },
+      "test-29-散场火锅": {
+        "correct": 25,
+        "n": 32,
+        "accuracy": 0.78125
+      },
+      "test-30-修水管便饭": {
+        "correct": 26,
+        "n": 32,
+        "accuracy": 0.8125
+      },
+      "test-31-相亲水果": {
+        "correct": 28,
+        "n": 32,
+        "accuracy": 0.875
+      },
+      "test-32-健身蛋白餐": {
+        "correct": 28,
+        "n": 32,
+        "accuracy": 0.875
+      }
+    },
+    "parseRate": 1.0,
+    "n": 1024
+  },
+  "cost": {
+    "ledger": {
+      "reserved": 3079,
+      "finished": 3078,
+      "failed": 0,
+      "unfinished": 1,
+      "unfinishedIds": [
+        "compat-fwd-0"
+      ],
+      "byOperation": {
+        "forward": 2053,
+        "generate": 1026
+      },
+      "byArm": {
+        "compat": 5,
+        "warmup": 2,
+        "shared": 2048,
+        "json": 1024
+      },
+      "modelJobs": 3079,
+      "generationJobs": 1026,
+      "forwardJobs": 2053,
+      "prefillCalls": 3078,
+      "decodeCalls": 7182,
+      "tokensIn": 369974,
+      "tokensOut": 7182,
+      "modelSeconds": 1620.273,
+      "windowSeconds": 1857.4,
+      "caps": {
+        "model_jobs": 3300,
+        "generation_jobs": 1100,
+        "max_new_tokens": 64,
+        "per_gpu_gib": 24,
+        "window_seconds": 14400,
+        "feature_jobs": 2400
+      }
+    },
+    "latency": {
+      "single_pass": {
+        "forwards": 32,
+        "medianForwardMs": 215.121,
+        "minForwardMs": 184.323,
+        "maxForwardMs": 883.065,
+        "decisionMedianMs": 215.121,
+        "decisionModelCalls": 1
+      },
+      "reverse_pair_consensus": {
+        "forwards": 32,
+        "medianForwardMs": 219.12,
+        "minForwardMs": 191.368,
+        "maxForwardMs": 229.287,
+        "decisionMedianMs": 438.24,
+        "decisionModelCalls": 2
+      },
+      "failurePolicy": "a failed or abandoned job stays charged; no retry in this round"
+    }
+  }
+}

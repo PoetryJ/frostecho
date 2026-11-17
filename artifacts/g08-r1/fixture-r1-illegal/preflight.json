@@ -1,0 +1,26 @@
+{
+  "schema": "frostecho.g07.eval.preflight/1",
+  "ok": true,
+  "endpointHost": "127.0.0.1:45531",
+  "expectedModel": "fake-model",
+  "preflightRequests": 2,
+  "checks": [
+    {
+      "path": "/health",
+      "url": "http://127.0.0.1:45531/health",
+      "status": 200,
+      "ok": true,
+      "error": null,
+      "raw": "ok"
+    },
+    {
+      "path": "/v1/models",
+      "url": "http://127.0.0.1:45531/v1/models",
+      "status": 200,
+      "ok": true,
+      "error": null,
+      "raw": "{\"data\":[{\"id\":\"fake-model\"}]}"
+    }
+  ],
+  "checkedAt": "2026-11-03T11:34:27.071Z"
+}

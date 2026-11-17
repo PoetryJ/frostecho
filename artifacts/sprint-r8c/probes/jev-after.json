@@ -1,0 +1,163 @@
+{
+  "sourceHEAD": "6c927c955a0545c9ff9e52f70da1518f8253ee2d",
+  "evidenceClass": "CPU-mechanism-probes-and-existing-data-inspection",
+  "gpuUsed": false,
+  "emptyA10Pair": {
+    "readyForLiveEncoding": true,
+    "requiredVramMiB": 51498,
+    "gpus": [
+      {
+        "index": 0,
+        "freeMiB": 23028,
+        "totalMiB": 23028,
+        "usedMiB": 0
+      },
+      {
+        "index": 1,
+        "freeMiB": 24564,
+        "totalMiB": 24564,
+        "usedMiB": 0
+      }
+    ]
+  },
+  "data": {
+    "cases": 335,
+    "episodes": [
+      "1-npc_01",
+      "1-npc_02",
+      "1-npc_03",
+      "1-npc_04",
+      "1-npc_05",
+      "1-npc_06",
+      "1-npc_07",
+      "1-npc_08"
+    ],
+    "splits": [
+      "calibration",
+      "dev",
+      "select",
+      "train"
+    ],
+    "reviewers": [
+      1
+    ],
+    "missingObservationText": 335,
+    "missingCandidateText": 335,
+    "singleCandidate": 15
+  },
+  "normalization": {
+    "r8Logits": [
+      0.0,
+      20.57754400047209
+    ],
+    "originalLayerNormLogits": [
+      0.0,
+      20.57754400047209
+    ]
+  },
+  "serve": [
+    {
+      "command": [
+        "/data/project/software/miniconda3/envs/contract2/bin/python",
+        "-B",
+        "/data3/DATA/project/project_meishijiang/FrostEcho-r8c/research/decision-choice/jev05/action/train.py",
+        "serve",
+        "--feature-map",
+        "/tmp/frostecho-r8-jev-audit-fmxidu1b/mechanism-fixture-features.json",
+        "--mode",
+        "jev-admitted",
+        "--temperature",
+        "0.1"
+      ],
+      "exitCode": 0,
+      "response": {
+        "requestId": "probe",
+        "candidateSetHash": "mechanism-fixture",
+        "scores": [
+          {
+            "candidateId": "a",
+            "logit": 0.0,
+            "probability": 0.0
+          },
+          {
+            "candidateId": "b",
+            "logit": 20.577544,
+            "probability": 1.0
+          }
+        ],
+        "selectedId": "b",
+        "disposition": "accept",
+        "reason": "experimental (T=0.1); admission refused: no certificate",
+        "admission": {
+          "requested": "jev-admitted",
+          "granted": false,
+          "reason": "no data certificate"
+        },
+        "identity": {
+          "mode": "jev-admitted",
+          "scorerId": "jev-joint-c/1",
+          "checkpointSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+          "encoderId": "/data2/model_weights/Qwen3.8-27B",
+          "rendererId": "joint-c-action/1",
+          "memoryPolicyId": "conditional-experience",
+          "dataCertificateSha256": null,
+          "experimental": true,
+          "countsAsAdmitted": false
+        },
+        "latencyMs": 0.708
+      }
+    },
+    {
+      "command": [
+        "/data/project/software/miniconda3/envs/contract2/bin/python",
+        "-B",
+        "/data3/DATA/project/project_meishijiang/FrostEcho-r8c/research/decision-choice/jev05/action/train.py",
+        "serve",
+        "--feature-map",
+        "/tmp/frostecho-r8-jev-audit-fmxidu1b/mechanism-fixture-features.json",
+        "--mode",
+        "jev-admitted",
+        "--temperature",
+        "100"
+      ],
+      "exitCode": 0,
+      "response": {
+        "requestId": "probe",
+        "candidateSetHash": "mechanism-fixture",
+        "scores": [
+          {
+            "candidateId": "a",
+            "logit": 0.0,
+            "probability": 0.448737
+          },
+          {
+            "candidateId": "b",
+            "logit": 20.577544,
+            "probability": 0.551263
+          }
+        ],
+        "selectedId": "b",
+        "disposition": "accept",
+        "reason": "experimental (T=100.0); admission refused: no certificate",
+        "admission": {
+          "requested": "jev-admitted",
+          "granted": false,
+          "reason": "no data certificate"
+        },
+        "identity": {
+          "mode": "jev-admitted",
+          "scorerId": "jev-joint-c/1",
+          "checkpointSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+          "encoderId": "/data2/model_weights/Qwen3.8-27B",
+          "rendererId": "joint-c-action/1",
+          "memoryPolicyId": "conditional-experience",
+          "dataCertificateSha256": null,
+          "experimental": true,
+          "countsAsAdmitted": false
+        },
+        "latencyMs": 0.723
+      }
+    }
+  ],
+  "temperatureHasNoEffect": false
+}

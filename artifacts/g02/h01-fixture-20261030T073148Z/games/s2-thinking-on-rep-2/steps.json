@@ -1,0 +1,59 @@
+[
+  {
+    "round": 1,
+    "observation": {
+      "id": "npc_a",
+      "location": "dorm",
+      "hunger": 40,
+      "foodHere": 0,
+      "reachable": [
+        "dorm",
+        "kitchen"
+      ]
+    },
+    "raw": "{\"type\":\"move\",\"to\":\"kitchen\"}",
+    "parse": {
+      "ok": true,
+      "action": {
+        "type": "move",
+        "to": "kitchen"
+      }
+    },
+    "command": {
+      "commandId": "s2-thinking-on-rep-2:npc:1",
+      "actorId": "npc_a",
+      "type": "move",
+      "payload": {
+        "to": "kitchen"
+      }
+    },
+    "exec": {
+      "commandId": "s2-thinking-on-rep-2:npc:1",
+      "seq": 3,
+      "status": "accepted",
+      "eventIds": [
+        "e4"
+      ]
+    }
+  },
+  {
+    "round": 2,
+    "observation": {
+      "id": "npc_a",
+      "location": "kitchen",
+      "hunger": 40,
+      "foodHere": 0,
+      "reachable": [
+        "dorm",
+        "kitchen"
+      ]
+    },
+    "raw": "{\"type\":\"stop\"}",
+    "parse": {
+      "ok": true,
+      "action": {
+        "type": "stop"
+      }
+    }
+  }
+]

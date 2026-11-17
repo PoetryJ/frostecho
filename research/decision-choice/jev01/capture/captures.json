@@ -1,0 +1,430 @@
+{
+  "schema": "frostecho.jev01.capture/1",
+  "at": "2026-11-09T09:14:05.537Z",
+  "source": "real ApplicationController -> Provider boundary, fixture providers, no model/HTTP",
+  "capturedInputs": 10,
+  "goalInputs": 5,
+  "actionInputs": 5,
+  "naturalLanguageEntry": "the fixed G09 S1 request text only",
+  "limitation": "existing natural semantic coverage is insufficient; the 640-case semantic set is synthetic/annotated",
+  "zeroCallBoundaries": [
+    {
+      "fixture": "w1",
+      "zeroCall": "closed_game",
+      "providerCallsBeforeQuit": 2,
+      "providerCallsAfterQuitRun": 2,
+      "delta": 0,
+      "phases": {
+        "goal": 1,
+        "action": 2
+      }
+    },
+    {
+      "fixture": "w2",
+      "zeroCall": "closed_game",
+      "providerCallsBeforeQuit": 2,
+      "providerCallsAfterQuitRun": 2,
+      "delta": 0,
+      "phases": {
+        "goal": 1,
+        "action": 2
+      }
+    },
+    {
+      "fixture": "cooperate",
+      "zeroCall": "closed_game",
+      "providerCallsBeforeQuit": 2,
+      "providerCallsAfterQuitRun": 2,
+      "delta": 0,
+      "phases": {
+        "goal": 1,
+        "action": 2
+      }
+    },
+    {
+      "fixture": "decline",
+      "zeroCall": "closed_game",
+      "providerCallsBeforeQuit": 2,
+      "providerCallsAfterQuitRun": 2,
+      "delta": 0,
+      "phases": {
+        "goal": 1,
+        "action": 2
+      }
+    },
+    {
+      "fixture": "violate",
+      "zeroCall": "closed_game",
+      "providerCallsBeforeQuit": 2,
+      "providerCallsAfterQuitRun": 2,
+      "delta": 0,
+      "phases": {
+        "goal": 1,
+        "action": 2
+      }
+    },
+    {
+      "fixture": "w1",
+      "zeroCall": "already_satisfied",
+      "providerCalls": 0,
+      "delta": 0
+    }
+  ],
+  "captures": [
+    {
+      "fixture": "w1",
+      "phase": "goal",
+      "projection": {
+        "observation": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40,
+          "foodHere": 1,
+          "reachable": [
+            "dorm",
+            "kitchen"
+          ]
+        },
+        "goal": {
+          "hungerAtLeast": 70
+        },
+        "activeGoal": null,
+        "goalLine": null,
+        "feedback": null,
+        "allowedActions": "timed_wait",
+        "goalOptions": [
+          "feed_self",
+          "yield_once"
+        ],
+        "requestText": "请把最后一份食物留给我，你先不要吃。",
+        "inputSha256": "aaffe657733f995dbb1c367e99797f172b455afd570af419175fa4280e342847"
+      }
+    },
+    {
+      "fixture": "w1",
+      "phase": "action",
+      "projection": {
+        "observation": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40,
+          "foodHere": 1,
+          "reachable": [
+            "dorm",
+            "kitchen"
+          ]
+        },
+        "goal": {
+          "hungerAtLeast": 70
+        },
+        "activeGoal": {
+          "kind": "yield_once",
+          "requestId": "cap-req-1",
+          "expiresAtSimTime": 1
+        },
+        "goalLine": null,
+        "feedback": null,
+        "allowedActions": "timed_wait",
+        "goalOptions": null,
+        "requestText": null,
+        "inputSha256": "f628896649c8fb9f420a5bce40bf16b240741b211a183260b5b60c24d388447e"
+      }
+    },
+    {
+      "fixture": "w1",
+      "zeroCall": "closed_game",
+      "providerCallsBeforeQuit": 2,
+      "providerCallsAfterQuitRun": 2,
+      "delta": 0,
+      "phases": {
+        "goal": 1,
+        "action": 2
+      }
+    },
+    {
+      "fixture": "w2",
+      "phase": "goal",
+      "projection": {
+        "observation": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40,
+          "foodHere": 1,
+          "reachable": [
+            "dorm",
+            "kitchen"
+          ]
+        },
+        "goal": {
+          "hungerAtLeast": 70
+        },
+        "activeGoal": null,
+        "goalLine": null,
+        "feedback": null,
+        "allowedActions": "timed_wait",
+        "goalOptions": [
+          "feed_self",
+          "yield_once"
+        ],
+        "requestText": "请把最后一份食物留给我，你先不要吃。",
+        "inputSha256": "aaffe657733f995dbb1c367e99797f172b455afd570af419175fa4280e342847"
+      }
+    },
+    {
+      "fixture": "w2",
+      "phase": "action",
+      "projection": {
+        "observation": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40,
+          "foodHere": 1,
+          "reachable": [
+            "dorm",
+            "kitchen"
+          ]
+        },
+        "goal": {
+          "hungerAtLeast": 70
+        },
+        "activeGoal": {
+          "kind": "yield_once",
+          "requestId": "cap-req-1",
+          "expiresAtSimTime": 1
+        },
+        "goalLine": null,
+        "feedback": null,
+        "allowedActions": "timed_wait",
+        "goalOptions": null,
+        "requestText": null,
+        "inputSha256": "f628896649c8fb9f420a5bce40bf16b240741b211a183260b5b60c24d388447e"
+      }
+    },
+    {
+      "fixture": "w2",
+      "zeroCall": "closed_game",
+      "providerCallsBeforeQuit": 2,
+      "providerCallsAfterQuitRun": 2,
+      "delta": 0,
+      "phases": {
+        "goal": 1,
+        "action": 2
+      }
+    },
+    {
+      "fixture": "cooperate",
+      "phase": "goal",
+      "projection": {
+        "observation": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40,
+          "foodHere": 1,
+          "reachable": [
+            "dorm",
+            "kitchen"
+          ]
+        },
+        "goal": {
+          "hungerAtLeast": 70
+        },
+        "activeGoal": null,
+        "goalLine": null,
+        "feedback": null,
+        "allowedActions": "timed_wait",
+        "goalOptions": [
+          "feed_self",
+          "yield_once"
+        ],
+        "requestText": "请把最后一份食物留给我，你先不要吃。",
+        "inputSha256": "aaffe657733f995dbb1c367e99797f172b455afd570af419175fa4280e342847"
+      }
+    },
+    {
+      "fixture": "cooperate",
+      "phase": "action",
+      "projection": {
+        "observation": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40,
+          "foodHere": 1,
+          "reachable": [
+            "dorm",
+            "kitchen"
+          ]
+        },
+        "goal": {
+          "hungerAtLeast": 70
+        },
+        "activeGoal": {
+          "kind": "yield_once",
+          "requestId": "cap-req-1",
+          "expiresAtSimTime": 1
+        },
+        "goalLine": null,
+        "feedback": null,
+        "allowedActions": "timed_wait",
+        "goalOptions": null,
+        "requestText": null,
+        "inputSha256": "f628896649c8fb9f420a5bce40bf16b240741b211a183260b5b60c24d388447e"
+      }
+    },
+    {
+      "fixture": "cooperate",
+      "zeroCall": "closed_game",
+      "providerCallsBeforeQuit": 2,
+      "providerCallsAfterQuitRun": 2,
+      "delta": 0,
+      "phases": {
+        "goal": 1,
+        "action": 2
+      }
+    },
+    {
+      "fixture": "decline",
+      "phase": "goal",
+      "projection": {
+        "observation": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40,
+          "foodHere": 1,
+          "reachable": [
+            "dorm",
+            "kitchen"
+          ]
+        },
+        "goal": {
+          "hungerAtLeast": 70
+        },
+        "activeGoal": null,
+        "goalLine": null,
+        "feedback": null,
+        "allowedActions": "timed_wait",
+        "goalOptions": [
+          "feed_self",
+          "yield_once"
+        ],
+        "requestText": "请把最后一份食物留给我，你先不要吃。",
+        "inputSha256": "aaffe657733f995dbb1c367e99797f172b455afd570af419175fa4280e342847"
+      }
+    },
+    {
+      "fixture": "decline",
+      "phase": "action",
+      "projection": {
+        "observation": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40,
+          "foodHere": 1,
+          "reachable": [
+            "dorm",
+            "kitchen"
+          ]
+        },
+        "goal": {
+          "hungerAtLeast": 70
+        },
+        "activeGoal": {
+          "kind": "feed_self",
+          "hungerAtLeast": 70
+        },
+        "goalLine": null,
+        "feedback": null,
+        "allowedActions": "timed_wait",
+        "goalOptions": null,
+        "requestText": null,
+        "inputSha256": "ddc2544e0b0eb27839bee5631508bc783210c804c601967d2d66b87b115c8eee"
+      }
+    },
+    {
+      "fixture": "decline",
+      "zeroCall": "closed_game",
+      "providerCallsBeforeQuit": 2,
+      "providerCallsAfterQuitRun": 2,
+      "delta": 0,
+      "phases": {
+        "goal": 1,
+        "action": 2
+      }
+    },
+    {
+      "fixture": "violate",
+      "phase": "goal",
+      "projection": {
+        "observation": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40,
+          "foodHere": 1,
+          "reachable": [
+            "dorm",
+            "kitchen"
+          ]
+        },
+        "goal": {
+          "hungerAtLeast": 70
+        },
+        "activeGoal": null,
+        "goalLine": null,
+        "feedback": null,
+        "allowedActions": "timed_wait",
+        "goalOptions": [
+          "feed_self",
+          "yield_once"
+        ],
+        "requestText": "请把最后一份食物留给我，你先不要吃。",
+        "inputSha256": "aaffe657733f995dbb1c367e99797f172b455afd570af419175fa4280e342847"
+      }
+    },
+    {
+      "fixture": "violate",
+      "phase": "action",
+      "projection": {
+        "observation": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40,
+          "foodHere": 1,
+          "reachable": [
+            "dorm",
+            "kitchen"
+          ]
+        },
+        "goal": {
+          "hungerAtLeast": 70
+        },
+        "activeGoal": {
+          "kind": "yield_once",
+          "requestId": "cap-req-1",
+          "expiresAtSimTime": 1
+        },
+        "goalLine": null,
+        "feedback": null,
+        "allowedActions": "timed_wait",
+        "goalOptions": null,
+        "requestText": null,
+        "inputSha256": "f628896649c8fb9f420a5bce40bf16b240741b211a183260b5b60c24d388447e"
+      }
+    },
+    {
+      "fixture": "violate",
+      "zeroCall": "closed_game",
+      "providerCallsBeforeQuit": 2,
+      "providerCallsAfterQuitRun": 2,
+      "delta": 0,
+      "phases": {
+        "goal": 1,
+        "action": 2
+      }
+    },
+    {
+      "fixture": "w1",
+      "zeroCall": "already_satisfied",
+      "providerCalls": 0,
+      "delta": 0
+    }
+  ]
+}

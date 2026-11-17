@@ -1,0 +1,35 @@
+{
+  "schema": "frostecho.jev04.trusted-policy-manifest/1",
+  "registrations": [
+    {
+      "identity": {
+        "model": "fixture/r6",
+        "head": "shared-scalar/1",
+        "adapter": "jev-choice/1",
+        "tokenizer": "fixture-tok/1",
+        "renderer": "jev04-render/3",
+        "task": "choose_action",
+        "k": 4,
+        "policy_version": "softmax-accept/1",
+        "memory_policy_version": "memory-policy/1"
+      },
+      "mode": "real",
+      "utility_source": null,
+      "evidence": {
+        "calT": {
+          "path": "/agent/repos/frostecho/artifacts/sprint-r6-1/run01/integration/jev/calT.json",
+          "sha256": "9eccb5510cb8a672617a6907e450dfc17dcf14187033f5882d896ef4d855d3e9"
+        },
+        "select": {
+          "path": "/agent/repos/frostecho/artifacts/sprint-r6-1/run01/integration/jev/select.json",
+          "sha256": "869cda45de96d34b291763e86ea92cc094d15d19cc67584986b75b0ac599eccf"
+        },
+        "cert": {
+          "path": "/agent/repos/frostecho/artifacts/sprint-r6-1/run01/integration/jev/cert.json",
+          "sha256": "edb04e67d5ce6e04d898ba1cf582e482f91db3e9b34d837dfaefddf8ab061be3"
+        },
+        "protocol_version": "jev04-risk/1"
+      }
+    }
+  ]
+}

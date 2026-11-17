@@ -1,0 +1,116 @@
+{
+  "schema": "frostecho.jev01.plan-lock/1",
+  "at": "2026-11-09T17:15:44+0800",
+  "baseline": "d8aa5174220fd39c1a227b9f78112fa70033ee4b",
+  "branch": "codex/jev-01-choice-probe",
+  "model": {
+    "path": "/data2/model_weights/Qwen3.8-27B",
+    "files": {
+      "config.json": {
+        "sha256": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab",
+        "bytes": 4312
+      },
+      "tokenizer_config.json": {
+        "sha256": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+        "bytes": 17928
+      },
+      "chat_template.jinja": {
+        "sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+        "bytes": 8952
+      },
+      "model.safetensors.index.json": {
+        "sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+        "bytes": 112216
+      },
+      "generation_config.json": {
+        "sha256": "e70c136c1b78ddc1fb0905bac8e733a4dc448d4f852a5dd75143fffc70be550e",
+        "bytes": 202
+      }
+    },
+    "totalSize": 55562855904.0,
+    "tensorCount": 1199
+  },
+  "dataset": {
+    "statsSha256": "1807b76e9454f15929a6561d3872e869cd50a813862d3b591e0699c85a496043",
+    "casesSha256": "aa94b2bf902eb4649bd5a148846959245958167a1e394875e3f5b703cee72dba",
+    "labelsSha256": "421ac28b2b7157caf253a96631fda129eb4456fe9ed21fb3300c195a78e6b3af",
+    "groupsSha256": "c90d6de861cc3abcf80eaa92d92d61be475005e2a9b4ebe348490161b9eccf9b",
+    "splitsSha256": "880b5b99eca5a140164cc032f626fdf1c665cb7802d8d8744eb7cd69a820fd80",
+    "testGoldSha256": "6b5dfdd5f7e0d701a53b92a14babcd109d215c07930920ce844245f00ac9a15c",
+    "testInputsSha256": "6b0f9e435b061e9870c73d0f5ce3e7906f36249110146b082588aae589fe0212",
+    "counts": {
+      "cal": 64,
+      "dev": 64,
+      "test": 128,
+      "train": 384
+    }
+  },
+  "latencyCaseIds": [
+    "jev01-test-NC-004",
+    "jev01-test-NC-005",
+    "jev01-test-NC-026",
+    "jev01-test-NC-031",
+    "jev01-test-NF-004",
+    "jev01-test-NF-013",
+    "jev01-test-NF-019",
+    "jev01-test-NF-020",
+    "jev01-test-NP-001",
+    "jev01-test-NP-018",
+    "jev01-test-NP-021",
+    "jev01-test-NP-028",
+    "jev01-test-PF-008",
+    "jev01-test-PF-026",
+    "jev01-test-PF-027",
+    "jev01-test-PF-032"
+  ],
+  "caps": {
+    "feature_jobs": 1280,
+    "json_cal_test_jobs": 384,
+    "latency_jobs": 128,
+    "warmup_jobs": 8,
+    "compatibility_jobs": 8,
+    "total_model_jobs": 1808,
+    "generation_jobs_max": 422,
+    "forward_jobs_max": 1386,
+    "gpu_window_seconds": 14400
+  },
+  "training": {
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "runs_max": 6,
+    "epochs_max": 30,
+    "batch_size": 32,
+    "lr": 0.001,
+    "weight_decay": 0.01,
+    "grad_clip": 1.0,
+    "patience": 5,
+    "rank": 128,
+    "hidden": 5120
+  },
+  "orders": [
+    [
+      "PLAYER_FIRST",
+      "NPC_FIRST",
+      "NO_PRIORITY_REQUEST",
+      "NEEDS_CLARIFICATION"
+    ],
+    [
+      "NEEDS_CLARIFICATION",
+      "NO_PRIORITY_REQUEST",
+      "NPC_FIRST",
+      "PLAYER_FIRST"
+    ]
+  ],
+  "arms": [
+    "rules",
+    "json",
+    "label_logits",
+    "linear_head",
+    "pointer_head"
+  ],
+  "testUnsealCount": 1,
+  "lockSha256": "f76248e2237c86af41667f7d6059973f8348ba99de3405a41d9c6a81921245b8"
+}

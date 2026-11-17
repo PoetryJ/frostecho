@@ -1,0 +1,149 @@
+FrostEcho G10 持续交互厨房（离线默认；世界修改只走既有游戏接口）
+脚本演示=cooperate（机制演示，不是模型合作率）
+输入 help 查看命令；save SLOT 存档；quit 收束。
+本次为 合作（脚本演示：选择 yield_once 并 wait）；结果只证明机制，不代表真实模型。
+[状态] 模式=negotiated/fixture/cooperate（脚本/离线，非实模） simTime=0 tick=0
+  世界: 厨房食物=1 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=40
+  npc_a: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=未满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  预算: 本会话 0/5 本局 0/10 | campaign 未授权（离线）
+  存档: 未保存
+操作（输入命令后回车；输入 help 随时回看）：
+  help                           显示这份操作说明
+  status                         显示权威状态；0 次模型调用
+  request npc_a yield_once       以玩家身份提出 S1 让食请求；只入箱，不调用模型，不改世界
+  step                           推进一次决策（最多 1 次模型调用）；两阶段需要两次 step
+  run N                          最多推进 N 次（1..20）；遇 idle/关闭/失败/预算停止，不自动推进时间
+  player move dorm|kitchen       移动玩家（npc_b）
+  player eat                     玩家进食；由世界规则判定的拒绝是正常结果
+  world time N                   世界调试输入：推进逻辑时间 1..10 步；0 次模型调用
+  world restock kitchen N        世界调试输入：补货 1..10；0 次模型调用
+  save SLOT                      独占写入新存档槽；决策在途时返回 SAVE_BUSY
+  quit                           关闭本次运行（存档请先 save）；EOF/SIGINT 同样收束一次
+[完成]
+[状态] 模式=negotiated/fixture/cooperate（脚本/离线，非实模） simTime=0 tick=0
+  世界: 厨房食物=1 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=40
+  npc_a: cycle=1 阶段=goal_choice 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=未满足（独立于选定目标）
+  wait截止=-
+  请求 cooperate-req-1: pending/pending 到期=1 接受序号=-
+  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  预算: 本会话 0/5 本局 0/10 | campaign 未授权（离线）
+  存档: 未保存
+[状态] 模式=negotiated/fixture/cooperate（脚本/离线，非实模） simTime=0 tick=0
+  世界: 厨房食物=1 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=40
+  npc_a: cycle=1 阶段=goal_choice 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=未满足（独立于选定目标）
+  wait截止=-
+  请求 cooperate-req-1: pending/pending 到期=1 接受序号=-
+  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  预算: 本会话 0/5 本局 0/10 | campaign 未授权（离线）
+  存档: 未保存
+[推进] 1 次（npc_a cycle=1 ready）
+[状态] 模式=negotiated/fixture/cooperate（脚本/离线，非实模） simTime=0 tick=0
+  世界: 厨房食物=1 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=40
+  npc_a: cycle=1 阶段=action 状态=ready 调用=1/5
+  选定目标=yield_once 未达成
+  饱食目标=未满足（独立于选定目标）
+  wait截止=-
+  请求 cooperate-req-1: accepted/pending 到期=1 接受序号=0 — 接受请求，尚未履约
+  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  预算: 本会话 1/5 本局 1/10 | campaign 未授权（离线）
+  存档: 未保存
+[推进] 1 次（npc_a cycle=1 waiting_time）
+[状态] 模式=negotiated/fixture/cooperate（脚本/离线，非实模） simTime=0 tick=0
+  世界: 厨房食物=1 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=40
+  npc_a: cycle=1 阶段=action 状态=waiting_time 调用=2/5
+  选定目标=yield_once 未达成
+  饱食目标=未满足（独立于选定目标）
+  wait截止=1
+  请求 cooperate-req-1: accepted/pending 到期=1 接受序号=0 — 接受请求，尚未履约
+  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  预算: 本会话 2/5 本局 2/10 | campaign 未授权（离线）
+  存档: 未保存
+[状态] 模式=negotiated/fixture/cooperate（脚本/离线，非实模） simTime=0 tick=0
+  世界: 厨房食物=1 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=40
+  npc_a: cycle=1 阶段=action 状态=waiting_time 调用=2/5
+  选定目标=yield_once 未达成
+  饱食目标=未满足（独立于选定目标）
+  wait截止=1
+  请求 cooperate-req-1: accepted/pending 到期=1 接受序号=0 — 接受请求，尚未履约
+  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  预算: 本会话 2/5 本局 2/10 | campaign 未授权（离线）
+  存档: 未保存
+[完成] cooperate:player:npc_b:1
+[状态] 模式=negotiated/fixture/cooperate（脚本/离线，非实模） simTime=0 tick=1
+  世界: 厨房食物=0 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=70
+  npc_a: cycle=1 阶段=action 状态=waiting_time 调用=2/5
+  选定目标=yield_once 已达成
+  饱食目标=未满足（独立于选定目标）
+  wait截止=1
+  请求 cooperate-req-1: accepted/fulfilled 到期=1 接受序号=0 — 请求已履约：玩家已吃到
+  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  预算: 本会话 2/5 本局 2/10 | campaign 未授权（离线）
+  存档: 未保存
+[状态] 模式=negotiated/fixture/cooperate（脚本/离线，非实模） simTime=0 tick=1
+  世界: 厨房食物=0 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=70
+  npc_a: cycle=1 阶段=action 状态=waiting_time 调用=2/5
+  选定目标=yield_once 已达成
+  饱食目标=未满足（独立于选定目标）
+  wait截止=1
+  请求 cooperate-req-1: accepted/fulfilled 到期=1 接受序号=0 — 请求已履约：玩家已吃到
+  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  预算: 本会话 2/5 本局 2/10 | campaign 未授权（离线）
+  存档: 未保存
+[完成] /data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g10-r1/demos/cooperate-slot.g09.json
+[状态] 模式=negotiated/fixture/cooperate（脚本/离线，非实模） simTime=0 tick=1
+  世界: 厨房食物=0 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=70
+  npc_a: cycle=1 阶段=action 状态=waiting_time 调用=2/5
+  选定目标=yield_once 已达成
+  饱食目标=未满足（独立于选定目标）
+  wait截止=1
+  请求 cooperate-req-1: accepted/fulfilled 到期=1 接受序号=0 — 请求已履约：玩家已吃到
+  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  预算: 本会话 2/5 本局 2/10 | campaign 未授权（离线）
+  存档: /data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g10-r1/demos/cooperate-slot.g09.json
+[完成]
+运行记录 -> /data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g10-r1/demos/cooperate-run.run.json

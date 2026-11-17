@@ -1,0 +1,1516 @@
+{
+  "schema": "frostecho.real-v1-paired-audit/1",
+  "archive": {
+    "path": "..\\audit\\v1-full-evidence.tar.gz",
+    "sha256": "2503edef533b3d78ad0362014dfd0d20ba21606b801bd48462064cd585ec7d22",
+    "bytes": 40750179
+  },
+  "initialResources": {
+    "food": 130,
+    "firewood": 30,
+    "power": 30,
+    "medicine": 3
+  },
+  "arms": {
+    "jev": {
+      "seed": "live-pair-1",
+      "profile": "gospel-5.8.19",
+      "sourceHEAD": "9fba23610f44445b33936f360b63bef81e3e6c49+online-deploy-v1:43415a892eb55d6a9f0592e58e31aed21e3e3227127e0f9e177bfcfe6b474e1e",
+      "fullMap": false,
+      "ending": [
+        {
+          "lifeNumber": 1,
+          "ending": "perfect",
+          "survivors": 8,
+          "elapsed": 4920,
+          "at": 5400
+        }
+      ],
+      "allDecisionRows": 360,
+      "referenceCouncilRows": 40,
+      "actionRows": 320,
+      "actionScorers": {
+        "jev-joint-c/1": 320
+      },
+      "actionExecutionStatus": {
+        "applied": 310,
+        "rejected": 10
+      },
+      "allAppliedRows": 350,
+      "selectedActionDistribution": {
+        "council-counter": 12,
+        "eat": 41,
+        "gather:firewood": 25,
+        "gather:food": 30,
+        "medical": 13,
+        "move:verify-stock": 99,
+        "rest": 100
+      },
+      "appliedActionDistribution": {
+        "council-counter": 12,
+        "eat": 41,
+        "gather:firewood": 25,
+        "gather:food": 30,
+        "medical": 3,
+        "move:verify-stock": 99,
+        "rest": 100
+      },
+      "selectedMoveToAlreadyCurrentLocation": 84,
+      "communicationCounterSelections": 12,
+      "finalResources": {
+        "food": 210,
+        "firewood": 52.866667,
+        "power": 0,
+        "medicine": 0
+      },
+      "finalFurnace": {
+        "lit": false,
+        "fuel": 0,
+        "warmth": 18
+      },
+      "finalMachineState": {
+        "machines": {
+          "generator": "absent",
+          "lumberMill": "absent",
+          "foodCollector": "absent"
+        },
+        "buildRemaining": {},
+        "buildWorker": {},
+        "ranMinutes": {},
+        "lastMinute": 5400
+      },
+      "tasks": {
+        "totalInstances": 40,
+        "statusCounts": {
+          "accepted": 17,
+          "done": 23
+        },
+        "doneByType": {
+          "COLLECT_FOOD": 20,
+          "PREPARE_MEDICAL": 3
+        },
+        "acceptedByType": {
+          "PREPARE_MEDICAL": 2,
+          "PREPARE_WARMTH": 15
+        },
+        "committedCompletionEventCount": 23,
+        "committedCompletionEvents": [
+          {
+            "eventId": "d:2160:task_completed:npc_01",
+            "type": "task_completed",
+            "actorId": "npc_01",
+            "simTime": 2160,
+            "payload": {
+              "taskId": "task-13",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_01-r8-168:gathered:168",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:2160:task_completed:npc_02",
+            "type": "task_completed",
+            "actorId": "npc_02",
+            "simTime": 2160,
+            "payload": {
+              "taskId": "task-14",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_02-r8-169:gathered:169",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:2160:task_completed:npc_03",
+            "type": "task_completed",
+            "actorId": "npc_03",
+            "simTime": 2160,
+            "payload": {
+              "taskId": "task-15",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_03-r8-170:gathered:170",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:2160:task_completed:npc_04",
+            "type": "task_completed",
+            "actorId": "npc_04",
+            "simTime": 2160,
+            "payload": {
+              "taskId": "task-16",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_04-r8-171:gathered:171",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:2640:task_completed:npc_02",
+            "type": "task_completed",
+            "actorId": "npc_02",
+            "simTime": 2640,
+            "payload": {
+              "taskId": "task-18",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_02-r8-249:gathered:249",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:2640:task_completed:npc_04",
+            "type": "task_completed",
+            "actorId": "npc_04",
+            "simTime": 2640,
+            "payload": {
+              "taskId": "task-20",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_04-r8-251:gathered:251",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:3120:task_completed:npc_01",
+            "type": "task_completed",
+            "actorId": "npc_01",
+            "simTime": 3120,
+            "payload": {
+              "taskId": "task-17",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_01-r8-276:gathered:276",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:3120:task_completed:npc_02",
+            "type": "task_completed",
+            "actorId": "npc_02",
+            "simTime": 3120,
+            "payload": {
+              "taskId": "task-22",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_02-r8-277:gathered:277",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:3120:task_completed:npc_03",
+            "type": "task_completed",
+            "actorId": "npc_03",
+            "simTime": 3120,
+            "payload": {
+              "taskId": "task-19",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_03-r8-278:gathered:278",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:3120:task_completed:npc_04",
+            "type": "task_completed",
+            "actorId": "npc_04",
+            "simTime": 3120,
+            "payload": {
+              "taskId": "task-24",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_04-r8-279:gathered:279",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:3600:task_completed:npc_01",
+            "type": "task_completed",
+            "actorId": "npc_01",
+            "simTime": 3600,
+            "payload": {
+              "taskId": "task-21",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_01-r8-300:gathered:300",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:3600:task_completed:npc_02",
+            "type": "task_completed",
+            "actorId": "npc_02",
+            "simTime": 3600,
+            "payload": {
+              "taskId": "task-26",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_02-r8-301:gathered:301",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:3600:task_completed:npc_03",
+            "type": "task_completed",
+            "actorId": "npc_03",
+            "simTime": 3600,
+            "payload": {
+              "taskId": "task-23",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_03-r8-302:gathered:302",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:3600:task_completed:npc_04",
+            "type": "task_completed",
+            "actorId": "npc_04",
+            "simTime": 3600,
+            "payload": {
+              "taskId": "task-28",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_04-r8-303:gathered:303",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:3660:task_completed:npc_01",
+            "type": "task_completed",
+            "actorId": "npc_01",
+            "simTime": 3660,
+            "payload": {
+              "taskId": "task-25",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_01-r8-310:gathered:310",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:3660:task_completed:npc_03",
+            "type": "task_completed",
+            "actorId": "npc_03",
+            "simTime": 3660,
+            "payload": {
+              "taskId": "task-27",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_03-r8-312:gathered:312",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:4080:task_completed:npc_03",
+            "type": "task_completed",
+            "actorId": "npc_03",
+            "simTime": 4080,
+            "payload": {
+              "taskId": "task-31",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_03-r8-382:gathered:382",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:4560:task_completed:npc_01",
+            "type": "task_completed",
+            "actorId": "npc_01",
+            "simTime": 4560,
+            "payload": {
+              "taskId": "task-33",
+              "type": "PREPARE_MEDICAL",
+              "receipt": "npc_01-r8-404:treated:404",
+              "receiptType": "treated"
+            }
+          },
+          {
+            "eventId": "d:4560:task_completed:npc_02",
+            "type": "task_completed",
+            "actorId": "npc_02",
+            "simTime": 4560,
+            "payload": {
+              "taskId": "task-34",
+              "type": "PREPARE_MEDICAL",
+              "receipt": "npc_02-r8-405:treated:405",
+              "receiptType": "treated"
+            }
+          },
+          {
+            "eventId": "d:4560:task_completed:npc_04",
+            "type": "task_completed",
+            "actorId": "npc_04",
+            "simTime": 4560,
+            "payload": {
+              "taskId": "task-36",
+              "type": "PREPARE_MEDICAL",
+              "receipt": "npc_04-r8-407:treated:407",
+              "receiptType": "treated"
+            }
+          },
+          {
+            "eventId": "d:5040:task_completed:npc_01",
+            "type": "task_completed",
+            "actorId": "npc_01",
+            "simTime": 5040,
+            "payload": {
+              "taskId": "task-37",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_01-r8-426:gathered:426",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:5040:task_completed:npc_02",
+            "type": "task_completed",
+            "actorId": "npc_02",
+            "simTime": 5040,
+            "payload": {
+              "taskId": "task-38",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_02-r8-427:gathered:427",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:5040:task_completed:npc_04",
+            "type": "task_completed",
+            "actorId": "npc_04",
+            "simTime": 5040,
+            "payload": {
+              "taskId": "task-40",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_04-r8-429:gathered:429",
+              "receiptType": "gathered"
+            }
+          }
+        ],
+        "trajectoryTaskCompletedFields": 0
+      },
+      "npcHealth": {
+        "min": 32.779999999999816,
+        "mean": 42.904999999999816,
+        "median": 35.779999999999816,
+        "max": 59.279999999999816
+      },
+      "npcHunger": {
+        "min": 28.200000000000102,
+        "mean": 39.575000000000095,
+        "median": 39.600000000000094,
+        "max": 46.2000000000001
+      },
+      "npcStamina": {
+        "min": 35.719999999999985,
+        "mean": 62.72749999999999,
+        "median": 72.35999999999999,
+        "max": 76.42
+      },
+      "wallSeconds": 1223.9704959392548,
+      "processExitCode": 0,
+      "actionLatencyMs": {
+        "min": 3249,
+        "mean": 3799.8125,
+        "median": 3700.5,
+        "max": 22812
+      },
+      "realNeuralForwards": 320,
+      "serviceRequests": 320,
+      "serviceSuccessfulReplies": 320,
+      "serviceLatencyMs": {
+        "min": 3247.467,
+        "mean": 3739.75281875,
+        "median": 3699.232,
+        "max": 4135.733,
+        "p95NearestRank": 4065.409,
+        "sum": 1196720.902,
+        "includesModelLoad": false
+      },
+      "scorerIdentity": {
+        "certificateSha256": null,
+        "countsAsAdmitted": false,
+        "encoderForwardAttempts": 320,
+        "encoderForwardCalls": 320,
+        "encoderId": "/data2/model_weights/Qwen3.8-27B",
+        "experimental": true,
+        "featureIdentityHash": "df1d9e4dc6d433c5e74f0b0db0fcdd4e96d01c7270901fae88502049e8851a4b",
+        "headSha256": "a7ea65413430f9518b7065643091131104dbf4e0968a15dcd24597f725cfe3f2",
+        "independentReviews": 0,
+        "labelSource": "reference-imitation",
+        "memoryPolicyId": "conditional-experience",
+        "mode": "jev-experimental",
+        "realModel": true,
+        "rendererId": "joint-c-action/1",
+        "requestsFailed": 0,
+        "requestsReceived": 320,
+        "scorerId": "jev-joint-c/1",
+        "scoresSucceeded": 320,
+        "tau": 0,
+        "temperature": 1,
+        "trainingManifestSha256": "caf6ca065f54610e40b132aeedfcb00873b4e38fb9552e7b2b6fa1cc14bb1217",
+        "utility": null
+      },
+      "stockBeliefLevelNullRequests": 320
+    },
+    "reference": {
+      "seed": "live-pair-1",
+      "profile": "gospel-5.8.19",
+      "sourceHEAD": "9fba23610f44445b33936f360b63bef81e3e6c49+online-deploy-v1:43415a892eb55d6a9f0592e58e31aed21e3e3227127e0f9e177bfcfe6b474e1e",
+      "fullMap": false,
+      "ending": [
+        {
+          "lifeNumber": 1,
+          "ending": "perfect",
+          "survivors": 8,
+          "elapsed": 4920,
+          "at": 5400
+        }
+      ],
+      "allDecisionRows": 360,
+      "referenceCouncilRows": 40,
+      "actionRows": 320,
+      "actionScorers": {
+        "reference-rule/1": 320
+      },
+      "actionExecutionStatus": {
+        "applied": 320
+      },
+      "allAppliedRows": 360,
+      "selectedActionDistribution": {
+        "eat": 44,
+        "gather:firewood": 17,
+        "gather:food": 35,
+        "medical": 3,
+        "move:verify-stock": 133,
+        "rest": 88
+      },
+      "appliedActionDistribution": {
+        "eat": 44,
+        "gather:firewood": 17,
+        "gather:food": 35,
+        "medical": 3,
+        "move:verify-stock": 133,
+        "rest": 88
+      },
+      "selectedMoveToAlreadyCurrentLocation": 113,
+      "communicationCounterSelections": 0,
+      "finalResources": {
+        "food": 224,
+        "firewood": 23.866667,
+        "power": 0,
+        "medicine": 0
+      },
+      "finalFurnace": {
+        "lit": false,
+        "fuel": 0,
+        "warmth": 18
+      },
+      "finalMachineState": {
+        "machines": {
+          "generator": "absent",
+          "lumberMill": "absent",
+          "foodCollector": "absent"
+        },
+        "buildRemaining": {},
+        "buildWorker": {},
+        "ranMinutes": {},
+        "lastMinute": 5400
+      },
+      "tasks": {
+        "totalInstances": 48,
+        "statusCounts": {
+          "accepted": 11,
+          "countered": 1,
+          "declined": 3,
+          "done": 25,
+          "proposed": 8
+        },
+        "doneByType": {
+          "COLLECT_FOOD": 16,
+          "REST_RECOVER": 9
+        },
+        "acceptedByType": {
+          "COLLECT_FOOD": 4,
+          "PREPARE_MEDICAL": 3,
+          "PREPARE_WARMTH": 4
+        },
+        "committedCompletionEventCount": 25,
+        "committedCompletionEvents": [
+          {
+            "eventId": "d:1200:task_completed:npc_01",
+            "type": "task_completed",
+            "actorId": "npc_01",
+            "simTime": 1200,
+            "payload": {
+              "taskId": "task-5",
+              "type": "REST_RECOVER",
+              "receipt": "npc_01-r8-120:rested:120",
+              "receiptType": "rested"
+            }
+          },
+          {
+            "eventId": "d:1200:task_completed:npc_02",
+            "type": "task_completed",
+            "actorId": "npc_02",
+            "simTime": 1200,
+            "payload": {
+              "taskId": "task-6",
+              "type": "REST_RECOVER",
+              "receipt": "npc_02-r8-121:rested:121",
+              "receiptType": "rested"
+            }
+          },
+          {
+            "eventId": "d:1200:task_completed:npc_03",
+            "type": "task_completed",
+            "actorId": "npc_03",
+            "simTime": 1200,
+            "payload": {
+              "taskId": "task-7",
+              "type": "REST_RECOVER",
+              "receipt": "npc_03-r8-122:rested:122",
+              "receiptType": "rested"
+            }
+          },
+          {
+            "eventId": "d:1200:task_completed:npc_04",
+            "type": "task_completed",
+            "actorId": "npc_04",
+            "simTime": 1200,
+            "payload": {
+              "taskId": "task-8",
+              "type": "REST_RECOVER",
+              "receipt": "npc_04-r8-123:rested:123",
+              "receiptType": "rested"
+            }
+          },
+          {
+            "eventId": "d:1680:task_completed:npc_01",
+            "type": "task_completed",
+            "actorId": "npc_01",
+            "simTime": 1680,
+            "payload": {
+              "taskId": "task-9",
+              "type": "REST_RECOVER",
+              "receipt": "npc_01-r8-144:rested:144",
+              "receiptType": "rested"
+            }
+          },
+          {
+            "eventId": "d:1680:task_completed:npc_02",
+            "type": "task_completed",
+            "actorId": "npc_02",
+            "simTime": 1680,
+            "payload": {
+              "taskId": "task-10",
+              "type": "REST_RECOVER",
+              "receipt": "npc_02-r8-145:rested:145",
+              "receiptType": "rested"
+            }
+          },
+          {
+            "eventId": "d:1680:task_completed:npc_03",
+            "type": "task_completed",
+            "actorId": "npc_03",
+            "simTime": 1680,
+            "payload": {
+              "taskId": "task-11",
+              "type": "REST_RECOVER",
+              "receipt": "npc_03-r8-146:rested:146",
+              "receiptType": "rested"
+            }
+          },
+          {
+            "eventId": "d:1680:task_completed:npc_04",
+            "type": "task_completed",
+            "actorId": "npc_04",
+            "simTime": 1680,
+            "payload": {
+              "taskId": "task-12",
+              "type": "REST_RECOVER",
+              "receipt": "npc_04-r8-147:rested:147",
+              "receiptType": "rested"
+            }
+          },
+          {
+            "eventId": "d:2220:task_completed:npc_04",
+            "type": "task_completed",
+            "actorId": "npc_04",
+            "simTime": 2220,
+            "payload": {
+              "taskId": "task-16",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_04-r8-181:gathered:181",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:2280:task_completed:npc_01",
+            "type": "task_completed",
+            "actorId": "npc_01",
+            "simTime": 2280,
+            "payload": {
+              "taskId": "task-13",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_01-r8-188:gathered:188",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:2280:task_completed:npc_02",
+            "type": "task_completed",
+            "actorId": "npc_02",
+            "simTime": 2280,
+            "payload": {
+              "taskId": "task-14",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_02-r8-189:gathered:189",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:2280:task_completed:npc_03",
+            "type": "task_completed",
+            "actorId": "npc_03",
+            "simTime": 2280,
+            "payload": {
+              "taskId": "task-15",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_03-r8-190:gathered:190",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:2640:task_completed:npc_01",
+            "type": "task_completed",
+            "actorId": "npc_01",
+            "simTime": 2640,
+            "payload": {
+              "taskId": "task-17",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_01-r8-248:gathered:248",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:2640:task_completed:npc_02",
+            "type": "task_completed",
+            "actorId": "npc_02",
+            "simTime": 2640,
+            "payload": {
+              "taskId": "task-18",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_02-r8-249:gathered:249",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:2640:task_completed:npc_03",
+            "type": "task_completed",
+            "actorId": "npc_03",
+            "simTime": 2640,
+            "payload": {
+              "taskId": "task-19",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_03-r8-250:gathered:250",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:2640:task_completed:npc_04",
+            "type": "task_completed",
+            "actorId": "npc_04",
+            "simTime": 2640,
+            "payload": {
+              "taskId": "task-20",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_04-r8-251:gathered:251",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:3900:task_completed:npc_01",
+            "type": "task_completed",
+            "actorId": "npc_01",
+            "simTime": 3900,
+            "payload": {
+              "taskId": "task-21",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_01-r8-350:gathered:350",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:3960:task_completed:npc_01",
+            "type": "task_completed",
+            "actorId": "npc_01",
+            "simTime": 3960,
+            "payload": {
+              "taskId": "task-22",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_01-r8-360:gathered:360",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:4560:task_completed:npc_01",
+            "type": "task_completed",
+            "actorId": "npc_01",
+            "simTime": 4560,
+            "payload": {
+              "taskId": "task-35",
+              "type": "REST_RECOVER",
+              "receipt": "npc_01-r8-408:rested:408",
+              "receiptType": "rested"
+            }
+          },
+          {
+            "eventId": "d:5280:task_completed:npc_01",
+            "type": "task_completed",
+            "actorId": "npc_01",
+            "simTime": 5280,
+            "payload": {
+              "taskId": "task-24",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_01-r8-472:gathered:472",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:5280:task_completed:npc_02",
+            "type": "task_completed",
+            "actorId": "npc_02",
+            "simTime": 5280,
+            "payload": {
+              "taskId": "task-36",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_02-r8-473:gathered:473",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:5280:task_completed:npc_03",
+            "type": "task_completed",
+            "actorId": "npc_03",
+            "simTime": 5280,
+            "payload": {
+              "taskId": "task-37",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_03-r8-474:gathered:474",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:5280:task_completed:npc_04",
+            "type": "task_completed",
+            "actorId": "npc_04",
+            "simTime": 5280,
+            "payload": {
+              "taskId": "task-38",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_04-r8-475:gathered:475",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:5340:task_completed:npc_01",
+            "type": "task_completed",
+            "actorId": "npc_01",
+            "simTime": 5340,
+            "payload": {
+              "taskId": "task-26",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_01-r8-482:gathered:482",
+              "receiptType": "gathered"
+            }
+          },
+          {
+            "eventId": "d:5340:task_completed:npc_02",
+            "type": "task_completed",
+            "actorId": "npc_02",
+            "simTime": 5340,
+            "payload": {
+              "taskId": "task-39",
+              "type": "COLLECT_FOOD",
+              "receipt": "npc_02-r8-483:gathered:483",
+              "receiptType": "gathered"
+            }
+          }
+        ],
+        "trajectoryTaskCompletedFields": 0
+      },
+      "npcHealth": {
+        "min": 32.779999999999816,
+        "mean": 43.654999999999816,
+        "median": 35.779999999999816,
+        "max": 60.779999999999816
+      },
+      "npcHunger": {
+        "min": 40.80000000000009,
+        "mean": 43.100000000000094,
+        "median": 43.100000000000094,
+        "max": 45.400000000000105
+      },
+      "npcStamina": {
+        "min": 27.599999999999987,
+        "mean": 32.614999999999995,
+        "median": 34.06999999999999,
+        "max": 38.02
+      },
+      "wallSeconds": 5.032720565795898,
+      "processExitCode": 0,
+      "actionLatencyMs": {
+        "min": 0,
+        "mean": 0.053125,
+        "median": 0.0,
+        "max": 1
+      }
+    }
+  },
+  "deltasJevMinusReference": {
+    "finalResources": {
+      "food": -14,
+      "firewood": 29.0,
+      "power": 0,
+      "medicine": 0
+    },
+    "doneTaskInstances": -2,
+    "wallSeconds": 1218.9377753734589
+  },
+  "rejectionAudit": {
+    "count": 10,
+    "reasons": {
+      "insufficient_medicine": 10
+    },
+    "allMedicineZeroBeforeInferenceAndCostOne": true,
+    "medicalOfferedRequests": 88,
+    "medicineZeroButMedicalOfferedRequests": 12,
+    "v1TrainingMedicalCandidateCases": 0,
+    "v1TrainingMedicalPositiveLabels": 0,
+    "frozenSource": {
+      "deploymentMember": "online-deploy-v1.tar.gz",
+      "deploymentSha256": "43415a892eb55d6a9f0592e58e31aed21e3e3227127e0f9e177bfcfe6b474e1e",
+      "member": "9fba23610f44445b33936f360b63bef81e3e6c49:src/r7/agency/options.ts",
+      "memberSha256": "582d32e08598162a56dfd44406504c51ac211d06050559dfc36b36ac411f8ae6",
+      "genericMedicalGuardPresent": true,
+      "taskMedicalSourceExcerpt": "case 'PREPARE_MEDICAL':\n        candidates.push(candidate('medical', '按分工处理伤病', { medicine: 1 },\n          ['medicine >= 1'], { health: 25 }));\n        rules.push('task.prepare-medical');\n        break;\n      "
+    },
+    "details": [
+      {
+        "requestId": "in-281-r8-score-npc_01",
+        "actorId": "npc_01",
+        "day": 4,
+        "minuteOfDay": 780,
+        "reason": "insufficient_medicine",
+        "inputSha256": "fee30ae28b462cfb657117d89118e58a439c455ed99815cf3682aac3bbf512c4",
+        "resources": {
+          "food": 213,
+          "firewood": 57.866667,
+          "power": 0,
+          "medicine": 0
+        },
+        "self": {
+          "id": "npc_01",
+          "location": "dorm-a",
+          "alive": true,
+          "hunger": 32.700000000000095,
+          "stamina": 43.219999999999985,
+          "health": 60.77999999999983,
+          "san": 94.59999999999977,
+          "bodyTemp": 36.5,
+          "promises": []
+        },
+        "selected": {
+          "id": "a-4d4ba3b4334c",
+          "kind": "medical",
+          "description": "按分工处理伤病",
+          "parameters": {
+            "action": "medical",
+            "medicine": 1
+          },
+          "preconditions": [
+            "medicine >= 1"
+          ],
+          "text": " 按分工处理伤病 [medical] {action=medical medicine=1} 前提:medicine >= 1"
+        },
+        "modelScore": {
+          "candidateId": "a-4d4ba3b4334c",
+          "logit": 0.9099723100662231,
+          "probability": 0.3987981911851987
+        },
+        "selectedIndex": 0,
+        "taskRulePresent": true,
+        "explicitMedicinePrecondition": true,
+        "medicineKnownBeforeInference": 0,
+        "selectedMedicineCost": 1,
+        "maskedScoreDiagnosticAlternative": {
+          "action": "rest",
+          "candidateId": "a-63ae70079e2d",
+          "logit": 0.4241965413093567,
+          "originalProbability": 0.24534852082382552
+        },
+        "diagnosticScope": "Re-ranking existing logits only; this is not a replay or a proved alternative episode."
+      },
+      {
+        "requestId": "in-282-r8-score-npc_02",
+        "actorId": "npc_02",
+        "day": 4,
+        "minuteOfDay": 780,
+        "reason": "insufficient_medicine",
+        "inputSha256": "c91fe50c6eee5a19d12d1df0b901f65c27f666f7a0a34f02dccb5b68336a04f2",
+        "resources": {
+          "food": 213,
+          "firewood": 57.866667,
+          "power": 0,
+          "medicine": 0
+        },
+        "self": {
+          "id": "npc_02",
+          "location": "dorm-b",
+          "alive": true,
+          "hunger": 42.100000000000094,
+          "stamina": 44.19999999999999,
+          "health": 60.77999999999983,
+          "san": 93.39999999999976,
+          "bodyTemp": 36.5,
+          "promises": []
+        },
+        "selected": {
+          "id": "a-4d4ba3b4334c",
+          "kind": "medical",
+          "description": "按分工处理伤病",
+          "parameters": {
+            "action": "medical",
+            "medicine": 1
+          },
+          "preconditions": [
+            "medicine >= 1"
+          ],
+          "text": " 按分工处理伤病 [medical] {action=medical medicine=1} 前提:medicine >= 1"
+        },
+        "modelScore": {
+          "candidateId": "a-4d4ba3b4334c",
+          "logit": 0.5418274402618408,
+          "probability": 0.32890869193389
+        },
+        "selectedIndex": 0,
+        "taskRulePresent": true,
+        "explicitMedicinePrecondition": true,
+        "medicineKnownBeforeInference": 0,
+        "selectedMedicineCost": 1,
+        "maskedScoreDiagnosticAlternative": {
+          "action": "rest",
+          "candidateId": "a-63ae70079e2d",
+          "logit": 0.4556294083595276,
+          "originalProbability": 0.3017449572716999
+        },
+        "diagnosticScope": "Re-ranking existing logits only; this is not a replay or a proved alternative episode."
+      },
+      {
+        "requestId": "in-289-r8-score-npc_01",
+        "actorId": "npc_01",
+        "day": 4,
+        "minuteOfDay": 840,
+        "reason": "insufficient_medicine",
+        "inputSha256": "4f1c16487ccfb9a646b83daad081e910d19634deaeae5c527f42f69f808c327d",
+        "resources": {
+          "food": 212,
+          "firewood": 56.866667,
+          "power": 0,
+          "medicine": 0
+        },
+        "self": {
+          "id": "npc_01",
+          "location": "dorm-a",
+          "alive": true,
+          "hunger": 31.800000000000097,
+          "stamina": 41.719999999999985,
+          "health": 59.57999999999983,
+          "san": 94.39999999999976,
+          "bodyTemp": 36.5,
+          "promises": []
+        },
+        "selected": {
+          "id": "a-4d4ba3b4334c",
+          "kind": "medical",
+          "description": "按分工处理伤病",
+          "parameters": {
+            "action": "medical",
+            "medicine": 1
+          },
+          "preconditions": [
+            "medicine >= 1"
+          ],
+          "text": " 按分工处理伤病 [medical] {action=medical medicine=1} 前提:medicine >= 1"
+        },
+        "modelScore": {
+          "candidateId": "a-4d4ba3b4334c",
+          "logit": 0.9417548179626465,
+          "probability": 0.4027383751222265
+        },
+        "selectedIndex": 0,
+        "taskRulePresent": true,
+        "explicitMedicinePrecondition": true,
+        "medicineKnownBeforeInference": 0,
+        "selectedMedicineCost": 1,
+        "maskedScoreDiagnosticAlternative": {
+          "action": "rest",
+          "candidateId": "a-63ae70079e2d",
+          "logit": 0.3148256540298462,
+          "originalProbability": 0.21515484838823284
+        },
+        "diagnosticScope": "Re-ranking existing logits only; this is not a replay or a proved alternative episode."
+      },
+      {
+        "requestId": "in-290-r8-score-npc_02",
+        "actorId": "npc_02",
+        "day": 4,
+        "minuteOfDay": 840,
+        "reason": "insufficient_medicine",
+        "inputSha256": "5e4adc8c59103043a1bcd9ebb653456e95a4aec62cc5f10903d210dbc1b0c8cc",
+        "resources": {
+          "food": 212,
+          "firewood": 56.866667,
+          "power": 0,
+          "medicine": 0
+        },
+        "self": {
+          "id": "npc_02",
+          "location": "dorm-b",
+          "alive": true,
+          "hunger": 41.200000000000095,
+          "stamina": 42.69999999999999,
+          "health": 59.57999999999983,
+          "san": 93.19999999999976,
+          "bodyTemp": 36.5,
+          "promises": []
+        },
+        "selected": {
+          "id": "a-4d4ba3b4334c",
+          "kind": "medical",
+          "description": "按分工处理伤病",
+          "parameters": {
+            "action": "medical",
+            "medicine": 1
+          },
+          "preconditions": [
+            "medicine >= 1"
+          ],
+          "text": " 按分工处理伤病 [medical] {action=medical medicine=1} 前提:medicine >= 1"
+        },
+        "modelScore": {
+          "candidateId": "a-4d4ba3b4334c",
+          "logit": 0.5275140404701233,
+          "probability": 0.3224047964022398
+        },
+        "selectedIndex": 0,
+        "taskRulePresent": true,
+        "explicitMedicinePrecondition": true,
+        "medicineKnownBeforeInference": 0,
+        "selectedMedicineCost": 1,
+        "maskedScoreDiagnosticAlternative": {
+          "action": "rest",
+          "candidateId": "a-63ae70079e2d",
+          "logit": 0.42230936884880066,
+          "originalProbability": 0.29020954066423554
+        },
+        "diagnosticScope": "Re-ranking existing logits only; this is not a replay or a proved alternative episode."
+      },
+      {
+        "requestId": "in-297-r8-score-npc_01",
+        "actorId": "npc_01",
+        "day": 4,
+        "minuteOfDay": 900,
+        "reason": "insufficient_medicine",
+        "inputSha256": "6894c64a7f9376e0d7af2aa614afcc4aea7e03956f5f0bb687a1896febea3435",
+        "resources": {
+          "food": 212,
+          "firewood": 55.866667,
+          "power": 0,
+          "medicine": 0
+        },
+        "self": {
+          "id": "npc_01",
+          "location": "dorm-a",
+          "alive": true,
+          "hunger": 30.900000000000098,
+          "stamina": 40.219999999999985,
+          "health": 58.379999999999825,
+          "san": 94.19999999999976,
+          "bodyTemp": 36.5,
+          "promises": []
+        },
+        "selected": {
+          "id": "a-4d4ba3b4334c",
+          "kind": "medical",
+          "description": "按分工处理伤病",
+          "parameters": {
+            "action": "medical",
+            "medicine": 1
+          },
+          "preconditions": [
+            "medicine >= 1"
+          ],
+          "text": " 按分工处理伤病 [medical] {action=medical medicine=1} 前提:medicine >= 1"
+        },
+        "modelScore": {
+          "candidateId": "a-4d4ba3b4334c",
+          "logit": 0.9065358638763428,
+          "probability": 0.39113722782306654
+        },
+        "selectedIndex": 0,
+        "taskRulePresent": true,
+        "explicitMedicinePrecondition": true,
+        "medicineKnownBeforeInference": 0,
+        "selectedMedicineCost": 1,
+        "maskedScoreDiagnosticAlternative": {
+          "action": "eat",
+          "candidateId": "a-bae1f2dab8ef",
+          "logit": 0.31248337030410767,
+          "originalProbability": 0.21594116172129899
+        },
+        "diagnosticScope": "Re-ranking existing logits only; this is not a replay or a proved alternative episode."
+      },
+      {
+        "requestId": "in-298-r8-score-npc_02",
+        "actorId": "npc_02",
+        "day": 4,
+        "minuteOfDay": 900,
+        "reason": "insufficient_medicine",
+        "inputSha256": "4e6a4a03635471e6921d7886af6aa9307becb8864db897ca3656ec84494f516a",
+        "resources": {
+          "food": 212,
+          "firewood": 55.866667,
+          "power": 0,
+          "medicine": 0
+        },
+        "self": {
+          "id": "npc_02",
+          "location": "dorm-b",
+          "alive": true,
+          "hunger": 40.3000000000001,
+          "stamina": 41.19999999999999,
+          "health": 58.379999999999825,
+          "san": 92.99999999999976,
+          "bodyTemp": 36.5,
+          "promises": []
+        },
+        "selected": {
+          "id": "a-4d4ba3b4334c",
+          "kind": "medical",
+          "description": "按分工处理伤病",
+          "parameters": {
+            "action": "medical",
+            "medicine": 1
+          },
+          "preconditions": [
+            "medicine >= 1"
+          ],
+          "text": " 按分工处理伤病 [medical] {action=medical medicine=1} 前提:medicine >= 1"
+        },
+        "modelScore": {
+          "candidateId": "a-4d4ba3b4334c",
+          "logit": 0.656944990158081,
+          "probability": 0.3589787382257872
+        },
+        "selectedIndex": 0,
+        "taskRulePresent": true,
+        "explicitMedicinePrecondition": true,
+        "medicineKnownBeforeInference": 0,
+        "selectedMedicineCost": 1,
+        "maskedScoreDiagnosticAlternative": {
+          "action": "rest",
+          "candidateId": "a-63ae70079e2d",
+          "logit": 0.31411343812942505,
+          "originalProbability": 0.25478794468052707
+        },
+        "diagnosticScope": "Re-ranking existing logits only; this is not a replay or a proved alternative episode."
+      },
+      {
+        "requestId": "in-305-r8-score-npc_01",
+        "actorId": "npc_01",
+        "day": 4,
+        "minuteOfDay": 960,
+        "reason": "insufficient_medicine",
+        "inputSha256": "513fc488cba6151202289555bb1a126887727dcb58190ed321401fd024c22621",
+        "resources": {
+          "food": 210,
+          "firewood": 54.866667,
+          "power": 0,
+          "medicine": 0
+        },
+        "self": {
+          "id": "npc_01",
+          "location": "dorm-a",
+          "alive": true,
+          "hunger": 30.0000000000001,
+          "stamina": 38.719999999999985,
+          "health": 57.17999999999982,
+          "san": 93.99999999999976,
+          "bodyTemp": 36.5,
+          "promises": []
+        },
+        "selected": {
+          "id": "a-4d4ba3b4334c",
+          "kind": "medical",
+          "description": "按分工处理伤病",
+          "parameters": {
+            "action": "medical",
+            "medicine": 1
+          },
+          "preconditions": [
+            "medicine >= 1"
+          ],
+          "text": " 按分工处理伤病 [medical] {action=medical medicine=1} 前提:medicine >= 1"
+        },
+        "modelScore": {
+          "candidateId": "a-4d4ba3b4334c",
+          "logit": 1.0345523357391357,
+          "probability": 0.4338708883947499
+        },
+        "selectedIndex": 0,
+        "taskRulePresent": true,
+        "explicitMedicinePrecondition": true,
+        "medicineKnownBeforeInference": 0,
+        "selectedMedicineCost": 1,
+        "maskedScoreDiagnosticAlternative": {
+          "action": "rest",
+          "candidateId": "a-63ae70079e2d",
+          "logit": 0.3606877326965332,
+          "originalProbability": 0.22115910942375733
+        },
+        "diagnosticScope": "Re-ranking existing logits only; this is not a replay or a proved alternative episode."
+      },
+      {
+        "requestId": "in-306-r8-score-npc_02",
+        "actorId": "npc_02",
+        "day": 4,
+        "minuteOfDay": 960,
+        "reason": "insufficient_medicine",
+        "inputSha256": "0982feb93a3ede2c0a2d910d92b492d98ef44e5e26ebd84a284419b0de208ee0",
+        "resources": {
+          "food": 210,
+          "firewood": 54.866667,
+          "power": 0,
+          "medicine": 0
+        },
+        "self": {
+          "id": "npc_02",
+          "location": "dorm-b",
+          "alive": true,
+          "hunger": 39.4000000000001,
+          "stamina": 39.69999999999999,
+          "health": 57.17999999999982,
+          "san": 92.79999999999976,
+          "bodyTemp": 36.5,
+          "promises": []
+        },
+        "selected": {
+          "id": "a-4d4ba3b4334c",
+          "kind": "medical",
+          "description": "按分工处理伤病",
+          "parameters": {
+            "action": "medical",
+            "medicine": 1
+          },
+          "preconditions": [
+            "medicine >= 1"
+          ],
+          "text": " 按分工处理伤病 [medical] {action=medical medicine=1} 前提:medicine >= 1"
+        },
+        "modelScore": {
+          "candidateId": "a-4d4ba3b4334c",
+          "logit": 0.6387344598770142,
+          "probability": 0.33191370179193813
+        },
+        "selectedIndex": 0,
+        "taskRulePresent": true,
+        "explicitMedicinePrecondition": true,
+        "medicineKnownBeforeInference": 0,
+        "selectedMedicineCost": 1,
+        "maskedScoreDiagnosticAlternative": {
+          "action": "rest",
+          "candidateId": "a-63ae70079e2d",
+          "logit": 0.29343992471694946,
+          "originalProbability": 0.23499881359652747
+        },
+        "diagnosticScope": "Re-ranking existing logits only; this is not a replay or a proved alternative episode."
+      },
+      {
+        "requestId": "in-313-r8-score-npc_01",
+        "actorId": "npc_01",
+        "day": 4,
+        "minuteOfDay": 1020,
+        "reason": "insufficient_medicine",
+        "inputSha256": "a577ef7459cf8ff4f540359486898c16000cc36befef1d821f5b4fd62c268fd5",
+        "resources": {
+          "food": 210,
+          "firewood": 53.866667,
+          "power": 0,
+          "medicine": 0
+        },
+        "self": {
+          "id": "npc_01",
+          "location": "dorm-a",
+          "alive": true,
+          "hunger": 29.1000000000001,
+          "stamina": 37.219999999999985,
+          "health": 55.97999999999982,
+          "san": 93.79999999999976,
+          "bodyTemp": 36.5,
+          "promises": []
+        },
+        "selected": {
+          "id": "a-4d4ba3b4334c",
+          "kind": "medical",
+          "description": "按分工处理伤病",
+          "parameters": {
+            "action": "medical",
+            "medicine": 1
+          },
+          "preconditions": [
+            "medicine >= 1"
+          ],
+          "text": " 按分工处理伤病 [medical] {action=medical medicine=1} 前提:medicine >= 1"
+        },
+        "modelScore": {
+          "candidateId": "a-4d4ba3b4334c",
+          "logit": 0.8606956601142883,
+          "probability": 0.38403337763421586
+        },
+        "selectedIndex": 0,
+        "taskRulePresent": true,
+        "explicitMedicinePrecondition": true,
+        "medicineKnownBeforeInference": 0,
+        "selectedMedicineCost": 1,
+        "maskedScoreDiagnosticAlternative": {
+          "action": "rest",
+          "candidateId": "a-63ae70079e2d",
+          "logit": 0.2609618902206421,
+          "originalProbability": 0.21081810495008194
+        },
+        "diagnosticScope": "Re-ranking existing logits only; this is not a replay or a proved alternative episode."
+      },
+      {
+        "requestId": "in-314-r8-score-npc_02",
+        "actorId": "npc_02",
+        "day": 4,
+        "minuteOfDay": 1020,
+        "reason": "insufficient_medicine",
+        "inputSha256": "24e1080c1b6c400e4a30534e17a6a80beaef900f7b7e538bb6c90fb87d4a70da",
+        "resources": {
+          "food": 210,
+          "firewood": 53.866667,
+          "power": 0,
+          "medicine": 0
+        },
+        "self": {
+          "id": "npc_02",
+          "location": "dorm-b",
+          "alive": true,
+          "hunger": 38.5000000000001,
+          "stamina": 38.19999999999999,
+          "health": 55.97999999999982,
+          "san": 92.59999999999975,
+          "bodyTemp": 36.5,
+          "promises": []
+        },
+        "selected": {
+          "id": "a-4d4ba3b4334c",
+          "kind": "medical",
+          "description": "按分工处理伤病",
+          "parameters": {
+            "action": "medical",
+            "medicine": 1
+          },
+          "preconditions": [
+            "medicine >= 1"
+          ],
+          "text": " 按分工处理伤病 [medical] {action=medical medicine=1} 前提:medicine >= 1"
+        },
+        "modelScore": {
+          "candidateId": "a-4d4ba3b4334c",
+          "logit": 0.8384805917739868,
+          "probability": 0.37767956849104345
+        },
+        "selectedIndex": 0,
+        "taskRulePresent": true,
+        "explicitMedicinePrecondition": true,
+        "medicineKnownBeforeInference": 0,
+        "selectedMedicineCost": 1,
+        "maskedScoreDiagnosticAlternative": {
+          "action": "rest",
+          "candidateId": "a-63ae70079e2d",
+          "logit": 0.37272223830223083,
+          "originalProbability": 0.23705395660901368
+        },
+        "diagnosticScope": "Re-ranking existing logits only; this is not a replay or a proved alternative episode."
+      }
+    ],
+    "rootCause": "Task-specific PREPARE_MEDICAL appends an explicitly medicine>=1 candidate without the generic public-resource guard; the model selects it despite public medicine=0. The authority rejects correctly.",
+    "exclusions": [
+      "Not unknown warehouse stock",
+      "Not a post-inference resource race: medicine is already zero in all 10 exact model inputs",
+      "Not a scoring-service failure"
+    ],
+    "modelContribution": "The model violates its own visible precondition on all 10 attempts; medical has no positive weak-label examples in the 96-case corpus. Distribution shift is a supported limitation, not a proven causal ablation.",
+    "scope": "V1 audit only; no frozen V2 code/data modified."
+  },
+  "limitations": [
+    "One paired seed, original full-map mode disabled; equal perfect/8 survival is a tie, not an improvement.",
+    "Forty council rows per arm are reference policy; only 320 rows in the JEV arm are real neural action decisions.",
+    "Applied counts include communication/no-op-like repeated moves, and do not by themselves prove promise completion.",
+    "V1 taskCompleted trajectory field underreports domain-only task completion; compare final task state and committed task_completed events.",
+    "The same v1 policy/data errors are preserved; this audit does not rerun or relabel this episode.",
+    "No live certificate, calibrated risk guarantee, independently reviewed long-term memory dataset, or generalization claim."
+  ],
+  "evidenceMembers": [
+    {
+      "member": "online-deploy-v1.tar.gz",
+      "sha256": "43415a892eb55d6a9f0592e58e31aed21e3e3227127e0f9e177bfcfe6b474e1e",
+      "bytes": 355497
+    },
+    {
+      "member": "runs/online-v1/fourday-exit.json",
+      "sha256": "8d3e31f60f3dfaec28a0ca486ff91afb189fb9fdd781c9f24ab28614bf3a4bc3",
+      "bytes": 72
+    },
+    {
+      "member": "runs/online-v1/reference-exit.json",
+      "sha256": "eea3823d8ebac36516de769180711206217f0b3da9d378235f2da869dd6bbb53",
+      "bytes": 73
+    },
+    {
+      "member": "source/artifacts/r8-train-play/live-fourday-v1/runtime-jev-experimental-live-pair-1-2026-11-17T03-44-26-034Z.json",
+      "sha256": "22dbbe9c8e93ed47b018ff33c9dd37df54154b6944cf140454fb8f63d0904714",
+      "bytes": 434644
+    },
+    {
+      "member": "source/artifacts/r8-train-play/live-fourday-v1/scorer-jev-experimental-live-pair-1-2026-11-17T03-44-26-034Z.jsonl",
+      "sha256": "7f4e4f5963c71806b9c5e1ba9eaacf0efa58838446a2d1f86ab797f2870e08ff",
+      "bytes": 7552292
+    },
+    {
+      "member": "source/artifacts/r8-train-play/live-fourday-v1/session-jev-experimental-live-pair-1-2026-11-17T03-44-26-034Z.json",
+      "sha256": "585a1144b41142e6a62a7f8075b019e95b0b52598721f2de2d5429e61bd61200",
+      "bytes": 6269246
+    },
+    {
+      "member": "source/artifacts/r8-train-play/live-fourday-v1/summary-jev-experimental-live-pair-1-2026-11-17T03-44-26-034Z.json",
+      "sha256": "00a7117a6ac59313042f08ad93fb3577736528e26bd4df76ecfb6f393c4f23e3",
+      "bytes": 28053
+    },
+    {
+      "member": "source/artifacts/r8-train-play/live-fourday-v1/trajectory-jev-experimental-live-pair-1-2026-11-17T03-44-26-034Z.jsonl",
+      "sha256": "b04f9a3cae2717966352fe4b22846f5cc395336aa6e860cef00616bda7b22445",
+      "bytes": 2593091
+    },
+    {
+      "member": "source/artifacts/r8-train-play/reference-fourday-v1/runtime-reference-live-pair-1-2026-11-17T03-43-35-566Z.json",
+      "sha256": "397beed6d6a9f9008fd16ff208342be749279ee8d2398463f86b4ebcd13a0451",
+      "bytes": 447348
+    },
+    {
+      "member": "source/artifacts/r8-train-play/reference-fourday-v1/session-reference-live-pair-1-2026-11-17T03-43-35-566Z.json",
+      "sha256": "685691a2ce1ead39c40e2b34bca0fd74b96f47fcfbc5b73bf1d3c5ae0f02a74f",
+      "bytes": 6283776
+    },
+    {
+      "member": "source/artifacts/r8-train-play/reference-fourday-v1/summary-reference-live-pair-1-2026-11-17T03-43-35-566Z.json",
+      "sha256": "137e34234c93c9e63d00faf4b05aa8d547b962138e0a1d05991b2bdd34851463",
+      "bytes": 27426
+    },
+    {
+      "member": "source/artifacts/r8-train-play/reference-fourday-v1/trajectory-reference-live-pair-1-2026-11-17T03-43-35-566Z.jsonl",
+      "sha256": "1b21287f0ba026edfe95bd5a53722d76ec9f4faf9b2447f934373f54b79b97b6",
+      "bytes": 2621126
+    }
+  ],
+  "reproduce": "python analyze-real-v1.py --archive <v1-full-evidence.tar.gz> --corpus <corpus-96-v1/cases.jsonl> --out <new-output.json>"
+}

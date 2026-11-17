@@ -1,0 +1,57 @@
+{
+  "schema": "frostecho.g04.batch/1",
+  "batchId": "g04-live-20261030-r1",
+  "mode": "live",
+  "scenarios": [
+    "n1",
+    "n2",
+    "n3"
+  ],
+  "orders": [
+    "ac",
+    "ca"
+  ],
+  "policies": [
+    "legacy",
+    "event"
+  ],
+  "plannedEpisodes": [
+    "n1-ac-legacy",
+    "n1-ac-event",
+    "n2-ac-legacy",
+    "n2-ac-event",
+    "n3-ac-legacy",
+    "n3-ac-event",
+    "n1-ca-legacy",
+    "n1-ca-event",
+    "n2-ca-legacy",
+    "n2-ca-event",
+    "n3-ca-legacy",
+    "n3-ca-event"
+  ],
+  "thinking": true,
+  "createdAt": "2026-10-30T10:31:43.360Z",
+  "version": {
+    "commit": "11458a1a600d5f181c845959c0ac6331d276c62e",
+    "dirty": false,
+    "dirtyFiles": [],
+    "sourceFingerprint": "d1cdd2a41010fc895089334e676147fcf48865e85a5fedd40e23cfc1a13931a0",
+    "promptFingerprint": "8d66afdf043633df7103189682fdd5b1647e293554bba761825529f1364c9ae2",
+    "node": "v20.18.0",
+    "platform": "linux"
+  },
+  "sourceFingerprint": "d1cdd2a41010fc895089334e676147fcf48865e85a5fedd40e23cfc1a13931a0",
+  "health": {
+    "ok": true,
+    "status": 200,
+    "modelsUrlPath": "/v1/models",
+    "expectedModel": "qwen3.8-27b",
+    "models": [
+      "qwen3.8-27b"
+    ],
+    "modelMatch": true,
+    "latencyMs": 26
+  },
+  "status": "finished",
+  "completedEpisodes": 12
+}

@@ -1,0 +1,182 @@
+{
+  "schema": "frostecho.g11-latency.plan/1",
+  "at": "2026-11-06T09:25:00.446Z",
+  "dir": "/data3/DATA/project/project_meishijiang/FrostEcho/research/decision-choice/latency",
+  "http": "http://127.0.0.1:18872/v1/chat/completions",
+  "model": "qwen3.8-27b",
+  "freeze": {
+    "temperature": 0,
+    "maxTokens": 1024,
+    "stream": false,
+    "timeoutMs": 120000
+  },
+  "identity": {
+    "recordedAt": "2026-11-06",
+    "source": "handoff/20261106-g11-verify-latency/performance-review/REPORT.md + results.json",
+    "sourceClaim": "static verification only: no service GET, no model POST was made to collect these values",
+    "service": {
+      "name": "qwen3.8-27b",
+      "endpoint": "http://127.0.0.1:18872/v1/chat/completions",
+      "vllm": "0.32.0",
+      "xgrammar": "0.2.8",
+      "apiPid": 288413,
+      "tensorParallel": 4,
+      "gpuMemoryUtilization": 0.25,
+      "maxNumSeqs": 1
+    },
+    "modelDir": "/data2/model_weights/Qwen3.8-27B",
+    "modelDeclaration": {
+      "model_type": "qwen3_5",
+      "architectures": [
+        "Qwen3_5ForConditionalGeneration"
+      ],
+      "note": "config.json declaration only; an architecture family is not a weight identity"
+    },
+    "hashes": {
+      "config.json": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab",
+      "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+      "chatTemplateRenderOn": "7f976d139c2fdc9d425d30bc1aec142a066aa5c2a908171169344bf9683f993a",
+      "chatTemplateRenderOff": "749963934760517924c644a53ce329c47730cecc2660dbeb7c56af6dabba31ec"
+    },
+    "template": {
+      "thinkingDefaultEffort": "xhigh",
+      "note": "with enable_thinking=true and no explicit effort the deployed template injects the xhigh instruction; with false it emits an empty think block. CPU render of the att-0002 messages produced 393 prompt tokens on and 353 off, matching the recorded 393."
+    },
+    "runtime": {
+      "node": "20.18.0"
+    },
+    "unproven": [
+      "the served weights are not identified beyond the service name and config declaration",
+      "engine-side quality and latency under enable_thinking=false are NOT measured here",
+      "these hashes were collected in a prior review, not re-read by this probe"
+    ]
+  },
+  "inputs": [
+    {
+      "inputId": "Y",
+      "label": "att-0002: the accepted-yield pending action (wait)",
+      "source": {
+        "path": "artifacts/g11-live/g11-live-20261105-r1/w1/w1-prefix-run.run.json",
+        "sha256": "738275e8ae1c92bec82f2dac69860b8ec126782e219fe933e9f7451d18f53e89",
+        "attemptId": "att-0002",
+        "phase": "action"
+      },
+      "body": {
+        "model": "qwen3.8-27b",
+        "temperature": 0,
+        "max_tokens": 1024,
+        "stream": false,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "Reply with one JSON object and no other text.\nallowedActions: [\"move\",\"eat\",\"stop\",\"wait\"]\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\n\"stop\" ends your current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows the outer restock-wait and new-cycle rules.\n\"wait\" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {\"type\":\"wait\"} only when allowedActions includes \"wait\".\nactiveGoal: {\"kind\":\"yield_once\",\"requestId\":\"w1-prefix-req-1\",\"expiresAtSimTime\":1}\nYour ONLY current goal is this agreement with the player: keep the food available to the player until the request expires, and the agreement is fulfilled only if the player actually eats before the deadline (logical time expiresAtSimTime).\nYour own hunger is background state, not this session's goal. Eating the food yourself before the player eats breaks the agreement; moving elsewhere does not.\nobservation: {\"id\":\"npc_a\",\"location\":\"kitchen\",\"hunger\":40,\"foodHere\":1,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null"
+          }
+        ]
+      },
+      "bodySha256": "c9dc5449d5f7bee4935203e9be9dd7134786247555f9066a61140493a1f515be",
+      "promptSha256": "530fa0b3a2763578432bd0b7e76eee8ab2f72b77ead2ee29935c132b592273ae"
+    },
+    {
+      "inputId": "N",
+      "label": "att-0003: the restored ordinary-hunger action (eat)",
+      "source": {
+        "path": "artifacts/g11-live/g11-live-20261105-r1/w1/w1-wait-run.run.json",
+        "sha256": "9ed53e6c7a1818c4e9321bb5cf07263f3f79054ce315e9e93c130e65852f93d2",
+        "attemptId": "att-0003",
+        "phase": "action"
+      },
+      "body": {
+        "model": "qwen3.8-27b",
+        "temperature": 0,
+        "max_tokens": 1024,
+        "stream": false,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "Reply with one JSON object and no other text.\nallowedActions: [\"move\",\"eat\",\"stop\",\"wait\"]\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\n\"stop\" ends your current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows the outer restock-wait and new-cycle rules.\n\"wait\" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {\"type\":\"wait\"} only when allowedActions includes \"wait\".\ngoal: hunger >= 70\nobservation: {\"id\":\"npc_a\",\"location\":\"kitchen\",\"hunger\":30,\"foodHere\":2,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null"
+          }
+        ]
+      },
+      "bodySha256": "78c3ea73f39baeb215ef4e973a612e1db0f23be44d95fc8af94a68b4e090e09f",
+      "promptSha256": "7da5399104d6ca82e4ec2b61950b61a1802504546fc4811521dca8015c32ce71"
+    }
+  ],
+  "matrix": [
+    {
+      "index": 0,
+      "pairId": "Y#1",
+      "inputId": "Y",
+      "arm": "off",
+      "rep": 1,
+      "order": 1
+    },
+    {
+      "index": 1,
+      "pairId": "Y#1",
+      "inputId": "Y",
+      "arm": "on",
+      "rep": 1,
+      "order": 2
+    },
+    {
+      "index": 2,
+      "pairId": "N#1",
+      "inputId": "N",
+      "arm": "on",
+      "rep": 1,
+      "order": 3
+    },
+    {
+      "index": 3,
+      "pairId": "N#1",
+      "inputId": "N",
+      "arm": "off",
+      "rep": 1,
+      "order": 4
+    },
+    {
+      "index": 4,
+      "pairId": "Y#2",
+      "inputId": "Y",
+      "arm": "on",
+      "rep": 2,
+      "order": 5
+    },
+    {
+      "index": 5,
+      "pairId": "Y#2",
+      "inputId": "Y",
+      "arm": "off",
+      "rep": 2,
+      "order": 6
+    },
+    {
+      "index": 6,
+      "pairId": "N#2",
+      "inputId": "N",
+      "arm": "off",
+      "rep": 2,
+      "order": 7
+    },
+    {
+      "index": 7,
+      "pairId": "N#2",
+      "inputId": "N",
+      "arm": "on",
+      "rep": 2,
+      "order": 8
+    }
+  ],
+  "proposedCalls": 8,
+  "authorizedCalls": 0,
+  "limits": {
+    "perArm": 4,
+    "total": 0
+  }
+}

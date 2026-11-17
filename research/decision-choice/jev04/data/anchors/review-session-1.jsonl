@@ -1,0 +1,64 @@
+{"caseId":"gR01-A","labels":["eat_self"],"rule":"R2/R5 已确认取消的授权方，当场听到取消，因此不再执行留饭承诺","confidence":"high"}
+{"caseId":"gR01-B","labels":["leave_food"],"rule":"R1/R5 本人没有听到取消，所以根据可见信息保留原承诺","confidence":"high"}
+{"caseId":"gR01-B","labels":["leave_food"],"rule":"R1/R5 本人没有听到取消，所以根据可见信息保留原承诺","confidence":"high"}
+{"caseId":"gR02-A","labels":["leave_food"],"rule":"R1 取消只告诉了别人，阿岚没有获知，所以仍按留饭执行","confidence":"high"}
+{"caseId":"gR02-B","labels":["eat_self"],"rule":"R2/R5 已获知授权方取消，留饭作废","confidence":"high"}
+{"caseId":"gR03-A","labels":["leave_food","verify"],"rule":"R2 小北作为第三方没有撤销权，承诺仍然有效；先核实传言","confidence":"medium"}
+{"caseId":"gR03-B","labels":["eat_self"],"rule":"R2 承诺方授权的取消有效，留饭作废","confidence":"high"}
+{"caseId":"gR04-A","labels":["leave_food"],"rule":"R1 没有取消，承诺继续有效","confidence":"high"}
+{"caseId":"gR04-B","labels":["leave_food"],"rule":"R2 取消未经授权，且本人没有听到，因此不改变有效承诺","confidence":"high"}
+{"caseId":"gR05-A","labels":["leave_food","ask_clarify"],"rule":"R5 没有获知取消，保留旧知识；可就归属进行澄清","confidence":"low"}
+{"caseId":"gR05-B","labels":["eat_self"],"rule":"R2/R5 已获知授权方取消，因此不执行过时承诺","confidence":"high"}
+{"caseId":"gR06-A","labels":["leave_food","verify"],"rule":"R3 转述不构成有效指令，先核实再改变安排","confidence":"medium"}
+{"caseId":"gR06-B","labels":["eat_self"],"rule":"R2 已直接获知取消，留饭作废","confidence":"high"}
+{"caseId":"gR07-A","labels":["eat_self"],"rule":"R2/R5 授权方面对面取消，阿澈也点头确认，因此不再留饭","confidence":"high"}
+{"caseId":"gR07-B","labels":["leave_food"],"rule":"R1 没有听到取消，因此保留原承诺","confidence":"high"}
+{"caseId":"gR08-A","labels":["leave_food","verify"],"rule":"R1/R2 议论来源不明，不改变有效承诺；需要核实说话者","confidence":"medium"}
+{"caseId":"gR08-B","labels":["eat_self"],"rule":"R2 已经确认是授权方取消，因此停止留饭","confidence":"medium"}
+{"caseId":"gQ01-A","labels":["verify","ask_clarify"],"rule":"R3 quoteDepth=1 属于转述，不构成新的有效指令","confidence":"medium"}
+{"caseId":"gQ01-B","labels":["verify","ask_clarify"],"rule":"R3 quoteDepth=0 但未获授权，仍按不可信的转述处理","confidence":"medium"}
+{"caseId":"gQ02-A","labels":["verify","ask_clarify"],"rule":"R3 quoteDepth=2 的二次转述无效，需要核实","confidence":"medium"}
+{"caseId":"gQ02-B","labels":["verify","ask_clarify"],"rule":"R3 未获授权的转述不构成有效指令","confidence":"medium"}
+{"caseId":"gQ03-A","labels":["leave_food"],"rule":"R3 quoteDepth=0 且为授权直接表态，承诺成立","confidence":"high"}
+{"caseId":"gQ03-B","labels":["verify","ask_clarify"],"rule":"R3 未获授权，不作为有效承诺执行","confidence":"medium"}
+{"caseId":"gQ04-A","labels":["verify","ask_clarify"],"rule":"R3 没有来源、也没有对象的转述，需要核实是谁取消的","confidence":"medium"}
+{"caseId":"gQ04-B","labels":["verify","ask_clarify"],"rule":"R3 未获授权且没有对象，仍属于转述层级","confidence":"medium"}
+{"caseId":"gQ05-A","labels":["verify","ask_clarify"],"rule":"R3 复述昨天原话，不是今天获授权的指令","confidence":"medium"}
+{"caseId":"gQ05-B","labels":["verify","ask_clarify"],"rule":"R3 quoteDepth=2 的转述层级更高，更不构成指令","confidence":"medium"}
+{"caseId":"gQ06-A","labels":["leave_food","verify"],"rule":"R3 维修工转述不构成有效取消，先核实其身份","confidence":"medium"}
+{"caseId":"gQ06-B","labels":["leave_food","verify"],"rule":"R3 说话人无法核实且未获授权，原承诺仍然有效","confidence":"medium"}
+{"caseId":"gQ07-A","labels":["eat_self"],"rule":"R3 获授权的直接取消有效，因此不执行过时承诺","confidence":"high"}
+{"caseId":"gQ07-B","labels":["leave_food","verify"],"rule":"R3 未获授权的表态不作数，保留原承诺并核实","confidence":"medium"}
+{"caseId":"gQ08-A","labels":["verify","ask_clarify"],"rule":"R3 引用旧话属于转述，且与今日改口冲突，需要核实","confidence":"low"}
+{"caseId":"gQ08-B","labels":["verify","ask_clarify"],"rule":"R3 引用旧话不构成有效指令，需要确认最新口径","confidence":"low"}
+{"caseId":"gA01-A","labels":["eat_self","address_npc"],"rule":"R4 presentOthers=1 可以唯一指向，按指令自己先吃","confidence":"medium"}
+{"caseId":"gA01-B","labels":["wait"],"rule":"R4 没有可指向的收话人，因此等待","confidence":"medium"}
+{"caseId":"gA02-A","labels":["ask_clarify"],"rule":"R4 presentOthers>=2 且未点名，需要先澄清","confidence":"high"}
+{"caseId":"gA02-B","labels":["eat_self","address_npc"],"rule":"R4 presentOthers=1 可以唯一指向，可直接照做","confidence":"medium"}
+{"caseId":"gA03-A","labels":["eat_self","address_npc"],"rule":"R4 explicitAddressee 点名阿岚，收话人唯一","confidence":"high"}
+{"caseId":"gA03-B","labels":["ask_clarify"],"rule":"R4 未点名且 presentOthers>=2，无法唯一指向","confidence":"high"}
+{"caseId":"gA04-A","labels":["wait"],"rule":"R4 presentOthers=0 无人，因此等待","confidence":"high"}
+{"caseId":"gA04-B","labels":["eat_self","address_npc"],"rule":"R4 presentOthers=1 可以唯一指向（与空房描述冲突）","confidence":"low"}
+{"caseId":"gA05-A","labels":["ask_clarify"],"rule":"R4 未点名且 presentOthers>=2，需要澄清留给谁","confidence":"high"}
+{"caseId":"gA05-B","labels":["leave_food","address_npc"],"rule":"R4 presentOthers=1 可以唯一指向，可以执行留饭","confidence":"medium"}
+{"caseId":"gA06-A","labels":["address_npc"],"rule":"R4 explicitAddressee 点名阿禾转交，收话人唯一","confidence":"medium"}
+{"caseId":"gA06-B","labels":["ask_clarify"],"rule":"R4 未点名且 presentOthers>=2，需要澄清给谁","confidence":"medium"}
+{"caseId":"gA07-A","labels":["ask_clarify","eat_self"],"rule":"R4 presentOthers>=2 且没有安排先后，先澄清","confidence":"medium"}
+{"caseId":"gA07-B","labels":["eat_self","address_npc"],"rule":"R4 presentOthers=1 可以唯一指向，可以先吃","confidence":"medium"}
+{"caseId":"gA08-A","labels":["leave_food","address_npc"],"rule":"R4 presentOthers=1 可以唯一指向，执行留到晚上","confidence":"medium"}
+{"caseId":"gA08-B","labels":["ask_clarify"],"rule":"R4 presentOthers>=2 未点名，需要澄清","confidence":"medium"}
+{"caseId":"gY01-A","labels":["eat_self"],"rule":"R5 已知取消，不得执行过时承诺","confidence":"high"}
+{"caseId":"gY01-B","labels":["leave_food"],"rule":"R5 未获知取消，保留旧知识；这不是记忆错误","confidence":"high"}
+{"caseId":"gY02-A","labels":["leave_food"],"rule":"R5 取消只告知阿澈，阿岚不知情，仍执行旧承诺","confidence":"high"}
+{"caseId":"gY02-B","labels":["eat_self"],"rule":"R5 已知取消，停止留饭","confidence":"high"}
+{"caseId":"gY03-A","labels":["ask_clarify"],"rule":"R6 foodStock=0 无法实际留饭，需要澄清或求援","confidence":"high"}
+{"caseId":"gY03-B","labels":["leave_food"],"rule":"R5 未获知取消且库存足够，按旧承诺留饭","confidence":"high"}
+{"caseId":"gY04-A","labels":["eat_self"],"rule":"R5 已知取消，库存充足也不执行旧承诺","confidence":"high"}
+{"caseId":"gY04-B","labels":["eat_self"],"rule":"R5/R6 已知取消，库存为0不改变取消后的决策","confidence":"medium"}
+{"caseId":"gY05-A","labels":["leave_food","ask_clarify"],"rule":"R6 库存仅一份，不足承诺量，部分留饭并澄清","confidence":"low"}
+{"caseId":"gY05-B","labels":["ask_clarify"],"rule":"R6 foodStock=0 不能承诺实际留饭，需要澄清或求援","confidence":"high"}
+{"caseId":"gY06-A","labels":["eat_self"],"rule":"R5 阿禾听清取消，停止留饭","confidence":"high"}
+{"caseId":"gY06-B","labels":["leave_food"],"rule":"R5 未获知取消，保留旧承诺","confidence":"high"}
+{"caseId":"gY07-A","labels":["leave_food"],"rule":"R2/R5 第三方没有转达，取消不生效，且本人不知情","confidence":"high"}
+{"caseId":"gY07-B","labels":["eat_self"],"rule":"R5 已知取消，不执行过时承诺","confidence":"high"}
+{"caseId":"gY08-A","labels":["leave_food"],"rule":"R5 误认为他人安排等于未获知取消，保留旧承诺","confidence":"medium"}

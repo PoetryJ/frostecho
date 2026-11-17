@@ -1,0 +1,254 @@
+{
+  "schema": "frostecho.g09.episode/2",
+  "episodeId": "g09-r1-s60-self_only",
+  "cell": "s60-self_only",
+  "satiety": 60,
+  "arm": "self_only",
+  "outcome": "completed",
+  "request": {
+    "schema": "frostecho.g09.goal-request/2",
+    "requestId": "g09-r1-s60-self_only-req-1",
+    "episodeId": "g09-r1-s60-self_only",
+    "from": "player",
+    "to": "npc_a",
+    "kind": "yield_once",
+    "text": "请把最后一份食物留给我，你先不要吃。",
+    "options": [
+      "feed_self"
+    ],
+    "createdAtSimTime": 0,
+    "expiresAtSimTime": 1,
+    "status": "declined",
+    "decision": {
+      "goal": "feed_self",
+      "round": 1,
+      "decidedAtSimTime": 0,
+      "raw": "{\"goal\":\"feed_self\"}"
+    },
+    "acceptedAfterSeq": null,
+    "lastProcessedSeq": 0,
+    "outcome": "pending",
+    "outcomeReason": null
+  },
+  "binding": null,
+  "goal": {
+    "round": 1,
+    "raw": "{\"goal\":\"feed_self\"}",
+    "parseOk": false,
+    "error": "no goal binding"
+  },
+  "action": {
+    "round": 2,
+    "raw": "{\"type\":\"eat\"}",
+    "parseOk": true,
+    "type": "eat",
+    "error": null
+  },
+  "fulfilment": null,
+  "playerEat": {
+    "ok": false,
+    "detail": "NO_FOOD"
+  },
+  "http": [
+    {
+      "phase": "goal",
+      "attemptId": "att-0005",
+      "requestBody": {
+        "model": "pm-loopback-model",
+        "temperature": 0,
+        "max_tokens": 1024,
+        "stream": false,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "你是 npc_a，位于kitchen。当前逻辑时间 0。\n你的饱食度：60。你所在位置的剩余食物：1。\n玩家说：“请把最后一份食物留给我，你先不要吃。”\n请从候选目标中选择一个，只回复一个 JSON 对象，不要输出任何其他内容。\ncandidateGoals: [\"feed_self\"]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "body": "{\"id\":\"wire-5\",\"object\":\"chat.completion\",\"model\":\"pm-loopback-model\",\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"goal\\\":\\\"feed_self\\\"}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":3,\"total_tokens\":14},\"extraWireMarker\":\"must-be-preserved\"}",
+        "usage": {
+          "total_tokens": 14,
+          "prompt_tokens": 11,
+          "completion_tokens": 3
+        }
+      },
+      "prompt": "你是 npc_a，位于kitchen。当前逻辑时间 0。\n你的饱食度：60。你所在位置的剩余食物：1。\n玩家说：“请把最后一份食物留给我，你先不要吃。”\n请从候选目标中选择一个，只回复一个 JSON 对象，不要输出任何其他内容。\ncandidateGoals: [\"feed_self\"]",
+      "promptFingerprint": "6705b76aac08169abab67333ac8c1ce3b2fa3782f95e658a44161c20bab25fd7",
+      "elapsedMs": 2,
+      "error": null
+    },
+    {
+      "phase": "action",
+      "attemptId": "att-0006",
+      "requestBody": {
+        "model": "pm-loopback-model",
+        "temperature": 0,
+        "max_tokens": 1024,
+        "stream": false,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "Reply with one JSON object and no other text.\nallowedActions: [\"move\",\"eat\",\"stop\",\"wait\"]\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\n\"stop\" ends your current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows the outer restock-wait and new-cycle rules.\n\"wait\" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {\"type\":\"wait\"} only when allowedActions includes \"wait\".\n你已选择的目标：feed_self（先满足自己的饱食）。\ngoal: hunger >= 70\nobservation: {\"id\":\"npc_a\",\"location\":\"kitchen\",\"hunger\":60,\"foodHere\":1,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "body": "{\"id\":\"wire-6\",\"object\":\"chat.completion\",\"model\":\"pm-loopback-model\",\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"type\\\":\\\"eat\\\"}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":3,\"total_tokens\":14},\"extraWireMarker\":\"must-be-preserved\"}",
+        "usage": {
+          "total_tokens": 14,
+          "prompt_tokens": 11,
+          "completion_tokens": 3
+        }
+      },
+      "prompt": "Reply with one JSON object and no other text.\nallowedActions: [\"move\",\"eat\",\"stop\",\"wait\"]\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\n\"stop\" ends your current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows the outer restock-wait and new-cycle rules.\n\"wait\" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {\"type\":\"wait\"} only when allowedActions includes \"wait\".\n你已选择的目标：feed_self（先满足自己的饱食）。\ngoal: hunger >= 70\nobservation: {\"id\":\"npc_a\",\"location\":\"kitchen\",\"hunger\":60,\"foodHere\":1,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null",
+      "promptFingerprint": "c6ec852aac96069679442e16ea8f2d8d0ee50b5c98e3b1896d18f6850c0aa232",
+      "elapsedMs": 2,
+      "error": null
+    }
+  ],
+  "attempts": [
+    {
+      "attemptId": "att-0005",
+      "outcome": "success"
+    },
+    {
+      "attemptId": "att-0006",
+      "outcome": "success"
+    }
+  ],
+  "tokens": {
+    "goal": 14,
+    "action": 14,
+    "total": 28
+  },
+  "snapshot": {
+    "initialState": {
+      "tick": 0,
+      "simTime": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 60
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_c": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 70
+        }
+      },
+      "food": {
+        "kitchen": 1,
+        "dorm": 0
+      }
+    },
+    "commands": [
+      {
+        "seq": 1,
+        "command": {
+          "commandId": "g09-r1-s60-self_only:npc:npc_a:1:2",
+          "actorId": "npc_a",
+          "type": "eat",
+          "payload": {}
+        },
+        "result": {
+          "commandId": "g09-r1-s60-self_only:npc:npc_a:1:2",
+          "seq": 1,
+          "status": "accepted",
+          "eventIds": [
+            "e1",
+            "e2"
+          ]
+        }
+      },
+      {
+        "seq": 2,
+        "command": {
+          "commandId": "g09-r1-s60-self_only:player:npc_b:1",
+          "actorId": "npc_b",
+          "type": "eat",
+          "payload": {}
+        },
+        "result": {
+          "commandId": "g09-r1-s60-self_only:player:npc_b:1",
+          "seq": 2,
+          "status": "rejected",
+          "reason": "NO_FOOD",
+          "detail": "kitchen food=0",
+          "eventIds": []
+        }
+      }
+    ],
+    "events": [
+      {
+        "type": "FoodConsumed",
+        "location": "kitchen",
+        "amount": 1,
+        "before": 1,
+        "after": 0,
+        "eventId": "e1",
+        "seq": 1,
+        "commandId": "g09-r1-s60-self_only:npc:npc_a:1:2"
+      },
+      {
+        "type": "HungerChanged",
+        "npcId": "npc_a",
+        "before": 60,
+        "after": 90,
+        "eventId": "e2",
+        "seq": 1,
+        "commandId": "g09-r1-s60-self_only:npc:npc_a:1:2"
+      }
+    ],
+    "finalState": {
+      "tick": 1,
+      "simTime": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 90
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_c": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 70
+        }
+      },
+      "food": {
+        "kitchen": 0,
+        "dorm": 0
+      }
+    }
+  },
+  "runtime": {
+    "actorIds": [
+      "npc_a",
+      "npc_c"
+    ],
+    "needPolicy": "recurring",
+    "policy": "event",
+    "actionSet": "timed_wait",
+    "goalMode": "negotiated"
+  },
+  "failure": null
+}

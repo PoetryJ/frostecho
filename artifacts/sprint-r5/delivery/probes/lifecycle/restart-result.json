@@ -1,0 +1,226 @@
+{
+  "first": [
+    {
+      "schema": "frostecho.play/2",
+      "event": "ready",
+      "statePath": "artifacts/sprint-r5/probes/lifecycle/restart.json",
+      "restored": false,
+      "day": 1,
+      "simTime": 0,
+      "npcs": [
+        "npc_01",
+        "npc_02"
+      ]
+    },
+    {
+      "command": "promise",
+      "jobId": "job-0001",
+      "promiseId": "p-food-npc_01",
+      "instanceId": "pi-c3c11c05-4c48-4bd3-8aef-9d8fd02d237c",
+      "heardBy": [
+        "npc_01",
+        "npc_02"
+      ],
+      "duplicate": false,
+      "inputId": "in-2-promise-npc_01"
+    },
+    {
+      "command": "cancel",
+      "jobId": "job-0002",
+      "promiseId": "p-food-npc_01",
+      "instanceId": "pi-c3c11c05-4c48-4bd3-8aef-9d8fd02d237c",
+      "onlyObserver": "npc_01",
+      "inputId": "in-4-cancel-npc_01"
+    },
+    {
+      "command": "restock",
+      "jobId": "job-0003",
+      "status": "applied",
+      "reason": null,
+      "eventIds": [
+        "in-5-restock:stock_restocked:0"
+      ],
+      "events": [
+        {
+          "eventId": "in-5-restock:stock_restocked:0",
+          "type": "stock_restocked",
+          "simTime": 0,
+          "payload": {
+            "place": "warehouse",
+            "amount": 2,
+            "source": "player",
+            "total": 6
+          }
+        }
+      ],
+      "observedBy": [],
+      "warehouseFood": 6
+    },
+    {
+      "command": "save",
+      "jobId": "job-0004",
+      "saved": "artifacts/sprint-r5/probes/lifecycle/restart.json",
+      "version": 1,
+      "tasks": 0,
+      "commitments": [],
+      "pending": 0
+    },
+    {
+      "command": "quit",
+      "jobId": "job-0005",
+      "bye": true,
+      "version": 1
+    },
+    {
+      "event": "exit",
+      "jobs": 5,
+      "completed": 5,
+      "failed": 0,
+      "closed": true,
+      "settled": true
+    }
+  ],
+  "second": [
+    {
+      "schema": "frostecho.play/2",
+      "event": "ready",
+      "statePath": "artifacts/sprint-r5/probes/lifecycle/restart.json",
+      "restored": true,
+      "day": 1,
+      "simTime": 0,
+      "npcs": [
+        "npc_01",
+        "npc_02"
+      ]
+    },
+    {
+      "command": "promise",
+      "jobId": "job-0001",
+      "promiseId": "p-food-npc_01",
+      "instanceId": "pi-79b0c88e-e9c8-4ba8-9125-4e37857c8ede",
+      "heardBy": [
+        "npc_01",
+        "npc_02"
+      ],
+      "duplicate": false,
+      "inputId": "in-7-promise-npc_01"
+    },
+    {
+      "command": "restock",
+      "jobId": "job-0002",
+      "status": "applied",
+      "reason": null,
+      "eventIds": [
+        "in-8-restock:stock_restocked:1"
+      ],
+      "events": [
+        {
+          "eventId": "in-8-restock:stock_restocked:1",
+          "type": "stock_restocked",
+          "simTime": 0,
+          "payload": {
+            "place": "warehouse",
+            "amount": 3,
+            "source": "player",
+            "total": 9
+          }
+        }
+      ],
+      "observedBy": [],
+      "warehouseFood": 9
+    },
+    {
+      "command": "knowledge",
+      "jobId": "job-0003",
+      "knowledge": {
+        "npc_01": {
+          "promises": [
+            {
+              "promiseId": "p-food-npc_01",
+              "fromId": "npc_01",
+              "toId": "player",
+              "text": "给玩家留一份饭",
+              "status": "active",
+              "lastRevision": 3,
+              "evidenceIds": [
+                "m-e55c40937014cba9"
+              ]
+            }
+          ],
+          "relation": null
+        },
+        "npc_02": {
+          "promises": [
+            {
+              "promiseId": "p-food-npc_01",
+              "fromId": "npc_01",
+              "toId": "player",
+              "text": "给玩家留一份饭",
+              "status": "active",
+              "lastRevision": 2,
+              "evidenceIds": [
+                "m-8ac45da54f7a7969"
+              ]
+            }
+          ],
+          "relation": null
+        }
+      },
+      "plans": [
+        {
+          "planId": "plan-pi-c3c11c05-4c48-4bd3-8aef-9d8fd02d237c",
+          "ownerId": "npc_01",
+          "promiseId": "p-food-npc_01",
+          "dependencyRevision": 3,
+          "state": "invalidated"
+        },
+        {
+          "planId": "plan-pi-79b0c88e-e9c8-4ba8-9125-4e37857c8ede",
+          "ownerId": "npc_01",
+          "promiseId": "p-food-npc_01",
+          "dependencyRevision": 3,
+          "state": "planned"
+        }
+      ],
+      "instances": [
+        {
+          "instanceId": "pi-c3c11c05-4c48-4bd3-8aef-9d8fd02d237c",
+          "promiseKey": "p-food-npc_01",
+          "commandId": "pi-c3c11c05-4c48-4bd3-8aef-9d8fd02d237c",
+          "createdAt": 0,
+          "state": "cancelled"
+        },
+        {
+          "instanceId": "pi-79b0c88e-e9c8-4ba8-9125-4e37857c8ede",
+          "promiseKey": "p-food-npc_01",
+          "commandId": "pi-79b0c88e-e9c8-4ba8-9125-4e37857c8ede",
+          "createdAt": 0,
+          "state": "active"
+        }
+      ]
+    },
+    {
+      "command": "save",
+      "jobId": "job-0004",
+      "saved": "artifacts/sprint-r5/probes/lifecycle/restart.json",
+      "version": 2,
+      "tasks": 0,
+      "commitments": [],
+      "pending": 0
+    },
+    {
+      "command": "quit",
+      "jobId": "job-0005",
+      "bye": true,
+      "version": 2
+    },
+    {
+      "event": "exit",
+      "jobs": 5,
+      "completed": 5,
+      "failed": 0,
+      "closed": true,
+      "settled": true
+    }
+  ]
+}

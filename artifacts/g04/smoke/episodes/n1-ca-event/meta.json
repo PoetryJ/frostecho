@@ -1,0 +1,39 @@
+{
+  "schema": "frostecho.g04.game/1",
+  "episodeId": "n1-ca-event",
+  "scenarioId": "n1",
+  "wakePolicy": "event",
+  "mode": "fixture",
+  "thinking": true,
+  "actorOrder": [
+    "npc_c",
+    "npc_a"
+  ],
+  "stopReason": "completed",
+  "commands": 3,
+  "events": 5,
+  "actors": {
+    "npc_c": {
+      "state": "satisfied",
+      "cycles": 2,
+      "providerCalls": 2,
+      "goalReached": true
+    },
+    "npc_a": {
+      "state": "satisfied",
+      "cycles": 2,
+      "providerCalls": 2,
+      "goalReached": true
+    }
+  },
+  "scenarioPass": true,
+  "idlePumps": {
+    "pumps": 0,
+    "callsBefore": 0,
+    "callsAfter": 0,
+    "cyclesBefore": 0,
+    "cyclesAfter": 0,
+    "actorStatesBefore": {},
+    "actorStatesAfter": {}
+  }
+}

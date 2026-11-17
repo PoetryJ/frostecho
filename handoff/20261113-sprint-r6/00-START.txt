@@ -1,0 +1,41 @@
+FrostEcho R6 — Grok Bot 可执行包（2026-11-13，Asia/Shanghai）
+
+目标：先关闭 R5 独立验收的四个缺口，再完成一个可恢复、可退出、有真实履约回执的四日晨会工作闭环。
+执行者：Grok Bot；默认一个会话顺序执行。负责人为用户，Codex后续独立验收。不要虚报多worker或独立审查。
+约束：服务器维护中，不SSH、不探测服务器/权重端口、不下载权重、不启动GPU或付费模型API。本轮全部CPU fixture/reference；Grok自身编码不等于FrostEcho真实模型实验。
+
+冻结基线
+仓库 https://github.com/PoetryJ/frostecho
+保存标签 r5-saved-20261112
+保存提交 f4739493b9dcec7214f04ab68c05f92bd5a8ea21
+产品代码 498c00015e51dc6d48668e2603e2e1877aa8e399
+本任务包分支 codex/sprint-r6-package-20261113 只增加任务包，不修产品。
+执行分支 codex/sprint-r6。不要改main或移动R5标签；不要重置/覆盖用户现有工作区。
+
+新工作区启动（Git、Node、npm、Python均需真实可执行）
+git clone --branch codex/sprint-r6-package-20261113 https://github.com/PoetryJ/frostecho.git FrostEcho-r6
+cd FrostEcho-r6
+git switch -c codex/sprint-r6
+python handoff/20261113-sprint-r6/tools/preflight.py --repo . --out artifacts/sprint-r6/run01/preflight
+npm ci
+npm run build
+python handoff/20261113-sprint-r6/tools/repro.py --repo . --out artifacts/sprint-r6/run01/baseline --expect baseline
+
+说明：Linux可用python3替代python。所有out必须是全新目录。命令中的run01是本次唯一运行ID，重跑换ID，不覆写失败记录。
+preflight验证标签/祖先、任务包SHA、R5检查点971项、原交付272项、原任务包128项，记录OS/Node/npm/Python/Git版本。不读取完整环境变量或凭据。
+如果Bot没有shell/GitHub检出/可写目录：交一份具体BLOCKED记录，写缺什么能力及命令错误；不能编造运行记录或用仅有diff声称交付。
+若缺依赖，只允许在此工作区安装npm锁依赖、可选隔离Python测试依赖；禁止全局改配置。无网络/不允许安装时记录受阻，不转用维护服务器。
+
+执行顺序
+1. 读01-CONTRACTS、02-REPAIRS；先运行四个基线探针，保留原始失败。
+2. 顺序修P供仓终态、R排队授权、D审查绑定、M证书绑定，每项一个有意义提交及定向测试。
+3. 四项均通过修复后探针和正负验收后，再做03-PLAY-HARNESS的同一工作跨日闭环，以及04-JEV-CPU的合法概率/拒绝机制fixture。
+4. 按05-ACCEPTANCE在隔离clone做一次全量，按06-DELIVERY交完整证据。不是“某个脚本exit0就通过”。
+
+基线探针exit0仅表示四个已知缺陷被成功复现；summary.phase=baseline，绝不表示产品通过。
+修复后重新选择全新目录：
+python handoff/20261113-sprint-r6/tools/repro.py --repo . --out artifacts/sprint-r6/run01/fixed --expect fixed
+该wrapper只覆盖四个最小反例；02中的完整正负例和03/04仍必须完成。
+
+停点：四项修复不齐则交有限返工，不进入新玩法扩展；证据/环境缺失则如实blocked。当前39题0eligible，研究数据门保持false。不得为了转绿删除断言、吞异常、让全部候选都拒绝、把fixture伪装real。
+本轮不凑512/128，不重写39题裁决，不宣称校准/模型收益；不铺UI、完整危机、轮回、完整建造或第二套调度器。

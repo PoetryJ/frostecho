@@ -1,0 +1,84 @@
+FrostEcho R8 RUNBOOK — 2026-11-16
+=================================
+Everything below is a real command, run from the repository root, with Node 22
+on PATH. Nothing here needs a GPU except the two encoder paths, which say so.
+
+0. Runtime
+----------
+The image has no system node. A local Node 22 is installed at
+  ~/.local/node22/bin
+so every shell that runs the game starts with:
+  export PATH=$HOME/.local/node22/bin:$PATH
+Dependencies:  npm install        (already done in this worktree)
+Build:         npm run build
+
+1. Play the game (the product entry)
+------------------------------------
+Web UI (assets ship in the repo, one authoritative CLI behind it):
+  npm run play:r7            -> http://127.0.0.1:18740
+
+Headless four-day run, reference rules (no model):
+  npm run play:r8
+or explicitly:
+  node dist/scripts/r8/playthrough.js \
+    --profile gospel-5.8.19 --seed r8-1 --mode reference \
+    --out artifacts/sprint-r8/O/<runId>
+
+Useful flags:
+  --lives 2        reincarnate after the D4 ending and run the next life
+  --npc 5          start with 5 survivors (normal ending); 3 -> bleak; 1 -> extinction
+  --food 12        start hungry (exercises the food-conflict crisis)
+  --memory-policy raw|unconditioned-experience|conditional-experience
+  --mode jev-experimental --scorer-command "<cmd>"   route choices to the JSONL service
+
+Outputs per run: summary-*.json, trajectory-*.jsonl (one line per decision:
+request id, candidate set hash, every candidate, the selection, the receipt),
+runtime-*.json (domain state + journal).
+
+2. Acceptance
+-------------
+  npm run verify:r8        # or: node dist/scripts/r8/verify.js --out <dir> [--strict]
+Gates: original-playthrough (elapsed 4920), reincarnation (two lives),
+cross-process-restore, four-endings (perfect/normal/bleak/extinction),
+original-parity (33 constants read back from the original source),
+jev-preflight (real weights/GPU/feature check), scorer-honesty, calendar-contract.
+`blocked` is used when a gate cannot run; `--strict` turns a block into a failure.
+
+Original-constant parity only:
+  npm run parity:r8
+
+3. Data (D)
+-----------
+  npm run cases:r8 -- --trajectory <trajectory.jsonl> --out artifacts/sprint-r8/D/cases
+Writes dynamic-cases.jsonl + split-manifest.json. Splits are by episode. Labels
+are single-receipt (`reviewers: 1`); the manifest states that no two independent
+blind reviewers produced them.
+
+4. Real scorer (M)
+------------------
+  python research/decision-choice/jev05/action/train.py --help
+  python research/decision-choice/jev05/action/train.py preflight --json
+  python research/decision-choice/jev05/action/train.py \
+    --features <features.npz> --cases <cases.jsonl> score --out <file.json>
+  python research/decision-choice/jev05/action/train.py \
+    --features <features.npz> --cases <cases.jsonl> train --out <dir> --init warm --seed 17
+  python research/decision-choice/jev05/action/train.py \
+    --features <features.npz> --cases <cases.jsonl> calibrate --out <file.json>
+  python research/decision-choice/jev05/action/train.py \
+    --head <best.safetensors> serve --feature-map <map.json> --mode jev-experimental
+
+Head:  artifacts/sprint-r7/legacy-reuse/c43-increment-batch4-1/warm-start-17/best.safetensors
+       sha256 2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04
+Encoder (not in the repo): /data2/model_weights/Qwen3.8-27B, hidden_size 5120.
+The encoder needs ~51 GiB; this host's two A10s are held by foreign processes, so
+`encode` refuses and says why instead of silently substituting another encoder.
+
+5. Comparison (H/O)
+-------------------
+  npm run compare:r8 -- --reference <dir> [--proposed <dir>] --out <file.json>
+Same-seed/profile comparison; a missing proposed arm is reported as `blocked`
+with the next command, never as a win.
+
+6. Existing suite
+-----------------
+  npm test        # 777 tests; one pre-existing environment failure, see REPORT.json

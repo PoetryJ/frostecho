@@ -1,0 +1,107 @@
+{
+  "passed": true,
+  "oldWorldVersion": 0,
+  "newWorldVersion": 1,
+  "outcomesBefore": 0,
+  "outcomesAfter": 1,
+  "steps": [
+    {
+      "command": "step",
+      "jobId": "job-0002",
+      "decisions": [
+        {
+          "actorId": "npc_01",
+          "status": "scored",
+          "selectedId": null,
+          "commandId": null,
+          "executionStatus": null,
+          "eventIds": [],
+          "postStateVersion": null,
+          "executed": false,
+          "reason": "stale_before_submit:memory",
+          "promiseStatuses": [
+            {
+              "promiseId": "p-food-npc_01",
+              "status": "cancelled"
+            }
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "taskId": "job-0002",
+          "actorId": "npc_01",
+          "status": "completed",
+          "value": {
+            "actorId": "npc_01",
+            "status": "scored",
+            "selectedId": null,
+            "commandId": null,
+            "executionStatus": null,
+            "eventIds": [],
+            "postStateVersion": null,
+            "executed": false,
+            "reason": "stale_before_submit:memory",
+            "promiseStatuses": [
+              {
+                "promiseId": "p-food-npc_01",
+                "status": "cancelled"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "command": "step",
+      "jobId": "job-0005",
+      "decisions": [
+        {
+          "actorId": "npc_01",
+          "status": "applied",
+          "selectedId": "c-eat",
+          "commandId": "npc_01-0-c-eat",
+          "executionStatus": "applied",
+          "eventIds": [
+            "npc_01-0-c-eat:ate:0"
+          ],
+          "postStateVersion": 1,
+          "executed": true,
+          "reason": "released async fixture (stale by construction)",
+          "promiseStatuses": [
+            {
+              "promiseId": "p-food-npc_01",
+              "status": "cancelled"
+            }
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "taskId": "job-0005",
+          "actorId": "npc_01",
+          "status": "completed",
+          "value": {
+            "actorId": "npc_01",
+            "status": "applied",
+            "selectedId": "c-eat",
+            "commandId": "npc_01-0-c-eat",
+            "executionStatus": "applied",
+            "eventIds": [
+              "npc_01-0-c-eat:ate:0"
+            ],
+            "postStateVersion": 1,
+            "executed": true,
+            "reason": "released async fixture (stale by construction)",
+            "promiseStatuses": [
+              {
+                "promiseId": "p-food-npc_01",
+                "status": "cancelled"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

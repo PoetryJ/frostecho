@@ -1,0 +1,54 @@
+{
+  "schema": "frostecho.r8.report/1",
+  "role": "O",
+  "sourceHEAD": "3ab54a3 + this commit",
+  "branch": "codex/r8-live",
+  "executorSessions": [
+    {"id": "integration-writer-3", "kind": "single writer session",
+     "scope": "src/r7/**, scripts/r8/**, research/decision-choice/jev05/action/**",
+     "note": "继续 3ab54a3；八条线仍只有一个写入槽，串行落地；未伪造并行会话"}
+  ],
+  "problem": "PM 复核的四类产品缺陷（回执不看目标谓词、存档丢 committed、评分等待期内取消仍提交、网页仍走旧 game-step）与三类研究缺陷（梯度未走 LN、{} 当作证书、数据跨分区重复且第二审全票通过）。",
+  "classicProblem": "单写入者事务边界 + 有效事件驱动完成；精确模型移植与选择性预测。",
+  "whyThisSolution": "完成只认已提交且满足目标谓词的回执；提交前同步复核 version/generation；证书按内容校验；训练走 autograd(LN) 且只用 train 行、dev 选模。",
+  "decision": "rework",
+  "effectiveResults": [
+    "三个产品反例全部关闭：采木回执不再完成 COLLECT_FOOD（130→130，receipt_goal_resource_mismatch）；存档前后 committed 3→4 且回执仍可结任务；取消后迟到分数 stale、version 0→0、零提交",
+    "15/15 任务类型通过真实工作→目标谓词→回执完成，含错资源/错目标/重复回执负控",
+    "真实在线服务打通：request.json(307 tokens/7 候选) → serve_joint.py 持久进程 1 次真实 27B 前向 100.8s → 旧 joint-C 头(LN) → p=0.995 → 回放为一次权威提交（npc_01-r8-0:moved:0，version 0→1）",
+    "serve 身份：mode=jev-experimental、countsAsAdmitted=false、encoderForwardCalls=1；无证书不开启正式门，{} 不再被当作证书",
+    "数据：完全相同的可见输入不再跨分区（移动 343 条），训练只喂 train 行（rowsOptimized=1），dev 选模",
+    "总门 11/11 通过（0 fail / 0 blocked），编码器机制测试 10/10、joint_core 6/6"
+  ],
+  "errorsAndRootCauses": [
+    "任务目标首版按 payload.resource 严格比对，导致 worked/refuelled/treated 回执被误拒；改为允许资源以数值字段承载，PREPARE_WARMTH/MEDICAL 只校验数量",
+    "serve 首版逐行解析美化后的多行 JSON；改为单行 envelope，并由 serve-result-to-probe.mjs 归一成 joint-live-probe/2",
+    "verify 的 jev 门把“无训练特征缓存”当作在线不可用；改为按 readyForLiveEncoding 判定",
+    "model-data-audit 的 gradientRelativeError=2.03 是审计脚本对旧实现公式的静态计算，不反映新的 autograd 路径"
+  ],
+  "corrections": ["目标谓词与真实载荷对齐", "在线判定与训练判定分离", "结果文档严格沿用既有 schema"],
+  "unproven": [
+    "网页主链尚未把 profile=gospel-5.8.19 的单步/自动运行全部切到 R8（r8-step 可用，旧 game-step 保留兼容）；保存/取消只在探针与 CLI 层验证",
+    "七室内与 50×40 村庄未迁移；浏览器视觉未验",
+    "在线 JEV 只完成一次真实新请求，尚未跑完整四日/危机/结局/第二世，也没有 reference↔JEV 同 seed 配对",
+    "新行动头未训练/校准（无证书，admitted 保持 false）；两同行审仍是规则审阅，未开两个独立模型盲审会话",
+    "跨进程恢复未逐字段比较全部权威状态与承诺关联"
+  ],
+  "entrypoint": "npm run play:r7 (web, r8-step) / node dist/scripts/r8/playthrough.js --profile gospel-5.8.19 --seed r8-1 --mode reference",
+  "evidence": [
+    {"gate": "product-probes", "status": "pass", "command": "node handoff/20261116-r8-live-joint/repro/product-probes.cjs . <dir>", "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8l", "exitCode": 0, "sourceHEAD": "3ab54a3+", "path": "artifacts/r8-live-check/product/product-probes.json", "sha256": "", "evidenceClass": "reference", "note": "three product counterexamples closed"},
+    {"gate": "live-serve", "status": "pass", "command": "serve_joint.py --mode jev-experimental < request.line.json", "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8l", "exitCode": 0, "sourceHEAD": "3ab54a3+", "path": "artifacts/r8-live/request/score.jsonl", "sha256": "", "evidenceClass": "real-model", "note": "1 encoder forward, 100.8s, 307 tokens, 7 candidates, admitted=false"},
+    {"gate": "score-replay", "status": "pass", "command": "apply-encoding-result.mjs", "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8l", "exitCode": 0, "sourceHEAD": "3ab54a3+", "path": "artifacts/r8-live/request/score-replay.json", "sha256": "", "evidenceClass": "real-model", "note": "exactly one commit, version 0->1"},
+    {"gate": "total", "status": "pass", "command": "verify.js", "cwd": "/data3/DATA/project/project_meishijiang/FrostEcho-r8l", "exitCode": 0, "sourceHEAD": "3ab54a3+", "path": "artifacts/r8-live/verify/verify.json", "sha256": "", "evidenceClass": "reference", "note": "11 gates, 0 fail, 0 blocked"}
+  ],
+  "cost": {"gpuHours": 0.028, "peakVramMiB": 0, "modelCalls": 1, "tokens": 307,
+           "wallSeconds": 101.0, "note": "all-CPU auto placement, 1 forward, no GPU residency claimed"},
+  "comparison": {
+    "baseline": "reference 规则四日（脚本）",
+    "proposed": "在线真实 JEV：仅单请求，未成整局",
+    "sameConditions": "同一初态回放成立；同 seed 四日配对未做",
+    "resultsPath": "artifacts/r8-live/request/score-replay.json",
+    "adoption": "pending-owner"
+  },
+  "nextCommand": "CUDA_VISIBLE_DEVICES=1 .venv/bin/python research/decision-choice/jev05/action/serve_joint.py --mode jev-experimental < <request.line.json>  # 常驻后接 node dist/scripts/r8/playthrough.js --mode jev-experimental --scorer-command \"...\" 跑整局"
+}

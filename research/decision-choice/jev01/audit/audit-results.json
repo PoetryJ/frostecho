@@ -1,0 +1,483 @@
+{
+  "schema": "frostecho.jev01.audit/1",
+  "at": "2026-11-09T17:31:44+0800",
+  "checks": [
+    {
+      "check": "lock-exists",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "lock-hash",
+      "ok": true,
+      "detail": "lock content changed"
+    },
+    {
+      "check": "dataset-cases",
+      "ok": true,
+      "detail": 640
+    },
+    {
+      "check": "dataset-hash",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "dataset-gold-sha",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "test-inputs-sha",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "group-split",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "no-leak-in-visible-input",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "check": "test-inputs-unlabelled",
+      "ok": true,
+      "detail": "test input carries a label"
+    },
+    {
+      "check": "gold-sha",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "gold-count",
+      "ok": true,
+      "detail": 128
+    },
+    {
+      "check": "job-total",
+      "ok": true,
+      "detail": 1808
+    },
+    {
+      "check": "job-features",
+      "ok": true,
+      "detail": 1280
+    },
+    {
+      "check": "job-generate",
+      "ok": true,
+      "detail": 384
+    },
+    {
+      "check": "job-latency",
+      "ok": true,
+      "detail": 128
+    },
+    {
+      "check": "job-warmup",
+      "ok": true,
+      "detail": 8
+    },
+    {
+      "check": "job-compat",
+      "ok": true,
+      "detail": 8
+    },
+    {
+      "check": "job-unique",
+      "ok": true,
+      "detail": "duplicate jobId"
+    },
+    {
+      "check": "job-positive-time",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "prediction-hashes",
+      "ok": true,
+      "detail": "predictions changed after unseal record"
+    },
+    {
+      "check": "prediction-count",
+      "ok": true,
+      "detail": 9
+    },
+    {
+      "check": "prediction-cover-json",
+      "ok": true,
+      "detail": "256 rows"
+    },
+    {
+      "check": "prediction-probs-json",
+      "ok": true,
+      "detail": "0 bad probability rows"
+    },
+    {
+      "check": "prediction-cover-label_logits",
+      "ok": true,
+      "detail": "256 rows"
+    },
+    {
+      "check": "prediction-probs-label_logits",
+      "ok": true,
+      "detail": "0 bad probability rows"
+    },
+    {
+      "check": "prediction-cover-linear_head-seed17",
+      "ok": true,
+      "detail": "256 rows"
+    },
+    {
+      "check": "prediction-probs-linear_head-seed17",
+      "ok": true,
+      "detail": "0 bad probability rows"
+    },
+    {
+      "check": "prediction-cover-linear_head-seed29",
+      "ok": true,
+      "detail": "256 rows"
+    },
+    {
+      "check": "prediction-probs-linear_head-seed29",
+      "ok": true,
+      "detail": "0 bad probability rows"
+    },
+    {
+      "check": "prediction-cover-linear_head-seed43",
+      "ok": true,
+      "detail": "256 rows"
+    },
+    {
+      "check": "prediction-probs-linear_head-seed43",
+      "ok": true,
+      "detail": "0 bad probability rows"
+    },
+    {
+      "check": "prediction-cover-pointer_head-seed17",
+      "ok": true,
+      "detail": "256 rows"
+    },
+    {
+      "check": "prediction-probs-pointer_head-seed17",
+      "ok": true,
+      "detail": "0 bad probability rows"
+    },
+    {
+      "check": "prediction-cover-pointer_head-seed29",
+      "ok": true,
+      "detail": "256 rows"
+    },
+    {
+      "check": "prediction-probs-pointer_head-seed29",
+      "ok": true,
+      "detail": "0 bad probability rows"
+    },
+    {
+      "check": "prediction-cover-pointer_head-seed43",
+      "ok": true,
+      "detail": "256 rows"
+    },
+    {
+      "check": "prediction-probs-pointer_head-seed43",
+      "ok": true,
+      "detail": "0 bad probability rows"
+    },
+    {
+      "check": "prediction-cover-rules",
+      "ok": true,
+      "detail": "256 rows"
+    },
+    {
+      "check": "prediction-probs-rules",
+      "ok": true,
+      "detail": "0 bad probability rows"
+    },
+    {
+      "check": "training-runs",
+      "ok": true,
+      "detail": 6
+    },
+    {
+      "check": "training-seeds-linear_head",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "weights-exist-linear_head-17",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "weights-hash-linear_head-17",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "params-linear_head-17",
+      "ok": true,
+      "detail": 5120
+    },
+    {
+      "check": "trainable-linear_head-17",
+      "ok": true,
+      "detail": [
+        "w"
+      ]
+    },
+    {
+      "check": "weights-exist-linear_head-29",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "weights-hash-linear_head-29",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "params-linear_head-29",
+      "ok": true,
+      "detail": 5120
+    },
+    {
+      "check": "trainable-linear_head-29",
+      "ok": true,
+      "detail": [
+        "w"
+      ]
+    },
+    {
+      "check": "weights-exist-linear_head-43",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "weights-hash-linear_head-43",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "params-linear_head-43",
+      "ok": true,
+      "detail": 5120
+    },
+    {
+      "check": "trainable-linear_head-43",
+      "ok": true,
+      "detail": [
+        "w"
+      ]
+    },
+    {
+      "check": "training-seeds-pointer_head",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "weights-exist-pointer_head-17",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "weights-hash-pointer_head-17",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "params-pointer_head-17",
+      "ok": true,
+      "detail": 1310848
+    },
+    {
+      "check": "trainable-pointer_head-17",
+      "ok": true,
+      "detail": [
+        "wq",
+        "wc",
+        "v"
+      ]
+    },
+    {
+      "check": "weights-exist-pointer_head-29",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "weights-hash-pointer_head-29",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "params-pointer_head-29",
+      "ok": true,
+      "detail": 1310848
+    },
+    {
+      "check": "trainable-pointer_head-29",
+      "ok": true,
+      "detail": [
+        "wq",
+        "wc",
+        "v"
+      ]
+    },
+    {
+      "check": "weights-exist-pointer_head-43",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "weights-hash-pointer_head-43",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "params-pointer_head-43",
+      "ok": true,
+      "detail": 1310848
+    },
+    {
+      "check": "trainable-pointer_head-43",
+      "ok": true,
+      "detail": [
+        "wq",
+        "wc",
+        "v"
+      ]
+    },
+    {
+      "check": "recompute-accuracy-json",
+      "ok": true,
+      "detail": "reported 214 vs 214"
+    },
+    {
+      "check": "recompute-accuracy-label_logits",
+      "ok": true,
+      "detail": "reported 177 vs 177"
+    },
+    {
+      "check": "recompute-accuracy-rules",
+      "ok": true,
+      "detail": "reported 210 vs 210"
+    },
+    {
+      "check": "recompute-nll-linear_head-uncalibrated",
+      "ok": true,
+      "detail": "0.271158 vs 0.271158"
+    },
+    {
+      "check": "recompute-nll-linear_head-calibrated",
+      "ok": true,
+      "detail": "0.402749 vs 0.402749"
+    },
+    {
+      "check": "recompute-nll-pointer_head-uncalibrated",
+      "ok": true,
+      "detail": "1.022497 vs 1.022497"
+    },
+    {
+      "check": "recompute-nll-pointer_head-calibrated",
+      "ok": true,
+      "detail": "0.30687 vs 0.30687"
+    },
+    {
+      "check": "latency-gpu-rows",
+      "ok": true,
+      "detail": 128
+    },
+    {
+      "check": "latency-json-32",
+      "ok": true,
+      "detail": 32
+    },
+    {
+      "check": "latency-json-positive",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "latency-label_logits-32",
+      "ok": true,
+      "detail": 32
+    },
+    {
+      "check": "latency-label_logits-positive",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "latency-linear_head-32",
+      "ok": true,
+      "detail": 32
+    },
+    {
+      "check": "latency-linear_head-positive",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "latency-pointer_head-32",
+      "ok": true,
+      "detail": 32
+    },
+    {
+      "check": "latency-pointer_head-positive",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "model-config-sha",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "feature-bytes-train",
+      "ok": true,
+      "detail": "feature npz changed"
+    },
+    {
+      "check": "feature-model-train",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "feature-bytes-dev",
+      "ok": true,
+      "detail": "feature npz changed"
+    },
+    {
+      "check": "feature-model-dev",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "feature-bytes-cal",
+      "ok": true,
+      "detail": "feature npz changed"
+    },
+    {
+      "check": "feature-model-cal",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "feature-bytes-test",
+      "ok": true,
+      "detail": "feature npz changed"
+    },
+    {
+      "check": "feature-model-test",
+      "ok": true,
+      "detail": null
+    }
+  ],
+  "issues": [],
+  "ok": true,
+  "passed": 91,
+  "total": 91
+}

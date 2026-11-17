@@ -1,0 +1,155 @@
+{
+  "first": {
+    "code": 0,
+    "rows": [
+      {
+        "schema": "frostecho.play/2",
+        "event": "ready",
+        "statePath": "/agent/repos/frostecho/artifacts/sprint-r6/run01/fixed/lifecycle/raw/travel.session.json",
+        "restored": false,
+        "day": 1,
+        "simTime": 0,
+        "npcs": [
+          "npc_01",
+          "npc_02"
+        ]
+      },
+      {
+        "command": "travel",
+        "jobId": "job-0001",
+        "status": "applied",
+        "reason": null,
+        "eventIds": [
+          "travel-one:traveled:0"
+        ],
+        "events": [
+          {
+            "eventId": "travel-one:traveled:0",
+            "type": "traveled",
+            "simTime": 32,
+            "actorId": "npc_01",
+            "payload": {
+              "tiles": 16,
+              "minutes": 32,
+              "arrivedAt": "warehouse"
+            }
+          }
+        ],
+        "observedBy": [
+          "npc_01"
+        ],
+        "tiles": 16,
+        "minutes": 32,
+        "location": "warehouse"
+      },
+      {
+        "command": "save",
+        "jobId": "job-0002",
+        "saved": "/agent/repos/frostecho/artifacts/sprint-r6/run01/fixed/lifecycle/raw/travel.session.json",
+        "version": 1,
+        "tasks": 0,
+        "commitments": [],
+        "pending": 0
+      },
+      {
+        "command": "quit",
+        "jobId": "job-0003",
+        "bye": true,
+        "version": 1
+      },
+      {
+        "event": "exit",
+        "jobs": 3,
+        "completed": 3,
+        "failed": 0,
+        "closed": true,
+        "settled": true
+      }
+    ],
+    "stderr": ""
+  },
+  "second": {
+    "code": 0,
+    "rows": [
+      {
+        "schema": "frostecho.play/2",
+        "event": "ready",
+        "statePath": "/agent/repos/frostecho/artifacts/sprint-r6/run01/fixed/lifecycle/raw/travel.session.json",
+        "restored": true,
+        "day": 1,
+        "simTime": 32,
+        "npcs": [
+          "npc_01",
+          "npc_02"
+        ]
+      },
+      {
+        "command": "travel",
+        "jobId": "job-0001",
+        "status": "applied",
+        "reason": null,
+        "eventIds": [
+          "travel-one:traveled:0"
+        ],
+        "events": [
+          {
+            "eventId": "travel-one:traveled:0",
+            "type": "traveled",
+            "simTime": 32,
+            "actorId": "npc_01",
+            "payload": {
+              "tiles": 16,
+              "minutes": 32,
+              "arrivedAt": "warehouse"
+            }
+          }
+        ],
+        "observedBy": [
+          "npc_01"
+        ],
+        "duplicate": true,
+        "tiles": 16,
+        "minutes": 32,
+        "location": "warehouse"
+      },
+      {
+        "command": "travel",
+        "jobId": "job-0002",
+        "status": "rejected",
+        "reason": "command_id_conflict",
+        "eventIds": [],
+        "events": [],
+        "observedBy": [],
+        "duplicate": false,
+        "tiles": 0,
+        "minutes": 0,
+        "location": "warehouse"
+      },
+      {
+        "command": "save",
+        "jobId": "job-0003",
+        "saved": "/agent/repos/frostecho/artifacts/sprint-r6/run01/fixed/lifecycle/raw/travel.session.json",
+        "version": 1,
+        "tasks": 0,
+        "commitments": [],
+        "pending": 0
+      },
+      {
+        "command": "quit",
+        "jobId": "job-0004",
+        "bye": true,
+        "version": 1
+      },
+      {
+        "event": "exit",
+        "jobs": 4,
+        "completed": 4,
+        "failed": 0,
+        "closed": true,
+        "settled": true
+      }
+    ],
+    "stderr": ""
+  },
+  "verified": true
+}

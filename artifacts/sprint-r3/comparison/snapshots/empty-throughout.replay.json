@@ -1,0 +1,13 @@
+{
+  "scenario": "empty-throughout",
+  "actorId": "npc_04",
+  "taskId": "task-001-deliver-meal",
+  "failureClass": "persistent-shortage",
+  "seed": "r3-compare-empty-throughout",
+  "branchAtStep": 4,
+  "maxSteps": 16,
+  "externalEvents": {},
+  "reset": "GameplayLoop.load('/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r3/comparison/snapshots/empty-throughout.session.json')",
+  "branch": "GameplayLoop.load('/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r3/comparison/snapshots/empty-throughout.session.json', { useExperience: false | true })",
+  "replay": "node dist/scripts/r3-compare.js --out <same dir>"
+}

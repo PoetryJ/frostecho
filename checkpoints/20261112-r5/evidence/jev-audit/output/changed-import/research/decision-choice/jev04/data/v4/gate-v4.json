@@ -1,0 +1,42 @@
+{
+  "schema": "frostecho.jev04.gate-v4/2",
+  "purpose": "report from the current bytes; not an input to training",
+  "validator": "research/decision-choice/jev04/data/v4/validate_v4.py",
+  "hashProtocol": "frostecho.jev04.visible/4 (task/narrative/facts/candidate order+id+text+kind+params)",
+  "summary": {
+    "cases": 39,
+    "s1": 39,
+    "s2": 39,
+    "adjudicated": 39,
+    "trainRows": 0,
+    "devRows": 0,
+    "uniqueTrainRows": 0,
+    "uniqueDevRows": 0,
+    "reviewVersion": "v4-review/1",
+    "independentReviewers": true,
+    "qualifiedTrain": 0,
+    "qualifiedDev": 0,
+    "requiredTrain": 512,
+    "requiredDev": 128,
+    "trainSourceGroups": 0,
+    "devSourceGroups": 0,
+    "researchTrainReady": false,
+    "failures": []
+  },
+  "failures": [],
+  "adjudication": {
+    "eligible": 0,
+    "ambiguous": 29,
+    "inconsistent": 10,
+    "acceptableSetDisagreements": 4,
+    "statusDifferences": 18,
+    "humanDoubleLabel": false,
+    "crossModelValidation": false
+  },
+  "researchTrainReady": false,
+  "formalTraining": {
+    "status": "closed",
+    "reason": "qualified counts below 512/128"
+  },
+  "note": "the 39-case review is an independent-session adjudication start point, not 512/128 training data"
+}

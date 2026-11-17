@@ -1,0 +1,261 @@
+{
+  "schema": "frostecho.g09.summary/3",
+  "batch": "g10-action-contract-20261105-r1",
+  "createdAt": "2026-11-05T08:02:45.346Z",
+  "mode": "live",
+  "model": "qwen3.8-27b",
+  "hardChatLimit": 16,
+  "protocol": {
+    "planned": 8,
+    "completed": 6,
+    "failed": 1,
+    "notRun": 1,
+    "goalPhases": 7,
+    "actionPhases": 7
+  },
+  "goals": {
+    "feed_self": 3,
+    "yield_once": 4,
+    "byCell": {
+      "s40-self_only": {
+        "feed_self": 1,
+        "yield_once": 0
+      },
+      "s40-choice": {
+        "feed_self": 0,
+        "yield_once": 2
+      },
+      "s60-self_only": {
+        "feed_self": 2,
+        "yield_once": 0
+      },
+      "s60-choice": {
+        "feed_self": 0,
+        "yield_once": 2
+      }
+    }
+  },
+  "fulfilment": {
+    "byCell": {
+      "s40-self_only": {
+        "fulfilled": 0,
+        "violated": 0,
+        "not_applicable": 0,
+        "undetermined": 0
+      },
+      "s40-choice": {
+        "fulfilled": 1,
+        "violated": 0,
+        "not_applicable": 0,
+        "undetermined": 0
+      },
+      "s60-self_only": {
+        "fulfilled": 0,
+        "violated": 0,
+        "not_applicable": 0,
+        "undetermined": 0
+      },
+      "s60-choice": {
+        "fulfilled": 2,
+        "violated": 0,
+        "not_applicable": 0,
+        "undetermined": 0
+      }
+    },
+    "world": {
+      "fulfilled": 3,
+      "violated": 0,
+      "not_applicable": 0,
+      "undetermined": 1
+    }
+  },
+  "costs": {
+    "chatRequests": 14,
+    "spent": 14,
+    "blocked": 0,
+    "unresolved": 0,
+    "usageUnknown": true,
+    "goalTokens": 1697,
+    "actionTokens": null,
+    "totalTokens": null,
+    "knownGoalTokens": 1697,
+    "knownActionTokens": 4734,
+    "knownTotalTokens": 6431,
+    "unknownPhases": 1,
+    "notRunPhases": 2,
+    "campaignLimit": 16,
+    "campaignSpent": 14,
+    "byCell": {
+      "s40-self_only": {
+        "goalTokens": 243,
+        "actionTokens": 534,
+        "requests": 2,
+        "knownGoalTokens": 243,
+        "knownActionTokens": 534,
+        "unknownPhases": 0
+      },
+      "s40-choice": {
+        "goalTokens": 462,
+        "actionTokens": null,
+        "requests": 4,
+        "knownGoalTokens": 462,
+        "knownActionTokens": 1392,
+        "unknownPhases": 1
+      },
+      "s60-self_only": {
+        "goalTokens": 486,
+        "actionTokens": 1078,
+        "requests": 4,
+        "knownGoalTokens": 486,
+        "knownActionTokens": 1078,
+        "unknownPhases": 0
+      },
+      "s60-choice": {
+        "goalTokens": 506,
+        "actionTokens": 1730,
+        "requests": 4,
+        "knownGoalTokens": 506,
+        "knownActionTokens": 1730,
+        "unknownPhases": 0
+      }
+    }
+  },
+  "episodes": [
+    {
+      "episodeId": "g09-r1-s40-choice",
+      "cell": "s40-choice",
+      "arm": "choice",
+      "satiety": 40,
+      "outcome": "completed",
+      "recordedOutcome": "completed",
+      "goal": "yield_once",
+      "goalParseOk": true,
+      "request": "accepted",
+      "verdict": "fulfilled",
+      "protocolValid": true,
+      "goalKind": "ok",
+      "actionKind": "ok",
+      "goalTokens": 231,
+      "actionTokens": 1392
+    },
+    {
+      "episodeId": "g09-r1-s40-self_only",
+      "cell": "s40-self_only",
+      "arm": "self_only",
+      "satiety": 40,
+      "outcome": "completed",
+      "recordedOutcome": "completed",
+      "goal": "feed_self",
+      "goalParseOk": true,
+      "request": "declined",
+      "verdict": null,
+      "protocolValid": true,
+      "goalKind": "ok",
+      "actionKind": "ok",
+      "goalTokens": 243,
+      "actionTokens": 534
+    },
+    {
+      "episodeId": "g09-r1-s60-choice",
+      "cell": "s60-choice",
+      "arm": "choice",
+      "satiety": 60,
+      "outcome": "completed",
+      "recordedOutcome": "completed",
+      "goal": "yield_once",
+      "goalParseOk": true,
+      "request": "accepted",
+      "verdict": "fulfilled",
+      "protocolValid": true,
+      "goalKind": "ok",
+      "actionKind": "ok",
+      "goalTokens": 253,
+      "actionTokens": 833
+    },
+    {
+      "episodeId": "g09-r1-s60-self_only",
+      "cell": "s60-self_only",
+      "arm": "self_only",
+      "satiety": 60,
+      "outcome": "completed",
+      "recordedOutcome": "completed",
+      "goal": "feed_self",
+      "goalParseOk": true,
+      "request": "declined",
+      "verdict": null,
+      "protocolValid": true,
+      "goalKind": "ok",
+      "actionKind": "ok",
+      "goalTokens": 243,
+      "actionTokens": 539
+    },
+    {
+      "episodeId": "g09-r2-s40-choice",
+      "cell": "s40-choice",
+      "arm": "choice",
+      "satiety": 40,
+      "outcome": "empty_output",
+      "recordedOutcome": "empty_output",
+      "goal": "yield_once",
+      "goalParseOk": true,
+      "request": "accepted",
+      "verdict": "undetermined",
+      "protocolValid": false,
+      "goalKind": "ok",
+      "actionKind": "empty_output",
+      "goalTokens": 231,
+      "actionTokens": null
+    },
+    {
+      "episodeId": "g09-r2-s40-self_only",
+      "cell": "s40-self_only",
+      "arm": "self_only",
+      "satiety": 40,
+      "outcome": "not_run",
+      "recordedOutcome": "not_run",
+      "goal": null,
+      "goalParseOk": false,
+      "request": null,
+      "verdict": null,
+      "protocolValid": false,
+      "goalKind": "no_exchange",
+      "actionKind": "no_exchange",
+      "goalTokens": null,
+      "actionTokens": null
+    },
+    {
+      "episodeId": "g09-r2-s60-choice",
+      "cell": "s60-choice",
+      "arm": "choice",
+      "satiety": 60,
+      "outcome": "completed",
+      "recordedOutcome": "completed",
+      "goal": "yield_once",
+      "goalParseOk": true,
+      "request": "accepted",
+      "verdict": "fulfilled",
+      "protocolValid": true,
+      "goalKind": "ok",
+      "actionKind": "ok",
+      "goalTokens": 253,
+      "actionTokens": 897
+    },
+    {
+      "episodeId": "g09-r2-s60-self_only",
+      "cell": "s60-self_only",
+      "arm": "self_only",
+      "satiety": 60,
+      "outcome": "completed",
+      "recordedOutcome": "completed",
+      "goal": "feed_self",
+      "goalParseOk": true,
+      "request": "declined",
+      "verdict": null,
+      "protocolValid": true,
+      "goalKind": "ok",
+      "actionKind": "ok",
+      "goalTokens": 243,
+      "actionTokens": 539
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "scenario": "detour-success",
+  "actorId": "npc_06",
+  "taskId": "task-001-deliver-meal",
+  "failureClass": "detour",
+  "seed": "r3-compare-detour-success",
+  "branchAtStep": 2,
+  "maxSteps": 14,
+  "externalEvents": {},
+  "reset": "GameplayLoop.load('/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r3/comparison/snapshots/detour-success.session.json')",
+  "branch": "GameplayLoop.load('/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r3/comparison/snapshots/detour-success.session.json', { useExperience: false | true })",
+  "replay": "node dist/scripts/r3-compare.js --out <same dir>"
+}

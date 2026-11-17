@@ -1,0 +1,59 @@
+test_other_policy_is_refused (test_calibration.ArtifactTest.test_other_policy_is_refused) ... ok
+test_roundtrip_applies_temperature_and_tau (test_calibration.ArtifactTest.test_roundtrip_applies_temperature_and_tau) ... ok
+test_coverage_below_minimum_is_refused (test_calibration.CertificateTest.test_coverage_below_minimum_is_refused) ... ok
+test_incomplete_evidence_cannot_certify (test_calibration.CertificateTest.test_incomplete_evidence_cannot_certify) ... ok
+test_perfect_evidence_certifies (test_calibration.CertificateTest.test_perfect_evidence_certifies) ... ok
+test_policy_identity_mismatch_is_rejected (test_calibration.CertificateTest.test_policy_identity_mismatch_is_rejected) ... ok
+test_all_errors_is_one (test_calibration.ClopperPearsonTest.test_all_errors_is_one) ... ok
+test_empty_is_none (test_calibration.ClopperPearsonTest.test_empty_is_none) ... ok
+test_matches_scipy_oracle (test_calibration.ClopperPearsonTest.test_matches_scipy_oracle) ... skipped 'scipy not installed'
+test_zero_of_hundred_matches_published_fixture (test_calibration.ClopperPearsonTest.test_zero_of_hundred_matches_published_fixture) ... ok
+test_all_wrong_has_no_valid_point (test_calibration.SelectionTest.test_all_wrong_has_no_valid_point) ... ok
+test_picks_max_coverage_under_risk (test_calibration.SelectionTest.test_picks_max_coverage_under_risk) ... ok
+test_empty_set_is_rejected (test_calibration.SoftmaxTest.test_empty_set_is_rejected) ... ok
+test_probabilities_sum_to_one (test_calibration.SoftmaxTest.test_probabilities_sum_to_one) ... ok
+test_fitted_temperature_minimises_nll_on_labelled_data (test_calibration.TemperatureTest.test_fitted_temperature_minimises_nll_on_labelled_data) ... ok
+test_bool_is_not_an_integer (test_cost.CanonicalCostTest.test_bool_is_not_an_integer) ... ok
+test_feature_payload_uses_canonical_field (test_cost.CanonicalCostTest.test_feature_payload_uses_canonical_field) ... ok
+test_generation_payload_uses_canonical_field (test_cost.CanonicalCostTest.test_generation_payload_uses_canonical_field) ... ok
+test_legacy_payload_without_canonical_but_with_newtokens (test_cost.CanonicalCostTest.test_legacy_payload_without_canonical_but_with_newtokens) ... ok
+test_missing_counts_is_unknown_not_zero (test_cost.CanonicalCostTest.test_missing_counts_is_unknown_not_zero) ... ok
+test_missing_key_is_invalid (test_cost.CanonicalCostTest.test_missing_key_is_invalid) ... ok
+test_nan_is_invalid (test_cost.CanonicalCostTest.test_nan_is_invalid) ... ok
+test_negative_is_invalid (test_cost.CanonicalCostTest.test_negative_is_invalid) ... ok
+test_unknown_source_is_invalid (test_cost.CanonicalCostTest.test_unknown_source_is_invalid) ... ok
+test_zero_model_calls_is_invalid (test_cost.CanonicalCostTest.test_zero_model_calls_is_invalid) ... ok
+test_candidate_text_and_params_change_is_rejected (test_r5_gates.DataGateTests.test_candidate_text_and_params_change_is_rejected) ... ok
+test_current_v4_is_structurally_valid_but_not_ready (test_r5_gates.DataGateTests.test_current_v4_is_structurally_valid_but_not_ready) ... ok
+test_duplicate_rows_cannot_inflate_512_128 (test_r5_gates.DataGateTests.test_duplicate_rows_cannot_inflate_512_128) ... ok
+test_group_overlap_is_rejected (test_r5_gates.DataGateTests.test_group_overlap_is_rejected) ... ok
+test_illegal_training_label_is_rejected (test_r5_gates.DataGateTests.test_illegal_training_label_is_rejected) ... ok
+test_first_request_and_snapshot_args (test_r5_gates.DownloadPathTests.test_first_request_and_snapshot_args) ... ok
+test_gate_status_does_not_trust_gate_v4_json (test_r5_gates.EncoderEntryTests.test_gate_status_does_not_trust_gate_v4_json) ... ok
+test_refusal_happens_before_any_model_import (test_r5_gates.EncoderEntryTests.test_refusal_happens_before_any_model_import) ... ok
+test_duplicate_partition_is_refused (test_r5_gates.PortEvidenceTests.test_duplicate_partition_is_refused) ... ok
+test_empty_certificate_never_counts_as_real (test_r5_gates.PortEvidenceTests.test_empty_certificate_never_counts_as_real) ... ok
+test_fixture_artifact_with_real_registration_never_counts (test_r5_gates.PortEvidenceTests.test_fixture_artifact_with_real_registration_never_counts) ... ok
+test_protocol_mismatch_is_refused (test_r5_gates.PortEvidenceTests.test_protocol_mismatch_is_refused) ... ok
+test_valid_distinct_evidence_binds_the_identity (test_r5_gates.PortEvidenceTests.test_valid_distinct_evidence_binds_the_identity) ... ok
+test_bool_and_non_integer_counts_are_refused (test_r6_evidence.EvidenceTests.test_bool_and_non_integer_counts_are_refused) ... ok
+test_cpu_mechanism_is_numeric_but_never_real (test_r6_evidence.EvidenceTests.test_cpu_mechanism_is_numeric_but_never_real) ... ok
+test_each_tamper_names_itself (test_r6_evidence.EvidenceTests.test_each_tamper_names_itself) ... ok
+test_legal_mechanism_accepts_and_abstains_and_fixture_is_not_real (test_r6_evidence.EvidenceTests.test_legal_mechanism_accepts_and_abstains_and_fixture_is_not_real) ... ok
+test_relabeling_the_same_fixture_records_is_rejected (test_r6_evidence.EvidenceTests.test_relabeling_the_same_fixture_records_is_rejected) ... ok
+test_unknown_evidence_class_is_not_real (test_r6_evidence.EvidenceTests.test_unknown_evidence_class_is_not_real) ... ok
+test_zero_of_120_matches_the_closed_form (test_r6_evidence.EvidenceTests.test_zero_of_120_matches_the_closed_form) ... ok
+test_candidate_text_params_facts_and_narrative_are_rejected (test_r6_provenance.ProvenanceTests.test_candidate_text_params_facts_and_narrative_are_rejected) ... ok
+test_case_id_packet_and_raw_review_sha_are_rejected (test_r6_provenance.ProvenanceTests.test_case_id_packet_and_raw_review_sha_are_rejected) ... ok
+test_joint_packet_and_v4_rewrite_stays_bound_to_canonical (test_r6_provenance.ProvenanceTests.test_joint_packet_and_v4_rewrite_stays_bound_to_canonical) ... ok
+test_unchanged_import_is_deterministic (test_r6_provenance.ProvenanceTests.test_unchanged_import_is_deterministic) ... ok
+test_fresh_job_records_measured_cost (test_runtime_cost.RunJobCostTest.test_fresh_job_records_measured_cost) ... ok
+test_invalid_cost_fails_without_finish (test_runtime_cost.RunJobCostTest.test_invalid_cost_fails_without_finish) ... ok
+test_missing_cost_is_unknown_not_zero (test_runtime_cost.RunJobCostTest.test_missing_cost_is_unknown_not_zero) ... ok
+test_restore_reuses_result_without_model_call (test_runtime_cost.RunJobCostTest.test_restore_reuses_result_without_model_call) ... ok
+test_top_level_real_shape_is_measured (test_runtime_cost.RunJobCostTest.test_top_level_real_shape_is_measured) ... ok
+
+----------------------------------------------------------------------
+Ran 54 tests in 1.138s
+
+OK (skipped=1)

@@ -1,0 +1,1123 @@
+{
+  "schema": "frostecho.online-play/1",
+  "mode": "jev-experimental",
+  "steps": 6,
+  "scored": 6,
+  "executed": 6,
+  "before": {
+    "command": "observe",
+    "jobId": "job-0001",
+    "day": 1,
+    "simTime": 480,
+    "hoursElapsed": 8,
+    "weather": "snow",
+    "resources": {
+      "food": 130,
+      "firewood": 30,
+      "power": 30,
+      "medicine": 3
+    },
+    "furnace": {
+      "lit": true,
+      "fuel": 6,
+      "warmth": 18
+    },
+    "npcs": [
+      {
+        "id": "npc_01",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      {
+        "id": "npc_02",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      {
+        "id": "npc_03",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      {
+        "id": "npc_04",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      {
+        "id": "npc_05",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      {
+        "id": "npc_06",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      {
+        "id": "npc_07",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      {
+        "id": "npc_08",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      }
+    ],
+    "profile": "gospel-5.8.19",
+    "mode": "jev-experimental"
+  },
+  "after": {
+    "command": "observe",
+    "jobId": "job-0009",
+    "day": 1,
+    "simTime": 480,
+    "hoursElapsed": 8,
+    "weather": "snow",
+    "resources": {
+      "food": 130,
+      "firewood": 30,
+      "power": 30,
+      "medicine": 3
+    },
+    "furnace": {
+      "lit": true,
+      "fuel": 6,
+      "warmth": 18
+    },
+    "npcs": [
+      {
+        "id": "npc_01",
+        "location": "warehouse",
+        "hunger": 70,
+        "stamina": 71,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      {
+        "id": "npc_02",
+        "location": "warehouse",
+        "hunger": 70,
+        "stamina": 71,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      {
+        "id": "npc_03",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      {
+        "id": "npc_04",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      {
+        "id": "npc_05",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      {
+        "id": "npc_06",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      {
+        "id": "npc_07",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      {
+        "id": "npc_08",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      }
+    ],
+    "profile": "gospel-5.8.19",
+    "mode": "jev-experimental"
+  },
+  "decisions": [
+    {
+      "command": "r8-step",
+      "jobId": "job-0002",
+      "records": [
+        {
+          "actorId": "npc_01",
+          "requestId": "in-1-r8-score-npc_01",
+          "inputSha256": "a82dd470fa35f035a75cf810514c90520a51e5961108bc8c8f60c0a82bb43ce2",
+          "candidateSetHash": "2bf8ce0d3ebbbf450c26da6b811af5063e7006015dcf68113b2c3edd385081c2",
+          "renderSha256": "f0ad8e3dd981fa68dcf516b6e2f4f00ee781437a38170f4d81746f292f326b6c",
+          "observationText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置dorm-a 饥饿70 体力80 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- council_opened@480 {\"meetingId\":\"council-1\",\"reason\":\"morning\"}\n- council_resolved@480 {\"meetingId\":\"council-1\",\"winner\":\"p-council-1-1\",\"tieBreakBy\":\"\",\"votes\":8}\n- task_proposed@480 {\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_01\"}\n- task_accepted@480 {\"taskId\":\"task-1\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_02\"}\n- task_accepted@480 {\"taskId\":\"task-2\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-3\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_03\"}\n- task_accepted@480 {\"taskId\":\"task-3\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-4\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_04\"}\n- task_accepted@480 {\"taskId\":\"task-4\",\"revision\":2}\n目标:{\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"memoryTruncated\":false}\n可选行动:\n1. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n2. 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15\n3. 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15\n4. 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60\n5. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n6. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n7. 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1\n8. 原地等待 [wait] {action=wait} 前提:alive",
+          "jointText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置dorm-a 饥饿70 体力80 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- council_opened@480 {\"meetingId\":\"council-1\",\"reason\":\"morning\"}\n- council_resolved@480 {\"meetingId\":\"council-1\",\"winner\":\"p-council-1-1\",\"tieBreakBy\":\"\",\"votes\":8}\n- task_proposed@480 {\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_01\"}\n- task_accepted@480 {\"taskId\":\"task-1\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_02\"}\n- task_accepted@480 {\"taskId\":\"task-2\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-3\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_03\"}\n- task_accepted@480 {\"taskId\":\"task-3\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-4\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_04\"}\n- task_accepted@480 {\"taskId\":\"task-4\",\"revision\":2}\n目标:{\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"memoryTruncated\":false}\n可选行动:\n1. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n2. 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15\n3. 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15\n4. 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60\n5. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n6. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n7. 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1\n8. 原地等待 [wait] {action=wait} 前提:alive",
+          "candidates": [
+            {
+              "id": "a-bae1f2dab8ef",
+              "kind": "eat",
+              "description": "吃掉一份食物",
+              "parameters": {
+                "action": "eat",
+                "amount": 1
+              },
+              "preconditions": [
+                "food >= 1",
+                "hunger < 80"
+              ],
+              "text": " 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80"
+            },
+            {
+              "id": "a-9b818e599fca",
+              "kind": "gather",
+              "description": "去冰湖采集食物",
+              "parameters": {
+                "action": "gather",
+                "resource": "food",
+                "amount": 2
+              },
+              "preconditions": [
+                "stamina > 15"
+              ],
+              "text": " 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15"
+            },
+            {
+              "id": "a-9dd795e76cba",
+              "kind": "gather",
+              "description": "去伐木场收集木柴",
+              "parameters": {
+                "action": "gather",
+                "resource": "firewood",
+                "amount": 2
+              },
+              "preconditions": [
+                "stamina > 15"
+              ],
+              "text": " 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15"
+            },
+            {
+              "id": "a-d83f6a3b1e99",
+              "kind": "refuel",
+              "description": "给中央炉添柴",
+              "parameters": {
+                "action": "refuel",
+                "amount": 3
+              },
+              "preconditions": [
+                "firewood >= 1",
+                "fuel < 60"
+              ],
+              "text": " 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60"
+            },
+            {
+              "id": "a-0b3f9fd02e70",
+              "kind": "move",
+              "description": "去仓库核实存粮",
+              "parameters": {
+                "action": "move",
+                "to": "warehouse",
+                "purpose": "verify-stock"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive"
+            },
+            {
+              "id": "a-4de955ab3c0e",
+              "kind": "move",
+              "description": "前往仓库",
+              "parameters": {
+                "action": "move",
+                "to": "warehouse",
+                "purpose": "travel"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive"
+            },
+            {
+              "id": "a-a8b51800872e",
+              "kind": "refuel",
+              "description": "为御寒准备炉火",
+              "parameters": {
+                "action": "refuel",
+                "amount": 2
+              },
+              "preconditions": [
+                "firewood >= 1"
+              ],
+              "text": " 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1"
+            },
+            {
+              "id": "a-3bc7f19405a7",
+              "kind": "wait",
+              "description": "原地等待",
+              "parameters": {
+                "action": "wait"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 原地等待 [wait] {action=wait} 前提:alive"
+            }
+          ],
+          "rules": [
+            "need.eat",
+            "yield.gather",
+            "need.heat",
+            "stock.unknown-verify",
+            "spatial.travel",
+            "task.prepare-warmth",
+            "baseline.wait"
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "disposition": "accept",
+          "scorerId": "jev-joint-c/1",
+          "latencyMs": 23021,
+          "executionStatus": "applied",
+          "reason": "",
+          "eventIds": [
+            "npc_01-r8-0:moved:0"
+          ],
+          "taskCompleted": null,
+          "worldVersion": 1
+        }
+      ],
+      "executed": 1,
+      "mode": "jev-experimental"
+    },
+    {
+      "command": "r8-step",
+      "jobId": "job-0003",
+      "records": [
+        {
+          "actorId": "npc_02",
+          "requestId": "in-2-r8-score-npc_02",
+          "inputSha256": "1f2f6fbd5001c7b848ea3dcb561cba8f49edf07a4a12de279d825c4e2bb806e6",
+          "candidateSetHash": "2bf8ce0d3ebbbf450c26da6b811af5063e7006015dcf68113b2c3edd385081c2",
+          "renderSha256": "ab23089a8bbbcddf5974c2e94d65127235c96b5f859b731c35356a31c3ba4c9d",
+          "observationText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置dorm-b 饥饿70 体力80 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- council_opened@480 {\"meetingId\":\"council-1\",\"reason\":\"morning\"}\n- council_resolved@480 {\"meetingId\":\"council-1\",\"winner\":\"p-council-1-1\",\"tieBreakBy\":\"\",\"votes\":8}\n- task_proposed@480 {\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_01\"}\n- task_accepted@480 {\"taskId\":\"task-1\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_02\"}\n- task_accepted@480 {\"taskId\":\"task-2\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-3\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_03\"}\n- task_accepted@480 {\"taskId\":\"task-3\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-4\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_04\"}\n- task_accepted@480 {\"taskId\":\"task-4\",\"revision\":2}\n目标:{\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"memoryTruncated\":false}\n可选行动:\n1. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n2. 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15\n3. 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15\n4. 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60\n5. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n6. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n7. 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1\n8. 原地等待 [wait] {action=wait} 前提:alive",
+          "jointText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置dorm-b 饥饿70 体力80 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- council_opened@480 {\"meetingId\":\"council-1\",\"reason\":\"morning\"}\n- council_resolved@480 {\"meetingId\":\"council-1\",\"winner\":\"p-council-1-1\",\"tieBreakBy\":\"\",\"votes\":8}\n- task_proposed@480 {\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_01\"}\n- task_accepted@480 {\"taskId\":\"task-1\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_02\"}\n- task_accepted@480 {\"taskId\":\"task-2\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-3\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_03\"}\n- task_accepted@480 {\"taskId\":\"task-3\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-4\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_04\"}\n- task_accepted@480 {\"taskId\":\"task-4\",\"revision\":2}\n目标:{\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"memoryTruncated\":false}\n可选行动:\n1. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n2. 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15\n3. 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15\n4. 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60\n5. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n6. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n7. 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1\n8. 原地等待 [wait] {action=wait} 前提:alive",
+          "candidates": [
+            {
+              "id": "a-bae1f2dab8ef",
+              "kind": "eat",
+              "description": "吃掉一份食物",
+              "parameters": {
+                "action": "eat",
+                "amount": 1
+              },
+              "preconditions": [
+                "food >= 1",
+                "hunger < 80"
+              ],
+              "text": " 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80"
+            },
+            {
+              "id": "a-9b818e599fca",
+              "kind": "gather",
+              "description": "去冰湖采集食物",
+              "parameters": {
+                "action": "gather",
+                "resource": "food",
+                "amount": 2
+              },
+              "preconditions": [
+                "stamina > 15"
+              ],
+              "text": " 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15"
+            },
+            {
+              "id": "a-9dd795e76cba",
+              "kind": "gather",
+              "description": "去伐木场收集木柴",
+              "parameters": {
+                "action": "gather",
+                "resource": "firewood",
+                "amount": 2
+              },
+              "preconditions": [
+                "stamina > 15"
+              ],
+              "text": " 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15"
+            },
+            {
+              "id": "a-d83f6a3b1e99",
+              "kind": "refuel",
+              "description": "给中央炉添柴",
+              "parameters": {
+                "action": "refuel",
+                "amount": 3
+              },
+              "preconditions": [
+                "firewood >= 1",
+                "fuel < 60"
+              ],
+              "text": " 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60"
+            },
+            {
+              "id": "a-0b3f9fd02e70",
+              "kind": "move",
+              "description": "去仓库核实存粮",
+              "parameters": {
+                "action": "move",
+                "to": "warehouse",
+                "purpose": "verify-stock"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive"
+            },
+            {
+              "id": "a-4de955ab3c0e",
+              "kind": "move",
+              "description": "前往仓库",
+              "parameters": {
+                "action": "move",
+                "to": "warehouse",
+                "purpose": "travel"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive"
+            },
+            {
+              "id": "a-a8b51800872e",
+              "kind": "refuel",
+              "description": "为御寒准备炉火",
+              "parameters": {
+                "action": "refuel",
+                "amount": 2
+              },
+              "preconditions": [
+                "firewood >= 1"
+              ],
+              "text": " 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1"
+            },
+            {
+              "id": "a-3bc7f19405a7",
+              "kind": "wait",
+              "description": "原地等待",
+              "parameters": {
+                "action": "wait"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 原地等待 [wait] {action=wait} 前提:alive"
+            }
+          ],
+          "rules": [
+            "need.eat",
+            "yield.gather",
+            "need.heat",
+            "stock.unknown-verify",
+            "spatial.travel",
+            "task.prepare-warmth",
+            "baseline.wait"
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "disposition": "accept",
+          "scorerId": "jev-joint-c/1",
+          "latencyMs": 3379,
+          "executionStatus": "applied",
+          "reason": "",
+          "eventIds": [
+            "npc_02-r8-1:moved:1"
+          ],
+          "taskCompleted": null,
+          "worldVersion": 2
+        }
+      ],
+      "executed": 1,
+      "mode": "jev-experimental"
+    },
+    {
+      "command": "r8-step",
+      "jobId": "job-0004",
+      "records": [
+        {
+          "actorId": "npc_01",
+          "requestId": "in-3-r8-score-npc_01",
+          "inputSha256": "bc768eddbe6b05f3b2de66cfb3df0b416d82822525804d710a811aa0e4c9455a",
+          "candidateSetHash": "2bf8ce0d3ebbbf450c26da6b811af5063e7006015dcf68113b2c3edd385081c2",
+          "renderSha256": "85019162ea37cac6098c75b01c3cbad4f1088a0fa586af0c347e84b1b963f3fd",
+          "observationText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置warehouse 饥饿70 体力77 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- council_opened@480 {\"meetingId\":\"council-1\",\"reason\":\"morning\"}\n- council_resolved@480 {\"meetingId\":\"council-1\",\"winner\":\"p-council-1-1\",\"tieBreakBy\":\"\",\"votes\":8}\n- task_proposed@480 {\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_01\"}\n- task_accepted@480 {\"taskId\":\"task-1\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_02\"}\n- task_accepted@480 {\"taskId\":\"task-2\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-3\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_03\"}\n- task_accepted@480 {\"taskId\":\"task-3\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-4\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_04\"}\n- task_accepted@480 {\"taskId\":\"task-4\",\"revision\":2}\n- moved@480 {\"to\":\"warehouse\"}\n目标:{\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"memoryTruncated\":false}\n可选行动:\n1. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n2. 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15\n3. 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15\n4. 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60\n5. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n6. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n7. 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1\n8. 原地等待 [wait] {action=wait} 前提:alive",
+          "jointText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置warehouse 饥饿70 体力77 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- council_opened@480 {\"meetingId\":\"council-1\",\"reason\":\"morning\"}\n- council_resolved@480 {\"meetingId\":\"council-1\",\"winner\":\"p-council-1-1\",\"tieBreakBy\":\"\",\"votes\":8}\n- task_proposed@480 {\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_01\"}\n- task_accepted@480 {\"taskId\":\"task-1\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_02\"}\n- task_accepted@480 {\"taskId\":\"task-2\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-3\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_03\"}\n- task_accepted@480 {\"taskId\":\"task-3\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-4\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_04\"}\n- task_accepted@480 {\"taskId\":\"task-4\",\"revision\":2}\n- moved@480 {\"to\":\"warehouse\"}\n目标:{\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"memoryTruncated\":false}\n可选行动:\n1. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n2. 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15\n3. 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15\n4. 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60\n5. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n6. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n7. 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1\n8. 原地等待 [wait] {action=wait} 前提:alive",
+          "candidates": [
+            {
+              "id": "a-bae1f2dab8ef",
+              "kind": "eat",
+              "description": "吃掉一份食物",
+              "parameters": {
+                "action": "eat",
+                "amount": 1
+              },
+              "preconditions": [
+                "food >= 1",
+                "hunger < 80"
+              ],
+              "text": " 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80"
+            },
+            {
+              "id": "a-9b818e599fca",
+              "kind": "gather",
+              "description": "去冰湖采集食物",
+              "parameters": {
+                "action": "gather",
+                "resource": "food",
+                "amount": 2
+              },
+              "preconditions": [
+                "stamina > 15"
+              ],
+              "text": " 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15"
+            },
+            {
+              "id": "a-9dd795e76cba",
+              "kind": "gather",
+              "description": "去伐木场收集木柴",
+              "parameters": {
+                "action": "gather",
+                "resource": "firewood",
+                "amount": 2
+              },
+              "preconditions": [
+                "stamina > 15"
+              ],
+              "text": " 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15"
+            },
+            {
+              "id": "a-d83f6a3b1e99",
+              "kind": "refuel",
+              "description": "给中央炉添柴",
+              "parameters": {
+                "action": "refuel",
+                "amount": 3
+              },
+              "preconditions": [
+                "firewood >= 1",
+                "fuel < 60"
+              ],
+              "text": " 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60"
+            },
+            {
+              "id": "a-0b3f9fd02e70",
+              "kind": "move",
+              "description": "去仓库核实存粮",
+              "parameters": {
+                "action": "move",
+                "to": "warehouse",
+                "purpose": "verify-stock"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive"
+            },
+            {
+              "id": "a-4de955ab3c0e",
+              "kind": "move",
+              "description": "前往仓库",
+              "parameters": {
+                "action": "move",
+                "to": "warehouse",
+                "purpose": "travel"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive"
+            },
+            {
+              "id": "a-a8b51800872e",
+              "kind": "refuel",
+              "description": "为御寒准备炉火",
+              "parameters": {
+                "action": "refuel",
+                "amount": 2
+              },
+              "preconditions": [
+                "firewood >= 1"
+              ],
+              "text": " 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1"
+            },
+            {
+              "id": "a-3bc7f19405a7",
+              "kind": "wait",
+              "description": "原地等待",
+              "parameters": {
+                "action": "wait"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 原地等待 [wait] {action=wait} 前提:alive"
+            }
+          ],
+          "rules": [
+            "need.eat",
+            "yield.gather",
+            "need.heat",
+            "stock.unknown-verify",
+            "spatial.travel",
+            "task.prepare-warmth",
+            "baseline.wait"
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "disposition": "accept",
+          "scorerId": "jev-joint-c/1",
+          "latencyMs": 3519,
+          "executionStatus": "applied",
+          "reason": "",
+          "eventIds": [
+            "npc_01-r8-2:moved:2"
+          ],
+          "taskCompleted": null,
+          "worldVersion": 3
+        }
+      ],
+      "executed": 1,
+      "mode": "jev-experimental"
+    },
+    {
+      "command": "r8-step",
+      "jobId": "job-0005",
+      "records": [
+        {
+          "actorId": "npc_02",
+          "requestId": "in-4-r8-score-npc_02",
+          "inputSha256": "4b789fee369cd6a1fd82784f7bf2a84984714586edc24cdfd608b1742565a023",
+          "candidateSetHash": "2bf8ce0d3ebbbf450c26da6b811af5063e7006015dcf68113b2c3edd385081c2",
+          "renderSha256": "21ad0fec49b6fc1b43107d478f148549f8ba760aeda8f739affa699abadc8922",
+          "observationText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置warehouse 饥饿70 体力77 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- council_opened@480 {\"meetingId\":\"council-1\",\"reason\":\"morning\"}\n- council_resolved@480 {\"meetingId\":\"council-1\",\"winner\":\"p-council-1-1\",\"tieBreakBy\":\"\",\"votes\":8}\n- task_proposed@480 {\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_01\"}\n- task_accepted@480 {\"taskId\":\"task-1\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_02\"}\n- task_accepted@480 {\"taskId\":\"task-2\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-3\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_03\"}\n- task_accepted@480 {\"taskId\":\"task-3\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-4\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_04\"}\n- task_accepted@480 {\"taskId\":\"task-4\",\"revision\":2}\n- moved@480 {\"to\":\"warehouse\"}\n目标:{\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"memoryTruncated\":false}\n可选行动:\n1. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n2. 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15\n3. 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15\n4. 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60\n5. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n6. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n7. 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1\n8. 原地等待 [wait] {action=wait} 前提:alive",
+          "jointText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置warehouse 饥饿70 体力77 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- council_opened@480 {\"meetingId\":\"council-1\",\"reason\":\"morning\"}\n- council_resolved@480 {\"meetingId\":\"council-1\",\"winner\":\"p-council-1-1\",\"tieBreakBy\":\"\",\"votes\":8}\n- task_proposed@480 {\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_01\"}\n- task_accepted@480 {\"taskId\":\"task-1\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_02\"}\n- task_accepted@480 {\"taskId\":\"task-2\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-3\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_03\"}\n- task_accepted@480 {\"taskId\":\"task-3\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-4\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_04\"}\n- task_accepted@480 {\"taskId\":\"task-4\",\"revision\":2}\n- moved@480 {\"to\":\"warehouse\"}\n目标:{\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"memoryTruncated\":false}\n可选行动:\n1. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n2. 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15\n3. 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15\n4. 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60\n5. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n6. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n7. 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1\n8. 原地等待 [wait] {action=wait} 前提:alive",
+          "candidates": [
+            {
+              "id": "a-bae1f2dab8ef",
+              "kind": "eat",
+              "description": "吃掉一份食物",
+              "parameters": {
+                "action": "eat",
+                "amount": 1
+              },
+              "preconditions": [
+                "food >= 1",
+                "hunger < 80"
+              ],
+              "text": " 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80"
+            },
+            {
+              "id": "a-9b818e599fca",
+              "kind": "gather",
+              "description": "去冰湖采集食物",
+              "parameters": {
+                "action": "gather",
+                "resource": "food",
+                "amount": 2
+              },
+              "preconditions": [
+                "stamina > 15"
+              ],
+              "text": " 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15"
+            },
+            {
+              "id": "a-9dd795e76cba",
+              "kind": "gather",
+              "description": "去伐木场收集木柴",
+              "parameters": {
+                "action": "gather",
+                "resource": "firewood",
+                "amount": 2
+              },
+              "preconditions": [
+                "stamina > 15"
+              ],
+              "text": " 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15"
+            },
+            {
+              "id": "a-d83f6a3b1e99",
+              "kind": "refuel",
+              "description": "给中央炉添柴",
+              "parameters": {
+                "action": "refuel",
+                "amount": 3
+              },
+              "preconditions": [
+                "firewood >= 1",
+                "fuel < 60"
+              ],
+              "text": " 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60"
+            },
+            {
+              "id": "a-0b3f9fd02e70",
+              "kind": "move",
+              "description": "去仓库核实存粮",
+              "parameters": {
+                "action": "move",
+                "to": "warehouse",
+                "purpose": "verify-stock"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive"
+            },
+            {
+              "id": "a-4de955ab3c0e",
+              "kind": "move",
+              "description": "前往仓库",
+              "parameters": {
+                "action": "move",
+                "to": "warehouse",
+                "purpose": "travel"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive"
+            },
+            {
+              "id": "a-a8b51800872e",
+              "kind": "refuel",
+              "description": "为御寒准备炉火",
+              "parameters": {
+                "action": "refuel",
+                "amount": 2
+              },
+              "preconditions": [
+                "firewood >= 1"
+              ],
+              "text": " 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1"
+            },
+            {
+              "id": "a-3bc7f19405a7",
+              "kind": "wait",
+              "description": "原地等待",
+              "parameters": {
+                "action": "wait"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 原地等待 [wait] {action=wait} 前提:alive"
+            }
+          ],
+          "rules": [
+            "need.eat",
+            "yield.gather",
+            "need.heat",
+            "stock.unknown-verify",
+            "spatial.travel",
+            "task.prepare-warmth",
+            "baseline.wait"
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "disposition": "accept",
+          "scorerId": "jev-joint-c/1",
+          "latencyMs": 3516,
+          "executionStatus": "applied",
+          "reason": "",
+          "eventIds": [
+            "npc_02-r8-3:moved:3"
+          ],
+          "taskCompleted": null,
+          "worldVersion": 4
+        }
+      ],
+      "executed": 1,
+      "mode": "jev-experimental"
+    },
+    {
+      "command": "r8-step",
+      "jobId": "job-0006",
+      "records": [
+        {
+          "actorId": "npc_01",
+          "requestId": "in-5-r8-score-npc_01",
+          "inputSha256": "70f0f3d0f029668170520b1a6c3c7485d0ed1e3ffb9281ec22b76bcfb1aaf8a3",
+          "candidateSetHash": "2bf8ce0d3ebbbf450c26da6b811af5063e7006015dcf68113b2c3edd385081c2",
+          "renderSha256": "01472868d0d4c0b3ddbb4393c4bdf0ff14deb7c822be29872587c6b91ceb5dff",
+          "observationText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置warehouse 饥饿70 体力74 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- council_opened@480 {\"meetingId\":\"council-1\",\"reason\":\"morning\"}\n- council_resolved@480 {\"meetingId\":\"council-1\",\"winner\":\"p-council-1-1\",\"tieBreakBy\":\"\",\"votes\":8}\n- task_proposed@480 {\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_01\"}\n- task_accepted@480 {\"taskId\":\"task-1\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_02\"}\n- task_accepted@480 {\"taskId\":\"task-2\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-3\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_03\"}\n- task_accepted@480 {\"taskId\":\"task-3\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-4\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_04\"}\n- task_accepted@480 {\"taskId\":\"task-4\",\"revision\":2}\n- moved@480 {\"to\":\"warehouse\"}\n- moved@480 {\"to\":\"warehouse\"}\n目标:{\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"memoryTruncated\":false}\n可选行动:\n1. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n2. 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15\n3. 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15\n4. 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60\n5. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n6. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n7. 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1\n8. 原地等待 [wait] {action=wait} 前提:alive",
+          "jointText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置warehouse 饥饿70 体力74 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- council_opened@480 {\"meetingId\":\"council-1\",\"reason\":\"morning\"}\n- council_resolved@480 {\"meetingId\":\"council-1\",\"winner\":\"p-council-1-1\",\"tieBreakBy\":\"\",\"votes\":8}\n- task_proposed@480 {\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_01\"}\n- task_accepted@480 {\"taskId\":\"task-1\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_02\"}\n- task_accepted@480 {\"taskId\":\"task-2\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-3\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_03\"}\n- task_accepted@480 {\"taskId\":\"task-3\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-4\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_04\"}\n- task_accepted@480 {\"taskId\":\"task-4\",\"revision\":2}\n- moved@480 {\"to\":\"warehouse\"}\n- moved@480 {\"to\":\"warehouse\"}\n目标:{\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"memoryTruncated\":false}\n可选行动:\n1. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n2. 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15\n3. 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15\n4. 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60\n5. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n6. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n7. 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1\n8. 原地等待 [wait] {action=wait} 前提:alive",
+          "candidates": [
+            {
+              "id": "a-bae1f2dab8ef",
+              "kind": "eat",
+              "description": "吃掉一份食物",
+              "parameters": {
+                "action": "eat",
+                "amount": 1
+              },
+              "preconditions": [
+                "food >= 1",
+                "hunger < 80"
+              ],
+              "text": " 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80"
+            },
+            {
+              "id": "a-9b818e599fca",
+              "kind": "gather",
+              "description": "去冰湖采集食物",
+              "parameters": {
+                "action": "gather",
+                "resource": "food",
+                "amount": 2
+              },
+              "preconditions": [
+                "stamina > 15"
+              ],
+              "text": " 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15"
+            },
+            {
+              "id": "a-9dd795e76cba",
+              "kind": "gather",
+              "description": "去伐木场收集木柴",
+              "parameters": {
+                "action": "gather",
+                "resource": "firewood",
+                "amount": 2
+              },
+              "preconditions": [
+                "stamina > 15"
+              ],
+              "text": " 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15"
+            },
+            {
+              "id": "a-d83f6a3b1e99",
+              "kind": "refuel",
+              "description": "给中央炉添柴",
+              "parameters": {
+                "action": "refuel",
+                "amount": 3
+              },
+              "preconditions": [
+                "firewood >= 1",
+                "fuel < 60"
+              ],
+              "text": " 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60"
+            },
+            {
+              "id": "a-0b3f9fd02e70",
+              "kind": "move",
+              "description": "去仓库核实存粮",
+              "parameters": {
+                "action": "move",
+                "to": "warehouse",
+                "purpose": "verify-stock"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive"
+            },
+            {
+              "id": "a-4de955ab3c0e",
+              "kind": "move",
+              "description": "前往仓库",
+              "parameters": {
+                "action": "move",
+                "to": "warehouse",
+                "purpose": "travel"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive"
+            },
+            {
+              "id": "a-a8b51800872e",
+              "kind": "refuel",
+              "description": "为御寒准备炉火",
+              "parameters": {
+                "action": "refuel",
+                "amount": 2
+              },
+              "preconditions": [
+                "firewood >= 1"
+              ],
+              "text": " 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1"
+            },
+            {
+              "id": "a-3bc7f19405a7",
+              "kind": "wait",
+              "description": "原地等待",
+              "parameters": {
+                "action": "wait"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 原地等待 [wait] {action=wait} 前提:alive"
+            }
+          ],
+          "rules": [
+            "need.eat",
+            "yield.gather",
+            "need.heat",
+            "stock.unknown-verify",
+            "spatial.travel",
+            "task.prepare-warmth",
+            "baseline.wait"
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "disposition": "accept",
+          "scorerId": "jev-joint-c/1",
+          "latencyMs": 3456,
+          "executionStatus": "applied",
+          "reason": "",
+          "eventIds": [
+            "npc_01-r8-4:moved:4"
+          ],
+          "taskCompleted": null,
+          "worldVersion": 5
+        }
+      ],
+      "executed": 1,
+      "mode": "jev-experimental"
+    },
+    {
+      "command": "r8-step",
+      "jobId": "job-0007",
+      "records": [
+        {
+          "actorId": "npc_02",
+          "requestId": "in-6-r8-score-npc_02",
+          "inputSha256": "79cf8c3d016309f7dd4acbdeabcd417b1d2be989d23a355cf6fe904a2de9596a",
+          "candidateSetHash": "2bf8ce0d3ebbbf450c26da6b811af5063e7006015dcf68113b2c3edd385081c2",
+          "renderSha256": "13c292ab82abb94390a24a3cc43804950346cd6a2deb7104e082d315a6b7d4a9",
+          "observationText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置warehouse 饥饿70 体力74 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- council_opened@480 {\"meetingId\":\"council-1\",\"reason\":\"morning\"}\n- council_resolved@480 {\"meetingId\":\"council-1\",\"winner\":\"p-council-1-1\",\"tieBreakBy\":\"\",\"votes\":8}\n- task_proposed@480 {\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_01\"}\n- task_accepted@480 {\"taskId\":\"task-1\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_02\"}\n- task_accepted@480 {\"taskId\":\"task-2\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-3\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_03\"}\n- task_accepted@480 {\"taskId\":\"task-3\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-4\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_04\"}\n- task_accepted@480 {\"taskId\":\"task-4\",\"revision\":2}\n- moved@480 {\"to\":\"warehouse\"}\n- moved@480 {\"to\":\"warehouse\"}\n目标:{\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"memoryTruncated\":false}\n可选行动:\n1. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n2. 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15\n3. 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15\n4. 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60\n5. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n6. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n7. 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1\n8. 原地等待 [wait] {action=wait} 前提:alive",
+          "jointText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置warehouse 饥饿70 体力74 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- council_opened@480 {\"meetingId\":\"council-1\",\"reason\":\"morning\"}\n- council_resolved@480 {\"meetingId\":\"council-1\",\"winner\":\"p-council-1-1\",\"tieBreakBy\":\"\",\"votes\":8}\n- task_proposed@480 {\"taskId\":\"task-1\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_01\"}\n- task_accepted@480 {\"taskId\":\"task-1\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_02\"}\n- task_accepted@480 {\"taskId\":\"task-2\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-3\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_03\"}\n- task_accepted@480 {\"taskId\":\"task-3\",\"revision\":2}\n- task_proposed@480 {\"taskId\":\"task-4\",\"type\":\"PREPARE_WARMTH\",\"assigneeId\":\"npc_04\"}\n- task_accepted@480 {\"taskId\":\"task-4\",\"revision\":2}\n- moved@480 {\"to\":\"warehouse\"}\n- moved@480 {\"to\":\"warehouse\"}\n目标:{\"taskId\":\"task-2\",\"type\":\"PREPARE_WARMTH\",\"memoryTruncated\":false}\n可选行动:\n1. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n2. 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15\n3. 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15\n4. 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60\n5. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n6. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n7. 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1\n8. 原地等待 [wait] {action=wait} 前提:alive",
+          "candidates": [
+            {
+              "id": "a-bae1f2dab8ef",
+              "kind": "eat",
+              "description": "吃掉一份食物",
+              "parameters": {
+                "action": "eat",
+                "amount": 1
+              },
+              "preconditions": [
+                "food >= 1",
+                "hunger < 80"
+              ],
+              "text": " 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80"
+            },
+            {
+              "id": "a-9b818e599fca",
+              "kind": "gather",
+              "description": "去冰湖采集食物",
+              "parameters": {
+                "action": "gather",
+                "resource": "food",
+                "amount": 2
+              },
+              "preconditions": [
+                "stamina > 15"
+              ],
+              "text": " 去冰湖采集食物 [gather] {action=gather amount=2 resource=food} 前提:stamina > 15"
+            },
+            {
+              "id": "a-9dd795e76cba",
+              "kind": "gather",
+              "description": "去伐木场收集木柴",
+              "parameters": {
+                "action": "gather",
+                "resource": "firewood",
+                "amount": 2
+              },
+              "preconditions": [
+                "stamina > 15"
+              ],
+              "text": " 去伐木场收集木柴 [gather] {action=gather amount=2 resource=firewood} 前提:stamina > 15"
+            },
+            {
+              "id": "a-d83f6a3b1e99",
+              "kind": "refuel",
+              "description": "给中央炉添柴",
+              "parameters": {
+                "action": "refuel",
+                "amount": 3
+              },
+              "preconditions": [
+                "firewood >= 1",
+                "fuel < 60"
+              ],
+              "text": " 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60"
+            },
+            {
+              "id": "a-0b3f9fd02e70",
+              "kind": "move",
+              "description": "去仓库核实存粮",
+              "parameters": {
+                "action": "move",
+                "to": "warehouse",
+                "purpose": "verify-stock"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive"
+            },
+            {
+              "id": "a-4de955ab3c0e",
+              "kind": "move",
+              "description": "前往仓库",
+              "parameters": {
+                "action": "move",
+                "to": "warehouse",
+                "purpose": "travel"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive"
+            },
+            {
+              "id": "a-a8b51800872e",
+              "kind": "refuel",
+              "description": "为御寒准备炉火",
+              "parameters": {
+                "action": "refuel",
+                "amount": 2
+              },
+              "preconditions": [
+                "firewood >= 1"
+              ],
+              "text": " 为御寒准备炉火 [refuel] {action=refuel amount=2} 前提:firewood >= 1"
+            },
+            {
+              "id": "a-3bc7f19405a7",
+              "kind": "wait",
+              "description": "原地等待",
+              "parameters": {
+                "action": "wait"
+              },
+              "preconditions": [
+                "alive"
+              ],
+              "text": " 原地等待 [wait] {action=wait} 前提:alive"
+            }
+          ],
+          "rules": [
+            "need.eat",
+            "yield.gather",
+            "need.heat",
+            "stock.unknown-verify",
+            "spatial.travel",
+            "task.prepare-warmth",
+            "baseline.wait"
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "disposition": "accept",
+          "scorerId": "jev-joint-c/1",
+          "latencyMs": 3455,
+          "executionStatus": "applied",
+          "reason": "",
+          "eventIds": [
+            "npc_02-r8-5:moved:5"
+          ],
+          "taskCompleted": null,
+          "worldVersion": 6
+        }
+      ],
+      "executed": 1,
+      "mode": "jev-experimental"
+    }
+  ],
+  "runtimeSha256": "92e95e73c348dcbfcce50b7d00efb4ad863e45bcdf8dad14853b5bdce3662f65",
+  "restoreEqual": true,
+  "documentsCompared": [
+    "",
+    ".r8.json",
+    ".tasks.json",
+    ".experience.json",
+    ".commitments.json",
+    ".council.json"
+  ],
+  "evidenceClass": "experimental",
+  "countsAsAdmitted": false,
+  "scorerIdentity": {
+    "certificateSha256": null,
+    "countsAsAdmitted": false,
+    "encoderForwardAttempts": 6,
+    "encoderForwardCalls": 6,
+    "encoderId": "/data2/model_weights/Qwen3.8-27B",
+    "experimental": true,
+    "featureIdentityHash": "df1d9e4dc6d433c5e74f0b0db0fcdd4e96d01c7270901fae88502049e8851a4b",
+    "headSha256": "a7ea65413430f9518b7065643091131104dbf4e0968a15dcd24597f725cfe3f2",
+    "independentReviews": 0,
+    "labelSource": "reference-imitation",
+    "memoryPolicyId": "conditional-experience",
+    "mode": "jev-experimental",
+    "realModel": true,
+    "rendererId": "joint-c-action/1",
+    "requestsFailed": 0,
+    "requestsReceived": 6,
+    "scorerId": "jev-joint-c/1",
+    "scoresSucceeded": 6,
+    "tau": 0,
+    "temperature": 1,
+    "trainingManifestSha256": "caf6ca065f54610e40b132aeedfcb00873b4e38fb9552e7b2b6fa1cc14bb1217",
+    "utility": null
+  }
+}

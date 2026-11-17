@@ -1,0 +1,57 @@
+{
+  "schema": "frostecho.jev04.data-gate/2",
+  "at": "2026-11-11T12:20:00+08:00",
+  "status": "blocked",
+  "mayTrainOnJev": false,
+  "evidence": {
+    "existingBehaviorCases": 192,
+    "existingJev03TestCases": 256,
+    "targetCases": 4096,
+    "publicAnchors": 64,
+    "anchorSourceGroups": 32,
+    "anchorFactsUnique": 64,
+    "independentLabelSessions": 2,
+    "session1Coverage": "63/64 unique (duplicate gR01-B, missing gY08-B)",
+    "session2Coverage": "64/64",
+    "session1ExactSetMatch": "33/63",
+    "session2ExactSetMatch": "25/64",
+    "interSessionAgreement": "computed in anchors/review-agreement.json",
+    "machineDerivedCorrections": 5,
+    "correctionsIndependentlyReviewed": 5,
+    "singleSessionLabels": 16,
+    "oldLabelsIndependentlyReviewed": "16/16 agree; 5/5 corrections agree",
+    "structuredSourceFacts": 64,
+    "trainCases": 48,
+    "devCases": 16,
+    "trainTarget": 512,
+    "devTarget": 128,
+    "trainGroups": 24,
+    "devGroups": 8
+  },
+  "blockers": [
+    "train/dev = 48/16，低于 512/128 推进目标；仅为按源组隔离的较小合格组",
+    "64 锚点仅覆盖 4 类结构事实，缺少 4096 主 case 的其他来源组",
+    "审查会话1有 1 个重复 ID 与 1 个缺行，需重标该 ID 后才能称完整覆盖",
+    "尚无旧解封集之外的 cal/select/cert/test 独立分组",
+    "本地无 Qwen3.5-27B/4B 权重，真实臂无法启动"
+  ],
+  "reviewedArtifacts": [
+    "anchors/anchors.jsonl",
+    "anchors/review-session-1.jsonl",
+    "anchors/review-session-2.jsonl",
+    "anchors/old-labels-review.jsonl",
+    "anchors/review-agreement.json",
+    "anchors/review-disagreements.jsonl"
+  ],
+  "allowedMeanwhile": [
+    "B 只运行 preflight；不得用合成特征冒充 T27",
+    "C 用 fake/录制请求验证身份、成本、恢复",
+    "D/E/F/G/H 用 fixture 与真实入口推进"
+  ],
+  "nextGate": [
+    "补齐 512 train/128 dev 且保持 32 源组隔离",
+    "重标 gY08-B，去重 gR01-B",
+    "审查分歧由 H 预注册 challenge，不看模型输出裁题",
+    "权重到位后按原两 seed/12h 矩阵先跑 T27"
+  ]
+}

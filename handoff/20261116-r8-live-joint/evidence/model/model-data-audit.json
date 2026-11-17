@@ -1,0 +1,120 @@
+{
+  "sourceHEAD": "8d100c40cbb26c6efa5886a7a57a8f656c036854",
+  "scope": "CPU-mechanism-fixtures and delivered-data inspection; no real model run",
+  "data": {
+    "cases": 2560,
+    "splits": {
+      "train": 1600,
+      "dev": 320,
+      "select": 320,
+      "calibration": 320
+    },
+    "episodes": 8,
+    "episodeSplitLeaks": 0,
+    "distinctVisibleTexts": 1477,
+    "visibleTextsCrossingSplits": 148,
+    "reviewBEqualsAllCandidates": 2560,
+    "labelEqualsReceiptOnly": 2560,
+    "quarantined": 0,
+    "ruleReviewKinds": [
+      "constraint",
+      "receipt"
+    ]
+  },
+  "training": {
+    "fixtureTrainRows": 1,
+    "fixtureDevRows": 1,
+    "rowsOptimized": 2,
+    "gradientRelativeError": 2.0297967326273954,
+    "command": [
+      "C:\\Program Files\\WindowsApps\\OpenAI.CodexPrimaryRuntime.v26-1104-2876-0_26.1104.2876.0_x64__3k8sg7r9htsxt\\dependencies\\python\\python.exe",
+      "-B",
+      "C:\\Users\\Administrator\\Documents\\ChatGPT\\工作学习\\research\\FrostEcho\\reviews\\R8C-8d100c4-20261116\\source\\research\\decision-choice\\jev05\\action\\train.py",
+      "--cases",
+      "C:\\Users\\Administrator\\Documents\\ChatGPT\\工作学习\\research\\FrostEcho\\reviews\\R8C-8d100c4-20261116\\audit\\model\\mechanism-inputs\\cases.jsonl",
+      "--features",
+      "C:\\Users\\Administrator\\Documents\\ChatGPT\\工作学习\\research\\FrostEcho\\reviews\\R8C-8d100c4-20261116\\audit\\model\\mechanism-inputs\\features.npz",
+      "train",
+      "--epochs",
+      "1",
+      "--out",
+      "C:\\Users\\Administrator\\Documents\\ChatGPT\\工作学习\\research\\FrostEcho\\reviews\\R8C-8d100c4-20261116\\audit\\model\\mechanism-inputs\\trained-mechanism-head"
+    ],
+    "rawResult": {
+      "schema": "frostecho.jev05.action.train/1",
+      "init": "warm",
+      "seed": 17,
+      "epochs": 1,
+      "lr": 0.05,
+      "cases": 2,
+      "bestLoss": 5.663438,
+      "curve": [
+        {
+          "epoch": 1,
+          "loss": 5.663438
+        }
+      ],
+      "headInSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+      "renderer": "joint-c-action/1",
+      "featureCacheSha256": "aabff3d793b7ce4addf95268773b0e47eea32bad0211e18d46d6f0fe92a13b8e"
+    }
+  },
+  "admission": {
+    "emptyJsonFileAdmitted": true,
+    "command": [
+      "C:\\Program Files\\WindowsApps\\OpenAI.CodexPrimaryRuntime.v26-1104-2876-0_26.1104.2876.0_x64__3k8sg7r9htsxt\\dependencies\\python\\python.exe",
+      "-B",
+      "C:\\Users\\Administrator\\Documents\\ChatGPT\\工作学习\\research\\FrostEcho\\reviews\\R8C-8d100c4-20261116\\source\\research\\decision-choice\\jev05\\action\\train.py",
+      "serve",
+      "--feature-map",
+      "C:\\Users\\Administrator\\Documents\\ChatGPT\\工作学习\\research\\FrostEcho\\reviews\\R8C-8d100c4-20261116\\audit\\model\\mechanism-inputs\\features.json",
+      "--mode",
+      "jev-admitted",
+      "--data-certificate",
+      "C:\\Users\\Administrator\\Documents\\ChatGPT\\工作学习\\research\\FrostEcho\\reviews\\R8C-8d100c4-20261116\\audit\\model\\mechanism-inputs\\not-a-certificate.json"
+    ],
+    "rawResponse": {
+      "requestId": "cpu-mechanism-audit",
+      "candidateSetHash": "mechanism-fixture",
+      "scores": [
+        {
+          "candidateId": "a",
+          "logit": -4.833843,
+          "probability": 0.00115
+        },
+        {
+          "candidateId": "b",
+          "logit": 1.932651,
+          "probability": 0.99885
+        }
+      ],
+      "selectedId": "b",
+      "disposition": "accept",
+      "reason": "joint-c argmax at T=1.0",
+      "admission": {
+        "requested": "jev-admitted",
+        "granted": true,
+        "reason": null
+      },
+      "identity": {
+        "mode": "jev-admitted",
+        "scorerId": "jev-joint-c/1",
+        "checkpointSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+        "encoderId": "\\data2\\model_weights\\Qwen3.8-27B",
+        "rendererId": "joint-c-action/1",
+        "memoryPolicyId": "conditional-experience",
+        "dataCertificateSha256": "C:\\Users\\Administrator\\Documents\\ChatGPT\\工作学习\\research\\FrostEcho\\reviews\\R8C-8d100c4-20261116\\audit\\model\\mechanism-inputs\\not-a-certificate.json",
+        "experimental": false,
+        "countsAsAdmitted": true
+      },
+      "latencyMs": 1.0
+    }
+  },
+  "encoderCodeFindings": [
+    "live_encode_probe max_memory contains MiB integers passed as byte counts",
+    "live_encode_probe batches observation/candidates independently",
+    "cmd_encode still uses AutoModel/cuda:0/truncation and no joint readout",
+    "serve only uses static featureKey lookup"
+  ],
+  "gpuUsed": false
+}

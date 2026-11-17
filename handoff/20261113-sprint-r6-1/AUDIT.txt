@@ -1,0 +1,45 @@
+FrostEcho R6 独立验收 — 2026-11-13（Asia/Shanghai）
+
+结论：有限返工。P供仓终态可接受；原R/D/M最小反例已修，但更完整契约仍有三个已证缺口。晨会故事有效，全量/CI与最新交付封装尚未闭合。不是停止项目，也不合main。
+固定核查HEAD：12cc208124c1b6d73c8fd5af66352091f8db9027；包含用户追加的G11恢复提交。所有工作本地Windows CPU + GitHub只读，不连接维护服务器，不调用模型API/下载权重/GPU。
+
+版本与原始证据
+- GitHub codex/sprint-r6及PR#12最新已取到12cc208；R6产品主体ac7aa4b，cf1ed793加报告/证据，8a0c7df存bundle，12cc208再改测试runner。
+- 原bundle完整历史、verify通过，SHA256=683763a876941bb55710216abfb6a03124dec2e6ae0adc7d5ff8fdb4f8d3c230，实际ref=cf1ed793be0b45b8a86d8fda4ef72db7e5176383。
+- 所以原bundle真实且未损坏，但不含12cc208。delivery/PACKAGE-SHA256仅覆盖3项，其他原始证据通过bundle/Git树保存。当前审计不改原bundle/短报来掩盖时间差。
+
+有效结果
+1. 独立npm ci/build成功。P/R两个原probe通过修复断言；R6 P/R3项、旧R5 9项定向通过。供仓库存6，真实stock_deposited amount2和fulfil amount2绑定，第三次进程恢复不重复履约。
+2. 显式cancel的补充负例独立通过；原单save场景捕获内0效果、捕获外恰一次、finalVersion2。
+3. 原D改候选/旧审查重绑反例、原M矛盾摘要证书反例均拒绝。当前39题原始内容/两审/裁决未被本轮修改，仍0eligible/29ambiguous/10inconsistent，正式训练入口先拒绝，modelLoads0。
+4. CPU合法fixture可以accept/abstain、utility=null；生产概率/选择/CP计算接线通过。不是模型收益或真实风险证书。
+5. 本人独立重跑两臂晨会故事：均4394分钟=73小时14分钟、进入第4日，2项供仓和3项送饭fulfilled。原提交与新复跑的整个world均逐字段相等；对commitment/change/memory/experience ID建立双射后，session和所有相关sidecars也相等，不删关联字段。request→commitment→task检查无断链。数据见story-audit.json。它是四个晨会窗口的受控故事，不是完整96h生存验证。
+
+三个必须返工的契约缺口
+R [P2] 双save仍误取消新工作：step1 started→save1/step2/save2→save1超时回执→release，save2尚未超时。step2被generation_changed_before_start拒绝，最终version1而非2。record.captured是跨barrier共享bool，后来save2标记污染了save1的捕获归属判断。见lifecycle/REPORT.txt、extra-probes.cjs、two-save原始JSONL。
+D [P1] validator遗漏canonical→packet语义绑定：同时修改packet.visibleInput和v4叙述、更新当前hash，保持canonical serializedInput和两审原文SHA不变，生产validate_v4仍exit0/ok=true。importer已做的比较没有被validator复用。当前研究门仍false；这是人工隔离负例，不指控交付数据造假。见jev/probe-output/result.json.validatorProjectionGap。
+M [P1] CPU证据可计real：同一合成逐样本数据仅把顶层evidenceClass由fixture改为cpu-mechanism，生产load_artifact→decide由shadow/false变成accept/counts_as_real=true；逐样本仍标fixture。新增测试甚至要求这一true。数值有效必须和真实模型证据分开。TS仍shadow，未发生实际模型调用或世界执行。见jev/probe-output/result.json.cpuClassRealAdmission。
+
+harness与独立全量
+- g04原12项在本机2.36s全部通过，不能复述为900s超时已在本机重现。
+- 一次真实CI runner：128.98s返回，756项=754pass/1fail/1skip，exit1。首败为既有g10 transient-save-IO；只定向复跑一次通过，首败仍算失败。
+- g04测试在finalize输出后才注册exit监听；有限诊断证明退出已发生时后挂监听永远收不到。支持原Linux超时的一种解释，但不是其唯一根因证明。
+- g09另有实际120.6s慢例：同进程fake HTTP服务器被execFileSync阻塞，最后timeout也被当成“500步骤失败”通过。这不是JEV/队列吞吐。
+- g10等待第一条stdout便断言第二条stdout，存在分块到达竞争。修握手，不用skip/known-flake或增大900秒掩盖。
+- 12cc208的G11恢复对干净检出有效，已有文件保留；但marker单文件存在就退出，其他13个缺失文件不补。应按完整清单补缺。
+- verify-r6.ts把P/R/D预先硬编码pass；这些汇总不能代替实际验收。内置保存比较删掉绑定字段，本次由独立更严格比较补证；正式harness应保留双射后的全部关联。
+- verify-r6硬编码python3，在仅有python.exe的Windows环境不可移植；本次根线用导出的runStory、JEV线用真实Python+TS组件独立复跑，没有把这算完整CLI集成入口通过。
+
+Python边界
+独立核心首跑51项：48pass/1fail/1缺依赖error/1skip。将huggingface_hub仅装到隔离测试目录后，缺依赖mock用例定向1/1通过，累计有证49pass/1fail/1skip（没有重跑全套刷绿）。port23/23。
+唯一实际核心失败是Windows未改输入导入时LF被写成CRLF，破坏字节确定性；应固定UTF-8/LF，不削弱原断言。SciPy oracle skip单列。
+原交付Ran51/OK(skipped=1)应计50pass+1skip，不是51pass+1skip。
+T平坦区补丁：本次PythonT=.104095、JS原拟合=.105869，目标NLL分别0和约5.55e-18；现fixture通过有依据，但2e-3容差的一般可靠性/近阈值行为未证明，不扩称完成校准。
+
+仓库体积
+12cc208全树5867文件、77,242,124字节（不是Git下载大小）；相对R6任务包实际改动645文件、+518781/-116行，当前这些文件32,861,945字节。PR#12对老main比较才是5854文件、+1,208,351行，包含R1–R5历史。
+最大单文件R6 bundle10,978,472字节；未发现node_modules/.venv/验收clone/dist误入。两个旧审计pyc和已有研究checkpoint继承于R5，不是本轮新增大模型。R6新增644个文本文件的凭据模式扫描无命中（仅模式检查，不是绝对无秘密证明）。不为压行数删除冻结证据或改main。
+
+当前CI状态见CI-FINAL-SNAPSHOT.json：2026-11-13北京时间12:33，12cc208的Ubuntu/Windows两组Node20成功，两组Node22仍in_progress；未完成不计通过，也不等待CI替代已证反例。
+
+下一轮：R6.1有限收口，先R/D/M三条反例与Windows确定性，再修G11完整性/G04-G09-G10异步测试/真实总门，单次全量及最终HEAD的CI。保留本次已有效玩法，暂不铺新危机/UI/轮回或开模型门。最后重封装覆盖最终源码的bundle，明确sourceHead/bundleHead/deliveryTip，允许保存bundle的纯文档提交自然在后，不要求bundle包含自身。

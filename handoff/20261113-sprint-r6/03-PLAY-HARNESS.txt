@@ -1,0 +1,24 @@
+四项修复通过后的有界产品闭环（必做；不再铺大系统）
+
+玩家可观察故事：晨会把供仓和送饭分别托付给居民。一项工作真实交存即结清，一项工作缺货时保留原因；居民可以退出，换人会产生新请求与新承诺；保存到明天后仍清楚谁欠什么、为什么没完成、由哪条真实回执结清。
+这是SuperAgent“持续托付的一件工作”的本项目实现：沿用request/commitment/task/job与权威事件，不引入SuperAgent依赖或第二套调度系统。
+
+在scripts/verify-r6.ts实现CLI驱动，通过stdin真实进程交互，不直接调用内部方法代替产品入口，不手改存档/库存。执行 node dist/scripts/verify-r6.js --out artifacts/sprint-r6/<run-id>/integration。
+冻结8NPC、spatial启用、初始food120等全部初始条件和控制命令；四个晨会窗口，不宣称自然生存平衡。若需短缺，预登记其制造命令和时刻。
+
+四日脚本要求
+1. 第一天供仓与送饭都由显式接受产生；分别由stock_deposited、meal_delivered结清绑定承诺。
+2. 第二天一名供仓者退出，旧承诺withdrawn、旧task取消；替代者收到revision2新请求，显式接受后完成。旧回应忽略，旧承诺不能改名复活。
+3. 第三天受控缺货被居民实际观察；保留未完成原因，经现有采集→交存→取用→送达恢复，禁止凭空补货或泄漏未观察库存。跨进程恢复安排在这项工作尚未完成时。
+4. 第四天重放旧决议/回应，零重复派工；收口仍有效的工作。任何未完成项逐项解释，不把“空闲/跑完四天”当完成。
+
+同一冻结命令序列跑两臂：continuous单进程、segmented每天save/quit后新进程恢复；除保存退出命令外控制输入一致。报告实际simTime分钟和旅行/工作消耗，不再写“精确96h”。R5已有脚本为6170分钟，仅供定位，不硬编码为R6预期。
+比较完整world，以及tasks/commitments/council和履约事件关联等必要sidecars。跨独立运行若有随机UUID，只能按稳定request/source/task关系双射规范化；规则预先写入normalize.json，交原始文件，不可删除revision、terminal/evidence、库存/携带或任务关联凑相等。
+
+导出obligation-ledger.json（由真实状态/事件派生，只读，不参与调度）
+每项至少包含：requestId/source/councilId/resolutionId/revision、actor、goal、commitmentId/status、taskId/status、terminalReason、receiptEventIds、未完成原因及其证据（没有证据写unknown，不能编故事）。
+玩家从这份清单能看出“谁接了工作—哪里受阻—谁退出—谁接替—实际做成了什么”。若现有council-status/task-status输出已足够，可直接从它们与回执导出，不要求新UI或新命令。
+
+验收：连续/分段权威结果一致；至少一项供仓和一项送饭真实履约；退出旧工作0后续效果；替代工作实例独立；旧决议0重复；资源守恒；没有任务done但绑定承诺active的漏账。未完成项必须合理且有因果证据。
+输出：两臂完整stdin/stdout/stderr、每日存档及sidecars、authority-diff.json、实际分钟、资源账、obligation-ledger.json及来源ID映射。
+JEV仍shadow/reference；本故事不声称实模自主规划或经验泛化收益。议会多议题、危机/室内逐格/UI/建造/轮回留在legacy-parity清单，标本轮未做。

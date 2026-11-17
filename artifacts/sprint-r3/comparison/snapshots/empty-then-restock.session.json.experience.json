@@ -1,0 +1,50 @@
+{
+  "exp-a3056e26-14c1-4385-a3ca-751eceeb1a50": {
+    "noteId": "exp-a3056e26-14c1-4385-a3ca-751eceeb1a50",
+    "ownerActorId": "npc_01",
+    "lesson": "warehouse-stocked",
+    "source": "own-observation",
+    "conditions": {
+      "place": "warehouse",
+      "learnedAt": 32
+    },
+    "evidenceEventIds": [
+      "cmp-drain-w:stock_withdrawn:1",
+      "cmp-refill:stock_restocked:6"
+    ],
+    "invalidatedByEventIds": [],
+    "valid": true
+  },
+  "exp-88cffd67-1d69-44eb-ae20-b5259d619c04": {
+    "noteId": "exp-88cffd67-1d69-44eb-ae20-b5259d619c04",
+    "ownerActorId": "npc_02",
+    "lesson": "warehouse-empty",
+    "source": "own-observation",
+    "conditions": {
+      "place": "warehouse",
+      "learnedAt": 82
+    },
+    "evidenceEventIds": [
+      "npc_02-game-3-g-withdraw:out_of_stock:3"
+    ],
+    "invalidatedByEventIds": [
+      "cmp-refill:stock_restocked:6"
+    ],
+    "valid": false
+  },
+  "exp-15e7b789-9e20-4064-ae6a-b4e45bf1ad4a": {
+    "noteId": "exp-15e7b789-9e20-4064-ae6a-b4e45bf1ad4a",
+    "ownerActorId": "npc_02",
+    "lesson": "warehouse-stocked",
+    "source": "own-observation",
+    "conditions": {
+      "place": "warehouse",
+      "learnedAt": 82
+    },
+    "evidenceEventIds": [
+      "cmp-refill:stock_restocked:6"
+    ],
+    "invalidatedByEventIds": [],
+    "valid": true
+  }
+}

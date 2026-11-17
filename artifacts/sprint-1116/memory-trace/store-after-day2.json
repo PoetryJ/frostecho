@@ -1,0 +1,130 @@
+{
+  "schema": "frostecho.memory-store/1",
+  "policyVersion": "memory-policy/1",
+  "records": [
+    {
+      "eventId": "e-promise-1",
+      "observerId": "npc_a",
+      "occurredAt": 100,
+      "observedAt": 100,
+      "kind": "promise_made",
+      "subjectIds": [
+        "npc_a",
+        "player"
+      ],
+      "payload": {
+        "promiseId": "p-leave-food",
+        "fromId": "npc_a",
+        "toId": "player",
+        "text": "给玩家留一份饭"
+      },
+      "source": "engine",
+      "authority": "npc",
+      "relatedRequestId": "req-1",
+      "recordId": "m-3f461846c87685ae",
+      "revision": 1,
+      "sourceEventIds": [
+        "e-promise-1"
+      ]
+    },
+    {
+      "eventId": "e-promise-1",
+      "observerId": "npc_b",
+      "occurredAt": 100,
+      "observedAt": 100,
+      "kind": "promise_made",
+      "subjectIds": [
+        "npc_a",
+        "player"
+      ],
+      "payload": {
+        "promiseId": "p-leave-food",
+        "fromId": "npc_a",
+        "toId": "player",
+        "text": "给玩家留一份饭"
+      },
+      "source": "engine",
+      "authority": "npc",
+      "relatedRequestId": "req-1",
+      "recordId": "m-40fd0a24ccb319fe",
+      "revision": 1,
+      "sourceEventIds": [
+        "e-promise-1"
+      ]
+    },
+    {
+      "eventId": "e-retract-1",
+      "observerId": "npc_a",
+      "occurredAt": 110,
+      "observedAt": 110,
+      "kind": "promise_retract",
+      "subjectIds": [
+        "npc_a",
+        "player"
+      ],
+      "payload": {
+        "promiseId": "p-leave-food",
+        "byId": "player",
+        "text": "不用留了，今晚我不回来吃"
+      },
+      "source": "player_statement",
+      "authority": "player",
+      "retracts": [
+        "e-promise-1"
+      ],
+      "recordId": "m-f722b6ec862457f2",
+      "revision": 2,
+      "sourceEventIds": [
+        "e-retract-1"
+      ]
+    },
+    {
+      "eventId": "e-retract-third",
+      "observerId": "npc_a",
+      "occurredAt": 115,
+      "observedAt": 115,
+      "kind": "promise_retract",
+      "subjectIds": [
+        "npc_c"
+      ],
+      "payload": {
+        "promiseId": "p-leave-food",
+        "byId": "npc_c",
+        "text": "我替他取消"
+      },
+      "source": "engine",
+      "authority": "third_party",
+      "recordId": "m-f89d6278b43639dd",
+      "revision": 3,
+      "sourceEventIds": [
+        "e-retract-third"
+      ]
+    },
+    {
+      "eventId": "e-retract-2",
+      "observerId": "npc_b",
+      "occurredAt": 210,
+      "observedAt": 210,
+      "kind": "promise_retract",
+      "subjectIds": [
+        "npc_b",
+        "player"
+      ],
+      "payload": {
+        "promiseId": "p-leave-food",
+        "byId": "player",
+        "text": "不用留了（当面告知 B）"
+      },
+      "source": "player_statement",
+      "authority": "player",
+      "retracts": [
+        "e-promise-1"
+      ],
+      "recordId": "m-c4850cb0fd26a50b",
+      "revision": 2,
+      "sourceEventIds": [
+        "e-retract-2"
+      ]
+    }
+  ]
+}

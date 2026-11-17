@@ -1,0 +1,206 @@
+{
+  "assembler": {
+    "role": "engineering-assembly-not-third-independent-adjudicator",
+    "script": "adjudicate.py",
+    "scriptSha256": "d7a45d8bf99716d15b0b5a08e3fec2046020e48856a060c71bb1e74278e3c894",
+    "sessionId": "/root/jev05_blind_a"
+  },
+  "authorComparisonPolicy": "Report any non-identical singleton comparison, including a multi-label review that still contains the author label; a reported difference does not itself establish an author error.",
+  "contract": "frostecho.jev03.semantic/2",
+  "contractSha256": "4b96946528e2a4dcd0379be985d05046b2fd87c98b5b93f58d392d0d9645654e",
+  "counts": {
+    "accepted": 63,
+    "authorConsensusMismatches": 0,
+    "authorDifferences": 1,
+    "authorOutsideAnyReviewSet": 0,
+    "dev": 16,
+    "groups": 8,
+    "input": 64,
+    "labelsBySplit": {
+      "dev": {
+        "NEEDS_CLARIFICATION": 4,
+        "NO_PRIORITY_REQUEST": 4,
+        "NPC_FIRST": 4,
+        "PLAYER_FIRST": 4
+      },
+      "train": {
+        "NEEDS_CLARIFICATION": 11,
+        "NO_PRIORITY_REQUEST": 12,
+        "NPC_FIRST": 12,
+        "PLAYER_FIRST": 12
+      }
+    },
+    "pending": 1,
+    "train": 47
+  },
+  "createdAt": "2026-11-13T10:15:45.059624+00:00",
+  "generalJevCertified": false,
+  "groups": {
+    "c-inc-dev-channel-addressee-handoff": "dev",
+    "c-inc-dev-reincarnation-archive": "dev",
+    "c-inc-train-conditional-experience": "train",
+    "c-inc-train-council-authority": "train",
+    "c-inc-train-delayed-message-restore": "train",
+    "c-inc-train-hearsay-vs-witness": "train",
+    "c-inc-train-memory-retracted-supper": "train",
+    "c-inc-train-relationship-debt": "train"
+  },
+  "oldTestRead": false,
+  "originalFiles": {
+    "../../../jev03/data/contract.json": {
+      "bytes": 10096,
+      "path": "../../../jev03/data/contract.json",
+      "sha256": "4b96946528e2a4dcd0379be985d05046b2fd87c98b5b93f58d392d0d9645654e"
+    },
+    "batch-016.author-labels.jsonl": {
+      "bytes": 6443,
+      "path": "batch-016.author-labels.jsonl",
+      "rows": 16,
+      "sha256": "3298ef5bd114a9c903b225b87e8ebc5e2ca15172c01eb5a81b9e925dad6da542"
+    },
+    "batch-016.blind.jsonl": {
+      "bytes": 9456,
+      "path": "batch-016.blind.jsonl",
+      "rows": 16,
+      "sha256": "4753187a7a61fe2bc2d627470aebc356dc718cc006d1cb1c5dfe250549b1ccb2"
+    },
+    "batch-016.freeze.json": {
+      "bytes": 736,
+      "path": "batch-016.freeze.json",
+      "sha256": "0abf4cf3306bce2efa5b26a6d45693bba2b61a81c3b09603db3f902c8ae84aa3"
+    },
+    "batch-016.inputs.jsonl": {
+      "bytes": 6600,
+      "path": "batch-016.inputs.jsonl",
+      "rows": 16,
+      "sha256": "b402fcd91ff8eb5f94508c63416fd9bad702203a78814cf4fe2226eb3d55d7a9"
+    },
+    "batch-064.author-labels.jsonl": {
+      "bytes": 25521,
+      "path": "batch-064.author-labels.jsonl",
+      "rows": 64,
+      "sha256": "71c5d0ac5e3e4a361f3ad6bb3438f350a910ea2a737e8c197088011dd0bbd1d0"
+    },
+    "batch-064.blind.jsonl": {
+      "bytes": 36787,
+      "path": "batch-064.blind.jsonl",
+      "rows": 64,
+      "sha256": "9d3734299eef642265d661cd28900d7f6ef802810caae757818d721be835e88a"
+    },
+    "batch-064.freeze.json": {
+      "bytes": 736,
+      "path": "batch-064.freeze.json",
+      "sha256": "4f1b9be7ef3028e3b08932673911790836437209986a19b8ddcfd7f64f5ac810"
+    },
+    "batch-064.inputs.jsonl": {
+      "bytes": 25515,
+      "path": "batch-064.inputs.jsonl",
+      "rows": 64,
+      "sha256": "533bbc11f9d6245a41c6a102f17f2fc9fc82782ec062747f24d872de60db244d"
+    },
+    "reviews/arm-a-016.jsonl": {
+      "bytes": 18183,
+      "path": "reviews/arm-a-016.jsonl",
+      "rows": 16,
+      "sha256": "e19812d7e601165b43de3e6e9e954584b37b2f86057afe01d5a2b28ace0a02d2"
+    },
+    "reviews/arm-a-016.raw.jsonl": {
+      "bytes": 11840,
+      "path": "reviews/arm-a-016.raw.jsonl",
+      "sha256": "78977330ab96d9af2c2e798ae3d17a26a3ee3f0c220473fd745b0c8070497a3b"
+    },
+    "reviews/arm-a-016.raw.txt": {
+      "bytes": 8508,
+      "path": "reviews/arm-a-016.raw.txt",
+      "sha256": "b66a3451bc11bf743f998081f34f83cb9df2292c03aa50639946bffa43788691"
+    },
+    "reviews/arm-a-remaining48.jsonl": {
+      "bytes": 52225,
+      "path": "reviews/arm-a-remaining48.jsonl",
+      "rows": 48,
+      "sha256": "0a2a86bef13ef25a64391d30c4733abd9785f75a628046c256658d3c2da4fa8d"
+    },
+    "reviews/arm-a-remaining48.raw.jsonl": {
+      "bytes": 33213,
+      "path": "reviews/arm-a-remaining48.raw.jsonl",
+      "sha256": "1dbba99921c8272fe64ecb964514f6fbfe41f7de0eed616721d0812bbfd4dd6a"
+    },
+    "reviews/arm-a-remaining48.raw.txt": {
+      "bytes": 21921,
+      "path": "reviews/arm-a-remaining48.raw.txt",
+      "sha256": "55d7076c0959b3b8bbd99309b2748853aaae489670b7de6876c256e5e721d9f5"
+    },
+    "reviews/arm-b-016.jsonl": {
+      "bytes": 16484,
+      "path": "reviews/arm-b-016.jsonl",
+      "rows": 16,
+      "sha256": "1f538de8049933119cfc88abb604480afbc5e6d5f08a2933572ae75375a36e71"
+    },
+    "reviews/arm-b-016.raw.txt": {
+      "bytes": 7187,
+      "path": "reviews/arm-b-016.raw.txt",
+      "sha256": "9235869b6a914eaf22af06a612bb298bdaf3299403f33296e27bd16de679951e"
+    },
+    "reviews/arm-b-remaining48.jsonl": {
+      "bytes": 48051,
+      "path": "reviews/arm-b-remaining48.jsonl",
+      "rows": 48,
+      "sha256": "c7925a5ad89e127217ed813edeb7b2e8054dd35be695a1c405ae0ebf01058d9a"
+    },
+    "reviews/arm-b-remaining48.raw.txt": {
+      "bytes": 18641,
+      "path": "reviews/arm-b-remaining48.raw.txt",
+      "sha256": "a5fafe62d51f92ef78c24a22145d34c2621bf44c37440da9386dc64bb0e06824"
+    }
+  },
+  "outputs": {
+    "author-differences.jsonl": {
+      "path": "reviewed/author-differences.jsonl",
+      "rows": 1,
+      "sha256": "d07561a6157544257857180b049ebbc03adc357018b7cc8fd88f74f0868831d3"
+    },
+    "dev.jsonl": {
+      "path": "reviewed/dev.jsonl",
+      "rows": 16,
+      "sha256": "4a7d9927daf81bb41b0679de0e6abf498a1803c5c2eb6ea2817c5d31b9cee3ba"
+    },
+    "pending.jsonl": {
+      "path": "reviewed/pending.jsonl",
+      "rows": 1,
+      "sha256": "ed16b1609c4946cc935a5f97b0cc1ad869ab62a142fbb6ad4b08245017ea8c38"
+    },
+    "train.jsonl": {
+      "path": "reviewed/train.jsonl",
+      "rows": 47,
+      "sha256": "17e9bf94bf7f19462b5206f8a7cfde8f105cc07e6211f02ea47e714b97bb3983"
+    }
+  },
+  "policy": "Accept only two supported independent-session reviews with identical singleton acceptableLabels; retain all other cases pending. Author labels are comparison-only.",
+  "protocol": "old-semantic/2",
+  "provenanceLimit": "Hashes and identity checks bind recorded evidence; the assembler is not an additional independent review.",
+  "reviewSessions": {
+    "a": [
+      "/root/jev05_blind_a"
+    ],
+    "b": [
+      "/root/jev05_blind_b"
+    ]
+  },
+  "reviewerIds": {
+    "a": [
+      "jev05-blind-a"
+    ],
+    "b": [
+      "jev05-blind-b"
+    ]
+  },
+  "schema": "frostecho.jev03.incremental-consensus-assembly/1",
+  "scope": "Original four-class priority-request semantic task only; not general gameplay/JEV certification.",
+  "source": {
+    "humanAnnotated": false,
+    "kind": "model-authored game scenarios",
+    "modelSynthetic": true,
+    "playerHumanAuthored": false,
+    "worldTraceUsed": false
+  }
+}

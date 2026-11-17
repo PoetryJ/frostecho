@@ -1,0 +1,26 @@
+{
+  "schema": "frostecho.r8.dynamic-cases.manifest/2",
+  "source": "/tmp/all.jsonl",
+  "sourceSha256": "aed6eb08a3322db6ff203d385ce229b7c1d55b0615f7f2ed12200928ec2a83a4",
+  "cases": 2560,
+  "splits": {
+    "train": 1922,
+    "dev": 236,
+    "calibration": 222,
+    "select": 180
+  },
+  "episodes": 8,
+  "crossSplitVisibleDuplicatesMoved": 343,
+  "weakLabels": "labels come from the reference action plus two rule reviewers; not an independent truth set",
+  "splitLeaks": [],
+  "droppedSingleCandidate": 320,
+  "quarantined": 0,
+  "reviewers": [
+    "A:receipt",
+    "B:constraint"
+  ],
+  "independentHumanReviews": 0,
+  "caveat": "two rule reviewers with different evidence; they are not independent humans. Disagreements are quarantined and excluded from acceptableIds.",
+  "out": "/data3/DATA/project/project_meishijiang/FrostEcho-r8l/artifacts/sprint-r8/D/cases/dynamic-cases.jsonl",
+  "sha256": "7fb0891b0c74af5a515649877b1209967d26c7ed3ad6d1f9169394616390f847"
+}

@@ -1,0 +1,214 @@
+{
+  "schema": "frostecho.g09.episode/1",
+  "episodeId": "g09-r2-s60-choice",
+  "cell": "s60-choice",
+  "satiety": 60,
+  "arm": "choice",
+  "outcome": "completed",
+  "request": {
+    "schema": "frostecho.g09.goal-request/1",
+    "requestId": "g09-r2-s60-choice-req-1",
+    "episodeId": "g09-r2-s60-choice",
+    "from": "player",
+    "to": "npc_a",
+    "text": "请把这份食物让给我。",
+    "options": [
+      "feed_self",
+      "yield_once"
+    ],
+    "deadlineAfterRound": 1,
+    "createdAtSimTime": 0,
+    "status": "accepted",
+    "decision": {
+      "goal": "yield_once",
+      "round": 1,
+      "raw": "{\"goal\":\"yield_once\"}"
+    }
+  },
+  "binding": {
+    "schema": "frostecho.g09.goal-binding/1",
+    "episodeId": "g09-r2-s60-choice",
+    "requestId": "g09-r2-s60-choice-req-1",
+    "goal": "yield_once",
+    "decidedRound": 1,
+    "decidedAtSimTime": 0,
+    "raw": "{\"goal\":\"yield_once\"}"
+  },
+  "goal": {
+    "round": 1,
+    "raw": "{\"goal\":\"yield_once\"}",
+    "parseOk": true,
+    "error": null
+  },
+  "action": {
+    "round": 2,
+    "raw": "{\"type\":\"eat\"}",
+    "parseOk": true,
+    "type": "eat",
+    "error": null
+  },
+  "fulfilment": {
+    "verdict": "violated",
+    "evidence": {
+      "goal": "yield_once",
+      "npcAteBeforePlayer": true,
+      "playerAte": false
+    }
+  },
+  "playerEat": {
+    "ok": false,
+    "detail": "NO_FOOD"
+  },
+  "http": [
+    {
+      "stage": "goal",
+      "attemptId": null,
+      "status": 200,
+      "raw": "{\"goal\":\"yield_once\"}",
+      "usage": {
+        "prompt_tokens": 50,
+        "completion_tokens": 10,
+        "total_tokens": 60
+      },
+      "error": null
+    },
+    {
+      "stage": "action",
+      "attemptId": "att-0015",
+      "status": 200,
+      "raw": "{\"type\":\"eat\"}",
+      "usage": {
+        "prompt_tokens": 50,
+        "completion_tokens": 10,
+        "total_tokens": 60
+      },
+      "error": null
+    }
+  ],
+  "attempts": [
+    {
+      "attemptId": "att-0015",
+      "outcome": "success"
+    },
+    {
+      "attemptId": "att-0016",
+      "outcome": "success"
+    }
+  ],
+  "tokens": {
+    "goal": 60,
+    "action": 60,
+    "total": 120
+  },
+  "snapshot": {
+    "initialState": {
+      "tick": 0,
+      "simTime": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 60
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 20
+        },
+        "npc_c": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 40
+        }
+      },
+      "food": {
+        "kitchen": 1,
+        "dorm": 0
+      }
+    },
+    "commands": [
+      {
+        "seq": 1,
+        "command": {
+          "commandId": "g09-r2-s60-choice:npc:npc_a:1:2",
+          "actorId": "npc_a",
+          "type": "eat",
+          "payload": {}
+        },
+        "result": {
+          "commandId": "g09-r2-s60-choice:npc:npc_a:1:2",
+          "seq": 1,
+          "status": "accepted",
+          "eventIds": [
+            "e1",
+            "e2"
+          ]
+        }
+      },
+      {
+        "seq": 2,
+        "command": {
+          "commandId": "g09-r2-s60-choice:player:npc_b:1",
+          "actorId": "npc_b",
+          "type": "eat",
+          "payload": {}
+        },
+        "result": {
+          "commandId": "g09-r2-s60-choice:player:npc_b:1",
+          "seq": 2,
+          "status": "rejected",
+          "reason": "NO_FOOD",
+          "detail": "kitchen food=0",
+          "eventIds": []
+        }
+      }
+    ],
+    "events": [
+      {
+        "type": "FoodConsumed",
+        "location": "kitchen",
+        "amount": 1,
+        "before": 1,
+        "after": 0,
+        "eventId": "e1",
+        "seq": 1,
+        "commandId": "g09-r2-s60-choice:npc:npc_a:1:2"
+      },
+      {
+        "type": "HungerChanged",
+        "npcId": "npc_a",
+        "before": 60,
+        "after": 90,
+        "eventId": "e2",
+        "seq": 1,
+        "commandId": "g09-r2-s60-choice:npc:npc_a:1:2"
+      }
+    ],
+    "finalState": {
+      "tick": 1,
+      "simTime": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 90
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 20
+        },
+        "npc_c": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 40
+        }
+      },
+      "food": {
+        "kitchen": 0,
+        "dorm": 0
+      }
+    }
+  },
+  "failure": null
+}

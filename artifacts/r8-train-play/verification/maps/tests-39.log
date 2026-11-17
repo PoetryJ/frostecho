@@ -1,0 +1,47 @@
+✔ original spatial profile is explicit; reference profile refuses it without changing state (8.1771ms)
+✔ one adjacent cell commits coordinate/location and charges one world minute plus original effort once (8.8409ms)
+✔ wall, remote door, invalid actor and unsupported old travel have zero authoritative effects (3.9184ms)
+✔ macro candidate move traverses the real map; all seven interiors remain accessible (244.0498ms)
+✔ same command replay is exact, conflicting content does not walk or advance time (2.4268ms)
+✔ warehouse entrance observes real stock only for the arriving actor; remote observation is rejected (34.0882ms)
+✔ runtime number encoding preserves live domain state and reads pre-encoding v1 sidecars (4.1407ms)
+✔ D2 save restored in a new process preserves all authority and door receipts through three-room return (493.9828ms)
+✔ road closure blocks the real original village route, and rescue cannot silently teleport (7.1233ms)
+✔ explicit original profile retains default three maps and all 2,560 original collision cells (6.7834ms)
+✔ real village route, command door conversion, interior path and coordinate save restore (2.7116ms)
+✔ real village route, dorm_a door conversion, interior path and coordinate save restore (0.5989ms)
+✔ real village route, dorm_b door conversion, interior path and coordinate save restore (0.7443ms)
+✔ real village route, kitchen door conversion, interior path and coordinate save restore (1.0236ms)
+✔ real village route, warehouse door conversion, interior path and coordinate save restore (0.523ms)
+✔ real village route, workshop door conversion, interior path and coordinate save restore (0.6987ms)
+✔ real village route, medical door conversion, interior path and coordinate save restore (0.4189ms)
+✔ original village walls/furnace/decorations and indoor furniture cannot be crossed (0.6406ms)
+✔ closed original gates cut outdoor resources off while internal buildings remain reachable (5.4118ms)
+✔ closed door and malformed save cannot teleport through wall or invent a profile (0.4755ms)
+✔ source defects and missing command indoor art are explicit, registry instances are isolated (1.0168ms)
+✔ G2-P1: the real CLI walks the village grid to the warehouse and the kitchen (127.028ms)
+✔ G2-P2: walls cannot be crossed; a sealed door is an observable report (112.2366ms)
+✔ G2-P3: witnessed shortage changes the next action; restock is retried (115.229ms)
+✔ G2-P4: an explicit cancel means zero delivery; save/restore keeps beliefs (230.8921ms)
+✔ G2-P5: the original 8-NPC four-day chain still runs unchanged (124.6195ms)
+✔ map: A* reaches every building door from every other door (6.4926ms)
+✔ travel: dorm -> warehouse door advances time, drains the traveller and updates location (1.8423ms)
+✔ travel: route must start at the actor cell and step 4-adjacent (0.5031ms)
+✔ travel: a wall cell is never walkable (0.144ms)
+✔ withdraw: success moves warehouse stock into carry with an event (0.3947ms)
+✔ withdraw: out-of-stock is an observable event, not an error (0.2975ms)
+✔ withdraw requires standing at the place (0.1194ms)
+✔ restock after an out_of_stock observation enables a retry (0.3251ms)
+✔ deliver: shortfall is observable; a real delivery completes the meal flow (0.5883ms)
+✔ close-road / open-road: authority events and walkability effects (0.4125ms)
+✔ a closed corridor forces a detour, not a shorter path through it (0.2257ms)
+✔ frozen flows: pre-R3 command streams never materialize a spatial field (0.9643ms)
+✔ spatial commands snapshot and restore through the same schema (0.3621ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 932.3102

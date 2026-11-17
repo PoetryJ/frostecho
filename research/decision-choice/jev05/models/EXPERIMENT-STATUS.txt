@@ -1,0 +1,4 @@
+The per-candidate-context/last-token/L2 encoder/head in this directory is an experimental alternative. It does not replace the already trained historical JEV-03 C route.
+The primary continuation lives in ../legacy/: original joint renderer, candidate-position features, non-affine LayerNorm eps=1e-5, C-seed43 weights, original four display orders.
+Do not load the old C vector into this directory's L2 head and describe the result as exact checkpoint recovery or continuation; its feature/readout/normalization semantics differ.
+Both routes must keep their own model/renderer/cache/checkpoint/calibration identities. Historical C training is real prior work, irrespective of the later v4 data gate being closed.

@@ -1,0 +1,414 @@
+{
+  "schema": "frostecho.session/1",
+  "world": {
+    "schema": "frostecho.world-v2/2",
+    "rulesVersion": "survival-rules/2",
+    "day": 1,
+    "simTime": 0,
+    "version": 0,
+    "rngSeed": "play-3",
+    "weather": "snow",
+    "npcs": {
+      "npc_01": {
+        "id": "npc_01",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_02": {
+        "id": "npc_02",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_03": {
+        "id": "npc_03",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      }
+    },
+    "resources": {
+      "food": 24,
+      "firewood": 20,
+      "power": 40,
+      "medicine": 2
+    },
+    "furnace": {
+      "lit": true,
+      "fuel": 6,
+      "warmth": 18
+    },
+    "commandLog": [],
+    "dead": [],
+    "ending": "none",
+    "scenarioDays": 4
+  },
+  "memories": {
+    "npc_01": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmt-commitment_proposed-cm-5c4c4995-11df-477d-9db7-59819ea87e06-0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "commitment_proposed",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_01",
+            "toId": "player",
+            "conditions": "warehouse-supply",
+            "deadline": -1,
+            "commitmentId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cmt-commitment_proposed-cm-5c4c4995-11df-477d-9db7-59819ea87e06-0"
+          ],
+          "recordId": "m-b30b570ac3fe37ab",
+          "revision": 1
+        },
+        {
+          "eventId": "cmt-commitment_accepted-cm-5c4c4995-11df-477d-9db7-59819ea87e06-1",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "commitment_accepted",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "available",
+            "commitmentId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cmt-commitment_accepted-cm-5c4c4995-11df-477d-9db7-59819ea87e06-1"
+          ],
+          "recordId": "m-85977f4d665b32e8",
+          "revision": 2
+        },
+        {
+          "eventId": "cmt-commitment_withdrawn-cm-5c4c4995-11df-477d-9db7-59819ea87e06-2",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "commitment_withdrawn",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "reason": "explicit-exit",
+            "text": "explicit-exit",
+            "commitmentId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cmt-commitment_withdrawn-cm-5c4c4995-11df-477d-9db7-59819ea87e06-2"
+          ],
+          "recordId": "m-b6c1b3627658908d",
+          "revision": 3
+        },
+        {
+          "eventId": "cmt-commitment_withdrawn-cm-5c4c4995-11df-477d-9db7-59819ea87e06-2:broken",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_broken",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+            "fromId": "npc_01",
+            "toId": "player",
+            "reason": "explicit-exit"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cmt-commitment_withdrawn-cm-5c4c4995-11df-477d-9db7-59819ea87e06-2:broken"
+          ],
+          "recordId": "m-0cc7db47a4707eb6",
+          "revision": 4
+        }
+      ]
+    },
+    "npc_02": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmt-commitment_proposed-cm-5c4c4995-11df-477d-9db7-59819ea87e06-0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "commitment_proposed",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_01",
+            "toId": "player",
+            "conditions": "warehouse-supply",
+            "deadline": -1,
+            "commitmentId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "cmt-commitment_proposed-cm-5c4c4995-11df-477d-9db7-59819ea87e06-0"
+          ],
+          "recordId": "m-bc532da758b900a5",
+          "revision": 1
+        },
+        {
+          "eventId": "cmt-commitment_accepted-cm-5c4c4995-11df-477d-9db7-59819ea87e06-1",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "commitment_accepted",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "available",
+            "commitmentId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "cmt-commitment_accepted-cm-5c4c4995-11df-477d-9db7-59819ea87e06-1"
+          ],
+          "recordId": "m-13f1bad7cf9ff97a",
+          "revision": 2
+        },
+        {
+          "eventId": "cmt-commitment_withdrawn-cm-5c4c4995-11df-477d-9db7-59819ea87e06-2",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "commitment_withdrawn",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "reason": "explicit-exit",
+            "text": "explicit-exit",
+            "commitmentId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "cmt-commitment_withdrawn-cm-5c4c4995-11df-477d-9db7-59819ea87e06-2"
+          ],
+          "recordId": "m-328b0b8af465c0e0",
+          "revision": 3
+        },
+        {
+          "eventId": "cmt-commitment_withdrawn-cm-5c4c4995-11df-477d-9db7-59819ea87e06-2:broken",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_broken",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+            "fromId": "npc_01",
+            "toId": "player",
+            "reason": "explicit-exit"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "cmt-commitment_withdrawn-cm-5c4c4995-11df-477d-9db7-59819ea87e06-2:broken"
+          ],
+          "recordId": "m-8454a13e3cd2bc9f",
+          "revision": 4
+        }
+      ]
+    },
+    "npc_03": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmt-commitment_proposed-cm-5c4c4995-11df-477d-9db7-59819ea87e06-0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "commitment_proposed",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_01",
+            "toId": "player",
+            "conditions": "warehouse-supply",
+            "deadline": -1,
+            "commitmentId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "cmt-commitment_proposed-cm-5c4c4995-11df-477d-9db7-59819ea87e06-0"
+          ],
+          "recordId": "m-712cd047b2dedbc1",
+          "revision": 1
+        },
+        {
+          "eventId": "cmt-commitment_accepted-cm-5c4c4995-11df-477d-9db7-59819ea87e06-1",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "commitment_accepted",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "available",
+            "commitmentId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "cmt-commitment_accepted-cm-5c4c4995-11df-477d-9db7-59819ea87e06-1"
+          ],
+          "recordId": "m-2b3f5929d4f9c204",
+          "revision": 2
+        },
+        {
+          "eventId": "cmt-commitment_withdrawn-cm-5c4c4995-11df-477d-9db7-59819ea87e06-2",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "commitment_withdrawn",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "reason": "explicit-exit",
+            "text": "explicit-exit",
+            "commitmentId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "cmt-commitment_withdrawn-cm-5c4c4995-11df-477d-9db7-59819ea87e06-2"
+          ],
+          "recordId": "m-0c969ea0129e8f79",
+          "revision": 3
+        },
+        {
+          "eventId": "cmt-commitment_withdrawn-cm-5c4c4995-11df-477d-9db7-59819ea87e06-2:broken",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_broken",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+            "fromId": "npc_01",
+            "toId": "player",
+            "reason": "explicit-exit"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-5c4c4995-11df-477d-9db7-59819ea87e06",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "cmt-commitment_withdrawn-cm-5c4c4995-11df-477d-9db7-59819ea87e06-2:broken"
+          ],
+          "recordId": "m-f0d1228e0d9687d1",
+          "revision": 4
+        }
+      ]
+    }
+  },
+  "outcomes": {},
+  "plans": [],
+  "instances": [],
+  "generations": {},
+  "sequence": 3,
+  "seed": "play-3",
+  "inputSequence": 2,
+  "inputReceipts": {}
+}

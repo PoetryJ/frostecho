@@ -1,0 +1,124 @@
+{
+  "out": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g10-r1/after/controller-cli",
+  "realModelCalls": 0,
+  "demos": [
+    {
+      "name": "cooperate",
+      "exit": 0,
+      "calls": 2,
+      "npc": {
+        "actorId": "npc_a",
+        "cycle": 1,
+        "phase": "action",
+        "status": "waiting_time",
+        "providerCalls": 2,
+        "selectedGoal": "yield_once",
+        "selectedGoalAchieved": true,
+        "selectedGoalReached": true,
+        "hungerNeedSatisfied": false,
+        "sessionOutcome": null,
+        "wakeAtSimTime": 1,
+        "request": {
+          "requestId": "audit-req-1",
+          "text": "请把最后一份食物留给我，你先不要吃。",
+          "status": "accepted",
+          "outcome": "fulfilled",
+          "outcomeReason": "the player ate at seq 1",
+          "expiresAtSimTime": 1,
+          "acceptedAfterSeq": 0,
+          "lastProcessedSeq": 1,
+          "decidedGoal": "yield_once"
+        }
+      },
+      "player": {
+        "actorId": "npc_b",
+        "location": "kitchen",
+        "hunger": 70
+      }
+    },
+    {
+      "name": "decline",
+      "exit": 0,
+      "calls": 2,
+      "npc": {
+        "actorId": "npc_a",
+        "cycle": 1,
+        "phase": "action",
+        "status": "goal_reached",
+        "providerCalls": 2,
+        "selectedGoal": "feed_self",
+        "selectedGoalAchieved": true,
+        "selectedGoalReached": false,
+        "hungerNeedSatisfied": true,
+        "sessionOutcome": "goal_reached",
+        "wakeAtSimTime": null,
+        "request": {
+          "requestId": "audit-req-1",
+          "text": "请把最后一份食物留给我，你先不要吃。",
+          "status": "declined",
+          "outcome": "pending",
+          "outcomeReason": null,
+          "expiresAtSimTime": 1,
+          "acceptedAfterSeq": null,
+          "lastProcessedSeq": 0,
+          "decidedGoal": "feed_self"
+        }
+      },
+      "player": {
+        "actorId": "npc_b",
+        "location": "kitchen",
+        "hunger": 40
+      }
+    },
+    {
+      "name": "violate",
+      "exit": 0,
+      "calls": 2,
+      "npc": {
+        "actorId": "npc_a",
+        "cycle": 1,
+        "phase": "action",
+        "status": "stopped",
+        "providerCalls": 2,
+        "selectedGoal": "yield_once",
+        "selectedGoalAchieved": false,
+        "selectedGoalReached": false,
+        "hungerNeedSatisfied": true,
+        "sessionOutcome": "selected_goal_yield",
+        "wakeAtSimTime": null,
+        "request": {
+          "requestId": "audit-req-1",
+          "text": "请把最后一份食物留给我，你先不要吃。",
+          "status": "accepted",
+          "outcome": "violated",
+          "outcomeReason": "npc_a ate first at seq 1",
+          "expiresAtSimTime": 1,
+          "acceptedAfterSeq": 0,
+          "lastProcessedSeq": 1,
+          "decidedGoal": "yield_once"
+        }
+      },
+      "player": {
+        "actorId": "npc_b",
+        "location": "kitchen",
+        "hunger": 40
+      }
+    }
+  ],
+  "ioFailure": {
+    "code": 2,
+    "signal": null,
+    "stdout": "",
+    "stderr": "cannot start: --root \"/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g10-r1/after/controller-cli/root-is-file\" exists and is not a directory\n",
+    "rootStillFile": true,
+    "runRecordExists": false
+  },
+  "eof": {
+    "code": 0,
+    "calls": 1
+  },
+  "defaultOffline": {
+    "code": 0,
+    "calls": 1
+  }
+}

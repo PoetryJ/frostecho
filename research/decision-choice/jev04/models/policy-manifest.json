@@ -1,0 +1,42 @@
+{
+  "schema": "frostecho.jev04.trusted-policy-manifest/1",
+  "note": "Operator-registered identities for the model line. Self-reported artifact identity is never sufficient; only this manifest authorizes a policy. The 14B local checkpoint is registered explicitly as a smoke-only substitute: it proves wiring, never counts as the target model.",
+  "registrations": [
+    {
+      "identity": {
+        "model": "Qwen/Qwen3.5-27B",
+        "head": "shared-scalar/1",
+        "adapter": "jev-choice/1",
+        "tokenizer": "qwen3.5-tk/1",
+        "renderer": "jev04-render/3",
+        "task": "choose_action",
+        "k": 4,
+        "policy_version": "softmax-accept/1",
+        "memory_policy_version": "memory-policy/1"
+      },
+      "mode": "real",
+      "weightsPath": "/data3/DATA/models/Qwen3.5-27B",
+      "utility_source": null,
+      "evidence": null,
+      "note": "target identity; weights absent locally and HF outbound blocked — see prepare_t27.py outputs"
+    },
+    {
+      "identity": {
+        "model": "local/DeepSeek-R1-Distill-Qwen-14B",
+        "head": "shared-scalar/1",
+        "adapter": "jev-choice/1",
+        "tokenizer": "deepseek-r1-qwen-tk/1",
+        "renderer": "jev04-render/3",
+        "task": "choose_action",
+        "k": 4,
+        "policy_version": "softmax-accept/1",
+        "memory_policy_version": "memory-policy/1"
+      },
+      "mode": "fixture",
+      "weightsPath": "/data3/DATA/models/DeepSeek-R1-Distill-Qwen-14B",
+      "utility_source": null,
+      "evidence": null,
+      "note": "smoke-only substitute; never counts as real model evidence"
+    }
+  ]
+}

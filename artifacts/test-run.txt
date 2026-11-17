@@ -1,0 +1,127 @@
+
+> gospel-rebuild@0.0.1 test
+> npm run build && node --test dist/tests/scenarios.test.js
+
+
+> gospel-rebuild@0.0.1 build
+> tsc -p tsconfig.json
+
+TAP version 13
+# Subtest: A: move to kitchen then eat
+ok 1 - A: move to kitchen then eat
+  ---
+  duration_ms: 3.819445
+  type: 'test'
+  ...
+# Subtest: A2: hunger clamps at 100
+ok 2 - A2: hunger clamps at 100
+  ---
+  duration_ms: 0.687402
+  type: 'test'
+  ...
+# Subtest: B: contention for last food, order npc_a then npc_b
+ok 3 - B: contention for last food, order npc_a then npc_b
+  ---
+  duration_ms: 1.028528
+  type: 'test'
+  ...
+# Subtest: B: contention for last food, order npc_b then npc_a
+ok 4 - B: contention for last food, order npc_b then npc_a
+  ---
+  duration_ms: 0.742255
+  type: 'test'
+  ...
+# Subtest: C: duplicate successful command has no extra effect
+ok 5 - C: duplicate successful command has no extra effect
+  ---
+  duration_ms: 1.783845
+  type: 'test'
+  ...
+# Subtest: D: same commandId with different payload -> COMMAND_ID_CONFLICT
+ok 6 - D: same commandId with different payload -> COMMAND_ID_CONFLICT
+  ---
+  duration_ms: 0.540884
+  type: 'test'
+  ...
+# Subtest: E: invalid input / unmet preconditions leave state unchanged
+ok 7 - E: invalid input / unmet preconditions leave state unchanged
+  ---
+  duration_ms: 1.135773
+  type: 'test'
+  ...
+# Subtest: F: replay(initial, events) equals live final state; no executor called
+ok 8 - F: replay(initial, events) equals live final state; no executor called
+  ---
+  duration_ms: 0.887521
+  type: 'test'
+  ...
+# Subtest: G: restore from save then retry completed command -> no duplicate effect
+ok 9 - G: restore from save then retry completed command -> no duplicate effect
+  ---
+  duration_ms: 1.2898
+  type: 'test'
+  ...
+# Subtest: Immutability: returned state/history cannot corrupt engine
+ok 10 - Immutability: returned state/history cannot corrupt engine
+  ---
+  duration_ms: 1.085253
+  type: 'test'
+  ...
+# Subtest: Determinism: same commands -> identical records (no wall clock)
+ok 11 - Determinism: same commands -> identical records (no wall clock)
+  ---
+  duration_ms: 0.952848
+  type: 'test'
+  ...
+# Subtest: H: move actorId toString -> UNKNOWN_ACTOR, no throw, state and events unchanged
+ok 12 - H: move actorId toString -> UNKNOWN_ACTOR, no throw, state and events unchanged
+  ---
+  duration_ms: 0.445541
+  type: 'test'
+  ...
+# Subtest: H: move actorId constructor -> UNKNOWN_ACTOR, no throw, state and events unchanged
+ok 13 - H: move actorId constructor -> UNKNOWN_ACTOR, no throw, state and events unchanged
+  ---
+  duration_ms: 0.399746
+  type: 'test'
+  ...
+# Subtest: H: move actorId proto -> UNKNOWN_ACTOR, no throw, state and events unchanged
+ok 14 - H: move actorId proto -> UNKNOWN_ACTOR, no throw, state and events unchanged
+  ---
+  duration_ms: 0.341422
+  type: 'test'
+  ...
+# Subtest: I: same commandId eat, omitted payload vs {} -> COMMAND_ID_CONFLICT both orders
+ok 15 - I: same commandId eat, omitted payload vs {} -> COMMAND_ID_CONFLICT both orders
+  ---
+  duration_ms: 1.062395
+  type: 'test'
+  ...
+# Subtest: I-restore: omitted payload vs {} still conflicts after JSON save/restore, both orders
+ok 16 - I-restore: omitted payload vs {} still conflicts after JSON save/restore, both orders
+  ---
+  duration_ms: 1.096684
+  type: 'test'
+  ...
+# Subtest: I-null: omitted payload vs explicit null -> COMMAND_ID_CONFLICT, both orders, and both after JSON restore
+ok 17 - I-null: omitted payload vs explicit null -> COMMAND_ID_CONFLICT, both orders, and both after JSON restore
+  ---
+  duration_ms: 1.764579
+  type: 'test'
+  ...
+# Subtest: J: true duplicates, key-order equality, and failed-command retry stay duplicates
+ok 18 - J: true duplicates, key-order equality, and failed-command retry stay duplicates
+  ---
+  duration_ms: 1.202078
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 78.043184
+EXIT:0

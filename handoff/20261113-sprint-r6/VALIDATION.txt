@@ -1,0 +1,26 @@
+任务包准备验证（Codex，2026-11-13 Asia/Shanghai）
+
+基线：r5-saved-20261112=f4739493b9dcec7214f04ab68c05f92bd5a8ea21。
+本次只创建下一轮任务包，没有实施P/R/D/M修复，没有访问维护服务器，没有模型/API/GPU调用。
+
+实际本地环境：Windows11 10.0.26200 AMD64；Node24.22.1；npm10.8.2；Python3.12.14；Git2.54.0.windows.1。
+本地使用已有Node/Python运行时及已有npm-cli，在新worktree执行npm ci（3个锁定依赖）和npm run build，均exit0。没有全局安装或更改用户配置。
+
+已实际验证
+1. tools/repro.py --expect baseline：四项defectObserved=true，四项fixed=false，exit0；这是四个缺陷仍存在的证据。
+2. 对同一未修基线运行--expect fixed：四项fixed=false、verified=false、exit1，证明不会把旧probe的exit0误当修复通过。
+3. preflight：旧检查点971/971、原交付272/272、原R5任务包128/128；已测试新包初版manifest；实际执行恢复12个缺失G11历史文件且未覆盖不同文件。
+4. 四个Python工具语法解析通过；源码src/scripts/tests/research与R5冻结STATUS/.gitattributes没有改动。
+5. 原始输出见PREPARATION-EVIDENCE.zip，包括两个模式的完整probe输出、源数据隔离篡改副本、Python拒绝负例输入、preflight与命令退出记录。
+
+边界
+- 这不是R6修复交付。四缺口仍存在，合法修复后的正例要由Grok完成并留下证据。
+- 本次没有重新跑旧全量752/Python66，也不把上轮Linux成绩算作本轮Windows成绩。
+- final_check.py的真实R6全量编排尚未端到端执行，因为R6代码/acceptance-v6尚未实现；其语法及所用基础preflight/运行记录组件已检查。Grok集成后必须真实执行，失败保留。
+- PREPARATION-EVIDENCE内preflight是准备期13文件版本的校验记录；最终包内容以本目录当前SHA256SUMS.txt为准，发布前另行校验。基线第一次终端转码曾显示中文路径乱码，原始summary/JSONL均为UTF-8；工具现已显式配置UTF-8输出。
+- 合成risk负例在原漏洞中产生counts_as_real=true，是待修缺陷，不是本次真实模型执行证据。
+
+包结构
+00启动；01契约；02四项修复；03晨会工作闭环；04 JEV CPU证据；05验收；06交付；GROK-PROMPT为短指令。
+tools/preflight.py做环境/字节核验及可选G11恢复；repro.py做四个最小反例的基线/修复后断言；final_check.py在隔离clone跑最后一次CPU全量；manifest.py生成/校验交付清单。
+所有冻结原探针均未修改。新包是依据独立审查整理的执行规格，不是新的研究结论。

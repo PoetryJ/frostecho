@@ -1,0 +1,12 @@
+1. 源码 HEAD ac7aa4b801d50fae6ddcd6eb2f5524129a40c866；基线 r5-saved-20261112=f4739493b9dcec7214f04ab68c05f92bd5a8ea21；分支 codex/sprint-r6；Linux x86_64 Node v22.23.4 npm 10.9.9 Python 3.12.3；worker 1，无独立审查。
+2. P：基线 task=done、commitment=active、evidence=[]、warehouseFood=6；修复后 fulfilled，回执 npc_01-game-1-g-deposit:stock_deposited:1，再恢复仍是这一条，food=6。
+3. R：捕获内 0 效果；捕获外恰一次且 finalVersion=2；显式 cancel 后捕获外 executed=false、events=[]、reason=generation_changed_before_start。
+4. D：原审查可追溯；改候选/params/事实/叙述/caseId/packet/rawReviewSha 均拒绝且不写盘；仍 0 eligible/29 ambiguous/10 inconsistent，研究门 false。
+5. M：逐样本重算并绑定 T/tau/calibration_id；矛盾证书 shadow 且 counts_as_real=false；合法 fixture 能 accept 也能 abstain，fixture 的 counts_as_real=false；Python 与 TS 的 tau=0.5 一致。
+6. JEV：seed17/43 CPU fixture，logits→softmax(T)→accept/abstain，utility=null，real=false；0/120 CP 上界与 1-alpha^(1/120) 之差 <1e-9。
+7. 玩法：四日晨会；供仓与送饭真实履约；供仓者退出后 revision2 替代者完成；缺货被当事人观察到并经采集→交存→取用→送达恢复；两臂 simTime=4394 分钟且权威投影一致。
+8. 验收：Python 核心 51 pass / 1 skip(scipy)，port 23 pass，gate-r6 pass。冻结 final_check 的 eval-full 在 900s 超时；历史 g04 live 用例未返回。首跑 JS 温度差 0.0018 的记录保留。
+9. R5 971+272+128 与任务包 SHA 预检仍过。本次无 GPU、无权重、无模型 API、无真实训练。
+10. 源码 HEAD ac7aa4b；bundle 内容提交 cf1ed793be0b45b8a86d8fda4ef72db7e5176383；路径 artifacts/sprint-r6/delivery/frostecho-r6.bundle；SHA256 683763a876941bb55710216abfb6a03124dec2e6ae0adc7d5ff8fdb4f8d3c230。bundle 不含保存它的后续提交。
+11. 未完成：冻结全量未在 900s 内结束；未证明校准、模型收益、512/128，也未打开执行门。
+12. 建议：有限返工。四缺口和晨会 CPU 闭环已有原始记录；全量套件没有在冻结时限内跑完。不合并 main。

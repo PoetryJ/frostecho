@@ -1,0 +1,119 @@
+{
+  "schema": "frostecho.session/1",
+  "world": {
+    "schema": "frostecho.world-v2/2",
+    "rulesVersion": "survival-rules/2",
+    "day": 1,
+    "simTime": 32,
+    "version": 1,
+    "rngSeed": "play-2",
+    "weather": "snow",
+    "npcs": {
+      "npc_01": {
+        "id": "npc_01",
+        "location": "warehouse",
+        "hunger": 69.52,
+        "stamina": 77.92,
+        "health": 100,
+        "san": 79.89333333333333,
+        "alive": true
+      },
+      "npc_02": {
+        "id": "npc_02",
+        "location": "dorm-b",
+        "hunger": 69.52,
+        "stamina": 79.2,
+        "health": 100,
+        "san": 79.89333333333333,
+        "alive": true
+      }
+    },
+    "resources": {
+      "food": 24,
+      "firewood": 20,
+      "power": 40,
+      "medicine": 2
+    },
+    "furnace": {
+      "lit": true,
+      "fuel": 5.786666666666667,
+      "warmth": 18
+    },
+    "commandLog": [
+      "travel-one"
+    ],
+    "dead": [],
+    "ending": "none",
+    "scenarioDays": 4,
+    "spatial": {
+      "positions": {
+        "npc_01": {
+          "x": 16,
+          "y": 15
+        }
+      },
+      "stocks": {
+        "warehouse": {
+          "food": 4
+        }
+      },
+      "carry": {},
+      "closedCells": [],
+      "deliveredMeals": 0
+    },
+    "receipts": {
+      "travel-one": {
+        "digest": "fb1935b0f2973a0b3c9c44719ab3eeb8e76712a86c3017eac6dccbd8d03bab41",
+        "eventIds": [
+          "travel-one:traveled:0"
+        ],
+        "postStateVersion": 1
+      }
+    }
+  },
+  "memories": {
+    "npc_01": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "travel-one:traveled:0",
+          "occurredAt": 32,
+          "observedAt": 32,
+          "kind": "traveled",
+          "subjectIds": [
+            "npc_01",
+            "world"
+          ],
+          "payload": {
+            "tiles": 16,
+            "minutes": 32,
+            "arrivedAt": "warehouse"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "travel-one:traveled:0"
+          ],
+          "recordId": "m-fe3628d4f73aa73a",
+          "revision": 1
+        }
+      ]
+    },
+    "npc_02": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": []
+    }
+  },
+  "outcomes": {},
+  "plans": [],
+  "instances": [],
+  "generations": {},
+  "sequence": 0,
+  "seed": "play-2",
+  "inputSequence": 0,
+  "inputReceipts": {}
+}

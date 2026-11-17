@@ -1,0 +1,2681 @@
+{
+  "schema": "frostecho.r9.blind-review-joined/1",
+  "cases": 48,
+  "identical": 41,
+  "quarantined": 7,
+  "meanJaccard": 0.974,
+  "problems": [],
+  "aSha256": "46e1a11d23837fa26395bd1472ace8385c5d4cc04ca1c23a766ac04ba1b3c3cf",
+  "bSha256": "179533fbea632ac0683962b2d383ea76b217b84d50df2aa99dc282a1a738f13c",
+  "rows": [
+    {
+      "publicId": "c-5ad3cff01dcc",
+      "realCaseId": "r9-medical-zero-resource-s10-0",
+      "scenario": "medical-zero-resource",
+      "split": "test",
+      "inputSha256": "d1b54b0df8f723dfc370cc0a0bba572a52622ecdf345979502d80af66ce620aa",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "无任务记忆，候选前提与可见状态全部相符，均可正当选择",
+      "reasonB": "药品为0但无用医候选；食物、木柴、体力均足，采集添柴核实进食等待都可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-6c8f72537b43",
+      "realCaseId": "r9-resource-contention-s10-1",
+      "scenario": "resource-contention",
+      "split": "test",
+      "inputSha256": "7c8fa01e5f80a9544524cddac9ccde3b99ed84901c5cf0a85be1e77dc6803836",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务均分派给他人，本人无目标；各项前提与可见状态相符，皆可正当选择",
+      "reasonB": "食物虽少但不因缺货排除；采集添柴核实进食等待都站得住",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ]
+    },
+    {
+      "publicId": "c-78f02ba08f38",
+      "realCaseId": "r9-cancel-after-work-s10-2",
+      "scenario": "cancel-after-work",
+      "split": "test",
+      "inputSha256": "d3feeff8a35bac286b4db315a0d85d5fbb2cc05e49463fc6f18d559a87423ac0",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务已取消且无候选绑定它；常规选项前提均满足，皆可正当选择",
+      "reasonB": "任务已取消且候选不绑该任务；进食采集添柴核实等待均可正当选择",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-ddde5a75ece0",
+      "realCaseId": "r9-wrong-location-gather-s10-3",
+      "scenario": "wrong-location-gather",
+      "split": "test",
+      "inputSha256": "ac0e3ce6be7e31a8fd46471279db8deb611bf7cb478dad04ec6edff72a258f53",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-bdf3be37fd7f"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-bdf3be37fd7f"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-bdf3be37fd7f"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-bdf3be37fd7f"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "人在medical不在车间，直接work不成立；应先前往workshop，其余常规项均可行",
+      "reasonB": "人在medical，车间维护不能就地做；排除该任务动作，前往workshop及其余行动可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-bdf3be37fd7f"
+      ]
+    },
+    {
+      "publicId": "c-2dcb9aaa5f7f",
+      "realCaseId": "r9-medical-zero-resource-s11-0",
+      "scenario": "medical-zero-resource",
+      "split": "test",
+      "inputSha256": "7294b2fc887ac99a1550d0755a24255339a0b4570d31265627c7965dccbcd7a8",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "无任务记忆，候选前提与可见状态全部相符，均可正当选择",
+      "reasonB": "药品为0但无用医候选；食物、木柴、体力均足，采集添柴核实进食等待都可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-dd2d8210d3d6",
+      "realCaseId": "r9-resource-contention-s11-1",
+      "scenario": "resource-contention",
+      "split": "test",
+      "inputSha256": "cee052ead338031b4b911ff3013f27c82f68e42c4d519d91ed30a4011398a81b",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务均分派给他人，本人无目标；各项前提与可见状态相符，皆可正当选择",
+      "reasonB": "食物虽少但不因缺货排除；采集添柴核实进食等待都站得住",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ]
+    },
+    {
+      "publicId": "c-28470835c644",
+      "realCaseId": "r9-cancel-after-work-s11-2",
+      "scenario": "cancel-after-work",
+      "split": "test",
+      "inputSha256": "5ef8a9599613c744a05633a759cba9c2754584e36552036c1863d1cd0d0e0d4b",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务已取消且无候选绑定它；常规选项前提均满足，皆可正当选择",
+      "reasonB": "任务已取消且候选不绑该任务；进食采集添柴核实等待均可正当选择",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-32898c03e2a5",
+      "realCaseId": "r9-wrong-location-gather-s11-3",
+      "scenario": "wrong-location-gather",
+      "split": "test",
+      "inputSha256": "ce40d84eb12b3e2f05638ba0011d4b6c62829343448d321057dc960568cda455",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-650005cc5962"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-650005cc5962"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-650005cc5962"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-650005cc5962"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "人在dorm-a，处置伤病需在medical执行；先移动过去合理，其余常规项均可行",
+      "reasonB": "人在dorm-a，伤病处理需在medical；排除该任务动作，前往medical及其余行动可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-650005cc5962"
+      ]
+    },
+    {
+      "publicId": "c-9cb7eb428e51",
+      "realCaseId": "r9-medical-zero-resource-s12-0",
+      "scenario": "medical-zero-resource",
+      "split": "test",
+      "inputSha256": "9c3f371cbd5cacf5bd8c7d4b698b83213ed64402f2a6ff27d918e1a92be5fe77",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "无任务记忆，候选前提与可见状态全部相符，均可正当选择",
+      "reasonB": "药品为0且健康偏低，但候选并无用医项；进食采集添柴核实等待仍都正当",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-46b242e72bde",
+      "realCaseId": "r9-resource-contention-s12-1",
+      "scenario": "resource-contention",
+      "split": "test",
+      "inputSha256": "2dba7c09adcbbfaa8a6f83139497b898b8dd9f226b34a0a98e918de35b148e7e",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "可见信息无携带食物或饭菜，deposit/deliver前提不成立；其余选项均可行",
+      "reasonB": "人在dorm-a且未见携带粮食或饭；排除送仓送厨，采集核实前往仓库可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ]
+    },
+    {
+      "publicId": "c-20ef5a05fb82",
+      "realCaseId": "r9-cancel-after-work-s12-2",
+      "scenario": "cancel-after-work",
+      "split": "test",
+      "inputSha256": "0e2157bfaffd2a0232a114f04f59288b0f14bc92d4a68d5ede3307b109a26d79",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务已取消且无候选绑定它；常规选项前提均满足，皆可正当选择",
+      "reasonB": "任务已取消且候选不绑该任务；进食采集添柴核实等待均可正当选择",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-3e289e094939",
+      "realCaseId": "r9-wrong-location-gather-s12-3",
+      "scenario": "wrong-location-gather",
+      "split": "test",
+      "inputSha256": "e51cf81c968d09773791613f315dc5f8476a42f01aa6e9f854ce9d9bcdc977df",
+      "reviewA": [
+        "a-de34115e1fd2",
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-da38572f198c"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "identical": false,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-da38572f198c"
+      ],
+      "union": [
+        "a-de34115e1fd2",
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-da38572f198c",
+        "a-4de955ab3c0e"
+      ],
+      "jaccard": 0.75,
+      "needsAdjudication": true,
+      "reasonA": "人已在仓库，无目的前往仓库无意义；核实存粮、外出采集、先去village均合理",
+      "reasonB": "人在仓库，执行伐木任务不能就地做；前往village及其余常规行动可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ]
+    },
+    {
+      "publicId": "c-3df8257f2165",
+      "realCaseId": "r9-medical-zero-resource-s1-0",
+      "scenario": "medical-zero-resource",
+      "split": "test",
+      "inputSha256": "4ffdd11246c577e730d27cb8681971ab914b65f248e7141e8895e8722ca87d3b",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "无任务记忆，候选前提与可见状态全部相符，均可正当选择",
+      "reasonB": "药品为0但无用医候选；食物、木柴、体力均足，采集添柴核实进食等待都可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-fb0452201325",
+      "realCaseId": "r9-resource-contention-s1-1",
+      "scenario": "resource-contention",
+      "split": "test",
+      "inputSha256": "d434569c63e46b93f2150a2da3389439cdd5addb241c3475e624ce83a530bcda",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务均分派给他人，本人无目标；各项前提与可见状态相符，皆可正当选择",
+      "reasonB": "食物虽少但不因缺货排除；采集添柴核实进食等待都站得住",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ]
+    },
+    {
+      "publicId": "c-036f3d04f1c1",
+      "realCaseId": "r9-cancel-after-work-s1-2",
+      "scenario": "cancel-after-work",
+      "split": "test",
+      "inputSha256": "e2077d16616a8dbf19db5f1037f7ef4afd49a8f43544c02bb779398d945c2c43",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务已取消且无候选绑定它；常规选项前提均满足，皆可正当选择",
+      "reasonB": "任务已取消且候选不绑该任务；进食采集添柴核实等待均可正当选择",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-c46da90faf16",
+      "realCaseId": "r9-wrong-location-gather-s1-3",
+      "scenario": "wrong-location-gather",
+      "split": "test",
+      "inputSha256": "7ae8d4442d31382bbae5c673247b864b8c2a7ea30a11deb5bf5141b45613c95d",
+      "reviewA": [
+        "a-29fdcce2a758",
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "identical": false,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "union": [
+        "a-29fdcce2a758",
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "jaccard": 0.875,
+      "needsAdjudication": true,
+      "reasonA": "采集类为外出行动可随时出发，含任务版；各项前提均满足，皆可选",
+      "reasonB": "人在厨房，执行采集任务不能就地做；前往village及其余常规行动可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ]
+    },
+    {
+      "publicId": "c-bf4e5c2b72c1",
+      "realCaseId": "r9-medical-zero-resource-s2-0",
+      "scenario": "medical-zero-resource",
+      "split": "test",
+      "inputSha256": "b13796aa7e0a41abfd1241fb28b64dce09ac5aeb8cb9a8c598108c82861d4c98",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "无任务记忆，候选前提与可见状态全部相符，均可正当选择",
+      "reasonB": "药品为0但无用医候选；食物、木柴、体力均足，采集添柴核实进食等待都可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-0cec556e3cfe",
+      "realCaseId": "r9-resource-contention-s2-1",
+      "scenario": "resource-contention",
+      "split": "test",
+      "inputSha256": "0dab254bc3b5bd94fd8bad72e1609095fb5bf7d4ae22ad8feace41e23bf1b168",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务均分派给他人，本人无目标；各项前提与可见状态相符，皆可正当选择",
+      "reasonB": "食物虽少但不因缺货排除；采集添柴核实进食等待都站得住",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ]
+    },
+    {
+      "publicId": "c-d5e8a7ff4362",
+      "realCaseId": "r9-cancel-after-work-s2-2",
+      "scenario": "cancel-after-work",
+      "split": "test",
+      "inputSha256": "d3feeff8a35bac286b4db315a0d85d5fbb2cc05e49463fc6f18d559a87423ac0",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务已取消且无候选绑定它；常规选项前提均满足，皆可正当选择",
+      "reasonB": "任务已取消且候选不绑该任务；进食采集添柴核实等待均可正当选择",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-49785f2e6f2f",
+      "realCaseId": "r9-wrong-location-gather-s2-3",
+      "scenario": "wrong-location-gather",
+      "split": "test",
+      "inputSha256": "ac0e3ce6be7e31a8fd46471279db8deb611bf7cb478dad04ec6edff72a258f53",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-bdf3be37fd7f"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-bdf3be37fd7f"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-bdf3be37fd7f"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-bdf3be37fd7f"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "人在medical不在车间，直接work不成立；应先前往workshop，其余常规项均可行",
+      "reasonB": "人在medical，车间维护不能就地做；排除该任务动作，前往workshop及其余行动可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-bdf3be37fd7f"
+      ]
+    },
+    {
+      "publicId": "c-73e8553dcd4c",
+      "realCaseId": "r9-medical-zero-resource-s3-0",
+      "scenario": "medical-zero-resource",
+      "split": "test",
+      "inputSha256": "e3f35fe5408aa234d84077a235fcea5fe013e8854f0b96ae08950b482ec575ff",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "无任务记忆，候选前提与可见状态全部相符，均可正当选择",
+      "reasonB": "药品为0且健康偏低，但候选并无用医项；进食采集添柴核实等待仍都正当",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-bdc82eadea5c",
+      "realCaseId": "r9-resource-contention-s3-1",
+      "scenario": "resource-contention",
+      "split": "test",
+      "inputSha256": "5a443996bf05c53b13b272b2b5f54193cec1811b78cbfde95b1cb2f31d263436",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务均分派给他人，本人无目标；各项前提与可见状态相符，皆可正当选择",
+      "reasonB": "食物虽少但不因缺货排除；采集添柴核实进食等待都站得住",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ]
+    },
+    {
+      "publicId": "c-8b5929ec4cfd",
+      "realCaseId": "r9-cancel-after-work-s3-2",
+      "scenario": "cancel-after-work",
+      "split": "test",
+      "inputSha256": "5ef8a9599613c744a05633a759cba9c2754584e36552036c1863d1cd0d0e0d4b",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务已取消且无候选绑定它；常规选项前提均满足，皆可正当选择",
+      "reasonB": "任务已取消且候选不绑该任务；进食采集添柴核实等待均可正当选择",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-bea7cf66ecc8",
+      "realCaseId": "r9-wrong-location-gather-s3-3",
+      "scenario": "wrong-location-gather",
+      "split": "test",
+      "inputSha256": "ce40d84eb12b3e2f05638ba0011d4b6c62829343448d321057dc960568cda455",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-650005cc5962"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-650005cc5962"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-650005cc5962"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-650005cc5962"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "人在dorm-a，处置伤病需在medical执行；先移动过去合理，其余常规项均可行",
+      "reasonB": "人在dorm-a，伤病处理需在medical；排除该任务动作，前往medical及其余行动可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-650005cc5962"
+      ]
+    },
+    {
+      "publicId": "c-ca48b7f23a59",
+      "realCaseId": "r9-medical-zero-resource-s4-0",
+      "scenario": "medical-zero-resource",
+      "split": "test",
+      "inputSha256": "5a6abf44158904c58a589a4d3b97c2fcaa6837fda3b0d3ecd17223e50f56f5a0",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "无任务记忆，候选前提与可见状态全部相符，均可正当选择",
+      "reasonB": "药品为0但无用医候选；食物、木柴、体力均足，采集添柴核实进食等待都可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-13a38f5cdc98",
+      "realCaseId": "r9-resource-contention-s4-1",
+      "scenario": "resource-contention",
+      "split": "test",
+      "inputSha256": "080aeca5d70350a7dc36bedcf84762bf2a1342ca40985703698c3a4686f405e0",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "可见信息无携带食物或饭菜，deposit/deliver前提不成立；其余选项均可行",
+      "reasonB": "人在dorm-a且未见携带粮食或饭；排除送仓送厨，采集核实前往仓库可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ]
+    },
+    {
+      "publicId": "c-9391f9dd059d",
+      "realCaseId": "r9-cancel-after-work-s4-2",
+      "scenario": "cancel-after-work",
+      "split": "test",
+      "inputSha256": "0e2157bfaffd2a0232a114f04f59288b0f14bc92d4a68d5ede3307b109a26d79",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务已取消且无候选绑定它；常规选项前提均满足，皆可正当选择",
+      "reasonB": "任务已取消且候选不绑该任务；进食采集添柴核实等待均可正当选择",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-c9b7f11e4379",
+      "realCaseId": "r9-wrong-location-gather-s4-3",
+      "scenario": "wrong-location-gather",
+      "split": "test",
+      "inputSha256": "e51cf81c968d09773791613f315dc5f8476a42f01aa6e9f854ce9d9bcdc977df",
+      "reviewA": [
+        "a-de34115e1fd2",
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-da38572f198c"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "identical": false,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-da38572f198c"
+      ],
+      "union": [
+        "a-de34115e1fd2",
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-da38572f198c",
+        "a-4de955ab3c0e"
+      ],
+      "jaccard": 0.75,
+      "needsAdjudication": true,
+      "reasonA": "人已在仓库，无目的前往仓库无意义；核实存粮、外出采集、先去village均合理",
+      "reasonB": "人在仓库，执行伐木任务不能就地做；前往village及其余常规行动可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ]
+    },
+    {
+      "publicId": "c-1e1ee00ee969",
+      "realCaseId": "r9-medical-zero-resource-s5-0",
+      "scenario": "medical-zero-resource",
+      "split": "test",
+      "inputSha256": "4876e94041f7b0b534a91af5e03172e70bfd1e3ff5d03aee48c92a69defddd80",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "无任务记忆，候选前提与可见状态全部相符，均可正当选择",
+      "reasonB": "药品为0但无用医候选；食物、木柴、体力均足，采集添柴核实进食等待都可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-7d01a83e85a1",
+      "realCaseId": "r9-resource-contention-s5-1",
+      "scenario": "resource-contention",
+      "split": "test",
+      "inputSha256": "18909dc9bf23822bd68ac5e3112db53d4e4ed77209bef563a3a1ba0b84538b60",
+      "reviewA": [
+        "a-855bd71e8938",
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "identical": false,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "union": [
+        "a-855bd71e8938",
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "jaccard": 0.875,
+      "needsAdjudication": true,
+      "reasonA": "采集类为外出行动可随时出发，含任务版；各项前提均满足，皆可选",
+      "reasonB": "人在dorm-a，执行采集任务需先到village；前往village及其余常规行动可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-855bd71e8938",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ]
+    },
+    {
+      "publicId": "c-1977c9b33e85",
+      "realCaseId": "r9-cancel-after-work-s5-2",
+      "scenario": "cancel-after-work",
+      "split": "test",
+      "inputSha256": "e2077d16616a8dbf19db5f1037f7ef4afd49a8f43544c02bb779398d945c2c43",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务已取消且无候选绑定它；常规选项前提均满足，皆可正当选择",
+      "reasonB": "任务已取消且候选不绑该任务；进食采集添柴核实等待均可正当选择",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-130dac04258b",
+      "realCaseId": "r9-wrong-location-gather-s5-3",
+      "scenario": "wrong-location-gather",
+      "split": "test",
+      "inputSha256": "7ae8d4442d31382bbae5c673247b864b8c2a7ea30a11deb5bf5141b45613c95d",
+      "reviewA": [
+        "a-29fdcce2a758",
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "identical": false,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "union": [
+        "a-29fdcce2a758",
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "jaccard": 0.875,
+      "needsAdjudication": true,
+      "reasonA": "采集类为外出行动可随时出发，含任务版；各项前提均满足，皆可选",
+      "reasonB": "人在厨房，执行采集任务不能就地做；前往village及其余常规行动可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ]
+    },
+    {
+      "publicId": "c-e5e793076d39",
+      "realCaseId": "r9-medical-zero-resource-s6-0",
+      "scenario": "medical-zero-resource",
+      "split": "test",
+      "inputSha256": "8f2ff842cadf36849c654589970b0c757761e5435732a91510babeb759d08c33",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "无任务记忆，候选前提与可见状态全部相符，均可正当选择",
+      "reasonB": "药品为0且健康偏低，但候选并无用医项；进食采集添柴核实等待仍都正当",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-2082d12d2782",
+      "realCaseId": "r9-resource-contention-s6-1",
+      "scenario": "resource-contention",
+      "split": "test",
+      "inputSha256": "6e1483931ec682d25c5d8628378d0c027706c6566aa8658a635d22c94bf45e8a",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务均分派给他人，本人无目标；各项前提与可见状态相符，皆可正当选择",
+      "reasonB": "食物虽少但不因缺货排除；采集添柴核实进食等待都站得住",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ]
+    },
+    {
+      "publicId": "c-85ec1539618a",
+      "realCaseId": "r9-cancel-after-work-s6-2",
+      "scenario": "cancel-after-work",
+      "split": "test",
+      "inputSha256": "d3feeff8a35bac286b4db315a0d85d5fbb2cc05e49463fc6f18d559a87423ac0",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务已取消且无候选绑定它；常规选项前提均满足，皆可正当选择",
+      "reasonB": "任务已取消且候选不绑该任务；进食采集添柴核实等待均可正当选择",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-5ba87ce72363",
+      "realCaseId": "r9-wrong-location-gather-s6-3",
+      "scenario": "wrong-location-gather",
+      "split": "test",
+      "inputSha256": "ac0e3ce6be7e31a8fd46471279db8deb611bf7cb478dad04ec6edff72a258f53",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-bdf3be37fd7f"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-bdf3be37fd7f"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-bdf3be37fd7f"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-bdf3be37fd7f"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "人在medical不在车间，直接work不成立；应先前往workshop，其余常规项均可行",
+      "reasonB": "人在medical，车间维护不能就地做；排除该任务动作，前往workshop及其余行动可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-bdf3be37fd7f"
+      ]
+    },
+    {
+      "publicId": "c-41f17142e84d",
+      "realCaseId": "r9-medical-zero-resource-s7-0",
+      "scenario": "medical-zero-resource",
+      "split": "test",
+      "inputSha256": "bedeea168a1ea00dfe9b52b238c4cc310ba6dc36ee1cae7f92b6940bb487c46c",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "无任务记忆，候选前提与可见状态全部相符，均可正当选择",
+      "reasonB": "药品为0但无用医候选；食物、木柴、体力均足，采集添柴核实进食等待都可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-e46bf3a3ec11",
+      "realCaseId": "r9-resource-contention-s7-1",
+      "scenario": "resource-contention",
+      "split": "test",
+      "inputSha256": "6aed5523cfa180b816f9d23c1f99ea5cde43cb94d915aafd3b57d6fecb4e9253",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务均分派给他人，本人无目标；各项前提与可见状态相符，皆可正当选择",
+      "reasonB": "食物虽少但不因缺货排除；采集添柴核实进食等待都站得住",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ]
+    },
+    {
+      "publicId": "c-649e11a3600e",
+      "realCaseId": "r9-cancel-after-work-s7-2",
+      "scenario": "cancel-after-work",
+      "split": "test",
+      "inputSha256": "5ef8a9599613c744a05633a759cba9c2754584e36552036c1863d1cd0d0e0d4b",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务已取消且无候选绑定它；常规选项前提均满足，皆可正当选择",
+      "reasonB": "任务已取消且候选不绑该任务；进食采集添柴核实等待均可正当选择",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-6d61cb7151af",
+      "realCaseId": "r9-wrong-location-gather-s7-3",
+      "scenario": "wrong-location-gather",
+      "split": "test",
+      "inputSha256": "ce40d84eb12b3e2f05638ba0011d4b6c62829343448d321057dc960568cda455",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-650005cc5962"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-650005cc5962"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-650005cc5962"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-650005cc5962"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "人在dorm-a，处置伤病需在medical执行；先移动过去合理，其余常规项均可行",
+      "reasonB": "人在dorm-a，伤病处理需在medical；排除该任务动作，前往medical及其余行动可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-650005cc5962"
+      ]
+    },
+    {
+      "publicId": "c-d7fb006952b0",
+      "realCaseId": "r9-medical-zero-resource-s8-0",
+      "scenario": "medical-zero-resource",
+      "split": "test",
+      "inputSha256": "e368c8433dac5f81a220206928abfef321a4d178229bc7f09af51e23c9ea36f9",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "无任务记忆，候选前提与可见状态全部相符，均可正当选择",
+      "reasonB": "药品为0但无用医候选；食物、木柴、体力均足，采集添柴核实进食等待都可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-f22ed2bc75ac",
+      "realCaseId": "r9-resource-contention-s8-1",
+      "scenario": "resource-contention",
+      "split": "test",
+      "inputSha256": "38ff7d907b3a48ca4c9a13d90fbb8c6cf7520d866e2e89c946f8eae3d24b5cb2",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "可见信息无携带食物或饭菜，deposit/deliver前提不成立；其余选项均可行",
+      "reasonB": "人在dorm-a且未见携带粮食或饭；排除送仓送厨，采集核实前往仓库可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ]
+    },
+    {
+      "publicId": "c-029bd54e2ad0",
+      "realCaseId": "r9-cancel-after-work-s8-2",
+      "scenario": "cancel-after-work",
+      "split": "test",
+      "inputSha256": "0e2157bfaffd2a0232a114f04f59288b0f14bc92d4a68d5ede3307b109a26d79",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务已取消且无候选绑定它；常规选项前提均满足，皆可正当选择",
+      "reasonB": "任务已取消且候选不绑该任务；进食采集添柴核实等待均可正当选择",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-bca42f5029c3",
+      "realCaseId": "r9-wrong-location-gather-s8-3",
+      "scenario": "wrong-location-gather",
+      "split": "test",
+      "inputSha256": "e51cf81c968d09773791613f315dc5f8476a42f01aa6e9f854ce9d9bcdc977df",
+      "reviewA": [
+        "a-de34115e1fd2",
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-da38572f198c"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "identical": false,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-da38572f198c"
+      ],
+      "union": [
+        "a-de34115e1fd2",
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-da38572f198c",
+        "a-4de955ab3c0e"
+      ],
+      "jaccard": 0.75,
+      "needsAdjudication": true,
+      "reasonA": "人已在仓库，无目的前往仓库无意义；核实存粮、外出采集、先去village均合理",
+      "reasonB": "人在仓库，执行伐木任务不能就地做；前往village及其余常规行动可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ]
+    },
+    {
+      "publicId": "c-ea95984c608a",
+      "realCaseId": "r9-medical-zero-resource-s9-0",
+      "scenario": "medical-zero-resource",
+      "split": "test",
+      "inputSha256": "465efff2dcdbc45039c2e09fc3a4f5492b216671a91abc682d9b2b27896090a1",
+      "reviewA": [
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "饥饿86但候选无进食项；其余前提均满足，皆可正当选择",
+      "reasonB": "饥饿86已无进食候选；采集、添柴、去仓库与等待的前提都满足",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-4323f80e4439",
+      "realCaseId": "r9-resource-contention-s9-1",
+      "scenario": "resource-contention",
+      "split": "test",
+      "inputSha256": "61f07028cf8e5dfba61b3348dcafccb59e2579a9fd2313de548cc3aeac4e9de3",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务均分派给他人，本人无目标；各项前提与可见状态相符，皆可正当选择",
+      "reasonB": "食物虽少但不因缺货排除；采集添柴核实进食等待都站得住",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e"
+      ]
+    },
+    {
+      "publicId": "c-a5dcf9d114b1",
+      "realCaseId": "r9-cancel-after-work-s9-2",
+      "scenario": "cancel-after-work",
+      "split": "test",
+      "inputSha256": "e2077d16616a8dbf19db5f1037f7ef4afd49a8f43544c02bb779398d945c2c43",
+      "reviewA": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "identical": true,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "union": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ],
+      "jaccard": 1,
+      "needsAdjudication": false,
+      "reasonA": "任务已取消且无候选绑定它；常规选项前提均满足，皆可正当选择",
+      "reasonB": "任务已取消且候选不绑该任务；进食采集添柴核实等待均可正当选择",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-bae1f2dab8ef",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-3bc7f19405a7"
+      ]
+    },
+    {
+      "publicId": "c-37e0f5c9f954",
+      "realCaseId": "r9-wrong-location-gather-s9-3",
+      "scenario": "wrong-location-gather",
+      "split": "test",
+      "inputSha256": "7ae8d4442d31382bbae5c673247b864b8c2a7ea30a11deb5bf5141b45613c95d",
+      "reviewA": [
+        "a-29fdcce2a758",
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "reviewB": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "identical": false,
+      "intersection": [
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "union": [
+        "a-29fdcce2a758",
+        "a-bae1f2dab8ef",
+        "a-9b818e599fca",
+        "a-9dd795e76cba",
+        "a-d83f6a3b1e99",
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ],
+      "jaccard": 0.875,
+      "needsAdjudication": true,
+      "reasonA": "采集类为外出行动可随时出发，含任务版；各项前提均满足，皆可选",
+      "reasonB": "人在厨房，执行采集任务不能就地做；前往village及其余常规行动可行",
+      "insufficientInfo": false,
+      "originalWeakLabel": [
+        "a-0b3f9fd02e70",
+        "a-4de955ab3c0e",
+        "a-da38572f198c"
+      ]
+    }
+  ]
+}

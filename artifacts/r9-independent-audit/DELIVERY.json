@@ -1,0 +1,32 @@
+{
+  "schema": "frostecho.independent-r9-audit/1",
+  "date": "2026-11-17",
+  "branch": "codex/r9-independent-audit-20261117",
+  "auditedSource": "a669890241cdfc419719e23e41d18211da14432e",
+  "sourceBundleSha256": "0a3555b1520ad518657d31b152afccbe0bff3a37078c26bb2c4d0875a7fbb9e89",
+  "verdict": "rework long-horizon delivery; retain genuine model and runtime progress",
+  "actualIndependentSubagents": 3,
+  "newGpuCalls": 0,
+  "newModelApiCalls": 0,
+  "environment": {"platform": "Windows", "node": "24.22.1", "python": "3.12.14", "serverEvidence": "Linux Node22 from original Vibe run"},
+  "verification": {
+    "build": "pass",
+    "originalDefaultTests": {"total": 780, "passed": 779, "skipped": 1, "failed": 0},
+    "expandedWithRestoredR9Tests": {"total": 822, "passed": 819, "skipped": 1, "failed": 2, "exit": 1},
+    "runtimePositiveControlsPassed": 1,
+    "runtimeNegativeControlsReproduced": 7,
+    "strictLifecycleGateExit": 1,
+    "independentNumpyRecompute": "pass; maximum NLL deviation <1.8e-8",
+    "originalOnlineRequestsBound": 320,
+    "frozenR8ArtifactFilesVerified": 213
+  },
+  "changedImplementation": ["scripts/run-tests.mjs now discovers colocated src tests", "scripts/r9/audit-work-lifecycle.cjs adds a portable nonzero semantic diagnostic"],
+  "productPolicyChanged": false,
+  "legacyFailedAssertionsWeakened": false,
+  "restoredOriginalTests": ["tests/r9/memory-invariants.test.ts", "tests/r9/work-proxy.test.ts"],
+  "proposals": "docs/r9-audit/DECISION.md",
+  "recommended": "B: durable execution baseline plus old/new head x raw/conditional memory, on new long-horizon episodes",
+  "vibeHandoff": "docs/r9-audit/VIBE.md",
+  "unproved": ["real long-horizon commitment benefit", "fourday JEV save while work pending and new-process continuation", "calibration or admitted risk guarantee", "full original gameplay parity"],
+  "mainMerged": false
+}

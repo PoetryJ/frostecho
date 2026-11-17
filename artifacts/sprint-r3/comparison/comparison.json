@@ -1,0 +1,527 @@
+{
+  "schema": "frostecho.r3.comparison/1",
+  "design": "same frozen snapshot per scenario; arms differ only in conditional experience notes (never a permanent option disable)",
+  "metricDefinitions": {
+    "outOfStockObserved": "out_of_stock records in the actor memory after the snapshot",
+    "gatherFallbackSteps": "steps selecting a gather/report fallback candidate",
+    "completedAtStep": "steps after the snapshot until the task board shows done"
+  },
+  "arms": {
+    "reference-only": {
+      "useExperience": false
+    },
+    "with-experience": {
+      "useExperience": true
+    }
+  },
+  "scenarios": [
+    {
+      "name": "success",
+      "actorId": "npc_01",
+      "failureClass": "none-baseline",
+      "branchAtStep": 2,
+      "maxSteps": 12,
+      "taskId": "task-001-deliver-meal",
+      "snapshot": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r3/comparison/snapshots/success.session.json",
+      "arms": {
+        "reference-only": {
+          "useExperience": false,
+          "fromSnapshotAtStep": 2,
+          "steps": 12,
+          "outOfStockObserved": 0,
+          "gatherFallbackSteps": 0,
+          "deliveredMeals": 1,
+          "taskStatus": "done",
+          "completedAtStep": 2,
+          "simTimeAtEnd": 76,
+          "experienceNotes": [
+            {
+              "lesson": "warehouse-stocked",
+              "valid": true,
+              "evidence": 1
+            }
+          ]
+        },
+        "with-experience": {
+          "useExperience": true,
+          "fromSnapshotAtStep": 2,
+          "steps": 12,
+          "outOfStockObserved": 0,
+          "gatherFallbackSteps": 0,
+          "deliveredMeals": 1,
+          "taskStatus": "done",
+          "completedAtStep": 2,
+          "simTimeAtEnd": 76,
+          "experienceNotes": [
+            {
+              "lesson": "warehouse-stocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "delivery-confirmed",
+              "valid": true,
+              "evidence": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-then-restock",
+      "actorId": "npc_02",
+      "failureClass": "missing-stock",
+      "branchAtStep": 4,
+      "maxSteps": 16,
+      "taskId": "task-001-deliver-meal",
+      "snapshot": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r3/comparison/snapshots/empty-then-restock.session.json",
+      "arms": {
+        "reference-only": {
+          "useExperience": false,
+          "fromSnapshotAtStep": 4,
+          "steps": 16,
+          "outOfStockObserved": 0,
+          "gatherFallbackSteps": 0,
+          "deliveredMeals": 1,
+          "taskStatus": "done",
+          "completedAtStep": 3,
+          "simTimeAtEnd": 126,
+          "experienceNotes": [
+            {
+              "lesson": "warehouse-stocked",
+              "valid": true,
+              "evidence": 2
+            },
+            {
+              "lesson": "warehouse-empty",
+              "valid": false,
+              "evidence": 1
+            },
+            {
+              "lesson": "warehouse-stocked",
+              "valid": true,
+              "evidence": 1
+            }
+          ]
+        },
+        "with-experience": {
+          "useExperience": true,
+          "fromSnapshotAtStep": 4,
+          "steps": 16,
+          "outOfStockObserved": 0,
+          "gatherFallbackSteps": 0,
+          "deliveredMeals": 1,
+          "taskStatus": "done",
+          "completedAtStep": 3,
+          "simTimeAtEnd": 126,
+          "experienceNotes": [
+            {
+              "lesson": "warehouse-stocked",
+              "valid": true,
+              "evidence": 2
+            },
+            {
+              "lesson": "warehouse-empty",
+              "valid": false,
+              "evidence": 1
+            },
+            {
+              "lesson": "warehouse-stocked",
+              "valid": true,
+              "evidence": 2
+            },
+            {
+              "lesson": "delivery-confirmed",
+              "valid": true,
+              "evidence": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "blocked-then-reopen",
+      "actorId": "npc_03",
+      "failureClass": "road-blocked",
+      "branchAtStep": 3,
+      "maxSteps": 16,
+      "taskId": "task-001-deliver-meal",
+      "snapshot": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r3/comparison/snapshots/blocked-then-reopen.session.json",
+      "arms": {
+        "reference-only": {
+          "useExperience": false,
+          "fromSnapshotAtStep": 3,
+          "steps": 16,
+          "outOfStockObserved": 0,
+          "gatherFallbackSteps": 0,
+          "deliveredMeals": 1,
+          "taskStatus": "done",
+          "completedAtStep": 4,
+          "simTimeAtEnd": 76,
+          "experienceNotes": [
+            {
+              "lesson": "road-blocked",
+              "valid": false,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": false,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": false,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": false,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": false,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": false,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": false,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": false,
+              "evidence": 1
+            }
+          ]
+        },
+        "with-experience": {
+          "useExperience": true,
+          "fromSnapshotAtStep": 3,
+          "steps": 16,
+          "outOfStockObserved": 0,
+          "gatherFallbackSteps": 0,
+          "deliveredMeals": 1,
+          "taskStatus": "done",
+          "completedAtStep": 4,
+          "simTimeAtEnd": 76,
+          "experienceNotes": [
+            {
+              "lesson": "road-blocked",
+              "valid": false,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": false,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": false,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": false,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": false,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": false,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": false,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": false,
+              "evidence": 1
+            },
+            {
+              "lesson": "warehouse-stocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "delivery-confirmed",
+              "valid": true,
+              "evidence": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-throughout",
+      "actorId": "npc_04",
+      "failureClass": "persistent-shortage",
+      "branchAtStep": 4,
+      "maxSteps": 16,
+      "taskId": "task-001-deliver-meal",
+      "snapshot": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r3/comparison/snapshots/empty-throughout.session.json",
+      "arms": {
+        "reference-only": {
+          "useExperience": false,
+          "fromSnapshotAtStep": 4,
+          "steps": 16,
+          "outOfStockObserved": 16,
+          "gatherFallbackSteps": 0,
+          "deliveredMeals": 0,
+          "taskStatus": "active",
+          "completedAtStep": null,
+          "simTimeAtEnd": 82,
+          "experienceNotes": [
+            {
+              "lesson": "warehouse-stocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "warehouse-empty",
+              "valid": true,
+              "evidence": 1
+            }
+          ]
+        },
+        "with-experience": {
+          "useExperience": true,
+          "fromSnapshotAtStep": 4,
+          "steps": 16,
+          "outOfStockObserved": 0,
+          "gatherFallbackSteps": 16,
+          "deliveredMeals": 0,
+          "taskStatus": "active",
+          "completedAtStep": null,
+          "simTimeAtEnd": 82,
+          "experienceNotes": [
+            {
+              "lesson": "warehouse-stocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "warehouse-empty",
+              "valid": true,
+              "evidence": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "rumor-only-then-real-restock",
+      "actorId": "npc_05",
+      "failureClass": "rumor-conflict",
+      "branchAtStep": 4,
+      "maxSteps": 20,
+      "taskId": "task-001-deliver-meal",
+      "snapshot": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r3/comparison/snapshots/rumor-only-then-real-restock.session.json",
+      "arms": {
+        "reference-only": {
+          "useExperience": false,
+          "fromSnapshotAtStep": 4,
+          "steps": 20,
+          "outOfStockObserved": 4,
+          "gatherFallbackSteps": 0,
+          "deliveredMeals": 1,
+          "taskStatus": "done",
+          "completedAtStep": 7,
+          "simTimeAtEnd": 108,
+          "experienceNotes": [
+            {
+              "lesson": "warehouse-stocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "warehouse-empty",
+              "valid": true,
+              "evidence": 1
+            }
+          ]
+        },
+        "with-experience": {
+          "useExperience": true,
+          "fromSnapshotAtStep": 4,
+          "steps": 20,
+          "outOfStockObserved": 4,
+          "gatherFallbackSteps": 0,
+          "deliveredMeals": 1,
+          "taskStatus": "done",
+          "completedAtStep": 7,
+          "simTimeAtEnd": 108,
+          "experienceNotes": [
+            {
+              "lesson": "warehouse-stocked",
+              "valid": true,
+              "evidence": 2
+            },
+            {
+              "lesson": "warehouse-empty",
+              "valid": false,
+              "evidence": 5
+            },
+            {
+              "lesson": "warehouse-stocked",
+              "valid": true,
+              "evidence": 2
+            },
+            {
+              "lesson": "delivery-confirmed",
+              "valid": true,
+              "evidence": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "detour-success",
+      "actorId": "npc_06",
+      "failureClass": "detour",
+      "branchAtStep": 2,
+      "maxSteps": 14,
+      "taskId": "task-001-deliver-meal",
+      "snapshot": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r3/comparison/snapshots/detour-success.session.json",
+      "arms": {
+        "reference-only": {
+          "useExperience": false,
+          "fromSnapshotAtStep": 2,
+          "steps": 14,
+          "outOfStockObserved": 0,
+          "gatherFallbackSteps": 0,
+          "deliveredMeals": 1,
+          "taskStatus": "done",
+          "completedAtStep": 2,
+          "simTimeAtEnd": 94,
+          "experienceNotes": [
+            {
+              "lesson": "road-blocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "warehouse-stocked",
+              "valid": true,
+              "evidence": 1
+            }
+          ]
+        },
+        "with-experience": {
+          "useExperience": true,
+          "fromSnapshotAtStep": 2,
+          "steps": 14,
+          "outOfStockObserved": 0,
+          "gatherFallbackSteps": 0,
+          "deliveredMeals": 1,
+          "taskStatus": "done",
+          "completedAtStep": 2,
+          "simTimeAtEnd": 94,
+          "experienceNotes": [
+            {
+              "lesson": "road-blocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "road-blocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "warehouse-stocked",
+              "valid": true,
+              "evidence": 1
+            },
+            {
+              "lesson": "delivery-confirmed",
+              "valid": true,
+              "evidence": 1
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "reproCommand": "node dist/scripts/r3-compare.js --out <dir>"
+}

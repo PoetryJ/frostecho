@@ -1,0 +1,283 @@
+{
+  "schema": "frostecho.g05.game/1",
+  "episodeId": "g05-ca-advance-rejections",
+  "scenarioId": null,
+  "wakePolicy": "event",
+  "mode": "fixture",
+  "thinking": false,
+  "actorOrder": [
+    "npc_c",
+    "npc_a"
+  ],
+  "initialState": {
+    "tick": 0,
+    "simTime": 0,
+    "npcs": {
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 0
+      },
+      "npc_c": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 20
+      },
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40
+      }
+    },
+    "food": {
+      "kitchen": 0,
+      "dorm": 0
+    }
+  },
+  "finalState": {
+    "tick": 4,
+    "simTime": 10,
+    "npcs": {
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 1
+      },
+      "npc_c": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 21
+      },
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 41
+      }
+    },
+    "food": {
+      "kitchen": 0,
+      "dorm": 0
+    }
+  },
+  "commands": [
+    {
+      "seq": 1,
+      "command": {
+        "commandId": "g05-ca-advance-rejections:world:advance:1",
+        "actorId": "world",
+        "type": "advance_time",
+        "payload": {
+          "minutes": 0
+        }
+      },
+      "result": {
+        "commandId": "g05-ca-advance-rejections:world:advance:1",
+        "seq": 1,
+        "status": "rejected",
+        "reason": "INVALID_PAYLOAD",
+        "detail": "advance_time.minutes must be an integer in [1,120]",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 2,
+      "command": {
+        "commandId": "g05-ca-advance-rejections:world:advance:2",
+        "actorId": "world",
+        "type": "advance_time",
+        "payload": {
+          "minutes": 121
+        }
+      },
+      "result": {
+        "commandId": "g05-ca-advance-rejections:world:advance:2",
+        "seq": 2,
+        "status": "rejected",
+        "reason": "INVALID_PAYLOAD",
+        "detail": "advance_time.minutes must be an integer in [1,120]",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 3,
+      "command": {
+        "commandId": "g05-ca-advance-rejections:world:advance:3",
+        "actorId": "world",
+        "type": "advance_time",
+        "payload": {
+          "minutes": -5
+        }
+      },
+      "result": {
+        "commandId": "g05-ca-advance-rejections:world:advance:3",
+        "seq": 3,
+        "status": "rejected",
+        "reason": "INVALID_PAYLOAD",
+        "detail": "advance_time.minutes must be an integer in [1,120]",
+        "eventIds": []
+      }
+    },
+    {
+      "seq": 4,
+      "command": {
+        "commandId": "g05-ca-advance-rejections:world:advance:4",
+        "actorId": "world",
+        "type": "advance_time",
+        "payload": {
+          "minutes": 10
+        }
+      },
+      "result": {
+        "commandId": "g05-ca-advance-rejections:world:advance:4",
+        "seq": 4,
+        "status": "accepted",
+        "eventIds": [
+          "e1",
+          "e2",
+          "e3",
+          "e4"
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "TimeAdvanced",
+      "before": 0,
+      "after": 10,
+      "eventId": "e1",
+      "seq": 4,
+      "commandId": "g05-ca-advance-rejections:world:advance:4"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_a",
+      "before": 40,
+      "after": 41,
+      "eventId": "e2",
+      "seq": 4,
+      "commandId": "g05-ca-advance-rejections:world:advance:4"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_b",
+      "before": 0,
+      "after": 1,
+      "eventId": "e3",
+      "seq": 4,
+      "commandId": "g05-ca-advance-rejections:world:advance:4"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_c",
+      "before": 20,
+      "after": 21,
+      "eventId": "e4",
+      "seq": 4,
+      "commandId": "g05-ca-advance-rejections:world:advance:4"
+    }
+  ],
+  "cycles": {
+    "npc_c": [
+      {
+        "cycle": 1,
+        "reason": "initial cycle",
+        "startLogCursor": 0,
+        "endState": "active",
+        "turns": [],
+        "providerCalls": 0
+      }
+    ],
+    "npc_a": [
+      {
+        "cycle": 1,
+        "reason": "initial cycle",
+        "startLogCursor": 0,
+        "endState": "active",
+        "turns": [],
+        "providerCalls": 0
+      }
+    ]
+  },
+  "actors": {
+    "npc_c": {
+      "state": "active",
+      "cycles": 1,
+      "providerCalls": 0,
+      "goalReached": false
+    },
+    "npc_a": {
+      "state": "active",
+      "cycles": 1,
+      "providerCalls": 0,
+      "goalReached": false
+    }
+  },
+  "transitions": [
+    {
+      "seq": 1,
+      "actorId": "npc_c",
+      "cycle": 1,
+      "from": null,
+      "to": "active",
+      "reason": "initial cycle (cycle 1)",
+      "observation": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 20,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 0
+    },
+    {
+      "seq": 2,
+      "actorId": "npc_a",
+      "cycle": 1,
+      "from": null,
+      "to": "active",
+      "reason": "initial cycle (cycle 1)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 0
+    }
+  ],
+  "stopReason": "user_closed",
+  "scenarioPass": true,
+  "replayMatches": true,
+  "idlePumps": {
+    "pumps": 0,
+    "callsBefore": 0,
+    "callsAfter": 0,
+    "cyclesBefore": 0,
+    "cyclesAfter": 0,
+    "actorStatesBefore": {},
+    "actorStatesAfter": {}
+  },
+  "requestConfig": {
+    "model": null,
+    "temperature": 0,
+    "max_tokens": 1024,
+    "stream": false,
+    "enableThinking": [
+      false
+    ],
+    "timeoutMs": 15000
+  },
+  "timing": {
+    "totalMs": 0
+  },
+  "needPolicy": "never",
+  "needs": []
+}

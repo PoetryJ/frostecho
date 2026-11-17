@@ -1,0 +1,10 @@
+R6.1任务包准备验证 — 2026-11-13
+产品固定基线12cc208；本任务包未实施任何产品修复。
+本地Windows11、Node24.22.1、Python3.12.14，原源码独立build成功；没有服务器、模型API、权重下载、GPU。
+check.py --expect baseline实跑：R双save/D联合改写/M合成类型准入/G11局部恢复四个defectObserved=true，exit0；P恢复及显式cancel、CPU fixture accept/abstain正控制通过。
+同一未修基线--expect fixed实跑：四项fixed=false，verified=false，exit1。原子脚本exit0不被当作修复成功。
+probes/lifecycle.cjs需要先有out/supply原探针产物；check.py已编排。probes/jev.py在审计原脚本上只增加已知策略参数与显式IdentityError的记录分支及fixture正控制，使修复后的正常拒绝仍可记录。没有改判定标准。
+G11探针沿用单文件run-tests --restore-only的当前最小沙盒；若实现拆分helper，应把必要helper作为同一源码输入复制入沙盒，保持所有缺失/已有字节断言。
+probes/story-audit.py需审计root含story/continuous与segmented；作为双射比较实现参考，不在check.py中自动调用。本次完整比较证据在AUDIT-EVIDENCE.zip的story-audit.json。
+AUDIT-EVIDENCE.zip保留各域报告/原始probe/测试日志、完整晨会存档、bundle和仓库体积校验、CI快照；排除隔离测试依赖与pycache。不把审计环境依赖装进产品或证据。
+未重新跑第二次全量；本次独立全量首败及一次定向重跑原样保留。通过/返工判断见AUDIT.txt。

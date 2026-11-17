@@ -1,0 +1,455 @@
+{
+  "schema": "frostecho.g04.game/1",
+  "episodeId": "n2-ca-event",
+  "scenarioId": "n2",
+  "wakePolicy": "event",
+  "mode": "live",
+  "thinking": true,
+  "actorOrder": [
+    "npc_c",
+    "npc_a"
+  ],
+  "initialState": {
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "kitchen",
+        "hunger": 20
+      },
+      "npc_c": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 40
+      }
+    },
+    "food": {
+      "kitchen": 0,
+      "dorm": 0
+    },
+    "tick": 0
+  },
+  "finalState": {
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "kitchen",
+        "hunger": 20
+      },
+      "npc_c": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 40
+      }
+    },
+    "food": {
+      "kitchen": 0,
+      "dorm": 2
+    },
+    "tick": 1
+  },
+  "commands": [
+    {
+      "seq": 1,
+      "command": {
+        "commandId": "n2-ca-event:world:1",
+        "actorId": "world",
+        "type": "restock",
+        "payload": {
+          "location": "dorm",
+          "amount": 2
+        }
+      },
+      "result": {
+        "commandId": "n2-ca-event:world:1",
+        "seq": 1,
+        "status": "accepted",
+        "eventIds": [
+          "e1"
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "FoodRestocked",
+      "location": "dorm",
+      "amount": 2,
+      "before": 0,
+      "after": 2,
+      "eventId": "e1",
+      "seq": 1,
+      "commandId": "n2-ca-event:world:1"
+    }
+  ],
+  "cycles": {
+    "npc_c": [
+      {
+        "cycle": 1,
+        "startLogCursor": 0,
+        "endState": "waiting",
+        "turns": [
+          {
+            "globalTurn": 1,
+            "actorId": "npc_c",
+            "cycle": 1,
+            "actorRound": 1,
+            "observation": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 40,
+              "foodHere": 0,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": null,
+            "providerCalled": true,
+            "status": "stopped",
+            "logCursorBefore": 0,
+            "logCursorAfter": 0,
+            "step": {
+              "round": 1,
+              "observation": {
+                "id": "npc_c",
+                "location": "kitchen",
+                "hunger": 40,
+                "foodHere": 0,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "\n\n{\"type\":\"stop\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "stop"
+                }
+              },
+              "transport": {
+                "requestBody": {
+                  "model": "qwen3.8-27b",
+                  "temperature": 0,
+                  "max_tokens": 1024,
+                  "stream": false,
+                  "chat_template_kwargs": {
+                    "enable_thinking": true
+                  },
+                  "messages": [
+                    {
+                      "role": "user",
+                      "content": "Reply with one JSON object and no other text.\nAllowed: {\"type\":\"move\",\"to\":\"dorm\"|\"kitchen\"}, {\"type\":\"eat\"}, {\"type\":\"stop\"}.\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\nIf you are already in the kitchen, foodHere is 0, and hunger is below the goal, reply {\"type\":\"stop\"}. Do not move around looking for distant food; distant food is not observable.\ngoal: hunger >= 70\nobservation: {\"id\":\"npc_c\",\"location\":\"kitchen\",\"hunger\":40,\"foodHere\":0,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null"
+                    }
+                  ]
+                },
+                "responseContent": {
+                  "id": "chatcmpl-82c26e2f86e78ffb",
+                  "object": "chat.completion",
+                  "created": 1793356433,
+                  "model": "qwen3.8-27b",
+                  "choices": [
+                    {
+                      "index": 0,
+                      "message": {
+                        "role": "assistant",
+                        "content": "\n\n{\"type\":\"stop\"}",
+                        "refusal": null,
+                        "annotations": null,
+                        "audio": null,
+                        "function_call": null,
+                        "reasoning": "We need answer user's request. Need produce final one JSON object no other text. Need reason: observation: npc_c in kitchen, hunger 40, foodHere 0, reachable dorm,kitchen. Goal hunger >=70. Rule: If already in kitchen, foodHere is 0, and hunger below goal, reply stop. Do not move looking for distant food. So output {\"type\":\"stop\"}.\n"
+                      },
+                      "logprobs": null,
+                      "finish_reason": "stop",
+                      "stop_reason": null,
+                      "token_ids": null,
+                      "routed_experts": null
+                    }
+                  ],
+                  "service_tier": null,
+                  "system_fingerprint": "vllm-0.32.0-tp4-042ad0af",
+                  "usage": {
+                    "prompt_tokens": 270,
+                    "total_tokens": 364,
+                    "completion_tokens": 94,
+                    "prompt_tokens_details": null,
+                    "completion_tokens_details": {
+                      "reasoning_tokens": 86
+                    }
+                  },
+                  "prompt_logprobs": null,
+                  "prompt_token_ids": null,
+                  "prompt_text": null,
+                  "kv_transfer_params": null,
+                  "ec_transfer_params": null,
+                  "metrics": null
+                },
+                "status": 200,
+                "usage": {
+                  "prompt_tokens": 270,
+                  "completion_tokens": 94,
+                  "total_tokens": 364
+                },
+                "latencyMs": 5369,
+                "error": null
+              }
+            }
+          }
+        ],
+        "providerCalls": 1
+      }
+    ],
+    "npc_a": [
+      {
+        "cycle": 1,
+        "startLogCursor": 0,
+        "endState": "waiting",
+        "turns": [
+          {
+            "globalTurn": 2,
+            "actorId": "npc_a",
+            "cycle": 1,
+            "actorRound": 1,
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40,
+              "foodHere": 0,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": null,
+            "providerCalled": true,
+            "status": "stopped",
+            "logCursorBefore": 0,
+            "logCursorAfter": 0,
+            "step": {
+              "round": 1,
+              "observation": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 40,
+                "foodHere": 0,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "\n\n{\"type\":\"stop\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "stop"
+                }
+              },
+              "transport": {
+                "requestBody": {
+                  "model": "qwen3.8-27b",
+                  "temperature": 0,
+                  "max_tokens": 1024,
+                  "stream": false,
+                  "chat_template_kwargs": {
+                    "enable_thinking": true
+                  },
+                  "messages": [
+                    {
+                      "role": "user",
+                      "content": "Reply with one JSON object and no other text.\nAllowed: {\"type\":\"move\",\"to\":\"dorm\"|\"kitchen\"}, {\"type\":\"eat\"}, {\"type\":\"stop\"}.\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\nIf you are already in the kitchen, foodHere is 0, and hunger is below the goal, reply {\"type\":\"stop\"}. Do not move around looking for distant food; distant food is not observable.\ngoal: hunger >= 70\nobservation: {\"id\":\"npc_a\",\"location\":\"kitchen\",\"hunger\":40,\"foodHere\":0,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null"
+                    }
+                  ]
+                },
+                "responseContent": {
+                  "id": "chatcmpl-802681c7b67ffdaf",
+                  "object": "chat.completion",
+                  "created": 1793356438,
+                  "model": "qwen3.8-27b",
+                  "choices": [
+                    {
+                      "index": 0,
+                      "message": {
+                        "role": "assistant",
+                        "content": "\n\n{\"type\":\"stop\"}",
+                        "refusal": null,
+                        "annotations": null,
+                        "audio": null,
+                        "function_call": null,
+                        "reasoning": "We need answer user's request. Need produce final one JSON object no other text. Need reason: observation: id npc_a, location kitchen, hunger 40, foodHere 0, reachable dorm,kitchen. goal hunger >=70. Rule: If already in kitchen, foodHere is 0, and hunger below goal, reply stop. Do not move looking for distant food. So output {\"type\":\"stop\"}.\n"
+                      },
+                      "logprobs": null,
+                      "finish_reason": "stop",
+                      "stop_reason": null,
+                      "token_ids": null,
+                      "routed_experts": null
+                    }
+                  ],
+                  "service_tier": null,
+                  "system_fingerprint": "vllm-0.32.0-tp4-042ad0af",
+                  "usage": {
+                    "prompt_tokens": 270,
+                    "total_tokens": 366,
+                    "completion_tokens": 96,
+                    "prompt_tokens_details": null,
+                    "completion_tokens_details": {
+                      "reasoning_tokens": 88
+                    }
+                  },
+                  "prompt_logprobs": null,
+                  "prompt_token_ids": null,
+                  "prompt_text": null,
+                  "kv_transfer_params": null,
+                  "ec_transfer_params": null,
+                  "metrics": null
+                },
+                "status": 200,
+                "usage": {
+                  "prompt_tokens": 270,
+                  "completion_tokens": 96,
+                  "total_tokens": 366
+                },
+                "latencyMs": 5512,
+                "error": null
+              }
+            }
+          }
+        ],
+        "providerCalls": 1
+      }
+    ]
+  },
+  "actors": {
+    "npc_c": {
+      "state": "waiting",
+      "cycles": 1,
+      "providerCalls": 1,
+      "goalReached": false
+    },
+    "npc_a": {
+      "state": "waiting",
+      "cycles": 1,
+      "providerCalls": 1,
+      "goalReached": false
+    }
+  },
+  "transitions": [
+    {
+      "seq": 1,
+      "actorId": "npc_c",
+      "cycle": 1,
+      "from": null,
+      "to": "active",
+      "reason": "initial cycle (cycle 1)",
+      "observation": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 0
+    },
+    {
+      "seq": 2,
+      "actorId": "npc_a",
+      "cycle": 1,
+      "from": null,
+      "to": "active",
+      "reason": "initial cycle (cycle 1)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 0
+    },
+    {
+      "seq": 3,
+      "actorId": "npc_c",
+      "cycle": 1,
+      "from": "active",
+      "to": "waiting",
+      "reason": "stop with an empty kitchen while hungry (kitchen hunger=40 foodHere=0)",
+      "observation": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 0
+    },
+    {
+      "seq": 4,
+      "actorId": "npc_a",
+      "cycle": 1,
+      "from": "active",
+      "to": "waiting",
+      "reason": "stop with an empty kitchen while hungry (kitchen hunger=40 foodHere=0)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 0
+    }
+  ],
+  "stopReason": "user_closed",
+  "scenarioPass": true,
+  "replayMatches": true,
+  "idlePumps": {
+    "pumps": 100,
+    "callsBefore": 2,
+    "callsAfter": 2,
+    "cyclesBefore": 2,
+    "cyclesAfter": 2,
+    "actorStatesBefore": {
+      "npc_c": "waiting",
+      "npc_a": "waiting"
+    },
+    "actorStatesAfter": {
+      "npc_c": "waiting",
+      "npc_a": "waiting"
+    }
+  },
+  "requestConfig": {
+    "model": "qwen3.8-27b",
+    "temperature": 0,
+    "max_tokens": 1024,
+    "stream": false,
+    "enableThinking": [
+      true
+    ],
+    "timeoutMs": 15000
+  },
+  "timing": {
+    "totalMs": 10883
+  }
+}

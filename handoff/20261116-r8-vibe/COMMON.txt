@@ -1,0 +1,7 @@
+只读本页 + 自己的任务；遇跨域需求写接口请求给 O，不改别人文件。
+产品基线 6407705；已有 UI、承诺/任务、空间、记忆、27B 冻结特征与 C 头训练记录。保留已有可用产物。
+共享源：src/decision/contracts.ts 的 ChoiceRequest/ChoiceResult/Candidate，src/planning/candidates.ts 的 ScorerPort；使用现有 DecisionRuntime 和应用 lifecycle。禁止第二世界、第二任务队列或第二提交时钟。
+O 在 contracts-freeze 提交后启动依赖实现；此前各工可提取原作规则/样例、检查数据、写纯函数。新增领域接口见 CONTRACT.txt，由 O 写入真实源码。原作解包：python handoff/20261113-r7-full-goal/bootstrap.py；源根 reference-extracted/source/extracted（相对于旧包）。
+统一证据 artifacts/sprint-r8/<ROLE>/<runId>/；每次保留输入、输出、exit code、sourceHEAD、环境和命令。失败不能被覆盖。工人提交只包含独占路径；O 集成后重跑并标集成 HEAD。不提交密钥、模型主干、node_modules、dist、缓存或递归 bundle。
+所有角色交 REPORT.json 格式的本角色条目。原作启用功能用原作文件/函数和行为证明；禁用功能标原作禁用，不发明玩法补齐率。
+现有旧门保持；不重复打包全部 R1-R7 证据。fixture/规则、真实模型、受控实验和正式执行分别记身份，不冒名顶替。

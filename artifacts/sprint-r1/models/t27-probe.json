@@ -1,0 +1,35 @@
+{
+  "schema": "frostecho.jev04.t27-probe/1",
+  "base": "844bab54cacff1ea4fe9b413565d5e57f8bb3ffe",
+  "mode": "preflight-only; no weights loaded, no GPU allocation",
+  "dataGate": {
+    "status": "blocked",
+    "mayTrainOnJev": false,
+    "targetCases": 4096,
+    "existingBehaviorCases": 192,
+    "publicAnchors": 0
+  },
+  "searchRoots": [
+    "/data3/DATA/models",
+    "/data",
+    "/root/.cache/huggingface"
+  ],
+  "foundQwen35": [],
+  "runtime": {
+    "torch": "2.8.0+cu128",
+    "transformers": "4.51.3",
+    "cudaAvailable": true,
+    "deviceCount": 4,
+    "gpuMiB": [
+      97356,
+      97356,
+      97356,
+      97356
+    ]
+  },
+  "reasons": [
+    "data gate blocked: 0/4096 anchors",
+    "no Qwen3.5 weights under searched roots: /data3/DATA/models, /data, /root/.cache/huggingface"
+  ],
+  "status": "blocked"
+}

@@ -1,0 +1,340 @@
+{
+  "prs": [
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "Action completed."
+        }
+      ],
+      "structuredContent": {
+        "url": "https://github.com/PoetryJ/frostecho/pull/10",
+        "number": 10,
+        "state": "open",
+        "merged": false,
+        "mergeable": true,
+        "draft": true,
+        "body": "玩家可向同地 NPC 发送有界消息，消息在其自然决策时绑定；发送不唤醒 NPC、不改变世界或刷新预算。默认关闭。存档保留邮箱消费记录，避免恢复后重复投递。\n\nG07-R1 d41940d 已修复默认超时漏传：归一化值贯穿运行器，核验器交叉检查计划、账本和实际快照。原实模批保持原字节：8 局实际使用 15000ms，历史计划误记 120000ms，因此严格核验正确返回 configuration=mismatch/exit 1，behaviorAndCost=ok。没有重跑 G07 实模。\n\n历史固定 8 局全部 eat、玩家随后 NO_FOOD。消息 off 为 1608 tokens/19833ms，on 为 2142 tokens/45579ms；仅是这批小样本观察，不能推断理解、礼让或拒绝。默认继续 off。\n\n验证：原交付独立 Windows Node20.19.2 320/320、golden12/12、原始命令与事件重执行一致；R1 修复与旧批预期差异已在后续 G08 收口分支的独立 408 项全测及只读核验中复验。保持 draft，供负责人审阅；未合并。",
+        "title": "G07：同地玩家消息、可恢复邮箱与配对行为评测",
+        "base": "codex/g06-checkpoint",
+        "base_sha": "2279beb4e691913de930b75776429be767a95e89",
+        "head": "codex/g07-player-messages",
+        "head_sha": "d41940d503ff3d004fe5c88a6a78184ad8943eec",
+        "head_repo_id": 1438143455,
+        "head_repo_full_name": "PoetryJ/frostecho",
+        "merge_commit_sha": "f93451ba12bd37a71e82083b9ff90b3c6ed394fa",
+        "user": {
+          "login": "PoetryJ",
+          "name": "PoetryJ",
+          "email": null,
+          "avatar_url": "https://avatars.githubusercontent.com/u/110576037?v=4",
+          "id": 110576037
+        },
+        "requested_reviewers": null,
+        "requested_team_reviewers": null,
+        "diff": null,
+        "comments": null,
+        "created_at": "2026-11-02T13:39:20Z",
+        "updated_at": "2026-11-04T02:56:45Z",
+        "closed_at": null,
+        "merged_at": null,
+        "commits": 9,
+        "changed_files": 57,
+        "additions": 11267,
+        "deletions": 113,
+        "display_url": "https://github.com/PoetryJ/frostecho/pull/10",
+        "display_title": "G07：同地玩家消息、可恢复邮箱与配对行为评测"
+      },
+      "isError": false
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "Action completed."
+        }
+      ],
+      "structuredContent": {
+        "url": "https://github.com/PoetryJ/frostecho/pull/11",
+        "number": 11,
+        "state": "open",
+        "merged": false,
+        "mergeable": true,
+        "draft": true,
+        "body": "G08 adds an opt-in one-step wait so an NPC can pause and resume the same session without resetting budgets. It also binds restored CLI providers to saved configuration and verifies experiments from raw responses, fresh Engine command execution, and request ledgers.\n\nIndependent acceptance at 20f8f0f:\n- Windows Node 20.19.2: 408/408 tests; golden 12/12.\n- The legal, failed, and live batches verify with expected exit codes 0/1/0. Corrupted command and cost records are rejected; read-only checks leave evidence unchanged.\n- Eight recorded live requests all chose eat. Total cost: 5336 tokens; messages off 2102 / on 3234. Ledger latency: 299404 ms total, observed on shared GPUs.\n- Saved thinking=false and timeout=777 ms were independently exercised with local fake HTTP; step/run failures preserve the original error and authoritative state.\n\nScope: this proves the implemented mechanism and the recorded first-decision experiment. It does not establish cooperation or live continuation after wait. Defaults remain legacy/messages off.\n\nFollow-up: interrupted-cost reporting should count spent from begin reservations rather than completed finishes. The recorded eight requests all completed, so this does not affect this batch or the actual hard budget. Track the correction with the next bounded task; do not rerun G08 live.\n\nThis PR is stacked on codex/g07-player-messages (G07-R1 d41940d). Draft for owner review; no merge requested.",
+        "title": "G08: opt-in timed wait, reproducible checkpoints and verified live evidence",
+        "base": "codex/g07-player-messages",
+        "base_sha": "d41940d503ff3d004fe5c88a6a78184ad8943eec",
+        "head": "codex/g08-closeout",
+        "head_sha": "20f8f0fbd1b3ce0a18a4429db2c544fb1afe57b4",
+        "head_repo_id": 1438143455,
+        "head_repo_full_name": "PoetryJ/frostecho",
+        "merge_commit_sha": "dd664d430212377f4e0bdf58f3b4b2b05d82d8c5",
+        "user": {
+          "login": "PoetryJ",
+          "name": "PoetryJ",
+          "email": null,
+          "avatar_url": "https://avatars.githubusercontent.com/u/110576037?v=4",
+          "id": 110576037
+        },
+        "requested_reviewers": null,
+        "requested_team_reviewers": null,
+        "diff": null,
+        "comments": null,
+        "created_at": "2026-11-04T02:55:14Z",
+        "updated_at": "2026-11-04T02:55:14Z",
+        "closed_at": null,
+        "merged_at": null,
+        "commits": 22,
+        "changed_files": 209,
+        "additions": 32088,
+        "deletions": 35,
+        "display_url": "https://github.com/PoetryJ/frostecho/pull/11",
+        "display_title": "G08: opt-in timed wait, reproducible checkpoints and verified live evidence"
+      },
+      "isError": false
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "Action completed."
+        }
+      ],
+      "structuredContent": {
+        "url": "https://github.com/PoetryJ/frostecho/pull/12",
+        "number": 12,
+        "state": "open",
+        "merged": false,
+        "mergeable": true,
+        "draft": true,
+        "body": "<!-- CURSOR_AGENT_PR_BODY_BEGIN -->\nDraft only. Do not merge.\n\nSource HEAD for the repairs is `ac7aa4b801d50fae6ddcd6eb2f5524129a40c866`. Branch tip `8a0c7dfd11277c20a8740eaa7dd4a08dc8ec03f9` only stores the bundle. The bundle itself is `artifacts/sprint-r6/delivery/frostecho-r6.bundle`, SHA256 `683763a876941bb55710216abfb6a03124dec2e6ae0adc7d5ff8fdb4f8d3c230`, and it records `cf1ed793be0b45b8a86d8fda4ef72db7e5176383` so it does not contain itself.\n\nOne session. No GPU, no weight download, no model API. Training and execution gates stay closed.\n\nThe four R5 gaps were reproduced first (`artifacts/sprint-r6/run01/baseline`) and then closed on CPU fixtures. The four-morning story matches across a continuous process and a save/quit process at 4394 simulated minutes.\n\nThe frozen `final_check.py` run did not finish: `eval-full` hit the tool's 900 second cap, and a streamed diagnostic stalled in the existing `g04-cli` live test. That is recorded, not treated as a pass.\n\nThe task-pack branch `r6-taskpack-20261113` is not on the remote, so this draft targets `main` only as a review base. It is not for merging.\n\nShort report: `artifacts/sprint-r6/delivery/REPORT.txt`.\n\n<!-- CURSOR_AGENT_PR_BODY_END -->\n\n<div><a href=\"https://cursor.com/agents/bc-0c777bb8-2a40-5165-9da6-ddb6f214fcc0?cursor_ref=pr_footer&cursor_cta=open_in_web\"><picture><source media=\"(prefers-color-scheme: dark)\" srcset=\"https://cursor.com/assets/images/open-in-web-dark.png\"><source media=\"(prefers-color-scheme: light)\" srcset=\"https://cursor.com/assets/images/open-in-web-light.png\"><img alt=\"Open in Web\" width=\"114\" height=\"28\" src=\"https://cursor.com/assets/images/open-in-web-dark.png\"></picture></a>&nbsp;<a href=\"https://cursor.com/background-agent?bcId=bc-0c777bb8-2a40-5165-9da6-ddb6f214fcc0&cursor_ref=pr_footer&cursor_cta=open_in_cursor\"><picture><source media=\"(prefers-color-scheme: dark)\" srcset=\"https://cursor.com/assets/images/open-in-cursor-dark.png\"><source media=\"(prefers-color-scheme: light)\" srcset=\"https://cursor.com/assets/images/open-in-cursor-light.png\"><img alt=\"Open in Cursor\" width=\"131\" height=\"28\" src=\"https://cursor.com/assets/images/open-in-cursor-dark.png\"></picture></a>&nbsp;</div>\n\n",
+        "title": "FrostEcho R6 CPU repairs and morning-story evidence",
+        "base": "main",
+        "base_sha": "7d3bf007a0d4f5d6c93330e5c664114436f0d1c3",
+        "head": "codex/sprint-r6",
+        "head_sha": "12cc208124c1b6d73c8fd5af66352091f8db9027",
+        "head_repo_id": 1438143455,
+        "head_repo_full_name": "PoetryJ/frostecho",
+        "merge_commit_sha": "f3a580d252f47fe60755e2ddb9e0d315ed4450bf",
+        "user": {
+          "login": "PoetryJ",
+          "name": "PoetryJ",
+          "email": null,
+          "avatar_url": "https://avatars.githubusercontent.com/u/110576037?v=4",
+          "id": 110576037
+        },
+        "requested_reviewers": null,
+        "requested_team_reviewers": null,
+        "diff": null,
+        "comments": null,
+        "created_at": "2026-11-13T04:10:23Z",
+        "updated_at": "2026-11-13T08:39:58Z",
+        "closed_at": null,
+        "merged_at": null,
+        "commits": 192,
+        "changed_files": 5854,
+        "additions": 1208351,
+        "deletions": 111,
+        "display_url": "https://github.com/PoetryJ/frostecho/pull/12",
+        "display_title": "FrostEcho R6 CPU repairs and morning-story evidence"
+      },
+      "isError": false
+    }
+  ],
+  "jobs": [
+    {
+      "run": 41763821429,
+      "job": 126357405548,
+      "name": "test (windows-latest, 22)",
+      "status": "cancelled",
+      "logFirst": "2026-11-04T02:55:21.7978752Z",
+      "logLast": "2026-11-04T08:56:01.8120277Z",
+      "logSpanSeconds": 21640.015,
+      "npmTestStart": "2026-11-04T02:55:43.6646111Z",
+      "nextFixtureStart": null,
+      "npmTestSeconds": null
+    },
+    {
+      "run": 43364432889,
+      "job": 131685373652,
+      "name": "test (ubuntu-latest, 22)",
+      "status": "cancelled",
+      "logFirst": "2026-11-13T04:16:28.7040960Z",
+      "logLast": "2026-11-13T10:16:40.9290073Z",
+      "logSpanSeconds": 21612.225,
+      "npmTestStart": "2026-11-13T04:16:36.0644284Z",
+      "nextFixtureStart": null,
+      "npmTestSeconds": null
+    },
+    {
+      "run": 43364432889,
+      "job": 131685373948,
+      "name": "test (windows-latest, 22)",
+      "status": "cancelled",
+      "logFirst": "2026-11-13T04:16:28.6663895Z",
+      "logLast": "2026-11-13T10:16:30.6286529Z",
+      "logSpanSeconds": 21601.962,
+      "npmTestStart": "2026-11-13T04:16:54.1162734Z",
+      "nextFixtureStart": null,
+      "npmTestSeconds": null
+    },
+    {
+      "run": 43364432889,
+      "job": 131685373882,
+      "name": "test (windows-latest, 20)",
+      "status": "success",
+      "logFirst": "2026-11-13T04:16:28.7735254Z",
+      "logLast": "2026-11-13T04:19:29.1741250Z",
+      "logSpanSeconds": 180.401,
+      "npmTestStart": "2026-11-13T04:16:44.8438867Z",
+      "nextFixtureStart": "2026-11-13T04:19:18.5427012Z",
+      "npmTestSeconds": 153.699
+    },
+    {
+      "run": 43364432889,
+      "job": 131685373986,
+      "name": "test (ubuntu-latest, 20)",
+      "status": "success",
+      "logFirst": "2026-11-13T04:16:28.3652189Z",
+      "logLast": "2026-11-13T04:19:01.9076845Z",
+      "logSpanSeconds": 153.542,
+      "npmTestStart": "2026-11-13T04:16:35.6079050Z",
+      "nextFixtureStart": "2026-11-13T04:18:55.4914787Z",
+      "npmTestSeconds": 139.884
+    },
+    {
+      "run": 43393992212,
+      "job": 131780385787,
+      "name": "test (windows-latest, 22)",
+      "status": "success",
+      "logFirst": "2026-11-13T08:32:23.5381587Z",
+      "logLast": "2026-11-13T08:34:19.2043656Z",
+      "logSpanSeconds": 115.666,
+      "npmTestStart": "2026-11-13T08:32:47.3663573Z",
+      "nextFixtureStart": "2026-11-13T08:34:05.9352329Z",
+      "npmTestSeconds": 78.569
+    },
+    {
+      "run": 43393992212,
+      "job": 131780385365,
+      "name": "test (windows-latest, 20)",
+      "status": "success",
+      "logFirst": "2026-11-13T08:32:23.7864774Z",
+      "logLast": "2026-11-13T08:34:00.5647393Z",
+      "logSpanSeconds": 96.778,
+      "npmTestStart": "2026-11-13T08:32:43.2531415Z",
+      "nextFixtureStart": "2026-11-13T08:33:50.7463794Z",
+      "npmTestSeconds": 67.493
+    },
+    {
+      "run": 41763821429,
+      "job": 126357405427,
+      "name": "test (windows-latest, 20)",
+      "status": "success",
+      "logFirst": "2026-11-04T02:55:22.3132939Z",
+      "logLast": "2026-11-04T02:56:23.9239876Z",
+      "logSpanSeconds": 61.61,
+      "npmTestStart": "2026-11-04T02:55:42.7437941Z",
+      "nextFixtureStart": "2026-11-04T02:56:14.7188233Z",
+      "npmTestSeconds": 31.975
+    },
+    {
+      "run": 43393992212,
+      "job": 131780385029,
+      "name": "test (ubuntu-latest, 22)",
+      "status": "success",
+      "logFirst": "2026-11-13T08:32:23.7396639Z",
+      "logLast": "2026-11-13T08:33:23.5850663Z",
+      "logSpanSeconds": 59.846,
+      "npmTestStart": "2026-11-13T08:32:31.1969357Z",
+      "nextFixtureStart": "2026-11-13T08:33:15.6757947Z",
+      "npmTestSeconds": 44.479
+    },
+    {
+      "run": 43393992212,
+      "job": 131780385343,
+      "name": "test (ubuntu-latest, 20)",
+      "status": "success",
+      "logFirst": "2026-11-13T08:32:22.9549856Z",
+      "logLast": "2026-11-13T08:33:19.6742484Z",
+      "logSpanSeconds": 56.72,
+      "npmTestStart": "2026-11-13T08:32:31.1852177Z",
+      "nextFixtureStart": "2026-11-13T08:33:13.3415588Z",
+      "npmTestSeconds": 42.156
+    },
+    {
+      "run": 41763786045,
+      "job": 126357297040,
+      "name": "test (windows-latest, 22)",
+      "status": "success",
+      "logFirst": "2026-11-04T02:55:01.6448496Z",
+      "logLast": "2026-11-04T02:55:49.3745134Z",
+      "logSpanSeconds": 47.73,
+      "npmTestStart": "2026-11-04T02:55:17.5869985Z",
+      "nextFixtureStart": "2026-11-04T02:55:40.9880548Z",
+      "npmTestSeconds": 23.402
+    },
+    {
+      "run": 41763786045,
+      "job": 126357296928,
+      "name": "test (windows-latest, 20)",
+      "status": "success",
+      "logFirst": "2026-11-04T02:55:01.9518321Z",
+      "logLast": "2026-11-04T02:55:40.6987138Z",
+      "logSpanSeconds": 38.747,
+      "npmTestStart": "2026-11-04T02:55:16.5687502Z",
+      "nextFixtureStart": "2026-11-04T02:55:34.6723215Z",
+      "npmTestSeconds": 18.104
+    },
+    {
+      "run": 41763821429,
+      "job": 126357405333,
+      "name": "test (ubuntu-latest, 22)",
+      "status": "success",
+      "logFirst": "2026-11-04T02:55:21.5518309Z",
+      "logLast": "2026-11-04T02:55:50.6350198Z",
+      "logSpanSeconds": 29.084,
+      "npmTestStart": "2026-11-04T02:55:29.7639131Z",
+      "nextFixtureStart": "2026-11-04T02:55:45.1027389Z",
+      "npmTestSeconds": 15.339
+    },
+    {
+      "run": 41763786045,
+      "job": 126357296714,
+      "name": "test (ubuntu-latest, 20)",
+      "status": "success",
+      "logFirst": "2026-11-04T02:55:02.3717984Z",
+      "logLast": "2026-11-04T02:55:29.9999923Z",
+      "logSpanSeconds": 27.628,
+      "npmTestStart": "2026-11-04T02:55:10.3090834Z",
+      "nextFixtureStart": "2026-11-04T02:55:24.5971413Z",
+      "npmTestSeconds": 14.288
+    },
+    {
+      "run": 41763821429,
+      "job": 126357405007,
+      "name": "test (ubuntu-latest, 20)",
+      "status": "success",
+      "logFirst": "2026-11-04T02:55:20.5542855Z",
+      "logLast": "2026-11-04T02:55:45.4106903Z",
+      "logSpanSeconds": 24.856,
+      "npmTestStart": "2026-11-04T02:55:27.4538079Z",
+      "nextFixtureStart": "2026-11-04T02:55:41.2627780Z",
+      "npmTestSeconds": 13.809
+    },
+    {
+      "run": 41763786045,
+      "job": 126357297064,
+      "name": "test (ubuntu-latest, 22)",
+      "status": "success",
+      "logFirst": "2026-11-04T02:55:01.8341749Z",
+      "logLast": "2026-11-04T02:55:19.7999301Z",
+      "logSpanSeconds": 17.965,
+      "npmTestStart": "2026-11-04T02:55:05.7643447Z",
+      "nextFixtureStart": "2026-11-04T02:55:16.1347287Z",
+      "npmTestSeconds": 10.37
+    }
+  ],
+  "scope": "All 3 PRs updated since Nov4 found by connector; latest associated workflow per PR plus R6.1 successful continuation. Not all historical workflow attempts."
+}

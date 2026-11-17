@@ -1,0 +1,112 @@
+{
+  "schema": "frostecho.session/1",
+  "world": {
+    "schema": "frostecho.world-v2/2",
+    "rulesVersion": "survival-rules/2",
+    "day": 1,
+    "simTime": 0,
+    "version": 1,
+    "rngSeed": "play-2",
+    "weather": "snow",
+    "npcs": {
+      "npc_01": {
+        "id": "npc_01",
+        "location": "dorm-a",
+        "hunger": 79,
+        "stamina": 80.5,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_02": {
+        "id": "npc_02",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      }
+    },
+    "resources": {
+      "food": 23,
+      "firewood": 20,
+      "power": 40,
+      "medicine": 2
+    },
+    "furnace": {
+      "lit": true,
+      "fuel": 6,
+      "warmth": 18
+    },
+    "commandLog": [
+      "npc_01-0-c-eat"
+    ],
+    "dead": [],
+    "ending": "none",
+    "scenarioDays": 4,
+    "receipts": {
+      "npc_01-0-c-eat": {
+        "digest": "3e5a1b357d2ecef7d1190e41e4871e485bc718aab90fbb8f2f5aa0cce6361613",
+        "eventIds": [
+          "npc_01-0-c-eat:ate:0"
+        ],
+        "postStateVersion": 1
+      }
+    }
+  },
+  "memories": {
+    "npc_01": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "npc_01-0-c-eat:ate:0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "ate",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "amount": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "npc_01-0-c-eat:ate:0"
+          ],
+          "recordId": "m-4cc12066bffd2ada",
+          "revision": 1
+        }
+      ]
+    },
+    "npc_02": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": []
+    }
+  },
+  "outcomes": {
+    "npc_01-0-c-eat": {
+      "status": "applied",
+      "eventIds": [
+        "npc_01-0-c-eat:ate:0"
+      ],
+      "postStateVersion": 1,
+      "reason": null
+    }
+  },
+  "plans": [],
+  "instances": [],
+  "generations": {
+    "npc_01": 1
+  },
+  "sequence": 5,
+  "seed": "play-2",
+  "inputSequence": 0,
+  "inputReceipts": {}
+}

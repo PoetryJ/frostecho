@@ -1,0 +1,57 @@
+{
+  "ok": true,
+  "baseline": {
+    "exit": 0,
+    "summary": {
+      "cases": 4,
+      "s1": 4,
+      "s2": 4,
+      "adjudicated": 4,
+      "train": 2,
+      "dev": 2,
+      "reviewVersion": "v4-review/1",
+      "trainCases": 2,
+      "devCases": 2,
+      "requiredTrain": 512,
+      "requiredDev": 128,
+      "trainSourceGroups": 2,
+      "devSourceGroups": 2,
+      "researchTrainReady": false,
+      "failures": []
+    }
+  },
+  "rejections": [
+    {
+      "kind": "review_hash",
+      "exit": 1,
+      "rejected": true,
+      "failures": [
+        "v4-fixture-00: s1_hash_not_bound (000000000000 vs 510f8d76c15b)"
+      ]
+    },
+    {
+      "kind": "review_version",
+      "exit": 1,
+      "rejected": true,
+      "failures": [
+        "v4-fixture-00: s2_bad_review_version 'v3-review/1' != 'v4-review/1'"
+      ]
+    },
+    {
+      "kind": "label",
+      "exit": 1,
+      "rejected": true,
+      "failures": [
+        "v4-fixture-00: adjudication_label_outside_candidates 'c-not-a-candidate'"
+      ]
+    },
+    {
+      "kind": "train_text",
+      "exit": 1,
+      "rejected": true,
+      "failures": [
+        "train:v4-fixture-00: train_text_differs_from_case"
+      ]
+    },
+    {
+      "kin

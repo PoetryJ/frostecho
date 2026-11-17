@@ -1,0 +1,35 @@
+恢复这个已暂停检查点
+
+仓库：https://github.com/PoetryJ/frostecho
+开发分支：codex/sprint-1116
+保存标签：r5-saved-20261112
+保存前产品源码：498c00015e51dc6d48668e2603e2e1877aa8e399
+服务器现有工作目录：/data3/DATA/project/project_meishijiang/FrostEcho
+该保存提交只新增归档/状态说明，不修产品。后续工作等待负责人再次指示；本文件不会启动任何任务。
+
+取得同一版本（需要恢复时手动执行）
+git clone --branch codex/sprint-1116 https://github.com/PoetryJ/frostecho.git FrostEcho
+cd FrostEcho
+git checkout r5-saved-20261112
+sha256sum -c checkpoints/20261112-r5/CHECKPOINT-SHA256
+cd artifacts/sprint-r5/delivery && sha256sum -c PACKAGE-SHA256
+回到仓库根；handoff/20261112-sprint-r5/SHA256SUMS.txt在其所在目录校验。
+
+环境
+Node24.14.0、npm11.9.0；Python3.11.15。本次Linux CPU复验环境详见ENVIRONMENT.json与python-packages.txt。
+服务器Node路径 /root/.workbuddy/binaries/node/versions/24.14.0/bin；Python路径 /opt/conda/envs/siren3/bin/python3。
+Node依赖用npm ci按lock安装。Python包清单是已安装版本快照，不建议无差别装进用户其他环境；需要时创建隔离环境并按实际CPU检查所需包安装。
+模型requirements是目标模型准备规范，不代表已在此环境完成27B兼容性/权重加载。GPU设备清单只是硬件记录。
+
+已有复跑入口（本轮已跑过；恢复后按需执行，不必立即重跑）
+npm ci
+npm run build
+bash scripts/bootstrap-g11-evidence.sh
+node dist/scripts/eval-full.js --out /tmp/frostecho-restored-check
+node --test --test-reporter=tap dist/tests/acceptance-v5/gate-r5.test.js
+python3 -m pytest research/decision-choice/jev04/tests research/decision-choice/jev04/scorers/tests -q
+
+当前阻断与资源
+正式训练数据门false，0合格train/dev；指定27B权重缺失，提交记录显示网络Errno101。没有真实calT/select/cert。不要根据证据文件存在、tiny fixture通过或高测试总数开启正式训练/执行。
+原三臂T27冻结/T4F冻结/T4L-LoRA、seed17/43和原总GPU12h剩余额度没有重置；本次独立验收未消耗GPU训练额度。未来恢复须核原账本和负责人指示。
+若交给Grok，先读STATUS.md、本目录README/AUDIT和四个已知缺口，再由负责人指定工作；当前没有新任务包或自动续跑。

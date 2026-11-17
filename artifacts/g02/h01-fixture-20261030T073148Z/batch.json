@@ -1,0 +1,132 @@
+{
+  "schema": "frostecho.g02.batch/2",
+  "batchId": "h01-fixture-20261030T073148Z",
+  "mode": "fixture",
+  "realModel": false,
+  "requestedModel": null,
+  "actualModel": null,
+  "servedModels": null,
+  "sampling": {
+    "temperature": 0,
+    "max_tokens": 1024,
+    "stream": false,
+    "productionEnableThinking": true,
+    "thinkingValues": [
+      true,
+      false
+    ]
+  },
+  "timeouts": {
+    "decisionMs": 30000,
+    "healthMs": 5000
+  },
+  "maxProviderCalls": 90,
+  "retries": 0,
+  "serial": true,
+  "autoRestartService": false,
+  "plan": [
+    {
+      "index": 0,
+      "taskId": "s1-thinking-on-rep-1",
+      "phase": "gate"
+    },
+    {
+      "index": 1,
+      "taskId": "s1-thinking-off-rep-1",
+      "phase": "gate"
+    },
+    {
+      "index": 2,
+      "taskId": "s2-thinking-on-rep-1",
+      "phase": "gate"
+    },
+    {
+      "index": 3,
+      "taskId": "s2-thinking-off-rep-1",
+      "phase": "gate"
+    },
+    {
+      "index": 4,
+      "taskId": "s3-thinking-on-rep-1",
+      "phase": "gate"
+    },
+    {
+      "index": 5,
+      "taskId": "s3-thinking-off-rep-1",
+      "phase": "gate"
+    },
+    {
+      "index": 6,
+      "taskId": "s1-thinking-on-rep-2",
+      "phase": "main"
+    },
+    {
+      "index": 7,
+      "taskId": "s1-thinking-off-rep-2",
+      "phase": "main"
+    },
+    {
+      "index": 8,
+      "taskId": "s2-thinking-on-rep-2",
+      "phase": "main"
+    },
+    {
+      "index": 9,
+      "taskId": "s2-thinking-off-rep-2",
+      "phase": "main"
+    },
+    {
+      "index": 10,
+      "taskId": "s3-thinking-on-rep-2",
+      "phase": "main"
+    },
+    {
+      "index": 11,
+      "taskId": "s3-thinking-off-rep-2",
+      "phase": "main"
+    },
+    {
+      "index": 12,
+      "taskId": "s1-thinking-on-rep-3",
+      "phase": "main"
+    },
+    {
+      "index": 13,
+      "taskId": "s1-thinking-off-rep-3",
+      "phase": "main"
+    },
+    {
+      "index": 14,
+      "taskId": "s2-thinking-on-rep-3",
+      "phase": "main"
+    },
+    {
+      "index": 15,
+      "taskId": "s2-thinking-off-rep-3",
+      "phase": "main"
+    },
+    {
+      "index": 16,
+      "taskId": "s3-thinking-on-rep-3",
+      "phase": "main"
+    },
+    {
+      "index": 17,
+      "taskId": "s3-thinking-off-rep-3",
+      "phase": "main"
+    }
+  ],
+  "version": {
+    "commit": "90873a7770123af169e899d52f2538b6050646c7",
+    "dirty": true,
+    "dirtyFiles": [
+      "rtifacts/g01/offline-timing.json",
+      "src/eval/record.ts"
+    ],
+    "sourceFingerprint": "a42a92d872472330048684a846fe0f5446632fe8bcb8998f5df9b7cc1dbb7fb0",
+    "promptFingerprint": "8d66afdf043633df7103189682fdd5b1647e293554bba761825529f1364c9ae2",
+    "node": "v20.18.0",
+    "platform": "linux"
+  },
+  "startedAt": "2026-10-30T07:31:51.402Z"
+}

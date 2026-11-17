@@ -1,0 +1,210 @@
+{
+  "schema": "frostecho.jev02.dataset/1",
+  "at": "2026-11-09T18:01:17+08:00",
+  "splits": {
+    "train": 1024,
+    "dev": 128,
+    "cal": 512
+  },
+  "perClass": {
+    "train": {
+      "PLAYER_FIRST": 256,
+      "NPC_FIRST": 256,
+      "NO_PRIORITY_REQUEST": 256,
+      "NEEDS_CLARIFICATION": 256
+    },
+    "dev": {
+      "PLAYER_FIRST": 32,
+      "NPC_FIRST": 32,
+      "NO_PRIORITY_REQUEST": 32,
+      "NEEDS_CLARIFICATION": 32
+    },
+    "cal": {
+      "PLAYER_FIRST": 128,
+      "NPC_FIRST": 128,
+      "NO_PRIORITY_REQUEST": 128,
+      "NEEDS_CLARIFICATION": 128
+    }
+  },
+  "stats": {
+    "train": {
+      "cases": 1024,
+      "uniquePlayerTexts": 59,
+      "duplicateTextRate": 0.9424,
+      "uniqueDialogues": 817,
+      "duplicateDialogueRate": 0.2021,
+      "families": 32,
+      "familySizes": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32
+      ],
+      "sources": {
+        "synthetic_dialogue": 1024
+      }
+    },
+    "dev": {
+      "cases": 128,
+      "uniquePlayerTexts": 26,
+      "duplicateTextRate": 0.7969,
+      "uniqueDialogues": 116,
+      "duplicateDialogueRate": 0.0938,
+      "families": 8,
+      "familySizes": [
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16
+      ],
+      "sources": {
+        "synthetic_dialogue": 128
+      }
+    },
+    "cal": {
+      "cases": 512,
+      "uniquePlayerTexts": 37,
+      "duplicateTextRate": 0.9277,
+      "uniqueDialogues": 431,
+      "duplicateDialogueRate": 0.1582,
+      "families": 16,
+      "familySizes": [
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32,
+        32
+      ],
+      "sources": {
+        "synthetic_dialogue": 512
+      }
+    }
+  },
+  "combined": {
+    "cases": 1664,
+    "uniquePlayerTexts": 122,
+    "duplicateTextRate": 0.9267,
+    "uniqueDialogues": 1364,
+    "duplicateDialogueRate": 0.1803,
+    "families": 56,
+    "familySizes": [
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32
+    ],
+    "sources": {
+      "synthetic_dialogue": 1664
+    }
+  },
+  "hashes": {
+    "train": "32dcc26c5b0d3190dd75b553e14325d35ef97df7e84d83fadf3ec13d7283d9a9",
+    "dev": "98f7eddfc1f8dcff7b7e44b35c36a79b2ab016652e8a2bc791b27ac249562cab",
+    "cal": "3b9ab13550ade80fef6c1476896524cf9bffebb5c02889eb229147954be655c6"
+  },
+  "sources": {
+    "synthetic_dialogue": 1664,
+    "human": 0,
+    "real_player": 0
+  },
+  "limitations": [
+    "all semantic cases are coding-agent synthetic_dialogue; no human labels",
+    "16 contexts share objects; dedupe rates are reported, not hidden",
+    "family = one authored pattern, split before variants"
+  ]
+}

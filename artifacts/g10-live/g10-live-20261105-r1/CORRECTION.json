@@ -1,0 +1,228 @@
+{
+  "schema": "frostecho.g10.correction/1",
+  "batch": "g10-live-20261105-r1",
+  "createdAt": "2026-11-05T07:49:09.489Z",
+  "why": "The batch summary counted protocol completion from recorded outcome/parseOk. G10 re-derives both from the raw HTTP wire, strict parsers and the authoritative ledger.",
+  "derivedProtocol": {
+    "planned": 8,
+    "completed": 1,
+    "failed": 1,
+    "notRun": 6,
+    "goalPhases": 2,
+    "actionPhases": 2
+  },
+  "derivedGoals": {
+    "feed_self": 1,
+    "yield_once": 1,
+    "byCell": {
+      "s40-self_only": {
+        "feed_self": 1,
+        "yield_once": 0
+      },
+      "s40-choice": {
+        "feed_self": 0,
+        "yield_once": 1
+      },
+      "s60-self_only": {
+        "feed_self": 0,
+        "yield_once": 0
+      },
+      "s60-choice": {
+        "feed_self": 0,
+        "yield_once": 0
+      }
+    }
+  },
+  "derivedFulfilment": {
+    "byCell": {
+      "s40-self_only": {
+        "fulfilled": 0,
+        "violated": 0,
+        "not_applicable": 0,
+        "undetermined": 0
+      },
+      "s40-choice": {
+        "fulfilled": 0,
+        "violated": 0,
+        "not_applicable": 0,
+        "undetermined": 0
+      },
+      "s60-self_only": {
+        "fulfilled": 0,
+        "violated": 0,
+        "not_applicable": 0,
+        "undetermined": 0
+      },
+      "s60-choice": {
+        "fulfilled": 0,
+        "violated": 0,
+        "not_applicable": 0,
+        "undetermined": 0
+      }
+    },
+    "world": {
+      "fulfilled": 1,
+      "violated": 0,
+      "not_applicable": 0,
+      "undetermined": 0
+    }
+  },
+  "derivedCosts": {
+    "chatRequests": 4,
+    "spent": 4,
+    "blocked": 0,
+    "unresolved": 0,
+    "usageUnknown": false,
+    "goalTokens": 474,
+    "actionTokens": 2021,
+    "totalTokens": 2495,
+    "knownGoalTokens": 474,
+    "knownActionTokens": 2021,
+    "knownTotalTokens": 2495,
+    "unknownPhases": 0,
+    "notRunPhases": 12,
+    "campaignLimit": 16,
+    "campaignSpent": 4,
+    "byCell": {
+      "s40-self_only": {
+        "goalTokens": 243,
+        "actionTokens": 681,
+        "requests": 2,
+        "knownGoalTokens": 243,
+        "knownActionTokens": 681,
+        "unknownPhases": 0
+      },
+      "s40-choice": {
+        "goalTokens": 231,
+        "actionTokens": 1340,
+        "requests": 2,
+        "knownGoalTokens": 231,
+        "knownActionTokens": 1340,
+        "unknownPhases": 0
+      },
+      "s60-self_only": {
+        "goalTokens": 0,
+        "actionTokens": 0,
+        "requests": 0,
+        "knownGoalTokens": 0,
+        "knownActionTokens": 0,
+        "unknownPhases": 0
+      },
+      "s60-choice": {
+        "goalTokens": 0,
+        "actionTokens": 0,
+        "requests": 0,
+        "knownGoalTokens": 0,
+        "knownActionTokens": 0,
+        "unknownPhases": 0
+      }
+    }
+  },
+  "facts": {
+    "chatRequests": 4,
+    "unknownPhases": 0,
+    "notRunPhases": 12,
+    "goalTokens": 474,
+    "actionTokens": 2021,
+    "totalTokens": 2495,
+    "latencySumMs": 189917,
+    "worldFulfilled": 1,
+    "protocolCompleted": 1,
+    "protocolFailed": 1,
+    "protocolNotRun": 6
+  },
+  "corrections": [
+    "episode g09-r1-s40-choice: recorded outcome completed → derived output_truncated (HTTP 200, finish_reason=length, empty final content).",
+    "episode g09-r1-s40-self_only: recorded goal.parseOk false → strict goal parse ok (legal feed_self); no binding is the DESIGNED result, not a parse failure.",
+    "protocol completed 2 → 1 (one legal protocol completion), failed 0 → 1, notRun 6 unchanged.",
+    "costs: summary goal/action totals were null because never-sent phases polluted the aggregate; the 4 attempted phases are fully known (2495)."
+  ],
+  "unchanged": [
+    "summary.json",
+    "plan.json",
+    "episodes/*",
+    "attempts/*",
+    "status/*",
+    "campaign ledger"
+  ],
+  "verifierExit": 1,
+  "verifierNote": "The original summary is NOT rewritten: the new verifier still reports its mismatches and exits 1.",
+  "originalFiles": [
+    {
+      "path": "attempts/att-0001.begin.json",
+      "sha256": "95e72dd3bd40b12230d95d49adbae0fc8b3d4c78d7c424d7e13402e062c57aec"
+    },
+    {
+      "path": "attempts/att-0001.finish.json",
+      "sha256": "c616f02f6594a794c1b95f90ae928943049155beac06f2cdbfd8e28aaba02730"
+    },
+    {
+      "path": "attempts/att-0002.begin.json",
+      "sha256": "0e45927153f8b4ba603628e9d63c3d2bf4f9cba24e1075c4970ca9c0718c39d3"
+    },
+    {
+      "path": "attempts/att-0002.finish.json",
+      "sha256": "947ffe39803ca04d3b94b5c54f2c49c0005f37122499292f3b0226e1e86fad5e"
+    },
+    {
+      "path": "attempts/att-0003.begin.json",
+      "sha256": "d1fc0db2112d288fc5a65517df2e9f28f44ff7b6d56ff313ccb34c6ee08c8d6c"
+    },
+    {
+      "path": "attempts/att-0003.finish.json",
+      "sha256": "201d3abd106cc63a6b6d562a050f88b58c23df9e79ad6549ed3bd91a028ac307"
+    },
+    {
+      "path": "attempts/att-0004.begin.json",
+      "sha256": "5d5bb7a997ee5fa00a86b5540271b8c49dd61bc23618607b35042d705ec2dd3e"
+    },
+    {
+      "path": "attempts/att-0004.finish.json",
+      "sha256": "600e8247c5125bb292c5c6c849d771fda32d9873c274bdaffabb1dcd1c6807cf"
+    },
+    {
+      "path": "episodes/g09-r1-s40-choice.json",
+      "sha256": "197aa50da54794e61917c5841d602f6c5d8d42ad068f96aad9139ccc8fbb321d"
+    },
+    {
+      "path": "episodes/g09-r1-s40-self_only.json",
+      "sha256": "423bdc884e88d7c9dba63aa60b81d93776699b2d74c77101fa752d7a0739a9a6"
+    },
+    {
+      "path": "episodes/g09-r1-s60-choice.json",
+      "sha256": "c08bf246bf1eb13dd50d45077d62aa55349226033da47b70d0cf1d4c8778aed4"
+    },
+    {
+      "path": "episodes/g09-r1-s60-self_only.json",
+      "sha256": "526bca67757896fe34ff2db851642e997904860188789b7c551173a05da050f3"
+    },
+    {
+      "path": "episodes/g09-r2-s40-choice.json",
+      "sha256": "784eb0a959e8bd5741dc3ad6bf5c317b7260d3686d82dd859ecb41d78fdd9eba"
+    },
+    {
+      "path": "episodes/g09-r2-s40-self_only.json",
+      "sha256": "3a5d4760e03d1d5cebe41ff1d3517822562d40d59bfc44ff8c2554d5ec76ce0a"
+    },
+    {
+      "path": "episodes/g09-r2-s60-choice.json",
+      "sha256": "d01e7b35c6b1edbd54c767f6e726fece202c7f5c79788921ed20a3cd74cfd15f"
+    },
+    {
+      "path": "episodes/g09-r2-s60-self_only.json",
+      "sha256": "8d3fe150094979c691b151fdb2506ee0b4396f659ec25567844a64adcf72757b"
+    },
+    {
+      "path": "plan.json",
+      "sha256": "9af08bd7fdadf87c2b896bcfce46ebc10a4e5ba6af48408a56596633568a1239"
+    },
+    {
+      "path": "status/finished.json",
+      "sha256": "064ab2c238a48f4610bf21f28a7334461ace057232fd62a36e2fc88d07c0021d"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "efda09f62ea3f1cabfb653273c046ad55b1f392c944270f45a6d579eec6cde98"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+FrostEcho Sprint R4 生命周期 / harness 独立核查
+日期 2026-11-12（Asia/Shanghai）
+HEAD db34123423a06cc5118fb92e1c3cfb9f0c03fceb；基线5abadc8。
+隔离bundle clone /tmp/frostecho-r4-lifecycle-ebIJ3F/repo。
+Node24.14.0，npm ci --offline/build成功；无模型、GPU和权重下载，未改服务器主树。
+
+结论：有限返工。R3已知单NPC取消/跨重启新操作问题修复有效；还需补队列任务的撤权一致性及衍生路线命令的真正幂等。
+
+有效结果
+1. 交付的acceptance-v4/gate-v4.test.js独立7/7，通过。与root全量重叠，不叠加计数。
+2. 另以R3原独立脚本的“实际承诺”部分重跑：promise→异步help评分started→cancel确认→release；旧结果0世界版本/0outcomes，保存承诺cancelled；新step后version1/outcomes1。见r3-recheck/actual-promise-cancel.summary.json及JSONL。
+3. 独立两进程普通promise→cancel→save→新promise产生新实例；restock2→save→重启restock3，库存4+2+3=9。见output/restart-result.json。
+4. 单NPCsave等待期间cancel能先确认、迟到scorer0执行；EOF未release有界退出已由7项验收覆盖。额外started→stdin.end('save\n')在约407ms边界写出save并exit0，见output/eof-with-save-result.json。本次未复现EOF丢save，不能把静态疑问当缺陷。
+
+P1：barrier只撤在途actor，却公告取消整条队列，排队任务随后仍执行
+复跑：真实CLI写step npc_01、step npc_02；等第一个scorer started；写save（barrier400ms，step timeout5000ms）。
+结果：save超时对job-0001和job-0002都发job_terminal/status=cancelled；存档world.version=0，generations仅npc_01=1。
+随后release旧scorer：npc_01旧结果被拒绝，但npc_02排队step继续开始并applied/ate，world.version=1；随后保存确认1。退出汇总把五个job全部记completed，已公告cancelled的终态又被改写。
+原始证据：output/queued-actors.jsonl、queued-before-release.json、queued-result.json（beforeVersion0/afterVersion1）。
+根因/位置：scripts/play-sprint.ts:176-180只遍历inFlightActors撤权；183-192将全部pendingStepJobs标cancelled；447-453启动排队job没有先检查terminal/撤权；runJob:419-420无条件覆写completed。脚本里的actor_02尚未进入inFlightActors，所以仍持有旧expectedGeneration0并可提交。
+最小修正：barrier以捕获的job集合为单位撤销所有在途及未开始job；queued job开跑前检查取消终态/令牌，已cancelled终态不被晚返回覆盖。沿现有lease/generation，不另造调度系统。保留“新step正常执行一次”的断言，并保证barrier不撤销其捕获范围外的新操作。
+这是已公告取消后的实际世界副作用，不是纯日志风格问题；单NPC取消已通过不能覆盖双NPC队列。
+
+P2：同一travel输入的显式retry重新规划路线，误判内容冲突
+真实CLI连续执行相同两行：travel npc_01 warehouse id=travel-one。
+首次applied，第二次rejected/command_id_conflict而非duplicate。
+根因：scripts/play-sprint.ts:284-297从当前actorCell重算route，再以相同commandId提交；第一次抵达后第二次route变为门口单点，权威命令digest与首次不同。语义玩家输入相同，衍生执行计划变了。
+证据：output/travel-retry-result.json、travel-retry.jsonl。
+最小修正：先以canonical玩家意图(actor,target,显式ID)查已保存input receipt，再规划新执行；同意图返回首次receipt，不重复寻路。同ID不同目的地仍冲突且无效果。不能通过忽略所有world command digest修复。
+
+复跑命令（输出目录必须全新，避免release文件污染）
+node r4-lifecycle-probe.cjs /path/to/built/r4-repo /new/out
+node r3-promise-cancel-recheck.cjs /path/to/built/r4-repo /new/out-r3
+node --test --test-reporter=tap dist/tests/acceptance-v4/gate-v4.test.js
+
+审计边界
+- 本域没有运行全套；root负责总验收。这里7项与root重复。
+- 首次自写probe读取第二次save时把barrier_timeout行也当成save完成，导致summary.afterVersion误读0；检查原始JSONL发现第二step已applied/version1，修正等待条件为row.saved后独立新目录重跑得到0→1。最终output是修正仪器后的结果；产品代码未修改。
+- 未做多文件保存中断原子性、网络真实模型或GPU试验；不把正常存档恢复推广为这些保证。
+
+下一轮harness与SuperAgent结合建议
+先补上述两个局部门。然后沿现有commitment目标/revision、一次attempt/lease、world receipt三层，把议会决议变成可接受或拒绝的NPC分工；具体尝试失败能回到同一目标，退出/取消与迟到动作一致，完成以真实权威结果为准。
+让harness负责任务队列/取消/恢复/运行账本，JEV只参与可见候选的语义排序；不要引入第二套任务总线或让模型判断一个已取消job是否还能提交。最值钱的验收是“议会下达→两名NPC执行→一名被取消/求生暂停→存档恢复→旧动作0作用、其他任务继续并真实结算”。

@@ -1,0 +1,27 @@
+{
+  "inputId": "Y",
+  "label": "att-0002: the accepted-yield pending action (wait)",
+  "source": {
+    "path": "artifacts/g11-live/g11-live-20261105-r1/w1/w1-prefix-run.run.json",
+    "sha256": "738275e8ae1c92bec82f2dac69860b8ec126782e219fe933e9f7451d18f53e89",
+    "attemptId": "att-0002",
+    "phase": "action"
+  },
+  "body": {
+    "model": "qwen3.8-27b",
+    "temperature": 0,
+    "max_tokens": 1024,
+    "stream": false,
+    "chat_template_kwargs": {
+      "enable_thinking": true
+    },
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with one JSON object and no other text.\nallowedActions: [\"move\",\"eat\",\"stop\",\"wait\"]\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\n\"stop\" ends your current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows the outer restock-wait and new-cycle rules.\n\"wait\" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {\"type\":\"wait\"} only when allowedActions includes \"wait\".\nactiveGoal: {\"kind\":\"yield_once\",\"requestId\":\"w1-prefix-req-1\",\"expiresAtSimTime\":1}\nYour ONLY current goal is this agreement with the player: keep the food available to the player until the request expires, and the agreement is fulfilled only if the player actually eats before the deadline (logical time expiresAtSimTime).\nYour own hunger is background state, not this session's goal. Eating the food yourself before the player eats breaks the agreement; moving elsewhere does not.\nobservation: {\"id\":\"npc_a\",\"location\":\"kitchen\",\"hunger\":40,\"foodHere\":1,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null"
+      }
+    ]
+  },
+  "bodySha256": "c9dc5449d5f7bee4935203e9be9dd7134786247555f9066a61140493a1f515be",
+  "promptSha256": "530fa0b3a2763578432bd0b7e76eee8ab2f72b77ead2ee29935c132b592273ae"
+}

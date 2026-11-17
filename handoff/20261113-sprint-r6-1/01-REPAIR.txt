@@ -1,0 +1,28 @@
+R6.1 三条契约修复，保留已有效路径
+
+R：捕获归属必须属于本次barrier
+复现：先跑R5 supply-probe到<out>/supply，再运行本包probes/lifecycle.cjs <repoAbs> <outAbs>；check.py已编排。
+时序step1 started→save1/step2/save2→save1超时回执→release。save2还未超时；基线step2误取消、finalVersion1。
+根因scripts/play-sprint.ts约221的record.captured为共享bool；约575已被save2标记，于是save1把自己的捕获外job误当捕获内。
+修复：每个barrier保存自己的job ID/授权集合，只按这个集合撤销及更新捕获外权限。用户显式cancel有独立优先级，不能被任何save重新授予。
+验收：新双save时序第一旧job0效果；第二job真实执行一次、第三job也一次，最终version2。单save、两NPC均被捕获、无actor批量step、明确cancel/EOF有界路径保持。
+把显式cancel实际输入纳入自动测试；现gate-r6标题写cancel但正文没发cancel，不能只改标题。第三次恢复后的履约/命令幂等保持。
+证据：每个barrier捕获ID列表、输入/握手/回执、两份save版本、event/command IDs、第三进程存档。
+
+D：validator必须复用canonical→packet绑定
+本包probes/jev.py在隔离树同时改packet.visibleInput和v4叙述，重算当前case/review/裁决hash；canonical serializedInput与两审原文完全未改。
+基线validate_v4 exit0/ok=true。importer做过的比较没有在validator执行。
+修复：抽共用只读校验，解析canonical serializedInput并比较受审语义投影→packet可见内容→当前v4；核原审查声明和原SHA，不能只比两个可改JSON。允许机械映射需版本化、显式、可复算。
+验收：该联合改写负例非零/ok=false/原因有caseId及canonical或packet字段；原始canonical和两审SHA始终不动。不能只拦固定句子。未改39题正常、原单字段篡改仍拒绝、混合坏批次不半写、重复迁移字节稳定。
+Windows现有失败必须修：write_text输出显式UTF-8/LF，未改输入重导不得LF→CRLF；不减弱字节比较，不重写冻结原审查来迁就输出。
+当前0eligible/29ambiguous/10inconsistent保持；正式encoder仍在加载torch/transformers前拒绝。缺huggingface_hub的mock测试可安装到隔离测试依赖目录，不下载模型。
+
+M：数值有效和真实模型证据是两个判断
+本包负例使用相同合成logits/labels，仅把顶层evidenceClass从fixture改cpu-mechanism（逐样本仍fixture），load_artifact→decide就counts_as_real=true。
+修复：fixture和cpu-mechanism等合成来源永不计real；上层类别/逐样本来源必须一致。不能把counts_as_real重新解释为“计算路径真实”，也不能把合成数据换个标签绕门。
+保留numericEvidenceValid，保留合法fixture的accept和abstain；当前无可信实模证据时真实入口继续shadow/selected不可执行。无需为了修此门制造model-run记录或开放模型。
+移除/改正test_cpu_mechanism_can_count_when_parameters_bind中要求true的错误正例。生产load_artifact、decide、TS adapter都测；不只修报告函数。
+验收：原fixture类和改名cpu-mechanism类都false；上层/逐样本类别冲突明确拒绝；未知类别不默认real。合法数值fixture仍能高pmax accept、低pmax abstain、utility=null、两者counts=false。旧计数/T/tau/alpha/SHA/identity/分区反例保持。
+保留seed17/43、原calT/select/cert隔离和统计协议，不训练不扩研究数据。2e-3浮点带目前只在平坦fixture有证；补一个非平坦/近tau正负控制，若容差改变接受集合应拒绝，不能宣称一般校准保证。
+
+P无需重写：供仓正数量receipt、actor/command/task/承诺绑定和第三次恢复已验证，作为回归保留。无新证据不得扩大玩法系统。

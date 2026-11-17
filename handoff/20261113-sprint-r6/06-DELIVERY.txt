@@ -1,0 +1,33 @@
+R6 交付协议
+
+位置：artifacts/sprint-r6/<run-id>/；交付索引artifacts/sprint-r6/delivery/REPORT.txt；进度REPORTS/20261113-r6.md。
+不要改R5 STATUS/证据。新artifacts/sprint-r6/.gitattributes写“** -text”，保留CRLF/原始字节；先保证Git检出后manifest仍正确。
+保留：
+1 provenance.json：productBaseline=f473949...、实现HEAD、任务包HEAD与SHA、执行者/实际worker数、UTC开始结束/OS/版本、完整命令及exit。
+2 baseline/与fixed/：四探针原始输出、差异、每个断言结果；不能只交绿色汇总。
+3 tests/：定向TS/Python、完整TAP、pass/fail/skip/blocked与原因，首跑失败和定向复跑分别存。
+4 play/：两臂stdin/stdout/stderr、每日存档及所有sidecars、authority-diff、normalize规则、资源账与obligation-ledger。
+5 jev/：逐样本CPU fixtures、calT/select/cert/artifact/manifest及hash、Python/TS对应判定、字段篡改拒绝理由、capability.json和正式入口门日志。
+6 integrity/：R5旧证据/本包SHA校验、最终新clone关键复验、git fsck。
+7 environment：版本/依赖锁。不得导出API密钥、token、完整环境变量、用户凭据或权重。
+
+代码按P/R/D/M/H提交，实际可以少于五个，只要边界清楚。不要合main，不移动R5标签。可推codex/sprint-r6；若Bot无push权限，交全历史git bundle及SHA，不为认证修改用户全局凭据。
+bundle：git bundle create <delivery外临时路径>/frostecho-r6.bundle codex/sprint-r6
+再移入delivery。不要把bundle打进其自身所属提交形成循环；交接manifest可最后生成，记录代码HEAD和bundleSHA，manifest不包含自身。
+用tools/manifest.py <evidence目录>生成PACKAGE-SHA256；它拒绝目录中含.git/node_modules/dist/acceptance-clone，防止把工作副本或依赖误当证据。源码/依赖由Git/lock保存。
+先选择原始证据复制到delivery，排除验收clone/临时缓存/依赖，再生成manifest；不要对包含隔离工作副本的整个run目录直接打包。
+重新clone bundle，校验manifest与关键测试。证据如未入Git，必须随bundle单独完整打包，不能只给服务器绝对路径。
+
+最终≤12行短报（其余详情写报告）
+1 HEAD/基线/分支/真实执行环境与人数。
+2 P：基线失败→修复后真实回执和跨进程终态。
+3 R：捕获内0效果、捕获外恰一次、显式cancel不复活。
+4 D：原审查可追溯、改题拒绝、0eligible门未开。
+5 M：逐样本重算/参数绑定正负例，Python与TS一致。
+6 JEV：候选评分→概率→accept/abstain CPU fixture，real=false。
+7 玩法：晨会/退出换人/缺货恢复/真实履约、实际分钟、两臂对照。
+8 验收：pass/fail/skip/blocked，保留首跑失败。
+9 原R5与任务包SHA；环境/模型/GPU事实。
+10 bundle/交付manifest/代码HEAD及下载路径。
+11 未完成和未证明项。
+12 建议通过/有限返工/停止（只能选一个）；不替负责人合main。

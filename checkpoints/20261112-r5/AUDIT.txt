@@ -1,0 +1,38 @@
+FrostEcho R5 independent closeout — 2026-11-12 (Asia/Shanghai)
+
+Disposition: 有限返工；保存未完成检查点。负责人明确要求今晚暂停后续，未修产品、未生成下一轮任务、未启动Grok或训练。
+Source: codex/sprint-1116 @ 498c00015e51dc6d48668e2603e2e1877aa8e399；baseline db34123。
+Original bundle SHA256: 86d32bb6da473863c6c1ffec5a0f2dcfce4c70163b3480ecebf6f9239329f26d。
+独立clone /tmp/frostecho-r5-root-498c000-Y74VZQ/repo；另3个只读领域审查。
+
+有效结果
+- 交付PACKAGE-SHA256 272/272、任务包128/128校验通过；bundle完整历史、fsck、npm ci/build/G11 bootstrap通过。
+- root一次独立eval-full：737/737核心测试、15项G11组通过，共752项；13pass/0fail/0blocked。没有为刷绿重复全量。G11是打包旧证据，不是新live。
+- acceptance-v5各域独立9/9；Python66/66，均与各自总门相关，不能和752相加。
+- R4承诺withdraw后继续送饭、cancel被旧change复活、counter接受漏task三条原反例已修；R4捕获范围内两NPC迟到任务0效果，travel跨进程同意图重放首次receipt、异内容冲突已修。
+- 晨会到居民请求/接受/采集/交存/运送、换人及跨进程恢复的已交路径有效，投票是fixture-reference。
+- 正式encoder入口现先重算v4，exit2且关闭时torch/transformers导入0；39题确为0eligible/29ambiguous/10inconsistent，原78份审查SHA与判断保留。当前数据内容与冻结输入一致，没有本次标签造假证据。
+- 空证书/fixture计real旧反例、真正download路径mock已修；没有真实权重/训练/GPU调用，无校准或风险保证。
+
+留待后续的已证缺口（今晚只记录）
+1. 新目标供仓未结清承诺：stock_deposited使supply-warehouse task=done、库存4→6，但commitment仍active且无履约evidence。loop.ts约695–702只完成任务，未调用承诺fulfil。
+2. save等待期间收到、但不在barrier捕获集合里的同NPC新step被误取消：record.expected更新后runJob仍读闭包旧expected，返回generation_changed_before_start。保存后再输入的第三step正常。旧取消任务不会越权，但新操作可能丢失。
+3. 审查导入链允许旧review重绑变更内容：隔离探针改候选文本，再运行importer，旧rawReviewSha不变而新hash被赋予，validator仍结构通过（训练门仍false）。当前39题没发生此漂移，但不能据此宣称未来改题有重新审查保护。
+4. 风险证书仍缺计算与参数绑定：构造cert errors=120/n=120却upper=.01、只有1个sampleId，artifact温度/阈值与证据不同，生产port仍accept/counts_as_real=true。此为CPU人工负例，没有真实证书/模型/世界执行，不指控交付者伪造。
+
+报告更正与未证明
+- 提交“96h”空间链实际6170分钟=102小时50分钟，连续/逐日分段整个world完全一致，8存活、3次送饭。测试仅检查>=96h；不能标精确96h。
+- 初始food120、主动排空仓库属于预登记受控场景，不是生存平衡或自然长期自主性结论。
+- 原交付报告把R4的96/96称测试数量不准确：它是R4原任务包文件校验数；本轮任务包128/128、交付272/272与测试752分别计数。
+- 无真实27B/4B三臂、概率校准/风险证书、经验泛化收益；晨会仅单议题fixture投票；危机/UI/室内逐格/轮回/完整建造等仍未完成。
+
+保存范围
+保留完整源码提交历史、原R5 bundle与原始delivery及manifest、R5冻结任务包/两审输入输出、模型拒绝/下载失败记录、独立复跑与新增反例、依赖锁/环境版本清单、暂停及恢复说明。已有产品代码原样保存，不把归档提交称为缺陷修复。
+服务器没有GitHub写凭据；本机已授权Git从完整bundle推同一历史，未复制服务器凭据。只推codex/sprint-1116和保存标签，不合main。
+环境清单不含凭据/完整环境变量/模型权重；不是整机镜像。旧未跟踪g11-action-off和g11-latency目录在服务器原样保留，不混为R5新验证证据。
+
+细节证据
+product-audit/：本轮acceptance-v5 9/9、供仓两进程JSONL、四日逐字段对照。
+lifecycle-audit/：原R4 probe与新范围外任务探针、真实保存和回执。
+jev-audit/：Python66/66、真实入口、78条原审查核对及两个CPU负例。
+eval-full/：root737核心TAP、13项汇总；build/install/G11日志。

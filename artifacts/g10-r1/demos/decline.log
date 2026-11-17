@@ -1,0 +1,109 @@
+FrostEcho G10 持续交互厨房（离线默认；世界修改只走既有游戏接口）
+脚本演示=decline（机制演示，不是模型合作率）
+输入 help 查看命令；save SLOT 存档；quit 收束。
+本次为 拒绝（脚本演示：选择 feed_self 并 eat）；结果只证明机制，不代表真实模型。
+[状态] 模式=negotiated/fixture/decline（脚本/离线，非实模） simTime=0 tick=0
+  世界: 厨房食物=1 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=40
+  npc_a: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=未满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  预算: 本会话 0/5 本局 0/10 | campaign 未授权（离线）
+  存档: 未保存
+[完成]
+[状态] 模式=negotiated/fixture/decline（脚本/离线，非实模） simTime=0 tick=0
+  世界: 厨房食物=1 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=40
+  npc_a: cycle=1 阶段=goal_choice 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=未满足（独立于选定目标）
+  wait截止=-
+  请求 decline-req-1: pending/pending 到期=1 接受序号=-
+  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  预算: 本会话 0/5 本局 0/10 | campaign 未授权（离线）
+  存档: 未保存
+[推进] 1 次（npc_a cycle=1 ready）
+[状态] 模式=negotiated/fixture/decline（脚本/离线，非实模） simTime=0 tick=0
+  世界: 厨房食物=1 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=40
+  npc_a: cycle=1 阶段=action 状态=ready 调用=1/5
+  选定目标=feed_self 未达成（按饱食判定）
+  饱食目标=未满足（独立于选定目标）
+  wait截止=-
+  请求 decline-req-1: declined/pending 到期=1 接受序号=- — 拒绝合作（feed_self）
+  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  预算: 本会话 1/5 本局 1/10 | campaign 未授权（离线）
+  存档: 未保存
+[推进] 1 次（npc_a cycle=1 goal_reached）
+[状态] 模式=negotiated/fixture/decline（脚本/离线，非实模） simTime=0 tick=1
+  世界: 厨房食物=0 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=40
+  npc_a: cycle=1 阶段=action 状态=goal_reached 调用=2/5
+  选定目标=feed_self 已达成（按饱食判定）
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求 decline-req-1: declined/pending 到期=1 接受序号=- — 拒绝合作（feed_self）
+  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  预算: 本会话 2/5 本局 2/10 | campaign 未授权（离线）
+  存档: 未保存
+[世界拒绝（正常游戏结果）] NO_FOOD
+[状态] 模式=negotiated/fixture/decline（脚本/离线，非实模） simTime=0 tick=1
+  世界: 厨房食物=0 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=40
+  npc_a: cycle=1 阶段=action 状态=goal_reached 调用=2/5
+  选定目标=feed_self 已达成（按饱食判定）
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求 decline-req-1: declined/pending 到期=1 接受序号=- — 拒绝合作（feed_self）
+  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  预算: 本会话 2/5 本局 2/10 | campaign 未授权（离线）
+  存档: 未保存
+[状态] 模式=negotiated/fixture/decline（脚本/离线，非实模） simTime=0 tick=1
+  世界: 厨房食物=0 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=40
+  npc_a: cycle=1 阶段=action 状态=goal_reached 调用=2/5
+  选定目标=feed_self 已达成（按饱食判定）
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求 decline-req-1: declined/pending 到期=1 接受序号=- — 拒绝合作（feed_self）
+  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  预算: 本会话 2/5 本局 2/10 | campaign 未授权（离线）
+  存档: 未保存
+[完成] /data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g10-r1/demos/decline-slot.g09.json
+[状态] 模式=negotiated/fixture/decline（脚本/离线，非实模） simTime=0 tick=1
+  世界: 厨房食物=0 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=40
+  npc_a: cycle=1 阶段=action 状态=goal_reached 调用=2/5
+  选定目标=feed_self 已达成（按饱食判定）
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求 decline-req-1: declined/pending 到期=1 接受序号=- — 拒绝合作（feed_self）
+  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5
+  选定目标=未选择 
+  饱食目标=已满足（独立于选定目标）
+  wait截止=-
+  请求: 暂无
+  预算: 本会话 2/5 本局 2/10 | campaign 未授权（离线）
+  存档: /data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g10-r1/demos/decline-slot.g09.json
+[完成]
+运行记录 -> /data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g10-r1/demos/decline-run.run.json

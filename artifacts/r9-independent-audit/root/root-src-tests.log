@@ -1,0 +1,53 @@
+✔ original spatial profile is explicit; reference profile refuses it without changing state (8.4075ms)
+✔ one adjacent cell commits coordinate/location and charges one world minute plus original effort once (8.5243ms)
+✔ wall, remote door, invalid actor and unsupported old travel have zero authoritative effects (2.8629ms)
+✔ macro candidate move traverses the real map; all seven interiors remain accessible (231.4509ms)
+✔ same command replay is exact, conflicting content does not walk or advance time (2.4393ms)
+✔ warehouse entrance observes real stock only for the arriving actor; remote observation is rejected (36.4308ms)
+✔ runtime number encoding preserves live domain state and reads pre-encoding v1 sidecars (4.6367ms)
+✔ D2 save restored in a new process preserves all authority and door receipts through three-room return (511.918ms)
+✔ road closure blocks the real original village route, and rescue cannot silently teleport (7.0628ms)
+✖ two same-type tasks close only the selected task and report the committed completion (11.9591ms)
+✖ terminal tasks disappear from goals and cannot confer a reference obligation bonus (1.3756ms)
+✔ COLLECT_MATERIAL closes only its explicitly bound worked receipt at its real work mode; proxy is marked (4.4389ms)
+✔ BOOST_MORALE closes only its explicitly bound worked receipt at its real work mode; proxy is marked (1.6329ms)
+✔ COORDINATE closes only its explicitly bound worked receipt at its real work mode; proxy is marked (1.6437ms)
+✔ MAINTAIN_ORDER closes only its explicitly bound worked receipt at its real work mode; proxy is marked (1.8504ms)
+✔ SCOUT_RUINS closes only its explicitly bound worked receipt at its real work mode; proxy is marked (1.3443ms)
+✔ a forged task type cannot bind the wrong execution primitive or reuse an earlier receipt (0.916ms)
+✔ bridge goal changes during scoring void the result without a second task queue (0.4948ms)
+✔ reference commitment bonus binds exact task/revision and yields to immediate survival needs (0.7304ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 17
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 946.7977
+
+✖ failing tests:
+
+test at dist\src\r7\integration\step-goal-binding.test.js:30:25
+✖ two same-type tasks close only the selected task and report the committed completion (11.9591ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (C:\Users\Administrator\Documents\ChatGPT\工作学习\research\FrostEcho\reviews\R9-audit-20261117\source\dist\src\r7\integration\step-goal-binding.test.js:39:22)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist\src\r7\integration\step-goal-binding.test.js:49:25
+✖ terminal tasks disappear from goals and cannot confer a reference obligation bonus (1.3756ms)
+  TypeError [Error]: Cannot read properties of undefined (reading 'goals')
+      at TestContext.<anonymous> (C:\Users\Administrator\Documents\ChatGPT\工作学习\research\FrostEcho\reviews\R9-audit-20261117\source\dist\src\r7\integration\step-goal-binding.test.js:58:28)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

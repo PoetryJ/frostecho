@@ -1,0 +1,219 @@
+{
+  "schema": "frostecho.jev04.closeout-recompute/1",
+  "source": {
+    "cases": "research/decision-choice/jev03/behavior/cases.jsonl",
+    "pairs": "research/decision-choice/jev03/behavior/pairs.json",
+    "scores": "research/decision-choice/jev03/behavior/results/scores.jsonl",
+    "scoresSha256": "a20a650945cc005b80782679a7d154477a493419cc244a3700df543cae96dfc7",
+    "generations": "research/decision-choice/jev03/behavior/results/generations.jsonl",
+    "generationsSha256": "f2cfa78ccd7f77513def118204d562eb02e07c554d90b6fd65a7da3b2eda1ecb",
+    "jsonInvalidGenerations": 0
+  },
+  "definitions": {
+    "perOrderBothCorrect": "pair counts only if both members correct within one fixed presentation order",
+    "fourOrderStress": "pair counts only if both members correct in all four presentation orders (8 rows)",
+    "sensitivity": "only derived; original gold/predictions untouched"
+  },
+  "arms": {
+    "C": {
+      "n": 768,
+      "accuracy": 0.5365,
+      "perOrder": {
+        "0": {
+          "n": 192,
+          "correct": 116,
+          "accuracy": 0.6042
+        },
+        "1": {
+          "n": 192,
+          "correct": 103,
+          "accuracy": 0.5365
+        },
+        "2": {
+          "n": 192,
+          "correct": 99,
+          "accuracy": 0.5156
+        },
+        "3": {
+          "n": 192,
+          "correct": 94,
+          "accuracy": 0.4896
+        }
+      },
+      "pairMetric": {
+        "pairs": 64,
+        "perOrderBothCorrect": {
+          "0": 17,
+          "1": 5,
+          "2": 6,
+          "3": 7
+        },
+        "perOrderBothCorrectRate": {
+          "0": 0.2656,
+          "1": 0.0781,
+          "2": 0.0938,
+          "3": 0.1094
+        },
+        "fourOrderStress": 0,
+        "fourOrderStressRate": 0.0,
+        "invariantPairs": 32
+      },
+      "sensitivityWith5Corrections": {
+        "corrections": 5,
+        "correctRows": 416,
+        "accuracy": 0.5417,
+        "deltaRows": 4
+      }
+    },
+    "JSON": {
+      "n": 768,
+      "accuracy": 0.612,
+      "perOrder": {
+        "0": {
+          "n": 192,
+          "correct": 110,
+          "accuracy": 0.5729
+        },
+        "1": {
+          "n": 192,
+          "correct": 121,
+          "accuracy": 0.6302
+        },
+        "2": {
+          "n": 192,
+          "correct": 122,
+          "accuracy": 0.6354
+        },
+        "3": {
+          "n": 192,
+          "correct": 117,
+          "accuracy": 0.6094
+        }
+      },
+      "pairMetric": {
+        "pairs": 64,
+        "perOrderBothCorrect": {
+          "0": 12,
+          "1": 13,
+          "2": 16,
+          "3": 16
+        },
+        "perOrderBothCorrectRate": {
+          "0": 0.1875,
+          "1": 0.2031,
+          "2": 0.25,
+          "3": 0.25
+        },
+        "fourOrderStress": 9,
+        "fourOrderStressRate": 0.1406,
+        "invariantPairs": 32
+      },
+      "sensitivityWith5Corrections": {
+        "corrections": 5,
+        "correctRows": 476,
+        "accuracy": 0.6198,
+        "deltaRows": 6
+      }
+    },
+    "M0": {
+      "n": 768,
+      "accuracy": 0.474,
+      "perOrder": {
+        "0": {
+          "n": 192,
+          "correct": 103,
+          "accuracy": 0.5365
+        },
+        "1": {
+          "n": 192,
+          "correct": 99,
+          "accuracy": 0.5156
+        },
+        "2": {
+          "n": 192,
+          "correct": 67,
+          "accuracy": 0.349
+        },
+        "3": {
+          "n": 192,
+          "correct": 95,
+          "accuracy": 0.4948
+        }
+      },
+      "pairMetric": {
+        "pairs": 64,
+        "perOrderBothCorrect": {
+          "0": 6,
+          "1": 6,
+          "2": 2,
+          "3": 5
+        },
+        "perOrderBothCorrectRate": {
+          "0": 0.0938,
+          "1": 0.0938,
+          "2": 0.0312,
+          "3": 0.0781
+        },
+        "fourOrderStress": 0,
+        "fourOrderStressRate": 0.0,
+        "invariantPairs": 32
+      },
+      "sensitivityWith5Corrections": {
+        "corrections": 5,
+        "correctRows": 367,
+        "accuracy": 0.4779,
+        "deltaRows": 3
+      }
+    },
+    "Q": {
+      "n": 768,
+      "accuracy": 0.5964,
+      "perOrder": {
+        "0": {
+          "n": 192,
+          "correct": 113,
+          "accuracy": 0.5885
+        },
+        "1": {
+          "n": 192,
+          "correct": 111,
+          "accuracy": 0.5781
+        },
+        "2": {
+          "n": 192,
+          "correct": 118,
+          "accuracy": 0.6146
+        },
+        "3": {
+          "n": 192,
+          "correct": 116,
+          "accuracy": 0.6042
+        }
+      },
+      "pairMetric": {
+        "pairs": 64,
+        "perOrderBothCorrect": {
+          "0": 6,
+          "1": 5,
+          "2": 6,
+          "3": 7
+        },
+        "perOrderBothCorrectRate": {
+          "0": 0.0938,
+          "1": 0.0781,
+          "2": 0.0938,
+          "3": 0.1094
+        },
+        "fourOrderStress": 4,
+        "fourOrderStressRate": 0.0625,
+        "invariantPairs": 32
+      },
+      "sensitivityWith5Corrections": {
+        "corrections": 5,
+        "correctRows": 462,
+        "accuracy": 0.6016,
+        "deltaRows": 4
+      }
+    }
+  }
+}

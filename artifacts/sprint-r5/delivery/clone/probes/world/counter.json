@@ -1,0 +1,693 @@
+{
+  "schema": "frostecho.session/1",
+  "world": {
+    "schema": "frostecho.world-v2/2",
+    "rulesVersion": "survival-rules/2",
+    "day": 3,
+    "simTime": 4000,
+    "version": 10,
+    "rngSeed": "play-3",
+    "weather": "snow",
+    "npcs": {
+      "npc_01": {
+        "id": "npc_01",
+        "location": "dorm-a",
+        "hunger": 36.99999999999999,
+        "stamina": 1.5,
+        "health": 20,
+        "san": 0,
+        "alive": true
+      },
+      "npc_02": {
+        "id": "npc_02",
+        "location": "dorm-b",
+        "hunger": 36.99999999999999,
+        "stamina": 1.5,
+        "health": 20,
+        "san": 0,
+        "alive": true
+      },
+      "npc_03": {
+        "id": "npc_03",
+        "location": "dorm-a",
+        "hunger": 36.99999999999999,
+        "stamina": 1.5,
+        "health": 20,
+        "san": 0,
+        "alive": true
+      }
+    },
+    "resources": {
+      "food": 15,
+      "firewood": 20,
+      "power": 40,
+      "medicine": 2
+    },
+    "furnace": {
+      "lit": false,
+      "fuel": 0,
+      "warmth": 18
+    },
+    "commandLog": [
+      "player-advance-0",
+      "npc_01-game-1-g-eat",
+      "npc_02-game-2-g-eat",
+      "npc_03-game-3-g-eat",
+      "npc_01-game-4-g-eat",
+      "npc_02-game-5-g-eat",
+      "npc_03-game-6-g-eat",
+      "npc_01-game-7-g-eat",
+      "npc_02-game-8-g-eat",
+      "npc_03-game-9-g-eat"
+    ],
+    "dead": [],
+    "ending": "none",
+    "scenarioDays": 4,
+    "receipts": {
+      "player-advance-0": {
+        "digest": "70b6ecbde544bd454f0fd00faa7eace8cf1236a546b2d99e8379ad740a445d63",
+        "eventIds": [
+          "player-advance-0:time_advanced:0"
+        ],
+        "postStateVersion": 1
+      },
+      "npc_01-game-1-g-eat": {
+        "digest": "7bea823518bbe9663f7ab33070ab0384c40eae3ea59e7c9e892336b70f32dbf3",
+        "eventIds": [
+          "npc_01-game-1-g-eat:ate:1"
+        ],
+        "postStateVersion": 2
+      },
+      "npc_02-game-2-g-eat": {
+        "digest": "f1fa5a2ba4ea773b4fa75129bd52a8ecd1d382704bad1581d7277147a6f23a11",
+        "eventIds": [
+          "npc_02-game-2-g-eat:ate:2"
+        ],
+        "postStateVersion": 3
+      },
+      "npc_03-game-3-g-eat": {
+        "digest": "28978bda2b6b83921991b2e7507b84f896a154e9d8a67964e6146739f907432f",
+        "eventIds": [
+          "npc_03-game-3-g-eat:ate:3"
+        ],
+        "postStateVersion": 4
+      },
+      "npc_01-game-4-g-eat": {
+        "digest": "d1f73659e4b695102f57e8f881dbe9e7dd53204fc99676264bc2343e3dc31fe4",
+        "eventIds": [
+          "npc_01-game-4-g-eat:ate:4"
+        ],
+        "postStateVersion": 5
+      },
+      "npc_02-game-5-g-eat": {
+        "digest": "4982348e292deda52ef9abecb0b5ff6405376895de03fea4b2dca25f6b954f3f",
+        "eventIds": [
+          "npc_02-game-5-g-eat:ate:5"
+        ],
+        "postStateVersion": 6
+      },
+      "npc_03-game-6-g-eat": {
+        "digest": "53b28b319fe8ce3af56f5634ffecd754a13199c9f0d895e9a0fe4d8ea73b9855",
+        "eventIds": [
+          "npc_03-game-6-g-eat:ate:6"
+        ],
+        "postStateVersion": 7
+      },
+      "npc_01-game-7-g-eat": {
+        "digest": "37b57f8a09e1324848a2d23194bb4ea280f2966a46de9d2f9991a2da6b68f65f",
+        "eventIds": [
+          "npc_01-game-7-g-eat:ate:7"
+        ],
+        "postStateVersion": 8
+      },
+      "npc_02-game-8-g-eat": {
+        "digest": "5f7efc6e4f87c0b304ab88f2717404985eaa3eb8ac000c2ba5def3db1ae3c201",
+        "eventIds": [
+          "npc_02-game-8-g-eat:ate:8"
+        ],
+        "postStateVersion": 9
+      },
+      "npc_03-game-9-g-eat": {
+        "digest": "a3da952fc9e55a96f72336918ba04d34b29440a5e9b85d97c95b48452384ec64",
+        "eventIds": [
+          "npc_03-game-9-g-eat:ate:9"
+        ],
+        "postStateVersion": 10
+      }
+    }
+  },
+  "memories": {
+    "npc_01": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmt-commitment_proposed-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-1",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "commitment_proposed",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_01",
+            "toId": "player",
+            "conditions": "warehouse-supply",
+            "deadline": -1,
+            "commitmentId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cmt-commitment_proposed-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-1"
+          ],
+          "recordId": "m-0a777f7b6ad7f5f6",
+          "revision": 1
+        },
+        {
+          "eventId": "cmt-commitment_change_proposed-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-2",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "commitment_change_proposed",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "changeId": "chg-8c9cc7e5-5860-4843-a9c9-5f5478c84faa",
+            "kind": "defer",
+            "reason": "need-food-first",
+            "proposedRevision": 2,
+            "terms": "{\"resumeWhen\":\"hunger>=40\",\"reason\":\"先让我吃一口再答应\"}",
+            "commitmentId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cmt-commitment_change_proposed-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-2"
+          ],
+          "recordId": "m-049a95bbd82f9060",
+          "revision": 2
+        },
+        {
+          "eventId": "cmt-commitment_change_accepted-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-3",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "commitment_change_accepted",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "changeId": "chg-8c9cc7e5-5860-4843-a9c9-5f5478c84faa",
+            "kind": "defer",
+            "revision": 2,
+            "status": "active",
+            "commitmentId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cmt-commitment_change_accepted-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-3"
+          ],
+          "recordId": "m-14532ca8e7e05f17",
+          "revision": 3
+        },
+        {
+          "eventId": "npc_01-game-1-g-eat:ate:1",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "ate",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "amount": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "npc_01-game-1-g-eat:ate:1"
+          ],
+          "recordId": "m-103fdd9947008c89",
+          "revision": 4
+        },
+        {
+          "eventId": "npc_01-game-4-g-eat:ate:4",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "ate",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "amount": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "npc_01-game-4-g-eat:ate:4"
+          ],
+          "recordId": "m-2d0e17c162558975",
+          "revision": 5
+        },
+        {
+          "eventId": "npc_01-game-7-g-eat:ate:7",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "ate",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "amount": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "npc_01-game-7-g-eat:ate:7"
+          ],
+          "recordId": "m-a9ac484b596d6b2b",
+          "revision": 6
+        }
+      ]
+    },
+    "npc_02": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmt-commitment_proposed-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-1",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "commitment_proposed",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_01",
+            "toId": "player",
+            "conditions": "warehouse-supply",
+            "deadline": -1,
+            "commitmentId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "cmt-commitment_proposed-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-1"
+          ],
+          "recordId": "m-895cde2e48ffba2a",
+          "revision": 1
+        },
+        {
+          "eventId": "cmt-commitment_change_proposed-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-2",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "commitment_change_proposed",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "changeId": "chg-8c9cc7e5-5860-4843-a9c9-5f5478c84faa",
+            "kind": "defer",
+            "reason": "need-food-first",
+            "proposedRevision": 2,
+            "terms": "{\"resumeWhen\":\"hunger>=40\",\"reason\":\"先让我吃一口再答应\"}",
+            "commitmentId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "cmt-commitment_change_proposed-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-2"
+          ],
+          "recordId": "m-b5ccada6fff57715",
+          "revision": 2
+        },
+        {
+          "eventId": "cmt-commitment_change_accepted-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-3",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "commitment_change_accepted",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "changeId": "chg-8c9cc7e5-5860-4843-a9c9-5f5478c84faa",
+            "kind": "defer",
+            "revision": 2,
+            "status": "active",
+            "commitmentId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "cmt-commitment_change_accepted-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-3"
+          ],
+          "recordId": "m-05f09a950f61adf5",
+          "revision": 3
+        },
+        {
+          "eventId": "npc_02-game-2-g-eat:ate:2",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "ate",
+          "subjectIds": [
+            "npc_02",
+            "player"
+          ],
+          "payload": {
+            "amount": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "npc_02-game-2-g-eat:ate:2"
+          ],
+          "recordId": "m-69c9746e6de0c249",
+          "revision": 4
+        },
+        {
+          "eventId": "npc_02-game-5-g-eat:ate:5",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "ate",
+          "subjectIds": [
+            "npc_02",
+            "player"
+          ],
+          "payload": {
+            "amount": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "npc_02-game-5-g-eat:ate:5"
+          ],
+          "recordId": "m-b53f304c51320c32",
+          "revision": 5
+        },
+        {
+          "eventId": "npc_02-game-8-g-eat:ate:8",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "ate",
+          "subjectIds": [
+            "npc_02",
+            "player"
+          ],
+          "payload": {
+            "amount": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "npc_02-game-8-g-eat:ate:8"
+          ],
+          "recordId": "m-42fb3f891f29fc45",
+          "revision": 6
+        }
+      ]
+    },
+    "npc_03": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmt-commitment_proposed-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-1",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "commitment_proposed",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_01",
+            "toId": "player",
+            "conditions": "warehouse-supply",
+            "deadline": -1,
+            "commitmentId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "cmt-commitment_proposed-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-1"
+          ],
+          "recordId": "m-a3f8650a91d558a9",
+          "revision": 1
+        },
+        {
+          "eventId": "cmt-commitment_change_proposed-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-2",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "commitment_change_proposed",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "changeId": "chg-8c9cc7e5-5860-4843-a9c9-5f5478c84faa",
+            "kind": "defer",
+            "reason": "need-food-first",
+            "proposedRevision": 2,
+            "terms": "{\"resumeWhen\":\"hunger>=40\",\"reason\":\"先让我吃一口再答应\"}",
+            "commitmentId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968",
+            "revision": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "cmt-commitment_change_proposed-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-2"
+          ],
+          "recordId": "m-715043175ec5e774",
+          "revision": 2
+        },
+        {
+          "eventId": "cmt-commitment_change_accepted-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-3",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "commitment_change_accepted",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "changeId": "chg-8c9cc7e5-5860-4843-a9c9-5f5478c84faa",
+            "kind": "defer",
+            "revision": 2,
+            "status": "active",
+            "commitmentId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "npc_01",
+          "relatedRequestId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "cmt-commitment_change_accepted-cm-437205cf-f32b-4dcc-99ce-c267eadd0968-3"
+          ],
+          "recordId": "m-947674874591ff1f",
+          "revision": 3
+        },
+        {
+          "eventId": "npc_03-game-3-g-eat:ate:3",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "ate",
+          "subjectIds": [
+            "npc_03",
+            "player"
+          ],
+          "payload": {
+            "amount": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "npc_03-game-3-g-eat:ate:3"
+          ],
+          "recordId": "m-d9377effa895dfcb",
+          "revision": 4
+        },
+        {
+          "eventId": "npc_03-game-6-g-eat:ate:6",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "ate",
+          "subjectIds": [
+            "npc_03",
+            "player"
+          ],
+          "payload": {
+            "amount": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "npc_03-game-6-g-eat:ate:6"
+          ],
+          "recordId": "m-c4c757dcc5598498",
+          "revision": 5
+        },
+        {
+          "eventId": "npc_03-game-9-g-eat:ate:9",
+          "occurredAt": 4000,
+          "observedAt": 4000,
+          "kind": "ate",
+          "subjectIds": [
+            "npc_03",
+            "player"
+          ],
+          "payload": {
+            "amount": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "npc_03-game-9-g-eat:ate:9"
+          ],
+          "recordId": "m-3735d35ab2911598",
+          "revision": 6
+        }
+      ]
+    }
+  },
+  "outcomes": {
+    "npc_01-game-1-g-eat": {
+      "status": "applied",
+      "eventIds": [
+        "npc_01-game-1-g-eat:ate:1"
+      ],
+      "postStateVersion": 2,
+      "reason": null
+    },
+    "npc_02-game-2-g-eat": {
+      "status": "applied",
+      "eventIds": [
+        "npc_02-game-2-g-eat:ate:2"
+      ],
+      "postStateVersion": 3,
+      "reason": null
+    },
+    "npc_03-game-3-g-eat": {
+      "status": "applied",
+      "eventIds": [
+        "npc_03-game-3-g-eat:ate:3"
+      ],
+      "postStateVersion": 4,
+      "reason": null
+    },
+    "npc_01-game-4-g-eat": {
+      "status": "applied",
+      "eventIds": [
+        "npc_01-game-4-g-eat:ate:4"
+      ],
+      "postStateVersion": 5,
+      "reason": null
+    },
+    "npc_02-game-5-g-eat": {
+      "status": "applied",
+      "eventIds": [
+        "npc_02-game-5-g-eat:ate:5"
+      ],
+      "postStateVersion": 6,
+      "reason": null
+    },
+    "npc_03-game-6-g-eat": {
+      "status": "applied",
+      "eventIds": [
+        "npc_03-game-6-g-eat:ate:6"
+      ],
+      "postStateVersion": 7,
+      "reason": null
+    },
+    "npc_01-game-7-g-eat": {
+      "status": "applied",
+      "eventIds": [
+        "npc_01-game-7-g-eat:ate:7"
+      ],
+      "postStateVersion": 8,
+      "reason": null
+    },
+    "npc_02-game-8-g-eat": {
+      "status": "applied",
+      "eventIds": [
+        "npc_02-game-8-g-eat:ate:8"
+      ],
+      "postStateVersion": 9,
+      "reason": null
+    },
+    "npc_03-game-9-g-eat": {
+      "status": "applied",
+      "eventIds": [
+        "npc_03-game-9-g-eat:ate:9"
+      ],
+      "postStateVersion": 10,
+      "reason": null
+    }
+  },
+  "plans": [],
+  "instances": [],
+  "generations": {},
+  "sequence": 4,
+  "seed": "play-3",
+  "inputSequence": 2,
+  "inputReceipts": {}
+}

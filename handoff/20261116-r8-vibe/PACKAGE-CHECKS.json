@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-16",
+  "productBaseline": "6407705c53a462a3d539e582187dd3f6bcb00bf5",
+  "scope": "Task package + algorithm reference; no new production implementation or model training",
+  "checks": [
+    {
+      "name": "reference-core-root-rerun",
+      "chunk_id": "69908d",
+      "wall_time_seconds": 0.7973571,
+      "exit_code": 0,
+      "original_token_count": 212,
+      "output": "test_actual_text_and_parameters_change_tokens (test_joint_core.JointCoreTests.test_actual_text_and_parameters_change_tokens) ... ok\r\ntest_context_markers_do_not_capture_candidate_positions (test_joint_core.JointCoreTests.test_context_markers_do_not_capture_candidate_positions) ... ok\r\ntest_extreme_logits_and_acceptable_sets (test_joint_core.JointCoreTests.test_extreme_logits_and_acceptable_sets) ... ok\r\ntest_order_rerenders_and_maps_without_id_leak (test_joint_core.JointCoreTests.test_order_rerenders_and_maps_without_id_leak) ... ok\r\ntest_reject_invalid_inputs (test_joint_core.JointCoreTests.test_reject_invalid_inputs) ... ok\r\ntest_shared_population_layernorm (test_joint_core.JointCoreTests.test_shared_population_layernorm) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 6 tests in 0.221s\r\n\r\nOK\r\n"
+    },
+    {
+      "name": "dispatcher-isolated-repository",
+      "chunk_id": "0fe20a",
+      "wall_time_seconds": 3.1075966,
+      "exit_code": 0,
+      "original_token_count": 50,
+      "output": "{\"ok\": true, \"isolatedWorktrees\": 8, \"existingWorkProtected\": true, \"originalTreeClean\": true, \"fixtureDirectory\": \"C:\\\\Users\\\\Administrator\\\\AppData\\\\Local\\\\Temp\\\\frostecho-r8-dispatch-oc3xzpf6\"}\r\n"
+    }
+  ],
+  "priorAttempt": {
+    "python": "uv Python 3.12",
+    "outcome": "ModuleNotFoundError: No module named 'numpy'",
+    "correction": "Used existing bundled runtime with NumPy; no dependency installed or hidden model run."
+  },
+  "productionChecksThisTurn": {
+    "typescriptBuild": "pass",
+    "r7Tests": {
+      "passed": 12,
+      "failed": 0
+    },
+    "fullSuite": "not rerun",
+    "training": "not rerun",
+    "originalPlaythrough": "not run"
+  },
+  "readOnlyReviewers": [
+    "r8_game_workplan",
+    "r8_jev_workplan"
+  ],
+  "referenceAuthor": "r8_jev_workplan",
+  "taskPackAuthor": "root"
+}

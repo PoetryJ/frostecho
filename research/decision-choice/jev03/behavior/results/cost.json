@@ -1,0 +1,51 @@
+{
+  "at": "2026-11-10T17:39:51+08:00",
+  "buckets": {
+    "feature": {
+      "decodeCalls": 0,
+      "jobs": 776,
+      "measuredJobs": 776,
+      "medianE2eMs": 207.542,
+      "prefillCalls": 776,
+      "tokensIn": 88544,
+      "tokensOut": 0
+    },
+    "generation": {
+      "decodeCalls": 5432,
+      "jobs": 776,
+      "measuredJobs": 776,
+      "medianE2eMs": 1041.194,
+      "prefillCalls": 776,
+      "tokensIn": 106396,
+      "tokensOut": 5432
+    }
+  },
+  "caps": {
+    "generation_jobs": 776,
+    "model_jobs": 1552,
+    "per_gpu_gib": 24,
+    "window_seconds": 7200
+  },
+  "gpuPeakGiB": {
+    "0": 13.11,
+    "1": 14.98,
+    "2": 15.0,
+    "3": 7.4
+  },
+  "ledgerCostDefect": {
+    "unknownCostFinish": 1552,
+    "why": "cost was computed from the result payload where the generation output count is `newTokens`; the model return did carry the counts, the ledger field did not"
+  },
+  "loadSeconds": 12.632,
+  "schema": "frostecho.jev03r1.cost/1",
+  "source": "derived from per-job results (measuredCost), not from finish events",
+  "totals": {
+    "decodeCalls": 5432,
+    "generationJobs": 776,
+    "modelJobs": 1552,
+    "prefillCalls": 1552,
+    "tokensIn": 194940,
+    "tokensOut": 5432
+  },
+  "wallSeconds": 1410.97
+}

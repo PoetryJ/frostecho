@@ -1,0 +1,4348 @@
+TAP version 13
+# Subtest: G2-a: assign/cancel-task/game-step/save and restore through the CLI
+ok 1 - G2-a: assign/cancel-task/game-step/save and restore through the CLI
+  ---
+  duration_ms: 1719.972821
+  type: 'test'
+  ...
+# Subtest: G2-b: 8 NPC x 4 days = 96h ending is decided by the authoritative state
+ok 2 - G2-b: 8 NPC x 4 days = 96h ending is decided by the authoritative state
+  ---
+  duration_ms: 646.661084
+  type: 'test'
+  ...
+# Subtest: G1-a: piped step/save/quit settles the step and saves its effects
+ok 3 - G1-a: piped step/save/quit settles the step and saves its effects
+  ---
+  duration_ms: 1283.8495
+  type: 'test'
+  ...
+# Subtest: G1-b: EOF without quit drains the queue and exits cleanly
+ok 4 - G1-b: EOF without quit drains the queue and exits cleanly
+  ---
+  duration_ms: 786.124023
+  type: 'test'
+  ...
+# Subtest: G1-c: a cancel accepted before the queued step revokes its choice
+ok 5 - G1-c: a cancel accepted before the queued step revokes its choice
+  ---
+  duration_ms: 684.373904
+  type: 'test'
+  ...
+# Subtest: G1-d: promise -> cancel -> promise creates a new live instance after restore
+ok 6 - G1-d: promise -> cancel -> promise creates a new live instance after restore
+  ---
+  duration_ms: 1472.689298
+  type: 'test'
+  ...
+# Subtest: G2-P1: the real CLI walks the village grid to the warehouse and the kitchen
+ok 7 - G2-P1: the real CLI walks the village grid to the warehouse and the kitchen
+  ---
+  duration_ms: 1312.026252
+  type: 'test'
+  ...
+# Subtest: G2-P2: walls cannot be crossed; a sealed door is an observable report
+ok 8 - G2-P2: walls cannot be crossed; a sealed door is an observable report
+  ---
+  duration_ms: 796.702617
+  type: 'test'
+  ...
+# Subtest: G2-P3: witnessed shortage changes the next action; restock is retried
+ok 9 - G2-P3: witnessed shortage changes the next action; restock is retried
+  ---
+  duration_ms: 683.926393
+  type: 'test'
+  ...
+# Subtest: G2-P4: an explicit cancel means zero delivery; save/restore keeps beliefs
+ok 10 - G2-P4: an explicit cancel means zero delivery; save/restore keeps beliefs
+  ---
+  duration_ms: 1896.954543
+  type: 'test'
+  ...
+# Subtest: G2-P5: the original 8-NPC four-day chain still runs unchanged
+ok 11 - G2-P5: the original 8-NPC four-day chain still runs unchanged
+  ---
+  duration_ms: 677.264431
+  type: 'test'
+  ...
+# Subtest: V4-G1: promise identity survives restart; restock accumulates; explicit retry replays
+ok 12 - V4-G1: promise identity survives restart; restock accumulates; explicit retry replays
+  ---
+  duration_ms: 2753.556514
+  type: 'test'
+  ...
+# Subtest: V4-G2: save waits boundedly, cancel confirms before release, nothing stale commits
+ok 13 - V4-G2: save waits boundedly, cancel confirms before release, nothing stale commits
+  ---
+  duration_ms: 3643.551031
+  type: 'test'
+  ...
+# Subtest: V4-G2: EOF with a never-released scorer exits within the bound
+ok 14 - V4-G2: EOF with a never-released scorer exits within the bound
+  ---
+  duration_ms: 1992.713787
+  type: 'test'
+  ...
+# Subtest: V4-G3: the real CLI completes spatial deliveries over a simulated day
+ok 15 - V4-G3: the real CLI completes spatial deliveries over a simulated day
+  ---
+  duration_ms: 492.836176
+  type: 'test'
+  ...
+# Subtest: V4-G4: CLI story A — request, shortage proposal, accept, deliver, fulfilled
+ok 16 - V4-G4: CLI story A — request, shortage proposal, accept, deliver, fulfilled
+  ---
+  duration_ms: 1117.984651
+  type: 'test'
+  ...
+# Subtest: V4-G4: CLI story B — survival proposal, reject keeps terms, dying exit
+ok 17 - V4-G4: CLI story B — survival proposal, reject keeps terms, dying exit
+  ---
+  duration_ms: 1762.864765
+  type: 'test'
+  ...
+# Subtest: V4-G5: a consumed rumor no longer drives empty probes
+ok 18 - V4-G5: a consumed rumor no longer drives empty probes
+  ---
+  duration_ms: 537.219996
+  type: 'test'
+  ...
+# Subtest: candidate set hash ignores order but binds content
+ok 19 - candidate set hash ignores order but binds content
+  ---
+  duration_ms: 1.590124
+  type: 'test'
+  ...
+# Subtest: duplicate candidate ids are rejected
+ok 20 - duplicate candidate ids are rejected
+  ---
+  duration_ms: 0.371752
+  type: 'test'
+  ...
+# Subtest: NaN utility is rejected
+ok 21 - NaN utility is rejected
+  ---
+  duration_ms: 0.163816
+  type: 'test'
+  ...
+# Subtest: empty candidate set produces a hash and never a fake softmax
+ok 22 - empty candidate set produces a hash and never a fake softmax
+  ---
+  duration_ms: 0.341862
+  type: 'test'
+  ...
+# Subtest: accept requires a candidate from the bound set
+ok 23 - accept requires a candidate from the bound set
+  ---
+  duration_ms: 0.267984
+  type: 'test'
+  ...
+# Subtest: probabilities must sum to one when present
+ok 24 - probabilities must sum to one when present
+  ---
+  duration_ms: 1.023187
+  type: 'test'
+  ...
+# Subtest: abstain must not smuggle a selection
+ok 25 - abstain must not smuggle a selection
+  ---
+  duration_ms: 0.273534
+  type: 'test'
+  ...
+# Subtest: valid accept result round-trips identity
+ok 26 - valid accept result round-trips identity
+  ---
+  duration_ms: 0.210585
+  type: 'test'
+  ...
+# Subtest: tampered candidate hash is rejected on the wire
+ok 27 - tampered candidate hash is rejected on the wire
+  ---
+  duration_ms: 0.384242
+  type: 'test'
+  ...
+# Subtest: unknown task is rejected
+ok 28 - unknown task is rejected
+  ---
+  duration_ms: 0.222655
+  type: 'test'
+  ...
+# Subtest: fixture eval runs 18 games, keeps scenario pass apart from the goal, and is not a real model
+ok 29 - fixture eval runs 18 games, keeps scenario pass apart from the goal, and is not a real model
+  ---
+  duration_ms: 7098.203505
+  type: 'test'
+  ...
+# Subtest: injected live eval is serial, shares the prompt, records thinking on and off, and does not retry
+ok 30 - injected live eval is serial, shares the prompt, records thinking on and off, and does not retry
+  ---
+  duration_ms: 6122.355104
+  type: 'test'
+  ...
+# Subtest: a transport failure is not retried and the failed game record is kept
+ok 31 - a transport failure is not retried and the failed game record is kept
+  ---
+  duration_ms: 4520.615315
+  type: 'test'
+  ...
+# Subtest: the call cap stops new model calls at the configured maximum
+ok 32 - the call cap stops new model calls at the configured maximum
+  ---
+  duration_ms: 2251.392897
+  type: 'test'
+  ...
+# Subtest: eval CLI fixture passes and a missing live config exits 2 without writing a real-model claim
+ok 33 - eval CLI fixture passes and a missing live config exits 2 without writing a real-model claim
+  ---
+  duration_ms: 2106.598877
+  type: 'test'
+  ...
+# Subtest: S1 fixture: no intervention, A move+eat, hunger 40→70, scenario pass is its own field
+ok 34 - S1 fixture: no intervention, A move+eat, hunger 40→70, scenario pass is its own field
+  ---
+  duration_ms: 3.541731
+  type: 'test'
+  ...
+# Subtest: S2 fixture: player eats before A observes, A stops, hunger stays 40, stop is not the goal
+ok 35 - S2 fixture: player eats before A observes, A stops, hunger stays 40, stop is not the goal
+  ---
+  duration_ms: 1.113505
+  type: 'test'
+  ...
+# Subtest: S3 fixture: stale kitchen observe, B eats first, A gets NO_FOOD then a fresh observe and stops
+ok 36 - S3 fixture: stale kitchen observe, B eats first, A gets NO_FOOD then a fresh observe and stops
+  ---
+  duration_ms: 1.272151
+  type: 'test'
+  ...
+# Subtest: player commands stay on npc_b and NPC steps stay on npc_a
+ok 37 - player commands stay on npc_b and NPC steps stay on npc_a
+  ---
+  duration_ms: 0.526189
+  type: 'test'
+  ...
+# Subtest: quit waits for the in-flight step, then refuses new commands, and the record replays
+ok 38 - quit waits for the in-flight step, then refuses new commands, and the record replays
+  ---
+  duration_ms: 1.428408
+  type: 'test'
+  ...
+# Subtest: play session budget, busy, and late timeout do not copy a second loop
+ok 39 - play session budget, busy, and late timeout do not copy a second loop
+  ---
+  duration_ms: 1.212413
+  type: 'test'
+  ...
+# Subtest: transport classification separates infrastructure kinds and the local budget
+ok 40 - transport classification separates infrastructure kinds and the local budget
+  ---
+  duration_ms: 1.34697
+  type: 'test'
+  ...
+# Subtest: health check confirms the served model via an injected fetch without network
+ok 41 - health check confirms the served model via an injected fetch without network
+  ---
+  duration_ms: 24.569362
+  type: 'test'
+  ...
+# Subtest: health failure (wrong model) sends zero chat requests and marks every task not_run
+ok 42 - health failure (wrong model) sends zero chat requests and marks every task not_run
+  ---
+  duration_ms: 6960.943607
+  type: 'test'
+  ...
+# Subtest: 6 successful requests then a dropped 7th connection ends the batch; finished games stay, the rest are not_run
+ok 43 - 6 successful requests then a dropped 7th connection ends the batch; finished games stay, the rest are not_run
+  ---
+  duration_ms: 9581.229284
+  type: 'test'
+  ...
+# Subtest: a second start with the same batch name is rejected before any request and old files stay byte-identical
+ok 44 - a second start with the same batch name is rejected before any request and old files stay byte-identical
+  ---
+  duration_ms: 2856.180445
+  type: 'test'
+  ...
+# Subtest: budget 1: HTTP, global and group request counts are all 1 and the intercept is separate
+ok 45 - budget 1: HTTP, global and group request counts are all 1 and the intercept is separate
+  ---
+  duration_ms: 1428.029354
+  type: 'test'
+  ...
+# Subtest: missing usage and a timeout are counted as unknown usage, never as 0 confirmed tokens
+ok 46 - missing usage and a timeout are counted as unknown usage, never as 0 confirmed tokens
+  ---
+  duration_ms: 1769.302421
+  type: 'test'
+  ...
+# Subtest: tampered summary or game evidence fails verification
+ok 47 - tampered summary or game evidence fails verification
+  ---
+  duration_ms: 3394.169474
+  type: 'test'
+  ...
+# Subtest: paired order alternates thinking on/off per scenario and rep, and gate is rep 1
+ok 48 - paired order alternates thinking on/off per scenario and rep, and gate is rep 1
+  ---
+  duration_ms: 1049.967178
+  type: 'test'
+  ...
+# Subtest: a behavior failure in the gate stops before reps 2..3 and is not an infrastructure interrupt
+ok 49 - a behavior failure in the gate stops before reps 2..3 and is not an infrastructure interrupt
+  ---
+  duration_ms: 941.962387
+  type: 'test'
+  ...
+# Subtest: batch metadata records version, fingerprints, sampling, timeouts and start/end
+ok 50 - batch metadata records version, fingerprints, sampling, timeouts and start/end
+  ---
+  duration_ms: 909.142659
+  type: 'test'
+  ...
+# Subtest: original live-18 evidence verifies per game and via the CLI
+ok 51 - original live-18 evidence verifies per game and via the CLI
+  ---
+  duration_ms: 11702.317838
+  type: 'test'
+  ...
+# Subtest: real goal-miss records (S2/S3) still verify as self-consistent
+ok 52 - real goal-miss records (S2/S3) still verify as self-consistent
+  ---
+  duration_ms: 5070.951008
+  type: 'test'
+  ...
+# Subtest: tampered sidecar final-state.json is rejected
+ok 53 - tampered sidecar final-state.json is rejected
+  ---
+  duration_ms: 4179.237261
+  type: 'test'
+  ...
+# Subtest: tampered game.json final state is rejected
+ok 54 - tampered game.json final state is rejected
+  ---
+  duration_ms: 2615.372267
+  type: 'test'
+  ...
+# Subtest: missing events.json is rejected
+ok 55 - missing events.json is rejected
+  ---
+  duration_ms: 1978.159841
+  type: 'test'
+  ...
+# Subtest: events inconsistent with the recorded final state are rejected
+ok 56 - events inconsistent with the recorded final state are rejected
+  ---
+  duration_ms: 1756.082705
+  type: 'test'
+  ...
+# Subtest: command exec result mismatch is rejected
+ok 57 - command exec result mismatch is rejected
+  ---
+  duration_ms: 1729.248475
+  type: 'test'
+  ...
+# Subtest: forged goalReached and replay flags are rejected
+ok 58 - forged goalReached and replay flags are rejected
+  ---
+  duration_ms: 1754.420293
+  type: 'test'
+  ...
+# Subtest: corrupt game.json is rejected without throwing
+ok 59 - corrupt game.json is rejected without throwing
+  ---
+  duration_ms: 1929.515137
+  type: 'test'
+  ...
+# Subtest: game.json null root: per-game rejected with a named issue and the batch CLI fails instead of passing
+ok 60 - game.json null root: per-game rejected with a named issue and the batch CLI fails instead of passing
+  ---
+  duration_ms: 2019.070609
+  type: 'test'
+  ...
+# Subtest: meta.json null root: rejected with a named issue, no TypeError
+ok 61 - meta.json null root: rejected with a named issue, no TypeError
+  ---
+  duration_ms: 1818.18348
+  type: 'test'
+  ...
+# Subtest: replay.json null root: rejected with a named issue, no TypeError
+ok 62 - replay.json null root: rejected with a named issue, no TypeError
+  ---
+  duration_ms: 2287.843783
+  type: 'test'
+  ...
+# Subtest: array and wrong-primitive roots are rejected with named issues
+ok 63 - array and wrong-primitive roots are rejected with named issues
+  ---
+  duration_ms: 915.271613
+  type: 'test'
+  ...
+# Subtest: verifyG02Batch rejects null batch.json/summary.json roots without throwing
+ok 64 - verifyG02Batch rejects null batch.json/summary.json roots without throwing
+  ---
+  duration_ms: 1062.717573
+  type: 'test'
+  ...
+# Subtest: missing live configuration exits 2 and names both environment variables
+ok 65 - missing live configuration exits 2 and names both environment variables
+  ---
+  duration_ms: 2487.173117
+  type: 'test'
+  ...
+# Subtest: normal reference run saves exactly once and exits 0
+ok 66 - normal reference run saves exactly once and exits 0
+  ---
+  duration_ms: 641.48365
+  type: 'test'
+  ...
+# Subtest: EOF without quit still saves exactly once and exits 0
+ok 67 - EOF without quit still saves exactly once and exits 0
+  ---
+  duration_ms: 528.828313
+  type: 'test'
+  ...
+# Subtest: HTTP 500 exits 1 and still persists one interrupted record
+ok 68 - HTTP 500 exits 1 and still persists one interrupted record
+  ---
+  duration_ms: 930.795706
+  type: 'test'
+  ...
+# Subtest: HTTP timeout exits 1 and still persists one interrupted record
+ok 69 - HTTP timeout exits 1 and still persists one interrupted record
+  ---
+  duration_ms: 1013.53825
+  type: 'test'
+  ...
+# [m1-ac-off] run=done; verdict: pass
+# [m1-ac-on] run=done; verdict: pass
+# [m2-ac-off] run=done; verdict: pass
+# [m2-ac-on] run=done; verdict: pass
+# [m3-ac-off] run=done; intervention: player eat -> accepted; verdict: pass
+# [m3-ac-on] run=done; intervention: player eat -> accepted; verdict: pass
+# [m1-ca-off] run=done; verdict: pass
+# [m1-ca-on] run=done; verdict: pass
+# [m2-ca-off] run=done; verdict: pass
+# [m2-ca-on] run=done; verdict: pass
+# [m3-ca-off] run=done; intervention: player eat -> accepted; verdict: pass
+# [m3-ca-on] run=done; intervention: player eat -> accepted; verdict: pass
+# Subtest: live batch: 44 HTTP requests, per-episode thinking honoured, evidence verifies
+ok 70 - live batch: 44 HTTP requests, per-episode thinking honoured, evidence verifies
+  ---
+  duration_ms: 11165.211009
+  type: 'test'
+  ...
+# [m1-ac-off] run=done; verdict: pass
+# [m1-ac-on] run=done; verdict: pass
+# [m2-ac-off] run=done; verdict: pass
+# [m2-ac-on] run=done; verdict: pass
+# [m3-ac-off] run=done; intervention: player eat -> accepted; verdict: pass
+# [m3-ac-on] run=done; intervention: player eat -> accepted; verdict: pass
+# Subtest: verification rejects a record whose thinking flag contradicts its request bodies
+ok 71 - verification rejects a record whose thinking flag contradicts its request bodies
+  ---
+  duration_ms: 5223.846317
+  type: 'test'
+  ...
+# Subtest: parseG03PlayerLine accepts only the two player verbs
+ok 72 - parseG03PlayerLine accepts only the two player verbs
+  ---
+  duration_ms: 1.100386
+  type: 'test'
+  ...
+# Subtest: two NPCs run to terminal statuses with unique per-actor command ids
+ok 73 - two NPCs run to terminal statuses with unique per-actor command ids
+  ---
+  duration_ms: 4.358892
+  type: 'test'
+  ...
+# Subtest: player line lands between NPC steps and is recorded once in the ledger
+ok 74 - player line lands between NPC steps and is recorded once in the ledger
+  ---
+  duration_ms: 4.954739
+  type: 'test'
+  ...
+# Subtest: snapshot captures replayMatches and authoritative per-actor goals
+ok 75 - snapshot captures replayMatches and authoritative per-actor goals
+  ---
+  duration_ms: 1.34772
+  type: 'test'
+  ...
+# Subtest: close marks user_closed and stops new steps
+ok 76 - close marks user_closed and stops new steps
+  ---
+  duration_ms: 0.505739
+  type: 'test'
+  ...
+# Subtest: each actor gets an independent provider instance
+ok 77 - each actor gets an independent provider instance
+  ---
+  duration_ms: 0.279364
+  type: 'test'
+  ...
+# Subtest: player line rejects bad verbs and impossible moves without crashing
+ok 78 - player line rejects bad verbs and impossible moves without crashing
+  ---
+  duration_ms: 0.352562
+  type: 'test'
+  ...
+# [m1-ac-off] run=done; verdict: pass
+# [m1-ac-on] run=done; verdict: pass
+# [m2-ac-off] run=done; verdict: pass
+# [m2-ac-on] run=done; verdict: pass
+# [m3-ac-off] run=done; intervention: player eat -> accepted; verdict: pass
+# [m3-ac-on] run=done; intervention: player eat -> accepted; verdict: pass
+# [m1-ca-off] run=done; verdict: pass
+# [m1-ca-on] run=done; verdict: pass
+# [m2-ca-off] run=done; verdict: pass
+# [m2-ca-on] run=done; verdict: pass
+# [m3-ca-off] run=done; intervention: player eat -> accepted; verdict: pass
+# [m3-ca-on] run=done; intervention: player eat -> accepted; verdict: pass
+# Subtest: M1 both orders: 4 reference decisions, both NPCs reach 70, player stays 20
+ok 79 - M1 both orders: 4 reference decisions, both NPCs reach 70, player stays 20
+  ---
+  duration_ms: 4.704945
+  type: 'test'
+  ...
+# Subtest: M2 both orders: 4 reference decisions, first-scheduled NPC wins and reversal flips the winner
+ok 80 - M2 both orders: 4 reference decisions, first-scheduled NPC wins and reversal flips the winner
+  ---
+  duration_ms: 1.699562
+  type: 'test'
+  ...
+# Subtest: M3 both orders: player steals the food, 3 reference decisions, NO_FOOD contention recorded
+ok 81 - M3 both orders: player steals the food, 3 reference decisions, NO_FOOD contention recorded
+  ---
+  duration_ms: 1.868449
+  type: 'test'
+  ...
+# Subtest: chat request counting follows transport presence (fixture has none), decisions follow providerCalls
+ok 82 - chat request counting follows transport presence (fixture has none), decisions follow providerCalls
+  ---
+  duration_ms: 1.077406
+  type: 'test'
+  ...
+# Subtest: episode evidence round-trip verifies on disk
+ok 83 - episode evidence round-trip verifies on disk
+  ---
+  duration_ms: 2.897675
+  type: 'test'
+  ...
+# Subtest: corrupted record probe: tampered final state, deleted replay file, array root
+ok 84 - corrupted record probe: tampered final state, deleted replay file, array root
+  ---
+  duration_ms: 3.942772
+  type: 'test'
+  ...
+# Subtest: fixture batch: 12 episodes, all pass, summary rebuilds from disk
+ok 85 - fixture batch: 12 episodes, all pass, summary rebuilds from disk
+  ---
+  duration_ms: 7040.049482
+  type: 'test'
+  ...
+# Subtest: batch directory collision is a precondition failure (exit 2)
+ok 86 - batch directory collision is a precondition failure (exit 2)
+  ---
+  duration_ms: 0.392411
+  type: 'test'
+  ...
+# Subtest: round-robin alternates starting from the first actor in order
+ok 87 - round-robin alternates starting from the first actor in order
+  ---
+  duration_ms: 1.435928
+  type: 'test'
+  ...
+# Subtest: reversed actor order reverses the rotation start
+ok 88 - reversed actor order reverses the rotation start
+  ---
+  duration_ms: 0.164506
+  type: 'test'
+  ...
+# Subtest: overlapping advance returns busy and starts no second step
+ok 89 - overlapping advance returns busy and starts no second step
+  ---
+  duration_ms: 0.158366
+  type: 'test'
+  ...
+# Subtest: terminal actors are skipped; ready actors keep getting turns
+ok 90 - terminal actors are skipped; ready actors keep getting turns
+  ---
+  duration_ms: 0.273904
+  type: 'test'
+  ...
+# Subtest: all terminal → advance reports done
+ok 91 - all terminal → advance reports done
+  ---
+  duration_ms: 0.185426
+  type: 'test'
+  ...
+# Subtest: run drives to done when everything reaches a terminal status
+ok 92 - run drives to done when everything reaches a terminal status
+  ---
+  duration_ms: 0.239195
+  type: 'test'
+  ...
+# Subtest: advance during run returns busy; re-entrant run returns busy
+ok 93 - advance during run returns busy; re-entrant run returns busy
+  ---
+  duration_ms: 0.199565
+  type: 'test'
+  ...
+# Subtest: timeout and provider_error interrupt the episode
+ok 94 - timeout and provider_error interrupt the episode
+  ---
+  duration_ms: 0.176686
+  type: 'test'
+  ...
+# Subtest: parse failure and budget exhaustion are actor results, not interrupts
+ok 95 - parse failure and budget exhaustion are actor results, not interrupts
+  ---
+  duration_ms: 0.165886
+  type: 'test'
+  ...
+# Subtest: close forbids new steps and waits for the in-flight step
+ok 96 - close forbids new steps and waits for the in-flight step
+  ---
+  duration_ms: 0.352492
+  type: 'test'
+  ...
+# Subtest: constructor rejects empty, duplicate, unknown, and player ids
+ok 97 - constructor rejects empty, duplicate, unknown, and player ids
+  ---
+  duration_ms: 0.458569
+  type: 'test'
+  ...
+# Subtest: missing live configuration exits 2 and names both environment variables
+ok 98 - missing live configuration exits 2 and names both environment variables
+  ---
+  duration_ms: 1272.275179
+  type: 'test'
+  ...
+# Subtest: reference event run saves once, exits 0, and both NPCs wait on an empty kitchen
+ok 99 - reference event run saves once, exits 0, and both NPCs wait on an empty kitchen
+  ---
+  duration_ms: 1484.388976
+  type: 'test'
+  ...
+# Subtest: a restock after idle wakes both NPCs under the event policy
+ok 100 - a restock after idle wakes both NPCs under the event policy
+  ---
+  duration_ms: 1153.056588
+  type: 'test'
+  ...
+# Subtest: the legacy policy never wakes a stopped NPC after a restock
+ok 101 - the legacy policy never wakes a stopped NPC after a restock
+  ---
+  duration_ms: 1098.160463
+  type: 'test'
+  ...
+# Subtest: an out-of-range restock is rejected and leaves the world unchanged
+ok 102 - an out-of-range restock is rejected and leaves the world unchanged
+  ---
+  duration_ms: 674.177441
+  type: 'test'
+  ...
+# Subtest: EOF without quit still saves exactly once and exits 0
+ok 103 - EOF without quit still saves exactly once and exits 0
+  ---
+  duration_ms: 1077.512163
+  type: 'test'
+  ...
+# Subtest: HTTP 500 exits 1 and still persists one interrupted record
+ok 104 - HTTP 500 exits 1 and still persists one interrupted record
+  ---
+  duration_ms: 1125.536622
+  type: 'test'
+  ...
+# Subtest: HTTP timeout exits 1 and still persists one interrupted record
+ok 105 - HTTP timeout exits 1 and still persists one interrupted record
+  ---
+  duration_ms: 1352.417481
+  type: 'test'
+  ...
+# Subtest: status only reads: a live session issues no chat request for status, and quit saves
+ok 106 - status only reads: a live session issues no chat request for status, and quit saves
+  ---
+  duration_ms: 824.738952
+  type: 'test'
+  ...
+# Subtest: quit during an in-flight live request waits only the started request
+ok 107 - quit during an in-flight live request waits only the started request
+  ---
+  duration_ms: 834.465724
+  type: 'test'
+  ...
+# Subtest: live timeout precedence: --timeout beats env, env beats the 30s default
+ok 108 - live timeout precedence: --timeout beats env, env beats the 30s default
+  ---
+  duration_ms: 3772.013175
+  type: 'test'
+  ...
+# Subtest: offline reference mode records the same effective timeout resolution
+ok 109 - offline reference mode records the same effective timeout resolution
+  ---
+  duration_ms: 678.915794
+  type: 'test'
+  ...
+# Subtest: close during an in-flight request blocks new requests and world input
+ok 110 - close during an in-flight request blocks new requests and world input
+  ---
+  duration_ms: 7.703988
+  type: 'test'
+  ...
+# Subtest: close waits for the in-flight step to finish its bookkeeping
+ok 111 - close waits for the in-flight step to finish its bookkeeping
+  ---
+  duration_ms: 5.553856
+  type: 'test'
+  ...
+# Subtest: 12 reference episodes pass with exactly 30 provider calls
+ok 112 - 12 reference episodes pass with exactly 30 provider calls
+  ---
+  duration_ms: 11178.670239
+  type: 'test'
+  ...
+# Subtest: N3: a restock that lands during the in-flight stop is never lost
+ok 113 - N3: a restock that lands during the in-flight stop is never lost
+  ---
+  duration_ms: 1.727431
+  type: 'test'
+  ...
+# Subtest: an NPC observation is local: no distant food, no other NPC, no global ledger
+ok 114 - an NPC observation is local: no distant food, no other NPC, no global ledger
+  ---
+  duration_ms: 0.950759
+  type: 'test'
+  ...
+# Subtest: the session budget caps at 5 calls and a spent actor never wakes again
+ok 115 - the session budget caps at 5 calls and a spent actor never wakes again
+  ---
+  duration_ms: 3.539421
+  type: 'test'
+  ...
+# Subtest: a model can never restock: the parser refuses it and the world refuses NPCs
+ok 116 - a model can never restock: the parser refuses it and the world refuses NPCs
+  ---
+  duration_ms: 0.520658
+  type: 'test'
+  ...
+# Subtest: 100 notifications with an unchanged world cause no calls and no cycles (no polling)
+ok 117 - 100 notifications with an unchanged world cause no calls and no cycles (no polling)
+  ---
+  duration_ms: 1.78085
+  type: 'test'
+  ...
+# Subtest: only one provider request is ever in flight
+ok 118 - only one provider request is ever in flight
+  ---
+  duration_ms: 20.321866
+  type: 'test'
+  ...
+# Subtest: a transport failure is latched, persisted and stops the batch
+ok 119 - a transport failure is latched, persisted and stops the batch
+  ---
+  duration_ms: 7515.435097
+  type: 'test'
+  ...
+# Subtest: verification re-judges the scenario and rejects a tampered record
+ok 120 - verification re-judges the scenario and rejects a tampered record
+  ---
+  duration_ms: 3049.659999
+  type: 'test'
+  ...
+# Subtest: an empty or missing batch never settles as verified
+ok 121 - an empty or missing batch never settles as verified
+  ---
+  duration_ms: 2174.912403
+  type: 'test'
+  ...
+# Subtest: world restock is accepted, emits FoodRestocked and updates food
+ok 122 - world restock is accepted, emits FoodRestocked and updates food
+  ---
+  duration_ms: 1.81945
+  type: 'test'
+  ...
+# Subtest: NPCs can never restock
+ok 123 - NPCs can never restock
+  ---
+  duration_ms: 0.319503
+  type: 'test'
+  ...
+# Subtest: the world actor may only restock
+ok 124 - the world actor may only restock
+  ---
+  duration_ms: 0.241935
+  type: 'test'
+  ...
+# Subtest: restock payload validation is strict
+ok 125 - restock payload validation is strict
+  ---
+  duration_ms: 0.592827
+  type: 'test'
+  ...
+# Subtest: restock that would overflow a safe integer is rejected
+ok 126 - restock that would overflow a safe integer is rejected
+  ---
+  duration_ms: 0.221546
+  type: 'test'
+  ...
+# Subtest: restock is a normal ledger entry: duplicate ids and replay both work
+ok 127 - restock is a normal ledger entry: duplicate ids and replay both work
+  ---
+  duration_ms: 1.119605
+  type: 'test'
+  ...
+# Subtest: same batch name: second open fails and no old byte changes
+ok 128 - same batch name: second open fails and no old byte changes
+  ---
+  duration_ms: 7786.320464
+  type: 'test'
+  ...
+# Subtest: two racing opens of one name: exactly one wins
+ok 129 - two racing opens of one name: exactly one wins
+  ---
+  duration_ms: 5195.634197
+  type: 'test'
+  ...
+# Subtest: the initial plan persists all 12 trajectories as not_run with the effective config
+ok 130 - the initial plan persists all 12 trajectories as not_run with the effective config
+  ---
+  duration_ms: 4376.06396
+  type: 'test'
+  ...
+# Subtest: episodes are saved immediately, pass or fail; a failed episode never removes the finished ones
+ok 131 - episodes are saved immediately, pass or fail; a failed episode never removes the finished ones
+  ---
+  duration_ms: 2106.640205
+  type: 'test'
+  ...
+# Subtest: mid-run exit: finished episodes and the attempt ledger survive; the summary rebuilds from disk
+ok 132 - mid-run exit: finished episodes and the attempt ledger survive; the summary rebuilds from disk
+  ---
+  duration_ms: 1602.296446
+  type: 'test'
+  ...
+# Subtest: verify is read-only: repeated verification changes no byte
+ok 133 - verify is read-only: repeated verification changes no byte
+  ---
+  duration_ms: 1327.711711
+  type: 'test'
+  ...
+# Subtest: gate: finite non-negative integer limit only; reserve never refunds
+ok 134 - gate: finite non-negative integer limit only; reserve never refunds
+  ---
+  duration_ms: 1.676203
+  type: 'test'
+  ...
+# Subtest: cap 1: exactly one POST, the second decision is denied without a request
+ok 135 - cap 1: exactly one POST, the second decision is denied without a request
+  ---
+  duration_ms: 16.143239
+  type: 'test'
+  ...
+# Subtest: cap 0: zero POSTs, first decision already denied
+ok 136 - cap 0: zero POSTs, first decision already denied
+  ---
+  duration_ms: 0.206485
+  type: 'test'
+  ...
+# Subtest: two racing decisions cannot both spend the last slot
+ok 137 - two racing decisions cannot both spend the last slot
+  ---
+  duration_ms: 20.316607
+  type: 'test'
+  ...
+# Subtest: a failed request keeps its slot; the denial is classified apart from transport
+ok 138 - a failed request keeps its slot; the denial is classified apart from transport
+  ---
+  duration_ms: 0.943199
+  type: 'test'
+  ...
+# Subtest: a begin write failure stops the attempt before any request (slot stays spent)
+ok 139 - a begin write failure stops the attempt before any request (slot stays spent)
+  ---
+  duration_ms: 0.253434
+  type: 'test'
+  ...
+# Subtest: durable ledger: begin before send, finish after, blocked recorded on disk
+ok 140 - durable ledger: begin before send, finish after, blocked recorded on disk
+  ---
+  duration_ms: 7329.113074
+  type: 'test'
+  ...
+# Subtest: full session: initial 70 checks at zero calls, advance reactivates under recurring, quit saves once
+ok 141 - full session: initial 70 checks at zero calls, advance reactivates under recurring, quit saves once
+  ---
+  duration_ms: 1073.276567
+  type: 'test'
+  ...
+# Subtest: advance rejects out-of-range steps without advancing simTime; status makes no request
+ok 142 - advance rejects out-of-range steps without advancing simTime; status makes no request
+  ---
+  duration_ms: 1097.492088
+  type: 'test'
+  ...
+# Subtest: one-shot stays at zero calls across decay; the initial check is free
+ok 143 - one-shot stays at zero calls across decay; the initial check is free
+  ---
+  duration_ms: 1493.983363
+  type: 'test'
+  ...
+# Subtest: the need switch rejects the removed third arm and accepts recurring
+ok 144 - the need switch rejects the removed third arm and accepts recurring
+  ---
+  duration_ms: 907.604923
+  type: 'test'
+  ...
+# Subtest: EOF on an open session still finalizes exactly once with exit 0
+ok 145 - EOF on an open session still finalizes exactly once with exit 0
+  ---
+  duration_ms: 644.906013
+  type: 'test'
+  ...
+# Subtest: contract: 70 advance 3 = 40 for every NPC incl. the passive player
+ok 146 - contract: 70 advance 3 = 40 for every NPC incl. the passive player
+  ---
+  duration_ms: 3.926032
+  type: 'test'
+  ...
+# Subtest: contract T1 recurring: two meals, 4 calls, kitchen empties, player decays to 10
+ok 147 - contract T1 recurring: two meals, 4 calls, kitchen empties, player decays to 10
+  ---
+  duration_ms: 3.399334
+  type: 'test'
+  ...
+# Subtest: contract T2: two single steps to 50, then 100 real pumps stay at zero calls and flat cycles
+ok 148 - contract T2: two single steps to 50, then 100 real pumps stay at zero calls and flat cycles
+  ---
+  duration_ms: 5.753582
+  type: 'test'
+  ...
+# Subtest: contract T3 recurring: empty-kitchen wait, 30->60 is not success, then 90
+ok 149 - contract T3 recurring: empty-kitchen wait, 30->60 is not success, then 90
+  ---
+  duration_ms: 4.0024
+  type: 'test'
+  ...
+# Subtest: contract T3 one-shot: no reactivation, restock is not eaten
+ok 150 - contract T3 one-shot: no reactivation, restock is not eaten
+  ---
+  duration_ms: 0.774792
+  type: 'test'
+  ...
+# Subtest: contract: in-flight time input is accepted and decays the authoritative world
+ok 151 - contract: in-flight time input is accepted and decays the authoritative world
+  ---
+  duration_ms: 1.260982
+  type: 'test'
+  ...
+# Subtest: contract: budgets — session 5, actor 10 for the whole episode, no resets
+ok 152 - contract: budgets — session 5, actor 10 for the whole episode, no resets
+  ---
+  duration_ms: 14.820429
+  type: 'test'
+  ...
+# Subtest: fakeHTTP: the full matrix spends exactly 20 requests with frozen per-request config
+ok 153 - fakeHTTP: the full matrix spends exactly 20 requests with frozen per-request config
+  ---
+  duration_ms: 7980.62418
+  type: 'test'
+  ...
+# Subtest: fakeHTTP: health precheck failure stops before any chat request
+ok 154 - fakeHTTP: health precheck failure stops before any chat request
+  ---
+  duration_ms: 5352.612105
+  type: 'test'
+  ...
+# Subtest: fakeHTTP: HTTP 500 interrupts the batch and keeps the failure on disk
+ok 155 - fakeHTTP: HTTP 500 interrupts the batch and keeps the failure on disk
+  ---
+  duration_ms: 4234.335972
+  type: 'test'
+  ...
+# Subtest: initial all-70 world completes the initial check with zero provider calls
+ok 156 - initial all-70 world completes the initial check with zero provider calls
+  ---
+  duration_ms: 2.308509
+  type: 'test'
+  ...
+# Subtest: recurring: satisfied at 40 reactivates exactly once; 41 rests
+ok 157 - recurring: satisfied at 40 reactivates exactly once; 41 rests
+  ---
+  duration_ms: 3.742876
+  type: 'test'
+  ...
+# Subtest: one-shot: satisfied actors never reactivate even at/below 40
+ok 158 - one-shot: satisfied actors never reactivate even at/below 40
+  ---
+  duration_ms: 0.607397
+  type: 'test'
+  ...
+# Subtest: 30 -> eat 60 is not success; the same session eats again to 90
+ok 159 - 30 -> eat 60 is not success; the same session eats again to 90
+  ---
+  duration_ms: 2.930195
+  type: 'test'
+  ...
+# Subtest: waiting keeps decaying without new cycles or calls until local food exists
+ok 160 - waiting keeps decaying without new cycles or calls until local food exists
+  ---
+  duration_ms: 3.969191
+  type: 'test'
+  ...
+# Subtest: time input while a decision is in flight executes against the authoritative world
+ok 161 - time input while a decision is in flight executes against the authoritative world
+  ---
+  duration_ms: 1.76917
+  type: 'test'
+  ...
+# Subtest: budgets: time and cycles never reset the per-actor episode limit
+ok 162 - budgets: time and cycles never reset the per-actor episode limit
+  ---
+  duration_ms: 16.826575
+  type: 'test'
+  ...
+# Subtest: ordinary stop / closed states do not resurrect on time input
+ok 163 - ordinary stop / closed states do not resurrect on time input
+  ---
+  duration_ms: 0.380102
+  type: 'test'
+  ...
+# Subtest: G04 one-shot semantics: restock still wakes a waiting actor (G04-R1 preserved)
+ok 164 - G04 one-shot semantics: restock still wakes a waiting actor (G04-R1 preserved)
+  ---
+  duration_ms: 1.120615
+  type: 'test'
+  ...
+# Subtest: goal constants stay frozen
+ok 165 - goal constants stay frozen
+  ---
+  duration_ms: 0.143997
+  type: 'test'
+  ...
+# Subtest: cap 1: at most one POST, budget stop, non-zero exit, ledger complete
+ok 166 - cap 1: at most one POST, budget stop, non-zero exit, ledger complete
+  ---
+  duration_ms: 9960.983392
+  type: 'test'
+  ...
+# Subtest: cap 4 on the ac head: 4 requests, 4×11=44 tokens, then a clean budget stop
+ok 167 - cap 4 on the ac head: 4 requests, 4×11=44 tokens, then a clean budget stop
+  ---
+  duration_ms: 5959.979617
+  type: 'test'
+  ...
+# Subtest: missing usage: usageUnknownCount counts, totalTokens=null
+ok 168 - missing usage: usageUnknownCount counts, totalTokens=null
+  ---
+  duration_ms: 4376.05465
+  type: 'test'
+  ...
+# Subtest: HTTP 500: first real request fails, episode persisted, non-zero exit
+ok 169 - HTTP 500: first real request fails, episode persisted, non-zero exit
+  ---
+  duration_ms: 1709.834908
+  type: 'test'
+  ...
+# Subtest: timeout: the request is ledgered as timeout and the batch stops
+ok 170 - timeout: the request is ledgered as timeout and the batch stops
+  ---
+  duration_ms: 1949.484581
+  type: 'test'
+  ...
+# Subtest: the same batch name exits 2 and leaves every old byte untouched
+ok 171 - the same batch name exits 2 and leaves every old byte untouched
+  ---
+  duration_ms: 1670.165042
+  type: 'test'
+  ...
+# Subtest: ca-only live is rejected before anything runs
+ok 172 - ca-only live is rejected before anything runs
+  ---
+  duration_ms: 200.890448
+  type: 'test'
+  ...
+# Subtest: the restored matrix: T1/T2/T3 × ac/ca × one-shot/recurring, 4 model + 8 zero-call
+ok 173 - the restored matrix: T1/T2/T3 × ac/ca × one-shot/recurring, 4 model + 8 zero-call
+  ---
+  duration_ms: 0.657155
+  type: 'test'
+  ...
+# Subtest: fixture batch: 12/12 pass, exactly 20 reference decisions, zero HTTP, verify settles
+ok 174 - fixture batch: 12/12 pass, exactly 20 reference decisions, zero HTTP, verify settles
+  ---
+  duration_ms: 7442.003745
+  type: 'test'
+  ...
+# Subtest: records carry the frozen rule triple and replayable checkpoints
+ok 175 - records carry the frozen rule triple and replayable checkpoints
+  ---
+  duration_ms: 5495.727123
+  type: 'test'
+  ...
+# Subtest: verifier rejects a forged scenarioPass and a tampered checkpoint
+ok 176 - verifier rejects a forged scenarioPass and a tampered checkpoint
+  ---
+  duration_ms: 3750.656462
+  type: 'test'
+  ...
+# Subtest: verifier rejects budget exemptions and a changed matrix version
+ok 177 - verifier rejects budget exemptions and a changed matrix version
+  ---
+  duration_ms: 1979.975761
+  type: 'test'
+  ...
+# Subtest: usage sums per request: 4×11=44
+ok 178 - usage sums per request: 4×11=44
+  ---
+  duration_ms: 0.799442
+  type: 'test'
+  ...
+# Subtest: a request with missing usage is counted but forces totalTokens=null
+ok 179 - a request with missing usage is counted but forces totalTokens=null
+  ---
+  duration_ms: 0.143857
+  type: 'test'
+  ...
+# Subtest: partial usage is still unknown unless it can be derived
+ok 180 - partial usage is still unknown unless it can be derived
+  ---
+  duration_ms: 0.139927
+  type: 'test'
+  ...
+# Subtest: zero requests ⇒ all zero with a confident 0; an unresolved begin poisons the total
+ok 181 - zero requests ⇒ all zero with a confident 0; an unresolved begin poisons the total
+  ---
+  duration_ms: 0.191036
+  type: 'test'
+  ...
+# Subtest: denials and outcomes are separate counters
+ok 182 - denials and outcomes are separate counters
+  ---
+  duration_ms: 0.135377
+  type: 'test'
+  ...
+# Subtest: live judge: legal extra decisions pass on a model trajectory (T1 recurring)
+ok 183 - live judge: legal extra decisions pass on a model trajectory (T1 recurring)
+  ---
+  duration_ms: 27.574944
+  type: 'test'
+  ...
+# Subtest: live judge: an unexpected request recorded on a zero-call trajectory still fails (T2)
+ok 184 - live judge: an unexpected request recorded on a zero-call trajectory still fails (T2)
+  ---
+  duration_ms: 4.787704
+  type: 'test'
+  ...
+# Subtest: reference mode stays strict: the same detour fails without live judging
+ok 185 - reference mode stays strict: the same detour fails without live judging
+  ---
+  duration_ms: 4.815522
+  type: 'test'
+  ...
+# Subtest: 70 advance 3 = 40; another 3 = 10; a floored NPC stays at 0
+ok 186 - 70 advance 3 = 40; another 3 = 10; a floored NPC stays at 0
+  ---
+  duration_ms: 2.026814
+  type: 'test'
+  ...
+# Subtest: one atomic commit: TimeAdvanced first, then id-sorted HungerChanged for changed NPCs only
+ok 187 - one atomic commit: TimeAdvanced first, then id-sorted HungerChanged for changed NPCs only
+  ---
+  duration_ms: 0.488129
+  type: 'test'
+  ...
+# Subtest: advance 3 equals three advance 1 in simTime and satiety (logs may differ)
+ok 188 - advance 3 equals three advance 1 in simTime and satiety (logs may differ)
+  ---
+  duration_ms: 0.526138
+  type: 'test'
+  ...
+# Subtest: retrying the same commandId never decays twice
+ok 189 - retrying the same commandId never decays twice
+  ---
+  duration_ms: 0.263024
+  type: 'test'
+  ...
+# Subtest: advance_time payload validation is strict and rejects leave state untouched
+ok 190 - advance_time payload validation is strict and rejects leave state untouched
+  ---
+  duration_ms: 1.184184
+  type: 'test'
+  ...
+# Subtest: NPCs can never advance_time; the world actor may only restock and advance_time
+ok 191 - NPCs can never advance_time; the world actor may only restock and advance_time
+  ---
+  duration_ms: 0.217075
+  type: 'test'
+  ...
+# Subtest: pre-G05 worlds without simTime read as 0 and materialize only on advance
+ok 192 - pre-G05 worlds without simTime read as 0 and materialize only on advance
+  ---
+  duration_ms: 0.239355
+  type: 'test'
+  ...
+# Subtest: replay from events reproduces simTime and hunger exactly
+ok 193 - replay from events reproduces simTime and hunger exactly
+  ---
+  duration_ms: 0.345382
+  type: 'test'
+  ...
+# Subtest: initialWorld stays pre-G05 canonical: no simTime field
+ok 194 - initialWorld stays pre-G05 canonical: no simTime field
+  ---
+  duration_ms: 0.144977
+  type: 'test'
+  ...
+# Subtest: decay uses the frozen rule constants
+ok 195 - decay uses the frozen rule constants
+  ---
+  duration_ms: 0.179066
+  type: 'test'
+  ...
+# Subtest: eval-g06 matrix: 8/8 cross-process pairs identical, evidence on disk
+ok 196 - eval-g06 matrix: 8/8 cross-process pairs identical, evidence on disk
+  ---
+  duration_ms: 10414.474757
+  type: 'test'
+  ...
+# Subtest: budget boundary: save right before the last call; exactly one call after restore, then exhaustion
+ok 197 - budget boundary: save right before the last call; exactly one call after restore, then exhaustion
+  ---
+  duration_ms: 1566.377238
+  type: 'test'
+  ...
+# Subtest: budget boundary: an exhausted session saved and restored never calls the provider again
+ok 198 - budget boundary: an exhausted session saved and restored never calls the provider again
+  ---
+  duration_ms: 1720.413281
+  type: 'test'
+  ...
+# Subtest: save then load round-trips; the file carries schema, sha256 and payload
+ok 199 - save then load round-trips; the file carries schema, sha256 and payload
+  ---
+  duration_ms: 6.478745
+  type: 'test'
+  ...
+# Subtest: the same slot never overwrites; racing saves produce exactly one file
+ok 200 - the same slot never overwrites; racing saves produce exactly one file
+  ---
+  duration_ms: 10.687271
+  type: 'test'
+  ...
+# Subtest: invalid slots, empty, half-written, tampered and foreign files are all rejected
+ok 201 - invalid slots, empty, half-written, tampered and foreign files are all rejected
+  ---
+  duration_ms: 2.458865
+  type: 'test'
+  ...
+# Subtest: CLI: save prints path/simTime/NPC states; --load resumes with no model call; duplicate slot refuses
+ok 202 - CLI: save prints path/simTime/NPC states; --load resumes with no model call; duplicate slot refuses
+  ---
+  duration_ms: 2374.369503
+  type: 'test'
+  ...
+# Subtest: CLI: corrupt load and mode conflict exit 2 without creating anything
+ok 203 - CLI: corrupt load and mode conflict exit 2 without creating anything
+  ---
+  duration_ms: 1555.011601
+  type: 'test'
+  ...
+# Subtest: CLI: player move/eat work on a resumed game
+ok 204 - CLI: player move/eat work on a resumed game
+  ---
+  duration_ms: 2437.840837
+  type: 'test'
+  ...
+# Subtest: mid-active save: restored game continues identically; no cycle opened, no call on restore
+ok 205 - mid-active save: restored game continues identically; no cycle opened, no call on restore
+  ---
+  duration_ms: 10.29099
+  type: 'test'
+  ...
+# Subtest: rotation cursor survives restore: the next actor is the other NPC
+ok 206 - rotation cursor survives restore: the next actor is the other NPC
+  ---
+  duration_ms: 1.322301
+  type: 'test'
+  ...
+# Subtest: waiting state round-trips: restock wakes the restored game without replaying old turns
+ok 207 - waiting state round-trips: restock wakes the restored game without replaying old turns
+  ---
+  duration_ms: 2.873546
+  type: 'test'
+  ...
+# Subtest: closed save restores closed; interrupted save restores interrupted
+ok 208 - closed save restores closed; interrupted save restores interrupted
+  ---
+  duration_ms: 1.978196
+  type: 'test'
+  ...
+# Subtest: satisfied terminal cycles restore without re-opening or calling the provider
+ok 209 - satisfied terminal cycles restore without re-opening or calling the provider
+  ---
+  duration_ms: 1.245392
+  type: 'test'
+  ...
+# Subtest: budget_exhausted lifecycle state round-trips
+ok 210 - budget_exhausted lifecycle state round-trips
+  ---
+  duration_ms: 1.829469
+  type: 'test'
+  ...
+# Subtest: in-flight save is SAVE_BUSY and serializes nothing
+ok 211 - in-flight save is SAVE_BUSY and serializes nothing
+  ---
+  duration_ms: 10.664742
+  type: 'test'
+  ...
+# Subtest: corrupt or inconsistent checkpoints are rejected with issues, never half-restored
+ok 212 - corrupt or inconsistent checkpoints are rejected with issues, never half-restored
+  ---
+  duration_ms: 1.595034
+  type: 'test'
+  ...
+# Subtest: restore makes no world command and no provider call at all
+ok 213 - restore makes no world command and no provider call at all
+  ---
+  duration_ms: 1.096286
+  type: 'test'
+  ...
+# Subtest: SIGKILL mid-request: unresolved attempt kept, totalTokens=null, crashed batch verifies non-zero
+ok 214 - SIGKILL mid-request: unresolved attempt kept, totalTokens=null, crashed batch verifies non-zero
+  ---
+  duration_ms: 9773.876727
+  type: 'test'
+  ...
+# Subtest: ready session round-trips; next DecideInput/command/result identical to the continuous branch
+ok 215 - ready session round-trips; next DecideInput/command/result identical to the continuous branch
+  ---
+  duration_ms: 3.925002
+  type: 'test'
+  ...
+# Subtest: partially completed session restores; final record equals the continuous branch (timing aside)
+ok 216 - partially completed session restores; final record equals the continuous branch (timing aside)
+  ---
+  duration_ms: 1.239383
+  type: 'test'
+  ...
+# Subtest: stopped and terminal sessions restore without ever calling the provider again
+ok 217 - stopped and terminal sessions restore without ever calling the provider again
+  ---
+  duration_ms: 0.966388
+  type: 'test'
+  ...
+# Subtest: budget boundary: restored session keeps its remaining calls and reports budget_exhausted
+ok 218 - budget boundary: restored session keeps its remaining calls and reports budget_exhausted
+  ---
+  duration_ms: 0.91046
+  type: 'test'
+  ...
+# Subtest: export is a deep copy in both directions; deciding refuses SAVE_BUSY
+ok 219 - export is a deep copy in both directions; deciding refuses SAVE_BUSY
+  ---
+  duration_ms: 50.725979
+  type: 'test'
+  ...
+# Subtest: restore rejects bad versions, shapes, ranges, torn step chains and formula mismatches
+ok 220 - restore rejects bad versions, shapes, ranges, torn step chains and formula mismatches
+  ---
+  duration_ms: 0.660316
+  type: 'test'
+  ...
+# Subtest: a session with an undeclared custom formula refuses export instead of guessing
+ok 221 - a session with an undeclared custom formula refuses export instead of guessing
+  ---
+  duration_ms: 0.226175
+  type: 'test'
+  ...
+# Subtest: parseG06RunId parses episode ids containing colons and rejects malformed ones
+ok 222 - parseG06RunId parses episode ids containing colons and rejects malformed ones
+  ---
+  duration_ms: 0.177656
+  type: 'test'
+  ...
+# Subtest: pending message survives save/load and binds at the next natural decision only
+ok 223 - pending message survives save/load and binds at the next natural decision only
+  ---
+  duration_ms: 9.163036
+  type: 'test'
+  ...
+# Subtest: consumed messages never re-deliver: save after the bind, load, and the next bind has no text
+ok 224 - consumed messages never re-deliver: save after the bind, load, and the next bind has no text
+  ---
+  duration_ms: 2.815797
+  type: 'test'
+  ...
+# Subtest: mode, message sequence, dedupe, bind count and budgets stay continuous across a save
+ok 225 - mode, message sequence, dedupe, bind count and budgets stay continuous across a save
+  ---
+  duration_ms: 2.609851
+  type: 'test'
+  ...
+# Subtest: a busy game refuses the save at the decision boundary
+ok 226 - a busy game refuses the save at the decision boundary
+  ---
+  duration_ms: 22.087567
+  type: 'test'
+  ...
+# Subtest: G06 and G07 files never load through each other
+ok 227 - G06 and G07 files never load through each other
+  ---
+  duration_ms: 2.104483
+  type: 'test'
+  ...
+# Subtest: CLI: say → save → quit → new process loads and the NPC consumes it in one decision
+ok 228 - CLI: say → save → quit → new process loads and the NPC consumes it in one decision
+  ---
+  duration_ms: 2447.510601
+  type: 'test'
+  ...
+# Subtest: CLI: message-mode conflict, foreign file and corrupt file all exit 2
+ok 229 - CLI: message-mode conflict, foreign file and corrupt file all exit 2
+  ---
+  duration_ms: 5557.392827
+  type: 'test'
+  ...
+# Subtest: CLI: an unwritable slot path fails the run, the ordinary duplicate stays exit 0
+ok 230 - CLI: an unwritable slot path fails the run, the ordinary duplicate stays exit 0
+  ---
+  duration_ms: 3026.017486
+  type: 'test'
+  ...
+# Subtest: a clean fake batch verifies ok, and its captured data lines are the frozen ones
+ok 231 - a clean fake batch verifies ok, and its captured data lines are the frozen ones
+  ---
+  duration_ms: 50.445314
+  type: 'test'
+  ...
+# Subtest: tampering one observation data line fails verify and names the line
+ok 232 - tampering one observation data line fails verify and names the line
+  ---
+  duration_ms: 6.418336
+  type: 'test'
+  ...
+# Subtest: tampering the goal data line fails verify and names the line
+ok 233 - tampering the goal data line fails verify and names the line
+  ---
+  duration_ms: 5.893838
+  type: 'test'
+  ...
+# Subtest: tampering the feedback data line fails verify and names the line
+ok 234 - tampering the feedback data line fails verify and names the line
+  ---
+  duration_ms: 5.352621
+  type: 'test'
+  ...
+# Subtest: a tampered command result fails the independent Engine re-execution
+ok 235 - a tampered command result fails the independent Engine re-execution
+  ---
+  duration_ms: 5.402769
+  type: 'test'
+  ...
+# Subtest: the re-execution also covers an accepted eat and the rejected player eat
+ok 236 - the re-execution also covers an accepted eat and the rejected player eat
+  ---
+  duration_ms: 5223.606843
+  type: 'test'
+  ...
+# Subtest: a tampered final state fails the independent Engine re-execution
+ok 237 - a tampered final state fails the independent Engine re-execution
+  ---
+  duration_ms: 5.511837
+  type: 'test'
+  ...
+# Subtest: the plan is frozen at 2 scenarios x 2 arms x 2 reps in the contract order
+ok 238 - the plan is frozen at 2 scenarios x 2 arms x 2 reps in the contract order
+  ---
+  duration_ms: 1.247692
+  type: 'test'
+  ...
+# Subtest: both arms share one template: only the playerMessages line differs
+ok 239 - both arms share one template: only the playerMessages line differs
+  ---
+  duration_ms: 0.729284
+  type: 'test'
+  ...
+# Subtest: strict parsing rejects forged authority, unknown actions and malformed text
+ok 240 - strict parsing rejects forged authority, unknown actions and malformed text
+  ---
+  duration_ms: 0.385571
+  type: 'test'
+  ...
+# Subtest: send changes no world, ledger, call or transition state and calls no provider
+ok 241 - send changes no world, ledger, call or transition state and calls no provider
+  ---
+  duration_ms: 2.114823
+  type: 'test'
+  ...
+# Subtest: a distant recipient is rejected and never queued
+ok 242 - a distant recipient is rejected and never queued
+  ---
+  duration_ms: 0.169277
+  type: 'test'
+  ...
+# Subtest: a budget denial spends no message: no bind, no HTTP, pending kept
+ok 243 - a budget denial spends no message: no bind, no HTTP, pending kept
+  ---
+  duration_ms: 0.706324
+  type: 'test'
+  ...
+# Subtest: an in-flight bind is frozen: a later send waits for the next decide
+ok 244 - an in-flight bind is frozen: a later send waits for the next decide
+  ---
+  duration_ms: 9.87093
+  type: 'test'
+  ...
+# Subtest: a restore does not redeliver a consumed message
+ok 245 - a restore does not redeliver a consumed message
+  ---
+  duration_ms: 0.633986
+  type: 'test'
+  ...
+# Subtest: the fixed 8-episode fake batch: one request each, identical templates, verifiable evidence
+ok 246 - the fixed 8-episode fake batch: one request each, identical templates, verifiable evidence
+  ---
+  duration_ms: 7734.796745
+  type: 'test'
+  ...
+# Subtest: verify is read-only
+ok 247 - verify is read-only
+  ---
+  duration_ms: 5160.99768
+  type: 'test'
+  ...
+# Subtest: G07-R1: omitting --timeout wires the effective 120000 ms into every layer
+ok 248 - G07-R1: omitting --timeout wires the effective 120000 ms into every layer
+  ---
+  duration_ms: 4395.393349
+  type: 'test'
+  ...
+# Subtest: G07-R1: a snapshot/plan timeout divergence is a configuration issue, not a behaviour failure
+ok 249 - G07-R1: a snapshot/plan timeout divergence is a configuration issue, not a behaviour failure
+  ---
+  duration_ms: 2155.927566
+  type: 'test'
+  ...
+# Subtest: an HTTP 500 stops the batch: failed record saved, later slots not_run, no retry
+ok 250 - an HTTP 500 stops the batch: failed record saved, later slots not_run, no retry
+  ---
+  duration_ms: 1497.411376
+  type: 'test'
+  ...
+# Subtest: a timeout stops the batch after one attempt, with no captured response and no retry
+ok 251 - a timeout stops the batch after one attempt, with no captured response and no retry
+  ---
+  duration_ms: 1401.357479
+  type: 'test'
+  ...
+# Subtest: a budget stop happens before the request: message stays pending, rest not_run
+ok 252 - a budget stop happens before the request: message stays pending, rest not_run
+  ---
+  duration_ms: 1125.409785
+  type: 'test'
+  ...
+# Subtest: a goal pre-check consumes no message and calls no provider
+ok 253 - a goal pre-check consumes no message and calls no provider
+  ---
+  duration_ms: 0.507369
+  type: 'test'
+  ...
+# Subtest: a forged actorId is recorded as invalid_output and never submitted
+ok 254 - a forged actorId is recorded as invalid_output and never submitted
+  ---
+  duration_ms: 1069.539351
+  type: 'test'
+  ...
+# Subtest: a fresh process does not redeliver a consumed message
+ok 255 - a fresh process does not redeliver a consumed message
+  ---
+  duration_ms: 46.481643
+  type: 'test'
+  ...
+# Subtest: preflight reads /health and /v1/models as separate, non-chat requests
+ok 256 - preflight reads /health and /v1/models as separate, non-chat requests
+  ---
+  duration_ms: 5.271182
+  type: 'test'
+  ...
+# Subtest: a failed preflight spends no chat and leaves all eight slots not_run
+ok 257 - a failed preflight spends no chat and leaves all eight slots not_run
+  ---
+  duration_ms: 891.18128
+  type: 'test'
+  ...
+# Subtest: a new live save records the actual model, thinking and timeout
+ok 258 - a new live save records the actual model, thinking and timeout
+  ---
+  duration_ms: 1637.53926
+  type: 'test'
+  ...
+# Subtest: a model mismatch is refused before any provider request (zero POSTs)
+ok 259 - a model mismatch is refused before any provider request (zero POSTs)
+  ---
+  duration_ms: 2421.618049
+  type: 'test'
+  ...
+# Subtest: resuming a live save uses the saved thinking value, not the environment
+ok 260 - resuming a live save uses the saved thinking value, not the environment
+  ---
+  duration_ms: 711.87489
+  type: 'test'
+  ...
+# Subtest: an unwritable save path fails the exit code; EXISTS stays an ordinary rejection
+ok 261 - an unwritable save path fails the exit code; EXISTS stays an ordinary rejection
+  ---
+  duration_ms: 3498.78998
+  type: 'test'
+  ...
+# Subtest: send accepts a local target once and rejects the second pending message
+ok 262 - send accepts a local target once and rejects the second pending message
+  ---
+  duration_ms: 1.567695
+  type: 'test'
+  ...
+# Subtest: same commandId: identical content duplicates, different content conflicts, never a second insert
+ok 263 - same commandId: identical content duplicates, different content conflicts, never a second insert
+  ---
+  duration_ms: 0.195006
+  type: 'test'
+  ...
+# Subtest: recipient, locality, blank and length bounds are enforced
+ok 264 - recipient, locality, blank and length bounds are enforced
+  ---
+  duration_ms: 0.214846
+  type: 'test'
+  ...
+# Subtest: bind is deep-copied and consumed once; later sends never mutate the bound text
+ok 265 - bind is deep-copied and consumed once; later sends never mutate the bound text
+  ---
+  duration_ms: 0.276974
+  type: 'test'
+  ...
+# Subtest: off arm binds at the same point but suppresses the text; receipt never claims understanding
+ok 266 - off arm binds at the same point but suppresses the text; receipt never claims understanding
+  ---
+  duration_ms: 0.262264
+  type: 'test'
+  ...
+# Subtest: restore of pending and consumed states: nothing re-binds or re-delivers
+ok 267 - restore of pending and consumed states: nothing re-binds or re-delivers
+  ---
+  duration_ms: 0.733364
+  type: 'test'
+  ...
+# Subtest: corrupt snapshots are rejected with issues
+ok 268 - corrupt snapshots are rejected with issues
+  ---
+  duration_ms: 0.359152
+  type: 'test'
+  ...
+# Subtest: pre-G07 inputs keep the original prompt: no message section at all
+ok 269 - pre-G07 inputs keep the original prompt: no message section at all
+  ---
+  duration_ms: 0.743563
+  type: 'test'
+  ...
+# Subtest: off and on arms share one template; only the playerMessages data differs
+ok 270 - off and on arms share one template; only the playerMessages data differs
+  ---
+  duration_ms: 0.206066
+  type: 'test'
+  ...
+# Subtest: the decorator binds at decide, settles the receipt, and forwards signal plus transport
+ok 271 - the decorator binds at decide, settles the receipt, and forwards signal plus transport
+  ---
+  duration_ms: 1.541546
+  type: 'test'
+  ...
+# Subtest: goal pre-check consumes nothing: no decide, message stays pending
+ok 272 - goal pre-check consumes nothing: no decide, message stays pending
+  ---
+  duration_ms: 1.259482
+  type: 'test'
+  ...
+# Subtest: in-flight bind is frozen: a newer send waits for the next decide
+ok 273 - in-flight bind is frozen: a newer send waits for the next decide
+  ---
+  duration_ms: 20.668769
+  type: 'test'
+  ...
+# Subtest: messages cannot inject actor/world commands; only the parsed action changes the world
+ok 274 - messages cannot inject actor/world commands; only the parsed action changes the world
+  ---
+  duration_ms: 17.325863
+  type: 'test'
+  ...
+# Subtest: reference provider ignores messages (no obedience is hard-coded)
+ok 275 - reference provider ignores messages (no obedience is hard-coded)
+  ---
+  duration_ms: 0.187716
+  type: 'test'
+  ...
+# Subtest: save/load round-trip: paused session restores with zero provider calls and the original deadline
+ok 276 - save/load round-trip: paused session restores with zero provider calls and the original deadline
+  ---
+  duration_ms: 10.379928
+  type: 'test'
+  ...
+# Subtest: resumed trajectory matches the never-interrupted one: wake, continue, identical final state
+ok 277 - resumed trajectory matches the never-interrupted one: wake, continue, identical final state
+  ---
+  duration_ms: 5.763222
+  type: 'test'
+  ...
+# Subtest: a runtime axis contradiction is refused with CONFLICT before any restore
+ok 278 - a runtime axis contradiction is refused with CONFLICT before any restore
+  ---
+  duration_ms: 2.066274
+  type: 'test'
+  ...
+# Subtest: foreign suffixes (.g06/.g07) and tampered envelopes are rejected, existing slots never overwritten
+ok 279 - foreign suffixes (.g06/.g07) and tampered envelopes are rejected, existing slots never overwritten
+  ---
+  duration_ms: 9.064028
+  type: 'test'
+  ...
+# Subtest: play-g08 CLI: cross-process restore keeps the deadline, spends zero calls, then wakes on time
+ok 280 - play-g08 CLI: cross-process restore keeps the deadline, spends zero calls, then wakes on time
+  ---
+  duration_ms: 4211.375124
+  type: 'test'
+  ...
+# Subtest: a loaded slot runs with the SAVED thinking=false and keeps the saved timeout
+ok 281 - a loaded slot runs with the SAVED thinking=false and keeps the saved timeout
+  ---
+  duration_ms: 1448.264092
+  type: 'test'
+  ...
+# Subtest: an HTTP 500 on --step exits 1 with the raw cause, the HTTP status and the failure state
+ok 282 - an HTTP 500 on --step exits 1 with the raw cause, the HTTP status and the failure state
+  ---
+  duration_ms: 1309.780662
+  type: 'test'
+  ...
+# Subtest: an HTTP 500 on --run exits 1 through the same finalize
+ok 283 - an HTTP 500 on --run exits 1 through the same finalize
+  ---
+  duration_ms: 1160.982981
+  type: 'test'
+  ...
+# Subtest: a live slot saves its model and refuses to load under another model (exit 2, zero requests)
+ok 284 - a live slot saves its model and refuses to load under another model (exit 2, zero requests)
+  ---
+  duration_ms: 3956.331784
+  type: 'test'
+  ...
+# Subtest: a live slot will not silently load with the script provider (exit 2, zero requests)
+ok 285 - a live slot will not silently load with the script provider (exit 2, zero requests)
+  ---
+  duration_ms: 1872.323193
+  type: 'test'
+  ...
+# Subtest: a reference slot refuses a --live upgrade (exit 2)
+ok 286 - a reference slot refuses a --live upgrade (exit 2)
+  ---
+  duration_ms: 2502.868346
+  type: 'test'
+  ...
+# Subtest: an HTTP 500 on --step exits 1, writes failure evidence, and never saves the slot
+ok 287 - an HTTP 500 on --step exits 1, writes failure evidence, and never saves the slot
+  ---
+  duration_ms: 813.703379
+  type: 'test'
+  ...
+# Subtest: an HTTP 500 on --run exits 1, writes evidence, and never saves the slot
+ok 288 - an HTTP 500 on --run exits 1, writes evidence, and never saves the slot
+  ---
+  duration_ms: 1016.70763
+  type: 'test'
+  ...
+# Subtest: the printed totalCalls equals the authoritative record on disk
+ok 289 - the printed totalCalls equals the authoritative record on disk
+  ---
+  duration_ms: 987.917252
+  type: 'test'
+  ...
+# Subtest: a pre-R1 envelope without effectiveConfig is refused at load (never migrated)
+ok 290 - a pre-R1 envelope without effectiveConfig is refused at load (never migrated)
+  ---
+  duration_ms: 1776.815433
+  type: 'test'
+  ...
+# Subtest: a legal mixed batch passes, and verification does not touch the evidence
+ok 291 - a legal mixed batch passes, and verification does not touch the evidence
+  ---
+  duration_ms: 7428.558286
+  type: 'test'
+  ...
+# Subtest: a command/event contradiction is rejected
+ok 292 - a command/event contradiction is rejected
+  ---
+  duration_ms: 5263.502383
+  type: 'test'
+  ...
+# Subtest: a self-consistent ledger that no longer matches the raw decision is rejected
+ok 293 - a self-consistent ledger that no longer matches the raw decision is rejected
+  ---
+  duration_ms: 3876.542433
+  type: 'test'
+  ...
+# Subtest: a tampered summary cannot vouch for itself
+ok 294 - a tampered summary cannot vouch for itself
+  ---
+  duration_ms: 1979.289717
+  type: 'test'
+  ...
+# Subtest: a missing summary fails the complete verification
+ok 295 - a missing summary fails the complete verification
+  ---
+  duration_ms: 1509.612214
+  type: 'test'
+  ...
+# Subtest: a duplicated finish is rejected by the full verifier
+ok 296 - a duplicated finish is rejected by the full verifier
+  ---
+  duration_ms: 1316.259147
+  type: 'test'
+  ...
+# Subtest: unknown usage is acknowledged, not silently zeroed
+ok 297 - unknown usage is acknowledged, not silently zeroed
+  ---
+  duration_ms: 1051.450205
+  type: 'test'
+  ...
+# Subtest: the prefix gate passes the first pair but a truncated batch is never complete
+ok 298 - the prefix gate passes the first pair but a truncated batch is never complete
+  ---
+  duration_ms: 1968.260383
+  type: 'test'
+  ...
+# Subtest: corrupted evidence is a named failure, never an exception
+ok 299 - corrupted evidence is a named failure, never an exception
+  ---
+  duration_ms: 971.802362
+  type: 'test'
+  ...
+# Subtest: an illegal first episode stops the batch: one request, seven not_run, nonzero exit
+ok 300 - an illegal first episode stops the batch: one request, seven not_run, nonzero exit
+  ---
+  duration_ms: 974.325595
+  type: 'test'
+  ...
+# Subtest: an honest batch derives all eight episodes, four cells and four pairs
+ok 301 - an honest batch derives all eight episodes, four cells and four pairs
+  ---
+  duration_ms: 7587.172167
+  type: 'test'
+  ...
+# Subtest: an unreadable usage is unknown, never a zero cost
+ok 302 - an unreadable usage is unknown, never a zero cost
+  ---
+  duration_ms: 5290.465742
+  type: 'test'
+  ...
+# Subtest: a duplicated finish is a named ledger issue
+ok 303 - a duplicated finish is a named ledger issue
+  ---
+  duration_ms: 3685.73547
+  type: 'test'
+  ...
+# Subtest: an orphan finish and an unresolved begin are both named
+ok 304 - an orphan finish and an unresolved begin are both named
+  ---
+  duration_ms: 1954.47753
+  type: 'test'
+  ...
+# Subtest: the hard chat budget cannot be exceeded by the ledger
+ok 305 - the hard chat budget cannot be exceeded by the ledger
+  ---
+  duration_ms: 1484.773688
+  type: 'test'
+  ...
+# Subtest: spent charges begins conservatively; an unresolved begin keeps usage unknown
+ok 306 - spent charges begins conservatively; an unresolved begin keeps usage unknown
+  ---
+  duration_ms: 1351.397383
+  type: 'test'
+  ...
+# Subtest: a blocked ledger record is counted, not silently dropped
+ok 307 - a blocked ledger record is counted, not silently dropped
+  ---
+  duration_ms: 1163.324179
+  type: 'test'
+  ...
+# Subtest: the plan is frozen: rep1 forward, rep2 the exact reverse, 4 balanced cells
+ok 308 - the plan is frozen: rep1 forward, rep2 the exact reverse, 4 balanced cells
+  ---
+  duration_ms: 1.167504
+  type: 'test'
+  ...
+# Subtest: the capability axis is visible in allowedActions; the wait rule is shared (G08-R1 C2)
+ok 309 - the capability axis is visible in allowedActions; the wait rule is shared (G08-R1 C2)
+  ---
+  duration_ms: 0.346072
+  type: 'test'
+  ...
+# Subtest: all four arms share one template once the axis data lines are stripped
+ok 310 - all four arms share one template once the axis data lines are stripped
+  ---
+  duration_ms: 0.576797
+  type: 'test'
+  ...
+# Subtest: promptIssuesFor catches a wrong axis, a missing wait line and a leaked playerMessages line
+ok 311 - promptIssuesFor catches a wrong axis, a missing wait line and a leaked playerMessages line
+  ---
+  duration_ms: 0.348082
+  type: 'test'
+  ...
+# Subtest: strictG08Action accepts wait only as the exact one-key object
+ok 312 - strictG08Action accepts wait only as the exact one-key object
+  ---
+  duration_ms: 0.380891
+  type: 'test'
+  ...
+# Subtest: a legal per-axis batch: timed_wait accepts wait with deadline 1, legacy eats first
+ok 313 - a legal per-axis batch: timed_wait accepts wait with deadline 1, legacy eats first
+  ---
+  duration_ms: 7585.497904
+  type: 'test'
+  ...
+# Subtest: an illegal legacy wait fails the experiment fast (G08-R1 C1)
+ok 314 - an illegal legacy wait fails the experiment fast (G08-R1 C1)
+  ---
+  duration_ms: 5230.419231
+  type: 'test'
+  ...
+# Subtest: an eat-responder batch: the NPC eats first and the player attempt is rejected
+ok 315 - an eat-responder batch: the NPC eats first and the player attempt is rejected
+  ---
+  duration_ms: 3720.295269
+  type: 'test'
+  ...
+# Subtest: a transport failure stops the batch: no retry, the rest stay not_run, verify reports it
+ok 316 - a transport failure stops the batch: no retry, the rest stay not_run, verify reports it
+  ---
+  duration_ms: 1960.503856
+  type: 'test'
+  ...
+# Subtest: the hard budget stops the batch mid-matrix and the blocked attempts are recorded
+ok 317 - the hard budget stops the batch mid-matrix and the blocked attempts are recorded
+  ---
+  duration_ms: 1504.175186
+  type: 'test'
+  ...
+# Subtest: verifyG08Batch re-reads a finished batch from disk and stays read-only
+ok 318 - verifyG08Batch re-reads a finished batch from disk and stays read-only
+  ---
+  duration_ms: 1300.406221
+  type: 'test'
+  ...
+# Subtest: timed_wait construction rejects a world without simTime, legacy does not
+ok 319 - timed_wait construction rejects a world without simTime, legacy does not
+  ---
+  duration_ms: 2.274219
+  type: 'test'
+  ...
+# Subtest: restore rejects a projected deadline that contradicts the session (DEADLINE_CONFLICT)
+ok 320 - restore rejects a projected deadline that contradicts the session (DEADLINE_CONFLICT)
+  ---
+  duration_ms: 5.876319
+  type: 'test'
+  ...
+# Subtest: restore rejects a session actionSet that contradicts the game (ACTION_SET_CONFLICT)
+ok 321 - restore rejects a session actionSet that contradicts the game (ACTION_SET_CONFLICT)
+  ---
+  duration_ms: 2.26005
+  type: 'test'
+  ...
+# Subtest: restore rejects an active actor whose session claims waiting_time (SESSION_STATE_CONFLICT)
+ok 322 - restore rejects an active actor whose session claims waiting_time (SESSION_STATE_CONFLICT)
+  ---
+  duration_ms: 1.608084
+  type: 'test'
+  ...
+# Subtest: restore rejects a timed_wait checkpoint without simTime (MISSING_SIMTIME)
+ok 323 - restore rejects a timed_wait checkpoint without simTime (MISSING_SIMTIME)
+  ---
+  duration_ms: 1.700422
+  type: 'test'
+  ...
+# Subtest: an expired-but-valid deadline restores as-is and the next reconcile honors it
+ok 324 - an expired-but-valid deadline restores as-is and the next reconcile honors it
+  ---
+  duration_ms: 5.707613
+  type: 'test'
+  ...
+# Subtest: a wait on the actor limit call settles budget_exhausted inside that advance
+ok 325 - a wait on the actor limit call settles budget_exhausted inside that advance
+  ---
+  duration_ms: 10.058176
+  type: 'test'
+  ...
+# Subtest: a legacy session can never restore as waiting_time
+ok 326 - a legacy session can never restore as waiting_time
+  ---
+  duration_ms: 0.622196
+  type: 'test'
+  ...
+# Subtest: createNeedsGame honors the same timed_wait simTime contract
+ok 327 - createNeedsGame honors the same timed_wait simTime contract
+  ---
+  duration_ms: 0.234745
+  type: 'test'
+  ...
+# Subtest: a wait accepted with a valid simTime still works (guard against over-rejection)
+ok 328 - a wait accepted with a valid simTime still works (guard against over-rejection)
+  ---
+  duration_ms: 0.608567
+  type: 'test'
+  ...
+# Subtest: a waiting actor is skipped by round-robin while the other NPC continues
+ok 329 - a waiting actor is skipped by round-robin while the other NPC continues
+  ---
+  duration_ms: 4.45868
+  type: 'test'
+  ...
+# Subtest: both NPCs waiting leaves the game idle; pumping does not move time
+ok 330 - both NPCs waiting leaves the game idle; pumping does not move time
+  ---
+  duration_ms: 1.219133
+  type: 'test'
+  ...
+# Subtest: a time jump resumes a paused session exactly once
+ok 331 - a time jump resumes a paused session exactly once
+  ---
+  duration_ms: 1.478467
+  type: 'test'
+  ...
+# Subtest: the fifth wait in a session and the tenth across cycles end budget_exhausted with no deadline
+ok 332 - the fifth wait in a session and the tenth across cycles end budget_exhausted with no deadline
+  ---
+  duration_ms: 4.561419
+  type: 'test'
+  ...
+# Subtest: a closed game never revives a paused actor
+ok 333 - a closed game never revives a paused actor
+  ---
+  duration_ms: 0.642655
+  type: 'test'
+  ...
+# Subtest: records, status and checkpoint data carry the G08 axis and deadlines
+ok 334 - records, status and checkpoint data carry the G08 axis and deadlines
+  ---
+  duration_ms: 0.873811
+  type: 'test'
+  ...
+# Subtest: a legacy G08 game accepts the axis without wait behaviour and keeps no deadlines
+ok 335 - a legacy G08 game accepts the axis without wait behaviour and keeps no deadlines
+  ---
+  duration_ms: 0.581747
+  type: 'test'
+  ...
+# Subtest: the player cannot wait: player input never pauses sessions
+ok 336 - the player cannot wait: player input never pauses sessions
+  ---
+  duration_ms: 0.378562
+  type: 'test'
+  ...
+# Subtest: legacy parser rejects wait with the unchanged legacy error
+ok 337 - legacy parser rejects wait with the unchanged legacy error
+  ---
+  duration_ms: 0.873631
+  type: 'test'
+  ...
+# Subtest: timed_wait parser accepts exactly {"type":"wait"}
+ok 338 - timed_wait parser accepts exactly {"type":"wait"}
+  ---
+  duration_ms: 0.615887
+  type: 'test'
+  ...
+# Subtest: an accepted wait sets waiting_time with deadline simTime+1 and survives re-stepping
+ok 339 - an accepted wait sets waiting_time with deadline simTime+1 and survives re-stepping
+  ---
+  duration_ms: 2.21488
+  type: 'test'
+  ...
+# Subtest: resumeIfDue only fires once at the deadline and costs no provider call
+ok 340 - resumeIfDue only fires once at the deadline and costs no provider call
+  ---
+  duration_ms: 0.654126
+  type: 'test'
+  ...
+# Subtest: a wait on the last session call ends budget_exhausted with no deadline
+ok 341 - a wait on the last session call ends budget_exhausted with no deadline
+  ---
+  duration_ms: 1.030007
+  type: 'test'
+  ...
+# Subtest: a world without simTime rejects the wait as a protocol failure (G08-R1: no ?? 0 fallback)
+ok 342 - a world without simTime rejects the wait as a protocol failure (G08-R1: no ?? 0 fallback)
+  ---
+  duration_ms: 0.293373
+  type: 'test'
+  ...
+# Subtest: exhaustBudget terminates a paused session and clears its deadline
+ok 343 - exhaustBudget terminates a paused session and clears its deadline
+  ---
+  duration_ms: 0.506478
+  type: 'test'
+  ...
+# Subtest: a legacy session exposes the same control surface without wait capability
+ok 344 - a legacy session exposes the same control surface without wait capability
+  ---
+  duration_ms: 0.391491
+  type: 'test'
+  ...
+# Subtest: G08 session checkpoint round trips a paused session with its deadline
+ok 345 - G08 session checkpoint round trips a paused session with its deadline
+  ---
+  duration_ms: 1.065526
+  type: 'test'
+  ...
+# Subtest: the legacy session schema refuses a waiting_time payload
+ok 346 - the legacy session schema refuses a waiting_time payload
+  ---
+  duration_ms: 0.558758
+  type: 'test'
+  ...
+# Subtest: a G08 payload without actionSet or with an inconsistent deadline is refused
+ok 347 - a G08 payload without actionSet or with an inconsistent deadline is refused
+  ---
+  duration_ms: 0.367052
+  type: 'test'
+  ...
+# Subtest: the honest batch passes: evidence ok, complete, 8/8, no issues
+ok 348 - the honest batch passes: evidence ok, complete, 8/8, no issues
+  ---
+  duration_ms: 7663.23081
+  type: 'test'
+  ...
+# Subtest: an impossible world is detected: the events cannot rebuild the final state
+ok 349 - an impossible world is detected: the events cannot rebuild the final state
+  ---
+  duration_ms: 5192.210213
+  type: 'test'
+  ...
+# Subtest: a timeout that disagrees with the frozen 120000 is a configuration finding
+ok 350 - a timeout that disagrees with the frozen 120000 is a configuration finding
+  ---
+  duration_ms: 3712.315147
+  type: 'test'
+  ...
+# Subtest: a request body that leaks another model/config is caught
+ok 351 - a request body that leaks another model/config is caught
+  ---
+  duration_ms: 1956.087564
+  type: 'test'
+  ...
+# Subtest: a raw response that no longer matches the recorded action is caught
+ok 352 - a raw response that no longer matches the recorded action is caught
+  ---
+  duration_ms: 1483.548706
+  type: 'test'
+  ...
+# Subtest: a deleted ledger is caught: 8 episodes, zero attempt files
+ok 353 - a deleted ledger is caught: 8 episodes, zero attempt files
+  ---
+  duration_ms: 1306.449316
+  type: 'test'
+  ...
+# Subtest: an empty batch is never complete success
+ok 354 - an empty batch is never complete success
+  ---
+  duration_ms: 1169.046231
+  type: 'test'
+  ...
+# Subtest: unknown/corrupted JSON is a named finding, never an exception
+ok 355 - unknown/corrupted JSON is a named finding, never an exception
+  ---
+  duration_ms: 934.937604
+  type: 'test'
+  ...
+# Subtest: the prefix gate checks only the first pair and never passes an empty prefix
+ok 356 - the prefix gate checks only the first pair and never passes an empty prefix
+  ---
+  duration_ms: 952.838645
+  type: 'test'
+  ...
+# Subtest: an honest eat episode: the command chain is the model output
+ok 357 - an honest eat episode: the command chain is the model output
+  ---
+  duration_ms: 7434.541212
+  type: 'test'
+  ...
+# Subtest: an honest wait episode: no world command, paused with deadline 1
+ok 358 - an honest wait episode: no world command, paused with deadline 1
+  ---
+  duration_ms: 5359.994261
+  type: 'test'
+  ...
+# Subtest: a command changed to move while the events still say eat is rejected
+ok 359 - a command changed to move while the events still say eat is rejected
+  ---
+  duration_ms: 4042.783075
+  type: 'test'
+  ...
+# Subtest: a command/event ledger that no longer matches the raw action is rejected
+ok 360 - a command/event ledger that no longer matches the raw action is rejected
+  ---
+  duration_ms: 1912.397038
+  type: 'test'
+  ...
+# Subtest: a forged wait flag without the paused game state is rejected
+ok 361 - a forged wait flag without the paused game state is rejected
+  ---
+  duration_ms: 1556.218404
+  type: 'test'
+  ...
+# Subtest: a forged player status is rejected against the executed command
+ok 362 - a forged player status is rejected against the executed command
+  ---
+  duration_ms: 1318.585925
+  type: 'test'
+  ...
+# Subtest: F1a: a goal answer released after the deadline is discarded (no binding, no submit)
+ok 363 - F1a: a goal answer released after the deadline is discarded (no binding, no submit)
+  ---
+  duration_ms: 4.375832
+  type: 'test'
+  ...
+# Subtest: F1b: a wait answer released after the action deadline creates no new wait deadline
+ok 364 - F1b: a wait answer released after the action deadline creates no new wait deadline
+  ---
+  duration_ms: 2.102433
+  type: 'test'
+  ...
+# Subtest: F1c: a player eat before acceptance cannot fulfil the later promise, and the seq is the receive seq
+ok 365 - F1c: a player eat before acceptance cannot fulfil the later promise, and the seq is the receive seq
+  ---
+  duration_ms: 1.275102
+  type: 'test'
+  ...
+# Subtest: F2a: yield -> stop -> player eat fulfils immediately; selected goal true, hunger need false
+ok 366 - F2a: yield -> stop -> player eat fulfils immediately; selected goal true, hunger need false
+  ---
+  duration_ms: 1.483177
+  type: 'test'
+  ...
+# Subtest: F2b: NPC eats first -> violated forever, even at hunger 70 and after a later player eat
+ok 367 - F2b: NPC eats first -> violated forever, even at hunger 70 and after a later player eat
+  ---
+  duration_ms: 4.304554
+  type: 'test'
+  ...
+# Subtest: F2d: a feed_self refusal is recorded in the store and still runs the ordinary hunger action
+ok 368 - F2d: a feed_self refusal is recorded in the store and still runs the ordinary hunger action
+  ---
+  duration_ms: 0.819992
+  type: 'test'
+  ...
+# Subtest: F2c: close cancels an unfinished request; the terminal outcome is idempotent
+ok 369 - F2c: close cancels an unfinished request; the terminal outcome is idempotent
+  ---
+  duration_ms: 0.743363
+  type: 'test'
+  ...
+# Subtest: F3: save at three cut points, load in another process, and keep the same yield goal
+ok 370 - F3: save at three cut points, load in another process, and keep the same yield goal
+  ---
+  duration_ms: 8904.94161
+  type: 'test'
+  ...
+# Subtest: F4: --time advances the authoritative clock, expires the open request, and never rewrites a fulfilled one
+ok 371 - F4: --time advances the authoritative clock, expires the open request, and never rewrites a fulfilled one
+  ---
+  duration_ms: 4103.950671
+  type: 'test'
+  ...
+# Subtest: F5: eval --live records the REAL wire (8 episodes, 16 POST, verify green)
+ok 372 - F5: eval --live records the REAL wire (8 episodes, 16 POST, verify green)
+  ---
+  duration_ms: 2596.998407
+  type: 'test'
+  ...
+# Subtest: F5b: a 500 on the first call stops the batch, keeps the raw evidence, and invents no usage
+ok 373 - F5b: a 500 on the first call stops the batch, keeps the raw evidence, and invents no usage
+  ---
+  duration_ms: 908.222599
+  type: 'test'
+  ...
+# Subtest: F6a: two processes race the FIRST open with limit 1 — only one authorization survives
+ok 374 - F6a: two processes race the FIRST open with limit 1 — only one authorization survives
+  ---
+  duration_ms: 2057.12516
+  type: 'test'
+  ...
+# Subtest: F6b: eight processes on an existing limit-2 ledger grant at most two unique attempts
+ok 375 - F6b: eight processes on an existing limit-2 ledger grant at most two unique attempts
+  ---
+  duration_ms: 263.181929
+  type: 'test'
+  ...
+# Subtest: F6c: limit 0 authorizes nothing, and a reserved-but-unfinished call stays spent
+ok 376 - F6c: limit 0 authorizes nothing, and a reserved-but-unfinished call stays spent
+  ---
+  duration_ms: 153.772799
+  type: 'test'
+  ...
+# Subtest: F7: six short sequences are judged by the contract first, then continuous == resumed
+ok 377 - F7: six short sequences are judged by the contract first, then continuous == resumed
+  ---
+  duration_ms: 26.837822
+  type: 'test'
+  ...
+# Subtest: F7b: post-acceptance continuation across processes equals the continuous run
+ok 378 - F7b: post-acceptance continuation across processes equals the continuous run
+  ---
+  duration_ms: 1112.361856
+  type: 'test'
+  ...
+# Subtest: a decided slot round-trips with the request store and the binding
+ok 379 - a decided slot round-trips with the request store and the binding
+  ---
+  duration_ms: 8.652477
+  type: 'test'
+  ...
+# Subtest: restore spends ZERO calls, keeps the phase and never re-chooses
+ok 380 - restore spends ZERO calls, keeps the phase and never re-chooses
+  ---
+  duration_ms: 3.680668
+  type: 'test'
+  ...
+# Subtest: a tampered or contradictory slot is refused before any game exists
+ok 381 - a tampered or contradictory slot is refused before any game exists
+  ---
+  duration_ms: 2.077693
+  type: 'test'
+  ...
+# Subtest: the CLI runs the real protocol, saves, loads and save-as
+ok 382 - the CLI runs the real protocol, saves, loads and save-as
+  ---
+  duration_ms: 5226.410091
+  type: 'test'
+  ...
+# Subtest: a 500 step exits nonzero, writes the failure record and keeps the slot bytes
+ok 383 - a 500 step exits nonzero, writes the failure record and keeps the slot bytes
+  ---
+  duration_ms: 122300.636577
+  type: 'test'
+  ...
+# Subtest: the frozen matrix is exact and rep 2 is the reverse
+ok 384 - the frozen matrix is exact and rep 2 is the reverse
+  ---
+  duration_ms: 1.214713
+  type: 'test'
+  ...
+# Subtest: the frozen world and the shared runtime factory
+ok 385 - the frozen world and the shared runtime factory
+  ---
+  duration_ms: 0.288894
+  type: 'test'
+  ...
+# Subtest: the campaign budget never refreshes by batch name and survives a restart
+ok 386 - the campaign budget never refreshes by batch name and survives a restart
+  ---
+  duration_ms: 2.869676
+  type: 'test'
+  ...
+# Subtest: a legal fake batch: 8 episodes, 16 POSTs, verify ok
+ok 387 - a legal fake batch: 8 episodes, 16 POSTs, verify ok
+  ---
+  duration_ms: 1809.172362
+  type: 'test'
+  ...
+# Subtest: campaign limit 2 stops after two POSTs across two batches
+ok 388 - campaign limit 2 stops after two POSTs across two batches
+  ---
+  duration_ms: 3360.086874
+  type: 'test'
+  ...
+# Subtest: a self-declared plan or summary cannot pass the external contract
+ok 389 - a self-declared plan or summary cannot pass the external contract
+  ---
+  duration_ms: 1802.922731
+  type: 'test'
+  ...
+# Subtest: a wrong attempt association or begin configuration is rejected
+ok 390 - a wrong attempt association or begin configuration is rejected
+  ---
+  duration_ms: 2903.501679
+  type: 'test'
+  ...
+# Subtest: verification is read-only
+ok 391 - verification is read-only
+  ---
+  duration_ms: 2058.764784
+  type: 'test'
+  ...
+# Subtest: the frozen entries are derived from the contract, not from disk
+ok 392 - the frozen entries are derived from the contract, not from disk
+  ---
+  duration_ms: 0.400441
+  type: 'test'
+  ...
+# Subtest: the frozen S1 is the request text in BOTH candidate sets
+ok 393 - the frozen S1 is the request text in BOTH candidate sets
+  ---
+  duration_ms: 1.145354
+  type: 'test'
+  ...
+# Subtest: the deadline is logical time: createdAt + 1, never a provider round
+ok 394 - the deadline is logical time: createdAt + 1, never a provider round
+  ---
+  duration_ms: 0.47031
+  type: 'test'
+  ...
+# Subtest: an answer at or after the expiry binds nothing
+ok 395 - an answer at or after the expiry binds nothing
+  ---
+  duration_ms: 0.219545
+  type: 'test'
+  ...
+# Subtest: feed_self declines without a binding; strict parser rejects everything else
+ok 396 - feed_self declines without a binding; strict parser rejects everything else
+  ---
+  duration_ms: 0.243015
+  type: 'test'
+  ...
+# Subtest: NPC eats first => violated and it can never be repaired
+ok 397 - NPC eats first => violated and it can never be repaired
+  ---
+  duration_ms: 0.273324
+  type: 'test'
+  ...
+# Subtest: the acceptance boundary excludes old commands and honours the deadline
+ok 398 - the acceptance boundary excludes old commands and honours the deadline
+  ---
+  duration_ms: 0.269004
+  type: 'test'
+  ...
+# Subtest: terminal states are idempotent and expiry is logical-time driven
+ok 399 - terminal states are idempotent and expiry is logical-time driven
+  ---
+  duration_ms: 0.214605
+  type: 'test'
+  ...
+# Subtest: replay uses each command time and keeps a fulfilled promise fulfilled
+ok 400 - replay uses each command time and keeps a fulfilled promise fulfilled
+  ---
+  duration_ms: 0.270944
+  type: 'test'
+  ...
+# Subtest: the game-level store dedupes, refuses conflicts and consumes once
+ok 401 - the game-level store dedupes, refuses conflicts and consumes once
+  ---
+  duration_ms: 0.310323
+  type: 'test'
+  ...
+# Subtest: evaluateGoal: feed_self uses hunger, yield_once uses the request outcome
+ok 402 - evaluateGoal: feed_self uses hunger, yield_once uses the request outcome
+  ---
+  duration_ms: 0.277384
+  type: 'test'
+  ...
+# Subtest: bindingIssues enforces the acceptance contract
+ok 403 - bindingIssues enforces the acceptance contract
+  ---
+  duration_ms: 0.92164
+  type: 'test'
+  ...
+# Subtest: the frozen goal prompt is one template for both arms
+ok 404 - the frozen goal prompt is one template for both arms
+  ---
+  duration_ms: 0.257914
+  type: 'test'
+  ...
+# Subtest: the snapshot validator enforces the new schema
+ok 405 - the snapshot validator enforces the new schema
+  ---
+  duration_ms: 0.216045
+  type: 'test'
+  ...
+# Subtest: goal then action in ONE session, each counted, action submits
+ok 406 - goal then action in ONE session, each counted, action submits
+  ---
+  duration_ms: 3.003423
+  type: 'test'
+  ...
+# Subtest: a late goal answer is discarded: no binding, no submit, the call stays spent
+ok 407 - a late goal answer is discarded: no binding, no submit, the call stays spent
+  ---
+  duration_ms: 0.958159
+  type: 'test'
+  ...
+# Subtest: a late yield action is discarded: no submit, no wait deadline
+ok 408 - a late yield action is discarded: no submit, no wait deadline
+  ---
+  duration_ms: 0.503829
+  type: 'test'
+  ...
+# Subtest: insufficient budget spends nothing and leaves the remaining call intact
+ok 409 - insufficient budget spends nothing and leaves the remaining call intact
+  ---
+  duration_ms: 0.303004
+  type: 'test'
+  ...
+# Subtest: a new recurring cycle never re-asks the processed request
+ok 410 - a new recurring cycle never re-asks the processed request
+  ---
+  duration_ms: 2.520014
+  type: 'test'
+  ...
+# Subtest: the goal step observation is the frozen local one
+ok 411 - the goal step observation is the frozen local one
+  ---
+  duration_ms: 0.311443
+  type: 'test'
+  ...
+# Subtest: U1: every command parses at its boundary; invalid input never reaches the game
+ok 412 - U1: every command parses at its boundary; invalid input never reaches the game
+  ---
+  duration_ms: 1.667473
+  type: 'test'
+  ...
+# Subtest: U2: step is at most one call, run N is at most N advances, reads are free
+ok 413 - U2: step is at most one call, run N is at most N advances, reads are free
+  ---
+  duration_ms: 7.891654
+  type: 'test'
+  ...
+# Subtest: U2b: reentrant step is busy, save is SAVE_BUSY, close is idempotent
+ok 414 - U2b: reentrant step is busy, save is SAVE_BUSY, close is idempotent
+  ---
+  duration_ms: 1.049806
+  type: 'test'
+  ...
+# Subtest: P1/P2/P3: the three scripted demos produce the contract outcomes with exactly two decisions
+ok 415 - P1/P2/P3: the three scripted demos produce the contract outcomes with exactly two decisions
+  ---
+  duration_ms: 4609.785666
+  type: 'test'
+  ...
+# Subtest: S1: three cut points survive a process exit and match the continuous run at every step
+ok 416 - S1: three cut points survive a process exit and match the continuous run at every step
+  ---
+  duration_ms: 3967.077603
+  type: 'test'
+  ...
+# Subtest: S2: a second save of the same slot is refused byte-for-byte; a load conflict exits 2
+ok 417 - S2: a second save of the same slot is refused byte-for-byte; a load conflict exits 2
+  ---
+  duration_ms: 3515.231563
+  type: 'test'
+  ...
+# Subtest: N1: default offline ignores env; the live path is real wire with the saved goal after a restore
+ok 418 - N1: default offline ignores env; the live path is real wire with the saved goal after a restore
+  ---
+  duration_ms: 3265.007926
+  type: 'test'
+  ...
+# Subtest: N2: a 500 stops at one POST with evidence; NO_FOOD keeps the session usable
+ok 419 - N2: a 500 stops at one POST with evidence; NO_FOOD keeps the session usable
+  ---
+  duration_ms: 1688.292718
+  type: 'test'
+  ...
+# Subtest: X1: quit and EOF each finalize once and never add a model call (all platforms)
+ok 420 - X1: quit and EOF each finalize once and never add a model call (all platforms)
+  ---
+  duration_ms: 1142.115662
+  type: 'test'
+  ...
+# Subtest: X1b: POSIX SIGINT finalizes once without a model call
+ok 421 - X1b: POSIX SIGINT finalizes once without a model call
+  ---
+  duration_ms: 464.452189
+  type: 'test'
+  ...
+# Subtest: 1. action prompt: structured active goal only; legacy prompt unchanged; feed_self keeps hunger
+ok 422 - 1. action prompt: structured active goal only; legacy prompt unchanged; feed_self keeps hunger
+  ---
+  duration_ms: 0.966598
+  type: 'test'
+  ...
+# Subtest: 1b. a restored session rebuilds the SAME active goal without a new goal choice
+ok 423 - 1b. a restored session rebuilds the SAME active goal without a new goal choice
+  ---
+  duration_ms: 3.195569
+  type: 'test'
+  ...
+# Subtest: 2. response classification: the original att-4 truncation, a JSON-looking truncation, and empty content
+ok 424 - 2. response classification: the original att-4 truncation, a JSON-looking truncation, and empty content
+  ---
+  duration_ms: 190.48575
+  type: 'test'
+  ...
+# Subtest: 3. an illegal FIRST action stops at exactly 2 POSTs, no scripted eat, rest not_run, exit 1
+ok 425 - 3. an illegal FIRST action stops at exactly 2 POSTs, no scripted eat, rest not_run, exit 1
+  ---
+  duration_ms: 2096.650769
+  type: 'test'
+  ...
+# Subtest: 3b. an illegal THIRD action stops at exactly 6 POSTs (after the first-pair gate)
+ok 426 - 3b. an illegal THIRD action stops at exactly 6 POSTs (after the first-pair gate)
+  ---
+  duration_ms: 1824.886761
+  type: 'test'
+  ...
+# Subtest: 4. a legal wait completes the phase; feed_self parses ok with no binding and no required command
+ok 427 - 4. a legal wait completes the phase; feed_self parses ok with no binding and no required command
+  ---
+  duration_ms: 2054.272484
+  type: 'test'
+  ...
+# Subtest: 5. cost derivation: 2495 known with 0 unknown; a missing attempted usage propagates null but keeps the known subtotal
+ok 428 - 5. cost derivation: 2495 known with 0 unknown; a missing attempted usage propagates null but keeps the known subtotal
+  ---
+  duration_ms: 1723.875815
+  type: 'test'
+  ...
+# Subtest: 6. tampered claims are rejected; the honest failure batch stays complete=false with a non-zero CLI
+ok 429 - 6. tampered claims are rejected; the honest failure batch stays complete=false with a non-zero CLI
+  ---
+  duration_ms: 1694.690245
+  type: 'test'
+  ...
+# Subtest: A transient save IO then recovery before EOF: exit 1, stderr cause, record carries the failure, no false claim
+ok 430 - A transient save IO then recovery before EOF: exit 1, stderr cause, record carries the failure, no false claim
+  ---
+  duration_ms: 2487.619117
+  type: 'test'
+  ...
+# Subtest: A permanent final-record IO on EOF: exit 1, stderr cause, no "run record ->" claim
+ok 431 - A permanent final-record IO on EOF: exit 1, stderr cause, no "run record ->" claim
+  ---
+  duration_ms: 1801.122811
+  type: 'test'
+  ...
+# Subtest: A ordinary refusals (EXISTS / INVALID_SLOT) never escalate to a latched failure
+ok 432 - A ordinary refusals (EXISTS / INVALID_SLOT) never escalate to a latched failure
+  ---
+  duration_ms: 1080.282042
+  type: 'test'
+  ...
+# Subtest: A one process, one exclusive run record; a second process gets a new ordinal
+ok 433 - A one process, one exclusive run record; a second process gets a new ordinal
+  ---
+  duration_ms: 3097.494372
+  type: 'test'
+  ...
+# Subtest: A unit: a fatal save failure latches with the original cause, evidence miss recorded as null
+ok 434 - A unit: a fatal save failure latches with the original cause, evidence miss recorded as null
+  ---
+  duration_ms: 0.830332
+  type: 'test'
+  ...
+# Subtest: A unit: an EXISTS refusal is not a failure; a provider throw latches PROVIDER_ERROR
+ok 435 - A unit: an EXISTS refusal is not a failure; a provider throw latches PROVIDER_ERROR
+  ---
+  duration_ms: 0.341143
+  type: 'test'
+  ...
+# Subtest: B independent check: an existing directory (sentinel or empty) is refused, bytes untouched
+ok 436 - B independent check: an existing directory (sentinel or empty) is refused, bytes untouched
+  ---
+  duration_ms: 377.530008
+  type: 'test'
+  ...
+# Subtest: ports contract: emptyPorts writeRunRecord accepts the optional failures parameter
+ok 437 - ports contract: emptyPorts writeRunRecord accepts the optional failures parameter
+  ---
+  duration_ms: 0.269284
+  type: 'test'
+  ...
+# Subtest: P0-1a: yield violated at hunger 70 is never labelled goal_reached
+ok 438 - P0-1a: yield violated at hunger 70 is never labelled goal_reached
+  ---
+  duration_ms: 4.451091
+  type: 'test'
+  ...
+# Subtest: P0-1b: yield fulfilled at hunger 40 keeps the two axes separate
+ok 439 - P0-1b: yield fulfilled at hunger 40 keeps the two axes separate
+  ---
+  duration_ms: 0.87463
+  type: 'test'
+  ...
+# Subtest: P0-1c: feed_self still follows the hunger rule
+ok 440 - P0-1c: feed_self still follows the hunger rule
+  ---
+  duration_ms: 1.282712
+  type: 'test'
+  ...
+# Subtest: P0-1d: an invalid run stays invalid even after the hunger reaches 70
+ok 441 - P0-1d: an invalid run stays invalid even after the hunger reaches 70
+  ---
+  duration_ms: 0.43044
+  type: 'test'
+  ...
+# Subtest: P0-2: an 80ms no-header timeout keeps exactly one real request body and a null response
+ok 442 - P0-2: an 80ms no-header timeout keeps exactly one real request body and a null response
+  ---
+  duration_ms: 87.946788
+  type: 'test'
+  ...
+# Subtest: I1: --root pointing at a regular file exits 2 with zero decisions and no record
+ok 443 - I1: --root pointing at a regular file exits 2 with zero decisions and no record
+  ---
+  duration_ms: 1755.636956
+  type: 'test'
+  ...
+# Subtest: I2a: a save IO failure exits 1, names the cause, and later quit cannot wash it
+ok 444 - I2a: a save IO failure exits 1, names the cause, and later quit cannot wash it
+  ---
+  duration_ms: 1095.648518
+  type: 'test'
+  ...
+# Subtest: I2b: a final-record write failure exits 1, prints the cause, and writes nothing
+ok 445 - I2b: a final-record write failure exits 1, prints the cause, and writes nothing
+  ---
+  duration_ms: 1518.808759
+  type: 'test'
+  ...
+# Subtest: I3: a duplicate/illegal slot is a named refusal; bytes stay; a new slot and a clean quit work
+ok 446 - I3: a duplicate/illegal slot is a named refusal; bytes stay; a new slot and a clean quit work
+  ---
+  duration_ms: 1550.527872
+  type: 'test'
+  ...
+# Subtest: I4: quit without save leaves one exclusive, re-executable run record; the view is only a projection
+ok 447 - I4: quit without save leaves one exclusive, re-executable run record; the view is only a projection
+  ---
+  duration_ms: 2428.352309
+  type: 'test'
+  ...
+# Subtest: B1: a saved live slot refuses a different limit-1 ledger before any POST
+ok 448 - B1: a saved live slot refuses a different limit-1 ledger before any POST
+  ---
+  duration_ms: 4002.216369
+  type: 'test'
+  ...
+# Subtest: B2: rollback, rewritten history, changed limit and a copied ledger are all refused
+ok 449 - B2: rollback, rewritten history, changed limit and a copied ledger are all refused
+  ---
+  duration_ms: 5349.943225
+  type: 'test'
+  ...
+# Subtest: B3: the same ledger may grow after the save; the old slot never refreshes the budget
+ok 450 - B3: the same ledger may grow after the save; the old slot never refreshes the budget
+  ---
+  duration_ms: 1267.893466
+  type: 'test'
+  ...
+# Subtest: B4: an old fixture slot still restores; an old live slot without a binding is refused
+ok 451 - B4: an old fixture slot still restores; an old live slot without a binding is refused
+  ---
+  duration_ms: 845.925739
+  type: 'test'
+  ...
+# Subtest: L1: the frozen 8-episode/16-POST eval path runs on a test-owned server and verifies read-only
+ok 452 - L1: the frozen 8-episode/16-POST eval path runs on a test-owned server and verifies read-only
+  ---
+  duration_ms: 758.295125
+  type: 'test'
+  ...
+# Subtest: L2: live-plan proposes 16, authorizes 0 and never creates a real ledger
+ok 453 - L2: live-plan proposes 16, authorizes 0 and never creates a real ledger
+  ---
+  duration_ms: 5.099926
+  type: 'test'
+  ...
+# Subtest: existing directory with sentinel evidence is refused with exit 2 and unchanged bytes
+ok 454 - existing directory with sentinel evidence is refused with exit 2 and unchanged bytes
+  ---
+  duration_ms: 186.93686
+  type: 'test'
+  ...
+# Subtest: an existing EMPTY directory is refused the same way
+ok 455 - an existing EMPTY directory is refused the same way
+  ---
+  duration_ms: 128.241509
+  type: 'test'
+  ...
+# Subtest: a fresh directory runs the full rehearsal: 8 episodes, 16 loopback POSTs, verify ok
+ok 456 - a fresh directory runs the full rehearsal: 8 episodes, 16 loopback POSTs, verify ok
+  ---
+  duration_ms: 4449.13504
+  type: 'test'
+  ...
+# Subtest: explicit action off is written, restored and handed to the provider layer
+ok 457 - explicit action off is written, restored and handed to the provider layer
+  ---
+  duration_ms: 12.735485
+  type: 'test'
+  ...
+# Subtest: a slot saved without the flag keeps its original key set and meaning
+ok 458 - a slot saved without the flag keeps its original key set and meaning
+  ---
+  duration_ms: 3.833125
+  type: 'test'
+  ...
+# Subtest: an envelope/game disagreement is refused before anything runs
+ok 459 - an envelope/game disagreement is refused before anything runs
+  ---
+  duration_ms: 3.208218
+  type: 'test'
+  ...
+# Subtest: a non-boolean actionThinking is refused by slot validation
+ok 460 - a non-boolean actionThinking is refused by slot validation
+  ---
+  duration_ms: 2.977654
+  type: 'test'
+  ...
+# Subtest: a tampered checksum is still rejected (the new field adds no bypass)
+ok 461 - a tampered checksum is still rejected (the new field adds no bypass)
+  ---
+  duration_ms: 2.834577
+  type: 'test'
+  ...
+# Subtest: the complete W1/W2 batch is 2 goal-on + 6 action-off across two processes per scene
+ok 462 - the complete W1/W2 batch is 2 goal-on + 6 action-off across two processes per scene
+  ---
+  duration_ms: 9651.071546
+  type: 'test'
+  ...
+# Subtest: a wire that contradicts the frozen action value closes the gate (copy only)
+ok 463 - a wire that contradicts the frozen action value closes the gate (copy only)
+  ---
+  duration_ms: 7834.0832
+  type: 'test'
+  ...
+# Subtest: an explicit load value that contradicts the slot spends nothing
+ok 464 - an explicit load value that contradicts the slot spends nothing
+  ---
+  duration_ms: 3210.452382
+  type: 'test'
+  ...
+# Subtest: a 500 on the first action stops with evidence and no retry
+ok 465 - a 500 on the first action stops with evidence and no retry
+  ---
+  duration_ms: 1504.636455
+  type: 'test'
+  ...
+# Subtest: goal keeps thinking on while the action phase is explicitly off
+ok 466 - goal keeps thinking on while the action phase is explicitly off
+  ---
+  duration_ms: 59.122441
+  type: 'test'
+  ...
+# Subtest: without the flag every request keeps the historical all-on body
+ok 467 - without the flag every request keeps the historical all-on body
+  ---
+  duration_ms: 14.605924
+  type: 'test'
+  ...
+# Subtest: an invalid --action-thinking value is a config error, not a silent default
+ok 468 - an invalid --action-thinking value is a config error, not a silent default
+  ---
+  duration_ms: 1582.255334
+  type: 'test'
+  ...
+# Subtest: prepare freezes action off; goal wires stay on and every action wire is off
+ok 469 - prepare freezes action off; goal wires stay on and every action wire is off
+  ---
+  duration_ms: 10304.90875
+  type: 'test'
+  ...
+# Subtest: a plan without the flag keeps the historical all-on wire and key set
+ok 470 - a plan without the flag keeps the historical all-on wire and key set
+  ---
+  duration_ms: 7551.777986
+  type: 'test'
+  ...
+# Subtest: verify rejects action wires that contradict the frozen phase value
+ok 471 - verify rejects action wires that contradict the frozen phase value
+  ---
+  duration_ms: 4242.072499
+  type: 'test'
+  ...
+# Subtest: an invalid --action-thinking value spends nothing and writes no plan
+ok 472 - an invalid --action-thinking value spends nothing and writes no plan
+  ---
+  duration_ms: 1177.711078
+  type: 'test'
+  ...
+# Subtest: fresh entry: an exhausted campaign blocks the continuation with ZERO posts (app wiring, not a hand-injected unit)
+ok 473 - fresh entry: an exhausted campaign blocks the continuation with ZERO posts (app wiring, not a hand-injected unit)
+  ---
+  duration_ms: 1310.372548
+  type: 'test'
+  ...
+# Subtest: the restore chain preserves GameRestoreRuntime.externalBudget (false stops, true continues)
+ok 474 - the restore chain preserves GameRestoreRuntime.externalBudget (false stops, true continues)
+  ---
+  duration_ms: 12.918082
+  type: 'test'
+  ...
+# Subtest: load entry: an unreadable ledger fails CLOSED — no cycle, zero posts
+ok 475 - load entry: an unreadable ledger fails CLOSED — no cycle, zero posts
+  ---
+  duration_ms: 40.998326
+  type: 'test'
+  ...
+# Subtest: a failed promise settles with zero calls and never continues (lifecycle counterexample)
+ok 476 - a failed promise settles with zero calls and never continues (lifecycle counterexample)
+  ---
+  duration_ms: 5.40445
+  type: 'test'
+  ...
+# Subtest: quitting with an open promise leaves cancelled evidence; the slot keeps the promise open
+ok 477 - quitting with an open promise leaves cancelled evidence; the slot keeps the promise open
+  ---
+  duration_ms: 1311.590901
+  type: 'test'
+  ...
+# Subtest: the view reports the CURRENT session goal only: terminal requests keep their own line, the settle never re-asks, feed_self shows its own decision
+ok 478 - the view reports the CURRENT session goal only: terminal requests keep their own line, the settle never re-asks, feed_self shows its own decision
+  ---
+  duration_ms: 11.980192
+  type: 'test'
+  ...
+# Subtest: a funded campaign completes W1 and W2 exactly: 8 posts, restore free, verify clean
+ok 479 - a funded campaign completes W1 and W2 exactly: 8 posts, restore free, verify clean
+  ---
+  duration_ms: 10897.369334
+  type: 'test'
+  ...
+# Subtest: an exhausted campaign blocks the restored continuation BEFORE any provider attempt
+ok 480 - an exhausted campaign blocks the restored continuation BEFORE any provider attempt
+  ---
+  duration_ms: 4824.831739
+  type: 'test'
+  ...
+# Subtest: a feed_self answer classifies not_triggered and stops the batch
+ok 481 - a feed_self answer classifies not_triggered and stops the batch
+  ---
+  duration_ms: 1860.594644
+  type: 'test'
+  ...
+# Subtest: an HTTP 500 on the first post stops with evidence and no re-run
+ok 482 - an HTTP 500 on the first post stops with evidence and no re-run
+  ---
+  duration_ms: 1269.96788
+  type: 'test'
+  ...
+# Subtest: a same-name batch is refused with ZERO posts
+ok 483 - a same-name batch is refused with ZERO posts
+  ---
+  duration_ms: 870.984301
+  type: 'test'
+  ...
+# Subtest: verify detects ledger tampering, forged lineage and slot rewrites
+ok 484 - verify detects ledger tampering, forged lineage and slot rewrites
+  ---
+  duration_ms: 3487.707357
+  type: 'test'
+  ...
+# Subtest: a scene that DECLARES its failure is evidence-ok but never complete
+ok 485 - a scene that DECLARES its failure is evidence-ok but never complete
+  ---
+  duration_ms: 263.552001
+  type: 'test'
+  ...
+# Subtest: a wrong model stops at preflight with ZERO posts and no ledger
+ok 486 - a wrong model stops at preflight with ZERO posts and no ledger
+  ---
+  duration_ms: 4013.745312
+  type: 'test'
+  ...
+# Subtest: a 503 /health stops at preflight with ZERO posts
+ok 487 - a 503 /health stops at preflight with ZERO posts
+  ---
+  duration_ms: 2911.876373
+  type: 'test'
+  ...
+# Subtest: every invocation keeps its OWN preflight record and never overwrites one
+ok 488 - every invocation keeps its OWN preflight record and never overwrites one
+  ---
+  duration_ms: 4419.53867
+  type: 'test'
+  ...
+# Subtest: a batch starts exactly once: the second run is refused with no extra spend
+ok 489 - a batch starts exactly once: the second run is refused with no extra spend
+  ---
+  duration_ms: 8111.618998
+  type: 'test'
+  ...
+# Subtest: run-start.json freezes the code head, the plan bytes and every effective setting
+ok 490 - run-start.json freezes the code head, the plan bytes and every effective setting
+  ---
+  duration_ms: 3188.496302
+  type: 'test'
+  ...
+# Subtest: a legal phase that needs more than 2 x request timeout still completes (settle margin)
+ok 491 - a legal phase that needs more than 2 x request timeout still completes (settle margin)
+  ---
+  duration_ms: 7801.498876
+  type: 'test'
+  ...
+# Subtest: a stuck phase is killed by the watchdog, recorded, and never retried
+ok 492 - a stuck phase is killed by the watchdog, recorded, and never retried
+  ---
+  duration_ms: 864.72619
+  type: 'test'
+  ...
+# Subtest: verify changes no byte of the batch or the campaign
+ok 493 - verify changes no byte of the batch or the campaign
+  ---
+  duration_ms: 2508.402084
+  type: 'test'
+  ...
+# Subtest: a batch with only plan + offline-ready verifies as offline_ready without creating anything
+ok 494 - a batch with only plan + offline-ready verifies as offline_ready without creating anything
+  ---
+  duration_ms: 431.902915
+  type: 'test'
+  ...
+# Subtest: W0: an ordinary wait resumes in the SAME cycle; the deadline costs no call
+ok 495 - W0: an ordinary wait resumes in the SAME cycle; the deadline costs no call
+  ---
+  duration_ms: 4.279544
+  type: 'test'
+  ...
+# Subtest: W1: a fulfilled promise settles at the deadline with zero calls and the ordinary need continues
+ok 496 - W1: a fulfilled promise settles at the deadline with zero calls and the ordinary need continues
+  ---
+  duration_ms: 4.190347
+  type: 'test'
+  ...
+# Subtest: W2: an expired promise settles with zero calls; the old request never flips to fulfilled
+ok 497 - W2: an expired promise settles with zero calls; the old request never flips to fulfilled
+  ---
+  duration_ms: 1.606894
+  type: 'test'
+  ...
+# Subtest: boundary: a still-unmet need at 50 after the deadline continues; >= 70 ends with zero calls
+ok 498 - boundary: a still-unmet need at 50 after the deadline continues; >= 70 ends with zero calls
+  ---
+  duration_ms: 1.220592
+  type: 'test'
+  ...
+# Subtest: boundary: one-shot, closed games, budget exhaustion and violations never continue
+ok 499 - boundary: one-shot, closed games, budget exhaustion and violations never continue
+  ---
+  duration_ms: 2.900576
+  type: 'test'
+  ...
+# Subtest: boundary: repeated reconcile/pumps settle once — one continuation cycle, no provider duplicate
+ok 500 - boundary: repeated reconcile/pumps settle once — one continuation cycle, no provider duplicate
+  ---
+  duration_ms: 1.80629
+  type: 'test'
+  ...
+# Subtest: restore: a checkpoint at the deadline reproduces the continuous continuation exactly
+ok 501 - restore: a checkpoint at the deadline reproduces the continuous continuation exactly
+  ---
+  duration_ms: 121.614397
+  type: 'test'
+  ...
+# Subtest: prompt: the yield statement no longer claims that moving breaks the agreement
+ok 502 - prompt: the yield statement no longer claims that moving breaks the agreement
+  ---
+  duration_ms: 3.939422
+  type: 'test'
+  ...
+# Subtest: derive: a connection refusal maps to provider_error, never invalid_run
+ok 503 - derive: a connection refusal maps to provider_error, never invalid_run
+  ---
+  duration_ms: 953.570828
+  type: 'test'
+  ...
+# Subtest: env config requires a full URL and model; the key is optional
+ok 504 - env config requires a full URL and model; the key is optional
+  ---
+  duration_ms: 1.078556
+  type: 'test'
+  ...
+# Subtest: prompt is only the decide input
+ok 505 - prompt is only the decide input
+  ---
+  duration_ms: 0.289833
+  type: 'test'
+  ...
+# Subtest: prompt states public eat rules and forbids actorId
+ok 506 - prompt states public eat rules and forbids actorId
+  ---
+  duration_ms: 0.179506
+  type: 'test'
+  ...
+# Subtest: HTTP adapter posts chat completions to the full URL and reads message content
+ok 507 - HTTP adapter posts chat completions to the full URL and reads message content
+  ---
+  duration_ms: 14.81776
+  type: 'test'
+  ...
+# Subtest: HTTP errors do not include the response body or the API key
+ok 508 - HTTP errors do not include the response body or the API key
+  ---
+  duration_ms: 1.32406
+  type: 'test'
+  ...
+# Subtest: adapter drops a body that arrives after abort
+ok 509 - adapter drops a body that arrives after abort
+  ---
+  duration_ms: 91.136367
+  type: 'test'
+  ...
+# Subtest: fake chat completions server: move then eat, and a transport error submits nothing
+ok 510 - fake chat completions server: move then eat, and a transport error submits nothing
+  ---
+  duration_ms: 92.252862
+  type: 'test'
+  ...
+# Subtest: HTTP timeout aborts the request and submits nothing
+ok 511 - HTTP timeout aborts the request and submits nothing
+  ---
+  duration_ms: 147.998299
+  type: 'test'
+  ...
+# Subtest: reasoning fields are not actions; only message content is returned
+ok 512 - reasoning fields are not actions; only message content is returned
+  ---
+  duration_ms: 2.588762
+  type: 'test'
+  ...
+# Subtest: offline entries do not network when live env is set
+ok 513 - offline entries do not network when live env is set
+  ---
+  duration_ms: 3238.678802
+  type: 'test'
+  ...
+# Subtest: missing live config exits 2 and does not call the network
+ok 514 - missing live config exits 2 and does not call the network
+  ---
+  duration_ms: 4446.592006
+  type: 'test'
+  ...
+# Subtest: fake HTTP happy path meets the goal three times, replays, and exits 0
+ok 515 - fake HTTP happy path meets the goal three times, replays, and exits 0
+  ---
+  duration_ms: 1015.464588
+  type: 'test'
+  ...
+# Subtest: HTTP 500 exits 1, keeps failure records, and does not change the world
+ok 516 - HTTP 500 exits 1, keeps failure records, and does not change the world
+  ---
+  duration_ms: 972.571535
+  type: 'test'
+  ...
+# Subtest: live timeout exits 1 without applying a late action
+ok 517 - live timeout exits 1 without applying a late action
+  ---
+  duration_ms: 1489.265007
+  type: 'test'
+  ...
+# Subtest: consecutive illegal outputs exit 1 and ignore a legal action hidden in reasoning
+ok 518 - consecutive illegal outputs exit 1 and ignore a legal action hidden in reasoning
+  ---
+  duration_ms: 1368.324816
+  type: 'test'
+  ...
+# Subtest: one failed live run among three exits 1
+ok 519 - one failed live run among three exits 1
+  ---
+  duration_ms: 1116.933873
+  type: 'test'
+  ...
+# Subtest: live start keeps existing files and writes a second batch beside the first
+ok 520 - live start keeps existing files and writes a second batch beside the first
+  ---
+  duration_ms: 1905.16101
+  type: 'test'
+  ...
+# Subtest: FROSTECHO_LLM_THINKING=false is sent and recorded, and the default constant stays true
+ok 521 - FROSTECHO_LLM_THINKING=false is sent and recorded, and the default constant stays true
+  ---
+  duration_ms: 699.102524
+  type: 'test'
+  ...
+# Subtest: live artifact defaults and timeout override stay optional
+ok 522 - live artifact defaults and timeout override stay optional
+  ---
+  duration_ms: 0.638086
+  type: 'test'
+  ...
+# Subtest: summary is regenerated from step records and drops secrets
+ok 523 - summary is regenerated from step records and drops secrets
+  ---
+  duration_ms: 7.719818
+  type: 'test'
+  ...
+# Subtest: summary recomputes the goal and rejects metadata that disagrees with the records
+ok 524 - summary recomputes the goal and rejects metadata that disagrees with the records
+  ---
+  duration_ms: 3.919922
+  type: 'test'
+  ...
+# Subtest: 1. duplicate observation is idempotent for memory and relations
+ok 525 - 1. duplicate observation is idempotent for memory and relations
+  ---
+  duration_ms: 1.269702
+  type: 'test'
+  ...
+# Subtest: 2. a private message to A never appears in B memory
+ok 526 - 2. a private message to A never appears in B memory
+  ---
+  duration_ms: 1.014857
+  type: 'test'
+  ...
+# Subtest: 3. a heard valid retraction leaves the active set but keeps history
+ok 527 - 3. a heard valid retraction leaves the active set but keeps history
+  ---
+  duration_ms: 1.240153
+  type: 'test'
+  ...
+# Subtest: 4. a character that did not hear the retraction keeps its knowledge
+ok 528 - 4. a character that did not hear the retraction keeps its knowledge
+  ---
+  duration_ms: 0.300063
+  type: 'test'
+  ...
+# Subtest: 5. an unauthorised third-party retraction does not change the promise
+ok 529 - 5. an unauthorised third-party retraction does not change the promise
+  ---
+  duration_ms: 0.258354
+  type: 'test'
+  ...
+# Subtest: 6. quoted words and unverified inference do not become instructions or fulfilment
+ok 530 - 6. quoted words and unverified inference do not become instructions or fulfilment
+  ---
+  duration_ms: 0.413441
+  type: 'test'
+  ...
+# Subtest: 7. an old similar memory does not outrank the known correction
+ok 531 - 7. an old similar memory does not outrank the known correction
+  ---
+  duration_ms: 0.398551
+  type: 'test'
+  ...
+# Subtest: 8. a query error is distinct from an empty result
+ok 532 - 8. a query error is distinct from an empty result
+  ---
+  duration_ms: 0.389741
+  type: 'test'
+  ...
+# Subtest: 9. budget truncation is reported and evidence stays traceable
+ok 533 - 9. budget truncation is reported and evidence stays traceable
+  ---
+  duration_ms: 0.344673
+  type: 'test'
+  ...
+# Subtest: 10. restore rebuilds indexes and keeps query/relation/hash equivalence
+ok 534 - 10. restore rebuilds indexes and keeps query/relation/hash equivalence
+  ---
+  duration_ms: 1.173304
+  type: 'test'
+  ...
+# Subtest: 11. only a relevant retraction invalidates a dependent plan
+ok 535 - 11. only a relevant retraction invalidates a dependent plan
+  ---
+  duration_ms: 0.174646
+  type: 'test'
+  ...
+# Subtest: 12. stale snapshots and other memory policies cannot be reused
+ok 536 - 12. stale snapshots and other memory policies cannot be reused
+  ---
+  duration_ms: 0.239225
+  type: 'test'
+  ...
+# Subtest: observation is own id, location, hunger, food here, and reachable places
+ok 537 - observation is own id, location, hunger, food here, and reachable places
+  ---
+  duration_ms: 1.215273
+  type: 'test'
+  ...
+# Subtest: foodHere follows the current location only
+ok 538 - foodHere follows the current location only
+  ---
+  duration_ms: 0.184336
+  type: 'test'
+  ...
+# Subtest: changing invisible food, other NPCs, or tick does not change the observation
+ok 539 - changing invisible food, other NPCs, or tick does not change the observation
+  ---
+  duration_ms: 0.219285
+  type: 'test'
+  ...
+# Subtest: observation does not mutate the world and reachable is a copy
+ok 540 - observation does not mutate the world and reachable is a copy
+  ---
+  duration_ms: 0.216775
+  type: 'test'
+  ...
+# Subtest: prototype actor ids are not observable NPCs
+ok 541 - prototype actor ids are not observable NPCs
+  ---
+  duration_ms: 0.409671
+  type: 'test'
+  ...
+# Subtest: parser accepts only move, eat, and stop
+ok 542 - parser accepts only move, eat, and stop
+  ---
+  duration_ms: 1.064946
+  type: 'test'
+  ...
+# Subtest: parser rejects extra fields, illegal places, and non-objects
+ok 543 - parser rejects extra fields, illegal places, and non-objects
+  ---
+  duration_ms: 0.255765
+  type: 'test'
+  ...
+# Subtest: every generated candidate is either executable or explicitly refused
+ok 544 - every generated candidate is either executable or explicitly refused
+  ---
+  duration_ms: 2.350708
+  type: 'test'
+  ...
+# Subtest: candidate parameters carry the action the world will execute
+ok 545 - candidate parameters carry the action the world will execute
+  ---
+  duration_ms: 0.280633
+  type: 'test'
+  ...
+# Subtest: a candidate is only offered when its preconditions hold
+ok 546 - a candidate is only offered when its preconditions hold
+  ---
+  duration_ms: 1.105855
+  type: 'test'
+  ...
+# Subtest: only active promises produce a help candidate
+ok 547 - only active promises produce a help candidate
+  ---
+  duration_ms: 0.989267
+  type: 'test'
+  ...
+# Subtest: utility is not a probability
+ok 548 - utility is not a probability
+  ---
+  duration_ms: 1.381259
+  type: 'test'
+  ...
+# Subtest: candidate order does not change per-id utility or the selected id
+ok 549 - candidate order does not change per-id utility or the selected id
+  ---
+  duration_ms: 0.45737
+  type: 'test'
+  ...
+# Subtest: an obligation beats a mild hunger when the promise is active
+ok 550 - an obligation beats a mild hunger when the promise is active
+  ---
+  duration_ms: 0.321503
+  type: 'test'
+  ...
+# Subtest: empty candidate sets are unavailable, not a softmax over nothing
+ok 551 - empty candidate sets are unavailable, not a softmax over nothing
+  ---
+  duration_ms: 0.269814
+  type: 'test'
+  ...
+# Subtest: json scorer rejects a selection outside the candidate set
+ok 552 - json scorer rejects a selection outside the candidate set
+  ---
+  duration_ms: 0.703104
+  type: 'test'
+  ...
+# Subtest: json scorer handles malformed output as unavailable
+ok 553 - json scorer handles malformed output as unavailable
+  ---
+  duration_ms: 0.390781
+  type: 'test'
+  ...
+# Subtest: jev shadow never accepts an action
+ok 554 - jev shadow never accepts an action
+  ---
+  duration_ms: 0.367302
+  type: 'test'
+  ...
+# Subtest: jev without a loaded model is unavailable, not a fake success
+ok 555 - jev without a loaded model is unavailable, not a fake success
+  ---
+  duration_ms: 0.308093
+  type: 'test'
+  ...
+# Subtest: eight npcs each get a legal candidate set under scarcity
+ok 556 - eight npcs each get a legal candidate set under scarcity
+  ---
+  duration_ms: 0.419661
+  type: 'test'
+  ...
+# Subtest: play without --live ignores live env and does not call the network
+ok 557 - play without --live ignores live env and does not call the network
+  ---
+  duration_ms: 1238.17883
+  type: 'test'
+  ...
+# Subtest: play --live without config exits 2 and does not call the network
+ok 558 - play --live without config exits 2 and does not call the network
+  ---
+  duration_ms: 733.758702
+  type: 'test'
+  ...
+# Subtest: player commands apply while the NPC request is in flight, then the stale eat is NO_FOOD
+ok 559 - player commands apply while the NPC request is in flight, then the stale eat is NO_FOOD
+  ---
+  duration_ms: 1351.189628
+  type: 'test'
+  ...
+# Subtest: quit rejects new commands and waits out the current step before saving
+ok 560 - quit rejects new commands and waits out the current step before saving
+  ---
+  duration_ms: 949.236105
+  type: 'test'
+  ...
+# Subtest: player cancellation reaches only the addressed NPC
+ok 561 - player cancellation reaches only the addressed NPC
+  ---
+  duration_ms: 2.141672
+  type: 'test'
+  ...
+# Subtest: a rejected reserve writes no promise_kept; success is fulfilled once
+ok 562 - a rejected reserve writes no promise_kept; success is fulfilled once
+  ---
+  duration_ms: 1.597085
+  type: 'test'
+  ...
+# Subtest: a real stdin session saves, exits, restores and keeps the asymmetry
+ok 563 - a real stdin session saves, exits, restores and keeps the asymmetry
+  ---
+  duration_ms: 1709.878736
+  type: 'test'
+  ...
+# Subtest: stdin input changes the trajectory and executes authoritative commands
+ok 564 - stdin input changes the trajectory and executes authoritative commands
+  ---
+  duration_ms: 6.541474
+  type: 'test'
+  ...
+# Subtest: R1-G: a confirmed fulfilment changes the relation once and survives restore
+ok 565 - R1-G: a confirmed fulfilment changes the relation once and survives restore
+  ---
+  duration_ms: 2.475745
+  type: 'test'
+  ...
+# Subtest: formal regression: actorId "proto" -> UNKNOWN_ACTOR, state and events unchanged
+ok 566 - formal regression: actorId "proto" -> UNKNOWN_ACTOR, state and events unchanged
+  ---
+  duration_ms: 70.440979
+  type: 'test'
+  ...
+# Subtest: formal regression: actorId "__proto__" -> UNKNOWN_ACTOR, state and events unchanged
+ok 567 - formal regression: actorId "__proto__" -> UNKNOWN_ACTOR, state and events unchanged
+  ---
+  duration_ms: 88.619913
+  type: 'test'
+  ...
+# Subtest: R2-P1: 8 NPC x 4 days = 96h completes tasks and settles the ending
+ok 568 - R2-P1: 8 NPC x 4 days = 96h completes tasks and settles the ending
+  ---
+  duration_ms: 19.916946
+  type: 'test'
+  ...
+# Subtest: R2-P2: an all-dead ending is reachable from the authoritative state
+ok 569 - R2-P2: an all-dead ending is reachable from the authoritative state
+  ---
+  duration_ms: 0.197605
+  type: 'test'
+  ...
+# Subtest: R2-P3: cancelling a task stops that NPC from executing it
+ok 570 - R2-P3: cancelling a task stops that NPC from executing it
+  ---
+  duration_ms: 0.256315
+  type: 'test'
+  ...
+# Subtest: R2-P4: hunger vs leave-food conflict is observable and defers the task
+ok 571 - R2-P4: hunger vs leave-food conflict is observable and defers the task
+  ---
+  duration_ms: 0.517849
+  type: 'test'
+  ...
+# Subtest: R2-P5: relation is a pre-registered candidate input (high vs low trust)
+ok 572 - R2-P5: relation is a pre-registered candidate input (high vs low trust)
+  ---
+  duration_ms: 0.204345
+  type: 'test'
+  ...
+# Subtest: R2-P7: the real CLI assigns, runs and restores gameplay tasks
+ok 573 - R2-P7: the real CLI assigns, runs and restores gameplay tasks
+  ---
+  duration_ms: 1307.531902
+  type: 'test'
+  ...
+# Subtest: R2-P6: task board and world survive save/restore and continue playing
+ok 574 - R2-P6: task board and world survive save/restore and continue playing
+  ---
+  duration_ms: 2.963054
+  type: 'test'
+  ...
+# Subtest: R2-A1: piped step/save/quit settles the step before saving (real subprocess)
+ok 575 - R2-A1: piped step/save/quit settles the step before saving (real subprocess)
+  ---
+  duration_ms: 934.076333
+  type: 'test'
+  ...
+# Subtest: R2-A2: EOF (no quit) drains accepted jobs and exits 0
+ok 576 - R2-A2: EOF (no quit) drains accepted jobs and exits 0
+  ---
+  duration_ms: 775.784074
+  type: 'test'
+  ...
+# Subtest: R2-B: a cancel accepted before a queued step starts revokes its choice
+ok 577 - R2-B: a cancel accepted before a queued step starts revokes its choice
+  ---
+  duration_ms: 557.284068
+  type: 'test'
+  ...
+# Subtest: R2-C: duplicate commandId replays the first receipt across save/load
+ok 578 - R2-C: duplicate commandId replays the first receipt across save/load
+  ---
+  duration_ms: 3.765026
+  type: 'test'
+  ...
+# Subtest: R2-D1: a recovered scored entry keeps retrieval=error and does not execute
+ok 579 - R2-D1: a recovered scored entry keeps retrieval=error and does not execute
+  ---
+  duration_ms: 2.362807
+  type: 'test'
+  ...
+# Subtest: R2-D2: journal mode refuses a legacy void callback (fail closed)
+ok 580 - R2-D2: journal mode refuses a legacy void callback (fail closed)
+  ---
+  duration_ms: 1.189304
+  type: 'test'
+  ...
+# Subtest: R2-D3: the request digest includes stateVersion (no stale replay)
+ok 581 - R2-D3: the request digest includes stateVersion (no stale replay)
+  ---
+  duration_ms: 1.402478
+  type: 'test'
+  ...
+# Subtest: CLI: delivery task completes over the real map and reports done
+ok 582 - CLI: delivery task completes over the real map and reports done
+  ---
+  duration_ms: 1056.56498
+  type: 'test'
+  ...
+# Subtest: CLI: empty warehouse yields out_of_stock, keeps the promise, retries after restock
+ok 583 - CLI: empty warehouse yields out_of_stock, keeps the promise, retries after restock
+  ---
+  duration_ms: 802.180395
+  type: 'test'
+  ...
+# Subtest: CLI: a sealed warehouse door is reported and never silently cancelled
+ok 584 - CLI: a sealed warehouse door is reported and never silently cancelled
+  ---
+  duration_ms: 668.602455
+  type: 'test'
+  ...
+# Subtest: CLI: cancelling the task means zero delivery commits afterwards
+ok 585 - CLI: cancelling the task means zero delivery commits afterwards
+  ---
+  duration_ms: 1798.385062
+  type: 'test'
+  ...
+# Subtest: CLI: save + new process restores path, belief, experience and board
+ok 586 - CLI: save + new process restores path, belief, experience and board
+  ---
+  duration_ms: 1142.270249
+  type: 'test'
+  ...
+# Subtest: CLI: the frozen 8-NPC four-day chain still runs alongside the spatial layer
+ok 587 - CLI: the frozen 8-NPC four-day chain still runs alongside the spatial layer
+  ---
+  duration_ms: 490.252563
+  type: 'test'
+  ...
+# Subtest: experience: an out_of_stock sighting creates a valid conditional note
+ok 588 - experience: an out_of_stock sighting creates a valid conditional note
+  ---
+  duration_ms: 1.353609
+  type: 'test'
+  ...
+# Subtest: experience: a personally-witnessed restock invalidates the empty note
+ok 589 - experience: a personally-witnessed restock invalidates the empty note
+  ---
+  duration_ms: 0.283953
+  type: 'test'
+  ...
+# Subtest: experience: road notes are separate lessons with their own invalidator
+ok 590 - experience: road notes are separate lessons with their own invalidator
+  ---
+  duration_ms: 0.160486
+  type: 'test'
+  ...
+# Subtest: experience: rumors never create notes (own observation only)
+ok 591 - experience: rumors never create notes (own observation only)
+  ---
+  duration_ms: 0.121838
+  type: 'test'
+  ...
+# Subtest: experience: notes round-trip through JSON without aliasing
+ok 592 - experience: notes round-trip through JSON without aliasing
+  ---
+  duration_ms: 0.218015
+  type: 'test'
+  ...
+# Subtest: comparison script: same-state branches produce the metric JSON
+ok 593 - comparison script: same-state branches produce the metric JSON
+  ---
+  duration_ms: 1103.617851
+  type: 'test'
+  ...
+# Subtest: delivery run: assign -> travel -> withdraw -> travel -> deliver completes the task
+ok 594 - delivery run: assign -> travel -> withdraw -> travel -> deliver completes the task
+  ---
+  duration_ms: 7.128301
+  type: 'test'
+  ...
+# Subtest: delivery run: personally-witnessed out-of-stock falls back, rumor + restock retries
+ok 595 - delivery run: personally-witnessed out-of-stock falls back, rumor + restock retries
+  ---
+  duration_ms: 7.294107
+  type: 'test'
+  ...
+# Subtest: delivery run: a sealed warehouse door is reported, not silently cancelled
+ok 596 - delivery run: a sealed warehouse door is reported, not silently cancelled
+  ---
+  duration_ms: 2.298849
+  type: 'test'
+  ...
+# Subtest: delivery run: unobserved world restock never leaks into NPC belief
+ok 597 - delivery run: unobserved world restock never leaks into NPC belief
+  ---
+  duration_ms: 0.824072
+  type: 'test'
+  ...
+# Subtest: delivery run: save and restore preserve spatial state, beliefs and board
+ok 598 - delivery run: save and restore preserve spatial state, beliefs and board
+  ---
+  duration_ms: 3.354675
+  type: 'test'
+  ...
+# Subtest: delivery run: step records stay reference-rules mode with conflicts visible
+ok 599 - delivery run: step records stay reference-rules mode with conflicts visible
+  ---
+  duration_ms: 0.421871
+  type: 'test'
+  ...
+# Subtest: R3-M1: unregistered identity fails closed even when self-consistent
+ok 600 - R3-M1: unregistered identity fails closed even when self-consistent
+  ---
+  duration_ms: 1.039617
+  type: 'test'
+  ...
+# Subtest: R3-M2: task/K/memoryPolicy drift is refused
+ok 601 - R3-M2: task/K/memoryPolicy drift is refused
+  ---
+  duration_ms: 0.220795
+  type: 'test'
+  ...
+# Subtest: R3-M3: non-finite logits fail closed
+ok 602 - R3-M3: non-finite logits fail closed
+  ---
+  duration_ms: 1.016598
+  type: 'test'
+  ...
+# Subtest: R3-M4: recorded-logits success is shadow-only with the source labelled
+ok 603 - R3-M4: recorded-logits success is shadow-only with the source labelled
+  ---
+  duration_ms: 0.602377
+  type: 'test'
+  ...
+# Subtest: R3-M5: fixture artifact may never pose as the model line
+ok 604 - R3-M5: fixture artifact may never pose as the model line
+  ---
+  duration_ms: 0.160966
+  type: 'test'
+  ...
+# Subtest: R3-M6: logits file must label its fake wiring
+ok 605 - R3-M6: logits file must label its fake wiring
+  ---
+  duration_ms: 0.635156
+  type: 'test'
+  ...
+# Subtest: R3-M7: manifest loader rejects foreign schemas
+ok 606 - R3-M7: manifest loader rejects foreign schemas
+  ---
+  duration_ms: 0.419041
+  type: 'test'
+  ...
+# Subtest: CLI async scorer: cancel is confirmed before release and the stale result commits nothing
+ok 607 - CLI async scorer: cancel is confirmed before release and the stale result commits nothing
+  ---
+  duration_ms: 1183.655565
+  type: 'test'
+  ...
+# Subtest: CLI async scorer: without a cancel the slow result commits exactly once
+ok 608 - CLI async scorer: without a cancel the slow result commits exactly once
+  ---
+  duration_ms: 855.498766
+  type: 'test'
+  ...
+# Subtest: map: A* reaches every building door from every other door
+ok 609 - map: A* reaches every building door from every other door
+  ---
+  duration_ms: 11.805466
+  type: 'test'
+  ...
+# Subtest: travel: dorm -> warehouse door advances time, drains the traveller and updates location
+ok 610 - travel: dorm -> warehouse door advances time, drains the traveller and updates location
+  ---
+  duration_ms: 1.690073
+  type: 'test'
+  ...
+# Subtest: travel: route must start at the actor cell and step 4-adjacent
+ok 611 - travel: route must start at the actor cell and step 4-adjacent
+  ---
+  duration_ms: 0.45843
+  type: 'test'
+  ...
+# Subtest: travel: a wall cell is never walkable
+ok 612 - travel: a wall cell is never walkable
+  ---
+  duration_ms: 0.177696
+  type: 'test'
+  ...
+# Subtest: withdraw: success moves warehouse stock into carry with an event
+ok 613 - withdraw: success moves warehouse stock into carry with an event
+  ---
+  duration_ms: 0.313413
+  type: 'test'
+  ...
+# Subtest: withdraw: out-of-stock is an observable event, not an error
+ok 614 - withdraw: out-of-stock is an observable event, not an error
+  ---
+  duration_ms: 0.364822
+  type: 'test'
+  ...
+# Subtest: withdraw requires standing at the place
+ok 615 - withdraw requires standing at the place
+  ---
+  duration_ms: 0.191985
+  type: 'test'
+  ...
+# Subtest: restock after an out_of_stock observation enables a retry
+ok 616 - restock after an out_of_stock observation enables a retry
+  ---
+  duration_ms: 0.373952
+  type: 'test'
+  ...
+# Subtest: deliver: shortfall is observable; a real delivery completes the meal flow
+ok 617 - deliver: shortfall is observable; a real delivery completes the meal flow
+  ---
+  duration_ms: 0.637965
+  type: 'test'
+  ...
+# Subtest: close-road / open-road: authority events and walkability effects
+ok 618 - close-road / open-road: authority events and walkability effects
+  ---
+  duration_ms: 0.490529
+  type: 'test'
+  ...
+# Subtest: a closed corridor forces a detour, not a shorter path through it
+ok 619 - a closed corridor forces a detour, not a shorter path through it
+  ---
+  duration_ms: 0.288524
+  type: 'test'
+  ...
+# Subtest: frozen flows: pre-R3 command streams never materialize a spatial field
+ok 620 - frozen flows: pre-R3 command streams never materialize a spatial field
+  ---
+  duration_ms: 1.148514
+  type: 'test'
+  ...
+# Subtest: spatial commands snapshot and restore through the same schema
+ok 621 - spatial commands snapshot and restore through the same schema
+  ---
+  duration_ms: 0.315003
+  type: 'test'
+  ...
+# Subtest: R3-R1: fromJSON restores the sequence high-water mark
+ok 622 - R3-R1: fromJSON restores the sequence high-water mark
+  ---
+  duration_ms: 0.829201
+  type: 'test'
+  ...
+# Subtest: R3-R2: done -> save -> restore -> new assign -> cancel acts on the new instance
+ok 623 - R3-R2: done -> save -> restore -> new assign -> cancel acts on the new instance
+  ---
+  duration_ms: 1867.084049
+  type: 'test'
+  ...
+# Subtest: R3-R3: cancelled -> save -> restore -> new assign gets a fresh active instance
+ok 624 - R3-R3: cancelled -> save -> restore -> new assign gets a fresh active instance
+  ---
+  duration_ms: 1288.054996
+  type: 'test'
+  ...
+# Subtest: R3-R4: repeated player command is idempotent across save/restore
+ok 625 - R3-R4: repeated player command is idempotent across save/restore
+  ---
+  duration_ms: 1962.734196
+  type: 'test'
+  ...
+# Subtest: R3-R5: legacy duplicate-ID archive resolves cancel to the active row
+ok 626 - R3-R5: legacy duplicate-ID archive resolves cancel to the active row
+  ---
+  duration_ms: 0.228065
+  type: 'test'
+  ...
+# Subtest: R3-R6: explicit taskId collisions are content-checked and re-minted
+ok 627 - R3-R6: explicit taskId collisions are content-checked and re-minted
+  ---
+  duration_ms: 0.301123
+  type: 'test'
+  ...
+# Subtest: R4-G3: a travel leg and an advance of the same minutes evolve identically
+ok 628 - R4-G3: a travel leg and an advance of the same minutes evolve identically
+  ---
+  duration_ms: 3.853044
+  type: 'test'
+  ...
+# Subtest: R4-G3: long travel cannot keep bystanders (or the furnace) frozen
+ok 629 - R4-G3: long travel cannot keep bystanders (or the furnace) frozen
+  ---
+  duration_ms: 6.908086
+  type: 'test'
+  ...
+# Subtest: R4-G3: a settled ending is never re-litigated by later travel
+ok 630 - R4-G3: a settled ending is never re-litigated by later travel
+  ---
+  duration_ms: 0.260564
+  type: 'test'
+  ...
+# Subtest: R4-G3: every food transfer debits one source and credits one target
+ok 631 - R4-G3: every food transfer debits one source and credits one target
+  ---
+  duration_ms: 0.590046
+  type: 'test'
+  ...
+# Subtest: R4-G3: a duplicate deposit replays and never double-credits
+ok 632 - R4-G3: a duplicate deposit replays and never double-credits
+  ---
+  duration_ms: 0.294323
+  type: 'test'
+  ...
+# Subtest: R4-G3: delivering more than carried is an authoritative shortfall, not a success
+ok 633 - R4-G3: delivering more than carried is an authoritative shortfall, not a success
+  ---
+  duration_ms: 0.217825
+  type: 'test'
+  ...
+# Subtest: R4-G4: a request only proposes; accept activates without touching revision
+ok 634 - R4-G4: a request only proposes; accept activates without touching revision
+  ---
+  duration_ms: 1.212893
+  type: 'test'
+  ...
+# Subtest: R4-G4: decline is terminal and never silently becomes active
+ok 635 - R4-G4: decline is terminal and never silently becomes active
+  ---
+  duration_ms: 0.204616
+  type: 'test'
+  ...
+# Subtest: R4-G4: a change proposal waits, and only accept bumps the revision
+ok 636 - R4-G4: a change proposal waits, and only accept bumps the revision
+  ---
+  duration_ms: 0.524899
+  type: 'test'
+  ...
+# Subtest: R4-G4: fulfilment is receipt-only; cancel and fulfil are independent terminals
+ok 637 - R4-G4: fulfilment is receipt-only; cancel and fulfil are independent terminals
+  ---
+  duration_ms: 0.843611
+  type: 'test'
+  ...
+# Subtest: R4-G4: explicit exit is an event with relation-bearing evidence
+ok 638 - R4-G4: explicit exit is an event with relation-bearing evidence
+  ---
+  duration_ms: 0.237585
+  type: 'test'
+  ...
+# Subtest: R4-G4: retries replay on the same input id, conflicts refuse with no effect
+ok 639 - R4-G4: retries replay on the same input id, conflicts refuse with no effect
+  ---
+  duration_ms: 0.224315
+  type: 'test'
+  ...
+# Subtest: R4-G4: negotiation thresholds are deterministic policy, not model claims
+ok 640 - R4-G4: negotiation thresholds are deterministic policy, not model claims
+  ---
+  duration_ms: 0.408061
+  type: 'test'
+  ...
+# Subtest: R4-G4: loop story A — accept, witness shortage, propose, agree, deliver, fulfil
+ok 641 - R4-G4: loop story A — accept, witness shortage, propose, agree, deliver, fulfil
+  ---
+  duration_ms: 10.074605
+  type: 'test'
+  ...
+# Subtest: R4-G4: loop story B — survival proposal, reject keeps terms, dying exit
+ok 642 - R4-G4: loop story B — survival proposal, reject keeps terms, dying exit
+  ---
+  duration_ms: 9.297812
+  type: 'test'
+  ...
+# Subtest: reference policy moves, eats, or stops from its own input
+ok 643 - reference policy moves, eats, or stops from its own input
+  ---
+  duration_ms: 0.634356
+  type: 'test'
+  ...
+# Subtest: reference policy stops when already satiated in the kitchen
+ok 644 - reference policy stops when already satiated in the kitchen
+  ---
+  duration_ms: 0.128687
+  type: 'test'
+  ...
+# Subtest: reference policy ignores feedback and does not need a world
+ok 645 - reference policy ignores feedback and does not need a world
+  ---
+  duration_ms: 0.515939
+  type: 'test'
+  ...
+# Subtest: happy path: move then eat, food 1→0, hunger 40→70, replay matches
+ok 646 - happy path: move then eat, food 1→0, hunger 40→70, replay matches
+  ---
+  duration_ms: 11.055183
+  type: 'test'
+  ...
+# Subtest: invisible place food and other NPC attrs do not change the decide input
+ok 647 - invisible place food and other NPC attrs do not change the decide input
+  ---
+  duration_ms: 0.817362
+  type: 'test'
+  ...
+# Subtest: no kitchen food while already there is a normal stop and is not the goal
+ok 648 - no kitchen food while already there is a normal stop and is not the goal
+  ---
+  duration_ms: 86.459461
+  type: 'test'
+  ...
+# Subtest: a model stop from the dorm leaves state unchanged and is not success
+ok 649 - a model stop from the dorm leaves state unchanged and is not success
+  ---
+  duration_ms: 16.425874
+  type: 'test'
+  ...
+# Subtest: empty kitchen from the dorm: reference moves, then stops, hunger stays 40
+ok 650 - empty kitchen from the dorm: reference moves, then stops, hunger stays 40
+  ---
+  duration_ms: 143.588907
+  type: 'test'
+  ...
+# Subtest: illegal JSON, illegal action, and forged actorId are not submitted; the next round can recover
+ok 651 - illegal JSON, illegal action, and forged actorId are not submitted; the next round can recover
+  ---
+  duration_ms: 162.925095
+  type: 'test'
+  ...
+# Subtest: eat in the dorm is rejected, fed back, then move and eat reach the goal
+ok 652 - eat in the dorm is rejected, fed back, then move and eat reach the goal
+  ---
+  duration_ms: 11.64005
+  type: 'test'
+  ...
+# Subtest: five consecutive illegal outputs end the run with no world commands
+ok 653 - five consecutive illegal outputs end the run with no world commands
+  ---
+  duration_ms: 9.972458
+  type: 'test'
+  ...
+# Subtest: a late provider response after timeout is not executed
+ok 654 - a late provider response after timeout is not executed
+  ---
+  duration_ms: 184.872296
+  type: 'test'
+  ...
+# Subtest: same initial state, runId, and reference policy produce identical actions, events, and final state
+ok 655 - same initial state, runId, and reference policy produce identical actions, events, and final state
+  ---
+  duration_ms: 1.067056
+  type: 'test'
+  ...
+# Subtest: actorId proto is not submitted by the runner
+ok 656 - actorId proto is not submitted by the runner
+  ---
+  duration_ms: 0.243624
+  type: 'test'
+  ...
+# Subtest: actorId __proto__ is not submitted by the runner
+ok 657 - actorId __proto__ is not submitted by the runner
+  ---
+  duration_ms: 0.109227
+  type: 'test'
+  ...
+# Subtest: already full hunger is success without a provider call
+ok 658 - already full hunger is success without a provider call
+  ---
+  duration_ms: 0.188106
+  type: 'test'
+  ...
+# Subtest: K outside the supported range is refused before any model call
+ok 659 - K outside the supported range is refused before any model call
+  ---
+  duration_ms: 2.021594
+  type: 'test'
+  ...
+# Subtest: a request bound to another memory policy is refused
+ok 660 - a request bound to another memory policy is refused
+  ---
+  duration_ms: 0.826642
+  type: 'test'
+  ...
+# Subtest: a stale state version is refused
+ok 661 - a stale state version is refused
+  ---
+  duration_ms: 0.45471
+  type: 'test'
+  ...
+# Subtest: retrieval error is reported and falls back explicitly
+ok 662 - retrieval error is reported and falls back explicitly
+  ---
+  duration_ms: 1.167714
+  type: 'test'
+  ...
+# Subtest: empty retrieval is distinct from an error
+ok 663 - empty retrieval is distinct from an error
+  ---
+  duration_ms: 0.45023
+  type: 'test'
+  ...
+# Subtest: at most one extra retrieval is attempted
+ok 664 - at most one extra retrieval is attempted
+  ---
+  duration_ms: 0.627106
+  type: 'test'
+  ...
+# Subtest: a journaled result is recovered without calling the scorer again
+ok 665 - a journaled result is recovered without calling the scorer again
+  ---
+  duration_ms: 2.541924
+  type: 'test'
+  ...
+# Subtest: a shadow result is recorded but never executed
+ok 666 - a shadow result is recorded but never executed
+  ---
+  duration_ms: 1.129754
+  type: 'test'
+  ...
+# Subtest: reference accept executes exactly once
+ok 667 - reference accept executes exactly once
+  ---
+  duration_ms: 0.575967
+  type: 'test'
+  ...
+# Subtest: R1-C: execution port must confirm before the journal says applied
+ok 668 - R1-C: execution port must confirm before the journal says applied
+  ---
+  duration_ms: 2.191001
+  type: 'test'
+  ...
+# Subtest: R1-C: a rejected submission never becomes applied and is not retried
+ok 669 - R1-C: a rejected submission never becomes applied and is not retried
+  ---
+  duration_ms: 1.884218
+  type: 'test'
+  ...
+# Subtest: R1-C: unknown submission is resolved by query on recovery, not re-submitted
+ok 670 - R1-C: unknown submission is resolved by query on recovery, not re-submitted
+  ---
+  duration_ms: 2.420416
+  type: 'test'
+  ...
+# Subtest: R1-C: a stale world or memory snapshot blocks submission
+ok 671 - R1-C: a stale world or memory snapshot blocks submission
+  ---
+  duration_ms: 0.42092
+  type: 'test'
+  ...
+# Subtest: R1-C: an invalid live response executes zero times
+ok 672 - R1-C: an invalid live response executes zero times
+  ---
+  duration_ms: 0.310573
+  type: 'test'
+  ...
+# Subtest: A: move to kitchen then eat
+ok 673 - A: move to kitchen then eat
+  ---
+  duration_ms: 11.283589
+  type: 'test'
+  ...
+# Subtest: A2: hunger clamps at 100
+ok 674 - A2: hunger clamps at 100
+  ---
+  duration_ms: 11.527483
+  type: 'test'
+  ...
+# Subtest: B: contention for last food, order npc_a then npc_b
+ok 675 - B: contention for last food, order npc_a then npc_b
+  ---
+  duration_ms: 67.394166
+  type: 'test'
+  ...
+# Subtest: B: contention for last food, order npc_b then npc_a
+ok 676 - B: contention for last food, order npc_b then npc_a
+  ---
+  duration_ms: 64.349635
+  type: 'test'
+  ...
+# Subtest: C: duplicate successful command has no extra effect
+ok 677 - C: duplicate successful command has no extra effect
+  ---
+  duration_ms: 8.500511
+  type: 'test'
+  ...
+# Subtest: D: same commandId with different payload -> COMMAND_ID_CONFLICT
+ok 678 - D: same commandId with different payload -> COMMAND_ID_CONFLICT
+  ---
+  duration_ms: 85.230928
+  type: 'test'
+  ...
+# Subtest: E: invalid input / unmet preconditions leave state unchanged
+ok 679 - E: invalid input / unmet preconditions leave state unchanged
+  ---
+  duration_ms: 109.669634
+  type: 'test'
+  ...
+# Subtest: F: replay(initial, events) equals live final state; no executor called
+ok 680 - F: replay(initial, events) equals live final state; no executor called
+  ---
+  duration_ms: 167.19209
+  type: 'test'
+  ...
+# Subtest: G: restore from save then retry completed command -> no duplicate effect
+ok 681 - G: restore from save then retry completed command -> no duplicate effect
+  ---
+  duration_ms: 14.991575
+  type: 'test'
+  ...
+# Subtest: Immutability: returned state/history cannot corrupt engine
+ok 682 - Immutability: returned state/history cannot corrupt engine
+  ---
+  duration_ms: 3.969822
+  type: 'test'
+  ...
+# Subtest: Determinism: same commands -> identical records (no wall clock)
+ok 683 - Determinism: same commands -> identical records (no wall clock)
+  ---
+  duration_ms: 0.380881
+  type: 'test'
+  ...
+# Subtest: H: move actorId toString -> UNKNOWN_ACTOR, no throw, state and events unchanged
+ok 684 - H: move actorId toString -> UNKNOWN_ACTOR, no throw, state and events unchanged
+  ---
+  duration_ms: 11.321208
+  type: 'test'
+  ...
+# Subtest: H: move actorId constructor -> UNKNOWN_ACTOR, no throw, state and events unchanged
+ok 685 - H: move actorId constructor -> UNKNOWN_ACTOR, no throw, state and events unchanged
+  ---
+  duration_ms: 7.541072
+  type: 'test'
+  ...
+# Subtest: H: move actorId proto -> UNKNOWN_ACTOR, no throw, state and events unchanged
+ok 686 - H: move actorId proto -> UNKNOWN_ACTOR, no throw, state and events unchanged
+  ---
+  duration_ms: 7.511212
+  type: 'test'
+  ...
+# Subtest: H: move actorId __proto__ -> UNKNOWN_ACTOR, no throw, state and events unchanged
+ok 687 - H: move actorId __proto__ -> UNKNOWN_ACTOR, no throw, state and events unchanged
+  ---
+  duration_ms: 7.362436
+  type: 'test'
+  ...
+# Subtest: I: same commandId eat, omitted payload vs {} -> COMMAND_ID_CONFLICT both orders
+ok 688 - I: same commandId eat, omitted payload vs {} -> COMMAND_ID_CONFLICT both orders
+  ---
+  duration_ms: 15.2164
+  type: 'test'
+  ...
+# Subtest: I-restore: omitted payload vs {} still conflicts after JSON save/restore, both orders
+ok 689 - I-restore: omitted payload vs {} still conflicts after JSON save/restore, both orders
+  ---
+  duration_ms: 139.8661
+  type: 'test'
+  ...
+# Subtest: I-null: omitted payload vs explicit null -> COMMAND_ID_CONFLICT, both orders, and both after JSON restore
+ok 690 - I-null: omitted payload vs explicit null -> COMMAND_ID_CONFLICT, both orders, and both after JSON restore
+  ---
+  duration_ms: 129.296986
+  type: 'test'
+  ...
+# Subtest: J: true duplicates, key-order equality, and failed-command retry stay duplicates
+ok 691 - J: true duplicates, key-order equality, and failed-command retry stay duplicates
+  ---
+  duration_ms: 150.809316
+  type: 'test'
+  ...
+# Subtest: round-robin order is fair across actors
+ok 692 - round-robin order is fair across actors
+  ---
+  duration_ms: 1.34658
+  type: 'test'
+  ...
+# Subtest: a slow actor does not delay the other actors
+ok 693 - a slow actor does not delay the other actors
+  ---
+  duration_ms: 60.927591
+  type: 'test'
+  ...
+# Subtest: only one decision is in flight per actor
+ok 694 - only one decision is in flight per actor
+  ---
+  duration_ms: 9.973528
+  type: 'test'
+  ...
+# Subtest: a timeout is reported without blocking later tasks
+ok 695 - a timeout is reported without blocking later tasks
+  ---
+  duration_ms: 11.781727
+  type: 'test'
+  ...
+# Subtest: late results are rejected against the current state version
+ok 696 - late results are rejected against the current state version
+  ---
+  duration_ms: 0.240164
+  type: 'test'
+  ...
+# Subtest: cancelled tasks never run
+ok 697 - cancelled tasks never run
+  ---
+  duration_ms: 0.151087
+  type: 'test'
+  ...
+# Subtest: stepAgent is the same execution path as runAgent
+ok 698 - stepAgent is the same execution path as runAgent
+  ---
+  duration_ms: 4.05047
+  type: 'test'
+  ...
+# Subtest: each step makes at most one call and the session stops at five
+ok 699 - each step makes at most one call and the session stops at five
+  ---
+  duration_ms: 0.795112
+  type: 'test'
+  ...
+# Subtest: a second step while deciding is busy and does not call the provider
+ok 700 - a second step while deciding is busy and does not call the provider
+  ---
+  duration_ms: 0.327203
+  type: 'test'
+  ...
+# Subtest: a player command during the wait is what Engine.submit sees
+ok 701 - a player command during the wait is what Engine.submit sees
+  ---
+  duration_ms: 0.608207
+  type: 'test'
+  ...
+# Subtest: timeout drops a late eat and submits nothing
+ok 702 - timeout drops a late eat and submits nothing
+  ---
+  duration_ms: 0.479669
+  type: 'test'
+  ...
+# Subtest: reference session still reaches the goal without a player
+ok 703 - reference session still reaches the goal without a player
+  ---
+  duration_ms: 3.807605
+  type: 'test'
+  ...
+# Subtest: eating increases satiety (G05 direction guard)
+ok 704 - eating increases satiety (G05 direction guard)
+  ---
+  duration_ms: 2.637141
+  type: 'test'
+  ...
+# Subtest: gathering is deterministic for the same seed and state
+ok 705 - gathering is deterministic for the same seed and state
+  ---
+  duration_ms: 0.721894
+  type: 'test'
+  ...
+# Subtest: duplicate command ids are rejected
+ok 706 - duplicate command ids are rejected
+  ---
+  duration_ms: 0.515489
+  type: 'test'
+  ...
+# Subtest: inventory never goes negative
+ok 707 - inventory never goes negative
+  ---
+  duration_ms: 0.200606
+  type: 'test'
+  ...
+# Subtest: a dead npc cannot act and its death is recorded once
+ok 708 - a dead npc cannot act and its death is recorded once
+  ---
+  duration_ms: 0.178276
+  type: 'test'
+  ...
+# Subtest: four-day 8-npc loop is reproducible and ends with a declared ending
+ok 709 - four-day 8-npc loop is reproducible and ends with a declared ending
+  ---
+  duration_ms: 2.25007
+  type: 'test'
+  ...
+# Subtest: resources stay non-negative across the four-day loop
+ok 710 - resources stay non-negative across the four-day loop
+  ---
+  duration_ms: 1.437298
+  type: 'test'
+  ...
+# Subtest: v0 snapshots migrate with documented defaults and the current rule version
+ok 711 - v0 snapshots migrate with documented defaults and the current rule version
+  ---
+  duration_ms: 0.268784
+  type: 'test'
+  ...
+# Subtest: a snapshot from another rules version is rejected, not silently upgraded
+ok 712 - a snapshot from another rules version is rejected, not silently upgraded
+  ---
+  duration_ms: 0.151417
+  type: 'test'
+  ...
+# Subtest: the presentation view is frozen
+ok 713 - the presentation view is frozen
+  ---
+  duration_ms: 0.235635
+  type: 'test'
+  ...
+# Subtest: R1-F: a command never mutates the input snapshot
+ok 714 - R1-F: a command never mutates the input snapshot
+  ---
+  duration_ms: 0.151196
+  type: 'test'
+  ...
+# Subtest: R1-F: a previously returned state is not changed by the next command
+ok 715 - R1-F: a previously returned state is not changed by the next command
+  ---
+  duration_ms: 0.228045
+  type: 'test'
+  ...
+# Subtest: R1-F: four days is exactly 96h and thirty days is exactly 720h
+ok 716 - R1-F: four days is exactly 96h and thirty days is exactly 720h
+  ---
+  duration_ms: 23.040176
+  type: 'test'
+  ...
+# Subtest: R1-F: illegal location and non-finite amounts are rejected without effect
+ok 717 - R1-F: illegal location and non-finite amounts are rejected without effect
+  ---
+  duration_ms: 0.352513
+  type: 'test'
+  ...
+# Subtest: R1-F: submitCommand reports applied/rejected/duplicate and does not double-apply
+ok 718 - R1-F: submitCommand reports applied/rejected/duplicate and does not double-apply
+  ---
+  duration_ms: 0.251494
+  type: 'test'
+  ...
+1..718
+# tests 718
+# suites 0
+# pass 718
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 130691.243591

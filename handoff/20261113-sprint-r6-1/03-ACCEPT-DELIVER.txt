@@ -1,0 +1,25 @@
+R6.1 验收、版本及交付
+
+定向先行：P/R真实CLI、R6和R6.1两套probe、D迁移及validator、M概率/来源正负例、G11补缺、g04/g09/g10握手、verify总门负控制、保存关联负控制。
+Python用unittest两目录，pass/fail/error/skip分别记；无SciPy不可把skip计pass，缺mock依赖可在隔离环境补齐。确保Windows LF确定性测试过；Linux可用GitHub CI验证，不访问维护服务器。
+R5 971+272+128、本R6与R6.1任务包SHA前后均不改。根STATUS/.gitattributes仍保留，新状态放REPORTS/20261113-r6-1.md，新artifacts/sprint-r6-1局部.gitattributes用** -text。
+
+集成代码最终提交后，在隔离clone跑原冻结final_check.py一次（沿用R6包工具，不修改其断言/900s限制），并运行最新verify-r6 + R6.1自动验收。
+全量exit和summary.failed/blocked必须同时核；CI runner通过不自动等同eval-full全部附加门通过。新全量失败如实返工，不把定向复跑通过覆盖首败。
+推执行分支codex/sprint-r6-1，检查最终源码HEAD的CI（Ubuntu/Windows×Node20/22）；至少完整四组finished/success后才说CI通过。尚running/超时不等于成功。不要把12cc208旧CI当新修复的验证。
+不合main；PR#12可说明后续修复位置，不为压行数擅改PR基线或删冻结证据。
+
+版本对齐
+本轮已查旧bundle=cf1ed793，SHA683763a8…；它不含12cc208。保留旧包。
+最终另造新全历史bundle，至少包含最后的源码/测试/运行配置提交，再做独立clone关键复验。
+provenance必须分开：sourceHead（最后源代码/测试/配置改动）、evidenceHead（对应原始记录提交）、bundleHead、deliveryTip（保存bundle/SHA的提交）。
+bundle不可能包含“保存bundle本身”的提交，无需强求字面SHA相同。必须验证bundleHead到deliveryTip没有任何源码/测试/依赖/配置变更；只能新增bundle/manifest/短报等交付元数据。封包后又修代码就重新封包，不更新文字冒充对齐。
+HEAD、命令、真实环境、起止/exit、源码diff、环境边界绑定每次结果。manifest不包含自身，bundle不打进自身。先选证据目录再打包，排除node_modules/.git/验收clone/测试依赖。
+
+交付内容
+artifacts/sprint-r6-1/<run-id>：所有基线与修复后原始JSONL/存档、D联合改写副本及不变SHA、M两类证据与实际决定、G11三个沙盒、g04/g09/g10原始日志、单次完整TAP/summary/CI链接、玩法两臂/双射与打乱关联负例、版本与体积清单。
+可把完整原始证据压成一个带SHA的归档以控制文件数；不要同时提交多份重复的展开副本。保留可复算性，不能只留摘要。
+本次参考：全树77.24MB、最大单文件10.98MB；PR5854文件包含R1–R5历史，R6本身645文件。未发现依赖或验收clone误入。报告新增/继承项，不把历史tiny checkpoint/pyc误报本轮下载大模型。
+
+最终短报≤12行：HEAD/环境/人数；R；D+LF；M；G11；g04/g09/g10；真实总门；玩法4394min及保存；单次全量/四组CI；旧SHA；新bundle四种HEAD与SHA；剩余未证明+通过/有限返工/停止之一。
+本轮CPU工程可单独通过，研究门仍0eligible/false，真实权重/校准收益/风险保证/完整原作仍未证明。不要因研究门关闭就停修CPU工程，也不要因CPU绿就开研究门。

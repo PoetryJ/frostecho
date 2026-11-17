@@ -1,0 +1,35 @@
+TAP version 13
+# Subtest: P0-1a: yield violated at hunger 70 is never labelled goal_reached
+ok 1 - P0-1a: yield violated at hunger 70 is never labelled goal_reached
+  ---
+  duration_ms: 4.791463
+  ...
+# Subtest: P0-1b: yield fulfilled at hunger 40 keeps the two axes separate
+ok 2 - P0-1b: yield fulfilled at hunger 40 keeps the two axes separate
+  ---
+  duration_ms: 0.87313
+  ...
+# Subtest: P0-1c: feed_self still follows the hunger rule
+ok 3 - P0-1c: feed_self still follows the hunger rule
+  ---
+  duration_ms: 0.859661
+  ...
+# Subtest: P0-1d: an invalid run stays invalid even after the hunger reaches 70
+ok 4 - P0-1d: an invalid run stays invalid even after the hunger reaches 70
+  ---
+  duration_ms: 0.527948
+  ...
+# Subtest: P0-2: an 80ms no-header timeout keeps exactly one real request body and a null response
+ok 5 - P0-2: an 80ms no-header timeout keeps exactly one real request body and a null response
+  ---
+  duration_ms: 86.63929
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 250.152747

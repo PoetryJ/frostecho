@@ -1,0 +1,124 @@
+{
+  "out": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g10-r1/before/controller-cli",
+  "realModelCalls": 0,
+  "demos": [
+    {
+      "name": "cooperate",
+      "exit": 0,
+      "calls": 2,
+      "npc": {
+        "actorId": "npc_a",
+        "cycle": 1,
+        "phase": "action",
+        "status": "waiting_time",
+        "providerCalls": 2,
+        "selectedGoal": "yield_once",
+        "selectedGoalAchieved": true,
+        "selectedGoalReached": true,
+        "hungerNeedSatisfied": false,
+        "sessionOutcome": null,
+        "wakeAtSimTime": 1,
+        "request": {
+          "requestId": "audit-req-1",
+          "text": "请把最后一份食物留给我，你先不要吃。",
+          "status": "accepted",
+          "outcome": "fulfilled",
+          "outcomeReason": "the player ate at seq 1",
+          "expiresAtSimTime": 1,
+          "acceptedAfterSeq": 0,
+          "lastProcessedSeq": 1,
+          "decidedGoal": "yield_once"
+        }
+      },
+      "player": {
+        "actorId": "npc_b",
+        "location": "kitchen",
+        "hunger": 70
+      }
+    },
+    {
+      "name": "decline",
+      "exit": 0,
+      "calls": 2,
+      "npc": {
+        "actorId": "npc_a",
+        "cycle": 1,
+        "phase": "action",
+        "status": "goal_reached",
+        "providerCalls": 2,
+        "selectedGoal": "feed_self",
+        "selectedGoalAchieved": true,
+        "selectedGoalReached": false,
+        "hungerNeedSatisfied": true,
+        "sessionOutcome": "goal_reached",
+        "wakeAtSimTime": null,
+        "request": {
+          "requestId": "audit-req-1",
+          "text": "请把最后一份食物留给我，你先不要吃。",
+          "status": "declined",
+          "outcome": "pending",
+          "outcomeReason": null,
+          "expiresAtSimTime": 1,
+          "acceptedAfterSeq": null,
+          "lastProcessedSeq": 0,
+          "decidedGoal": "feed_self"
+        }
+      },
+      "player": {
+        "actorId": "npc_b",
+        "location": "kitchen",
+        "hunger": 40
+      }
+    },
+    {
+      "name": "violate",
+      "exit": 0,
+      "calls": 2,
+      "npc": {
+        "actorId": "npc_a",
+        "cycle": 1,
+        "phase": "action",
+        "status": "stopped",
+        "providerCalls": 2,
+        "selectedGoal": "yield_once",
+        "selectedGoalAchieved": false,
+        "selectedGoalReached": false,
+        "hungerNeedSatisfied": true,
+        "sessionOutcome": "selected_goal_yield",
+        "wakeAtSimTime": null,
+        "request": {
+          "requestId": "audit-req-1",
+          "text": "请把最后一份食物留给我，你先不要吃。",
+          "status": "accepted",
+          "outcome": "violated",
+          "outcomeReason": "npc_a ate first at seq 1",
+          "expiresAtSimTime": 1,
+          "acceptedAfterSeq": 0,
+          "lastProcessedSeq": 1,
+          "decidedGoal": "yield_once"
+        }
+      },
+      "player": {
+        "actorId": "npc_b",
+        "location": "kitchen",
+        "hunger": 40
+      }
+    }
+  ],
+  "ioFailure": {
+    "code": 0,
+    "signal": null,
+    "stdout": "FrostEcho G10 持续交互厨房（离线默认；世界修改只走既有游戏接口）\n模式=legacy/reference（离线脚本，非实模）\n输入 help 查看命令；save SLOT 存档；quit 收束。\n[状态] 模式=legacy/reference（脚本/离线，非实模） simTime=0 tick=0\n  世界: 厨房食物=1 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=40\n  npc_a: cycle=1 阶段=action 状态=ready 调用=0/5\n  选定目标=未选择 \n  饱食目标=未满足（独立于选定目标）\n  wait截止=-\n  请求: 暂无\n  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5\n  选定目标=未选择 \n  饱食目标=已满足（独立于选定目标）\n  wait截止=-\n  请求: 暂无\n  预算: 本会话 0/5 本局 0/10 | campaign 未授权（离线）\n  存档: 未保存\n[存档失败] EEXIST: file already exists, mkdir '/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g10-r1/before/controller-cli/root-is-file'\n[状态] 模式=legacy/reference（脚本/离线，非实模） simTime=0 tick=0\n  世界: 厨房食物=1 宿舍食物=0 | 玩家 npc_b@kitchen 饱食=40\n  npc_a: cycle=1 阶段=action 状态=ready 调用=0/5\n  选定目标=未选择 \n  饱食目标=未满足（独立于选定目标）\n  wait截止=-\n  请求: 暂无\n  npc_c: cycle=1 阶段=action 状态=ready 调用=0/5\n  选定目标=未选择 \n  饱食目标=已满足（独立于选定目标）\n  wait截止=-\n  请求: 暂无\n  预算: 本会话 0/5 本局 0/10 | campaign 未授权（离线）\n  存档: 未保存\n[完成]\n",
+    "stderr": "",
+    "rootStillFile": true,
+    "runRecordExists": false
+  },
+  "eof": {
+    "code": 0,
+    "calls": 1
+  },
+  "defaultOffline": {
+    "code": 0,
+    "calls": 1
+  }
+}

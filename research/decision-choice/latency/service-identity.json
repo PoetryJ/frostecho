@@ -1,0 +1,37 @@
+{
+  "recordedAt": "2026-11-06",
+  "source": "handoff/20261106-g11-verify-latency/performance-review/REPORT.md + results.json",
+  "sourceClaim": "static verification only: no service GET, no model POST was made to collect these values",
+  "service": {
+    "name": "qwen3.8-27b",
+    "endpoint": "http://127.0.0.1:18872/v1/chat/completions",
+    "vllm": "0.32.0",
+    "xgrammar": "0.2.8",
+    "apiPid": 288413,
+    "tensorParallel": 4,
+    "gpuMemoryUtilization": 0.25,
+    "maxNumSeqs": 1
+  },
+  "modelDir": "/data2/model_weights/Qwen3.8-27B",
+  "modelDeclaration": {
+    "model_type": "qwen3_5",
+    "architectures": ["Qwen3_5ForConditionalGeneration"],
+    "note": "config.json declaration only; an architecture family is not a weight identity"
+  },
+  "hashes": {
+    "config.json": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chatTemplateRenderOn": "7f976d139c2fdc9d425d30bc1aec142a066aa5c2a908171169344bf9683f993a",
+    "chatTemplateRenderOff": "749963934760517924c644a53ce329c47730cecc2660dbeb7c56af6dabba31ec"
+  },
+  "template": {
+    "thinkingDefaultEffort": "xhigh",
+    "note": "with enable_thinking=true and no explicit effort the deployed template injects the xhigh instruction; with false it emits an empty think block. CPU render of the att-0002 messages produced 393 prompt tokens on and 353 off, matching the recorded 393."
+  },
+  "runtime": { "node": "20.18.0" },
+  "unproven": [
+    "the served weights are not identified beyond the service name and config declaration",
+    "engine-side quality and latency under enable_thinking=false are NOT measured here",
+    "these hashes were collected in a prior review, not re-read by this probe"
+  ]
+}

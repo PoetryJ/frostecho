@@ -1,0 +1,838 @@
+{
+  "schema": "frostecho.play-trace/1",
+  "mode": "reference-fixture",
+  "days": 4,
+  "npcCount": 8,
+  "final": {
+    "ending": "survived",
+    "resources": {
+      "food": 15,
+      "firewood": 50,
+      "power": 56,
+      "medicine": 2
+    },
+    "furnace": {
+      "lit": true,
+      "fuel": 7.599999999999996,
+      "warmth": 18
+    },
+    "alive": 8,
+    "dead": []
+  },
+  "eventCount": 100,
+  "trace": [
+    {
+      "day": 1,
+      "start": {
+        "day": 1,
+        "resources": {
+          "food": 24,
+          "firewood": 20,
+          "power": 40,
+          "medicine": 2
+        },
+        "furnace": {
+          "lit": true,
+          "fuel": 6,
+          "warmth": 18
+        },
+        "alive": 8
+      },
+      "end": {
+        "day": 2,
+        "resources": {
+          "food": 40,
+          "firewood": 27,
+          "power": 44,
+          "medicine": 2
+        },
+        "furnace": {
+          "lit": true,
+          "fuel": 6.4,
+          "warmth": 18
+        },
+        "alive": 8
+      },
+      "decisions": [
+        {
+          "actorId": "npc_01",
+          "selectedId": "c-help-p-npc_01",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_01",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.549840321,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "5d6b423a1056f0210aa3220a5be277890acd80bb14e3f850ab4afaba90a46edf",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 11,
+          "stateVersionAfter": 12,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_02",
+          "selectedId": "c-help-p-npc_02",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_02",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.549840321,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "f1633e356768476561e029bdb528adbd9667b1d8447e253cf04ee9f5831d9910",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 12,
+          "stateVersionAfter": 13,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_03",
+          "selectedId": "c-help-p-npc_03",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_03",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.549840321,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "7c2192be5abd7891813881593ccc23a9aded2b20f2b854890a38135c688fde49",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 13,
+          "stateVersionAfter": 14,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_04",
+          "selectedId": "c-help-p-npc_04",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_04",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.546305353,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "0b874089cdc2722391212ec82c3258275339a796e0d824bb36494d747d30cb18",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 14,
+          "stateVersionAfter": 15,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_05",
+          "selectedId": "c-help-p-npc_05",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_05",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.549840321,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "b4162c5f33a13cb676d55eb9f27849a8b0b678a431da352d2eb57b7c49de5907",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 15,
+          "stateVersionAfter": 16,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_06",
+          "selectedId": "c-help-p-npc_06",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_06",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.549840321,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "947780376997247d664b6d34f691c1a482606aed3f5e30c56fa4c547f2a7351e",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 16,
+          "stateVersionAfter": 17,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_07",
+          "selectedId": "c-help-p-npc_07",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_07",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.549840321,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "930fceb5c785f131e45589d74ddfdea35ef16e089c69e8874834ad7429b54101",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 17,
+          "stateVersionAfter": 18,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_08",
+          "selectedId": "c-help-p-npc_08",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_08",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.546305353,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "ab31065db73291a342043d3f62d5abc3c5a99eef83a8a2a293e324612c0b5e89",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 18,
+          "stateVersionAfter": 19,
+          "events": [
+            "food_reserved"
+          ]
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "start": {
+        "day": 2,
+        "resources": {
+          "food": 40,
+          "firewood": 27,
+          "power": 44,
+          "medicine": 2
+        },
+        "furnace": {
+          "lit": true,
+          "fuel": 6.4,
+          "warmth": 18
+        },
+        "alive": 8
+      },
+      "end": {
+        "day": 3,
+        "resources": {
+          "food": 33,
+          "firewood": 35,
+          "power": 48,
+          "medicine": 2
+        },
+        "furnace": {
+          "lit": true,
+          "fuel": 6.799999999999999,
+          "warmth": 18
+        },
+        "alive": 8
+      },
+      "decisions": [
+        {
+          "actorId": "npc_01",
+          "selectedId": "c-help-p-npc_01",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_01",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.554704264,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "f8e0ad6379c3091a42825a34f0cd8a082b51dc2bd26bcc99f620a8b7808f7732",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 38,
+          "stateVersionAfter": 39,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_02",
+          "selectedId": "c-help-p-npc_02",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_02",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.554704264,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "0bbdb3edc21569f7f801797f5b32596fe458c4bf139f13f08bc3772fa086d717",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 39,
+          "stateVersionAfter": 40,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_03",
+          "selectedId": "c-help-p-npc_03",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_03",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.554704264,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "8dc096273029959bbfaff63096d6f48829ae3c0e1f9c8e2a875742fd4409303d",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 40,
+          "stateVersionAfter": 41,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_04",
+          "selectedId": "c-help-p-npc_04",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_04",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.547769963,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "0eb3c8fdc4d0188f5794a488622c18bc4c778c20a47e878d4c140fcf127a0491",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 41,
+          "stateVersionAfter": 42,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_05",
+          "selectedId": "c-help-p-npc_05",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_05",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.554704264,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "76f42e1e3688892d6b1527041861308c5dbdbe4d51614fea44538212ee21fbd8",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 42,
+          "stateVersionAfter": 43,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_06",
+          "selectedId": "c-help-p-npc_06",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_06",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.554704264,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "52c031b40a9fee28b8be0f69a98d4a6da92b1120f038642b82939f8dd1c0d4c0",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 43,
+          "stateVersionAfter": 44,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_07",
+          "selectedId": "c-help-p-npc_07",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_07",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.554704264,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "41b9a836f8e253747750c0296587d1642a34a971367cd4aa81817f9da6093b26",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 44,
+          "stateVersionAfter": 45,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_08",
+          "selectedId": "c-help-p-npc_08",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_08",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.547769963,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "6192fabd842270740931c7e148ce3d4860bce6a207ff6d05f2334536754a61fd",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 45,
+          "stateVersionAfter": 46,
+          "events": [
+            "food_reserved"
+          ]
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "start": {
+        "day": 3,
+        "resources": {
+          "food": 33,
+          "firewood": 35,
+          "power": 48,
+          "medicine": 2
+        },
+        "furnace": {
+          "lit": true,
+          "fuel": 6.799999999999999,
+          "warmth": 18
+        },
+        "alive": 8
+      },
+      "end": {
+        "day": 4,
+        "resources": {
+          "food": 25,
+          "firewood": 43,
+          "power": 52,
+          "medicine": 2
+        },
+        "furnace": {
+          "lit": true,
+          "fuel": 7.1999999999999975,
+          "warmth": 18
+        },
+        "alive": 8
+      },
+      "decisions": [
+        {
+          "actorId": "npc_01",
+          "selectedId": "c-help-p-npc_01",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_01",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.559421033,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "19734f59bd9288061d0ded8fc9b74225a6e783f8667edbb51d3fb825a0dd7296",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 65,
+          "stateVersionAfter": 66,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_02",
+          "selectedId": "c-help-p-npc_02",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_02",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.559421033,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "532ba14f5a6992e4f633c81ff908078eb92cc1af561df379578085ce21af39f3",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 66,
+          "stateVersionAfter": 67,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_03",
+          "selectedId": "c-help-p-npc_03",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_03",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.559421033,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "3c28c7fed8b49f47b9aadb1aef5b284d00538034715dba027aab8633c007201b",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 67,
+          "stateVersionAfter": 68,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_04",
+          "selectedId": "c-help-p-npc_04",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_04",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.549221921,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "ed6c1cbdd72cd9fc448c8b2c8985a787bdd7afbb5db67536933ed432931994a6",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 68,
+          "stateVersionAfter": 69,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_05",
+          "selectedId": "c-help-p-npc_05",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_05",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.559421033,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "0c1c43eef05336600b56570bcfa37dc044d50dc1be52366b3273d0e8b49503cc",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 69,
+          "stateVersionAfter": 70,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_06",
+          "selectedId": "c-help-p-npc_06",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_06",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.559421033,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "c7be578d1b783d5a51535fbe3472206fe385078eaceae42c4fb4f7e78fa4f059",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 70,
+          "stateVersionAfter": 71,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_07",
+          "selectedId": "c-help-p-npc_07",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_07",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.559421033,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "e0870ef79e44ea389759491aec0a379dd763722e5cab26eede570b6efb345317",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 71,
+          "stateVersionAfter": 72,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_08",
+          "selectedId": "c-help-p-npc_08",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_08",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.549221921,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "90cfc7a94426a2da9537a7169778e7c31defa0a9c3f6d1a3fd6a525e48dd86bf",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 72,
+          "stateVersionAfter": 73,
+          "events": [
+            "food_reserved"
+          ]
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "start": {
+        "day": 4,
+        "resources": {
+          "food": 25,
+          "firewood": 43,
+          "power": 52,
+          "medicine": 2
+        },
+        "furnace": {
+          "lit": true,
+          "fuel": 7.1999999999999975,
+          "warmth": 18
+        },
+        "alive": 8
+      },
+      "end": {
+        "day": 5,
+        "resources": {
+          "food": 15,
+          "firewood": 50,
+          "power": 56,
+          "medicine": 2
+        },
+        "furnace": {
+          "lit": true,
+          "fuel": 7.599999999999996,
+          "warmth": 18
+        },
+        "alive": 8
+      },
+      "decisions": [
+        {
+          "actorId": "npc_01",
+          "selectedId": "c-help-p-npc_01",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_01",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.563992019,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "bd8c26fc8955bfc42a72fa8291633840dbefbe889d0d866e791849f018343bf3",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 92,
+          "stateVersionAfter": 93,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_02",
+          "selectedId": "c-help-p-npc_02",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_02",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.563992019,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "0f99a664635a2d35521da9c94d740a73f7e34a8898a8f87899acad685a00b4b3",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 93,
+          "stateVersionAfter": 94,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_03",
+          "selectedId": "c-help-p-npc_03",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_03",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.563992019,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "b1cb7df0b86436301aa93a5d73d0bc5e6145cb8abcffc0113feefcbda4eae5b9",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 94,
+          "stateVersionAfter": 95,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_04",
+          "selectedId": "c-help-p-npc_04",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_04",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.55066125,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "90d436acb6dcbe6e985293b5f3ace7a939bd76eeaf65b91cde81176d19227fb6",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 95,
+          "stateVersionAfter": 96,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_05",
+          "selectedId": "c-help-p-npc_05",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_05",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.563992019,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "285e60284651cb08fbdf70d2721808a6f338d3bf9def0c71a07df062d8e901c9",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 96,
+          "stateVersionAfter": 97,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_06",
+          "selectedId": "c-help-p-npc_06",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_06",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.563992019,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "6135222d6bf46bab5b1d3394475ed2876e57af2e72f416f4a598f53bda32cc56",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 97,
+          "stateVersionAfter": 98,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_07",
+          "selectedId": "c-help-p-npc_07",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_07",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.563992019,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "e547fccb39eb5ec7a262638a18052b70ac166ea532e1c5def24823a8548d73ee",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 98,
+          "stateVersionAfter": 99,
+          "events": [
+            "food_reserved"
+          ]
+        },
+        {
+          "actorId": "npc_08",
+          "selectedId": "c-help-p-npc_08",
+          "candidateIds": [
+            "c-eat",
+            "c-refuel",
+            "c-work",
+            "c-help-p-npc_08",
+            "c-wait"
+          ],
+          "utility": 1.9,
+          "probability": 0.55066125,
+          "promiseStatus": "active",
+          "memorySnapshotHash": "bc6332653434ef8b93298fd6e770e1faf22fd38ad43486fc0e03e59635660fc6",
+          "memoryQueryStatus": "ok",
+          "stateVersionBefore": 99,
+          "stateVersionAfter": 100,
+          "events": [
+            "food_reserved"
+          ]
+        }
+      ]
+    }
+  ],
+  "traceSha256": "ee75915103cf7c2deded438755d53ad9235cb24eeb072e157f77a1b9e499b1a6"
+}

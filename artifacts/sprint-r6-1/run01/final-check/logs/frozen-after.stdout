@@ -1,0 +1,90 @@
+{
+  "schema": "frostecho.r6.preflight/1",
+  "at": "2026-11-13T08:27:19.224969+00:00",
+  "repo": "/agent/repos/frostecho/artifacts/sprint-r6-1/run01/final-check/acceptance-clone",
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "pythonExecutable": "/usr/bin/python3",
+  "platform": "Linux-6.12.113+-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/git",
+        "--version"
+      ],
+      "exit": 0,
+      "stdout": "git version 2.43.0\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/exec-daemon/node",
+        "--version"
+      ],
+      "exit": 0,
+      "stdout": "v22.23.4\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/home/ubuntu/.nvm/versions/node/v22.23.4/bin/npm",
+        "--version"
+      ],
+      "exit": 0,
+      "stdout": "10.9.9\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "stdout": "a86c8a1a268fb1f3f6392440a6a94d440a278a05\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "r5-saved-20261112^{commit}"
+      ],
+      "exit": 0,
+      "stdout": "f4739493b9dcec7214f04ab68c05f92bd5a8ea21\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "merge-base",
+        "--is-ancestor",
+        "f4739493b9dcec7214f04ab68c05f92bd5a8ea21",
+        "HEAD"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "checks": {
+    "package": {
+      "files": 15,
+      "ok": true
+    },
+    "checkpoint": {
+      "files": 971,
+      "ok": true
+    },
+    "r5Delivery": {
+      "files": 272,
+      "ok": true
+    },
+    "r5TaskPackage": {
+      "files": 128,
+      "ok": true
+    }
+  },
+  "status": "ready_for_cpu_work",
+  "head": "a86c8a1a268fb1f3f6392440a6a94d440a278a05"
+}

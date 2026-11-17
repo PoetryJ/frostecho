@@ -1,0 +1,720 @@
+[
+  {
+    "caseId": "v2-gA01-B",
+    "contentHash": "02aac07b36fe4abd7f191cc0568fc3868c6aeb9aa356e6e9ce420742efe443b7",
+    "sourceGroup": "gA01",
+    "aStatus": "supported",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c1"
+    ],
+    "bAcceptable": [
+      "c1"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "两名在场者且无明确称呼，c1的询问收话人意图合理；c0查来源不能直接解决指代，c2吃饭及c3拒绝缺依据。c1的wait不实际发起澄清。",
+    "bReason": "面对面仍有阿澈、阿岚两名可能收话人，未说明执行角色，澄清指代有依据；先吃不等于取消留饭。c1的wait只表示等待，不能证明已发出澄清。"
+  },
+  {
+    "caseId": "v2-gA02-A",
+    "contentHash": "9ea05462f93cf90092e566e4b58aa99c78f6548f2ce42e342a37430ec786a5b6",
+    "sourceGroup": "gA02",
+    "aStatus": "supported",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c1",
+      "c3"
+    ],
+    "bAcceptable": [
+      "c1",
+      "c3"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "三名具名者另有两人在场，无法认定唯一收话人；c1澄清和c3暂缓均是可接受意图。c1仅wait不能提问，c3也只支持暂缓；c2的具体留饭承诺未给出。",
+    "bReason": "三名具名者加其他在场者且经转述，不能选唯一收话人；澄清或等待信息有依据。只有承诺编号不足以证明应给玩家留一份；c1的wait未执行澄清。"
+  },
+  {
+    "caseId": "v2-gA03-B",
+    "contentHash": "48eaee4be4e5bd9400c5d6902740af769e26a6dcf11d124db7b2aae9f5cafdd5",
+    "sourceGroup": "gA03",
+    "aStatus": "supported",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c0"
+    ],
+    "bAcceptable": [
+      "c0",
+      "c2"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": false,
+    "needsAdjudication": true,
+    "aReason": "纸条无称呼且四名具名者另有两人在场，c0暂缓合理；c1的唯一收话人前提不成立。c2查来源不等于厘清收话人且params仅wait；c3不能由“你先吃”推出不留饭。",
+    "bReason": "纸条未称呼且有多名在场者，等待或核实纸条来源可减少指代不明；不能据此唯一指人或决定自食不留。c2的wait未实现核实。"
+  },
+  {
+    "caseId": "v2-gA04-A",
+    "contentHash": "d7e974068b340f183d88c6963560cf6a0ee1e9e6d6aac4eb69c640409cf97cb9",
+    "sourceGroup": "gA04",
+    "aStatus": "ambiguous",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c1"
+    ],
+    "bAcceptable": [
+      "c1"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "当面仅阿澈在场使“你”较可能指阿澈，但未说明执行角色就是阿澈；一份库存也不能证明“先吃”等于撤销留饭承诺。c1澄清意图可接受，wait不能执行澄清。",
+    "bReason": "唯一在场的阿澈是自然收话人候选，但未说明执行角色就是阿澈；你先吃也未明确取消留饭。库存仅一份，原承诺不明时不能断定自食或留给玩家，澄清意图有依据。"
+  },
+  {
+    "caseId": "v2-gA05-A",
+    "contentHash": "8187185d8955885a4b4ee1ca3e1399b56ce5d1e7a9ce2354d36014183934fd39",
+    "sourceGroup": "gA05",
+    "aStatus": "supported",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c0",
+      "c2"
+    ],
+    "bAcceptable": [
+      "c0",
+      "c2"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "转述且两名具名者另有两人在场，c0核实转述与c2询问收话人均可接受；c1没有唯一收话人依据，c3缺原承诺内容。c0/c2的wait不实际核实或提问。",
+    "bReason": "转述且多人在场，没有唯一收话人依据；核实来源或澄清指代合理。promiseId未给出留饭承诺内容；c0、c2的wait均不能完成各自文字动作。"
+  },
+  {
+    "caseId": "v2-gA06-B",
+    "contentHash": "eb77468e66f3df761623407d79c58d2631e255642a0edfda6583ae76d485481a",
+    "sourceGroup": "gA06",
+    "aStatus": "supported",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c0"
+    ],
+    "bAcceptable": [
+      "c0"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "无称呼的纸条对应多名在场者，c0澄清指向合理；c1声称唯一收话人不成立，c2拒绝和c3留一份未获具体承诺支持。c0的wait只暂停，不完成澄清。",
+    "bReason": "纸条无明确称呼，三名具名者外还有三人，澄清比指定唯一收话人有依据；未知承诺内容，不能推出拒绝或给玩家留一份。c0的wait只是占位。"
+  },
+  {
+    "caseId": "v2-gA08-B",
+    "contentHash": "dd60d33032ecf6e3cee54aadadcdfabe6127add5bb886e14f297d459de12233e",
+    "sourceGroup": "gA08",
+    "aStatus": "supported",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c2",
+      "c3"
+    ],
+    "bAcceptable": [
+      "c2",
+      "c3"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "虽然只列阿澈，另有两人在场且为转述，不能推出唯一收话人；c2暂缓、c3澄清意图均可接受。c3的wait不提问；c0不留饭和c1具体承诺均不能由现有话语确定。",
+    "bReason": "虽然只列出阿澈姓名，但另有两人在场且消息经转述，指代仍不唯一；等待或澄清有依据。先吃不充分支持不留饭，承诺编号也不说明应留给谁。"
+  },
+  {
+    "caseId": "v2-gQ01-A",
+    "contentHash": "db614c7ea232f8ed900793f37289d18dbe90da39e9e96c4cdebb7bc9486021b9",
+    "sourceGroup": "gQ01",
+    "aStatus": "ambiguous",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c0",
+      "c1"
+    ],
+    "bAcceptable": [
+      "c0",
+      "c1"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "题面明确纸条表态不能当作玩家有效指令，故c0核实与c1暂缓合理；c2只有promiseId而无留一份的承诺内容，c3不能据此自食并不留。c0的wait没有核实效果。",
+    "bReason": "叙述明示纸条表态不能视为玩家有效指令，因此核实来源或暂缓有依据；没有原承诺内容，不能直接确认给玩家留一份，也不能据无效表态自食。c0的wait不等于核实。"
+  },
+  {
+    "caseId": "v2-gQ03-A",
+    "contentHash": "c9c29bcaf29ce6dd527ccadb84c1c8467fdee7e8981d1d5dd47243c69697a439",
+    "sourceGroup": "gQ03",
+    "aStatus": "ambiguous",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c0"
+    ],
+    "bAcceptable": [
+      "c0",
+      "c1",
+      "c3"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": false,
+    "needsAdjudication": true,
+    "aReason": "“不用留了”被描述为直接且有权，支持c0中的“不执行留饭”读法，不必推出主动拒绝或c2自己吃；relay与直接、quoteDepth=0的关系未定义。c0的wait也不能表达明确拒绝。",
+    "bReason": "若依直接且有权这一明确描述，不执行留饭的意图有依据；但relay与直接、转述层数0的对应未定义，澄清或核实也合理。取消留饭不自动授权自食；wait不表示已经拒绝、澄清或核实。"
+  },
+  {
+    "caseId": "v2-gQ07-A",
+    "contentHash": "5c237f704b56ae0bf7dcb5eb73e5d989191d4d79a3e80203c2c849d4d744f899",
+    "sourceGroup": "gQ07",
+    "aStatus": "ambiguous",
+    "bStatus": "supported",
+    "aAcceptable": [
+      "c0",
+      "c2"
+    ],
+    "bAcceptable": [
+      "c2"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": false,
+    "needsAdjudication": true,
+    "aReason": "纸条被明确标为直接且有权，c2中的不再留饭以及c0暂缓可接受；这并不提供c1自行食用的需求或权限。c2含更强的“明确拒绝”，其wait只能等待，无法表达该言语行为。",
+    "bReason": "纸条表态明确直接且有权，支持c2中不执行留饭的意图；不用留了不等于要求自己吃。c2的wait能表示当前不留饭，但不能证明明确拒绝已被表达。"
+  },
+  {
+    "caseId": "v2-gQ07-B",
+    "contentHash": "d784d78ea4f082ef44f8cc6dc52dda17d9d3510136f5ed72912b05e22f2eb0ab",
+    "sourceGroup": "gQ07",
+    "aStatus": "supported",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c0",
+      "c1"
+    ],
+    "bAcceptable": [
+      "c0",
+      "c1"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "题面明确表态无效，即使quoteDepth=0也不能当玩家指令；核实来源c0或向说话者确认c1合理。两人在场无唯一收话人依据，c3不留饭无依据；c0/c1的wait不执行所述交互。",
+    "bReason": "纸条被明示为无效玩家指令，核实来源或澄清有依据；两名在场者不支持唯一收话人，自食不留也无有效取消依据。c0、c1的wait均未实现核实或澄清。"
+  },
+  {
+    "caseId": "v2-gQ08-A",
+    "contentHash": "455464b0ab3e50979bafaf81fdeebe56354bc70b856aa9ef80c2aea9c76066aa",
+    "sourceGroup": "gQ08",
+    "aStatus": "supported",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c0",
+      "c2",
+      "c3"
+    ],
+    "bAcceptable": [
+      "c0",
+      "c2",
+      "c3"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "当面出现的表态仍被明确标为无效且有一层转述；c0核实、c3澄清或c2暂缓均可接受，不能据此拒绝留饭。c0/c3仅wait不实际获取信息，c2才与wait文字一致。",
+    "bReason": "面对面也可能引用别人说法，本题明确表态无效且转述一层；核实、等待或澄清均有依据，不能由此拒绝留饭。c0、c3的wait未执行其文字动作。"
+  },
+  {
+    "caseId": "v2-gR01-A",
+    "contentHash": "7842aae7cf4fa897a71994dc2e966621c55fa41ee545b28497c9e78611a7f3e0",
+    "sourceGroup": "gR01",
+    "aStatus": "ambiguous",
+    "bStatus": "supported",
+    "aAcceptable": [
+      "c3"
+    ],
+    "bAcceptable": [
+      "c3"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "有权者取消且该角色已获知，支持c3中的停止留饭；c1自行吃饭不是取消的必然含义。c3同时写“明确拒绝”，但wait不表达拒绝或修改承诺状态。",
+    "bReason": "取消表态存在、说话者有权且角色已获知，支持c3的不执行留饭意图；这些事实不构成自食授权。c3的wait只能表示暂不留饭，不能证明已明确拒绝。"
+  },
+  {
+    "caseId": "v2-gR01-B",
+    "contentHash": "6fdedf2f0a0e5873b743627c3ff498ab93a9f6b318b516304b8f3aaed9d0e0a9",
+    "sourceGroup": "gR01",
+    "aStatus": "ambiguous",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c0"
+    ],
+    "bAcceptable": [
+      "c0"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "角色未获知有权者的取消，c0继续原留饭请求的意图可接受，不能用其未知信息支持c1不留；但“此前请求”未交代该角色承诺的份数和责任。c2/c3的wait不执行澄清或核实。",
+    "bReason": "角色未获知取消，不能用审查者看到的取消改变其行动；先前玩家留饭请求为c0的留饭意图提供依据。但请求不证明已承诺恰好一份，c2、c3的wait也不实现其文字动作。"
+  },
+  {
+    "caseId": "v2-gR02-A",
+    "contentHash": "31848bf5f7dc44003d5513358858030ea9739b0c1650193638a682f6c79cd24f",
+    "sourceGroup": "gR02",
+    "aStatus": "ambiguous",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c0"
+    ],
+    "bAcceptable": [
+      "c0"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "取消虽存在且有权，角色未获知，c0保留原请求的意图合理；库存三份足以执行reserve一份，但原请求是否由此角色承接、是否一份未给出。c2核实和c3明确拒绝均不能由wait完成。",
+    "bReason": "角色不知道取消，维持先前留饭请求的方向有依据；不能因外部已取消就自食或拒绝。c0的按承诺一份仍缺原承诺事实，c2的wait没有核实来源。"
+  },
+  {
+    "caseId": "v2-gR02-B",
+    "contentHash": "c26b14d3b81e9d9f206cdc109e15cfd60b56e3f4fd31e5780722aa0ff0d520af",
+    "sourceGroup": "gR02",
+    "aStatus": "ambiguous",
+    "bStatus": "supported",
+    "aAcceptable": [
+      "c2"
+    ],
+    "bAcceptable": [
+      "c2"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "有权取消已被角色获知，c2的不执行留饭读法可接受；c1继续以原承诺留饭缺新依据，c3自食需另有权限与需求。c2的明确拒绝及c0核实不由wait实现。",
+    "bReason": "可见材料同时给出有效取消与角色已知，支持c2的不执行留饭分支；吃一份需要额外自食依据。wait不能证明确实表达了拒绝，也不能代替c0的核实。"
+  },
+  {
+    "caseId": "v2-gR03-A",
+    "contentHash": "2199f352810ce6d1a1006303836a88455b9663821e8ee8962e22d1f35920cf38",
+    "sourceGroup": "gR03",
+    "aStatus": "ambiguous",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c0"
+    ],
+    "bAcceptable": [
+      "c0"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "角色虽听见取消但说话者无权，不能据此废除玩家的留饭请求，c0保留请求的意图合理；题面仍未确认该角色承诺一份。c2澄清或c3明确拒绝的文字均超出wait。",
+    "bReason": "当面听见无权者的取消不使原请求失效，继续留饭的意图有依据；但没有已接受承诺及一份数量的事实。c2的wait不能证明澄清，向无权者确认也不自动产生取消权限。"
+  },
+  {
+    "caseId": "v2-gR03-B",
+    "contentHash": "7de0e1b490e8f692552856e1acb94bba9d24e4289dded9508a1620a3a9c342ab",
+    "sourceGroup": "gR03",
+    "aStatus": "ambiguous",
+    "bStatus": "supported",
+    "aAcceptable": [
+      "c3"
+    ],
+    "bAcceptable": [
+      "c3"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "当面有权取消且角色已获知，c3的不再留饭部分有依据；没有推出c2自食的需求或处分权限。c3的明确拒绝、c0澄清和c1核实都不是wait实际做出的行为。",
+    "bReason": "当面、有权且已获知取消，足以支持不执行该留饭安排；无事实要求或授权自食。c3只按不执行分支可接受，wait不能证明明确拒绝已说出口。"
+  },
+  {
+    "caseId": "v2-gR04-A",
+    "contentHash": "b25919716ef6926aa00e20ce7982459587b2f0e453e6518f3b5a1553d4f60edd",
+    "sourceGroup": "gR04",
+    "aStatus": "inconsistent",
+    "bStatus": "inconsistent",
+    "aAcceptable": [],
+    "bAcceptable": [],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "叙述称“出现取消表态”，facts却给retractionExists=false，取消是否存在冲突。角色又未获知、说话者无权，不能推出吃饭或拒绝；c0/c1询问核实虽可用于外部查错，wait并未执行，角色也未被给出疑点。",
+    "bReason": "叙述称出现取消表态且角色未获知这次取消，facts却给retractionExists=false，取消是否存在自相矛盾。各wait候选也未实现澄清、核实或明确拒绝，没有完整可确认的候选。"
+  },
+  {
+    "caseId": "v2-gR04-B",
+    "contentHash": "06ac9830dbb6cfffa1b969cf98df571e722fb66d237e29ba443a17a7521c4286",
+    "sourceGroup": "gR04",
+    "aStatus": "ambiguous",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c1"
+    ],
+    "bAcceptable": [
+      "c1"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "取消存在但说话者无权且角色未获知，c1延续玩家原请求的意图可接受；仍缺由谁承诺以及留一份的约定。c0明确拒绝、c2澄清和c3核实都不能由wait实现。",
+    "bReason": "取消者无权且角色未获知，不能支持角色停止留饭；c1的留饭方向符合先前请求，但按承诺给玩家一份的细节未提供。c2、c3的wait不等于澄清或核实。"
+  },
+  {
+    "caseId": "v2-gR05-A",
+    "contentHash": "e96b12f7700437835af14902bfbe12313d8f402b51cdf80af0d3bf6ac67c3586",
+    "sourceGroup": "gR05",
+    "aStatus": "ambiguous",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c0"
+    ],
+    "bAcceptable": [
+      "c0"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "有权取消并未被该角色获知，c0按照其仍知道的原请求留饭可接受；五小时本身不能证明履约期限或承诺份数。c1拒绝、c2核实、c3澄清的wait均不执行这些意图。",
+    "bReason": "角色未获知有权取消，不能凭外部事实决定拒绝；按已知请求继续留饭的意图有依据，但原承诺与一份数量未展示。c2、c3的wait不能完成核实或澄清。"
+  },
+  {
+    "caseId": "v2-gR05-B",
+    "contentHash": "92435be0cd7159a116c2cfdd47a1579e0699cfef722f916d5cc8d8a263713265",
+    "sourceGroup": "gR05",
+    "aStatus": "ambiguous",
+    "bStatus": "supported",
+    "aAcceptable": [
+      "c1"
+    ],
+    "bAcceptable": [
+      "c1"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "角色已获知有权取消，c1的不执行留饭读法有依据；c2继续原承诺及c3自己吃均需额外理由。c1“明确拒绝”和c0“核实”不由wait表达或完成。",
+    "bReason": "取消存在、有权且已传达到角色，支持不执行留饭；不再留给玩家不表示可以自己吃。c1的明确拒绝部分及c0的核实均不能由wait本身证明。"
+  },
+  {
+    "caseId": "v2-gR06-B",
+    "contentHash": "207cd408974e2a9b40949f5432ca6965fc7b943ac01b88ceb126fc11ebca50ea",
+    "sourceGroup": "gR06",
+    "aStatus": "ambiguous",
+    "bStatus": "supported",
+    "aAcceptable": [
+      "c3"
+    ],
+    "bAcceptable": [
+      "c3"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "当面有权取消已被角色听见，c3停止留饭合理；库存仅一份仍不能证明这份应由该角色吃。c3的明确拒绝以及c0/c1核实澄清均不能由wait实际完成。",
+    "bReason": "角色已知有权者当面取消，支持不执行留饭；库存只有一份也不能自动证明可自行吃掉。c3仅不执行意图有依据，wait未执行明确拒绝，c0、c1同样未执行核实或澄清。"
+  },
+  {
+    "caseId": "v2-gR07-A",
+    "contentHash": "6cd90bd18f56da2ec3eef9ca3a5bc24bed3e87020bdfd9114c634afd21d2ad5a",
+    "sourceGroup": "gR07",
+    "aStatus": "ambiguous",
+    "bStatus": "supported",
+    "aAcceptable": [
+      "c0"
+    ],
+    "bAcceptable": [
+      "c0"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "已获知有权取消支持c0的不执行留饭意图，并不自动授权c2自食；c1没有继续原承诺的理由。c0含主动拒绝的更强表述，wait只暂停；c3的wait也不询问。",
+    "bReason": "经转述不妨碍本题明确给出的有权取消与角色已知，因而不执行留饭有依据；没有自食授权。c0的wait不能表明明确拒绝已被表达。"
+  },
+  {
+    "caseId": "v2-gR07-B",
+    "contentHash": "9989b497580b92ccf6b9ca0834a23d8863bb230e15a34b9461dc1d6f2996e4a9",
+    "sourceGroup": "gR07",
+    "aStatus": "ambiguous",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c1"
+    ],
+    "bAcceptable": [
+      "c1"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "角色未获知取消，c1继续其原先留饭请求的意图可接受；不能让其依据未知取消选择c2或c3。原请求是否由角色承诺一份仍缺证据；c0澄清及c3明确拒绝不由wait实现。",
+    "bReason": "角色未获知取消，只能据原有留饭请求行动，c1的留饭意图有依据；请求本身未证明该角色承诺一份。c0的wait不执行澄清，c3也不能凭未知取消获得拒绝依据。"
+  },
+  {
+    "caseId": "v2-gR08-A",
+    "contentHash": "b49fec052d1180a2867c668ccc27967c29a6b086977eee4c0241c33685de0359",
+    "sourceGroup": "gR08",
+    "aStatus": "ambiguous",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c2"
+    ],
+    "bAcceptable": [
+      "c1",
+      "c2",
+      "c3"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": false,
+    "needsAdjudication": true,
+    "aReason": "说话者无权，角色获知该表态也不足以取消玩家原请求，c2维持留饭意图合理；角色承担一份承诺未被明示。c1核实和c3澄清均只有wait，不能真实获取信息。",
+    "bReason": "角色已收到无权者的取消，因此保留原留饭安排、核实来源或澄清均有依据；向无权者询问不会自行使取消有效。c2具体承诺与份数未展示，c1、c3的wait也未执行询查。"
+  },
+  {
+    "caseId": "v2-gR08-B",
+    "contentHash": "01e33a475bf2eb036334275a8887fd3a0a4faa82f1ae94d98e85780951684b1e",
+    "sourceGroup": "gR08",
+    "aStatus": "ambiguous",
+    "bStatus": "supported",
+    "aAcceptable": [
+      "c3"
+    ],
+    "bAcceptable": [
+      "c3"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "角色已获知有权取消，c3的不再留饭部分可接受；c2继续原承诺缺依据。c3含明确拒绝而wait不能表达，c0/c1的核实澄清也未被参数执行。",
+    "bReason": "叙述和facts均给出取消存在、有权且已获知，支持不执行留饭；继续按未撤销承诺留饭没有依据。c3仅不执行分支成立，wait不等于明确拒绝，c0、c1也没有执行核实或澄清。"
+  },
+  {
+    "caseId": "v2-gY01-A",
+    "contentHash": "1309edc58c9b32a1bea19994e92b4661a6e4015c1a16e656f32128f408ad7fc1",
+    "sourceGroup": "gY01",
+    "aStatus": "inconsistent",
+    "bStatus": "inconsistent",
+    "aAcceptable": [
+      "c1"
+    ],
+    "bAcceptable": [
+      "c1"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "叙述及foodStock为3，stockPortions为2，未给两套库存的口径。按“已获知取消”的叙述，c1不再留饭意图可接受，但取消授权未说明，不能推出c2自食；c0澄清和c1明确拒绝均不由wait实现。",
+    "bReason": "叙述和foodStock为3，stockPortions却为2，未解释两种库存口径。角色已知取消支持c1的不执行意图，但不支持自行吃饭；wait不能证明明确拒绝或澄清已发生。"
+  },
+  {
+    "caseId": "v2-gY01-B",
+    "contentHash": "de32292bac45a069153782553d526f5ac96f4f04ca2bfd027400725c82cb094f",
+    "sourceGroup": "gY01",
+    "aStatus": "inconsistent",
+    "bStatus": "inconsistent",
+    "aAcceptable": [
+      "c3"
+    ],
+    "bAcceptable": [
+      "c3"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "食物库存叙述及foodStock为3，stockPortions却为2，口径不明。角色未获知取消，c3延续原请求的意图可接受，两数也都够一份；但承诺归属和数量未给出，c1拒绝及c2澄清均非wait效果。",
+    "bReason": "食物库存叙述及foodStock为3，stockPortions为2，库存冲突；角色未知取消，原请求给c3留饭意图提供依据，但承诺成立与恰好一份未展示。c2的wait不是实际澄清。"
+  },
+  {
+    "caseId": "v2-gY02-A",
+    "contentHash": "5fb6670fba06502b63eb8e14e5cb3b20e0575fd24666df44850ff4a6ad35cb85",
+    "sourceGroup": "gY02",
+    "aStatus": "ambiguous",
+    "bStatus": "ambiguous",
+    "aAcceptable": [
+      "c2"
+    ],
+    "bAcceptable": [
+      "c2"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "角色未获知取消且两处库存均为3，c2保留原请求的意图合理；但请求并未明确由该角色承诺一份，32小时也不决定承诺是否过期。c1澄清与c3明确拒绝均不能由wait完成。",
+    "bReason": "库存均为3且角色不知道取消，继续响应原留饭请求的意图有依据；但未展示角色是否承诺及承诺多少，不能把c2的一份视为已知。c1的wait不能证明澄清，未知取消也不支持拒绝。"
+  },
+  {
+    "caseId": "v2-gY02-B",
+    "contentHash": "bd4396844ab69bcef0ea8248e630d03caa537fd2dd949c63fafdfbe73d1377a5",
+    "sourceGroup": "gY02",
+    "aStatus": "ambiguous",
+    "bStatus": "supported",
+    "aAcceptable": [
+      "c2"
+    ],
+    "bAcceptable": [
+      "c2"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "角色已获知取消，按题面取消有效的读法c2的不再留饭可接受，但没有取消者及其权限证据，也无c0自食依据。c2的明确拒绝与c1澄清均未由wait执行。",
+    "bReason": "叙述直接说明该角色已获知留饭取消，且库存字段一致，支持不执行留饭的意图；知道取消不等于获得自食权限。c2的wait能表示不行动，但不能证明已明确拒绝。"
+  },
+  {
+    "caseId": "v2-gY03-B",
+    "contentHash": "93e88ca7a69ae6373b207bd960bdbcfe21e1858017abb9a9f05dc2fe1e4eb212",
+    "sourceGroup": "gY03",
+    "aStatus": "inconsistent",
+    "bStatus": "inconsistent",
+    "aAcceptable": [
+      "c3"
+    ],
+    "bAcceptable": [
+      "c3"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "叙述及foodStock为3而stockPortions为4，未解释口径。角色未获知取消，c3继续原请求的意图可接受，两种库存都够一份；原承诺归属仍未明，c0明确拒绝与c2澄清均超出wait。",
+    "bReason": "叙述及foodStock给库存3，stockPortions给4，互相冲突。角色未知取消，因此c3留饭意图有原请求依据，但实际承诺和一份数量仍缺失；c2的wait不执行澄清。"
+  },
+  {
+    "caseId": "v2-gY04-A",
+    "contentHash": "37b8fa2625b29836d42927ad7351e80d9113c551c327472a10d6e80c91240115",
+    "sourceGroup": "gY04",
+    "aStatus": "ambiguous",
+    "bStatus": "supported",
+    "aAcceptable": [
+      "c0"
+    ],
+    "bAcceptable": [
+      "c0"
+    ],
+    "sameStatus": false,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "库存两处均为5且角色已获知取消，c0的不再留饭读法可接受；但取消授权未给出，c1自己吃也缺角色权限和需求。c0的明确拒绝以及c2澄清都不能由wait完成。",
+    "bReason": "角色已获知取消，食物库存两字段同为5，支持不执行原留饭安排；库存充足本身不授权自食。c0只按不执行分支可接受，wait未证实明确拒绝已发生。"
+  },
+  {
+    "caseId": "v2-gY04-B",
+    "contentHash": "3e25bd0394a160ef9441ffb69bcc9f76d4310dbbbe06800d85981153362af901",
+    "sourceGroup": "gY04",
+    "aStatus": "inconsistent",
+    "bStatus": "inconsistent",
+    "aAcceptable": [
+      "c1"
+    ],
+    "bAcceptable": [
+      "c1"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "叙述及foodStock为0，stockPortions却为5，直接影响eat/reserve是否可行。按已获知取消且可能无食物的叙述，c1不执行留饭意图可接受，但明确拒绝不等于wait，c0也未实际澄清。",
+    "bReason": "叙述和foodStock为0，stockPortions却为5，直接影响吃饭和留饭能否执行。角色已知取消仍支持c1的不执行意图；wait不能证明已明确拒绝，不能凭5这一单独字段确认可吃或可留。"
+  },
+  {
+    "caseId": "v2-gY06-A",
+    "contentHash": "7eb52b3e68ecaabc0f61ba9ba614367d56befd59496e99cc28bbca23a72119d9",
+    "sourceGroup": "gY06",
+    "aStatus": "inconsistent",
+    "bStatus": "inconsistent",
+    "aAcceptable": [
+      "c1"
+    ],
+    "bAcceptable": [
+      "c1"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "叙述及foodStock为2，stockPortions为1，库存口径冲突。角色已获知取消支持c1不再留饭的读法，但取消权限和c2自食依据缺失；c1明确拒绝及c3澄清不是wait执行的动作。",
+    "bReason": "叙述及foodStock为2，stockPortions为1，库存不一致。已知取消支持c1的不执行留饭意图，但不能推出自食；wait也不能证明明确拒绝或c3的澄清实际发生。"
+  },
+  {
+    "caseId": "v2-gY06-B",
+    "contentHash": "7b68210a9192db5d51ca2d1eaca79c22836c0d227e7205ac6d643f513c62eb04",
+    "sourceGroup": "gY06",
+    "aStatus": "inconsistent",
+    "bStatus": "inconsistent",
+    "aAcceptable": [
+      "c3"
+    ],
+    "bAcceptable": [
+      "c3"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "叙述及foodStock为2，stockPortions为1，未定义换算。角色未获知取消，c3保持原留饭请求的意图可接受，两个数也都足一份；承诺承担者和份数仍缺失，c1拒绝/c2澄清不由wait执行。",
+    "bReason": "库存2与stockPortions=1冲突。角色未获知取消，c3继续留饭的意图有原请求依据，但原承诺和留一份的细节未给；c2的wait未执行澄清，不能用未知取消决定不留。"
+  },
+  {
+    "caseId": "v2-gY07-A",
+    "contentHash": "024ee7fbcd55e1deec804534399b865b0e5bc8ffd866e596cfeb2b366effef5c",
+    "sourceGroup": "gY07",
+    "aStatus": "inconsistent",
+    "bStatus": "inconsistent",
+    "aAcceptable": [
+      "c2"
+    ],
+    "bAcceptable": [
+      "c2"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "叙述及foodStock为4，stockPortions为2，库存证据不一致。角色未获知取消，c2延续原请求的意图可接受，不能让其使用未知取消支持c3不留；原承诺细节不足，c0拒绝/c1澄清不是wait效果。",
+    "bReason": "叙述及foodStock为4，stockPortions却为2。角色不知道取消，保留原留饭方向有依据，但c2按承诺一份仍需要承诺事实；c1的wait不能证明向说话者澄清。"
+  },
+  {
+    "caseId": "v2-gY07-B",
+    "contentHash": "470b30b823b7d85475f3b5bed65dceba8818d0da709c82ff954cb6cc3c8cd4ff",
+    "sourceGroup": "gY07",
+    "aStatus": "inconsistent",
+    "bStatus": "inconsistent",
+    "aAcceptable": [
+      "c2"
+    ],
+    "bAcceptable": [
+      "c2"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "叙述及foodStock为4，stockPortions为2，未说明不同计量。角色已获知取消时c2不再留饭读法可接受，但取消授权与c1自食依据缺失；c2明确拒绝/c3澄清不由wait实现。",
+    "bReason": "库存叙述及foodStock为4，stockPortions为2，未说明不同口径。角色已知取消支持c2的不执行留饭意图；取消不自动允许自食，wait不等于明确拒绝或澄清。"
+  },
+  {
+    "caseId": "v2-gY08-B",
+    "contentHash": "454bb81963a0dbf63ff41c6809f49736478c03939997ac23025ce5e6fca8a53a",
+    "sourceGroup": "gY08",
+    "aStatus": "inconsistent",
+    "bStatus": "inconsistent",
+    "aAcceptable": [
+      "c3"
+    ],
+    "bAcceptable": [
+      "c3"
+    ],
+    "sameStatus": true,
+    "sameAcceptable": true,
+    "needsAdjudication": true,
+    "aReason": "叙述及foodStock为2，stockPortions为3，库存口径冲突。角色已获知取消，c3的不再留饭意图可接受，但取消授权未明，c1自食不能直接推出；c0澄清和c3明确拒绝均超出wait。",
+    "bReason": "叙述及foodStock为2，stockPortions为3，库存字段冲突。角色已获知取消支持c3的不执行意图，不能由此推出自食；c3的wait不能证明明确拒绝，c0也未真正澄清。"
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "schema": "frostecho.jev04.evidence/1",
+  "partition": "select",
+  "protocol_version": "jev04-risk/1",
+  "valid": true,
+  "policy": {
+    "model": "audit/fake",
+    "head": "shared-scalar/1",
+    "tokenizer": "audit",
+    "renderer": "audit",
+    "task": "choose_action",
+    "k": 4,
+    "memory_policy_version": "audit"
+  },
+  "sampleIds": [
+    "select-only-one"
+  ],
+  "tau": 0.8,
+  "accepted": 120,
+  "coverage": 0.4
+}

@@ -1,0 +1,6 @@
+独占 src/r7/domains/{survival,production}/**、tests/r8/economy.test.ts。
+目标：把炉火、身体、天气、医疗、三种机器变成实际资源闭环。经典对应：离散事件模拟与资源守恒。
+读原作 weather/resource/furnace/machine/difficulty 及身体更新；承接原NPC配置、specialty专长数值、npc-eating/npc-sleep的进食/睡眠身体效果。先列参数和调用位置，随后移植纯领域 reducer/onTimeSpan，通过 O intents 改公共世界。日程调度由P3，不另建身体/资源真相。
+必须包含：建造三机器、工作投入/产出/停机/恢复；中央炉柴与电；温度与户外暴露；医疗、伤病、死亡；难度。buildMaterialCost 实际扣 power，不能创造第四种材料。原作已移除第二炉竞争，不复活。
+验收：从真实采集开始→建造→发电/采木/采食→资源耗尽停机→补给恢复；D2 与 D4 户外边界；跨时间边界守恒；travel 与 advance 对所有身体相同演化。
+交参数溯源、账本、上述真实命令/事件/存档、局部测试。给 O 最小接线说明，不改 world-v2。

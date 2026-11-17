@@ -1,0 +1,301 @@
+{
+  "schema": "frostecho.session/1",
+  "world": {
+    "schema": "frostecho.world-v2/2",
+    "rulesVersion": "survival-rules/2",
+    "day": 1,
+    "simTime": 0,
+    "version": 2,
+    "rngSeed": "play-2",
+    "weather": "snow",
+    "npcs": {
+      "npc_01": {
+        "id": "npc_01",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_02": {
+        "id": "npc_02",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      }
+    },
+    "resources": {
+      "food": 24,
+      "firewood": 20,
+      "power": 40,
+      "medicine": 2
+    },
+    "furnace": {
+      "lit": true,
+      "fuel": 6,
+      "warmth": 18
+    },
+    "commandLog": [
+      "in-5-restock",
+      "in-8-restock"
+    ],
+    "dead": [],
+    "ending": "none",
+    "scenarioDays": 4,
+    "spatial": {
+      "positions": {},
+      "carry": {},
+      "closedCells": [],
+      "stocks": {
+        "warehouse": {
+          "food": 9
+        }
+      },
+      "deliveredMeals": 0
+    },
+    "receipts": {
+      "in-5-restock": {
+        "digest": "38cc09636a61c274640e38586c4aee2095278b226e1917a4063981e1ccb3e5c3",
+        "eventIds": [
+          "in-5-restock:stock_restocked:0"
+        ],
+        "postStateVersion": 1
+      },
+      "in-8-restock": {
+        "digest": "f74cc4899b1a3d67094b6e3583e63685291145c502b4bacabdd81dd16c4230fb",
+        "eventIds": [
+          "in-8-restock:stock_restocked:1"
+        ],
+        "postStateVersion": 2
+      }
+    }
+  },
+  "memories": {
+    "npc_01": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "promise-pi-41d654cf-5aea-4a32-a2a3-f2c172a4d41f",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_made",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "p-food-npc_01",
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "给玩家留一份饭",
+            "instanceId": "pi-41d654cf-5aea-4a32-a2a3-f2c172a4d41f"
+          },
+          "source": "engine",
+          "authority": "npc",
+          "speakerId": "npc_01",
+          "relatedRequestId": "pi-41d654cf-5aea-4a32-a2a3-f2c172a4d41f",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "promise-pi-41d654cf-5aea-4a32-a2a3-f2c172a4d41f"
+          ],
+          "recordId": "m-7393535a9445b016",
+          "revision": 1
+        },
+        {
+          "eventId": "cancel-db07750a-3ec0-4a11-bcfa-f39ee21ca473",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_retract",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "p-food-npc_01",
+            "byId": "player",
+            "text": "不用留了",
+            "instanceId": "pi-41d654cf-5aea-4a32-a2a3-f2c172a4d41f"
+          },
+          "source": "player_statement",
+          "authority": "player",
+          "speakerId": "player",
+          "retracts": [
+            "promise-pi-41d654cf-5aea-4a32-a2a3-f2c172a4d41f"
+          ],
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cancel-db07750a-3ec0-4a11-bcfa-f39ee21ca473"
+          ],
+          "recordId": "m-32f31811857560f2",
+          "revision": 2
+        },
+        {
+          "eventId": "promise-pi-0a25acd4-120a-49e8-8a24-a30a264a8d7f",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_made",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "p-food-npc_01",
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "给玩家留一份饭",
+            "instanceId": "pi-0a25acd4-120a-49e8-8a24-a30a264a8d7f"
+          },
+          "source": "engine",
+          "authority": "npc",
+          "speakerId": "npc_01",
+          "relatedRequestId": "pi-0a25acd4-120a-49e8-8a24-a30a264a8d7f",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "promise-pi-0a25acd4-120a-49e8-8a24-a30a264a8d7f"
+          ],
+          "recordId": "m-6be4a103975e43f9",
+          "revision": 3
+        }
+      ]
+    },
+    "npc_02": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "promise-pi-41d654cf-5aea-4a32-a2a3-f2c172a4d41f",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_made",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "p-food-npc_01",
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "给玩家留一份饭",
+            "instanceId": "pi-41d654cf-5aea-4a32-a2a3-f2c172a4d41f"
+          },
+          "source": "engine",
+          "authority": "npc",
+          "speakerId": "npc_01",
+          "relatedRequestId": "pi-41d654cf-5aea-4a32-a2a3-f2c172a4d41f",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "promise-pi-41d654cf-5aea-4a32-a2a3-f2c172a4d41f"
+          ],
+          "recordId": "m-0c1ac8e01b09cc20",
+          "revision": 1
+        },
+        {
+          "eventId": "promise-pi-0a25acd4-120a-49e8-8a24-a30a264a8d7f",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_made",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "p-food-npc_01",
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "给玩家留一份饭",
+            "instanceId": "pi-0a25acd4-120a-49e8-8a24-a30a264a8d7f"
+          },
+          "source": "engine",
+          "authority": "npc",
+          "speakerId": "npc_01",
+          "relatedRequestId": "pi-0a25acd4-120a-49e8-8a24-a30a264a8d7f",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "promise-pi-0a25acd4-120a-49e8-8a24-a30a264a8d7f"
+          ],
+          "recordId": "m-2215507743df7c2c",
+          "revision": 2
+        }
+      ]
+    }
+  },
+  "outcomes": {},
+  "plans": [
+    {
+      "planId": "plan-pi-41d654cf-5aea-4a32-a2a3-f2c172a4d41f",
+      "ownerId": "npc_01",
+      "promiseId": "p-food-npc_01",
+      "dependencyRevision": 3,
+      "state": "invalidated"
+    },
+    {
+      "planId": "plan-pi-0a25acd4-120a-49e8-8a24-a30a264a8d7f",
+      "ownerId": "npc_01",
+      "promiseId": "p-food-npc_01",
+      "dependencyRevision": 3,
+      "state": "planned"
+    }
+  ],
+  "instances": [
+    {
+      "instanceId": "pi-41d654cf-5aea-4a32-a2a3-f2c172a4d41f",
+      "promiseKey": "p-food-npc_01",
+      "commandId": "pi-41d654cf-5aea-4a32-a2a3-f2c172a4d41f",
+      "createdAt": 0,
+      "state": "cancelled"
+    },
+    {
+      "instanceId": "pi-0a25acd4-120a-49e8-8a24-a30a264a8d7f",
+      "promiseKey": "p-food-npc_01",
+      "commandId": "pi-0a25acd4-120a-49e8-8a24-a30a264a8d7f",
+      "createdAt": 0,
+      "state": "active"
+    }
+  ],
+  "generations": {
+    "npc_01": 1
+  },
+  "sequence": 0,
+  "seed": "play-2",
+  "inputSequence": 8,
+  "inputReceipts": {
+    "in-2-promise-npc_01": {
+      "kind": "promise",
+      "digest": "{\"kind\":\"promise\",\"npcId\":\"npc_01\",\"promiseKey\":\"p-food-npc_01\"}",
+      "result": {
+        "promiseId": "p-food-npc_01",
+        "instanceId": "pi-41d654cf-5aea-4a32-a2a3-f2c172a4d41f",
+        "heardBy": [
+          "npc_01",
+          "npc_02"
+        ]
+      }
+    },
+    "in-4-cancel-npc_01": {
+      "kind": "cancel",
+      "digest": "{\"kind\":\"cancel\",\"npcId\":\"npc_01\",\"instanceId\":\"live\"}",
+      "result": {
+        "promiseId": "p-food-npc_01",
+        "instanceId": "pi-41d654cf-5aea-4a32-a2a3-f2c172a4d41f",
+        "onlyObserver": "npc_01"
+      }
+    },
+    "in-7-promise-npc_01": {
+      "kind": "promise",
+      "digest": "{\"kind\":\"promise\",\"npcId\":\"npc_01\",\"promiseKey\":\"p-food-npc_01\"}",
+      "result": {
+        "promiseId": "p-food-npc_01",
+        "instanceId": "pi-0a25acd4-120a-49e8-8a24-a30a264a8d7f",
+        "heardBy": [
+          "npc_01",
+          "npc_02"
+        ]
+      }
+    }
+  }
+}

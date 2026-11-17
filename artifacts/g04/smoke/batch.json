@@ -1,0 +1,49 @@
+{
+  "schema": "frostecho.g04.batch/1",
+  "batchId": "smoke",
+  "mode": "fixture",
+  "scenarios": [
+    "n1",
+    "n2",
+    "n3"
+  ],
+  "orders": [
+    "ac",
+    "ca"
+  ],
+  "policies": [
+    "legacy",
+    "event"
+  ],
+  "plannedEpisodes": [
+    "n1-ac-legacy",
+    "n1-ac-event",
+    "n2-ac-legacy",
+    "n2-ac-event",
+    "n3-ac-legacy",
+    "n3-ac-event",
+    "n1-ca-legacy",
+    "n1-ca-event",
+    "n2-ca-legacy",
+    "n2-ca-event",
+    "n3-ca-legacy",
+    "n3-ca-event"
+  ],
+  "thinking": true,
+  "createdAt": "2026-10-30T09:57:30.104Z",
+  "version": {
+    "commit": "e25df68a9b90cc75fce8987dba12d10d9cb12688",
+    "dirty": true,
+    "dirtyFiles": [
+      "rtifacts/g01/offline-timing.json",
+      "package.json"
+    ],
+    "sourceFingerprint": "a53cc6b07bcb87cb9e67c313d734056d7f6121c72d0083a645b0b06d833ef1f7",
+    "promptFingerprint": "8d66afdf043633df7103189682fdd5b1647e293554bba761825529f1364c9ae2",
+    "node": "v20.18.0",
+    "platform": "linux"
+  },
+  "sourceFingerprint": "a53cc6b07bcb87cb9e67c313d734056d7f6121c72d0083a645b0b06d833ef1f7",
+  "status": "finished",
+  "completedEpisodes": 12
+}

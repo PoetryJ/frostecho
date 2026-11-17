@@ -1,0 +1,264 @@
+{
+  "schema": "frostecho.g09.plan/2",
+  "batch": "loopback-live",
+  "plan": [
+    {
+      "index": 1,
+      "episodeId": "g09-r1-s40-self_only",
+      "rep": 1,
+      "cell": "s40-self_only",
+      "satiety": 40,
+      "arm": "self_only",
+      "requestId": "g09-r1-s40-self_only-req-1"
+    },
+    {
+      "index": 2,
+      "episodeId": "g09-r1-s40-choice",
+      "rep": 1,
+      "cell": "s40-choice",
+      "satiety": 40,
+      "arm": "choice",
+      "requestId": "g09-r1-s40-choice-req-1"
+    },
+    {
+      "index": 3,
+      "episodeId": "g09-r1-s60-self_only",
+      "rep": 1,
+      "cell": "s60-self_only",
+      "satiety": 60,
+      "arm": "self_only",
+      "requestId": "g09-r1-s60-self_only-req-1"
+    },
+    {
+      "index": 4,
+      "episodeId": "g09-r1-s60-choice",
+      "rep": 1,
+      "cell": "s60-choice",
+      "satiety": 60,
+      "arm": "choice",
+      "requestId": "g09-r1-s60-choice-req-1"
+    },
+    {
+      "index": 5,
+      "episodeId": "g09-r2-s60-choice",
+      "rep": 2,
+      "cell": "s60-choice",
+      "satiety": 60,
+      "arm": "choice",
+      "requestId": "g09-r2-s60-choice-req-1"
+    },
+    {
+      "index": 6,
+      "episodeId": "g09-r2-s60-self_only",
+      "rep": 2,
+      "cell": "s60-self_only",
+      "satiety": 60,
+      "arm": "self_only",
+      "requestId": "g09-r2-s60-self_only-req-1"
+    },
+    {
+      "index": 7,
+      "episodeId": "g09-r2-s40-choice",
+      "rep": 2,
+      "cell": "s40-choice",
+      "satiety": 40,
+      "arm": "choice",
+      "requestId": "g09-r2-s40-choice-req-1"
+    },
+    {
+      "index": 8,
+      "episodeId": "g09-r2-s40-self_only",
+      "rep": 2,
+      "cell": "s40-self_only",
+      "satiety": 40,
+      "arm": "self_only",
+      "requestId": "g09-r2-s40-self_only-req-1"
+    }
+  ],
+  "hardChatLimit": 16,
+  "repCount": 2,
+  "runtime": {
+    "actorIds": [
+      "npc_a",
+      "npc_c"
+    ],
+    "needPolicy": "recurring",
+    "policy": "event",
+    "actionSet": "timed_wait",
+    "goalMode": "negotiated"
+  },
+  "createdAt": "2026-11-05T03:35:55.579Z",
+  "mode": "live",
+  "model": "loopback-model",
+  "thinking": true,
+  "timeoutMs": 120000,
+  "cells": [
+    {
+      "cell": "s40-self_only",
+      "satiety": 40,
+      "arm": "self_only"
+    },
+    {
+      "cell": "s40-choice",
+      "satiety": 40,
+      "arm": "choice"
+    },
+    {
+      "cell": "s60-self_only",
+      "satiety": 60,
+      "arm": "self_only"
+    },
+    {
+      "cell": "s60-choice",
+      "satiety": 60,
+      "arm": "choice"
+    }
+  ],
+  "frozen": {
+    "source": "spec-lock",
+    "matrix": [
+      [
+        1,
+        40,
+        "self_only"
+      ],
+      [
+        1,
+        40,
+        "choice"
+      ],
+      [
+        1,
+        60,
+        "self_only"
+      ],
+      [
+        1,
+        60,
+        "choice"
+      ],
+      [
+        2,
+        60,
+        "choice"
+      ],
+      [
+        2,
+        60,
+        "self_only"
+      ],
+      [
+        2,
+        40,
+        "choice"
+      ],
+      [
+        2,
+        40,
+        "self_only"
+      ]
+    ]
+  },
+  "initialStates": {
+    "s40-self_only": {
+      "tick": 0,
+      "simTime": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_c": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 70
+        }
+      },
+      "food": {
+        "kitchen": 1,
+        "dorm": 0
+      }
+    },
+    "s40-choice": {
+      "tick": 0,
+      "simTime": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_c": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 70
+        }
+      },
+      "food": {
+        "kitchen": 1,
+        "dorm": 0
+      }
+    },
+    "s60-self_only": {
+      "tick": 0,
+      "simTime": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 60
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_c": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 70
+        }
+      },
+      "food": {
+        "kitchen": 1,
+        "dorm": 0
+      }
+    },
+    "s60-choice": {
+      "tick": 0,
+      "simTime": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 60
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_c": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 70
+        }
+      },
+      "food": {
+        "kitchen": 1,
+        "dorm": 0
+      }
+    }
+  }
+}

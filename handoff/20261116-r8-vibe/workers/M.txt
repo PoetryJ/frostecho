@@ -1,0 +1,10 @@
+独占 research/decision-choice/jev05/{action,calibration}/**、src/r7/jev/**、tests/r8/jev-*；公共协议由O改。
+目标：真实27B特征+动态K候选评分+选择性决策，进入game-step。经典对应：迁移学习、learning-to-rank、selective prediction。
+立即确认现有闲置卡/进程，不杀他人任务。服务器原路径 /data/home/user_00/frostecho-r7；权重 /data2/model_weights/Qwen3.8-27B；已有torch环境和GPU1 BF16提取器。核实真实config/SHA/hidden=5120，别因目录名给模型改身份。使用legacy/RUNBOOK.md与encode_bf16.py；找不到则限时定位并报准确缺项，不重下载大模型。
+可复用真实C头：artifacts/sprint-r7/legacy-reuse/c43-increment-batch4-1/，warm-start-17选中权重SHA=2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04。扫描manifest找实际路径；旧主干冻结、joint候选位置、LayerNorm eps1e-5、共享无bias线性头。models/下last-token+L2是另一算法，不冒称续训。
+reference/joint_core.py给结构参考（需要NumPy；已有训练环境可运行6项测试），移植到Torch+真实tokenizer：动态K2..8；适配ChoiceRequest的kind→action、parameters→params和可见preconditions；结构char-span→offset定位；acceptable-set logsumexp loss；不静默截断。因果位置有顺序影响，训练重排/heldout四序压力；不承诺排列不变。共享5120头可迁移，但renderer已变，应重新训练/校准。
+D首批合格后先64例编码探针报吞吐/显存/输入长度/预计总时，缓存按encoder+renderer+完整输入+order绑定。编码去重；训练两序、dev/test四序单独统计，校准每独立输入仅预登记一次顺序。不要让全部token从CPU逐层offload而不测吞吐；根据当前两卡空闲情况明确device_map/max_memory，禁抢占。
+合格训练门通过后 warm/random × seeds17/43 四个小头同预算训练，按dev选一个；骨干冻结，无须全参微调。JSON生成基线可沿现有同主干接口实现，另列真实推理成本；若无此基线不能宣称比生成式更好。
+复用 calibration/math_core.py 与 policy.py；写joint-C checkpoint/score adapter，别直接套绑定L2的旧CLI。输出真实温度/阈值/风险覆盖率，绑定encoder/checkpoint/renderer/memory policy与数据SHA。cert独立；每种不同memory策略不能共用不匹配证书。
+持久JSONL服务只加载一次模型，输入ChoiceRequest输出按ID映射logits→softmax(T)→accept/abstain。无证书可做隔离实验，不打开正式默认门。合法/非法工件及实际CLI正负例都交H；utility=null，概率不是效用。
+交 train.py 的preflight/encode/train/calibrate/serve入口、逐样本结果、曲线/四权重/选择理由、GPU时间与峰值显存、复载一致；大特征/主干不入Git。

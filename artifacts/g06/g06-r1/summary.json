@@ -1,0 +1,134 @@
+{
+  "schema": "frostecho.g06.eval/1",
+  "batch": "g06-r1",
+  "generatedAt": "2026-11-02T10:05:07.000Z",
+  "totals": {
+    "pairs": 8,
+    "passed": 8,
+    "failed": 0
+  },
+  "comparison": "full checkpoint (engine incl. processed dedupe, states, cycles/turns, sessions round/feedback/steps, cursor, player/world counters, budgets); wall-clock timing excluded",
+  "crossProcess": "resume branch = save file → exit → new node process loads and continues",
+  "pairs": [
+    {
+      "caseId": "r1-ac",
+      "kind": "r1",
+      "chain": "ac",
+      "pass": true,
+      "savepointCalls": 1,
+      "finalCalls": 2,
+      "diffs": [],
+      "finalStates": {
+        "npc_a": "satisfied",
+        "npc_c": "satisfied"
+      },
+      "food": 0,
+      "playerHunger": 40
+    },
+    {
+      "caseId": "r1-ca",
+      "kind": "r1",
+      "chain": "ca",
+      "pass": true,
+      "savepointCalls": 1,
+      "finalCalls": 2,
+      "diffs": [],
+      "finalStates": {
+        "npc_c": "satisfied",
+        "npc_a": "satisfied"
+      },
+      "food": 0,
+      "playerHunger": 40
+    },
+    {
+      "caseId": "r2-ac",
+      "kind": "r2",
+      "chain": "ac",
+      "pass": true,
+      "savepointCalls": 2,
+      "finalCalls": 4,
+      "diffs": [],
+      "finalStates": {
+        "npc_a": "satisfied",
+        "npc_c": "satisfied"
+      },
+      "food": 0,
+      "playerHunger": 40
+    },
+    {
+      "caseId": "r2-ca",
+      "kind": "r2",
+      "chain": "ca",
+      "pass": true,
+      "savepointCalls": 2,
+      "finalCalls": 4,
+      "diffs": [],
+      "finalStates": {
+        "npc_c": "satisfied",
+        "npc_a": "satisfied"
+      },
+      "food": 0,
+      "playerHunger": 40
+    },
+    {
+      "caseId": "r3-ac",
+      "kind": "r3",
+      "chain": "ac",
+      "pass": true,
+      "savepointCalls": 0,
+      "finalCalls": 2,
+      "diffs": [],
+      "finalStates": {
+        "npc_a": "satisfied",
+        "npc_c": "satisfied"
+      },
+      "food": 0,
+      "playerHunger": 10
+    },
+    {
+      "caseId": "r3-ca",
+      "kind": "r3",
+      "chain": "ca",
+      "pass": true,
+      "savepointCalls": 0,
+      "finalCalls": 2,
+      "diffs": [],
+      "finalStates": {
+        "npc_c": "satisfied",
+        "npc_a": "satisfied"
+      },
+      "food": 0,
+      "playerHunger": 10
+    },
+    {
+      "caseId": "r4-ac",
+      "kind": "r4",
+      "chain": "ac",
+      "pass": true,
+      "savepointCalls": 1,
+      "finalCalls": 2,
+      "diffs": [],
+      "finalStates": {
+        "npc_a": "satisfied",
+        "npc_c": "waiting"
+      },
+      "food": 0,
+      "playerHunger": 70
+    },
+    {
+      "caseId": "r4-ca",
+      "kind": "r4",
+      "chain": "ca",
+      "pass": true,
+      "savepointCalls": 1,
+      "finalCalls": 2,
+      "diffs": [],
+      "finalStates": {
+        "npc_c": "satisfied",
+        "npc_a": "waiting"
+      },
+      "food": 0,
+      "playerHunger": 70
+    }
+  ]
+}

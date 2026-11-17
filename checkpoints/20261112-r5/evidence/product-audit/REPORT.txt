@@ -1,0 +1,34 @@
+FrostEcho Sprint R5 independent product audit — 2026-11-12
+
+Verdict: 有限返工。既有承诺/取消反例修复有效；新晨会 supply-warehouse 的任务完成没有关闭其承诺。今晚先保存证据和进度，不继续开发或派发下一轮任务。
+
+Scope and provenance
+- Source HEAD: 498c00015e51dc6d48668e2603e2e1877aa8e399; baseline: db34123.
+- Independently cloned artifacts/sprint-r5/delivery/frostecho-r5.bundle into /tmp/frostecho-r5-product-TiofSV/repo.
+- Node /root/.workbuddy/binaries/node/versions/24.14.0/bin; npm ci --offline and npm run build succeeded.
+- Read-only product audit. No product changes, real-model calls, GPU work, full-suite run, or new task package by this auditor.
+
+Effective results
+1. acceptance-v5: independently reran all 9 tests, 9 passed / 0 failed. Raw TAP: acceptance-v5.tap.
+2. Replayed the supplied R4 world probe against R5. Withdraw cancels linked task; subsequent 8 steps cannot deliver. Cancel closes pending change; late accept does not revive it. First counter-accept binds one task. R5-G3 independently confirms resumeWhen waiting then actual delivery/fulfilled using the same task. Prior probe raw output: probe-output/ and world-probe.log.
+3. Morning-council acceptance, actual gathering/deposit/delivery, withdrawal/reassignment and duplicate/old-response handling pass the targeted acceptance suite. Votes are fixture-reference, not model or human social validation.
+4. Independently inspected original continuous/segmented four-day save files: their entire world JSON is exactly equal, not just selected fields. Eight NPCs survive; 3 meal deliveries; four resolved morning councils; spatial movement/work occurred. Fresh R5-G9 also independently passes its authoritative-state comparison.
+
+Issues and unproved items (3)
+1. [P1 / verified defect] A completed supply-warehouse task leaves its promise active.
+   Minimal real CLI, two processes: fresh 8 NPCs -> council-open -> council-resolve -> save/quit; restore -> accept supply request -> 4 game-step -> save/quit.
+   Selected actions: g-supply-travel, g-deposit, g-wait, g-wait. Warehouse food rises 4 to 6. Task status is done, commitment status remains active, and evidenceEventIds is empty.
+   src/gameplay-v2/loop.ts:695-702 completes the task on stock_deposited but does not call commitments.fulfil, unlike the meal branch at 682-692.
+   Raw reproducible evidence: supply-probe.cjs and supply-output/{first.jsonl,second.jsonl,summary.json,supply.json*}. The submitted four-day snapshot also retains an active first-day supply commitment without fulfillment evidence. Do not classify all product lifecycle gates as passed.
+2. [Report correction / bounded positive] The submitted four-day chain totals 6170 minutes = 102 h 50 min, not exactly 96 h. R5-G9 checks >=96 h; travel/rest consume time beyond sixteen 360-minute advances. Continuous and segmented world equality is valid at that same elapsed time. Raw calculations: audit-evidence.py and fourday-raw-audit.json.
+3. [Unproved] Initial food=120 and deliberate warehouse depletion define a controlled CLI scenario. This supports reproducible spatial execution, shortage handling and save/restore, not natural four-day survival balance. It does not prove real-model decisions, general social behavior or full original-game completion.
+
+Reproduction
+- run.sh creates an isolated bundle clone, builds, runs world-probe.cjs, then acceptance-v5; use an equivalent original-repo path where appropriate.
+- export PATH=/root/.workbuddy/binaries/node/versions/24.14.0/bin:$PATH
+- node supply-probe.cjs /tmp/frostecho-r5-product-TiofSV/repo /tmp/frostecho-r5-supply-repro-NEW
+- python3 audit-evidence.py (reads the submitted four-day directory encoded in that script).
+- Keep original outputs; use new output directories when rerunning the probe.
+
+Disposition
+Preserve valid fixes, experiments, environment and this new defect in the GitHub checkpoint. No repair is included in this audit. Further work waits for the project owner's next request.

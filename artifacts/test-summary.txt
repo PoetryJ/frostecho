@@ -1,11 +1,27 @@
-ok 1 - A: move to kitchen then eat
-ok 2 - A2: hunger clamps at 100
-ok 3 - B: contention for last food, order npc_a then npc_b
-ok 4 - B: contention for last food, order npc_b then npc_a
-ok 5 - C: duplicate successful command has no extra effect
-ok 6 - D: same commandId with different payload -> COMMAND_ID_CONFLICT
-ok 7 - E: invalid input / unmet preconditions leave state unchanged
-ok 8 - F: replay(initial, events) equals live final state; no executor called
-ok 9 - G: restore from save then retry completed command -> no duplicate effect
-ok 10 - Immutability: returned state/history cannot corrupt engine
-ok 11 - Determinism: same commands -> identical records (no wall clock)
+npm test EXIT 0
+node --test dist/tests/scenarios.test.js
+tests 18, pass 18, fail 0, skipped 0
+
+ok  1 A: move to kitchen then eat
+ok  2 A2: hunger clamps at 100
+ok  3 B: contention for last food, order npc_a then npc_b
+ok  4 B: contention for last food, order npc_b then npc_a
+ok  5 C: duplicate successful command has no extra effect
+ok  6 D: same commandId with different payload -> COMMAND_ID_CONFLICT
+ok  7 E: invalid input / unmet preconditions leave state unchanged
+ok  8 F: replay(initial, events) equals live final state; no executor called
+ok  9 G: restore from save then retry completed command -> no duplicate effect
+ok 10 Immutability: returned state/history cannot corrupt engine
+ok 11 Determinism: same commands -> identical records (no wall clock)
+ok 12 H: move actorId toString -> UNKNOWN_ACTOR, no throw, state and events unchanged
+ok 13 H: move actorId constructor -> UNKNOWN_ACTOR, no throw, state and events unchanged
+ok 14 H: move actorId proto -> UNKNOWN_ACTOR, no throw, state and events unchanged
+ok 15 I: same commandId eat, omitted payload vs {} -> COMMAND_ID_CONFLICT both orders
+ok 16 I-restore: omitted payload vs {} still conflicts after JSON save/restore, both orders
+ok 17 I-null: omitted payload vs explicit null -> COMMAND_ID_CONFLICT, both orders, and both after JSON restore
+ok 18 J: true duplicates, key-order equality, and failed-command retry stay duplicates
+
+Full TAP: artifacts/test-run.txt
+Demo: artifacts/demo-run.txt EXIT 0
+Environment: artifacts/env.txt
+Before/after inputs: artifacts/g00-r1-before.json , artifacts/g00-r1-after.json

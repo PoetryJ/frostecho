@@ -1,0 +1,19 @@
+在 e21c0ac 基线上，先 npm ci --ignore-scripts，再 npm run build。
+1. 原报告场景（已独立复跑）
+node dist/scripts/r8/playthrough.js --profile gospel-5.8.19 --seed r8-1 --mode reference --out <newDir>
+观察：335/335/0，perfect/8，elapsed4920。
+2. 新seed与两世（已独立复跑）
+node dist/scripts/r8/playthrough.js --seed pm-r8-1 --lives 2 --mode reference --out <newDir>
+观察：670决策/657执行/13拒绝，第二世perfect/8/4920。拒绝需解释但不是自动失败。
+3. 任务与生产反例（无需GPU）
+node handoff/20261116-r8-completion/probes/domain-probes.cjs .
+观察基线：不存在回执令food130→138且零时间；build-start令任务done但machine仍building；补木后generator仍stopped。
+4. 模型/数据机制反例（Python+NumPy，无GPU）
+python handoff/20261116-r8-completion/probes/jev-probes.py --repo . --out <new.json>
+观察基线：空闲双A10被拒；LN缺失改变logits；T变化不改变概率；无证书admitted；335输入字段不匹配且同局NPC跨分区。
+5. 原验收（原作源码未解包先运行旧bootstrap）
+python handoff/20261113-r7-full-goal/bootstrap.py
+node dist/scripts/r8/verify.js --out <newDir> --strict
+本地观察7pass/1blocked/exit1。它遗漏产品门且部分空断言，不能仅追此计数变绿。
+以上probes是保留原始反例的观察器，不是修复后测试套。修复后H按同输入验证正确行为，保留基线日志与新结果；API变化时写薄适配，不能删case使其消失。
+检查通过标准见WORK.txt的三个产品成果，不以旧计数或几个反例关闭替代完整交付。

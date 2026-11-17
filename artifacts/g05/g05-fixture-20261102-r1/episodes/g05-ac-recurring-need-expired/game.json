@@ -1,0 +1,1252 @@
+{
+  "schema": "frostecho.g05.game/1",
+  "episodeId": "g05-ac-recurring-need-expired",
+  "scenarioId": null,
+  "wakePolicy": "event",
+  "mode": "fixture",
+  "thinking": false,
+  "actorOrder": [
+    "npc_a",
+    "npc_c"
+  ],
+  "initialState": {
+    "tick": 0,
+    "simTime": 0,
+    "npcs": {
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 0
+      },
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40
+      },
+      "npc_c": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "kitchen": 0,
+      "dorm": 0
+    }
+  },
+  "finalState": {
+    "tick": 2,
+    "simTime": 60,
+    "npcs": {
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 6
+      },
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46
+      },
+      "npc_c": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 26
+      }
+    },
+    "food": {
+      "kitchen": 0,
+      "dorm": 0
+    }
+  },
+  "commands": [
+    {
+      "seq": 1,
+      "command": {
+        "commandId": "g05-ac-recurring-need-expired:world:advance:1",
+        "actorId": "world",
+        "type": "advance_time",
+        "payload": {
+          "minutes": 30
+        }
+      },
+      "result": {
+        "commandId": "g05-ac-recurring-need-expired:world:advance:1",
+        "seq": 1,
+        "status": "accepted",
+        "eventIds": [
+          "e1",
+          "e2",
+          "e3",
+          "e4"
+        ]
+      }
+    },
+    {
+      "seq": 2,
+      "command": {
+        "commandId": "g05-ac-recurring-need-expired:world:advance:2",
+        "actorId": "world",
+        "type": "advance_time",
+        "payload": {
+          "minutes": 30
+        }
+      },
+      "result": {
+        "commandId": "g05-ac-recurring-need-expired:world:advance:2",
+        "seq": 2,
+        "status": "accepted",
+        "eventIds": [
+          "e5",
+          "e6",
+          "e7",
+          "e8"
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "TimeAdvanced",
+      "before": 0,
+      "after": 30,
+      "eventId": "e1",
+      "seq": 1,
+      "commandId": "g05-ac-recurring-need-expired:world:advance:1"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_a",
+      "before": 40,
+      "after": 43,
+      "eventId": "e2",
+      "seq": 1,
+      "commandId": "g05-ac-recurring-need-expired:world:advance:1"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_b",
+      "before": 0,
+      "after": 3,
+      "eventId": "e3",
+      "seq": 1,
+      "commandId": "g05-ac-recurring-need-expired:world:advance:1"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_c",
+      "before": 20,
+      "after": 23,
+      "eventId": "e4",
+      "seq": 1,
+      "commandId": "g05-ac-recurring-need-expired:world:advance:1"
+    },
+    {
+      "type": "TimeAdvanced",
+      "before": 30,
+      "after": 60,
+      "eventId": "e5",
+      "seq": 2,
+      "commandId": "g05-ac-recurring-need-expired:world:advance:2"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_a",
+      "before": 43,
+      "after": 46,
+      "eventId": "e6",
+      "seq": 2,
+      "commandId": "g05-ac-recurring-need-expired:world:advance:2"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_b",
+      "before": 3,
+      "after": 6,
+      "eventId": "e7",
+      "seq": 2,
+      "commandId": "g05-ac-recurring-need-expired:world:advance:2"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_c",
+      "before": 23,
+      "after": 26,
+      "eventId": "e8",
+      "seq": 2,
+      "commandId": "g05-ac-recurring-need-expired:world:advance:2"
+    }
+  ],
+  "cycles": {
+    "npc_a": [
+      {
+        "cycle": 1,
+        "reason": "initial cycle",
+        "startLogCursor": 0,
+        "endState": "active",
+        "turns": [],
+        "providerCalls": 0
+      },
+      {
+        "cycle": 2,
+        "reason": "need cycle (period 1, sim 30min)",
+        "startLogCursor": 2,
+        "endState": "waiting",
+        "turns": [
+          {
+            "globalTurn": 1,
+            "actorId": "npc_a",
+            "cycle": 2,
+            "actorRound": 1,
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 46,
+              "foodHere": 0,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": null,
+            "providerCalled": true,
+            "status": "stopped",
+            "logCursorBefore": 2,
+            "logCursorAfter": 2,
+            "step": {
+              "round": 1,
+              "observation": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 46,
+                "foodHere": 0,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "{\"type\":\"stop\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "stop"
+                }
+              }
+            }
+          }
+        ],
+        "providerCalls": 1
+      },
+      {
+        "cycle": 3,
+        "reason": "need cycle (period 1, sim 30min)",
+        "startLogCursor": 2,
+        "endState": "waiting",
+        "turns": [
+          {
+            "globalTurn": 3,
+            "actorId": "npc_a",
+            "cycle": 3,
+            "actorRound": 1,
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 46,
+              "foodHere": 0,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": null,
+            "providerCalled": true,
+            "status": "stopped",
+            "logCursorBefore": 2,
+            "logCursorAfter": 2,
+            "step": {
+              "round": 1,
+              "observation": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 46,
+                "foodHere": 0,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "{\"type\":\"stop\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "stop"
+                }
+              }
+            }
+          }
+        ],
+        "providerCalls": 1
+      },
+      {
+        "cycle": 4,
+        "reason": "need cycle (period 1, sim 30min)",
+        "startLogCursor": 2,
+        "endState": "waiting",
+        "turns": [
+          {
+            "globalTurn": 4,
+            "actorId": "npc_a",
+            "cycle": 4,
+            "actorRound": 1,
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 46,
+              "foodHere": 0,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": null,
+            "providerCalled": true,
+            "status": "stopped",
+            "logCursorBefore": 2,
+            "logCursorAfter": 2,
+            "step": {
+              "round": 1,
+              "observation": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 46,
+                "foodHere": 0,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "{\"type\":\"stop\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "stop"
+                }
+              }
+            }
+          }
+        ],
+        "providerCalls": 1
+      },
+      {
+        "cycle": 5,
+        "reason": "need cycle (period 1, sim 30min)",
+        "startLogCursor": 2,
+        "endState": "waiting",
+        "turns": [
+          {
+            "globalTurn": 5,
+            "actorId": "npc_a",
+            "cycle": 5,
+            "actorRound": 1,
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 46,
+              "foodHere": 0,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": null,
+            "providerCalled": true,
+            "status": "stopped",
+            "logCursorBefore": 2,
+            "logCursorAfter": 2,
+            "step": {
+              "round": 1,
+              "observation": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 46,
+                "foodHere": 0,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "{\"type\":\"stop\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "stop"
+                }
+              }
+            }
+          }
+        ],
+        "providerCalls": 1
+      },
+      {
+        "cycle": 6,
+        "reason": "need cycle (period 1, sim 30min)",
+        "startLogCursor": 2,
+        "endState": "waiting",
+        "turns": [
+          {
+            "globalTurn": 6,
+            "actorId": "npc_a",
+            "cycle": 6,
+            "actorRound": 1,
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 46,
+              "foodHere": 0,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": null,
+            "providerCalled": true,
+            "status": "stopped",
+            "logCursorBefore": 2,
+            "logCursorAfter": 2,
+            "step": {
+              "round": 1,
+              "observation": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 46,
+                "foodHere": 0,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "{\"type\":\"stop\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "stop"
+                }
+              }
+            }
+          }
+        ],
+        "providerCalls": 1
+      },
+      {
+        "cycle": 7,
+        "reason": "need cycle (period 1, sim 30min)",
+        "startLogCursor": 2,
+        "endState": "waiting",
+        "turns": [
+          {
+            "globalTurn": 7,
+            "actorId": "npc_a",
+            "cycle": 7,
+            "actorRound": 1,
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 46,
+              "foodHere": 0,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": null,
+            "providerCalled": true,
+            "status": "stopped",
+            "logCursorBefore": 2,
+            "logCursorAfter": 2,
+            "step": {
+              "round": 1,
+              "observation": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 46,
+                "foodHere": 0,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "{\"type\":\"stop\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "stop"
+                }
+              }
+            }
+          }
+        ],
+        "providerCalls": 1
+      },
+      {
+        "cycle": 8,
+        "reason": "need cycle (period 1, sim 30min)",
+        "startLogCursor": 2,
+        "endState": "waiting",
+        "turns": [
+          {
+            "globalTurn": 8,
+            "actorId": "npc_a",
+            "cycle": 8,
+            "actorRound": 1,
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 46,
+              "foodHere": 0,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": null,
+            "providerCalled": true,
+            "status": "stopped",
+            "logCursorBefore": 2,
+            "logCursorAfter": 2,
+            "step": {
+              "round": 1,
+              "observation": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 46,
+                "foodHere": 0,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "{\"type\":\"stop\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "stop"
+                }
+              }
+            }
+          }
+        ],
+        "providerCalls": 1
+      },
+      {
+        "cycle": 9,
+        "reason": "need cycle (period 1, sim 30min)",
+        "startLogCursor": 2,
+        "endState": "waiting",
+        "turns": [
+          {
+            "globalTurn": 9,
+            "actorId": "npc_a",
+            "cycle": 9,
+            "actorRound": 1,
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 46,
+              "foodHere": 0,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": null,
+            "providerCalled": true,
+            "status": "stopped",
+            "logCursorBefore": 2,
+            "logCursorAfter": 2,
+            "step": {
+              "round": 1,
+              "observation": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 46,
+                "foodHere": 0,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "{\"type\":\"stop\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "stop"
+                }
+              }
+            }
+          }
+        ],
+        "providerCalls": 1
+      },
+      {
+        "cycle": 10,
+        "reason": "need cycle (period 1, sim 30min)",
+        "startLogCursor": 2,
+        "endState": "waiting",
+        "turns": [
+          {
+            "globalTurn": 10,
+            "actorId": "npc_a",
+            "cycle": 10,
+            "actorRound": 1,
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 46,
+              "foodHere": 0,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": null,
+            "providerCalled": true,
+            "status": "stopped",
+            "logCursorBefore": 2,
+            "logCursorAfter": 2,
+            "step": {
+              "round": 1,
+              "observation": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 46,
+                "foodHere": 0,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "{\"type\":\"stop\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "stop"
+                }
+              }
+            }
+          }
+        ],
+        "providerCalls": 1
+      },
+      {
+        "cycle": 11,
+        "reason": "need cycle (period 1, sim 30min)",
+        "startLogCursor": 2,
+        "endState": "failed",
+        "turns": [
+          {
+            "globalTurn": 11,
+            "actorId": "npc_a",
+            "cycle": 11,
+            "actorRound": 1,
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 46,
+              "foodHere": 0,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": null,
+            "providerCalled": true,
+            "status": "stopped",
+            "logCursorBefore": 2,
+            "logCursorAfter": 2,
+            "step": {
+              "round": 1,
+              "observation": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 46,
+                "foodHere": 0,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "{\"type\":\"stop\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "stop"
+                }
+              }
+            }
+          }
+        ],
+        "providerCalls": 1
+      }
+    ],
+    "npc_c": [
+      {
+        "cycle": 1,
+        "reason": "initial cycle",
+        "startLogCursor": 0,
+        "endState": "waiting",
+        "turns": [
+          {
+            "globalTurn": 2,
+            "actorId": "npc_c",
+            "cycle": 1,
+            "actorRound": 1,
+            "observation": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 26,
+              "foodHere": 0,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "inputFeedback": null,
+            "providerCalled": true,
+            "status": "stopped",
+            "logCursorBefore": 2,
+            "logCursorAfter": 2,
+            "step": {
+              "round": 1,
+              "observation": {
+                "id": "npc_c",
+                "location": "kitchen",
+                "hunger": 26,
+                "foodHere": 0,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "raw": "{\"type\":\"stop\"}",
+              "parse": {
+                "ok": true,
+                "action": {
+                  "type": "stop"
+                }
+              }
+            }
+          }
+        ],
+        "providerCalls": 1
+      }
+    ]
+  },
+  "actors": {
+    "npc_a": {
+      "state": "failed",
+      "cycles": 11,
+      "providerCalls": 10,
+      "goalReached": false
+    },
+    "npc_c": {
+      "state": "waiting",
+      "cycles": 1,
+      "providerCalls": 1,
+      "goalReached": false
+    }
+  },
+  "transitions": [
+    {
+      "seq": 1,
+      "actorId": "npc_a",
+      "cycle": 1,
+      "from": null,
+      "to": "active",
+      "reason": "initial cycle (cycle 1)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 0
+    },
+    {
+      "seq": 2,
+      "actorId": "npc_c",
+      "cycle": 1,
+      "from": null,
+      "to": "active",
+      "reason": "initial cycle (cycle 1)",
+      "observation": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 20,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 0
+    },
+    {
+      "seq": 3,
+      "actorId": "npc_a",
+      "cycle": 2,
+      "from": "active",
+      "to": "active",
+      "reason": "need cycle (period 1, sim 30min) (cycle 2)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 4,
+      "actorId": "npc_a",
+      "cycle": 2,
+      "from": "active",
+      "to": "waiting",
+      "reason": "stop with an empty kitchen while hungry (kitchen hunger=46 foodHere=0)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 5,
+      "actorId": "npc_c",
+      "cycle": 1,
+      "from": "active",
+      "to": "waiting",
+      "reason": "stop with an empty kitchen while hungry (kitchen hunger=26 foodHere=0)",
+      "observation": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 26,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 6,
+      "actorId": "npc_a",
+      "cycle": 3,
+      "from": "waiting",
+      "to": "active",
+      "reason": "need cycle (period 1, sim 30min) (cycle 3)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 7,
+      "actorId": "npc_a",
+      "cycle": 3,
+      "from": "active",
+      "to": "waiting",
+      "reason": "stop with an empty kitchen while hungry (kitchen hunger=46 foodHere=0)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 8,
+      "actorId": "npc_a",
+      "cycle": 4,
+      "from": "waiting",
+      "to": "active",
+      "reason": "need cycle (period 1, sim 30min) (cycle 4)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 9,
+      "actorId": "npc_a",
+      "cycle": 4,
+      "from": "active",
+      "to": "waiting",
+      "reason": "stop with an empty kitchen while hungry (kitchen hunger=46 foodHere=0)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 10,
+      "actorId": "npc_a",
+      "cycle": 5,
+      "from": "waiting",
+      "to": "active",
+      "reason": "need cycle (period 1, sim 30min) (cycle 5)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 11,
+      "actorId": "npc_a",
+      "cycle": 5,
+      "from": "active",
+      "to": "waiting",
+      "reason": "stop with an empty kitchen while hungry (kitchen hunger=46 foodHere=0)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 12,
+      "actorId": "npc_a",
+      "cycle": 6,
+      "from": "waiting",
+      "to": "active",
+      "reason": "need cycle (period 1, sim 30min) (cycle 6)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 13,
+      "actorId": "npc_a",
+      "cycle": 6,
+      "from": "active",
+      "to": "waiting",
+      "reason": "stop with an empty kitchen while hungry (kitchen hunger=46 foodHere=0)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 14,
+      "actorId": "npc_a",
+      "cycle": 7,
+      "from": "waiting",
+      "to": "active",
+      "reason": "need cycle (period 1, sim 30min) (cycle 7)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 15,
+      "actorId": "npc_a",
+      "cycle": 7,
+      "from": "active",
+      "to": "waiting",
+      "reason": "stop with an empty kitchen while hungry (kitchen hunger=46 foodHere=0)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 16,
+      "actorId": "npc_a",
+      "cycle": 8,
+      "from": "waiting",
+      "to": "active",
+      "reason": "need cycle (period 1, sim 30min) (cycle 8)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 17,
+      "actorId": "npc_a",
+      "cycle": 8,
+      "from": "active",
+      "to": "waiting",
+      "reason": "stop with an empty kitchen while hungry (kitchen hunger=46 foodHere=0)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 18,
+      "actorId": "npc_a",
+      "cycle": 9,
+      "from": "waiting",
+      "to": "active",
+      "reason": "need cycle (period 1, sim 30min) (cycle 9)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 19,
+      "actorId": "npc_a",
+      "cycle": 9,
+      "from": "active",
+      "to": "waiting",
+      "reason": "stop with an empty kitchen while hungry (kitchen hunger=46 foodHere=0)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 20,
+      "actorId": "npc_a",
+      "cycle": 10,
+      "from": "waiting",
+      "to": "active",
+      "reason": "need cycle (period 1, sim 30min) (cycle 10)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 21,
+      "actorId": "npc_a",
+      "cycle": 10,
+      "from": "active",
+      "to": "waiting",
+      "reason": "stop with an empty kitchen while hungry (kitchen hunger=46 foodHere=0)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 22,
+      "actorId": "npc_a",
+      "cycle": 11,
+      "from": "waiting",
+      "to": "active",
+      "reason": "need cycle (period 1, sim 30min) (cycle 11)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 23,
+      "actorId": "npc_a",
+      "cycle": 11,
+      "from": "active",
+      "to": "waiting",
+      "reason": "stop with an empty kitchen while hungry (kitchen hunger=46 foodHere=0)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    },
+    {
+      "seq": 24,
+      "actorId": "npc_a",
+      "cycle": 11,
+      "from": "waiting",
+      "to": "failed",
+      "reason": "need expired: 10 decisions without a landed eat",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 46,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 2
+    }
+  ],
+  "stopReason": "interrupted",
+  "scenarioPass": true,
+  "replayMatches": true,
+  "idlePumps": {
+    "pumps": 0,
+    "callsBefore": 0,
+    "callsAfter": 0,
+    "cyclesBefore": 0,
+    "cyclesAfter": 0,
+    "actorStatesBefore": {},
+    "actorStatesAfter": {}
+  },
+  "requestConfig": {
+    "model": null,
+    "temperature": 0,
+    "max_tokens": 1024,
+    "stream": false,
+    "enableThinking": [
+      false
+    ],
+    "timeoutMs": 15000
+  },
+  "timing": {
+    "totalMs": 3
+  },
+  "needPolicy": "recurring",
+  "needs": [
+    {
+      "seq": 1,
+      "actorId": "npc_a",
+      "atSimTime": 30,
+      "period": 1,
+      "decisionsUsed": 10,
+      "outcome": "expired"
+    }
+  ]
+}

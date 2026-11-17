@@ -1,0 +1,255 @@
+{
+  "schema": "frostecho.session/1",
+  "world": {
+    "schema": "frostecho.world-v2/2",
+    "rulesVersion": "survival-rules/2",
+    "day": 1,
+    "simTime": 32,
+    "version": 2,
+    "rngSeed": "r3-compare-success",
+    "weather": "snow",
+    "npcs": {
+      "npc_01": {
+        "id": "npc_01",
+        "location": "warehouse",
+        "hunger": 69.52,
+        "stamina": 79.2,
+        "health": 100,
+        "san": 79.89333333333333,
+        "alive": true
+      },
+      "npc_02": {
+        "id": "npc_02",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_03": {
+        "id": "npc_03",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_04": {
+        "id": "npc_04",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_05": {
+        "id": "npc_05",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_06": {
+        "id": "npc_06",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_07": {
+        "id": "npc_07",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_08": {
+        "id": "npc_08",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      }
+    },
+    "resources": {
+      "food": 24,
+      "firewood": 20,
+      "power": 40,
+      "medicine": 2
+    },
+    "furnace": {
+      "lit": true,
+      "fuel": 6,
+      "warmth": 18
+    },
+    "commandLog": [
+      "npc_01-game-0-g-travel-warehouse",
+      "npc_01-game-1-g-withdraw"
+    ],
+    "dead": [],
+    "ending": "none",
+    "scenarioDays": 4,
+    "spatial": {
+      "positions": {
+        "npc_01": {
+          "x": 16,
+          "y": 15
+        }
+      },
+      "carry": {
+        "npc_01": {
+          "meals": 1
+        }
+      },
+      "closedCells": [],
+      "stocks": {
+        "warehouse": {
+          "food": 3
+        }
+      },
+      "deliveredMeals": 0
+    },
+    "receipts": {
+      "npc_01-game-0-g-travel-warehouse": {
+        "digest": "4b5beffcc4e65368dd0dd4341a2b058bdbf6d76d0132f6039e5fc2b336443644",
+        "eventIds": [
+          "npc_01-game-0-g-travel-warehouse:traveled:0"
+        ],
+        "postStateVersion": 1
+      },
+      "npc_01-game-1-g-withdraw": {
+        "digest": "bb1660862f5719b7b5ef9157bb9d350330ebdd6b0938d1c467290391ffd0cc15",
+        "eventIds": [
+          "npc_01-game-1-g-withdraw:stock_withdrawn:1"
+        ],
+        "postStateVersion": 2
+      }
+    }
+  },
+  "memories": {
+    "npc_01": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "npc_01-game-0-g-travel-warehouse:traveled:0",
+          "occurredAt": 32,
+          "observedAt": 32,
+          "kind": "traveled",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "tiles": 16,
+            "minutes": 32,
+            "arrivedAt": "warehouse"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "npc_01-game-0-g-travel-warehouse:traveled:0"
+          ],
+          "recordId": "m-bb8c389a9e45e566",
+          "revision": 1
+        },
+        {
+          "eventId": "npc_01-game-1-g-withdraw:stock_withdrawn:1",
+          "occurredAt": 32,
+          "observedAt": 32,
+          "kind": "stock_withdrawn",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "place": "warehouse",
+            "amount": 1,
+            "remaining": 3,
+            "carried": 1
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "npc_01-game-1-g-withdraw:stock_withdrawn:1"
+          ],
+          "recordId": "m-02293257232b0db2",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_02": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": []
+    },
+    "npc_03": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": []
+    },
+    "npc_04": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": []
+    },
+    "npc_05": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": []
+    },
+    "npc_06": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": []
+    },
+    "npc_07": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": []
+    },
+    "npc_08": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": []
+    }
+  },
+  "outcomes": {
+    "npc_01-game-0-g-travel-warehouse": {
+      "status": "applied",
+      "eventIds": [
+        "npc_01-game-0-g-travel-warehouse:traveled:0"
+      ],
+      "postStateVersion": 1,
+      "reason": null
+    },
+    "npc_01-game-1-g-withdraw": {
+      "status": "applied",
+      "eventIds": [
+        "npc_01-game-1-g-withdraw:stock_withdrawn:1"
+      ],
+      "postStateVersion": 2,
+      "reason": null
+    }
+  },
+  "plans": [],
+  "instances": [],
+  "generations": {},
+  "sequence": 0,
+  "seed": "r3-compare-success"
+}

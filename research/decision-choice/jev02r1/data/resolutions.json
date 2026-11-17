@@ -1,0 +1,32 @@
+{
+  "schema": "frostecho.jev02r1.resolutions/1",
+  "at": "2026-11-10",
+  "note": "Every entry was re-read against contract.json by the coordinating agent before any model call. No majority vote and no template labeler were used.",
+  "resolutions": {
+    "r1-calT-0072": {
+      "labelId": "NPC_FIRST",
+      "rule": "R4/R7",
+      "rationale": "收话人明确是老义工（他提问），只有两人在场且斋堂规矩就是长者先；'按规矩来，我跟着'唯一指向老义工先吃、玩家随后，不构成未定。盲标方读法成立，采纳。"
+    },
+    "r1-test-0212": {
+      "labelId": "NPC_FIRST",
+      "rule": "R4/R7",
+      "rationale": "与 calT-0072 同构：收话人明确、过堂规矩唯一指向长者先，'我跟着'即玩家随后。采纳盲标读法。"
+    },
+    "r1-calP-0119": {
+      "labelId": "PLAYER_FIRST",
+      "rule": "R4",
+      "rationale": "'先给我吧'的方向是玩家自己优先，不依赖收话人是谁；R1 的收话人明确要求只用于 NPC_FIRST（需要指定受益的NPC）。方向单值，采纳盲标读法。"
+    },
+    "r1-test-0087": {
+      "labelId": "NO_PRIORITY_REQUEST",
+      "rule": "R2/R3",
+      "rationale": "'先点吧'指先点菜，不是谁先吃；菜单语境里没有吃食先后安排。采纳盲标读法。"
+    },
+    "r1-test-0127": {
+      "labelId": "NEEDS_CLARIFICATION",
+      "rule": "R1",
+      "rationale": "'趁热吃'的受益方向是他人，但化妆师与服装师两人都在场，未确定把先吃让给谁；NPC_FIRST 需要指定收话人，故维持澄清。作者读法成立，不采纳盲标。"
+    }
+  }
+}

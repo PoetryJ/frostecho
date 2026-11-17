@@ -1,0 +1,150 @@
+{
+  "schema": "frostecho.g05.liveplan/1",
+  "batchId": "g05-live-20261102-r1",
+  "mode": "live",
+  "matrixVersion": "g05-r1-t123",
+  "chatBudget": {
+    "limit": 60
+  },
+  "requestDefaults": {
+    "model": "qwen3.8-27b",
+    "temperature": 0,
+    "max_tokens": 1024,
+    "stream": false,
+    "enableThinking": true,
+    "timeoutMs": 120000,
+    "urlPresent": true
+  },
+  "plannedScenarios": [
+    {
+      "scenarioId": "ac/t1/one-shot",
+      "episodeId": "g05-ac-t1-one-shot",
+      "chain": "ac",
+      "kind": "t1",
+      "needPolicy": "one-shot",
+      "kitchenFood": 4,
+      "referenceDecisions": 0,
+      "zeroCall": true
+    },
+    {
+      "scenarioId": "ac/t1/recurring",
+      "episodeId": "g05-ac-t1-recurring",
+      "chain": "ac",
+      "kind": "t1",
+      "needPolicy": "recurring",
+      "kitchenFood": 4,
+      "referenceDecisions": 4,
+      "zeroCall": false
+    },
+    {
+      "scenarioId": "ac/t2/one-shot",
+      "episodeId": "g05-ac-t2-one-shot",
+      "chain": "ac",
+      "kind": "t2",
+      "needPolicy": "one-shot",
+      "kitchenFood": 2,
+      "referenceDecisions": 0,
+      "zeroCall": true
+    },
+    {
+      "scenarioId": "ac/t2/recurring",
+      "episodeId": "g05-ac-t2-recurring",
+      "chain": "ac",
+      "kind": "t2",
+      "needPolicy": "recurring",
+      "kitchenFood": 2,
+      "referenceDecisions": 0,
+      "zeroCall": true
+    },
+    {
+      "scenarioId": "ac/t3/one-shot",
+      "episodeId": "g05-ac-t3-one-shot",
+      "chain": "ac",
+      "kind": "t3",
+      "needPolicy": "one-shot",
+      "kitchenFood": 0,
+      "referenceDecisions": 0,
+      "zeroCall": true
+    },
+    {
+      "scenarioId": "ac/t3/recurring",
+      "episodeId": "g05-ac-t3-recurring",
+      "chain": "ac",
+      "kind": "t3",
+      "needPolicy": "recurring",
+      "kitchenFood": 0,
+      "referenceDecisions": 6,
+      "zeroCall": false
+    },
+    {
+      "scenarioId": "ca/t1/one-shot",
+      "episodeId": "g05-ca-t1-one-shot",
+      "chain": "ca",
+      "kind": "t1",
+      "needPolicy": "one-shot",
+      "kitchenFood": 4,
+      "referenceDecisions": 0,
+      "zeroCall": true
+    },
+    {
+      "scenarioId": "ca/t1/recurring",
+      "episodeId": "g05-ca-t1-recurring",
+      "chain": "ca",
+      "kind": "t1",
+      "needPolicy": "recurring",
+      "kitchenFood": 4,
+      "referenceDecisions": 4,
+      "zeroCall": false
+    },
+    {
+      "scenarioId": "ca/t2/one-shot",
+      "episodeId": "g05-ca-t2-one-shot",
+      "chain": "ca",
+      "kind": "t2",
+      "needPolicy": "one-shot",
+      "kitchenFood": 2,
+      "referenceDecisions": 0,
+      "zeroCall": true
+    },
+    {
+      "scenarioId": "ca/t2/recurring",
+      "episodeId": "g05-ca-t2-recurring",
+      "chain": "ca",
+      "kind": "t2",
+      "needPolicy": "recurring",
+      "kitchenFood": 2,
+      "referenceDecisions": 0,
+      "zeroCall": true
+    },
+    {
+      "scenarioId": "ca/t3/one-shot",
+      "episodeId": "g05-ca-t3-one-shot",
+      "chain": "ca",
+      "kind": "t3",
+      "needPolicy": "one-shot",
+      "kitchenFood": 0,
+      "referenceDecisions": 0,
+      "zeroCall": true
+    },
+    {
+      "scenarioId": "ca/t3/recurring",
+      "episodeId": "g05-ca-t3-recurring",
+      "chain": "ca",
+      "kind": "t3",
+      "needPolicy": "recurring",
+      "kitchenFood": 0,
+      "referenceDecisions": 6,
+      "zeroCall": false
+    }
+  ],
+  "version": {
+    "commit": "5e6ea932168f61576f686b3f98c14c6bf30e2637",
+    "dirty": false,
+    "dirtyFiles": [],
+    "sourceFingerprint": "88687d395107712e88274c83077237d8e74a27b9e42d5f8b25cd21cd10e3c7e1",
+    "promptFingerprint": "8d66afdf043633df7103189682fdd5b1647e293554bba761825529f1364c9ae2",
+    "node": "v20.18.0",
+    "platform": "linux"
+  },
+  "createdAt": "2026-11-02T08:48:17.429Z"
+}

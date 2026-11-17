@@ -1,0 +1,36 @@
+FrostEcho R5 生命周期独立验收
+日期2026-11-12（Asia/Shanghai）。
+HEAD 498c00015e51dc6d48668e2603e2e1877aa8e399；基线db34123。
+隔离bundle clone /tmp/frostecho-r5-lifecycle-YABxGi/repo；Node24.14.0。
+未修改产品代码/服务器主树，无真实模型调用、GPU或权重下载。
+
+本域结论：有限返工，允许按未完成检查点保存。按负责人要求今晚不继续开发，也不发下一轮任务。
+
+已验证
+1. 独立bundle clone、npm ci --offline、build成功；acceptance-v5 9/9（含产品路径，与root全量重叠，不另加总）。
+2. 重新运行R4原独立lifecycle-probe：两个save前排队NPC在barrier超时后都失效；release前保存version0，release后再保存仍version0，没有第二NPC迟到提交。
+3. 原有跨进程promise新实例、restock 2+3=9、EOF带save有界退出保持；EOF exit0且save存在。
+4. 补充真实两进程travel：同actor/同target/同显式ID在恢复后duplicate=true，重放首次eventIds、tiles、minutes；同ID改为另一目标返回command_id_conflict，0副作用。
+
+剩余一个已证边界（P2）
+save捕获集合之后、超时之前接收的新单NPC step，本应不被这次barrier撤销，但实际会丢失。
+确定时序：
+  step npc_01评分started → 输入save，然后同NPC的新step → save超时完成，version0 → release。
+结果：第一个step正确失效；捕获范围外的第二个step也返回cancelled，reason=generation_changed_before_start、0效果。此后再输入第三个step正常执行，最终version1。
+原始证据 new-output/outside.jsonl、outside-result.json、saved-before-release.json；该探针不是随机sleep猜顺序，而是等待fixture started文件和实际saved回执。
+根因 scripts/play-sprint.ts:218-219 更新record.expected；:532-538保留最初的局部expected；:540-542真正启动runJob仍传旧局部expected。单actor expected为number，更新record字段不会修改闭包中的数值。这里不是旧任务越权执行，而是应继续的新任务被误取消。
+正常“save完成后再提交的新step”通过，不覆盖“save等待期间已经接收的新step”。不把前者的成功扩大为全部捕获范围外job都有效。
+本轮已按暂停要求保留失败证据，没有修产品或安排后续运行。
+
+文件与复跑
+setup.sh记录隔离构建/目标测试。
+r4-lifecycle-probe.cjs：R4原审计脚本；r4-output/为本轮新输出，r4-probe.log摘要。
+r5-lifecycle-probe.cjs：一个新增队列边界+跨进程travel重放；new-output/完整JSONL与存档，new-probe.log摘要。
+命令：
+  /root/.workbuddy/binaries/node/versions/24.14.0/bin/node r4-lifecycle-probe.cjs <built-repo> <全新输出目录>
+  /root/.workbuddy/binaries/node/versions/24.14.0/bin/node r5-lifecycle-probe.cjs <built-repo> <全新输出目录>
+脚本是诊断工具，会记录旧行为，不应仅以进程exit0当作产品全通过；核查outsideDecision中的原因与效果。
+
+环境边界
+首次执行旧probe的PowerShell拼接PATH错误，远端export报错，没有运行产品；随后改用绝对node和repo路径，两个脚本正常完成。此属审计命令错误，未当作交付失败。
+只做此一个新增队列反例后收口，没有扩展保存原子性、网络模型或其他运行时路径。

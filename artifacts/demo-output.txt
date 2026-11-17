@@ -1,4 +1,4 @@
-EXPERIMENTAL RULES: {"LOCATIONS":["dorm","kitchen"],"EAT_FOOD_COST":1,"EAT_HUNGER_RESTORE":30,"HUNGER_MIN":0,"HUNGER_MAX":100}
+EXPERIMENTAL RULES: {"LOCATIONS":["dorm","kitchen"],"EAT_FOOD_COST":1,"EAT_HUNGER_RESTORE":30,"HUNGER_MIN":0,"HUNGER_MAX":100,"DECAY_PER_STEP":10,"TIME_ADVANCE_MAX_STEPS":10}
 INITIAL: kitchen.food=1 | npc_a@dorm hunger=40 | npc_b@dorm hunger=20
 #1 npc_a move {"to":"kitchen"} [c1] -> ACCEPTED events=e1
      state: kitchen.food=1 | npc_a@kitchen hunger=40 | npc_b@dorm hunger=20

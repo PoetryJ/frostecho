@@ -1,0 +1,11 @@
+共享：原合同 handoff/20261116-r8-vibe/CONTRACT.txt 仍适用。修订必须由O一次冻结、通知依赖。以下是接续工作的全部变更；各人只取自己的段。
+O（核心接线）：唯一改 application-v2/**、gameplay-v2/**、scripts/play-sprint.ts、r7/integration/**、shared contracts/package。把R8领域注册到现有PlaySession/GameplayLoop；R8Runtime可作适配器，不能再创建另一套任务/承诺权威。网页、stdin、四日评测共用该入口。game-step入既有job/actor generation/barrier，模型等待时cancel/save可处理。先端到端接线，再逐域合入，不最后才拼。
+P1（production/survival）：原作真实数值与机器输入输出差分（原20电/24木/12食物每小时；当前8/6/5错误）。三机器建造必须真实经过工作时间；耗尽停机、实际补给、恢复产出。资源只能由实际工作/转移提交；任务完成不再二次发奖。输入不足不得截成零又继续产出；死亡、进食/睡眠/户外暴露沿原作，既有世界不重复扣。给同输入原作函数vs新函数的记录。
+P2（spatial-v2、r7/ui、public/r7）：七室内+门/碰撞/寻路；所有生产/议会/危机/结局控件接O唯一产品入口。不能只在playthrough里演示。网页按原配置走完一局+下一局，保留真实HTTP/CLI流与屏幕记录；视觉无法运行时明确未验，但代码与接口继续。
+P3（domains/tasks/council/crises）：撤掉独立可变任务队列，作为旧TaskBoard/CommitmentBoard的类型/日程适配。15是任务类型不是实例数；每类有真实目标事件。完成须核对已提交事件的actor/task/目标/实例，build-start不是build-completed；伪造/其他任务回执无效且不加资源。居民由候选决策接受/拒绝/反提案；移除runner批量写死accept/同票/夜间瞬移。日程驱动工作、吃饭、沿路径回屋，危机有触发与实际救援。
+P4（domains/life）：保留D1 08:00→D4 18:00及四结局已有代码，改接真实产品状态。D2存档后另进程继续到结局，与连续版比较全部权威状态和关联；再一局验证旧承诺不复活、life/history/经验保留规则正确。只看clock相同不够。
+A（agency/memory）：与O共用任务与观察。为生产/履约/生存/核实提供有意义的备选，不由脚本预选。来源和条件不同必须改变真实可见输入；实现raw/无条件经验/条件经验的实际差异，不把三臂都转同一分支。玩家请求、NPC主动任务、拒绝/协商用同一执行路径；未知补货不能泄露。
+D（scripts/r8/cases.ts、action_data/**、data/action-r8/**）：当前335行保留为旧规则轨迹，不用作合格训练/测试。记录完整ChoiceRequest（含观察和候选语义），按独立整局/来源族/反事实谱系分区，不能按同局NPC拆分。候选执行成功≠最优/可接受：依据预先确定目标、约束及真实后果形成acceptable-set，两盲审保留原文+inputSHA，分歧隔离。先交64例端到端验证字段/渲染/两审，再按原512train/128dev及calT/select/cert/test要求扩量；全部输入与M同一适配器。cert每独立episode一个预登记决策，四序不算四样本。
+M（action/**、calibration/**、r7/jev/**）：遵照 MODEL.txt；用已有joint/LN/BF16代码，不沿当前裸线性/逐候选last-token实现续写。CPU可先完成算法/字段/服务和数据分区，GPU有多少用多少，持久服务对新请求实时encode。正式校准复用旧math_core/policy，禁止另写只有温度扫描的假校准；experimental与admitted分开，没证书绝不自称admitted。
+H（scripts/r8/{verify,compare,playthrough}、tests/r8/e2e）：runner只通过产品接口操作，不直接写world/投票/接受/位置。总门必须包含完整地图UI、15类型行为、三机器恢复、自主分工/救援、真实JEV、数据/校准、D2续跑及轮回。验收读取真实结果再判，不能findings=[]直接pass，任一required fail非零，blocked不算完成。parity同时读原作与新实现，不能读原作两遍。固定同初态/事件表/预算，先规则vs真实JEV，再raw/无条件/条件经验；轨迹允许策略分化，报告履约/恢复/无效尝试/生存/时间/token/GPU。
+集成验收：三件产品成果同时交付——可操作原作全局；新输入实时驱动真实JEV行动；四日保存恢复及条件变化后的自主履约。CPU工作不会因GPU等待停止。

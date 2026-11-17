@@ -1,0 +1,6 @@
+独占 src/r7/domains/{tasks,council,crises}/**、tests/r8/social.test.ts。
+目标：完整任务、议会、危机和救援，居民能自主响应分工。经典对应：BDI/HTN 任务分解、合同网、有限资源调度。
+真实15任务定义在原作 src/systems/task-system.js 的 TASK_TYPES/TASK_DETAILS；data/task-definitions.js 是空壳。另承接npc-schedule/npc-sleep/npc-eating的日程、起居、进食触发与任务覆盖仲裁；身体效果由P1。由日程产生目标、A生成候选，不能把原日程永远写死为唯一动作。从council/event原路径移植启用规则，禁用功能标注。
+输出现有 commitment 请求和 world intents，禁止第二执行队列。任务目标到实际行动效果要有映射；承诺仅凭目标回执完成。实现提案/投票/拒绝/反提案/改派、危机触发与救援；规则投票明确 reference，后接 A/M 的真实选择。
+验收：寒潮+短粮→晨会分工→居民因身体/目标冲突拒绝→改派→真实建造/生产/送达→危机解除；每类启用危机有触发、处置和结果证据。自主接受必须来自 NPC 决策，不能脚本替每人点 accept 后声称自主。
+交15任务与危机规则对照、原始事件和局部测试；与 A 只通过请求/候选接口协作。

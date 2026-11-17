@@ -1,0 +1,4368 @@
+{
+  "schema": "frostecho.corpus-semantic-errata/1",
+  "cases": 96,
+  "episodes": 48,
+  "sameCaseIdsAndPartitions": true,
+  "counts": {
+    "rawInputChanged": 96,
+    "renderedChanged": 36,
+    "renderedChangedIgnoringUUIDs": 36,
+    "candidateIdsChanged": 18,
+    "labelIdChanged": 24,
+    "semanticActionChanged": 6
+  },
+  "semanticChangesBySplit": {
+    "train": 4,
+    "dev": 1,
+    "test": 1
+  },
+  "causalAttribution": "Frozen v1 candidate audit identified 12 terminal-goal inputs and 6 changed weak reference labels. v2 also explicitly binds accepted task candidates and records corrected completion evidence; all differences are listed below.",
+  "modelSelection": "Same four heads, seeds 17/43, 40 epochs and dev set-NLL selection; test errata is semantic correction, not a tuning signal.",
+  "limitation": "Reference imitation only; original v1 corpus and model remain unchanged.",
+  "diffs": [
+    {
+      "caseId": "weak-68682f722e78c6785a2a",
+      "split": "train",
+      "scenario": "verify-stock",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/verify-stock/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-13b58cadd3918f87f770",
+      "split": "train",
+      "scenario": "verify-stock",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/verify-stock/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-ce57aa89914129710543",
+      "split": "train",
+      "scenario": "verify-stock",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/verify-stock/1",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-bbb16ae298fd9c8b9519",
+      "split": "train",
+      "scenario": "verify-stock",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/verify-stock/1",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-3301c6fc3b018b31ad94",
+      "split": "train",
+      "scenario": "verify-stock",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/verify-stock/2",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-43c01af05beabf891a7d",
+      "split": "train",
+      "scenario": "verify-stock",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/verify-stock/2",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-d76efff8b63c48283c21",
+      "split": "train",
+      "scenario": "verify-stock",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/verify-stock/3",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-9a65a2e38afe673c46a3",
+      "split": "train",
+      "scenario": "verify-stock",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/verify-stock/3",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-bc74a443c151b1da0d67",
+      "split": "train",
+      "scenario": "food-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/food-shortage/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        4,
+        4
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-9b818e599fca",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-7c14875168bcb7ac0d47",
+      "split": "train",
+      "scenario": "food-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/food-shortage/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        5,
+        5
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-9b818e599fca",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-7766fbcd16c74217f478",
+      "split": "train",
+      "scenario": "food-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/food-shortage/1",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        4,
+        4
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-9b818e599fca",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-2b850763bd52ed13e00e",
+      "split": "train",
+      "scenario": "food-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/food-shortage/1",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        5,
+        5
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-9b818e599fca",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-7b448f7bc9592663b0b0",
+      "split": "train",
+      "scenario": "food-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/food-shortage/2",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        4,
+        4
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-9b818e599fca",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-163f50d4ddb61912c071",
+      "split": "train",
+      "scenario": "food-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/food-shortage/2",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        5,
+        5
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-9b818e599fca",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-a6640c3c8eeb9a65747f",
+      "split": "train",
+      "scenario": "food-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/food-shortage/3",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        4,
+        4
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-9b818e599fca",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-df2ef1c782ae4eec39e9",
+      "split": "train",
+      "scenario": "food-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/food-shortage/3",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        5,
+        5
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-9b818e599fca",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-a21f74d2add4f5ee61f0",
+      "split": "train",
+      "scenario": "wood-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/wood-shortage/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9dd795e76cba",
+      "newLabel": "a-9dd795e76cba",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-00fde83ad93fd7d01697",
+      "split": "train",
+      "scenario": "wood-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/wood-shortage/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9dd795e76cba",
+      "newLabel": "a-9dd795e76cba",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-fa71af0db5d57cd3abeb",
+      "split": "train",
+      "scenario": "wood-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/wood-shortage/1",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9dd795e76cba",
+      "newLabel": "a-9dd795e76cba",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-66efe46db52d612a9059",
+      "split": "train",
+      "scenario": "wood-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/wood-shortage/1",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9dd795e76cba",
+      "newLabel": "a-9dd795e76cba",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-8dc19b6501aefbdeab64",
+      "split": "train",
+      "scenario": "wood-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/wood-shortage/2",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9dd795e76cba",
+      "newLabel": "a-9dd795e76cba",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-1d3382ff98623cc180ff",
+      "split": "train",
+      "scenario": "wood-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/wood-shortage/2",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9dd795e76cba",
+      "newLabel": "a-9dd795e76cba",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-8d9cc9b934bd6aaa5e85",
+      "split": "train",
+      "scenario": "wood-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/wood-shortage/3",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        6,
+        6
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9dd795e76cba",
+      "newLabel": "a-9dd795e76cba",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-0130ae834a2db4ec5d09",
+      "split": "train",
+      "scenario": "wood-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/wood-shortage/3",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9dd795e76cba",
+      "newLabel": "a-9dd795e76cba",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-2291967b7843e00bf743",
+      "split": "train",
+      "scenario": "hunger",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/hunger/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "eat",
+        "parameters": {
+          "action": "eat",
+          "amount": 1
+        }
+      },
+      "newAction": {
+        "kind": "eat",
+        "parameters": {
+          "action": "eat",
+          "amount": 1
+        }
+      },
+      "oldLabel": "a-bae1f2dab8ef",
+      "newLabel": "a-bae1f2dab8ef",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-987980fad27a37b86e52",
+      "split": "train",
+      "scenario": "hunger",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/hunger/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "newAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "oldLabel": "a-63ae70079e2d",
+      "newLabel": "a-63ae70079e2d",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-06b761e4773ebe1c17d0",
+      "split": "train",
+      "scenario": "hunger",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/hunger/1",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "eat",
+        "parameters": {
+          "action": "eat",
+          "amount": 1
+        }
+      },
+      "newAction": {
+        "kind": "eat",
+        "parameters": {
+          "action": "eat",
+          "amount": 1
+        }
+      },
+      "oldLabel": "a-bae1f2dab8ef",
+      "newLabel": "a-bae1f2dab8ef",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-1456b1d251ec2aea5e10",
+      "split": "train",
+      "scenario": "hunger",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/hunger/1",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "newAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "oldLabel": "a-63ae70079e2d",
+      "newLabel": "a-63ae70079e2d",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-9ca9ad741bba93245c92",
+      "split": "train",
+      "scenario": "hunger",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/hunger/2",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "eat",
+        "parameters": {
+          "action": "eat",
+          "amount": 1
+        }
+      },
+      "newAction": {
+        "kind": "eat",
+        "parameters": {
+          "action": "eat",
+          "amount": 1
+        }
+      },
+      "oldLabel": "a-bae1f2dab8ef",
+      "newLabel": "a-bae1f2dab8ef",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-36123f3b94deb0daf832",
+      "split": "train",
+      "scenario": "hunger",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/hunger/2",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "newAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "oldLabel": "a-63ae70079e2d",
+      "newLabel": "a-63ae70079e2d",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-d9a239931dd24919e721",
+      "split": "train",
+      "scenario": "hunger",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/hunger/3",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "eat",
+        "parameters": {
+          "action": "eat",
+          "amount": 1
+        }
+      },
+      "newAction": {
+        "kind": "eat",
+        "parameters": {
+          "action": "eat",
+          "amount": 1
+        }
+      },
+      "oldLabel": "a-bae1f2dab8ef",
+      "newLabel": "a-bae1f2dab8ef",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-c59da9c11f9a41e4285f",
+      "split": "train",
+      "scenario": "hunger",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/hunger/3",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "newAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "oldLabel": "a-63ae70079e2d",
+      "newLabel": "a-63ae70079e2d",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-82fdb65deb78e91ed69c",
+      "split": "train",
+      "scenario": "fatigue",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/fatigue/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "newAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "oldLabel": "a-63ae70079e2d",
+      "newLabel": "a-63ae70079e2d",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-3b4346ec80b459ac9715",
+      "split": "train",
+      "scenario": "fatigue",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/fatigue/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-a77b8027fe1bd5954eb7",
+      "split": "train",
+      "scenario": "fatigue",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/fatigue/1",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "newAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "oldLabel": "a-63ae70079e2d",
+      "newLabel": "a-63ae70079e2d",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-bb540f80e53335457251",
+      "split": "train",
+      "scenario": "fatigue",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/fatigue/1",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-74a3ca0262efa56da8d0",
+      "split": "train",
+      "scenario": "fatigue",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/fatigue/2",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "newAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "oldLabel": "a-63ae70079e2d",
+      "newLabel": "a-63ae70079e2d",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-2d891605d95dbdd2a826",
+      "split": "train",
+      "scenario": "fatigue",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/fatigue/2",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-bec5bfab0635dd8fbad5",
+      "split": "train",
+      "scenario": "fatigue",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/fatigue/3",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "newAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "oldLabel": "a-63ae70079e2d",
+      "newLabel": "a-63ae70079e2d",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-13de2501942e8eb74aeb",
+      "split": "train",
+      "scenario": "fatigue",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/fatigue/3",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-5c536530ae67875b81ed",
+      "split": "train",
+      "scenario": "maintain-power",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/maintain-power/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "work",
+        "parameters": {
+          "action": "work",
+          "minutes": 40
+        }
+      },
+      "newAction": {
+        "kind": "work",
+        "parameters": {
+          "action": "work",
+          "minutes": 40
+        }
+      },
+      "oldLabel": "a-6ce066f5b8f9",
+      "newLabel": "a-d7f9f926b0e9",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": "task-1"
+    },
+    {
+      "caseId": "weak-32189d08d6db0c31ab78",
+      "split": "train",
+      "scenario": "maintain-power",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/maintain-power/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-9cc92c4db65366ddf24f",
+      "split": "train",
+      "scenario": "maintain-power",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/maintain-power/1",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "work",
+        "parameters": {
+          "action": "work",
+          "minutes": 40
+        }
+      },
+      "newAction": {
+        "kind": "work",
+        "parameters": {
+          "action": "work",
+          "minutes": 40
+        }
+      },
+      "oldLabel": "a-6ce066f5b8f9",
+      "newLabel": "a-d7f9f926b0e9",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": "task-1"
+    },
+    {
+      "caseId": "weak-4a5de43ac5648d9afdac",
+      "split": "train",
+      "scenario": "maintain-power",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/maintain-power/1",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-e49a5425aade80c78c98",
+      "split": "train",
+      "scenario": "maintain-power",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/maintain-power/2",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "work",
+        "parameters": {
+          "action": "work",
+          "minutes": 40
+        }
+      },
+      "newAction": {
+        "kind": "work",
+        "parameters": {
+          "action": "work",
+          "minutes": 40
+        }
+      },
+      "oldLabel": "a-6ce066f5b8f9",
+      "newLabel": "a-d7f9f926b0e9",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": "task-1"
+    },
+    {
+      "caseId": "weak-d147bd7391a38fb58465",
+      "split": "train",
+      "scenario": "maintain-power",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/maintain-power/2",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-aed2c5a6c5b6eb54d104",
+      "split": "train",
+      "scenario": "maintain-power",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/maintain-power/3",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "work",
+        "parameters": {
+          "action": "work",
+          "minutes": 40
+        }
+      },
+      "newAction": {
+        "kind": "work",
+        "parameters": {
+          "action": "work",
+          "minutes": 40
+        }
+      },
+      "oldLabel": "a-6ce066f5b8f9",
+      "newLabel": "a-d7f9f926b0e9",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": "task-1"
+    },
+    {
+      "caseId": "weak-f40776f1636c0afe2bc2",
+      "split": "train",
+      "scenario": "maintain-power",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/maintain-power/3",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-6b4e2e3b6c1c7472fce3",
+      "split": "train",
+      "scenario": "build-generator",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/build-generator/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "build-machine",
+        "parameters": {
+          "action": "build-machine",
+          "machine": "generator"
+        }
+      },
+      "newAction": {
+        "kind": "build-machine",
+        "parameters": {
+          "action": "build-machine",
+          "machine": "generator"
+        }
+      },
+      "oldLabel": "a-9dc36f1d3c1f",
+      "newLabel": "a-ce112b2a7b07",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-c040c0dc46fa72ced45f",
+      "split": "train",
+      "scenario": "build-generator",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/build-generator/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "status": "accepted",
+          "memoryTruncated": true
+        }
+      ],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-58ec3262397822d7617c",
+      "split": "train",
+      "scenario": "build-generator",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/build-generator/1",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "build-machine",
+        "parameters": {
+          "action": "build-machine",
+          "machine": "generator"
+        }
+      },
+      "newAction": {
+        "kind": "build-machine",
+        "parameters": {
+          "action": "build-machine",
+          "machine": "generator"
+        }
+      },
+      "oldLabel": "a-9dc36f1d3c1f",
+      "newLabel": "a-ce112b2a7b07",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-1fb60cd4897d27b10d42",
+      "split": "train",
+      "scenario": "build-generator",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/build-generator/1",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "status": "accepted",
+          "memoryTruncated": true
+        }
+      ],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9dd795e76cba",
+      "newLabel": "a-9dd795e76cba",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-4dbc20ef480d26e65c6c",
+      "split": "train",
+      "scenario": "build-generator",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/build-generator/2",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "build-machine",
+        "parameters": {
+          "action": "build-machine",
+          "machine": "generator"
+        }
+      },
+      "newAction": {
+        "kind": "build-machine",
+        "parameters": {
+          "action": "build-machine",
+          "machine": "generator"
+        }
+      },
+      "oldLabel": "a-9dc36f1d3c1f",
+      "newLabel": "a-ce112b2a7b07",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-1d41dd4436a7009f67e6",
+      "split": "train",
+      "scenario": "build-generator",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/build-generator/2",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "status": "accepted",
+          "memoryTruncated": true
+        }
+      ],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-9b69010ecfaa05f51bcf",
+      "split": "train",
+      "scenario": "build-generator",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/build-generator/3",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "build-machine",
+        "parameters": {
+          "action": "build-machine",
+          "machine": "generator"
+        }
+      },
+      "newAction": {
+        "kind": "build-machine",
+        "parameters": {
+          "action": "build-machine",
+          "machine": "generator"
+        }
+      },
+      "oldLabel": "a-9dc36f1d3c1f",
+      "newLabel": "a-ce112b2a7b07",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-b475dbfd28f81b9ae361",
+      "split": "train",
+      "scenario": "build-generator",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/build-generator/3",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "status": "accepted",
+          "memoryTruncated": true
+        }
+      ],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-24ae0af0aa2b8a484f93",
+      "split": "train",
+      "scenario": "promise-and-food-task",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/promise-and-food-task/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "relationships",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        7,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-29fdcce2a758",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": "task-1"
+    },
+    {
+      "caseId": "weak-58b18580a5172dcd5262",
+      "split": "train",
+      "scenario": "promise-and-food-task",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/promise-and-food-task/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "relationships",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [],
+      "labelIdChanged": true,
+      "semanticActionChanged": true,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-6f0a0fd87d3677893219",
+      "split": "train",
+      "scenario": "promise-and-food-task",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/promise-and-food-task/1",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "relationships",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        7,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-29fdcce2a758",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": "task-1"
+    },
+    {
+      "caseId": "weak-1cf7be0fce80f7bb24e4",
+      "split": "train",
+      "scenario": "promise-and-food-task",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/promise-and-food-task/1",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "relationships",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [],
+      "labelIdChanged": true,
+      "semanticActionChanged": true,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-99c799ffa280aa3603df",
+      "split": "train",
+      "scenario": "promise-and-food-task",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/promise-and-food-task/2",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "relationships",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        7,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-29fdcce2a758",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": "task-1"
+    },
+    {
+      "caseId": "weak-3e6b3c5f389ff7f2e44b",
+      "split": "train",
+      "scenario": "promise-and-food-task",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/promise-and-food-task/2",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "relationships",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [],
+      "labelIdChanged": true,
+      "semanticActionChanged": true,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-b935ac348920b712879b",
+      "split": "train",
+      "scenario": "promise-and-food-task",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/promise-and-food-task/3",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "relationships",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        7,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-29fdcce2a758",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": "task-1"
+    },
+    {
+      "caseId": "weak-8f0bda2b2cd1f6db5e18",
+      "split": "train",
+      "scenario": "promise-and-food-task",
+      "sourceFamily": "r8live-weak-reference-96-v1/train/promise-and-food-task/3",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "relationships",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [],
+      "labelIdChanged": true,
+      "semanticActionChanged": true,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-1232d9a0891140593781",
+      "split": "dev",
+      "scenario": "verify-stock",
+      "sourceFamily": "r8live-weak-reference-96-v1/dev/verify-stock/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-46e356162d2f81334fc2",
+      "split": "dev",
+      "scenario": "verify-stock",
+      "sourceFamily": "r8live-weak-reference-96-v1/dev/verify-stock/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-831e9fec09cd4642db49",
+      "split": "dev",
+      "scenario": "food-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/dev/food-shortage/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        4,
+        4
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-9b818e599fca",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-20b830f16d20cfc2d731",
+      "split": "dev",
+      "scenario": "food-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/dev/food-shortage/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        5,
+        5
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-9b818e599fca",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-628212577847a0ea2e15",
+      "split": "dev",
+      "scenario": "wood-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/dev/wood-shortage/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9dd795e76cba",
+      "newLabel": "a-9dd795e76cba",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-66310210ffc43eb1ad2c",
+      "split": "dev",
+      "scenario": "wood-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/dev/wood-shortage/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9dd795e76cba",
+      "newLabel": "a-9dd795e76cba",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-7b7078d75b320b950700",
+      "split": "dev",
+      "scenario": "hunger",
+      "sourceFamily": "r8live-weak-reference-96-v1/dev/hunger/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "eat",
+        "parameters": {
+          "action": "eat",
+          "amount": 1
+        }
+      },
+      "newAction": {
+        "kind": "eat",
+        "parameters": {
+          "action": "eat",
+          "amount": 1
+        }
+      },
+      "oldLabel": "a-bae1f2dab8ef",
+      "newLabel": "a-bae1f2dab8ef",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-cd3f6b84483e950656f5",
+      "split": "dev",
+      "scenario": "hunger",
+      "sourceFamily": "r8live-weak-reference-96-v1/dev/hunger/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "newAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "oldLabel": "a-63ae70079e2d",
+      "newLabel": "a-63ae70079e2d",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-1c443a9c3ee77132525c",
+      "split": "dev",
+      "scenario": "fatigue",
+      "sourceFamily": "r8live-weak-reference-96-v1/dev/fatigue/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "newAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "oldLabel": "a-63ae70079e2d",
+      "newLabel": "a-63ae70079e2d",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-ffae0987fd37ab170837",
+      "split": "dev",
+      "scenario": "fatigue",
+      "sourceFamily": "r8live-weak-reference-96-v1/dev/fatigue/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-9fabf97d0f2aecd97764",
+      "split": "dev",
+      "scenario": "maintain-power",
+      "sourceFamily": "r8live-weak-reference-96-v1/dev/maintain-power/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "work",
+        "parameters": {
+          "action": "work",
+          "minutes": 40
+        }
+      },
+      "newAction": {
+        "kind": "work",
+        "parameters": {
+          "action": "work",
+          "minutes": 40
+        }
+      },
+      "oldLabel": "a-6ce066f5b8f9",
+      "newLabel": "a-d7f9f926b0e9",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": "task-1"
+    },
+    {
+      "caseId": "weak-0b9b28fa560e632279c4",
+      "split": "dev",
+      "scenario": "maintain-power",
+      "sourceFamily": "r8live-weak-reference-96-v1/dev/maintain-power/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-394d7eb7a62539e98962",
+      "split": "dev",
+      "scenario": "build-generator",
+      "sourceFamily": "r8live-weak-reference-96-v1/dev/build-generator/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "build-machine",
+        "parameters": {
+          "action": "build-machine",
+          "machine": "generator"
+        }
+      },
+      "newAction": {
+        "kind": "build-machine",
+        "parameters": {
+          "action": "build-machine",
+          "machine": "generator"
+        }
+      },
+      "oldLabel": "a-9dc36f1d3c1f",
+      "newLabel": "a-ce112b2a7b07",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-4bab7a37739f28d9f07c",
+      "split": "dev",
+      "scenario": "build-generator",
+      "sourceFamily": "r8live-weak-reference-96-v1/dev/build-generator/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "status": "accepted",
+          "memoryTruncated": true
+        }
+      ],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9dd795e76cba",
+      "newLabel": "a-9dd795e76cba",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-2cae52db652a3682a60e",
+      "split": "dev",
+      "scenario": "promise-and-food-task",
+      "sourceFamily": "r8live-weak-reference-96-v1/dev/promise-and-food-task/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "relationships",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        7,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-29fdcce2a758",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": "task-1"
+    },
+    {
+      "caseId": "weak-cdd61a6c5bbf35f5ceea",
+      "split": "dev",
+      "scenario": "promise-and-food-task",
+      "sourceFamily": "r8live-weak-reference-96-v1/dev/promise-and-food-task/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "relationships",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [],
+      "labelIdChanged": true,
+      "semanticActionChanged": true,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-dae4072eb4100c09fe9a",
+      "split": "test",
+      "scenario": "verify-stock",
+      "sourceFamily": "r8live-weak-reference-96-v1/test/verify-stock/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-d95c6074f28971af27f1",
+      "split": "test",
+      "scenario": "verify-stock",
+      "sourceFamily": "r8live-weak-reference-96-v1/test/verify-stock/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-186b9d38d8202e42bddc",
+      "split": "test",
+      "scenario": "food-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/test/food-shortage/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        4,
+        4
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-9b818e599fca",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-ec86b21ddcfae74c942a",
+      "split": "test",
+      "scenario": "food-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/test/food-shortage/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        5,
+        5
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-9b818e599fca",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-399b903f8ce3993670f4",
+      "split": "test",
+      "scenario": "wood-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/test/wood-shortage/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9dd795e76cba",
+      "newLabel": "a-9dd795e76cba",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-40bdb2d2e2ff2873d8ed",
+      "split": "test",
+      "scenario": "wood-shortage",
+      "sourceFamily": "r8live-weak-reference-96-v1/test/wood-shortage/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "firewood",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9dd795e76cba",
+      "newLabel": "a-9dd795e76cba",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-69b4b12d0184bc5e0fd2",
+      "split": "test",
+      "scenario": "hunger",
+      "sourceFamily": "r8live-weak-reference-96-v1/test/hunger/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "eat",
+        "parameters": {
+          "action": "eat",
+          "amount": 1
+        }
+      },
+      "newAction": {
+        "kind": "eat",
+        "parameters": {
+          "action": "eat",
+          "amount": 1
+        }
+      },
+      "oldLabel": "a-bae1f2dab8ef",
+      "newLabel": "a-bae1f2dab8ef",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-0a701d421395a4c42a16",
+      "split": "test",
+      "scenario": "hunger",
+      "sourceFamily": "r8live-weak-reference-96-v1/test/hunger/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "newAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "oldLabel": "a-63ae70079e2d",
+      "newLabel": "a-63ae70079e2d",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-3efedd6881bec6036112",
+      "split": "test",
+      "scenario": "fatigue",
+      "sourceFamily": "r8live-weak-reference-96-v1/test/fatigue/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "newAction": {
+        "kind": "rest",
+        "parameters": {
+          "action": "rest",
+          "minutes": 60
+        }
+      },
+      "oldLabel": "a-63ae70079e2d",
+      "newLabel": "a-63ae70079e2d",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-2809930e876bc60f87c1",
+      "split": "test",
+      "scenario": "fatigue",
+      "sourceFamily": "r8live-weak-reference-96-v1/test/fatigue/0",
+      "rawInputChanged": true,
+      "renderedChanged": false,
+      "renderedChangedIgnoringUUIDs": false,
+      "requestFieldsChanged": [
+        "requestId"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-f63417a8981458ea32ea",
+      "split": "test",
+      "scenario": "maintain-power",
+      "sourceFamily": "r8live-weak-reference-96-v1/test/maintain-power/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "work",
+        "parameters": {
+          "action": "work",
+          "minutes": 40
+        }
+      },
+      "newAction": {
+        "kind": "work",
+        "parameters": {
+          "action": "work",
+          "minutes": 40
+        }
+      },
+      "oldLabel": "a-6ce066f5b8f9",
+      "newLabel": "a-d7f9f926b0e9",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": "task-1"
+    },
+    {
+      "caseId": "weak-830a1b62f06d810883ce",
+      "split": "test",
+      "scenario": "maintain-power",
+      "sourceFamily": "r8live-weak-reference-96-v1/test/maintain-power/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "MAINTAIN_POWER",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-ffcbc0d36c2e8fed201d",
+      "split": "test",
+      "scenario": "build-generator",
+      "sourceFamily": "r8live-weak-reference-96-v1/test/build-generator/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        8,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "build-machine",
+        "parameters": {
+          "action": "build-machine",
+          "machine": "generator"
+        }
+      },
+      "newAction": {
+        "kind": "build-machine",
+        "parameters": {
+          "action": "build-machine",
+          "machine": "generator"
+        }
+      },
+      "oldLabel": "a-9dc36f1d3c1f",
+      "newLabel": "a-ce112b2a7b07",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-c7f141d493b43473f93c",
+      "split": "test",
+      "scenario": "build-generator",
+      "sourceFamily": "r8live-weak-reference-96-v1/test/build-generator/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "BUILD_GENERATOR",
+          "status": "accepted",
+          "memoryTruncated": true
+        }
+      ],
+      "labelIdChanged": false,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-0b3f9fd02e70",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    },
+    {
+      "caseId": "weak-6b9493814f4d10de4005",
+      "split": "test",
+      "scenario": "promise-and-food-task",
+      "sourceFamily": "r8live-weak-reference-96-v1/test/promise-and-food-task/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "relationships",
+        "goals",
+        "candidates",
+        "candidateSetHash"
+      ],
+      "candidateIdsChanged": true,
+      "candidateK": [
+        7,
+        8
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "memoryTruncated": false
+        }
+      ],
+      "newGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "status": "accepted",
+          "memoryTruncated": false
+        }
+      ],
+      "labelIdChanged": true,
+      "semanticActionChanged": false,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-29fdcce2a758",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": "task-1"
+    },
+    {
+      "caseId": "weak-40cbe7006fd59c89257b",
+      "split": "test",
+      "scenario": "promise-and-food-task",
+      "sourceFamily": "r8live-weak-reference-96-v1/test/promise-and-food-task/0",
+      "rawInputChanged": true,
+      "renderedChanged": true,
+      "renderedChangedIgnoringUUIDs": true,
+      "requestFieldsChanged": [
+        "requestId",
+        "relationships",
+        "goals"
+      ],
+      "candidateIdsChanged": false,
+      "candidateK": [
+        7,
+        7
+      ],
+      "oldGoals": [
+        {
+          "taskId": "task-1",
+          "type": "COLLECT_FOOD",
+          "memoryTruncated": true
+        }
+      ],
+      "newGoals": [],
+      "labelIdChanged": true,
+      "semanticActionChanged": true,
+      "oldAction": {
+        "kind": "gather",
+        "parameters": {
+          "action": "gather",
+          "resource": "food",
+          "amount": 2
+        }
+      },
+      "newAction": {
+        "kind": "move",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        }
+      },
+      "oldLabel": "a-9b818e599fca",
+      "newLabel": "a-0b3f9fd02e70",
+      "oldTaskCompleted": null,
+      "newTaskCompleted": null
+    }
+  ]
+}

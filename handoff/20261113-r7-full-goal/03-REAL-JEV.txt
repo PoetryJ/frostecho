@@ -1,0 +1,49 @@
+真实 JEV：一次做通数据→训练→校准→游戏行动→长程效果
+本轮不是“再跑tiny fixture”。旧39题 eligible=0 是旧数据事实，不是新数据与真实建模不能开始的理由。
+
+A. 首30分钟资源与API能力分流
+- 用户服务器维修，禁止SSH。用户可提供API，服务商/Base URL/模型名/能力尚待回答；secret通过环境变量，不入日志/仓库/浏览器。
+- 普通chat completion：可生成候选解释、作为基线/教师、解析玩家意图。它不提供自定义PyTorch头训练能力；API输出数字不等于训练出的JEV。
+- 提供真实embedding接口：建立明确命名 JEV-API-Embedding 实验臂。API编码完整(context,candidate)或分别编码并组合，固定模型/revision/维度/归一化/文本renderer；缓存真实表征，在本地CPU训练共享评分头。这是新的真实神经候选评分方法，不冒充Qwen4B/27B。
+- 服务不暴露不可变revision时标unknown/unversioned，冻结请求与实际embedding字节哈希；端点名不能冒充权重SHA。运行时版本不可证及供应商漂移限制单列。
+- 提供隐藏状态/训练或微调作业接口：按服务支持的模型架构/训练目标实现提交、状态轮询、checkpoint/结果下载。托管生成式SFT不是自动等同原共享评分头；记录方法差别。
+- 只有聊天API：可立即推进真实语言NPC和数据，但JEV训练仍需embedding、可加载本地权重或训练服务中的一种。当天明确缺失能力，不把聊天模型选择伪称JEV训练。
+- 4B/27B原实验仍保留。官方4B原本就是目标，不是tiny替代。先实际测4B加载/前向吞吐，冻结编码+特征缓存后头训练。不要因27B缺算力把所有工作串行卡住。
+- 先做少量能力/吞吐探针并估成本，按用户明确提供额度执行；不自行购买GPU。API记录token/调用/延时/失败重试，不记录secret。
+- 输出 resources.json、可复制运行命令及每种模式真实可用性，不能把shell能跑视为模型已加载。
+
+B. v5完整数据与流水开训
+- 总目标沿旧PLAN：4096，train2048/dev256/calT256/select512/cert512/test512。
+- 先按source scenario、语义骨架、模板/改写族拆分，再生成；同源/翻译/数字微调不得跨分区。归组定义过宽或过窄都要按来源核实，不能只检查caseId。
+- 由真实可重放世界状态与NPC可见证据生成：生存与履约冲突、信息权威/转述、承诺撤回、条件经验、供货/道路变化、合作/关系、机器/救援/议会等。
+- 事实、叙述、候选与参数同源；评估标签可以看裁决证据，但模型输入不能含未观察信息/未来结果。
+- 多个合理答案保留acceptable-set，训练loss与评价correctness使用同一集合语义。主观目标权重写入问题，不能强迫唯一最优。
+- D1/D2为真正隔离审查会话，盲看canonical输入，不看作者答案/彼此输出；保留完整原始响应、会话身份、输入SHA。分歧第三会话裁决或修题后双审。
+- 39旧题作为原始歧义分析只读留存；改题新ID/版本/重审，不让29歧义与10矛盾继续空转。
+- 每批冻结来源与审查，合格train≥512、dev≥128后先开始真实训练，后续继续4096；不同批次checkpoint有独立数据manifest，不事后混写。
+- v5验证器重算资格与分区并绑定模型训练入口；不改旧v4门成true，不拿复制样本凑数。
+
+C. 生产训练与执行（一次补齐）
+- 真实Qwen3.5加载适配：官方architecture Qwen3_5ForConditionalGeneration，维度在text_config；实际核查当前支持库版本，不沿用未经验证的旧4.51.3依赖。
+- 完整候选正文/params必须进入编码；替换旧96-token尾部截断+candidateId表征，记录实际token覆盖与截断策略。
+- 冻结编码器的表示一次缓存；cache key绑定input/model/revision/renderer。正确处理CPU/CUDA设备、batch和掩码。
+- 在真实训练集训练shared scalar head，保存权重、优化器/seed/config与训练曲线；新进程复载，测试未见过的输入及置换候选顺序。
+- API embedding臂同样实际训练头，不是调用embedding后手写相似度再称训练；说明与原Qwen臂方法区别。
+- logits→softmax(T)→tau accept/abstain，候选真正进入游戏。新real-model证据类型绑定原始特征来源与checkpoint；不得仅改顶层evidenceClass解除门。
+- 适配TS与Python的实际分数路径，记录模型选中ID、游戏最终提交ID、回执；两者不一致须说明回退/失效。
+- 数据门、模型来源、校准与执行门分开：真实权重≠校准通过；有概率≠长程收益。
+
+D. 校准与风险（沿原定协议，不改阈值迎合结果）
+- calT拟合温度，select选预先冻结tau网格；cert只认证一次，test不调参。
+- 旧协议目标：select接受≥100；cert coverage≥0.30；95%单侧Clopper-Pearson错误上界≤0.05。样本相关/分布漂移时不外推为全环境保证。
+- correctness为所选候选属于acceptable-set；不能拿集合第一个ID替代集合判断。
+- calT也用集合目标，例如负log(sum_{i属于acceptable-set}softmax(logits/T)[i])；不能沿用单label温度拟合。另明确top-choice可靠性图/ECE与二元Brier的事件为“所选候选属于acceptable-set”，置信度为该候选概率；不混成长期收益预测。
+- 原始逐样本logits/probs/标签/分区/T/tau及SHA可复算；保存NLL/Brier/ECE、coverage-risk与置信区间。
+- cert失败不得用同批结果反复选tau再认证。修模型只能用新的独立cert或如实无证书。
+- 若执行风险门未过，可继续真实shadow/对照研究，不能称目标已完成。实现工作照常推进，报告准确缺口。
+- 真实智能提升是实验问题，不能预写正结果；长程评价见04。
+
+命令交付
+M/D必须提供真实可运行的：
+prepare-data → validate-data → encode → train → calibrate → certify → serve-scorer → run-game --scorer <real-mode>。
+每条有config、退出码和产物路径；不交只有命令名字却缺实现的脚手架。

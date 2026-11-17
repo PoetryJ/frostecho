@@ -1,0 +1,83 @@
+{
+  "mode": "live",
+  "realModel": true,
+  "model": "qwen3.8-27b",
+  "thinkingDefault": true,
+  "batchId": "live-2026-10-29T13-15-58-344Z-8e8207",
+  "gamesPlanned": 18,
+  "gamesRun": 18,
+  "maxProviderCalls": 90,
+  "requestCount": 26,
+  "callCapExceeded": false,
+  "serial": true,
+  "retries": 0,
+  "byScenario": {
+    "s1": {
+      "games": 6,
+      "scenarioPass": 3,
+      "passRate": 0.5,
+      "goalReached": 3
+    },
+    "s2": {
+      "games": 6,
+      "scenarioPass": 0,
+      "passRate": 0,
+      "goalReached": 0
+    },
+    "s3": {
+      "games": 6,
+      "scenarioPass": 0,
+      "passRate": 0,
+      "goalReached": 0
+    }
+  },
+  "byThinking": {
+    "true": {
+      "games": 9,
+      "scenarioPass": 3,
+      "passRate": 0.3333333333333333,
+      "goalReached": 3,
+      "requestCount": 17,
+      "latencyMs": 116633,
+      "promptTokens": 2558,
+      "completionTokens": 1536,
+      "totalTokens": 4094,
+      "errors": {
+        "transport": 6,
+        "parse": 0,
+        "decide": 0,
+        "execute": 0
+      }
+    },
+    "false": {
+      "games": 9,
+      "scenarioPass": 0,
+      "passRate": 0,
+      "goalReached": 0,
+      "requestCount": 9,
+      "latencyMs": 272,
+      "promptTokens": 0,
+      "completionTokens": 0,
+      "totalTokens": 0,
+      "errors": {
+        "transport": 9,
+        "parse": 0,
+        "decide": 0,
+        "execute": 0
+      }
+    }
+  },
+  "errors": {
+    "transport": 15,
+    "parse": 0,
+    "decide": 0,
+    "execute": 0
+  },
+  "notes": [
+    "Production default enable_thinking remains true. This batch compares true and false and does not switch the default.",
+    "mode=live sends one HTTP chat completion at a time. Failures are not retried.",
+    "scenarioPass is separate from goalReached. S2 and S3 pass when A stops with hunger still 40. stop is never goalReached.",
+    "An execute rejection such as S3 NO_FOOD is counted here and can still be a scenario pass.",
+    "thinking env default at process start: true"
+  ]
+}

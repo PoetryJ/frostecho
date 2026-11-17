@@ -1,0 +1,15 @@
+{
+  "scenario": "empty-then-restock",
+  "actorId": "npc_02",
+  "taskId": "task-001-deliver-meal",
+  "failureClass": "missing-stock",
+  "seed": "r3-compare-empty-then-restock",
+  "branchAtStep": 4,
+  "maxSteps": 16,
+  "externalEvents": {
+    "4": 1
+  },
+  "reset": "GameplayLoop.load('/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r3/comparison/snapshots/empty-then-restock.session.json')",
+  "branch": "GameplayLoop.load('/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r3/comparison/snapshots/empty-then-restock.session.json', { useExperience: false | true })",
+  "replay": "node dist/scripts/r3-compare.js --out <same dir>"
+}

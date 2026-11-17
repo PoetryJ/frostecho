@@ -1,0 +1,69 @@
+{
+  "schema": "frostecho.r9.test-eval/1",
+  "heads": [
+    {
+      "head": "best.safetensors",
+      "path": "artifacts/sprint-r7/legacy-reuse/c43-increment-batch4-1/warm-start-17/best.safetensors",
+      "splits": {
+        "train": {
+          "cases": 36,
+          "top1InAcceptable": 1.0,
+          "setNll": 5.109584977507389e-06
+        },
+        "dev": {
+          "cases": 12,
+          "top1InAcceptable": 1.0,
+          "setNll": 1.7652113762772295e-07
+        },
+        "test": {
+          "cases": 48,
+          "top1InAcceptable": 0.9375,
+          "setNll": 0.37488637330124197
+        }
+      }
+    },
+    {
+      "head": "warm-17.safetensors",
+      "path": "artifacts/r9/trained-v3/warm-17.safetensors",
+      "splits": {
+        "train": {
+          "cases": 36,
+          "top1InAcceptable": 1.0,
+          "setNll": 5.109584977507389e-06
+        },
+        "dev": {
+          "cases": 12,
+          "top1InAcceptable": 1.0,
+          "setNll": 1.7652113762772295e-07
+        },
+        "test": {
+          "cases": 48,
+          "top1InAcceptable": 0.9375,
+          "setNll": 0.37488637330124197
+        }
+      }
+    },
+    {
+      "head": "random-43.safetensors",
+      "path": "artifacts/r9/trained-v3/random-43.safetensors",
+      "splits": {
+        "train": {
+          "cases": 36,
+          "top1InAcceptable": 1.0,
+          "setNll": 8.877574727808282e-09
+        },
+        "dev": {
+          "cases": 12,
+          "top1InAcceptable": 1.0,
+          "setNll": 2.168385257461658e-08
+        },
+        "test": {
+          "cases": 48,
+          "top1InAcceptable": 0.5,
+          "setNll": 1.802661172463581
+        }
+      }
+    }
+  ],
+  "note": "same frozen test split; weak labels from receipts/rules"
+}

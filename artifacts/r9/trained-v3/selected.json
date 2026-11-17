@@ -1,0 +1,1308 @@
+{
+  "schema": "frostecho.action-weak-experiment/1",
+  "experimental": true,
+  "researchTrainReady": false,
+  "mayTrainOnJev": false,
+  "countsAsAdmitted": false,
+  "calibrated": false,
+  "labelSource": "reference-imitation",
+  "independentReviews": 0,
+  "device": "cuda:0",
+  "corpusSha256": "36856a936192d995c4fa177f25e0bda71b613325f5c086a8c1097447eb367d9d",
+  "cacheSha256": "1b6fa4687af5500eafd88f32a0851a85e6f2cb069f7ca5609af40d2629297948",
+  "featureIdentityHash": "39c1b378ed76473e64c0f72432ba12c073cbf011c80541a9cb7ea6734c80fe83",
+  "featureIdentity": {
+    "actualParameterBytesByDevice": {
+      "cpu": 53791996928
+    },
+    "attention": "eager",
+    "class": "Qwen3_5ForCausalLM",
+    "deviceMap": {},
+    "dimension": 5120,
+    "encoderSourceSha256": "1e9f9bfb2271008e9c95da9af9453990b7447151eae80458138243795e6d3d98",
+    "metadataSha256": {
+      "config.json": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab",
+      "model.safetensors.index.json": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+      "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27"
+    },
+    "modelPath": "/data2/model_weights/Qwen3.8-27B",
+    "padMultiple": 8,
+    "padding": "right-masked-position-ids/1",
+    "physicalGpus": [
+      1
+    ],
+    "precision": "bfloat16",
+    "quantization": "none",
+    "readout": "joint-candidate-end-token",
+    "rendererSourceSha256": "644335acb70da0e0a51bdc899db25c8e054c9f7f5355abc2b8f6488c20f6fdb4",
+    "rotaryBufferDevices": {
+      "inv_freq": "cpu",
+      "original_inv_freq": "cpu"
+    },
+    "schema": "frostecho.joint-c-feature-identity/1",
+    "torch": "2.5.1+cu121",
+    "transformers": "5.2.0",
+    "weightIdentityScope": "local checkpoint metadata; no new full-shard hash claim"
+  },
+  "encodingExecution": {
+    "batchSize": 1,
+    "maxTokens": 2048,
+    "padMultiple": 8,
+    "placement": "auto",
+    "qualificationLimits": [
+      0.02,
+      1.0,
+      0.001
+    ],
+    "runnerSourceSha256": "03263ee097f7915daee12c67906828e85b59ee11b73ecacdd0a1b83de35aaafc"
+  },
+  "encodingQualification": {
+    "featuresSha256": "591212e2b83fc2f29a928fa36a6a99aa5bd635b7f0ff6a35e1ce58ba698ef1d8",
+    "path": "qualification.json",
+    "sha256": "effbe39b182b1bce88cc81ce3f4ee2ff46c21af0f4da30bd5b135742c5ade6b6"
+  },
+  "torchVersion": "2.5.1+cu121",
+  "cudaRuntime": "12.1",
+  "initialHeadSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+  "selectedCheckpoint": "warm-17.safetensors",
+  "selectedCheckpointSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+  "selection": "lowest dev set-NLL, never test",
+  "counts": {
+    "train": 36,
+    "dev": 12,
+    "test": 48
+  },
+  "baseline": {
+    "train": {
+      "cases": 36,
+      "setNll": 4.927317149849841e-06,
+      "referenceAgreement": 1.0
+    },
+    "dev": {
+      "cases": 12,
+      "setNll": 0.0,
+      "referenceAgreement": 1.0
+    },
+    "test": {
+      "cases": 48,
+      "setNll": 0.3748863637447357,
+      "referenceAgreement": 0.9375
+    }
+  },
+  "selectedMetrics": {
+    "init": "warm",
+    "seed": 17,
+    "selectedEpoch": 0,
+    "dev": {
+      "cases": 12,
+      "setNll": 0.0,
+      "referenceAgreement": 1.0
+    },
+    "train": {
+      "cases": 36,
+      "setNll": 4.927317149849841e-06,
+      "referenceAgreement": 1.0
+    },
+    "test": {
+      "cases": 48,
+      "setNll": 0.3748863637447357,
+      "referenceAgreement": 0.9375,
+      "predictions": [
+        {
+          "caseId": "r9-medical-zero-resource-s10-0",
+          "inputSha256": "d1b54b0df8f723dfc370cc0a0bba572a52622ecdf345979502d80af66ce620aa",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            2.210115909576416,
+            -4.936145782470703,
+            -5.392611503601074,
+            4.718854904174805,
+            10.673847198486328,
+            -3.7796103954315186,
+            -1.2639631032943726
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-resource-contention-s10-1",
+          "inputSha256": "7c8fa01e5f80a9544524cddac9ccde3b99ed84901c5cf0a85be1e77dc6803836",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            4.411916732788086,
+            -3.668020248413086,
+            -4.631369590759277,
+            4.381911277770996,
+            10.516907691955566,
+            -6.8106794357299805,
+            -2.7343993186950684
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-cancel-after-work-s10-2",
+          "inputSha256": "d3feeff8a35bac286b4db315a0d85d5fbb2cc05e49463fc6f18d559a87423ac0",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            3.5211048126220703,
+            -4.263802528381348,
+            -4.694141387939453,
+            6.4539794921875,
+            10.258299827575684,
+            -4.9592671394348145,
+            -2.174762725830078
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-wrong-location-gather-s10-3",
+          "inputSha256": "ac0e3ce6be7e31a8fd46471279db8deb611bf7cb478dad04ec6edff72a258f53",
+          "candidateIds": [
+            "a-d7f9f926b0e9",
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-bdf3be37fd7f"
+          ],
+          "logits": [
+            0.4506967067718506,
+            4.665945053100586,
+            -3.274794578552246,
+            -5.053640365600586,
+            5.45328950881958,
+            8.360541343688965,
+            -3.2359530925750732,
+            -6.769738674163818
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-medical-zero-resource-s11-0",
+          "inputSha256": "7294b2fc887ac99a1550d0755a24255339a0b4570d31265627c7965dccbcd7a8",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            2.8202097415924072,
+            -4.853437900543213,
+            -4.651086807250977,
+            5.364668846130371,
+            10.6365327835083,
+            -1.9121733903884888,
+            -0.9350683689117432
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-resource-contention-s11-1",
+          "inputSha256": "cee052ead338031b4b911ff3013f27c82f68e42c4d519d91ed30a4011398a81b",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            4.28519868850708,
+            -3.9233498573303223,
+            -4.168661117553711,
+            4.150544166564941,
+            10.340953826904297,
+            -6.453631401062012,
+            -2.6814887523651123
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-cancel-after-work-s11-2",
+          "inputSha256": "5ef8a9599613c744a05633a759cba9c2754584e36552036c1863d1cd0d0e0d4b",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            3.864124298095703,
+            -4.483672142028809,
+            -5.1832098960876465,
+            5.455586910247803,
+            10.59181022644043,
+            -5.377187252044678,
+            -2.020547389984131
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-wrong-location-gather-s11-3",
+          "inputSha256": "ce40d84eb12b3e2f05638ba0011d4b6c62829343448d321057dc960568cda455",
+          "candidateIds": [
+            "a-7d5dba528360",
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-650005cc5962"
+          ],
+          "logits": [
+            7.5833282470703125,
+            4.0048627853393555,
+            -4.14625358581543,
+            -3.1300692558288574,
+            5.108373165130615,
+            9.966389656066895,
+            -2.0681633949279785,
+            -4.592677593231201
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-medical-zero-resource-s12-0",
+          "inputSha256": "9c3f371cbd5cacf5bd8c7d4b698b83213ed64402f2a6ff27d918e1a92be5fe77",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            4.933398246765137,
+            -5.363198280334473,
+            -6.0577263832092285,
+            4.643633842468262,
+            10.92384147644043,
+            -2.3314409255981445,
+            -1.504188060760498
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-resource-contention-s12-1",
+          "inputSha256": "2dba7c09adcbbfaa8a6f83139497b898b8dd9f226b34a0a98e918de35b148e7e",
+          "candidateIds": [
+            "a-7ef746d7877d",
+            "a-83567b525b25",
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e"
+          ],
+          "logits": [
+            12.831897735595703,
+            14.102073669433594,
+            5.843238830566406,
+            -2.707962989807129,
+            -1.7871203422546387,
+            4.940027236938477,
+            8.536502838134766,
+            -5.8219523429870605
+          ],
+          "selectedId": "a-83567b525b25",
+          "agreesWithWeakLabel": false
+        },
+        {
+          "caseId": "r9-cancel-after-work-s12-2",
+          "inputSha256": "0e2157bfaffd2a0232a114f04f59288b0f14bc92d4a68d5ede3307b109a26d79",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            2.991889476776123,
+            -4.322699069976807,
+            -4.72177267074585,
+            4.742490291595459,
+            10.140451431274414,
+            -5.27942419052124,
+            -1.384692668914795
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-wrong-location-gather-s12-3",
+          "inputSha256": "e51cf81c968d09773791613f315dc5f8476a42f01aa6e9f854ce9d9bcdc977df",
+          "candidateIds": [
+            "a-de34115e1fd2",
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-da38572f198c"
+          ],
+          "logits": [
+            1.4588873386383057,
+            5.29847526550293,
+            -2.582796573638916,
+            -9.499738693237305,
+            4.384660720825195,
+            9.737251281738281,
+            5.5536298751831055,
+            -1.9130172729492188
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-medical-zero-resource-s1-0",
+          "inputSha256": "4ffdd11246c577e730d27cb8681971ab914b65f248e7141e8895e8722ca87d3b",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            2.483192205429077,
+            -5.580000877380371,
+            -5.099539756774902,
+            5.186956882476807,
+            10.614569664001465,
+            -2.9955520629882812,
+            -1.6946401596069336
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-resource-contention-s1-1",
+          "inputSha256": "d434569c63e46b93f2150a2da3389439cdd5addb241c3475e624ce83a530bcda",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            4.575625896453857,
+            -4.21368408203125,
+            -4.852968215942383,
+            4.319716453552246,
+            10.427132606506348,
+            -6.5004730224609375,
+            -2.8411037921905518
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-cancel-after-work-s1-2",
+          "inputSha256": "e2077d16616a8dbf19db5f1037f7ef4afd49a8f43544c02bb779398d945c2c43",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            3.8195130825042725,
+            -4.8353729248046875,
+            -5.7976908683776855,
+            4.703134536743164,
+            10.573923110961914,
+            -4.988110542297363,
+            -1.2644668817520142
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-wrong-location-gather-s1-3",
+          "inputSha256": "7ae8d4442d31382bbae5c673247b864b8c2a7ea30a11deb5bf5141b45613c95d",
+          "candidateIds": [
+            "a-29fdcce2a758",
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-da38572f198c"
+          ],
+          "logits": [
+            1.9001030921936035,
+            5.322080612182617,
+            -3.213144540786743,
+            -7.469993591308594,
+            4.5417046546936035,
+            9.26440143585205,
+            -3.375028610229492,
+            -3.5525238513946533
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-medical-zero-resource-s2-0",
+          "inputSha256": "b13796aa7e0a41abfd1241fb28b64dce09ac5aeb8cb9a8c598108c82861d4c98",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            2.4801177978515625,
+            -4.813625335693359,
+            -4.173611640930176,
+            5.122771739959717,
+            10.746318817138672,
+            -2.8314249515533447,
+            -1.2672104835510254
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-resource-contention-s2-1",
+          "inputSha256": "0dab254bc3b5bd94fd8bad72e1609095fb5bf7d4ae22ad8feace41e23bf1b168",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            4.42791748046875,
+            -3.987133741378784,
+            -4.109820365905762,
+            4.167815208435059,
+            10.512179374694824,
+            -6.55913782119751,
+            -2.679661273956299
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-cancel-after-work-s2-2",
+          "inputSha256": "d3feeff8a35bac286b4db315a0d85d5fbb2cc05e49463fc6f18d559a87423ac0",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            3.5211048126220703,
+            -4.263802528381348,
+            -4.694141387939453,
+            6.4539794921875,
+            10.258299827575684,
+            -4.9592671394348145,
+            -2.174762725830078
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-wrong-location-gather-s2-3",
+          "inputSha256": "ac0e3ce6be7e31a8fd46471279db8deb611bf7cb478dad04ec6edff72a258f53",
+          "candidateIds": [
+            "a-d7f9f926b0e9",
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-bdf3be37fd7f"
+          ],
+          "logits": [
+            0.4506967067718506,
+            4.665945053100586,
+            -3.274794578552246,
+            -5.053640365600586,
+            5.45328950881958,
+            8.360541343688965,
+            -3.2359530925750732,
+            -6.769738674163818
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-medical-zero-resource-s3-0",
+          "inputSha256": "e3f35fe5408aa234d84077a235fcea5fe013e8854f0b96ae08950b482ec575ff",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            3.5637223720550537,
+            -4.872495651245117,
+            -4.927335739135742,
+            5.55924129486084,
+            10.15315055847168,
+            -2.997732162475586,
+            -2.101839542388916
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-resource-contention-s3-1",
+          "inputSha256": "5a443996bf05c53b13b272b2b5f54193cec1811b78cbfde95b1cb2f31d263436",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            4.579639911651611,
+            -4.370753765106201,
+            -5.179956436157227,
+            4.158372402191162,
+            10.376315116882324,
+            -6.929675102233887,
+            -2.9140634536743164
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-cancel-after-work-s3-2",
+          "inputSha256": "5ef8a9599613c744a05633a759cba9c2754584e36552036c1863d1cd0d0e0d4b",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            3.864124298095703,
+            -4.483672142028809,
+            -5.1832098960876465,
+            5.455586910247803,
+            10.59181022644043,
+            -5.377187252044678,
+            -2.020547389984131
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-wrong-location-gather-s3-3",
+          "inputSha256": "ce40d84eb12b3e2f05638ba0011d4b6c62829343448d321057dc960568cda455",
+          "candidateIds": [
+            "a-7d5dba528360",
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-650005cc5962"
+          ],
+          "logits": [
+            7.5833282470703125,
+            4.0048627853393555,
+            -4.14625358581543,
+            -3.1300692558288574,
+            5.108373165130615,
+            9.966389656066895,
+            -2.0681633949279785,
+            -4.592677593231201
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-medical-zero-resource-s4-0",
+          "inputSha256": "5a6abf44158904c58a589a4d3b97c2fcaa6837fda3b0d3ecd17223e50f56f5a0",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            2.4619197845458984,
+            -5.441673278808594,
+            -5.401792526245117,
+            5.005023956298828,
+            10.388387680053711,
+            -3.5331575870513916,
+            -1.1094038486480713
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-resource-contention-s4-1",
+          "inputSha256": "080aeca5d70350a7dc36bedcf84762bf2a1342ca40985703698c3a4686f405e0",
+          "candidateIds": [
+            "a-7ef746d7877d",
+            "a-83567b525b25",
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e"
+          ],
+          "logits": [
+            11.690187454223633,
+            13.733198165893555,
+            5.264901161193848,
+            -2.6266398429870605,
+            -1.0094571113586426,
+            4.926703929901123,
+            8.268941879272461,
+            -5.521740436553955
+          ],
+          "selectedId": "a-83567b525b25",
+          "agreesWithWeakLabel": false
+        },
+        {
+          "caseId": "r9-cancel-after-work-s4-2",
+          "inputSha256": "0e2157bfaffd2a0232a114f04f59288b0f14bc92d4a68d5ede3307b109a26d79",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            2.991889476776123,
+            -4.322699069976807,
+            -4.72177267074585,
+            4.742490291595459,
+            10.140451431274414,
+            -5.27942419052124,
+            -1.384692668914795
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-wrong-location-gather-s4-3",
+          "inputSha256": "e51cf81c968d09773791613f315dc5f8476a42f01aa6e9f854ce9d9bcdc977df",
+          "candidateIds": [
+            "a-de34115e1fd2",
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-da38572f198c"
+          ],
+          "logits": [
+            1.4588873386383057,
+            5.29847526550293,
+            -2.582796573638916,
+            -9.499738693237305,
+            4.384660720825195,
+            9.737251281738281,
+            5.5536298751831055,
+            -1.9130172729492188
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-medical-zero-resource-s5-0",
+          "inputSha256": "4876e94041f7b0b534a91af5e03172e70bfd1e3ff5d03aee48c92a69defddd80",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            2.409313201904297,
+            -5.37879753112793,
+            -5.824447154998779,
+            4.916602611541748,
+            10.269433975219727,
+            -2.6790921688079834,
+            -1.5916121006011963
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-resource-contention-s5-1",
+          "inputSha256": "18909dc9bf23822bd68ac5e3112db53d4e4ed77209bef563a3a1ba0b84538b60",
+          "candidateIds": [
+            "a-855bd71e8938",
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-da38572f198c"
+          ],
+          "logits": [
+            2.202883243560791,
+            4.5843658447265625,
+            -1.8695652484893799,
+            -8.038215637207031,
+            3.4697928428649902,
+            9.323914527893066,
+            -0.8530721664428711,
+            -6.615100860595703
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-cancel-after-work-s5-2",
+          "inputSha256": "e2077d16616a8dbf19db5f1037f7ef4afd49a8f43544c02bb779398d945c2c43",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            3.8195130825042725,
+            -4.8353729248046875,
+            -5.7976908683776855,
+            4.703134536743164,
+            10.573923110961914,
+            -4.988110542297363,
+            -1.2644668817520142
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-wrong-location-gather-s5-3",
+          "inputSha256": "7ae8d4442d31382bbae5c673247b864b8c2a7ea30a11deb5bf5141b45613c95d",
+          "candidateIds": [
+            "a-29fdcce2a758",
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-da38572f198c"
+          ],
+          "logits": [
+            1.9001030921936035,
+            5.322080612182617,
+            -3.213144540786743,
+            -7.469993591308594,
+            4.5417046546936035,
+            9.26440143585205,
+            -3.375028610229492,
+            -3.5525238513946533
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-medical-zero-resource-s6-0",
+          "inputSha256": "8f2ff842cadf36849c654589970b0c757761e5435732a91510babeb759d08c33",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            3.6702537536621094,
+            -5.171326160430908,
+            -5.497900009155273,
+            4.789966106414795,
+            10.76033878326416,
+            -4.285107135772705,
+            -2.5942177772521973
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-resource-contention-s6-1",
+          "inputSha256": "6e1483931ec682d25c5d8628378d0c027706c6566aa8658a635d22c94bf45e8a",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            4.94101619720459,
+            -4.385798454284668,
+            -4.649566650390625,
+            4.416188716888428,
+            10.35126781463623,
+            -7.064761161804199,
+            -2.89509654045105
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-cancel-after-work-s6-2",
+          "inputSha256": "d3feeff8a35bac286b4db315a0d85d5fbb2cc05e49463fc6f18d559a87423ac0",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            3.5211048126220703,
+            -4.263802528381348,
+            -4.694141387939453,
+            6.4539794921875,
+            10.258299827575684,
+            -4.9592671394348145,
+            -2.174762725830078
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-wrong-location-gather-s6-3",
+          "inputSha256": "ac0e3ce6be7e31a8fd46471279db8deb611bf7cb478dad04ec6edff72a258f53",
+          "candidateIds": [
+            "a-d7f9f926b0e9",
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-bdf3be37fd7f"
+          ],
+          "logits": [
+            0.4506967067718506,
+            4.665945053100586,
+            -3.274794578552246,
+            -5.053640365600586,
+            5.45328950881958,
+            8.360541343688965,
+            -3.2359530925750732,
+            -6.769738674163818
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-medical-zero-resource-s7-0",
+          "inputSha256": "bedeea168a1ea00dfe9b52b238c4cc310ba6dc36ee1cae7f92b6940bb487c46c",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            2.2523555755615234,
+            -4.965875148773193,
+            -4.853532791137695,
+            5.301398754119873,
+            10.46867561340332,
+            -2.881282329559326,
+            -0.725646436214447
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-resource-contention-s7-1",
+          "inputSha256": "6aed5523cfa180b816f9d23c1f99ea5cde43cb94d915aafd3b57d6fecb4e9253",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            4.24760103225708,
+            -4.186859130859375,
+            -4.357940673828125,
+            4.1538872718811035,
+            10.540342330932617,
+            -6.409341335296631,
+            -2.7925801277160645
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-cancel-after-work-s7-2",
+          "inputSha256": "5ef8a9599613c744a05633a759cba9c2754584e36552036c1863d1cd0d0e0d4b",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            3.864124298095703,
+            -4.483672142028809,
+            -5.1832098960876465,
+            5.455586910247803,
+            10.59181022644043,
+            -5.377187252044678,
+            -2.020547389984131
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-wrong-location-gather-s7-3",
+          "inputSha256": "ce40d84eb12b3e2f05638ba0011d4b6c62829343448d321057dc960568cda455",
+          "candidateIds": [
+            "a-7d5dba528360",
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-650005cc5962"
+          ],
+          "logits": [
+            7.5833282470703125,
+            4.0048627853393555,
+            -4.14625358581543,
+            -3.1300692558288574,
+            5.108373165130615,
+            9.966389656066895,
+            -2.0681633949279785,
+            -4.592677593231201
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-medical-zero-resource-s8-0",
+          "inputSha256": "e368c8433dac5f81a220206928abfef321a4d178229bc7f09af51e23c9ea36f9",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            2.11637544631958,
+            -5.66473388671875,
+            -5.160265922546387,
+            4.778870582580566,
+            10.321893692016602,
+            -2.2853920459747314,
+            -1.0026187896728516
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-resource-contention-s8-1",
+          "inputSha256": "38ff7d907b3a48ca4c9a13d90fbb8c6cf7520d866e2e89c946f8eae3d24b5cb2",
+          "candidateIds": [
+            "a-7ef746d7877d",
+            "a-83567b525b25",
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e"
+          ],
+          "logits": [
+            11.524951934814453,
+            13.91186809539795,
+            5.371198654174805,
+            -2.4901041984558105,
+            -0.9353259801864624,
+            4.698353290557861,
+            8.124837875366211,
+            -5.798220634460449
+          ],
+          "selectedId": "a-83567b525b25",
+          "agreesWithWeakLabel": false
+        },
+        {
+          "caseId": "r9-cancel-after-work-s8-2",
+          "inputSha256": "0e2157bfaffd2a0232a114f04f59288b0f14bc92d4a68d5ede3307b109a26d79",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            2.991889476776123,
+            -4.322699069976807,
+            -4.72177267074585,
+            4.742490291595459,
+            10.140451431274414,
+            -5.27942419052124,
+            -1.384692668914795
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-wrong-location-gather-s8-3",
+          "inputSha256": "e51cf81c968d09773791613f315dc5f8476a42f01aa6e9f854ce9d9bcdc977df",
+          "candidateIds": [
+            "a-de34115e1fd2",
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-da38572f198c"
+          ],
+          "logits": [
+            1.4588873386383057,
+            5.29847526550293,
+            -2.582796573638916,
+            -9.499738693237305,
+            4.384660720825195,
+            9.737251281738281,
+            5.5536298751831055,
+            -1.9130172729492188
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-medical-zero-resource-s9-0",
+          "inputSha256": "465efff2dcdbc45039c2e09fc3a4f5492b216671a91abc682d9b2b27896090a1",
+          "candidateIds": [
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            0.8020243644714355,
+            5.5450825691223145,
+            4.086506366729736,
+            9.71506118774414,
+            -1.5341508388519287,
+            -5.020015716552734
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-resource-contention-s9-1",
+          "inputSha256": "61f07028cf8e5dfba61b3348dcafccb59e2579a9fd2313de548cc3aeac4e9de3",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            4.883778095245361,
+            -4.14998722076416,
+            -5.01481819152832,
+            4.241698265075684,
+            10.285994529724121,
+            -6.856357097625732,
+            -3.189370632171631
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-cancel-after-work-s9-2",
+          "inputSha256": "e2077d16616a8dbf19db5f1037f7ef4afd49a8f43544c02bb779398d945c2c43",
+          "candidateIds": [
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-3bc7f19405a7"
+          ],
+          "logits": [
+            3.8195130825042725,
+            -4.8353729248046875,
+            -5.7976908683776855,
+            4.703134536743164,
+            10.573923110961914,
+            -4.988110542297363,
+            -1.2644668817520142
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        },
+        {
+          "caseId": "r9-wrong-location-gather-s9-3",
+          "inputSha256": "7ae8d4442d31382bbae5c673247b864b8c2a7ea30a11deb5bf5141b45613c95d",
+          "candidateIds": [
+            "a-29fdcce2a758",
+            "a-bae1f2dab8ef",
+            "a-9b818e599fca",
+            "a-9dd795e76cba",
+            "a-d83f6a3b1e99",
+            "a-0b3f9fd02e70",
+            "a-4de955ab3c0e",
+            "a-da38572f198c"
+          ],
+          "logits": [
+            1.9001030921936035,
+            5.322080612182617,
+            -3.213144540786743,
+            -7.469993591308594,
+            4.5417046546936035,
+            9.26440143585205,
+            -3.375028610229492,
+            -3.5525238513946533
+          ],
+          "selectedId": "a-0b3f9fd02e70",
+          "agreesWithWeakLabel": true
+        }
+      ]
+    }
+  },
+  "trainingCodeSha256": "9d97f2ed50afe823ab3ec216e024a9a767e5c9f11c7e7d1bc26d630acbf6b4dd",
+  "backboneGradients": 0,
+  "backboneLoadedByTrainer": false,
+  "epochs": 40,
+  "batchSize": 16,
+  "learningRate": 0.001,
+  "seconds": 2.1975598260760307,
+  "peakCudaAllocatedMiB": 47.99853515625,
+  "limitations": [
+    "Weak reference agreement is not action optimality or long-horizon intelligence.",
+    "No independent blind labels or calibration/risk certificate in this experiment."
+  ]
+}

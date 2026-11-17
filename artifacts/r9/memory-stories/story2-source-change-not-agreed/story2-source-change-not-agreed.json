@@ -1,0 +1,255 @@
+{
+  "story": "story2-source-change-not-agreed",
+  "passed": true,
+  "checks": [
+    {
+      "name": "the promisor proposes an alternative source and waits (pending-change)",
+      "passed": true,
+      "detail": {
+        "status": "pending-change",
+        "changes": [
+          "open"
+        ],
+        "shortageReceipt": [
+          "npc_01-direct-4-withdraw:out_of_stock:4"
+        ]
+      }
+    },
+    {
+      "name": "no alternative-source action is offered before the answer",
+      "passed": true,
+      "detail": {
+        "steps": [
+          "await-answer"
+        ]
+      }
+    },
+    {
+      "name": "a rumour stays a player statement (never an engine stock fact)",
+      "passed": true,
+      "detail": [
+        {
+          "source": "player_statement",
+          "authority": "player",
+          "observedAt": 480
+        }
+      ]
+    },
+    {
+      "name": "the unanswered proposal and its revision survive the restart",
+      "passed": true,
+      "detail": {
+        "status": "pending-change",
+        "changes": [
+          "open"
+        ]
+      }
+    },
+    {
+      "name": "after the restart the un-agreed source is still not actionable",
+      "passed": true,
+      "detail": {
+        "steps": [
+          "await-answer"
+        ]
+      }
+    },
+    {
+      "name": "a rejection restores the original terms and never adds the source",
+      "passed": true,
+      "detail": {
+        "conditions": [
+          "warehouse-supply"
+        ],
+        "steps": [
+          "rejected-source-shortage"
+        ]
+      }
+    },
+    {
+      "name": "the original promise is fulfilled on its own delivery receipt",
+      "passed": true,
+      "detail": {
+        "status": "fulfilled",
+        "evidence": [
+          "npc_01-r8-58:meal_delivered:60"
+        ],
+        "receipts": [
+          "npc_01-r8-58:meal_delivered:60"
+        ],
+        "withdraw": "applied",
+        "deliver": "working"
+      }
+    },
+    {
+      "name": "an explicit acceptance is what makes the new source executable",
+      "passed": true,
+      "detail": {
+        "status": "active",
+        "conditions": [
+          "warehouse-supply",
+          "source:gather"
+        ],
+        "steps": [
+          "gather"
+        ],
+        "receipts": [
+          "npc_01-r8-6:gathered:8"
+        ]
+      }
+    }
+  ],
+  "outcome": {
+    "statusResponded": "commitment_change_rejected",
+    "finalStatus": "fulfilled",
+    "evidence": [
+      "npc_01-r8-58:meal_delivered:60"
+    ],
+    "conditionStock": "restocked",
+    "agreedArmStatus": "gather-executed"
+  },
+  "memory": {
+    "raw": {
+      "kinds": [
+        "r8_actor",
+        "r8_actor",
+        "r8_actor",
+        "r8_actor",
+        "r8_actor",
+        "r8_resource",
+        "r8_intent-note",
+        "heating_settled",
+        "meal_delivered",
+        "commitment_action_committed",
+        "commitment_fulfilled",
+        "promise_kept"
+      ],
+      "kept": 12,
+      "dropped": 314,
+      "bytes": 5010
+    },
+    "obligationFirst": {
+      "kinds": [
+        "commitment_proposed",
+        "commitment_accepted",
+        "out_of_stock",
+        "commitment_change_proposed",
+        "restock_rumor",
+        "commitment_change_rejected",
+        "stock_restocked",
+        "stock_withdrawn",
+        "commitment_action_committed",
+        "commitment_action_committed",
+        "commitment_fulfilled",
+        "promise_kept"
+      ],
+      "kept": 12,
+      "dropped": 314,
+      "bytes": 6251
+    },
+    "keptOnlyByNewPolicy": [
+      "commitment_proposed",
+      "commitment_accepted",
+      "out_of_stock",
+      "commitment_change_proposed",
+      "restock_rumor",
+      "commitment_change_rejected",
+      "stock_restocked",
+      "stock_withdrawn"
+    ],
+    "notesTotal": 2,
+    "notesApplicable": [
+      "note-restock-npc_01"
+    ],
+    "condition": "restocked",
+    "observedAt": [
+      {
+        "kind": "commitment_proposed",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_01",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "commitment_accepted",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_01",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "out_of_stock",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "engine",
+        "heardBy": null
+      },
+      {
+        "kind": "commitment_change_proposed",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_01",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "restock_rumor",
+        "observedAt": 480,
+        "source": "player_statement",
+        "speakerId": "player",
+        "heardBy": null
+      },
+      {
+        "kind": "commitment_change_rejected",
+        "observedAt": 1920,
+        "source": "engine",
+        "speakerId": "npc_01",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "stock_restocked",
+        "observedAt": 1920,
+        "source": "engine",
+        "speakerId": "engine",
+        "heardBy": null
+      },
+      {
+        "kind": "stock_withdrawn",
+        "observedAt": 1920,
+        "source": "engine",
+        "speakerId": "engine",
+        "heardBy": null
+      },
+      {
+        "kind": "commitment_action_committed",
+        "observedAt": 1935,
+        "source": "engine",
+        "speakerId": null,
+        "heardBy": null
+      },
+      {
+        "kind": "commitment_action_committed",
+        "observedAt": 1950,
+        "source": "engine",
+        "speakerId": null,
+        "heardBy": null
+      },
+      {
+        "kind": "commitment_fulfilled",
+        "observedAt": 1950,
+        "source": "engine",
+        "speakerId": "npc_01",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "promise_kept",
+        "observedAt": 1950,
+        "source": "engine",
+        "speakerId": "npc_01",
+        "heardBy": null
+      }
+    ]
+  },
+  "files": [
+    "/data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/memory-stories/story2-source-change-not-agreed/story2-source-change-not-agreed.json"
+  ]
+}

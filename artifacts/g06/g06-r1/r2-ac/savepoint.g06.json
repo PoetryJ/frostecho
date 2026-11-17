@@ -1,0 +1,446 @@
+{
+  "schema": "frostecho.g06.checkpoint/1",
+  "createdAt": "2026-11-02T10:05:04.941Z",
+  "sha256": "6889bf3f7422465769755ec7d1fa46069e880d20c16327b5e0cdda5ad0fb6b7d",
+  "payload": {
+    "schema": "frostecho.g06.checkpoint/1",
+    "episodeId": "g06-r2-ac",
+    "actorIds": [
+      "npc_a",
+      "npc_c"
+    ],
+    "wakePolicy": "event",
+    "mode": "reference",
+    "thinking": true,
+    "needPolicy": "recurring",
+    "recordSchema": "frostecho.g05.game/2",
+    "requestModel": null,
+    "timeoutMs": 15000,
+    "engine": {
+      "version": 1,
+      "initialState": {
+        "tick": 0,
+        "simTime": 0,
+        "npcs": {
+          "npc_a": {
+            "id": "npc_a",
+            "location": "kitchen",
+            "hunger": 40
+          },
+          "npc_b": {
+            "id": "npc_b",
+            "location": "kitchen",
+            "hunger": 40
+          },
+          "npc_c": {
+            "id": "npc_c",
+            "location": "kitchen",
+            "hunger": 40
+          }
+        },
+        "food": {
+          "kitchen": 0,
+          "dorm": 0
+        }
+      },
+      "state": {
+        "tick": 0,
+        "simTime": 0,
+        "npcs": {
+          "npc_a": {
+            "id": "npc_a",
+            "location": "kitchen",
+            "hunger": 40
+          },
+          "npc_b": {
+            "id": "npc_b",
+            "location": "kitchen",
+            "hunger": 40
+          },
+          "npc_c": {
+            "id": "npc_c",
+            "location": "kitchen",
+            "hunger": 40
+          }
+        },
+        "food": {
+          "kitchen": 0,
+          "dorm": 0
+        }
+      },
+      "seq": 0,
+      "eventCounter": 0,
+      "events": [],
+      "log": [],
+      "processed": {}
+    },
+    "initialState": {
+      "tick": 0,
+      "simTime": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_c": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 40
+        }
+      },
+      "food": {
+        "kitchen": 0,
+        "dorm": 0
+      }
+    },
+    "startedAt": 1793613904940,
+    "states": {
+      "npc_a": "waiting",
+      "npc_c": "waiting"
+    },
+    "transitions": [
+      {
+        "seq": 1,
+        "actorId": "npc_a",
+        "cycle": 1,
+        "from": null,
+        "to": "active",
+        "reason": "initial cycle (cycle 1)",
+        "observation": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40,
+          "foodHere": 0,
+          "reachable": [
+            "dorm",
+            "kitchen"
+          ]
+        },
+        "logCursor": 0
+      },
+      {
+        "seq": 2,
+        "actorId": "npc_c",
+        "cycle": 1,
+        "from": null,
+        "to": "active",
+        "reason": "initial cycle (cycle 1)",
+        "observation": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 40,
+          "foodHere": 0,
+          "reachable": [
+            "dorm",
+            "kitchen"
+          ]
+        },
+        "logCursor": 0
+      },
+      {
+        "seq": 3,
+        "actorId": "npc_a",
+        "cycle": 1,
+        "from": "active",
+        "to": "waiting",
+        "reason": "stop with an empty kitchen while hungry (kitchen hunger=40 foodHere=0)",
+        "observation": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40,
+          "foodHere": 0,
+          "reachable": [
+            "dorm",
+            "kitchen"
+          ]
+        },
+        "logCursor": 0
+      },
+      {
+        "seq": 4,
+        "actorId": "npc_c",
+        "cycle": 1,
+        "from": "active",
+        "to": "waiting",
+        "reason": "stop with an empty kitchen while hungry (kitchen hunger=40 foodHere=0)",
+        "observation": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 40,
+          "foodHere": 0,
+          "reachable": [
+            "dorm",
+            "kitchen"
+          ]
+        },
+        "logCursor": 0
+      }
+    ],
+    "cursor": 0,
+    "globalTurn": 2,
+    "playerSeq": 1,
+    "worldSeq": 1,
+    "busy": false,
+    "closed": false,
+    "interrupted": false,
+    "lastInterruptedActor": null,
+    "totalCalls": 2,
+    "idlePumps": {
+      "pumps": 0,
+      "callsBefore": 0,
+      "callsAfter": 0,
+      "cyclesBefore": 0,
+      "cyclesAfter": 0,
+      "actorStatesBefore": {},
+      "actorStatesAfter": {}
+    },
+    "cycles": {
+      "npc_a": [
+        {
+          "cycle": 1,
+          "reason": "initial cycle",
+          "startLogCursor": 0,
+          "endState": "waiting",
+          "turns": [
+            {
+              "globalTurn": 1,
+              "actorId": "npc_a",
+              "cycle": 1,
+              "actorRound": 1,
+              "observation": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 40,
+                "foodHere": 0,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "inputFeedback": null,
+              "providerCalled": true,
+              "status": "stopped",
+              "logCursorBefore": 0,
+              "logCursorAfter": 0,
+              "step": {
+                "round": 1,
+                "observation": {
+                  "id": "npc_a",
+                  "location": "kitchen",
+                  "hunger": 40,
+                  "foodHere": 0,
+                  "reachable": [
+                    "dorm",
+                    "kitchen"
+                  ]
+                },
+                "raw": "{\"type\":\"stop\"}",
+                "parse": {
+                  "ok": true,
+                  "action": {
+                    "type": "stop"
+                  }
+                }
+              }
+            }
+          ],
+          "session": {
+            "schema": "frostecho.g06.session/1",
+            "runId": "g06-r2-ac:npc_a:c1",
+            "actorId": "npc_a",
+            "round": 1,
+            "feedback": null,
+            "status": "stopped",
+            "providerCalls": 1,
+            "steps": [
+              {
+                "round": 1,
+                "observation": {
+                  "id": "npc_a",
+                  "location": "kitchen",
+                  "hunger": 40,
+                  "foodHere": 0,
+                  "reachable": [
+                    "dorm",
+                    "kitchen"
+                  ]
+                },
+                "raw": "{\"type\":\"stop\"}",
+                "parse": {
+                  "ok": true,
+                  "action": {
+                    "type": "stop"
+                  }
+                }
+              }
+            ],
+            "timeoutMs": 15000,
+            "commandIdScheme": "g06-episode-cycle",
+            "timing": {
+              "started": 1793613904940,
+              "calls": [
+                {
+                  "round": 1,
+                  "ms": 0
+                }
+              ]
+            },
+            "terminalOutcome": "stopped",
+            "initialState": {
+              "tick": 0,
+              "simTime": 0,
+              "npcs": {
+                "npc_a": {
+                  "id": "npc_a",
+                  "location": "kitchen",
+                  "hunger": 40
+                },
+                "npc_b": {
+                  "id": "npc_b",
+                  "location": "kitchen",
+                  "hunger": 40
+                },
+                "npc_c": {
+                  "id": "npc_c",
+                  "location": "kitchen",
+                  "hunger": 40
+                }
+              },
+              "food": {
+                "kitchen": 0,
+                "dorm": 0
+              }
+            },
+            "eventsBefore": 0
+          }
+        }
+      ],
+      "npc_c": [
+        {
+          "cycle": 1,
+          "reason": "initial cycle",
+          "startLogCursor": 0,
+          "endState": "waiting",
+          "turns": [
+            {
+              "globalTurn": 2,
+              "actorId": "npc_c",
+              "cycle": 1,
+              "actorRound": 1,
+              "observation": {
+                "id": "npc_c",
+                "location": "kitchen",
+                "hunger": 40,
+                "foodHere": 0,
+                "reachable": [
+                  "dorm",
+                  "kitchen"
+                ]
+              },
+              "inputFeedback": null,
+              "providerCalled": true,
+              "status": "stopped",
+              "logCursorBefore": 0,
+              "logCursorAfter": 0,
+              "step": {
+                "round": 1,
+                "observation": {
+                  "id": "npc_c",
+                  "location": "kitchen",
+                  "hunger": 40,
+                  "foodHere": 0,
+                  "reachable": [
+                    "dorm",
+                    "kitchen"
+                  ]
+                },
+                "raw": "{\"type\":\"stop\"}",
+                "parse": {
+                  "ok": true,
+                  "action": {
+                    "type": "stop"
+                  }
+                }
+              }
+            }
+          ],
+          "session": {
+            "schema": "frostecho.g06.session/1",
+            "runId": "g06-r2-ac:npc_c:c1",
+            "actorId": "npc_c",
+            "round": 1,
+            "feedback": null,
+            "status": "stopped",
+            "providerCalls": 1,
+            "steps": [
+              {
+                "round": 1,
+                "observation": {
+                  "id": "npc_c",
+                  "location": "kitchen",
+                  "hunger": 40,
+                  "foodHere": 0,
+                  "reachable": [
+                    "dorm",
+                    "kitchen"
+                  ]
+                },
+                "raw": "{\"type\":\"stop\"}",
+                "parse": {
+                  "ok": true,
+                  "action": {
+                    "type": "stop"
+                  }
+                }
+              }
+            ],
+            "timeoutMs": 15000,
+            "commandIdScheme": "g06-episode-cycle",
+            "timing": {
+              "started": 1793613904940,
+              "calls": [
+                {
+                  "round": 1,
+                  "ms": 0
+                }
+              ]
+            },
+            "terminalOutcome": "stopped",
+            "initialState": {
+              "tick": 0,
+              "simTime": 0,
+              "npcs": {
+                "npc_a": {
+                  "id": "npc_a",
+                  "location": "kitchen",
+                  "hunger": 40
+                },
+                "npc_b": {
+                  "id": "npc_b",
+                  "location": "kitchen",
+                  "hunger": 40
+                },
+                "npc_c": {
+                  "id": "npc_c",
+                  "location": "kitchen",
+                  "hunger": 40
+                }
+              },
+              "food": {
+                "kitchen": 0,
+                "dorm": 0
+              }
+            },
+            "eventsBefore": 0
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": "frostecho.jev04.encoder-train/1",
+  "at": "2026-11-13T03:45:03.157163+00:00",
+  "status": "refused",
+  "mode": "full",
+  "gate": {
+    "mayTrainOnJev": false,
+    "reason": "not ready: qualified 0/512 train, 0/128 dev",
+    "failures": [],
+    "summary": {
+      "cases": 39,
+      "s1": 39,
+      "s2": 39,
+      "adjudicated": 39,
+      "trainRows": 0,
+      "devRows": 0,
+      "uniqueTrainRows": 0,
+      "uniqueDevRows": 0,
+      "reviewVersion": "v4-review/1",
+      "independentReviewers": true,
+      "qualifiedTrain": 0,
+      "qualifiedDev": 0,
+      "requiredTrain": 512,
+      "requiredDev": 128,
+      "trainSourceGroups": 0,
+      "devSourceGroups": 0,
+      "researchTrainReady": false,
+      "failures": []
+    }
+  },
+  "modelLoads": 0,
+  "note": "refused BEFORE any torch/transformers import or weight load; the v4 gate is recomputed from the current bytes, not read from an editable gate cache."
+}

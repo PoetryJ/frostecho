@@ -1,0 +1,63 @@
+{
+  "schema": "frostecho.jev02r1.semantic-contract/1",
+  "frozenAt": "2026-11-10",
+  "baseline": "e12ac4cbe6d6ad055e9253904f701e9078c8705b",
+  "task": "判断当前玩家对明确收话人表达了什么优先请求；不替NPC决定服从，不裁判多人谁有理。",
+  "classes": {
+    "PLAYER_FIRST": "当前玩家为自己（或自己一侧）主张先吃。",
+    "NPC_FIRST": "当前玩家把先吃让给明确收话的NPC。",
+    "NO_PRIORITY_REQUEST": "当前话语没有提出任何先后顺序请求。",
+    "NEEDS_CLARIFICATION": "话里出现优先权字样，但在给定上下文中收话人、方向、指代或本人请求无法唯一确定。"
+  },
+  "rules": [
+    {"id": "R0", "text": "只判定当前玩家的这一句话所表达的请求。上下文用于确定参与者、收话人、食物状态和先前发生的事；上下文里别人的意见不是当前玩家的请求。"},
+    {"id": "R1", "text": "收话人明确 = 上下文唯一确定玩家正对某个NPC说话（点名、递碗、注视、只有两人在场等）。若在场两个及以上NPC且话语无线索指向其中一个，收话人不明确。"},
+    {"id": "R2", "text": "优先权内容 = 对吃食先后作出安排（先吃、先动筷、等你吃完、我先、让他先、给你留着你先、你们先来等）。仅描述食物、抱怨、致谢、询问做法、寒暄均不构成优先权内容。"},
+    {"id": "R3", "text": "无优先权内容 → NO_PRIORITY_REQUEST，即使提到分量、留饭、打包、他人意见或在场人数。"},
+    {"id": "R4", "text": "有优先权内容且收话人明确、方向唯一 → 当前玩家为自己主张先吃记 PLAYER_FIRST；把先吃让给收话NPC记 NPC_FIRST。"},
+    {"id": "R5", "text": "留一部分给第三方（留点、打包、给他带）本身不是优先权请求；可与给收话人的先吃安排共存，此时按先吃安排定标签。"},
+    {"id": "R6", "text": "转述他人意见与本人请求分开：若玩家先转述再表明自己（“他说你先，我说我先”），按本人请求定标签；若只转述而无本人请求 → NEEDS_CLARIFICATION。"},
+    {"id": "R7", "text": "省略主语不自动等于澄清：收话人明确时“先吃吧”= NPC_FIRST，“那我先”= PLAYER_FIRST。收话人不明确时同样的句子才是 NEEDS_CLARIFICATION。"},
+    {"id": "R8", "text": "提问（你先还是我先？）、两边都行、自我否定、指代缺项、条件未定 → NEEDS_CLARIFICATION，除非句中同时给出唯一安排。"},
+    {"id": "R9", "text": "同一句话在完整上下文下确有两种以上合理读法且无法用R1-R8唯一裁决时，进入未计分 challenge，不硬裁成唯一标签。"}
+  ],
+  "publicRegressions": [
+    {"utterance": "先吃吧。", "context": "玩家把筷子递给唯一在场的阿婆，阿婆还没动筷。", "label": "NPC_FIRST", "why": "收话人明确，省略主语不构成澄清。"},
+    {"utterance": "给我留点，你先吃。", "context": "玩家对弟弟说，锅里还有别的菜，弟弟在等。", "label": "NPC_FIRST", "why": "留饭不是优先权请求；先吃安排明确给收话人。"},
+    {"utterance": "他说你先，我说我先。", "context": "玩家对母亲说，哥哥刚才插了话。", "label": "PLAYER_FIRST", "why": "只取本人请求，不裁判兄弟冲突。"}
+  ],
+  "dataPlan": {
+    "scored": {"cal-temperature": 128, "cal-policy": 128, "test": 256},
+    "minFamilies": {"cal-temperature": 16, "cal-policy": 16, "test": 32},
+    "minUniquePlayerTextFraction": 0.9,
+    "sourceFamiliesMutuallyDisjoint": true,
+    "noSlotVariationPadding": "换食物名、人名、数字不算新语义；族内8条为不同情境而非词槽替换。",
+    "provenance": "synthetic_dialogue"
+  },
+  "strategyPreregistration": {
+    "S1": {"name": "single_pass", "gate": "softmax(logits/T)[argmax] >= tau", "supportedOrders": [0, 1, 2, 3]},
+    "S2": {"name": "reverse_pair_consensus", "gate": "argmax 一致时 score=min(max p_forward, max p_reverse) >= tau，不一致直接拒答", "supportedPairs": [[0, 1], [2, 3]]},
+    "gatingScore": {"single_pass": "max_confidence", "reverse_pair_consensus": "min_confidence"},
+    "temperatureArms": ["T1", "TFit"],
+    "temperatureRule": "在 cal-temperature 按 base×四序等权拟合一个正T；在 cal-policy 比较NLL与Brier，Tfit 两者都不劣才采用，否则 T1。",
+    "thresholdGrid": [0.5, 0.6, 0.7, 0.8, 0.85, 0.9, 0.925, 0.95, 0.975, 0.99, 0.995],
+    "gates": {"maxEmpiricalRisk": 0.05, "minAcceptedBasesPerSupported": 50, "minAcceptedPerClassPerSupported": 5, "emptyAcceptanceRisk": null},
+    "selection": "满足全部门槛者按支持order/pair等权平均coverage最高；同覆盖取较高tau；无可行点则 valid=false。",
+    "noTestTuning": true
+  },
+  "predeclaredDiagnostics": {
+    "note": "以下在解封前登记，仅作诊断，不得据以改用线上参数，也不构成验收结论。",
+    "items": [
+      "test 上对固定网格的全曲线 risk/coverage（每个 method × T arm）",
+      "不加门控的分类器准确率（按序、按类、按族）",
+      "旧 JEV-02 test 仅作公开合同回归，不计入本轮盲测"
+    ]
+  },
+  "forbidden": [
+    "用正则/模板脚本冒充独立语义标注",
+    "用换食物名或数字扩充样本数量",
+    "在 test 上选阈值或重训",
+    "valid=false 时把 tau 当作 0 输出“高置信”",
+    "prediction 阶段读取 test gold"
+  ]
+}

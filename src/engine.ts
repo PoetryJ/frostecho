@@ -16,8 +16,14 @@ export interface SaveData {
   processed: Record<string, { fingerprint: string; result: CommandResult }>;
 }
 
+/**
+ * Content identity for dedupe: actorId + type + payload.
+ * Missing payload is not coerced to null or {}. Eat accepts both omission and
+ * {}, and rejects null; those three must not share a fingerprint.
+ * Explicit payload: undefined is the same as omission (JSON drops both).
+ */
 export function fingerprint(c: Command): string {
-  return canonical({ actorId: c.actorId, type: c.type, payload: c.payload ?? null });
+  return canonical({ actorId: c.actorId, type: c.type, payload: c.payload });
 }
 
 export class Engine {
@@ -82,6 +88,8 @@ export class Engine {
   getState(): WorldState { return deepClone(this.state); }
   getEvents(): WorldEvent[] { return deepClone(this.events); }
   getLog(): LogEntry[] { return deepClone(this.log); }
+  /** G09: ledger length without cloning (the acceptance seq boundary). */
+  logLength(): number { return this.log.length; }
   getInitialState(): WorldState { return deepClone(this.initial); }
 
   save(): SaveData {
@@ -112,5 +120,7 @@ export function replay(initial: WorldState, events: readonly WorldEvent[]): Worl
 }
 
 export function initialWorld(): WorldState {
+  // G05-R1: no implicit simTime here — pre-G05 records stay canonically
+  // identical; the G05 world builder sets simTime: 0 explicitly.
   return { tick: 0, npcs: { npc_a: { id: 'npc_a', location: 'dorm', hunger: 40 }, npc_b: { id: 'npc_b', location: 'dorm', hunger: 20 } }, food: { dorm: 0, kitchen: 1 } };
 }

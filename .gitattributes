@@ -1,0 +1,12 @@
+* text=auto eol=lf
+
+# Frozen evidence must retain exact bytes for its SHA256 manifests.
+artifacts/sprint-r5/** -text
+handoff/20261112-sprint-r5/** -text
+checkpoints/20261112-r5/** -text
+research/decision-choice/jev05/data/incremental-c/** -text
+artifacts/sprint-r7/legacy-reuse/** -text
+
+# New audit manifests also bind original bytes and line endings.
+/artifacts/r8-train-play/** -text whitespace=cr-at-eol
+/artifacts/r9-independent-audit/** -text -whitespace

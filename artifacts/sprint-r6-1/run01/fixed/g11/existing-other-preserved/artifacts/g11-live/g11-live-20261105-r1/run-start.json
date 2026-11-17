@@ -1,0 +1,49 @@
+{
+  "schema": "frostecho.g11-live.run-start/1",
+  "at": "2026-11-06T08:39:28.967Z",
+  "batchDir": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g11-live/g11-live-20261105-r1",
+  "campaignDir": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g11-live/campaign-approved8",
+  "codeHead": "44a1b696ab2227cda153afbc3b32260fad7221fb",
+  "planPath": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g11-live/g11-live-20261105-r1/plan.json",
+  "planSha256": "f6fbb8e762f2e5d5dd75d2cc0af5191cb31b9f983c6ed0daaec7125451b5bbdb",
+  "planBytes": 750,
+  "preflightPath": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g11-live/g11-live-20261105-r1/preflight-001.json",
+  "authorization": {
+    "totalPosts": 8,
+    "maxPostsPerScene": 4,
+    "scenes": [
+      "W1",
+      "W2"
+    ]
+  },
+  "effective": {
+    "http": "http://127.0.0.1:18872/v1/chat/completions",
+    "model": "qwen3.8-27b",
+    "promptVersion": "g11-needs-resume/1",
+    "config": {
+      "goals": "negotiated",
+      "candidates": "choice",
+      "satiety": 40,
+      "needPolicy": "recurring",
+      "actionSet": "timed_wait"
+    },
+    "sampling": {
+      "temperature": 0,
+      "maxTokens": 1024,
+      "stream": false,
+      "thinking": true
+    },
+    "requestTimeoutMs": 120000,
+    "watchdog": {
+      "requestsPerPhase": 2,
+      "settleMs": 30000,
+      "phaseMs": 270000,
+      "source": "default"
+    }
+  },
+  "sceneOrder": [
+    "W1",
+    "W2"
+  ],
+  "campaignSpentBefore": 0
+}

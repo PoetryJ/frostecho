@@ -1,0 +1,129 @@
+{
+  "inspection": {
+    "ok": true,
+    "reason": "recomputed evidence matches the frozen policy",
+    "temperature": 0.104095,
+    "tau": 0.5,
+    "calibration_id": "fixture-r6-cpu",
+    "evidence_class": "fixture",
+    "upper": 0.018549134077503752,
+    "n": 160,
+    "errors": 0,
+    "coverage": 1.0
+  },
+  "high": {
+    "raw_logits": [
+      6.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "softmax_probabilities": [
+      0.9926186332070156,
+      0.0024604555976614757,
+      0.0024604555976614757,
+      0.0024604555976614757
+    ],
+    "temperature_probabilities": [
+      1.0,
+      9.277168061693845e-26,
+      9.277168061693845e-26,
+      9.277168061693845e-26
+    ],
+    "utility": null,
+    "utility_source": null,
+    "selected_index": 0,
+    "disposition": "accept",
+    "pmax": 1.0,
+    "mode": "fixture",
+    "counts_as_real": false,
+    "reason": null
+  },
+  "low": {
+    "raw_logits": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "softmax_probabilities": [
+      0.25,
+      0.25,
+      0.25,
+      0.25
+    ],
+    "temperature_probabilities": [
+      0.25,
+      0.25,
+      0.25,
+      0.25
+    ],
+    "utility": null,
+    "utility_source": null,
+    "selected_index": null,
+    "disposition": "abstain",
+    "pmax": 0.25,
+    "mode": "fixture",
+    "counts_as_real": false,
+    "reason": null
+  },
+  "asReal": {
+    "raw_logits": [
+      6.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "softmax_probabilities": [
+      0.9926186332070156,
+      0.0024604555976614757,
+      0.0024604555976614757,
+      0.0024604555976614757
+    ],
+    "temperature_probabilities": [
+      1.0,
+      9.277168061693845e-26,
+      9.277168061693845e-26,
+      9.277168061693845e-26
+    ],
+    "utility": null,
+    "utility_source": null,
+    "selected_index": null,
+    "disposition": "shadow_only",
+    "pmax": 1.0,
+    "mode": "real",
+    "counts_as_real": false,
+    "reason": "fixture synthetic evidence cannot count as real"
+  },
+  "temperatureTamper": {
+    "raw_logits": [
+      6.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "softmax_probabilities": [
+      0.9926186332070156,
+      0.0024604555976614757,
+      0.0024604555976614757,
+      0.0024604555976614757
+    ],
+    "temperature_probabilities": [
+      1.0,
+      2.6503965530043108e-261,
+      2.6503965530043108e-261,
+      2.6503965530043108e-261
+    ],
+    "utility": null,
+    "utility_source": null,
+    "selected_index": null,
+    "disposition": "shadow_only",
+    "pmax": 1.0,
+    "mode": "real",
+    "counts_as_real": false,
+    "reason": "artifact temperature 0.01 != calT 0.104095"
+  },
+  "cpUpper0of120": 0.024655401055656393,
+  "reference": "1-alpha**(1/120)",
+  "referenceValue": 0.024655401055656334
+}

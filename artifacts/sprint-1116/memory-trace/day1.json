@@ -1,0 +1,97 @@
+{
+  "schema": "frostecho.memory-trace/1",
+  "phase": "day1",
+  "simTime": 120,
+  "process": "pid=687133",
+  "queryA": {
+    "promises": [
+      {
+        "promiseId": "p-leave-food",
+        "fromId": "npc_a",
+        "toId": "player",
+        "text": "给玩家留一份饭",
+        "status": "cancelled",
+        "lastRevision": 3,
+        "evidenceIds": [
+          "m-3f461846c87685ae",
+          "m-f722b6ec862457f2",
+          "m-f89d6278b43639dd"
+        ],
+        "cancelledBy": "player",
+        "conflicts": [
+          {
+            "byId": "npc_c",
+            "eventId": "e-retract-third"
+          }
+        ]
+      }
+    ],
+    "queryStatus": "ok",
+    "hash": "c00bad576c80c982b31410dc1a3038d30d8d0c0dab94b0c11668628fde970af6",
+    "evidenceIds": [
+      "e-retract-third",
+      "m-f89d6278b43639dd",
+      "e-retract-1",
+      "m-f722b6ec862457f2",
+      "e-promise-1",
+      "m-3f461846c87685ae"
+    ]
+  },
+  "queryB": {
+    "promises": [
+      {
+        "promiseId": "p-leave-food",
+        "fromId": "npc_a",
+        "toId": "player",
+        "text": "给玩家留一份饭",
+        "status": "active",
+        "lastRevision": 1,
+        "evidenceIds": [
+          "m-40fd0a24ccb319fe"
+        ]
+      }
+    ],
+    "queryStatus": "ok",
+    "hash": "c00bad576c80c982b31410dc1a3038d30d8d0c0dab94b0c11668628fde970af6",
+    "evidenceIds": [
+      "e-promise-1",
+      "m-40fd0a24ccb319fe"
+    ]
+  },
+  "plans": [
+    {
+      "planId": "plan-npc_a-p-leave-food",
+      "owner": "npc_a",
+      "promiseId": "p-leave-food",
+      "dependencyRevision": 1,
+      "steps": [
+        "cook-extra-portion",
+        "leave-box-in-dorm"
+      ],
+      "state": "invalidated",
+      "invalidatedBy": "promise:cancelled@r3"
+    },
+    {
+      "planId": "plan-npc_b-p-leave-food",
+      "owner": "npc_b",
+      "promiseId": "p-leave-food",
+      "dependencyRevision": 1,
+      "steps": [
+        "keep-soup-warm"
+      ],
+      "state": "planned"
+    }
+  ],
+  "relation": {
+    "fromId": "npc_a",
+    "toId": "player",
+    "trust": 0,
+    "grievance": 0,
+    "debt": 0,
+    "evidenceIds": [
+      "m-f722b6ec862457f2"
+    ]
+  },
+  "memoryPolicyVersion": "memory-policy/1",
+  "note": "A heard the player retraction; B did not. Process will exit after writing the store."
+}

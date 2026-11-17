@@ -1,0 +1,61 @@
+{
+  "elapsedMs": 450,
+  "saveExists": true,
+  "code": 0,
+  "signal": null,
+  "rows": [
+    {
+      "schema": "frostecho.play/2",
+      "event": "ready",
+      "statePath": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r5/clone-final/probes/lifecycle/eof-with-save.session.json",
+      "restored": false,
+      "day": 1,
+      "simTime": 0,
+      "npcs": [
+        "npc_01",
+        "npc_02"
+      ]
+    },
+    {
+      "event": "job_terminal",
+      "jobId": "job-0001",
+      "kind": "step",
+      "status": "cancelled",
+      "reason": "barrier_timeout"
+    },
+    {
+      "command": "save",
+      "jobId": "job-0002",
+      "saved": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r5/clone-final/probes/lifecycle/eof-with-save.session.json",
+      "version": 0,
+      "tasks": 0,
+      "commitments": [],
+      "pending": 0
+    },
+    {
+      "command": "save",
+      "event": "barrier_timeout",
+      "revoked": [
+        "npc_01"
+      ],
+      "boundMs": 400
+    },
+    {
+      "event": "barrier_timeout",
+      "revoked": [
+        "npc_01"
+      ],
+      "boundMs": 400,
+      "at": "eof"
+    },
+    {
+      "event": "exit",
+      "jobs": 2,
+      "completed": 1,
+      "failed": 0,
+      "closed": false,
+      "settled": false
+    }
+  ],
+  "stderr": ""
+}

@@ -1,0 +1,26 @@
+R5三个窄修复；不得只增加新的替身实现
+
+A. 承诺生命周期（P独占src/gameplay-v2/commitments.ts、loop.ts、tasks.ts、negotiation.ts；对应单测）
+不变量：terminal承诺不能被旧change/attempt复活；绑定terminal承诺的任务不能退回legacy执行；所有入口达成同状态必须有同样关联任务/等待条件；提议不等于同意。
+统一cancel/withdraw/fulfilled收尾：关闭或明确拒绝open change，终结关联task，撤销相关attempt；历史receipt保留，只读重放。需要重新承诺时创建新的实例，不改旧终态。
+初次counter的accept必须建立唯一关联任务，且按已接受resumeWhen等待；条件满足后恢复，重复accept不重建。初次accept、counter-accept、恢复路径用同一绑定规则。
+用状态转移表涵盖active/pending-change/suspended/terminal×accept/reject/cancel/withdraw/late-result；只测会改变行为的交叉，不给每行实现镜像测试。
+实际CLI必过：退出后连续step不再送饭；取消后旧提议accept/reject不复活；初次counter接受→条件未满足不执行→合法改善条件后真实送饭。保留故事A/B。
+
+B. runtime/harness（R独占scripts/play-sprint.ts、src/application-v2/*；必要runtime接线）
+barrier固定捕获job集合，对集合内在途和未开始任务都撤权；排队任务启动前检查取消终态/令牌；晚返回不能把cancelled/timed_out覆写completed。barrier不能撤其捕获范围外的后来新任务。
+复用现有generation/lease和JobRegistry，禁止另造第二调度器。真CLI：两NPC排队→首个started→save超时→release，两个旧任务均0效果，存档与之后世界一致；新step一次成功。取消/EOF/quit仍有界。
+travel等衍生计划先以canonical原始意图(actor/target/params/id)查首次receipt，再规划路线；同输入重传返回首次结果，新目的地同ID仍冲突且0效果。不能取消世界命令digest校验来掩盖错误。
+
+C. 真JEV路径（D/M独占research/decision-choice/jev04/{data,scorers,models}及TS adapter；旧数据只读）
+明确验收调用链，不新加平行helper绕过旧入口：
+  encoder_train.main -> 唯一数据资格校验 -> 注册模型完整性 -> 模型加载/训练/保存；
+  TS shadow adapter -> 实际port.decide -> 证据内容+身份+分区+风险协议；
+  prepare_t27.download -> 实际首个HTTP请求 -> snapshot_download(repo,revision) -> 文件manifest。
+修改encoder_train.py读取新数据/schema并重新验证真实数据，不能读v3 true或信可编辑gate缓存。CPU测试从正式入口进入，用禁止模型加载的stub确认缺审/不足/篡改时加载调用数0且非零退出。
+完整hash覆盖真实输入task/narrative/facts/候选顺序、ID、文字、kind/params；标签与acceptable-set绑定裁决，split为已审case的精确投影。拒绝重复case/review/split ID、不合法标签、synthetic充正式数、来源组/模板家族跨split。unique合格样本计数，不按JSONL行数。
+当前v3题task名与生产interpret_request/choose_goal/choose_action的映射明确写在schema迁移里；语义意图与世界命令params分开，不静默改变任务定义。修改内容后hash变化，旧审查不得认证新版本。
+正式port拒绝空{}、重复分区或身份/风险协议不符证书；fixture永远counts_as_real=false。沿原协议检查calT/select/cert内容及互斥样本，仍保持TS selectedId=null、0执行直到真实能力门通过。
+tiny保存/复载与acceptable-set处理必须与正式入口复用同一生产组件；full只有真的写出可复载head/adapter才声明artifactWritten。没有实际模型结果时明确fixture。
+mock拦截真正download()，断言首请求保留Qwen/Qwen3.5-27B及精确revision，snapshot参数与续传命令一致；失败非零。--resolve-only正确不代表download修好。
+先完成上述CPU门，再处理本包39题裁决；达到原512/128等研究门才启动原训练计划。证书门与训练门分开，不能把无证书当不能训练，也不能把训练完成当可以执行。

@@ -1,0 +1,29 @@
+继续 FrostEcho。你负责完整原作玩法接入；Codex 同时负责旧 JEV 复用、训练与决策接线。不要等模型线完成才做玩法。
+
+基线与工作区
+1. 拉取 https://github.com/PoetryJ/frostecho.git 的 codex/sprint-r7-build，首实现提交445e2c1。新建你自己的 codex/r7-original-game 分支和 /data/home/user_00/frostecho-r7/game-worker 工作区。
+2. 不修改旧 /data3/DATA/project/project_meishijiang/FrostEcho* 工作区；不修改 Codex 的 .venv、workbench、logs、artifacts。不占用GPU、不结束任何现有GPU进程。
+3. Node已在 /data2/nvm/versions/node/v24.16.0/bin；仅给当前shell加PATH。npm ci && npm run build。
+4. python handoff/20261113-r7-full-goal/bootstrap.py 解出原作115源码与85资产。若已有相同SHA原作包可复用，无需重复下载。
+5. 读 handoff/20261113-r7-full-goal/01-WORKSTREAMS.txt 和 02-CONTRACTS.txt；当前网页入口 npm run play:r7，WorldV2是唯一权威。
+
+直接实现，不再写一轮方案后停工
+A. 完整原作空间/身份：8名居民、室外和7室内、门与碰撞、跨地图行走及原作HUD/音画/双语。复用当前public/r7和src/r7/ui，所有行动进同一权威世界。
+B. 原作生存生产：四日天气、体温/户外暴露、饥饿/体力/健康/SAN/医疗、easy/hard；木材+电力集中供暖；三机器建造/资源扣除/产消/维修。发电机缺木停，另两机缺电停；不恢复已删除第二暖炉、不新增独立建材货币。
+C. 15任务及额外行动、多议题议会、居民自主投票/接受/拒绝/协商、实际资源与NPC危机、救援；决议仍进入既有承诺和任务，不造第二队列。
+D. 原作D4 18:00或全灭结算、8/5/2阈值四档结局、轮回档案/下一世工作计划，跨进程存档覆盖全部领域。轮回功能服务原作，不另立研究主线。
+E. 玩家自由目的、NPC持续自主行动、生产/危机/议会/结局在同一场真实游戏里贯通。不得用两套独立游戏、预录故事或只有按钮的界面冒充接入。
+
+文件协调
+- 优先新增 src/r7/domains/{survival,production,council,crises,life,spatial}/ 与对应测试，领域模块交纯reduce/onTimeSpan/events。
+- 你在独立分支可修改src/survival/world-v2.ts、空间及界面接线；共用GameplayLoop/PlaySession改动单独提交，保留445e2c1的decisionContext与.long-term-memory.json，不删除记忆桥接。
+- 不修改research/decision-choice、旧数据/gold/checkpoint、JEV评分与校准协议。这条线由Codex处理，不重复训练。
+- 每4小时推送一个能玩的集成提交，说明玩家能做什么、真实状态如何改变。提交标题围绕功能，不围绕测试数量。
+
+交付与停止条件
+- 从新局实际玩到原作结局；至少一次机器产耗/危机救援/议会改派/承诺履约；第2日退出恢复，下一世继承经验后继续玩。
+- 每个原作启用功能给入口和实际结果；补全所有模块，不把原型改名完整重建。
+- 只修阻止核心玩法、保存或状态正确性的故障，不扩展无关反例，不重复R6.x返工。持续完成本任务，不做完一个小项就停。
+- 推送你的分支，交SOURCE_HEAD、启动/恢复命令、PARITY.json和游玩证据；不要合main。
+
+明确主线：完整原作重建 + 真实JEV候选评分/概率/校准/不确定性决策。长期记忆与SuperAgent/harness是支撑；不另开API替代模型或跨世研究题目。

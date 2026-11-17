@@ -1,0 +1,68 @@
+{
+  "runId": "http-500",
+  "actorId": "npc_a",
+  "outcome": "provider_error",
+  "goalReached": false,
+  "providerCalls": 1,
+  "steps": [
+    {
+      "round": 1,
+      "observation": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "raw": "",
+      "parse": {
+        "ok": false,
+        "error": "provider_error"
+      },
+      "error": "http 500"
+    }
+  ],
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "events": [],
+  "finalState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "error": "http 500"
+}

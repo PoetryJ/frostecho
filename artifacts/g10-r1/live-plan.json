@@ -1,0 +1,162 @@
+{
+  "schema": "frostecho.g10.live-plan/1",
+  "createdAt": "2026-11-04T11:40:12.264Z",
+  "status": "awaiting_owner_authorization",
+  "proposedChatLimit": 16,
+  "authorizedChatLimit": 0,
+  "automaticRetries": 0,
+  "extraWaitContinuationCalls": 0,
+  "episodes": 8,
+  "callsPerEpisode": 2,
+  "matrix": [
+    [
+      1,
+      40,
+      "self_only"
+    ],
+    [
+      1,
+      40,
+      "choice"
+    ],
+    [
+      1,
+      60,
+      "self_only"
+    ],
+    [
+      1,
+      60,
+      "choice"
+    ],
+    [
+      2,
+      60,
+      "choice"
+    ],
+    [
+      2,
+      60,
+      "self_only"
+    ],
+    [
+      2,
+      40,
+      "choice"
+    ],
+    [
+      2,
+      40,
+      "self_only"
+    ]
+  ],
+  "request": {
+    "text": "请把最后一份食物留给我，你先不要吃。",
+    "arms": {
+      "self_only": [
+        "feed_self"
+      ],
+      "choice": [
+        "feed_self",
+        "yield_once"
+      ]
+    },
+    "bothArmsSameS1": true,
+    "createdAtSimTime": 0,
+    "expiresAtSimTime": 1
+  },
+  "world": {
+    "npcA": {
+      "satietyLevels": [
+        40,
+        60
+      ],
+      "playerId": "npc_b",
+      "companionId": "npc_c"
+    },
+    "playerHunger": 40,
+    "companionHunger": 70,
+    "kitchenFood": 1,
+    "needPolicy": "recurring",
+    "wakePolicy": "event",
+    "actionSet": "timed_wait",
+    "actors": [
+      "npc_a",
+      "npc_c"
+    ],
+    "goalMode": "negotiated",
+    "repetition2Reversed": true
+  },
+  "model": {
+    "name": "qwen3.8-27b",
+    "thinking": true,
+    "temperature": 0,
+    "maxTokens": 1024,
+    "stream": false,
+    "timeoutMs": 120000,
+    "endpointKind": "full /v1/chat/completions",
+    "modelListValidation": "GET /v1/models must list the model before any authorized call"
+  },
+  "providerSource": "test-owned loopback HTTP server (rehearsal only)",
+  "endpointClassNote": "127.0.0.1 is an address class, not proof that the peer is a fake model; the rehearsal report names the test-owned server and captured wire.",
+  "structureGate": "the first pair (4 POST) must pass verify before the rest may run",
+  "successDefinition": "complete legal protocol + evidence chain; model cooperation is NOT required",
+  "perEpisodeReport": [
+    "goal",
+    "request accepted/declined",
+    "action",
+    "fulfilment",
+    "both actors state",
+    "two-phase tokens",
+    "latency",
+    "unknown usage"
+  ],
+  "controlRestricted": "a feed_self choice is reported as a control choice, never as an autonomous refusal",
+  "history": {
+    "label": "out_of_contract",
+    "oldChatRequests": 17,
+    "knownTokens": 9970,
+    "totalTokens": "unknown",
+    "note": "not comparable to a new controlled batch; kept separate"
+  },
+  "commands": {
+    "rehearsal": "node scripts/g10-live-rehearse.mjs artifacts/g10-r1/rehearsal",
+    "verify": "node dist/scripts/eval-g09.js --verify --out artifacts/g10-r1/rehearsal/artifacts --batch loopback-live --campaign artifacts/g10-r1/rehearsal/campaign",
+    "futureAuthorizedRun": "node dist/scripts/eval-g09.js --out DIR --batch NAME --campaign DIR --campaign-limit 16 --live --http URL --model qwen3.8-27b",
+    "futureVerify": "node dist/scripts/eval-g09.js --verify --out DIR --batch NAME --campaign DIR"
+  },
+  "costReportTemplate": {
+    "chatRequests": 0,
+    "spentOfAuthorized": "0/0",
+    "failed": 0,
+    "cancelled": 0,
+    "timedOut": 0,
+    "unknownUsage": 0,
+    "goalTokens": 0,
+    "actionTokens": 0,
+    "totalTokens": null
+  },
+  "cells": [
+    {
+      "cell": "s40-self_only",
+      "satiety": 40,
+      "arm": "self_only"
+    },
+    {
+      "cell": "s40-choice",
+      "satiety": 40,
+      "arm": "choice"
+    },
+    {
+      "cell": "s60-self_only",
+      "satiety": 60,
+      "arm": "self_only"
+    },
+    {
+      "cell": "s60-choice",
+      "satiety": 60,
+      "arm": "choice"
+    }
+  ],
+  "authorized": false
+}

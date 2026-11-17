@@ -1,0 +1,41 @@
+{
+  "schema": "frostecho.jev05.contract-guide/1",
+  "case": {
+    "caseId": "unique-id",
+    "context": {"observed": "Only NPC-visible facts, retrieved memories and current goals"},
+    "candidates": [{"id": "c0", "text": "Full candidate action", "params": {"action": "gather"}}, {"id": "c1", "text": "Another action", "params": {"action": "wait"}}],
+    "acceptableIds": ["c0"],
+    "split": "train",
+    "sourceGroup": "original-source-group",
+    "templateFamily": "semantic-template-family",
+    "contentHash": "sha256(canonical({context,candidates:[{id,text,params}]}))",
+    "origin": {"type": "world-event", "source": "trace-key"}
+  },
+  "review": {
+    "caseId": "unique-id", "contentHash": "same canonical input hash", "acceptableIds": ["c0"],
+    "status": "supported", "blind": true, "reviewerId": "actual-reviewer-identity", "sessionId": "actual-session-id", "rawResponse": "original complete response"
+  },
+  "adjudication": {
+    "caseId": "unique-id", "contentHash": "same canonical input hash", "acceptableIds": ["c0"], "status": "supported",
+    "reviewASha256": "sha256(canonical(original review A row))", "reviewBSha256": "sha256(canonical(original review B row))"
+  },
+  "qualification": {
+    "schema": "frostecho.jev05.qualification/1",
+    "files": {
+      "cases": {"path": "cases.jsonl", "sha256": "actual-file-sha256"},
+      "reviewA": {"path": "review-a.jsonl", "sha256": "actual-file-sha256"},
+      "reviewB": {"path": "review-b.jsonl", "sha256": "actual-file-sha256"},
+      "adjudications": {"path": "adjudications.jsonl", "sha256": "actual-file-sha256"}
+    },
+    "sources": {"trace-key": {"path": "original-world-trace.jsonl", "sha256": "actual-file-sha256"}}
+  },
+  "notes": [
+    "This file is a contract guide with examples, not a machine JSON Schema or a ready qualification manifest.",
+    "Canonical JSON uses sorted keys, UTF-8, no whitespace, ensure_ascii=False, allow_nan=False.",
+    "Case contentHash never includes labels, split or reviewer output. Model text never includes candidate IDs/positions/labels.",
+    "All case/review/adjudication ID sets must agree. Cases in a qualified manifest must all be supported; keep ambiguous/rejected records in the separate source archive.",
+    "Source groups and template families cannot cross any of train/dev/calT/select/cert/test. Fixed open-train floor is 512/128, not the final 4096 target.",
+    "Review session sets A and B cannot intersect. Different names in one actual session are not independent reviews.",
+    "Qualification validates binding/structure; honest original provenance and actual independent review cannot be created by changing flags."
+  ]
+}

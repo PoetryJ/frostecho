@@ -1,0 +1,57 @@
+{
+  "withdraw": {
+    "status": "withdrawn",
+    "task": [
+      {
+        "taskId": "task-001-deliver-meal",
+        "actorId": "npc_01",
+        "kind": "deliver-meal",
+        "status": "cancelled",
+        "assignedAt": 0,
+        "commitmentId": "cm-21d6cb04-42ed-4c37-be26-e6130ce66420",
+        "inputId": "in-1-request:task"
+      }
+    ],
+    "selected": [
+      "g-wait",
+      "g-wait",
+      "g-wait",
+      "g-wait",
+      "g-wait",
+      "g-wait",
+      "g-wait",
+      "g-wait"
+    ]
+  },
+  "cancel": {
+    "before": "pending-change",
+    "after": "cancelled",
+    "revision": 1
+  },
+  "counter": {
+    "initial": {
+      "verdict": "counter",
+      "reason": "need-food-first",
+      "terms": {
+        "resumeWhen": "hunger>=40",
+        "reason": "先让我吃一口再答应"
+      }
+    },
+    "after": "active",
+    "task": [
+      {
+        "taskId": "task-001-deliver-meal",
+        "actorId": "npc_01",
+        "kind": "deliver-meal",
+        "status": "active",
+        "assignedAt": 4000,
+        "commitmentId": "cm-437205cf-f32b-4dcc-99ce-c267eadd0968"
+      }
+    ],
+    "selected": [
+      "g-eat",
+      "g-eat",
+      "g-eat"
+    ]
+  }
+}

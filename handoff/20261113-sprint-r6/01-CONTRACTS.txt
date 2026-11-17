@@ -1,0 +1,32 @@
+R6 冻结接口、边界与责任
+
+问题与理由
+P：任务完成和承诺完成脱节。对应事务完成条件：权威回执驱动绑定承诺终态，不能仅修改显示状态。
+R：保存撤销旧任务时，误撤销了捕获集合之外的新任务。对应队列取消令牌/代次：保存只撤销所捕获工作，启动时读取该job被授予的有效版本，不能给已取消job重新授权。
+D：旧判断可以重绑改题。对应数据来源追溯：审查必须绑定审查者实际看到的不可变输入，文件存在或ID相同都不充分。
+M：准入信任摘要。对应可复算证书：用冻结策略和独立逐样本记录重算统计量，绑定实际artifact参数。
+这是SuperAgent式长期工作身份、JEV决策证据和harness真实入口恢复的工程前置，不声称新论文贡献。
+
+单会话所有权（默认顺序执行）
+P：src/gameplay-v2/loop.ts、必要的commitments.ts局部修复、对应新增 tests/acceptance-v6/P测试。
+R：scripts/play-sprint.ts队列/保存段、对应新增 tests/acceptance-v6/R测试。
+D：research/decision-choice/jev04/data/v4/import_blind_review.py、validate_v4.py必要代码及相关Python tests。
+M：research/decision-choice/jev04/scorers/port_v3.py、calibration/calibration.py必要代码、src/decision/jev-shadow-adapter.ts及相关测试。
+H：新增 scripts/verify-r6.ts、tests/acceptance-v6、artifacts/sprint-r6、REPORTS/20261113-r6.md、交付包。
+集成责任归Grok会话本身。只有Bot确实支持独立worker时才拆P/R/D/M；先冻结接口，各线不写他线文件，H独占集成入口。P与R共用CLI集成测试必须由H协调，不需要为形式启动多人。
+
+冻结新入口：tests/acceptance-v6/gate-r6.test.ts 汇集本轮真实CLI验收；scripts/verify-r6.ts 支持 --out <全新目录>，输出 integration-summary.json 的P/R/D/M/play/jevCpu/frozenEvidence各项pass/fail/blocked、证据路径、sourceHead；有fail非零，有blocked也非零。实际协议/API变更需先在本轮报告说明，不能改本冻结包来适配伪通过。
+
+兼容与证据
+- 保留现有CLI、ScorerIdentity/Artifact/Request接口；若需内部校验结果类型，可添加内部类型，不以破坏旧probe接口逃避复现。
+- 不增加第二份可执行任务队列或第二份权威库存/承诺状态。账本从已有状态、事件和回执派生。
+- 终态不能被旧respond/旧scorer/恢复复活；幂等回放首次receipt；拒绝路径0副作用。
+- Python/TS风险验证共享同一规范和fixture文件；Python真准入入口关闭，TS selectedId=null，无实际JEV执行。
+- 不将softmax候选分布当作效用、经验正确率或送饭成功概率；utility无明确来源保持null。
+- 不改变原v4 cases/reviews/裁决、R5 frozen handoff/delivery/checkpoint、旧gold/成本账本/1552批。
+- R5的971项manifest包含根STATUS.md和.gitattributes。本轮保留它们原样；新状态写REPORTS/20261113-r6.md。新artifacts目录自行放局部.gitattributes“** -text”保护原始字节。
+- 迁移代码允许修改，但原始审查记录与数据不原地重写。所有篡改/导入/正式encoder关闭门测试在隔离复制树中执行。
+
+不重置资源授权
+原三臂T27冻结/T4F冻结/T4L-LoRA、seed17/43和GPU12h剩余额度仅为历史约束，本轮不使用、不重置。真实训练、权重下载、模型API及执行准入都不属于本轮任务。
+一个Grok会话不能自称两次独立审查。统计fixture可按固定种子合成，但必须fixture标识，不能进入研究train/dev/calT/select/cert登记。

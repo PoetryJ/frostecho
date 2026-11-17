@@ -1,0 +1,1052 @@
+diff --git a/scripts/r8/task-matrix.mjs b/scripts/r8/task-matrix.mjs
+index 9f3f52d..65439ec 100644
+--- a/scripts/r8/task-matrix.mjs
++++ b/scripts/r8/task-matrix.mjs
+@@ -11,7 +11,8 @@ import { resolve } from 'node:path';
+ const require = createRequire(import.meta.url);
+ const root = process.argv[2] ?? process.cwd();
+ const { R8Runtime } = require(resolve(root, 'dist/src/r7/integration/runtime.js'));
+-const { TASK_IDS, WORK_RULES } = require(resolve(root, 'dist/src/r7/domains/tasks/index.js'));
++const { TASK_IDS, WORK_RULES, WORK_MODE_PLACE } =
++  require(resolve(root, 'dist/src/r7/domains/tasks/index.js'));
+ 
+ const results = [];
+ 
+@@ -19,7 +20,8 @@ function commandFor(rule, actorId, commandId) {
+   switch (rule.action) {
+     case 'gather': return { commandId, type: 'gather', actorId, resource: rule.resource,
+       amount: rule.amount ?? 1 };
+-    case 'work': return { commandId, type: 'work', actorId, minutes: rule.minutes ?? 40 };
++    case 'work': return { commandId, type: 'work', actorId, minutes: rule.minutes ?? 40,
++      ...(rule.mode ? { mode: rule.mode } : {}) };
+     case 'refuel': return { commandId, type: 'refuel', actorId, amount: rule.amount ?? 1 };
+     case 'medical': return { commandId, type: 'medical', actorId, targetId: actorId,
+       amount: rule.amount ?? 1 };
+@@ -61,6 +63,14 @@ for (const type of TASK_IDS) {
+     runtime.advanceWorld(runtime.world.simTime + spec);
+   } else {
+     const rule = WORK_RULES[type];
++    // The authority checks the real work site: walk there first, exactly like
++    // a candidate would (the human-handled matrix never patches coordinates).
++    const place = rule.action === 'work' && rule.mode ? WORK_MODE_PLACE[rule.mode] : null;
++    if (place && runtime.world.npcs[actorId].location !== place) {
++      const walked = runtime.session.submitWorldCommand({ commandId: `walk-${type}`,
++        type: 'move', actorId, to: place });
++      if (walked.events) runtime.recordCommitted(walked.events);
++    }
+     const command = commandFor(rule, actorId, `work-${type}`);
+     work = runtime.session.submitWorldCommand(command);
+     if (work.events) runtime.recordCommitted(work.events);
+diff --git a/src/application-v2/session.ts b/src/application-v2/session.ts
+index 965f776..e74ef79 100644
+--- a/src/application-v2/session.ts
++++ b/src/application-v2/session.ts
+@@ -424,8 +424,10 @@ export class PlaySession {
+ 
+   /**
+    * R4 (G4): a commitment event is a real communication record: sender,
+-   * recipient, content, revision and the supporting receipt. It is ingested
+-   * into every living NPC's memory (social events are public here); the
++   * recipient, content, revision and the supporting receipt. By default it is
++   * a public team event ingested by every living NPC; a caller may pass an
++   * explicit `audience` (a private face-to-face message) and the real
++   * `source`/`speaker` (a player statement is not an engine fact). The
+    * promisor additionally gets the relation-bearing records:
+    *  - commitment_fulfilled  -> promise_kept  (trust +, only with the receipt)
+    *  - commitment_withdrawn  -> promise_broken (trust -, grievance +)
+@@ -434,8 +436,16 @@ export class PlaySession {
+   ingestCommitmentEvent(event: {
+     type: string; commitmentId: string; revision: number; at: number;
+     actorId: string; payload: Record<string, unknown>;
+-  }): string[] {
+-    const observers = this.npcIds.filter(id => this.world.npcs[id]?.alive);
++  }, options: {
++    /** Who actually heard it; omitted = every living NPC (public event). */
++    audience?: string[];
++    source?: 'engine' | 'player_statement';
++    authority?: 'engine' | 'player' | 'npc' | 'third_party' | 'inference';
++    speakerId?: string;
++  } = {}): string[] {
++    const observers = options.audience
++      ? options.audience.filter(id => this.world.npcs[id]?.alive)
++      : this.npcIds.filter(id => this.world.npcs[id]?.alive);
+     const eventId = `cmt-${event.type}-${event.commitmentId}-${this.sequence++}`;
+     const recipient = String(event.payload.toId ?? 'player');
+     for (const observer of observers) {
+@@ -443,8 +453,13 @@ export class PlaySession {
+         eventId, occurredAt: event.at, observedAt: this.world.simTime, kind: event.type,
+         subjectIds: [event.actorId, recipient],
+         payload: { ...event.payload, commitmentId: event.commitmentId,
+-          revision: event.revision },
+-        source: 'engine', authority: 'engine', speakerId: event.actorId,
++          revision: event.revision,
++          // Provenance of the telling: who heard it, and from whom.
++          heardBy: observers.join(';'),
++          toldBy: options.speakerId ?? event.actorId },
++        source: options.source ?? 'engine',
++        authority: options.authority ?? 'engine',
++        speakerId: options.speakerId ?? event.actorId,
+         relatedRequestId: event.commitmentId,
+       };
+       this.ingest(observer, base);
+diff --git a/src/gameplay-v2/loop.ts b/src/gameplay-v2/loop.ts
+index 6788fd5..95a4437 100644
+--- a/src/gameplay-v2/loop.ts
++++ b/src/gameplay-v2/loop.ts
+@@ -367,16 +367,50 @@ export class GameplayLoop {
+     }
+   }
+ 
+-  /** The beneficiary cancels; every later attempt stops (independent terminal). */
++  /**
++   * The beneficiary cancels; every later attempt stops (independent terminal).
++   * `heardBy` is the real audience of the telling: a cancellation spoken to one
++   * resident is a player statement only those residents remember, and the
++   * others keep acting on what they actually heard.
++   */
+   cancelCommitment(commitmentId: string, options: { inputId?: string;
+-    reason?: string } = {}): { commitment: Commitment; event: CommitmentEvent } {
++    reason?: string; heardBy?: string[] } = {}):
++    { commitment: Commitment; event: CommitmentEvent } {
+     const result = this.commitments.cancel(commitmentId,
+       { at: this.session.world.simTime, inputId: options.inputId, reason: options.reason });
+-    this.session.ingestCommitmentEvent(result.event);
++    this.session.ingestCommitmentEvent(result.event, {
++      ...(options.heardBy ? { audience: options.heardBy } : {}),
++      source: 'player_statement', authority: 'player', speakerId: 'player' });
+     this.closeBoundTasks(result.commitment);
+     return { commitment: result.commitment, event: result.event };
+   }
+ 
++  /**
++   * An NPC relays a cancellation it actually heard to the residents present.
++   * The teller must hold the cancellation record itself, so a relay can never
++   * invent knowledge; the audience learns it as a player statement reported by
++   * that NPC, not as a new engine fact.
++   */
++  relayCancellation(commitmentId: string, options: { tellerId: string; audience: string[];
++    text?: string }): { commitment: Commitment; told: string[]; event: CommitmentEvent } | null {
++    const commitment = this.commitments.find(commitmentId);
++    if (!commitment) throw new Error(`unknown commitment ${commitmentId}`);
++    const records = this.session.memories.get(options.tellerId)?.toJSON().records ?? [];
++    const heard = [...records].reverse().find(record => record.observerId === options.tellerId
++      && record.kind === 'commitment_cancelled'
++      && String((record.payload as Record<string, unknown>).commitmentId) === commitmentId);
++    if (!heard) return null;
++    const event: CommitmentEvent = { type: 'commitment_cancelled', commitmentId,
++      revision: commitment.revision, at: this.session.world.simTime,
++      actorId: commitment.promisorId,
++      payload: { fromId: commitment.beneficiaryId, toId: commitment.promisorId,
++        text: options.text ?? '玩家当面说已经取消了',
++        relayedBy: options.tellerId, originalEventId: heard.sourceEventIds[0] ?? '' } };
++    const told = this.session.ingestCommitmentEvent(event, { audience: options.audience,
++      source: 'player_statement', authority: 'npc', speakerId: options.tellerId });
++    return { commitment, told, event };
++  }
++
+   /** The promisor exits explicitly; the relation moves on this evidence. */
+   withdrawCommitment(commitmentId: string, options: { inputId?: string;
+     reason?: string } = {}): { commitment: Commitment; event: CommitmentEvent } {
+diff --git a/src/planning/commands.ts b/src/planning/commands.ts
+index 7c78c25..1b3a1be 100644
+--- a/src/planning/commands.ts
++++ b/src/planning/commands.ts
+@@ -23,7 +23,18 @@ export function candidateCommand(candidate: Candidate, actorId: string, commandI
+     case 'eat': return { commandId, type: 'eat', actorId, amount: Number(parameters.amount ?? 1) };
+     case 'refuel': return { commandId, type: 'refuel', actorId, amount: Number(parameters.amount ?? 1) };
+     case 'rest': return { commandId, type: 'rest', actorId, minutes: Number(parameters.minutes ?? 60) };
+-    case 'work': return { commandId, type: 'work', actorId, minutes: Number(parameters.minutes ?? 60) };
++    case 'work': {
++      // The original five non-resource tasks share the `work` primitive; the
++      // mode is part of the authoritative command, never a rendering hint.
++      const mode = parameters.mode;
++      if (mode !== undefined && (typeof mode !== 'string'
++        || !['power', 'explore', 'morale', 'coordinate', 'order', 'scout'].includes(mode))) {
++        throw new UnsupportedActionError(candidate.id, `work mode:${String(mode)}`);
++      }
++      return { commandId, type: 'work', actorId, minutes: Number(parameters.minutes ?? 60),
++        ...(mode ? { mode: mode as 'power' | 'explore' | 'morale' | 'coordinate' | 'order' | 'scout' }
++          : {}) };
++    }
+     case 'gather': {
+       const resource = parameters.resource;
+       if (resource !== 'food' && resource !== 'firewood') {
+diff --git a/src/r7/agency/options.ts b/src/r7/agency/options.ts
+index bd5669e..bccc702 100644
+--- a/src/r7/agency/options.ts
++++ b/src/r7/agency/options.ts
+@@ -11,7 +11,8 @@
+  *  - ids are opaque handles for mapping only, never training features.
+  */
+ import { canonicalJson, sha256Hex, type Candidate } from '../../decision/contracts';
+-import { TASK_CATALOG, WORK_RULES, type TaskTypeId } from '../domains/tasks/index';
++import { TASK_CATALOG, WORK_RULES, WORK_MODE_PLACE,
++  type TaskTypeId } from '../domains/tasks/index';
+ 
+ export interface AgencyView {
+   actorId: string;
+@@ -75,15 +76,21 @@ export interface OptionBuild {
+   notesUsed: string[];
+ }
+ 
+-/** Where each task's work has to happen. */
++/**
++ * Where each task's work has to happen (the original `targetLocation`). The
++ * five non-resource tasks used to be place-free (or `workshop`), which let a
++ * resident do dormitory morale work from the warehouse; they now carry the
++ * real room, and the authority enforces the same table.
++ */
+ export const PLACE_FOR_TASK: Record<string, string | null> = {
+   COLLECT_FOOD: 'village', COLLECT_WOOD: 'village', SCOUT_RUINS: 'village',
+-  MAINTAIN_POWER: 'workshop', COLLECT_MATERIAL: 'workshop',
++  MAINTAIN_POWER: 'workshop', COLLECT_MATERIAL: 'village',
+   PREPARE_WARMTH: 'workshop', PREPARE_MEDICAL: 'medical',
+   DISTRIBUTE_FOOD: 'warehouse',
+   BUILD_GENERATOR: 'workshop', BUILD_LUMBER_MILL: 'workshop',
+   BUILD_FOOD_COLLECTOR: 'workshop',
+-  BOOST_MORALE: null, COORDINATE: null, MAINTAIN_ORDER: null, REST_RECOVER: null,
++  BOOST_MORALE: 'dorm-a', COORDINATE: 'dorm-a', MAINTAIN_ORDER: 'dorm-a',
++  REST_RECOVER: null,
+ };
+ 
+ export const MAX_OPTIONS = 8;
+@@ -109,7 +116,8 @@ export function taskBindingOfCandidate(entry: Candidate): {
+     ? action === 'build-machine' && entry.parameters.machine === definition.builds
+     : type === 'DISTRIBUTE_FOOD' ? action === 'deposit' || action === 'deliver'
+       : rule !== null && action === rule.action
+-        && (!rule.resource || entry.parameters.resource === rule.resource);
++        && (!rule.resource || entry.parameters.resource === rule.resource)
++        && (!rule.mode || entry.parameters.mode === rule.mode);
+   if (!matches) return null;
+   return { taskId, type, evidenceClass: WORK_PROXY_TASKS.has(type) ? 'work-proxy' : 'task-primitive' };
+ }
+@@ -261,12 +269,39 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
+       case 'COORDINATE':
+       case 'MAINTAIN_ORDER':
+       case 'SCOUT_RUINS':
+-      case 'COLLECT_MATERIAL':
+-        candidates.push(candidate('work', `按分工执行${task.type}`, { minutes: 40 },
+-          ['stamina > 10'], { power: 6, stamina: -10 }));
++      case 'COLLECT_MATERIAL': {
++        // Real original semantics, not a generic power shift: the candidate
++        // names the work mode, the real duration and the effect it will cause.
++        const rule = WORK_RULES[task.type as TaskTypeId]!;
++        const definition = TASK_CATALOG[task.type as TaskTypeId];
++        const mode = rule.mode!;
++        // The site is visible to the actor, so an impossible instant action is
++        // never offered: walking there is the offered option instead (the
++        // executor would refuse it anyway, but the model should not be invited
++        // to spend an hour on a doomed command).
++        const required = WORK_MODE_PLACE[mode];
++        if (npc.location !== required) {
++          rules.push(`task.work-place-blocked:${task.type}@${required}`);
++          break;
++        }
++        const text: Record<string, string> = {
++          morale: '在宿舍唱歌鼓舞士气', coordinate: '在宿舍统筹协调、安抚同屋',
++          order: '在宿舍维持秩序、调解冲突', scout: '深入废墟侦察稀有物资',
++          explore: '去废墟探索可用物资',
++        };
++        const expected: Record<string, number> = mode === 'morale'
++          ? { sanityOthers: 36, sanity: 5 }
++          : mode === 'coordinate' ? { sanityOthers: 36, sanity: 5 }
++            : mode === 'order' ? { sanityOthers: 54, sanity: 5 }
++              : mode === 'scout' ? { sanity: 5, scoutRolls: definition.minutes }
++                : { sanity: 5 };
++        candidates.push(candidate('work', text[mode] ?? `按分工执行${task.type}`,
++          { minutes: definition.minutes, mode }, [`stamina > ${Math.max(10, definition.staminaCost)}`],
++          expected));
+         rules.push('task.work');
+         rules.push(`task.work-proxy:${task.type}`);
+         break;
++      }
+       case 'REST_RECOVER':
+         candidates.push(candidate('rest', '按分工休息恢复', { minutes: 60 },
+           ['awake'], { stamina: 20 }));
+diff --git a/src/r7/domains/tasks/index.ts b/src/r7/domains/tasks/index.ts
+index 22ed5e6..31ff6c8 100644
+--- a/src/r7/domains/tasks/index.ts
++++ b/src/r7/domains/tasks/index.ts
+@@ -12,6 +12,10 @@
+  */
+ import type { DomainCommand, DomainModule, DomainResult, ResourceId } from '../../contracts';
+ import { emptyResult } from '../../contracts';
++import { WORK_MODE_PLACE, type WorkMode } from '../../../survival/world-v2';
++
++export type { WorkMode };
++export { WORK_MODE_PLACE };
+ 
+ export type TaskTypeId =
+   | 'COLLECT_WOOD' | 'COLLECT_FOOD' | 'MAINTAIN_POWER' | 'COLLECT_MATERIAL'
+@@ -32,7 +36,13 @@ export interface TaskDefinition {
+   dailyLimit?: number;
+ }
+ 
+-/** `task-system.js:39-190`; baseYield / duration / stamina cost kept verbatim. */
++/**
++ * `task-system.js:39-190`; baseYield / duration / stamina cost kept verbatim.
++ * The five work-proxy rows carry the original `baseDuration` in minutes
++ * (3600s explore/coordinate/order, 1800s morale, 2400s scout) and the original
++ * `staminaCost`; their `place` is the original `targetLocation`, so the
++ * authority can demand the real work site instead of any indoor room.
++ */
+ export const TASK_CATALOG: Record<TaskTypeId, TaskDefinition> = {
+   COLLECT_WOOD: { id: 'COLLECT_WOOD', name: '🪵 收集木柴', minutes: 30,
+     staminaCost: 15, place: 'lumber_camp', yields: { resource: 'firewood', amount: 10 } },
+@@ -40,24 +50,24 @@ export const TASK_CATALOG: Record<TaskTypeId, TaskDefinition> = {
+     staminaCost: 12, place: 'frozen_lake', yields: { resource: 'food', amount: 8 } },
+   MAINTAIN_POWER: { id: 'MAINTAIN_POWER', name: '⚡ 维护电力', minutes: 40,
+     staminaCost: 10, place: 'workshop_door', yields: { resource: 'power', amount: 15 } },
+-  COLLECT_MATERIAL: { id: 'COLLECT_MATERIAL', name: '🔍 探索废墟', minutes: 45,
+-    staminaCost: 18, place: 'ruins', dailyLimit: 3 },
++  COLLECT_MATERIAL: { id: 'COLLECT_MATERIAL', name: '🔍 探索废墟', minutes: 60,
++    staminaCost: 18, place: 'ruins_site', dailyLimit: 3 },
+   PREPARE_WARMTH: { id: 'PREPARE_WARMTH', name: '🧥 准备御寒物资', minutes: 30,
+     staminaCost: 8, place: 'workshop' },
+   PREPARE_MEDICAL: { id: 'PREPARE_MEDICAL', name: '💊 医疗救治', minutes: 40,
+     staminaCost: 10, place: 'medical' },
+   BOOST_MORALE: { id: 'BOOST_MORALE', name: '🎵 鼓舞士气', minutes: 30,
+-    staminaCost: 5, place: 'command' },
+-  COORDINATE: { id: 'COORDINATE', name: '📢 统筹协调', minutes: 30,
+-    staminaCost: 5, place: 'command' },
++    staminaCost: 8, place: 'dorm_a_door' },
++  COORDINATE: { id: 'COORDINATE', name: '📢 统筹协调', minutes: 60,
++    staminaCost: 5, place: 'dorm_a_door' },
+   DISTRIBUTE_FOOD: { id: 'DISTRIBUTE_FOOD', name: '🍲 分配食物', minutes: 20,
+     staminaCost: 5, place: 'kitchen' },
+-  MAINTAIN_ORDER: { id: 'MAINTAIN_ORDER', name: '🛡️ 维持秩序', minutes: 40,
+-    staminaCost: 10, place: 'village' },
++  MAINTAIN_ORDER: { id: 'MAINTAIN_ORDER', name: '🛡️ 维持秩序', minutes: 60,
++    staminaCost: 5, place: 'dorm_a_door' },
+   REST_RECOVER: { id: 'REST_RECOVER', name: '🛏️ 休息恢复', minutes: 60,
+     staminaCost: -20, place: 'dorm' },
+-  SCOUT_RUINS: { id: 'SCOUT_RUINS', name: '🔍 废墟侦察', minutes: 45,
+-    staminaCost: 15, place: 'ruins' },
++  SCOUT_RUINS: { id: 'SCOUT_RUINS', name: '🔍 废墟侦察', minutes: 40,
++    staminaCost: 20, place: 'ruins_site' },
+   BUILD_GENERATOR: { id: 'BUILD_GENERATOR', name: '⚡ 建造自动发电机', minutes: 240,
+     staminaCost: 20, place: 'workshop', builds: 'generator' },
+   BUILD_LUMBER_MILL: { id: 'BUILD_LUMBER_MILL', name: '🪵 建造自动伐木机', minutes: 300,
+@@ -90,9 +100,14 @@ export const RECEIPT_TYPES: Record<TaskTypeId, string[]> = {
+   BUILD_FOOD_COLLECTOR: ['machine_built'],
+ };
+ 
+-/** The work a task actually performs; resources come from this, not the close. */
++/**
++ * The work a task actually performs; resources come from this, not the close.
++ * The five non-resource tasks carry the original `task-effects.js` mode, so a
++ * power repair can never close a morale task.
++ */
+ export interface WorkRule {
+   action: 'gather' | 'work' | 'refuel' | 'medical' | 'deposit' | 'rest';
++  mode?: WorkMode;
+   resource?: 'food' | 'firewood';
+   amount?: number;
+   minutes?: number;
+@@ -101,21 +116,47 @@ export interface WorkRule {
+ export const WORK_RULES: Record<TaskTypeId, WorkRule | null> = {
+   COLLECT_WOOD: { action: 'gather', resource: 'firewood', amount: 2 },
+   COLLECT_FOOD: { action: 'gather', resource: 'food', amount: 2 },
+-  MAINTAIN_POWER: { action: 'work', minutes: 40 },
+-  COLLECT_MATERIAL: { action: 'work', minutes: 45 },
++  MAINTAIN_POWER: { action: 'work', mode: 'power', minutes: 40 },
++  COLLECT_MATERIAL: { action: 'work', mode: 'explore', minutes: 60 },
+   PREPARE_WARMTH: { action: 'refuel', amount: 2 },
+   PREPARE_MEDICAL: { action: 'medical', amount: 1 },
+-  BOOST_MORALE: { action: 'work', minutes: 30 },
+-  COORDINATE: { action: 'work', minutes: 30 },
++  BOOST_MORALE: { action: 'work', mode: 'morale', minutes: 30 },
++  COORDINATE: { action: 'work', mode: 'coordinate', minutes: 60 },
+   DISTRIBUTE_FOOD: { action: 'deposit', amount: 1 },
+-  MAINTAIN_ORDER: { action: 'work', minutes: 40 },
++  MAINTAIN_ORDER: { action: 'work', mode: 'order', minutes: 60 },
+   REST_RECOVER: { action: 'rest', minutes: 60 },
+-  SCOUT_RUINS: { action: 'work', minutes: 45 },
++  SCOUT_RUINS: { action: 'work', mode: 'scout', minutes: 40 },
+   BUILD_GENERATOR: null,
+   BUILD_LUMBER_MILL: null,
+   BUILD_FOOD_COLLECTOR: null,
+ };
+ 
++/** work mode -> the task it discharges (the authority's completion mapping). */
++export const WORK_MODE_TASK: Record<WorkMode, TaskTypeId> = {
++  power: 'MAINTAIN_POWER', explore: 'COLLECT_MATERIAL', morale: 'BOOST_MORALE',
++  coordinate: 'COORDINATE', order: 'MAINTAIN_ORDER', scout: 'SCOUT_RUINS',
++};
++
++/**
++ * The ONE place gate shared by the step executor and the agency layer. A
++ * command that spends time at the wrong site is refused before the clock or a
++ * resource moves; the candidate layer only proposes the walk to the right site.
++ */
++export function requiredPlaceOf(action: string, parameters: Record<string, unknown> = {}):
++  string | null {
++  switch (action) {
++    case 'gather': return 'village';
++    case 'work': {
++      const mode = String(parameters.mode ?? 'power') as WorkMode;
++      return WORK_MODE_PLACE[mode] ?? 'workshop';
++    }
++    case 'medical': return 'medical';
++    case 'deposit': return 'warehouse';
++    case 'deliver': return 'kitchen';
++    default: return null;
++  }
++}
++
+ export function receiptTypesFor(type: TaskTypeId): string[] {
+   return RECEIPT_TYPES[type] ?? [];
+ }
+@@ -130,6 +171,8 @@ export interface TaskGoal {
+   amount?: number;
+   /** The place/object the receipt must name. */
+   place?: 'warehouse' | 'kitchen';
++  /** The work mode the receipt must prove (the five non-resource tasks). */
++  mode?: WorkMode;
+ }
+ 
+ export interface TaskRecord {
+@@ -158,20 +201,26 @@ export interface TasksState {
+   usedReceipts: string[];
+ }
+ 
+-/** The goal each type must really reach; social types state their own effect. */
++/**
++ * The goal each type must really reach. The five non-resource tasks are not
++ * closed by a generic `worked` receipt: the receipt must carry the original
++ * work mode, which is the committed proof that the right work happened.
++ * (`COLLECT_MATERIAL` used to demand `power`; the original `explore` source
++ * yields no public resource, so that goal was never the real one.)
++ */
+ export const TASK_GOALS: Record<TaskTypeId, TaskGoal> = {
+   COLLECT_WOOD: { resource: 'firewood', amount: 1 },
+   COLLECT_FOOD: { resource: 'food', amount: 1 },
+   MAINTAIN_POWER: { resource: 'power', amount: 1 },
+-  COLLECT_MATERIAL: { resource: 'power', amount: 1 },
++  COLLECT_MATERIAL: { mode: 'explore', amount: 1 },
+   PREPARE_WARMTH: { amount: 1 },
+   PREPARE_MEDICAL: { amount: 1 },
+-  BOOST_MORALE: {},
+-  COORDINATE: {},
++  BOOST_MORALE: { mode: 'morale' },
++  COORDINATE: { mode: 'coordinate' },
+   DISTRIBUTE_FOOD: { place: 'warehouse', amount: 1 },
+-  MAINTAIN_ORDER: {},
++  MAINTAIN_ORDER: { mode: 'order' },
+   REST_RECOVER: {},
+-  SCOUT_RUINS: {},
++  SCOUT_RUINS: { mode: 'scout' },
+   BUILD_GENERATOR: {},
+   BUILD_LUMBER_MILL: {},
+   BUILD_FOOD_COLLECTOR: {},
+@@ -394,6 +443,23 @@ export const tasksDomain: DomainModule<TasksState> = {
+           return result;
+         }
+       }
++      // The five non-resource tasks are proven by the real work mode the
++      // receipt carries (morale/coordinate/order/explore/scout), not by any
++      // `worked` event: a power repair stays a power repair.
++      if (goal.mode) {
++        if (payload.mode !== goal.mode) {
++          result.rejections.push({ intentId: `tasks:${taskId}:complete`,
++            code: 'receipt_goal_mode_mismatch',
++            reason: `${task.type} needs work mode ${goal.mode}, receipt is ${String(payload.mode)}` });
++          return result;
++        }
++        if (goal.amount !== undefined && !(Number(payload.amount ?? 0) >= goal.amount)) {
++          result.rejections.push({ intentId: `tasks:${taskId}:complete`,
++            code: 'receipt_goal_amount',
++            reason: `amount ${String(payload.amount)} < ${goal.amount}` });
++          return result;
++        }
++      }
+       next.usedReceipts.push(receiptId);
+       if (definition.builds) {
+         const machineState = context.snapshot.machines[definition.builds];
+diff --git a/src/r7/integration/commitment-bridge.ts b/src/r7/integration/commitment-bridge.ts
+index 55f4dd2..3073de9 100644
+--- a/src/r7/integration/commitment-bridge.ts
++++ b/src/r7/integration/commitment-bridge.ts
+@@ -49,12 +49,40 @@ function option(commitment: Commitment, task: GameplayTask, action: string,
+     description, parameters: bound, preconditions, expectedEffects: {}, utilityComponents: {} };
+ }
+ 
++/** The terminal kinds a promisor can only know because it was told. */
++const TERMINAL_KINDS = ['commitment_cancelled', 'commitment_declined',
++  'commitment_withdrawn', 'commitment_fulfilled'];
++
++/**
++ * Did THIS actor hear the event that ended the commitment? A terminal ledger
++ * row is world truth; without its own record the actor still believes the
++ * promise is alive and keeps working — that is the unheard-cancellation case,
++ * not a bug to be papered over by reading the truth.
++ */
++function heardTerminal(runtime: R8Runtime, actorId: string,
++  commitment: Commitment): boolean {
++  const records = runtime.session.memories.get(actorId)?.toJSON().records ?? [];
++  return records.some(record => record.observerId === actorId
++    && TERMINAL_KINDS.includes(record.kind)
++    && String((record.payload as Record<string, unknown>).commitmentId) === commitment.commitmentId
++    && Number((record.payload as Record<string, unknown>).revision ?? -1) === commitment.revision);
++}
++
+ export function createCommitmentBridge(runtime: R8Runtime, play: GameplayLoop): CommitmentGoalBridge {
+   if (runtime.session !== play.session) throw new Error('commitment bridge requires one shared session');
++  /**
++   * The actor's own view of its commitments: a terminal row it never heard
++   * still counts as live, and is marked so the candidate path cannot settle it.
++   */
+   const rows = (actorId: string) => play.commitments.all()
+     .filter(row => row.promisorId === actorId
+-      && ['deliver-meal', 'supply-warehouse'].includes(row.goal) && !isTerminal(row.status))
+-    .sort((a, b) => a.createdAt - b.createdAt || a.commitmentId.localeCompare(b.commitmentId));
++      && ['deliver-meal', 'supply-warehouse'].includes(row.goal))
++    // Every row stays visible: a heard terminal is reported as terminal, an
++    // unheard one as the still-live state this actor believes in.
++    .map(row => ({ row, unheardTerminal: isTerminal(row.status)
++      && !heardTerminal(runtime, actorId, row) }))
++    .sort((a, b) => a.row.createdAt - b.row.createdAt
++      || a.row.commitmentId.localeCompare(b.row.commitmentId));
+ 
+   const binding = (actorId: string, candidate: Candidate) => {
+     const p = candidate.parameters;
+@@ -69,8 +97,10 @@ export function createCommitmentBridge(runtime: R8Runtime, play: GameplayLoop):
+   };
+ 
+   const proposeShortage = (commitment: Commitment, eventIds: string[]) => {
++    // One source proposal per commitment, ever: a rejected proposal is the
++    // beneficiary's explicit answer ("按原约定"), not an invitation to re-ask.
+     if (commitment.status !== 'active' || commitment.goal !== 'deliver-meal'
+-      || commitment.changes.some(change => change.kind === 'alt-source' && change.status !== 'rejected')) return;
++      || commitment.changes.some(change => change.kind === 'alt-source')) return;
+     const result = play.commitments.proposeChange(commitment.commitmentId, {
+       kind: 'alt-source', reason: 'warehouse-empty',
+       terms: { source: 'gather', reason: '亲见仓库缺货，我采集后补仓，再把饭送来' },
+@@ -82,15 +112,27 @@ export function createCommitmentBridge(runtime: R8Runtime, play: GameplayLoop):
+     view(actorId) {
+       const npc = runtime.world.npcs[actorId];
+       const goals: unknown[] = [], candidates: Candidate[] = [];
+-      for (const commitment of rows(actorId)) {
++      for (const { row: commitment, unheardTerminal } of rows(actorId)) {
+         const task = commitment.taskId ? play.board.find(commitment.taskId) : undefined;
+-        const ready = Boolean(npc?.alive && task?.status === 'active'
+-          && task.commitmentId === commitment.commitmentId && task.actorId === actorId
+-          && commitment.status === 'active' && resumeReady(npc, commitment));
++        // While a change is pending the promisor is NOT working under the new
++        // terms: only the originally agreed path may be offered.
++        const pendingChange = commitment.status === 'pending-change';
++        const lastKnownActive = commitment.status === 'active' || pendingChange || unheardTerminal;
++        const taskUsable = unheardTerminal
++          ? task !== undefined
++          : task?.status === 'active' && task.commitmentId === commitment.commitmentId
++            && task.actorId === actorId;
++        const ready = Boolean(npc?.alive && taskUsable && lastKnownActive
++          && resumeReady(npc, commitment));
+         goals.push({ source: 'legacy-commitment', taskId: commitment.taskId,
+           legacyTaskId: commitment.taskId, commitmentId: commitment.commitmentId,
+           revision: commitment.revision, type: commitment.goal === 'deliver-meal' ? 'DELIVER_MEAL' : 'SUPPLY_WAREHOUSE',
+-          status: commitment.status, taskStatus: task?.status ?? 'missing', ready,
++          // The status this actor can actually establish. `observedTerminal`
++          // says whether the engine truth is inside its own memory.
++          status: unheardTerminal ? 'active' : commitment.status,
++          observedTerminal: !unheardTerminal,
++          belief: unheardTerminal ? 'unheard-cancellation' : 'observed',
++          taskStatus: unheardTerminal ? 'active' : task?.status ?? 'missing', ready,
+           conditions: [...commitment.conditions], deadline: commitment.deadline,
+           beneficiaryId: commitment.beneficiaryId });
+         if (!ready || !task || !npc) continue;
+@@ -115,12 +157,30 @@ export function createCommitmentBridge(runtime: R8Runtime, play: GameplayLoop):
+         }
+         const alternative = commitment.changes.some(change => change.kind === 'alt-source'
+           && change.status === 'accepted' && change.terms.source === 'gather');
++        const rejectedAlternative = commitment.changes.some(change =>
++          change.kind === 'alt-source' && change.status === 'rejected');
+         if (stock === 0 && !alternative) {
++          if (pendingChange) {
++            // The proposal is already open and unanswered: never act on the
++            // un-agreed source, and never re-run the withdraw that just failed
++            // (a second identical out_of_stock is a repeated invalid action).
++            candidates.push(make('report-delay', '改源答复未到，说明现状并等待，不再空取',
++              { note: 'await-change-answer', bridgeStep: 'await-answer' }));
++            continue;
++          }
++          if (rejectedAlternative) {
++            // The beneficiary refused the new source: stay on the original
++            // terms, report the shortage, and do not spend another attempt on
++            // a withdrawal that is known to fail.
++            candidates.push(make('report-delay', '按原约定等待补货，并说明当前无法取餐',
++              { note: 'rejected-source-shortage', bridgeStep: 'rejected-source-shortage' }));
++            continue;
++          }
+           candidates.push(make('report-delay', '说明亲见缺货，提议改为采集后送饭，等待玩家同意',
+             { note: 'warehouse-empty', bridgeStep: 'propose-alt-source' }));
+           continue;
+         }
+-        if (alternative) {
++        if (alternative && !pendingChange) {
+           const last = progressEvents(runtime, commitment).filter(event =>
+             ['gathered', 'stock_deposited', 'stock_withdrawn', 'out_of_stock'].includes(event!.type)).at(-1);
+           if (!last || !['gathered', 'stock_deposited'].includes(last.type)) {
+diff --git a/src/r7/integration/runtime.ts b/src/r7/integration/runtime.ts
+index e93bf93..d6835d4 100644
+--- a/src/r7/integration/runtime.ts
++++ b/src/r7/integration/runtime.ts
+@@ -18,7 +18,7 @@ import {
+ import { commitIntents, ensureR8, snapshotOf } from './intents';
+ import { survivalDomain, type SurvivalState } from '../domains/survival/index';
+ import { productionDomain, type ProductionState } from '../domains/production/index';
+-import { tasksDomain, type TasksState } from '../domains/tasks/index';
++import { tasksDomain, WORK_MODE_TASK, type TasksState, type WorkMode } from '../domains/tasks/index';
+ import { councilDomain, type CouncilState } from '../domains/council/index';
+ import { crisesDomain, type CrisesState } from '../domains/crises/index';
+ import { lifeDomain, type LifeState } from '../domains/life/index';
+@@ -108,13 +108,20 @@ export function boundariesBetween(profile: TimeProfile, from: number, to: number
+   return [...points].sort((left, right) => left - right);
+ }
+ 
+-/** Which task an action discharges, for closure on the real receipt. */
++/**
++ * Which task an action discharges, for closure on the real receipt. The work
++ * mode decides the five non-resource tasks; a caller-supplied `taskType` is
++ * never trusted here, so a power receipt cannot close a morale task.
++ */
+ function workTaskType(candidate: { parameters: Record<string, unknown> }): string | null {
+   const action = String(candidate.parameters.action ?? '');
+   if (action === 'gather') {
+     return candidate.parameters.resource === 'food' ? 'COLLECT_FOOD' : 'COLLECT_WOOD';
+   }
+-  if (action === 'work') return 'MAINTAIN_POWER';
++  if (action === 'work') {
++    const mode = String(candidate.parameters.mode ?? 'power') as WorkMode;
++    return WORK_MODE_TASK[mode] ?? 'MAINTAIN_POWER';
++  }
+   if (action === 'rest') return 'REST_RECOVER';
+   if (action === 'medical') return 'PREPARE_MEDICAL';
+   if (action === 'refuel') return 'PREPARE_WARMTH';
+@@ -133,6 +140,14 @@ export class R8Runtime {
+   endingKind: string | null = null;
+   /** Occupancy: one work item per actor; several actors overlap in time. */
+   readonly work = new Map<string, WorkItem>();
++  /**
++   * Per-command settlement hooks. An occupied action has no immediate receipt,
++   * so the entry that started it registers here how to learn about the real
++   * one (the commitment bridge must fulfil on the committed receipt, not on the
++   * intent). Hooks are process-local and re-registered by whoever starts work.
++   */
++  private readonly settleHooks = new Map<string, (actorId: string,
++    candidate: import('../../decision/contracts').Candidate, eventIds: string[]) => void>();
+   /** Completed work items, in commit order (evidence for the time story). */
+   readonly workLog: { actorId: string; kind: string; startedAt: number; endsAt: number;
+     status: string; eventIds: string[] }[] = [];
+@@ -417,6 +432,12 @@ export class R8Runtime {
+     return this.work.get(actorId)?.endsAt ?? null;
+   }
+ 
++  /** Register the one settlement hook for a started work command. */
++  onWorkSettled(commandId: string, hook: (actorId: string,
++    candidate: import('../../decision/contracts').Candidate, eventIds: string[]) => void): void {
++    this.settleHooks.set(commandId, hook);
++  }
++
+   /**
+    * Complete every work item the committed clock has passed. Called by
+    * advanceWorld only, so CLI, web and the four-day runner finish work at the
+@@ -438,6 +459,15 @@ export class R8Runtime {
+       } catch (error) {
+         status = `error:${(error as Error).message}`;
+       }
++      const hook = this.settleHooks.get(item.commandId);
++      this.settleHooks.delete(item.commandId);
++      if (hook && status === 'applied' && eventIds.length > 0) {
++        try {
++          hook(item.actorId, item.candidate, eventIds);
++        } catch (error) {
++          status = `hook_error:${(error as Error).message}`;
++        }
++      }
+       // A finished work item closes its own task on its own receipt.
+       if (status === 'applied' && eventIds.length > 0) {
+         const type = workTaskType(item.candidate);
+diff --git a/src/r7/integration/step-goal-binding.test.ts b/src/r7/integration/step-goal-binding.test.ts
+index 4a41992..d20e349 100644
+--- a/src/r7/integration/step-goal-binding.test.ts
++++ b/src/r7/integration/step-goal-binding.test.ts
+@@ -5,7 +5,7 @@ import { runStep, closeTaskOnReceipt } from './step';
+ import { makeChoiceResult, type ChoiceRequest, type Candidate } from '../../decision/contracts';
+ import { referenceAgencyScorer, referenceUtility, referenceUtilityWithGoals } from '../agency/reference';
+ import { taskBindingOfCandidate, WORK_PROXY_TASKS } from '../agency/options';
+-import type { TaskTypeId } from '../domains/tasks/index';
++import { WORK_RULES, WORK_MODE_PLACE, type TaskTypeId } from '../domains/tasks/index';
+ 
+ function assign(runtime: R8Runtime, type: TaskTypeId) {
+   const actor = runtime.context().actorIds[0];
+@@ -63,17 +63,25 @@ test('terminal tasks disappear from goals and cannot confer a reference obligati
+   assert.equal(referenceUtilityWithGoals(activeCandidate, terminalRequest), referenceUtility(activeCandidate, terminalRequest));
+ });
+ 
+-for (const type of WORK_PROXY_TASKS) test(`${type} closes only its explicitly bound existing worked-receipt contract; proxy is marked`, async () => {
++for (const type of WORK_PROXY_TASKS) test(`${type} closes only its explicitly bound worked receipt at its real work mode; proxy is marked`, async () => {
+   const runtime = R8Runtime.create({ seed: `work-proxy-${type}` });
+   const taskId = assign(runtime, type);
++  const rule = WORK_RULES[type]!;
++  const place = WORK_MODE_PLACE[rule.mode!];
++  if (runtime.world.npcs['npc_01'].location !== place) {
++    runtime.session.submitWorldCommand({ commandId: `walk-${type}`, type: 'move',
++      actorId: 'npc_01', to: place as never });
++  }
+   const result = await runStep(runtime, forced(request => request.candidates.find(row => row.parameters.taskId === taskId)), { actorIds: ['npc_01'] });
+-  assert.equal(result.executed, 1);
+-  assert.equal(result.records[0].taskCompleted, taskId);
+-  assert.equal(result.records[0].taskCompletionEvidence, 'work-proxy');
+-  const receipts = result.records[0].eventIds.map(id => runtime.committedEvent(id)!);
+-  assert.ok(receipts.some(row => row.type === 'worked'));
++  // R9: the work occupies its actor and settles on the authoritative clock.
++  assert.equal(result.records[0].executionStatus, 'working');
++  runtime.advanceWorld(runtime.busyUntil('npc_01')!);
++  const task = runtime.states.tasks.tasks.find(row => row.taskId === taskId)!;
++  assert.equal(task.status, 'done');
++  const receipts = runtime.committedEvents().filter(row => row.actorId === 'npc_01');
++  const worked = receipts.find(row => row.type === 'worked')!;
++  assert.equal(worked.payload.mode, rule.mode);
+   assert.equal(receipts.some(row => ['scouted', 'morale_boosted', 'materials_collected'].includes(row.type)), false);
+-  assert.equal(runtime.states.tasks.tasks.find(row => row.taskId === taskId)!.status, 'done');
+ });
+ 
+ test('a forged task type cannot bind the wrong execution primitive or reuse an earlier receipt', async () => {
+diff --git a/src/r7/integration/step.ts b/src/r7/integration/step.ts
+index b6823a0..18f5664 100644
+--- a/src/r7/integration/step.ts
++++ b/src/r7/integration/step.ts
+@@ -14,7 +14,7 @@ import type { ScorePort } from '../contracts';
+ import { applicableNotes, buildActionOptions, taskBindingOfCandidate,
+   type MemoryPolicyId, type ExperienceNote } from '../agency/options';
+ import { renderRequest } from '../jev/render';
+-import { TASK_CATALOG, receiptTypesFor } from '../domains/tasks/index';
++import { TASK_CATALOG, receiptTypesFor, requiredPlaceOf } from '../domains/tasks/index';
+ import type { R8Runtime } from './runtime';
+ 
+ export interface StepOptions {
+@@ -22,6 +22,11 @@ export interface StepOptions {
+   actorIds?: string[];
+   expectedGenerations?: Record<string, number>;
+   memoryPolicy?: MemoryPolicyId;
++  /**
++   * How the bounded memory of the actor is filled. Both arms keep the same
++   * count/token budget; `raw-last12` is the frozen control.
++   */
++  memorySelection?: MemorySelection;
+   mode?: 'reference' | 'jev-experimental' | 'jev-admitted';
+   /** Conditional notes per actor; empty by default. */
+   notes?: (actorId: string) => ExperienceNote[];
+@@ -52,6 +57,11 @@ export interface StepRecord {
+   eventIds: string[];
+   taskCompleted: string | null;
+   taskCompletionEvidence?: 'task-primitive' | 'work-proxy' | null;
++  /** Which bounded-memory arm filled this input, and how big it really was. */
++  memorySelection?: MemorySelection;
++  memoryKept?: number;
++  memoryDropped?: number;
++  memoryBytes?: number;
+   worldVersion: number;
+ }
+ 
+@@ -141,17 +151,54 @@ export function notesFor(runtime: R8Runtime, actorId: string): ExperienceNote[]
+   return notes;
+ }
+ 
++/**
++ * How the bounded memory window is filled. `raw-last12` is the frozen control
++ * (newest twelve records, whatever they are); `obligation-first` keeps the same
++ * count/token budget but prefers what governs the next action: the current
++ * obligation, an authorized change, and a changed condition.
++ */
++export type MemorySelection = 'raw-last12' | 'obligation-first';
++
++const MEMORY_PRIORITY: Record<string, number> = {
++  task_proposed: 100, task_accepted: 100, task_reassigned: 100, task_countered: 100,
++  commitment_proposed: 100, commitment_accepted: 100, commitment_change_proposed: 100,
++  commitment_change_accepted: 90, commitment_change_rejected: 90, commitment_resumed: 90,
++  out_of_stock: 80, stock_restocked: 80, stock_deposited: 80, stock_withdrawn: 80,
++  warehouse_stock_observed: 80, restock_rumor: 80, commitment_cancelled: 80,
++  commitment_withdrawn: 80, commitment_fulfilled: 80, commitment_declined: 80,
++  promise_kept: 70, promise_broken: 70, task_vacated: 70, commitment_action_committed: 70,
++};
++
++/** Priority of one record for the next decision; ties break on recency. */
++export function memoryPriority(kind: string): number {
++  return MEMORY_PRIORITY[kind] ?? 10;
++}
++
+ /**
+  * The actor's own visible memory, bounded. `memoryFacts` used to be empty, which
+  * meant the model never saw a single promise or relationship; it now carries the
+- * actor's own records only.
++ * actor's own records only. Selection is explicit so the raw window stays a
++ * real control arm rather than being silently replaced.
+  */
+-export function visibleMemory(runtime: R8Runtime, actorId: string, topK = 12):
+-  { facts: ObservedFact[]; relationships: unknown; truncated: boolean } {
++export function visibleMemory(runtime: R8Runtime, actorId: string, topK = 12,
++  selection: MemorySelection = 'obligation-first'):
++  { facts: ObservedFact[]; relationships: unknown; truncated: boolean;
++    selection: MemorySelection; kept: number; dropped: number; bytes: number } {
+   const store = runtime.session.memories.get(actorId);
+-  if (!store) return { facts: [], relationships: {}, truncated: false };
++  if (!store) return { facts: [], relationships: {}, truncated: false,
++    selection, kept: 0, dropped: 0, bytes: 0 };
+   const records = store.toJSON().records.filter(record => record.observerId === actorId);
+-  const facts: ObservedFact[] = records.slice(-topK).map(record => ({
++  // Same budget (same number of facts) for both arms: only the choice differs.
++  const chosen = selection === 'raw-last12'
++    ? records.slice(-topK).map((record, index) => ({ record,
++      index: Math.max(0, records.length - topK) + index }))
++    : records.map((record, index) => ({ record, index }))
++      .sort((left, right) => memoryPriority(right.record.kind) - memoryPriority(left.record.kind)
++        || right.index - left.index
++        || left.record.recordId.localeCompare(right.record.recordId))
++      .slice(0, topK)
++      .sort((left, right) => left.index - right.index);
++  const facts: ObservedFact[] = chosen.map(({ record }) => ({
+     eventId: record.sourceEventIds[0] ?? record.recordId,
+     observerId: actorId,
+     // When THIS actor learned it, not when the event happened.
+@@ -172,7 +219,9 @@ export function visibleMemory(runtime: R8Runtime, actorId: string, topK = 12):
+   }));
+   const knowledge = runtime.session.knowledge();
+   const relationships = knowledge[actorId] ?? { promises: [], relation: null };
+-  return { facts, relationships, truncated: records.length > facts.length };
++  return { facts, relationships, truncated: records.length > facts.length,
++    selection, kept: facts.length, dropped: Math.max(0, records.length - facts.length),
++    bytes: Buffer.byteLength(JSON.stringify(facts), 'utf8') };
+ }
+ 
+ /**
+@@ -187,12 +236,12 @@ export const ACTION_MINUTES: Record<string, number> = {
+ /**
+  * Where a real action must physically happen. The authority checks this before
+  * spending any time or resource: standing in the warehouse cannot gather wood
+- * at the lumber camp.
++ * at the lumber camp, and a `work` command carries its mode so dormitory
++ * morale work cannot be done from the workshop either. One table, shared with
++ * the candidate layer (`requiredPlaceOf`) so a proposal never promises a site
++ * the executor would refuse.
+  */
+-export const REQUIRED_PLACE: Record<string, string> = {
+-  gather: 'village', work: 'workshop', medical: 'medical',
+-  deposit: 'warehouse', deliver: 'kitchen',
+-};
++export { requiredPlaceOf } from '../domains/tasks/index';
+ 
+ export function durationOf(candidate: Candidate): number {
+   const action = String(candidate.parameters.action ?? '');
+@@ -204,17 +253,24 @@ export function durationOf(candidate: Candidate): number {
+   return ACTION_MINUTES[action] ?? 0;
+ }
+ 
++/** The one place gate: `work` resolves by its mode, never by a caller label. */
++function requiredPlace(candidate: Candidate): string | null {
++  return requiredPlaceOf(String(candidate.parameters.action ?? ''),
++    candidate.parameters as Record<string, unknown>);
++}
++
+ /** Execute one selected candidate; returns what really landed. */
+ export function executeCandidate(runtime: R8Runtime, actorId: string,
+   candidate: Candidate, commandId: string):
+   { status: string; reason: string; eventIds: string[] } {
+   const action = candidate.parameters.action;
+-  const place = REQUIRED_PLACE[String(action ?? '')];
++  const place = requiredPlace(candidate);
+   if (place) {
+     const here = runtime.world.npcs[actorId]?.location;
+     if (here !== place) {
+       return { status: 'rejected',
+-        reason: `wrong_location: ${action} needs ${place}, actor is at ${String(here)}`,
++        reason: `wrong_location: ${action}${candidate.parameters.mode
++          ? `(${String(candidate.parameters.mode)})` : ''} needs ${place}, actor is at ${String(here)}`,
+         eventIds: [] };
+     }
+   }
+@@ -329,7 +385,8 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
+       built.candidates = unique.slice(0, 8);
+     }
+     if (built.candidates.length === 0) continue;
+-    const memory = visibleMemory(runtime, actorId);
++    const memorySelection = options.memorySelection ?? 'obligation-first';
++    const memory = visibleMemory(runtime, actorId, 12, memorySelection);
+     const request = makeChoiceRequest({
+       requestId: runtime.session.nextInputId('r8-score', actorId),
+       task: 'choose_action',
+@@ -362,7 +419,7 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
+     // commit: a cancel/timeout or a newer world version voids this result.
+     const fresh = runtime.world.version === startedVersion
+       && runtime.session.generationFor(actorId) === startedGeneration
+-      && memoryHash(visibleMemory(runtime, actorId)) === startedMemory
++      && memoryHash(visibleMemory(runtime, actorId, 12, memorySelection)) === startedMemory
+       && memoryHash(options.goalBridge?.view(actorId) ?? { goals: [], candidates: [] }) === startedBridge;
+     if (!fresh) {
+       records.push({
+@@ -373,7 +430,9 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
+         candidates: [], rules: built.rules, selectedId: null,
+         disposition: 'stale', scorerId: result.scorerId, latencyMs,
+         executionStatus: 'stale', reason: 'generation_version_or_memory_changed',
+-        eventIds: [], taskCompleted: null, worldVersion: runtime.world.version,
++        eventIds: [], taskCompleted: null,
++        memorySelection, memoryKept: memory.kept, memoryDropped: memory.dropped,
++        memoryBytes: memory.bytes, worldVersion: runtime.world.version,
+       });
+       continue;
+     }
+@@ -385,7 +444,12 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
+       const minutes = durationOf(selected);
+       const commandId = `${actorId}-r8-${runtime.world.version}`;
+       if (minutes > 0) {
+-        // Occupy the actor; the effect lands when the clock reaches endsAt.
++        // Occupy the actor; the effect lands when the clock reaches endsAt, and
++        // the commitment/task side learns about it on the committed receipt.
++        if (options.goalBridge) {
++          runtime.onWorkSettled(commandId, (settledActor, settledCandidate, settledEvents) =>
++            options.goalBridge!.afterCommit(settledActor, settledCandidate, settledEvents));
++        }
+         const begun = runtime.beginWork(actorId, String(selected.parameters.action),
+           commandId, selected, minutes);
+         outcome = 'rejected' in begun
+@@ -416,6 +480,8 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
+       executionStatus: outcome.status, reason: outcome.reason,
+       eventIds: outcome.eventIds, taskCompleted,
+       taskCompletionEvidence: taskCompleted && selected ? taskBindingOfCandidate(selected)?.evidenceClass ?? null : null,
++      memorySelection, memoryKept: memory.kept, memoryDropped: memory.dropped,
++      memoryBytes: memory.bytes,
+       worldVersion: runtime.world.version,
+     });
+   }
+diff --git a/src/survival/world-v2.ts b/src/survival/world-v2.ts
+index 5cff99a..ad071fa 100644
+--- a/src/survival/world-v2.ts
++++ b/src/survival/world-v2.ts
+@@ -23,6 +23,44 @@ export const TRAVEL_STAMINA_PER_TILE = 0.08;
+ export type Weather = 'clear' | 'snow' | 'storm' | 'cold-snap';
+ export type LocationId = 'dorm-a' | 'dorm-b' | 'kitchen' | 'warehouse' | 'workshop' | 'medical' | 'command' | 'village';
+ 
++/**
++ * R9: the original splits five non-resource tasks inside
++ * `task-effects.js:_applyTaskEffect`. The executor keeps one `work` primitive
++ * and carries the mode, so the authority — not a caller's label — decides what
++ * the work produces and where it may happen.
++ */
++export const WORK_MODES = ['power', 'explore', 'morale', 'coordinate', 'order', 'scout'] as const;
++export type WorkMode = (typeof WORK_MODES)[number];
++
++/** Original `targetLocation` -> the engine room that work must happen in. */
++export const WORK_MODE_PLACE: Record<WorkMode, LocationId> = {
++  power: 'workshop', explore: 'village', scout: 'village',
++  morale: 'dorm-a', coordinate: 'dorm-a', order: 'dorm-a',
++};
++
++/**
++ * The original per-second task effects converted to per-minute rates (the
++ * original clock is 1 real second = 1 game minute):
++ *  - staminaCost spread over baseDuration (`task-effects.js:144,168`);
++ *  - morale +0.02/s, coordinate +0.01/s, order +0.015/s to the same scene
++ *    (`:191-214`), completion grants the actor +5 sanity (`:157,180`);
++ *  - scout loot chance 0.002/s, medicine 5 / food 8 / power 5 (`:274-290`);
++ *  - explore (`COLLECT_MATERIAL`) has no public resource in the original: the
++ *    `explore` gather rate is absent from GATHER_RATES, so only the
++ *    completion sanity is real.
++ */
++export const WORK_MODE_SPEC: Record<WorkMode, {
++  staminaPerMinute: number; sanitySelf: number; sanityOthersPerMinute: number;
++  lootPerMinute: number;
++}> = {
++  power: { staminaPerMinute: 14 / 60, sanitySelf: 0, sanityOthersPerMinute: 0, lootPerMinute: 0 },
++  explore: { staminaPerMinute: 18 / 60, sanitySelf: 5, sanityOthersPerMinute: 0, lootPerMinute: 0 },
++  morale: { staminaPerMinute: 8 / 30, sanitySelf: 5, sanityOthersPerMinute: 0.02 * 60, lootPerMinute: 0 },
++  coordinate: { staminaPerMinute: 5 / 60, sanitySelf: 5, sanityOthersPerMinute: 0.01 * 60, lootPerMinute: 0 },
++  order: { staminaPerMinute: 5 / 60, sanitySelf: 5, sanityOthersPerMinute: 0.015 * 60, lootPerMinute: 0 },
++  scout: { staminaPerMinute: 20 / 40, sanitySelf: 5, sanityOthersPerMinute: 0, lootPerMinute: 0.002 * 60 },
++};
++
+ export interface NpcState {
+   id: string;
+   location: LocationId;
+@@ -104,7 +142,7 @@ export type Command =
+   | { commandId: string; type: 'gather'; actorId: string; resource: 'food' | 'firewood'; amount: number }
+   | { commandId: string; type: 'eat'; actorId: string; amount: number }
+   | { commandId: string; type: 'rest'; actorId: string; minutes: number }
+-  | { commandId: string; type: 'work'; actorId: string; minutes: number }
++  | { commandId: string; type: 'work'; actorId: string; minutes: number; mode?: WorkMode }
+   | { commandId: string; type: 'refuel'; actorId: string; amount: number }
+   | { commandId: string; type: 'medical'; actorId: string; targetId: string; amount: number }
+   | { commandId: string; type: 'move'; actorId: string; to: LocationId }
+@@ -362,11 +400,67 @@ export function applyCommand(state: WorldV2, command: Command): { state: WorldV2
+       }
+       const hours = command.minutes / MINUTES_PER_HOUR;
+       if (npc.stamina < 5) throw new SurvivalError('too_tired', `${npc.id} has no stamina to work`);
+-      const produced = Math.max(1, Math.round(hours * 2));
+-      resources.power = clamp(resources.power + produced, 0, 1000);
+-      npcs[npc.id] = { ...npc, stamina: clamp(npc.stamina - 14 * hours, 0, 100),
+-        hunger: clamp(npc.hunger - 4 * hours, 0, 100) };
+-      events.push(event(next, command, 'worked', { minutes: command.minutes, power: produced }));
++      const mode = (command.mode ?? 'power') as WorkMode;
++      if (!WORK_MODES.includes(mode)) {
++        throw new SurvivalError('bad_work_mode', `unknown work mode ${String(command.mode)}`);
++      }
++      if (mode === 'power') {
++        // Frozen survival-rules/2 behaviour: a power shift.
++        const produced = Math.max(1, Math.round(hours * 2));
++        resources.power = clamp(resources.power + produced, 0, 1000);
++        npcs[npc.id] = { ...npc, stamina: clamp(npc.stamina - 14 * hours, 0, 100),
++          hunger: clamp(npc.hunger - 4 * hours, 0, 100) };
++        events.push(event(next, command, 'worked', { minutes: command.minutes,
++          mode, power: produced }));
++        break;
++      }
++      // The authority checks the work site itself: a direct CLI command cannot
++      // do dormitory morale work from the warehouse either.
++      const place = WORK_MODE_PLACE[mode];
++      if (npc.location !== place) {
++        throw new SurvivalError('bad_location',
++          `work mode ${mode} requires standing at ${place}`);
++      }
++      const spec = WORK_MODE_SPEC[mode];
++      const stamina = spec.staminaPerMinute * command.minutes;
++      const others = Object.values(npcs).filter(other => other.alive
++        && other.id !== npc.id && other.location === npc.location);
++      const boosted: string[] = [];
++      if (spec.sanityOthersPerMinute > 0) {
++        const gain = spec.sanityOthersPerMinute * command.minutes;
++        for (const other of others) {
++          const before = other.san;
++          npcs[other.id] = { ...other, san: clamp(other.san + gain, 0, 100) };
++          if (npcs[other.id].san !== before) boosted.push(other.id);
++        }
++      }
++      let lootMedicine = 0, lootFood = 0, lootPower = 0, rolls = 0;
++      if (spec.lootPerMinute > 0) {
++        // Identity is the work interval's start, not the current world version:
++        // a restore or a different step size cannot re-roll the same search.
++        const counter = Math.round(next.simTime - command.minutes) * 1000 + command.minutes;
++        for (let minute = 1; minute <= command.minutes; minute += 1) {
++          rolls += 1;
++          if (hashUnit(next.rngSeed, counter, `scout:${npc.id}:${minute}`) >= spec.lootPerMinute) continue;
++          const pick = hashUnit(next.rngSeed, counter, `scout-loot:${npc.id}:${minute}`);
++          if (pick < 1 / 3) lootMedicine += 5;
++          else if (pick < 2 / 3) lootFood += 8;
++          else lootPower += 5;
++        }
++        resources.medicine += lootMedicine;
++        resources.food += lootFood;
++        resources.power = clamp(resources.power + lootPower, 0, 1000);
++      }
++      npcs[npc.id] = { ...npc, stamina: clamp(npc.stamina - stamina, 0, 100),
++        san: clamp(npc.san + spec.sanitySelf, 0, 100) };
++      events.push(event(next, command, 'worked', {
++        // One completed work unit, so a task goal that needs a count is real.
++        amount: 1, minutes: command.minutes, mode,
++        stamina: -Math.round(stamina * 100) / 100,
++        sanitySelf: spec.sanitySelf,
++        sanityOthers: boosted.length > 0
++          ? Math.round(spec.sanityOthersPerMinute * command.minutes * 100) / 100 : 0,
++        boosted: boosted.join(';'), rolls, lootMedicine, lootFood, lootPower }));
+       break;
+     }
+     case 'refuel': {

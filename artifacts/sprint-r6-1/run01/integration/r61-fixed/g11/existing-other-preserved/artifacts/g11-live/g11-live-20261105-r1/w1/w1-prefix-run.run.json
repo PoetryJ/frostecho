@@ -1,0 +1,1099 @@
+{
+  "schema": "frostecho.g10.run/2",
+  "createdAt": "2026-11-06T08:40:39.730Z",
+  "sha256": "3ae2ce2c28bb2d9fe84b9b7dbb2fbbd7e677b0430b032804bc601f3415d20442",
+  "payload": {
+    "schema": "frostecho.g10.run/2",
+    "at": "2026-11-06T08:40:39.726Z",
+    "lineage": {
+      "baseCommit": null,
+      "parentSlot": null,
+      "attemptRange": {
+        "first": "att-0001",
+        "last": "att-0002",
+        "count": 2
+      }
+    },
+    "meta": {
+      "schema": "frostecho.g10.app/2",
+      "episodeId": "w1-prefix",
+      "providerKind": "live",
+      "fixtureId": null,
+      "goalMode": "negotiated",
+      "candidateSet": "choice",
+      "satiety": 40,
+      "scripted": false,
+      "campaign": null
+    },
+    "config": {
+      "mode": "live",
+      "requestModel": "qwen3.8-27b",
+      "thinking": true,
+      "timeoutMs": 120000
+    },
+    "beforeCloseView": {
+      "episodeId": "w1-prefix",
+      "mode": "live",
+      "providerKind": "live",
+      "fixtureId": null,
+      "goalMode": "negotiated",
+      "candidateSet": "choice",
+      "scripted": false,
+      "simTime": 0,
+      "tick": 0,
+      "player": {
+        "actorId": "npc_b",
+        "location": "kitchen",
+        "hunger": 40
+      },
+      "food": {
+        "kitchen": 1,
+        "dorm": 0
+      },
+      "npcs": [
+        {
+          "actorId": "npc_a",
+          "cycle": 1,
+          "phase": "action",
+          "status": "waiting_time",
+          "providerCalls": 2,
+          "selectedGoal": "yield_once",
+          "selectedGoalBasis": "session_binding",
+          "selectedGoalAchieved": false,
+          "selectedGoalReached": false,
+          "hungerNeedSatisfied": false,
+          "sessionOutcome": null,
+          "wakeAtSimTime": 1,
+          "request": {
+            "requestId": "w1-prefix-req-1",
+            "text": "请把最后一份食物留给我，你先不要吃。",
+            "status": "accepted",
+            "outcome": "pending",
+            "outcomeReason": null,
+            "expiresAtSimTime": 1,
+            "acceptedAfterSeq": 0,
+            "lastProcessedSeq": 0,
+            "decidedGoal": "yield_once"
+          }
+        },
+        {
+          "actorId": "npc_c",
+          "cycle": 1,
+          "phase": "action",
+          "status": "ready",
+          "providerCalls": 0,
+          "selectedGoal": null,
+          "selectedGoalBasis": "ordinary_hunger_need",
+          "selectedGoalAchieved": true,
+          "selectedGoalReached": false,
+          "hungerNeedSatisfied": true,
+          "sessionOutcome": null,
+          "wakeAtSimTime": null,
+          "request": null
+        }
+      ],
+      "budget": {
+        "sessionCalls": 2,
+        "sessionLimit": 5,
+        "episodeCalls": 2,
+        "episodeLimit": 10
+      },
+      "campaign": {
+        "limit": 8,
+        "spent": 2,
+        "known": 1008
+      },
+      "savedPath": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g11-live/g11-live-20261105-r1/w1/w1-wait.g09.json",
+      "closed": false,
+      "busy": false
+    },
+    "authoritative": {
+      "snapshot": {
+        "schema": "frostecho.g08.game/1",
+        "episodeId": "w1-prefix",
+        "scenarioId": null,
+        "wakePolicy": "event",
+        "mode": "live",
+        "thinking": true,
+        "requestModel": "qwen3.8-27b",
+        "timeoutMs": 120000,
+        "actorOrder": [
+          "npc_a",
+          "npc_c"
+        ],
+        "initialState": {
+          "tick": 0,
+          "simTime": 0,
+          "npcs": {
+            "npc_a": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40
+            },
+            "npc_b": {
+              "id": "npc_b",
+              "location": "kitchen",
+              "hunger": 40
+            },
+            "npc_c": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 70
+            }
+          },
+          "food": {
+            "kitchen": 1,
+            "dorm": 0
+          }
+        },
+        "finalState": {
+          "tick": 0,
+          "simTime": 0,
+          "npcs": {
+            "npc_a": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40
+            },
+            "npc_b": {
+              "id": "npc_b",
+              "location": "kitchen",
+              "hunger": 40
+            },
+            "npc_c": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 70
+            }
+          },
+          "food": {
+            "kitchen": 1,
+            "dorm": 0
+          }
+        },
+        "commands": [],
+        "events": [],
+        "cycles": {
+          "npc_a": [
+            {
+              "cycle": 1,
+              "reason": "initial cycle",
+              "startLogCursor": 0,
+              "endState": "timed_wait",
+              "turns": [
+                {
+                  "globalTurn": 1,
+                  "actorId": "npc_a",
+                  "cycle": 1,
+                  "actorRound": 1,
+                  "observation": {
+                    "id": "npc_a",
+                    "location": "kitchen",
+                    "hunger": 40,
+                    "foodHere": 1,
+                    "reachable": [
+                      "dorm",
+                      "kitchen"
+                    ]
+                  },
+                  "inputFeedback": null,
+                  "providerCalled": true,
+                  "status": "ready",
+                  "logCursorBefore": 0,
+                  "logCursorAfter": 0,
+                  "step": {
+                    "round": 1,
+                    "observation": {
+                      "id": "npc_a",
+                      "location": "kitchen",
+                      "hunger": 40,
+                      "foodHere": 1,
+                      "reachable": [
+                        "dorm",
+                        "kitchen"
+                      ]
+                    },
+                    "raw": "\n\n{\"goal\":\"yield_once\"}",
+                    "parse": {
+                      "ok": false,
+                      "error": "goal phase: no action parsed"
+                    },
+                    "goal": {
+                      "requestId": "w1-prefix-req-1",
+                      "goal": "yield_once",
+                      "decidedRound": 1,
+                      "decidedAtSimTime": 0,
+                      "parseOk": true
+                    }
+                  }
+                },
+                {
+                  "globalTurn": 2,
+                  "actorId": "npc_a",
+                  "cycle": 1,
+                  "actorRound": 2,
+                  "observation": {
+                    "id": "npc_a",
+                    "location": "kitchen",
+                    "hunger": 40,
+                    "foodHere": 1,
+                    "reachable": [
+                      "dorm",
+                      "kitchen"
+                    ]
+                  },
+                  "inputFeedback": null,
+                  "providerCalled": true,
+                  "status": "waiting_time",
+                  "logCursorBefore": 0,
+                  "logCursorAfter": 0,
+                  "step": {
+                    "round": 2,
+                    "observation": {
+                      "id": "npc_a",
+                      "location": "kitchen",
+                      "hunger": 40,
+                      "foodHere": 1,
+                      "reachable": [
+                        "dorm",
+                        "kitchen"
+                      ]
+                    },
+                    "raw": "\n\n{\"type\":\"wait\"}",
+                    "parse": {
+                      "ok": true,
+                      "action": {
+                        "type": "wait"
+                      }
+                    },
+                    "wait": {
+                      "wakeAtSimTime": 1
+                    }
+                  }
+                }
+              ],
+              "providerCalls": 2
+            }
+          ],
+          "npc_c": [
+            {
+              "cycle": 1,
+              "reason": "initial cycle",
+              "startLogCursor": 0,
+              "endState": "satisfied",
+              "turns": [],
+              "providerCalls": 0
+            }
+          ]
+        },
+        "actors": {
+          "npc_a": {
+            "state": "timed_wait",
+            "cycles": 1,
+            "providerCalls": 2,
+            "goalReached": false
+          },
+          "npc_c": {
+            "state": "satisfied",
+            "cycles": 1,
+            "providerCalls": 0,
+            "goalReached": true
+          }
+        },
+        "transitions": [
+          {
+            "seq": 1,
+            "actorId": "npc_a",
+            "cycle": 1,
+            "from": null,
+            "to": "active",
+            "reason": "initial cycle (cycle 1)",
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40,
+              "foodHere": 1,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "logCursor": 0
+          },
+          {
+            "seq": 2,
+            "actorId": "npc_c",
+            "cycle": 1,
+            "from": null,
+            "to": "active",
+            "reason": "initial cycle (cycle 1)",
+            "observation": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 70,
+              "foodHere": 1,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "logCursor": 0
+          },
+          {
+            "seq": 3,
+            "actorId": "npc_c",
+            "cycle": 1,
+            "from": "active",
+            "to": "satisfied",
+            "reason": "authoritative hunger 70 >= 70 at cycle start; no provider call",
+            "observation": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 70,
+              "foodHere": 1,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "logCursor": 0
+          },
+          {
+            "seq": 4,
+            "actorId": "npc_a",
+            "cycle": 1,
+            "from": "active",
+            "to": "timed_wait",
+            "reason": "wait: session paused until simTime 1",
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40,
+              "foodHere": 1,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "logCursor": 0
+          }
+        ],
+        "stopReason": "user_closed",
+        "scenarioPass": null,
+        "replayMatches": true,
+        "idlePumps": {
+          "pumps": 0,
+          "callsBefore": 0,
+          "callsAfter": 0,
+          "cyclesBefore": 0,
+          "cyclesAfter": 0,
+          "actorStatesBefore": {},
+          "actorStatesAfter": {}
+        },
+        "requestConfig": {
+          "model": "qwen3.8-27b",
+          "temperature": 0,
+          "max_tokens": 1024,
+          "stream": false,
+          "enableThinking": [
+            true
+          ],
+          "timeoutMs": 120000
+        },
+        "timing": {
+          "totalMs": 68364
+        },
+        "needPolicy": "recurring",
+        "actionSet": "timed_wait",
+        "wakeAtSimTime": {
+          "npc_a": 1,
+          "npc_c": null
+        }
+      },
+      "checkpoint": {
+        "episodeId": "w1-prefix",
+        "actorIds": [
+          "npc_a",
+          "npc_c"
+        ],
+        "wakePolicy": "event",
+        "mode": "live",
+        "thinking": true,
+        "needPolicy": "recurring",
+        "requestModel": "qwen3.8-27b",
+        "timeoutMs": 120000,
+        "engine": {
+          "version": 1,
+          "initialState": {
+            "tick": 0,
+            "simTime": 0,
+            "npcs": {
+              "npc_a": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 40
+              },
+              "npc_b": {
+                "id": "npc_b",
+                "location": "kitchen",
+                "hunger": 40
+              },
+              "npc_c": {
+                "id": "npc_c",
+                "location": "kitchen",
+                "hunger": 70
+              }
+            },
+            "food": {
+              "kitchen": 1,
+              "dorm": 0
+            }
+          },
+          "state": {
+            "tick": 0,
+            "simTime": 0,
+            "npcs": {
+              "npc_a": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 40
+              },
+              "npc_b": {
+                "id": "npc_b",
+                "location": "kitchen",
+                "hunger": 40
+              },
+              "npc_c": {
+                "id": "npc_c",
+                "location": "kitchen",
+                "hunger": 70
+              }
+            },
+            "food": {
+              "kitchen": 1,
+              "dorm": 0
+            }
+          },
+          "seq": 0,
+          "eventCounter": 0,
+          "events": [],
+          "log": [],
+          "processed": {}
+        },
+        "initialState": {
+          "tick": 0,
+          "simTime": 0,
+          "npcs": {
+            "npc_a": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40
+            },
+            "npc_b": {
+              "id": "npc_b",
+              "location": "kitchen",
+              "hunger": 40
+            },
+            "npc_c": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 70
+            }
+          },
+          "food": {
+            "kitchen": 1,
+            "dorm": 0
+          }
+        },
+        "startedAt": 1793954371362,
+        "states": {
+          "npc_a": "timed_wait",
+          "npc_c": "satisfied"
+        },
+        "transitions": [
+          {
+            "seq": 1,
+            "actorId": "npc_a",
+            "cycle": 1,
+            "from": null,
+            "to": "active",
+            "reason": "initial cycle (cycle 1)",
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40,
+              "foodHere": 1,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "logCursor": 0
+          },
+          {
+            "seq": 2,
+            "actorId": "npc_c",
+            "cycle": 1,
+            "from": null,
+            "to": "active",
+            "reason": "initial cycle (cycle 1)",
+            "observation": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 70,
+              "foodHere": 1,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "logCursor": 0
+          },
+          {
+            "seq": 3,
+            "actorId": "npc_c",
+            "cycle": 1,
+            "from": "active",
+            "to": "satisfied",
+            "reason": "authoritative hunger 70 >= 70 at cycle start; no provider call",
+            "observation": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 70,
+              "foodHere": 1,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "logCursor": 0
+          },
+          {
+            "seq": 4,
+            "actorId": "npc_a",
+            "cycle": 1,
+            "from": "active",
+            "to": "timed_wait",
+            "reason": "wait: session paused until simTime 1",
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40,
+              "foodHere": 1,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "logCursor": 0
+          }
+        ],
+        "cursor": 1,
+        "globalTurn": 2,
+        "playerSeq": 1,
+        "worldSeq": 1,
+        "busy": false,
+        "closed": true,
+        "interrupted": false,
+        "lastInterruptedActor": null,
+        "totalCalls": 2,
+        "idlePumps": {
+          "pumps": 0,
+          "callsBefore": 0,
+          "callsAfter": 0,
+          "cyclesBefore": 0,
+          "cyclesAfter": 0,
+          "actorStatesBefore": {},
+          "actorStatesAfter": {}
+        },
+        "cycles": {
+          "npc_a": [
+            {
+              "cycle": 1,
+              "reason": "initial cycle",
+              "startLogCursor": 0,
+              "endState": "timed_wait",
+              "turns": [
+                {
+                  "globalTurn": 1,
+                  "actorId": "npc_a",
+                  "cycle": 1,
+                  "actorRound": 1,
+                  "observation": {
+                    "id": "npc_a",
+                    "location": "kitchen",
+                    "hunger": 40,
+                    "foodHere": 1,
+                    "reachable": [
+                      "dorm",
+                      "kitchen"
+                    ]
+                  },
+                  "inputFeedback": null,
+                  "providerCalled": true,
+                  "status": "ready",
+                  "logCursorBefore": 0,
+                  "logCursorAfter": 0,
+                  "step": {
+                    "round": 1,
+                    "observation": {
+                      "id": "npc_a",
+                      "location": "kitchen",
+                      "hunger": 40,
+                      "foodHere": 1,
+                      "reachable": [
+                        "dorm",
+                        "kitchen"
+                      ]
+                    },
+                    "raw": "\n\n{\"goal\":\"yield_once\"}",
+                    "parse": {
+                      "ok": false,
+                      "error": "goal phase: no action parsed"
+                    },
+                    "goal": {
+                      "requestId": "w1-prefix-req-1",
+                      "goal": "yield_once",
+                      "decidedRound": 1,
+                      "decidedAtSimTime": 0,
+                      "parseOk": true
+                    }
+                  }
+                },
+                {
+                  "globalTurn": 2,
+                  "actorId": "npc_a",
+                  "cycle": 1,
+                  "actorRound": 2,
+                  "observation": {
+                    "id": "npc_a",
+                    "location": "kitchen",
+                    "hunger": 40,
+                    "foodHere": 1,
+                    "reachable": [
+                      "dorm",
+                      "kitchen"
+                    ]
+                  },
+                  "inputFeedback": null,
+                  "providerCalled": true,
+                  "status": "waiting_time",
+                  "logCursorBefore": 0,
+                  "logCursorAfter": 0,
+                  "step": {
+                    "round": 2,
+                    "observation": {
+                      "id": "npc_a",
+                      "location": "kitchen",
+                      "hunger": 40,
+                      "foodHere": 1,
+                      "reachable": [
+                        "dorm",
+                        "kitchen"
+                      ]
+                    },
+                    "raw": "\n\n{\"type\":\"wait\"}",
+                    "parse": {
+                      "ok": true,
+                      "action": {
+                        "type": "wait"
+                      }
+                    },
+                    "wait": {
+                      "wakeAtSimTime": 1
+                    }
+                  }
+                }
+              ],
+              "session": {
+                "runId": "w1-prefix:npc_a:c1",
+                "actorId": "npc_a",
+                "round": 2,
+                "feedback": {
+                  "round": 2,
+                  "kind": "accepted",
+                  "detail": "wait"
+                },
+                "status": "waiting_time",
+                "providerCalls": 2,
+                "steps": [
+                  {
+                    "round": 1,
+                    "observation": {
+                      "id": "npc_a",
+                      "location": "kitchen",
+                      "hunger": 40,
+                      "foodHere": 1,
+                      "reachable": [
+                        "dorm",
+                        "kitchen"
+                      ]
+                    },
+                    "raw": "\n\n{\"goal\":\"yield_once\"}",
+                    "parse": {
+                      "ok": false,
+                      "error": "goal phase: no action parsed"
+                    },
+                    "goal": {
+                      "requestId": "w1-prefix-req-1",
+                      "goal": "yield_once",
+                      "decidedRound": 1,
+                      "decidedAtSimTime": 0,
+                      "parseOk": true
+                    }
+                  },
+                  {
+                    "round": 2,
+                    "observation": {
+                      "id": "npc_a",
+                      "location": "kitchen",
+                      "hunger": 40,
+                      "foodHere": 1,
+                      "reachable": [
+                        "dorm",
+                        "kitchen"
+                      ]
+                    },
+                    "raw": "\n\n{\"type\":\"wait\"}",
+                    "parse": {
+                      "ok": true,
+                      "action": {
+                        "type": "wait"
+                      }
+                    },
+                    "wait": {
+                      "wakeAtSimTime": 1
+                    }
+                  }
+                ],
+                "timeoutMs": 120000,
+                "commandIdScheme": "g06-episode-cycle",
+                "timing": {
+                  "started": 1793954371362,
+                  "calls": [
+                    {
+                      "round": 1,
+                      "ms": 17877
+                    },
+                    {
+                      "round": 2,
+                      "ms": 50242
+                    }
+                  ]
+                },
+                "terminalOutcome": null,
+                "initialState": {
+                  "tick": 0,
+                  "simTime": 0,
+                  "npcs": {
+                    "npc_a": {
+                      "id": "npc_a",
+                      "location": "kitchen",
+                      "hunger": 40
+                    },
+                    "npc_b": {
+                      "id": "npc_b",
+                      "location": "kitchen",
+                      "hunger": 40
+                    },
+                    "npc_c": {
+                      "id": "npc_c",
+                      "location": "kitchen",
+                      "hunger": 70
+                    }
+                  },
+                  "food": {
+                    "kitchen": 1,
+                    "dorm": 0
+                  }
+                },
+                "eventsBefore": 0,
+                "schema": "frostecho.g09.session/2",
+                "actionSet": "timed_wait",
+                "wakeAtSimTime": 1,
+                "goalProtocol": {
+                  "arm": "choice",
+                  "requestId": "w1-prefix-req-1",
+                  "text": "请把最后一份食物留给我，你先不要吃。",
+                  "options": [
+                    "feed_self",
+                    "yield_once"
+                  ],
+                  "expiresAtSimTime": 1,
+                  "playerId": "npc_b"
+                },
+                "goalBinding": {
+                  "schema": "frostecho.g09.goal-binding/2",
+                  "episodeId": "w1-prefix",
+                  "requestId": "w1-prefix-req-1",
+                  "goal": "yield_once",
+                  "decidedRound": 1,
+                  "decidedAtSimTime": 0,
+                  "expiresAtSimTime": 1,
+                  "acceptedAfterSeq": 0,
+                  "raw": "\n\n{\"goal\":\"yield_once\"}"
+                },
+                "goalDecision": {
+                  "requestId": "w1-prefix-req-1",
+                  "goal": "yield_once",
+                  "decidedRound": 1,
+                  "decidedAtSimTime": 0,
+                  "raw": "\n\n{\"goal\":\"yield_once\"}"
+                }
+              }
+            }
+          ],
+          "npc_c": [
+            {
+              "cycle": 1,
+              "reason": "initial cycle",
+              "startLogCursor": 0,
+              "endState": "satisfied",
+              "turns": [],
+              "session": {
+                "runId": "w1-prefix:npc_c:c1",
+                "actorId": "npc_c",
+                "round": 0,
+                "feedback": null,
+                "status": "ready",
+                "providerCalls": 0,
+                "steps": [],
+                "timeoutMs": 120000,
+                "commandIdScheme": "g06-episode-cycle",
+                "timing": {
+                  "started": 1793954371363,
+                  "calls": []
+                },
+                "terminalOutcome": null,
+                "initialState": {
+                  "tick": 0,
+                  "simTime": 0,
+                  "npcs": {
+                    "npc_a": {
+                      "id": "npc_a",
+                      "location": "kitchen",
+                      "hunger": 40
+                    },
+                    "npc_b": {
+                      "id": "npc_b",
+                      "location": "kitchen",
+                      "hunger": 40
+                    },
+                    "npc_c": {
+                      "id": "npc_c",
+                      "location": "kitchen",
+                      "hunger": 70
+                    }
+                  },
+                  "food": {
+                    "kitchen": 1,
+                    "dorm": 0
+                  }
+                },
+                "eventsBefore": 0,
+                "schema": "frostecho.g09.session/2",
+                "actionSet": "timed_wait",
+                "wakeAtSimTime": null,
+                "goalProtocol": null,
+                "goalBinding": null,
+                "goalDecision": null
+              }
+            }
+          ]
+        },
+        "goalMode": "negotiated",
+        "candidateSet": "choice",
+        "playerId": "npc_b",
+        "requestStore": {
+          "requests": {
+            "w1-prefix-req-1": {
+              "schema": "frostecho.g09.goal-request/2",
+              "requestId": "w1-prefix-req-1",
+              "episodeId": "w1-prefix",
+              "from": "player",
+              "to": "npc_a",
+              "kind": "yield_once",
+              "text": "请把最后一份食物留给我，你先不要吃。",
+              "options": [
+                "feed_self",
+                "yield_once"
+              ],
+              "createdAtSimTime": 0,
+              "expiresAtSimTime": 1,
+              "status": "cancelled",
+              "decision": {
+                "goal": "yield_once",
+                "round": 1,
+                "decidedAtSimTime": 0,
+                "raw": "\n\n{\"goal\":\"yield_once\"}"
+              },
+              "acceptedAfterSeq": 0,
+              "lastProcessedSeq": 0,
+              "outcome": "cancelled",
+              "outcomeReason": "the game closed before the request was fulfilled"
+            }
+          },
+          "processed": [
+            "w1-prefix-req-1"
+          ]
+        },
+        "foldCursor": 0,
+        "schema": "frostecho.g08.game/1",
+        "actionSet": "timed_wait",
+        "recordSchema": "frostecho.g08.game/1",
+        "wakeAtSimTime": {
+          "npc_a": 1,
+          "npc_c": null
+        }
+      },
+      "engine": {
+        "state": {
+          "tick": 0,
+          "simTime": 0,
+          "npcs": {
+            "npc_a": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40
+            },
+            "npc_b": {
+              "id": "npc_b",
+              "location": "kitchen",
+              "hunger": 40
+            },
+            "npc_c": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 70
+            }
+          },
+          "food": {
+            "kitchen": 1,
+            "dorm": 0
+          }
+        },
+        "log": []
+      },
+      "commands": [],
+      "events": [],
+      "processed": [
+        "w1-prefix-req-1"
+      ],
+      "requests": {
+        "w1-prefix-req-1": {
+          "schema": "frostecho.g09.goal-request/2",
+          "requestId": "w1-prefix-req-1",
+          "episodeId": "w1-prefix",
+          "from": "player",
+          "to": "npc_a",
+          "kind": "yield_once",
+          "text": "请把最后一份食物留给我，你先不要吃。",
+          "options": [
+            "feed_self",
+            "yield_once"
+          ],
+          "createdAtSimTime": 0,
+          "expiresAtSimTime": 1,
+          "status": "cancelled",
+          "decision": {
+            "goal": "yield_once",
+            "round": 1,
+            "decidedAtSimTime": 0,
+            "raw": "\n\n{\"goal\":\"yield_once\"}"
+          },
+          "acceptedAfterSeq": 0,
+          "lastProcessedSeq": 0,
+          "outcome": "cancelled",
+          "outcomeReason": "the game closed before the request was fulfilled"
+        }
+      },
+      "budget": {
+        "sessionLimit": 5,
+        "episodeLimit": 10,
+        "providerCalls": 2,
+        "episodeCalls": 2
+      }
+    },
+    "wire": [
+      {
+        "attemptId": "att-0001",
+        "phase": "goal",
+        "endpointClass": "loopback",
+        "providerSource": "http",
+        "model": "qwen3.8-27b",
+        "requestBody": {
+          "model": "qwen3.8-27b",
+          "temperature": 0,
+          "max_tokens": 1024,
+          "stream": false,
+          "chat_template_kwargs": {
+            "enable_thinking": true
+          },
+          "messages": [
+            {
+              "role": "user",
+              "content": "你是 npc_a，位于kitchen。当前逻辑时间 0。\n你的饱食度：40。你所在位置的剩余食物：1。\n玩家说：“请把最后一份食物留给我，你先不要吃。”\n请从候选目标中选择一个，只回复一个 JSON 对象，不要输出任何其他内容。\ncandidateGoals: [\"feed_self\",\"yield_once\"]"
+            }
+          ]
+        },
+        "requestBodyText": "{\"model\":\"qwen3.8-27b\",\"temperature\":0,\"max_tokens\":1024,\"stream\":false,\"chat_template_kwargs\":{\"enable_thinking\":true},\"messages\":[{\"role\":\"user\",\"content\":\"你是 npc_a，位于kitchen。当前逻辑时间 0。\\n你的饱食度：40。你所在位置的剩余食物：1。\\n玩家说：“请把最后一份食物留给我，你先不要吃。”\\n请从候选目标中选择一个，只回复一个 JSON 对象，不要输出任何其他内容。\\ncandidateGoals: [\\\"feed_self\\\",\\\"yield_once\\\"]\"}]}",
+        "status": 200,
+        "responseBody": "{\"id\":\"chatcmpl-879a49721d9aff49\",\"object\":\"chat.completion\",\"created\":1793954372,\"model\":\"qwen3.8-27b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\\n\\n{\\\"goal\\\":\\\"yield_once\\\"}\",\"refusal\":null,\"annotations\":null,\"audio\":null,\"function_call\":null,\"reasoning\":\"We need answer user's request. Need produce final only JSON object. Need choose goal from candidateGoals: [\\\"feed_self\\\",\\\"yield_once\\\"]. Context: npc_a in kitchen, time 0, satiety 40, remaining food 1. Player says: \\\"Please leave the last food for me, don't eat it first.\\\" Need choose likely yield_once. Need output only JSON object. Maybe {\\\"goal\\\":\\\"yield_once\\\"}. Ensure no other content.\\n\"},\"logprobs\":null,\"finish_reason\":\"stop\",\"stop_reason\":null,\"token_ids\":null,\"routed_experts\":null}],\"service_tier\":null,\"system_fingerprint\":\"vllm-0.32.0-tp4-042ad0af\",\"usage\":{\"prompt_tokens\":128,\"total_tokens\":231,\"completion_tokens\":103,\"prompt_tokens_details\":null,\"completion_tokens_details\":{\"reasoning_tokens\":94}},\"prompt_logprobs\":null,\"prompt_token_ids\":null,\"prompt_text\":null,\"kv_transfer_params\":null,\"ec_transfer_params\":null,\"metrics\":null}",
+        "usage": {
+          "total_tokens": 231,
+          "prompt_tokens": 128,
+          "completion_tokens": 103
+        },
+        "error": null
+      },
+      {
+        "attemptId": "att-0002",
+        "phase": "action",
+        "endpointClass": "loopback",
+        "providerSource": "http",
+        "model": "qwen3.8-27b",
+        "requestBody": {
+          "model": "qwen3.8-27b",
+          "temperature": 0,
+          "max_tokens": 1024,
+          "stream": false,
+          "chat_template_kwargs": {
+            "enable_thinking": true
+          },
+          "messages": [
+            {
+              "role": "user",
+              "content": "Reply with one JSON object and no other text.\nallowedActions: [\"move\",\"eat\",\"stop\",\"wait\"]\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\n\"stop\" ends your current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows the outer restock-wait and new-cycle rules.\n\"wait\" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {\"type\":\"wait\"} only when allowedActions includes \"wait\".\nactiveGoal: {\"kind\":\"yield_once\",\"requestId\":\"w1-prefix-req-1\",\"expiresAtSimTime\":1}\nYour ONLY current goal is this agreement with the player: keep the food available to the player until the request expires, and the agreement is fulfilled only if the player actually eats before the deadline (logical time expiresAtSimTime).\nYour own hunger is background state, not this session's goal. Eating the food yourself before the player eats breaks the agreement; moving elsewhere does not.\nobservation: {\"id\":\"npc_a\",\"location\":\"kitchen\",\"hunger\":40,\"foodHere\":1,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null"
+            }
+          ]
+        },
+        "requestBodyText": "{\"model\":\"qwen3.8-27b\",\"temperature\":0,\"max_tokens\":1024,\"stream\":false,\"chat_template_kwargs\":{\"enable_thinking\":true},\"messages\":[{\"role\":\"user\",\"content\":\"Reply with one JSON object and no other text.\\nallowedActions: [\\\"move\\\",\\\"eat\\\",\\\"stop\\\",\\\"wait\\\"]\\nDo not set actorId or commandId. World changes happen only through Engine.submit.\\nhunger is satiety: higher means fuller.\\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\\n\\\"stop\\\" ends your current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows the outer restock-wait and new-cycle rules.\\n\\\"wait\\\" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {\\\"type\\\":\\\"wait\\\"} only when allowedActions includes \\\"wait\\\".\\nactiveGoal: {\\\"kind\\\":\\\"yield_once\\\",\\\"requestId\\\":\\\"w1-prefix-req-1\\\",\\\"expiresAtSimTime\\\":1}\\nYour ONLY current goal is this agreement with the player: keep the food available to the player until the request expires, and the agreement is fulfilled only if the player actually eats before the deadline (logical time expiresAtSimTime).\\nYour own hunger is background state, not this session's goal. Eating the food yourself before the player eats breaks the agreement; moving elsewhere does not.\\nobservation: {\\\"id\\\":\\\"npc_a\\\",\\\"location\\\":\\\"kitchen\\\",\\\"hunger\\\":40,\\\"foodHere\\\":1,\\\"reachable\\\":[\\\"dorm\\\",\\\"kitchen\\\"]}\\nfeedback: null\"}]}",
+        "status": 200,
+        "responseBody": "{\"id\":\"chatcmpl-9f24ac064a367e6e\",\"object\":\"chat.completion\",\"created\":1793954390,\"model\":\"qwen3.8-27b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\\n\\n{\\\"type\\\":\\\"wait\\\"}\",\"refusal\":null,\"annotations\":null,\"audio\":null,\"function_call\":null,\"reasoning\":\"We need answer user's request. Need produce final one JSON object no other text. Need decide action.\\n\\nWe have allowedActions: [\\\"move\\\",\\\"eat\\\",\\\"stop\\\",\\\"wait\\\"]\\nGoal: yield_once, keep food available to player until request expires, fulfilled only if player actually eats before deadline. Own hunger background. Eating food yourself before player eats breaks agreement; moving elsewhere does not.\\nObservation: npc_a in kitchen, hunger 40, foodHere 1, reachable dorm, kitchen.\\nactiveGoal expiresAtSimTime 1. Need likely wait? We need keep food available. If we eat, breaks. Move elsewhere does not break? It says moving elsewhere does not. But if move away, food remains available? The player can eat? We are in kitchen with food. Need keep food available to player until request expires. If we wait, pauses session one logical time step, then resumes. Does wait allow player to eat? likely yes. Need output only allowed action. Since food present and goal yield_once, should not eat. Could stop? \\\"stop\\\" ends current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows outer restock-wait and new-cycle rules. But active goal is agreement; stop might end session, maybe not fulfill? Need keep food available until request expires. If stop, maybe ends session and no longer keep? But with food present ends pursuit this cycle. Could be okay? But goal says only current goal is agreement; keep food available until request expires. We should wait to let player eat before deadline. allowedActions includes wait. So output {\\\"type\\\":\\\"wait\\\"}.\\n\\nNeed ensure JSON object only. Maybe include type only? They say You may output {\\\"type\\\":\\\"wait\\\"} only when allowedActions includes wait. So final {\\\"type\\\":\\\"wait\\\"}.\\n\"},\"logprobs\":null,\"finish_reason\":\"stop\",\"stop_reason\":null,\"token_ids\":null,\"routed_experts\":null}],\"service_tier\":null,\"system_fingerprint\":\"vllm-0.32.0-tp4-042ad0af\",\"usage\":{\"prompt_tokens\":393,\"total_tokens\":777,\"completion_tokens\":384,\"prompt_tokens_details\":null,\"completion_tokens_details\":{\"reasoning_tokens\":376}},\"prompt_logprobs\":null,\"prompt_token_ids\":null,\"prompt_text\":null,\"kv_transfer_params\":null,\"ec_transfer_params\":null,\"metrics\":null}",
+        "usage": {
+          "total_tokens": 777,
+          "prompt_tokens": 393,
+          "completion_tokens": 384
+        },
+        "error": null
+      }
+    ],
+    "campaign": {
+      "binding": {
+        "schema": "frostecho.g10.campaign-binding/1",
+        "ledgerId": "3088ce1c-67ec-4a12-b057-e0248b22c795",
+        "locator": "/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/g11-live/campaign-approved8/campaign.json",
+        "limit": 8,
+        "spentFloor": 2,
+        "usedPrefix": [
+          "att-0001",
+          "att-0002"
+        ],
+        "savedAtUtc": "2026-11-06T08:40:39.561Z"
+      },
+      "limit": 8,
+      "spent": 2,
+      "known": 1008
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "frostecho.jev04.evidence/1",
+  "partition": "cert",
+  "protocol_version": "jev04-risk/1",
+  "valid": true,
+  "policy": {
+    "model": "audit/fake",
+    "head": "shared-scalar/1",
+    "tokenizer": "audit",
+    "renderer": "audit",
+    "task": "choose_action",
+    "k": 4,
+    "memory_policy_version": "audit"
+  },
+  "sampleIds": [
+    "cert-only-one"
+  ],
+  "n": 120,
+  "errors": 120,
+  "upper": 0.01,
+  "coverage": 0.4,
+  "alpha": 0.05
+}

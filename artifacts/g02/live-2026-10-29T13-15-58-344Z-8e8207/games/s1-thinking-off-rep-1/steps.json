@@ -1,0 +1,43 @@
+[
+  {
+    "round": 1,
+    "observation": {
+      "id": "npc_a",
+      "location": "dorm",
+      "hunger": 40,
+      "foodHere": 0,
+      "reachable": [
+        "dorm",
+        "kitchen"
+      ]
+    },
+    "raw": "",
+    "parse": {
+      "ok": false,
+      "error": "provider_error"
+    },
+    "error": "network error",
+    "transport": {
+      "requestBody": {
+        "model": "qwen3.8-27b",
+        "temperature": 0,
+        "max_tokens": 1024,
+        "stream": false,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "Reply with one JSON object and no other text.\nAllowed: {\"type\":\"move\",\"to\":\"dorm\"|\"kitchen\"}, {\"type\":\"eat\"}, {\"type\":\"stop\"}.\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\ngoal: hunger >= 70\nobservation: {\"id\":\"npc_a\",\"location\":\"dorm\",\"hunger\":40,\"foodHere\":0,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null"
+          }
+        ]
+      },
+      "responseContent": null,
+      "status": null,
+      "usage": null,
+      "latencyMs": 32,
+      "error": "network error"
+    }
+  }
+]

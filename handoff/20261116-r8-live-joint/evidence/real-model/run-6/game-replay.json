@@ -1,0 +1,408 @@
+{
+  "schema": "frostecho.real-score-replay/1",
+  "sourceHEAD": "8d100c40cbb26c6efa5886a7a57a8f656c036854",
+  "evidenceClass": "real-model-score-replay",
+  "requestFile": "C:\\Users\\Administrator\\Documents\\ChatGPT\\工作学习\\research\\FrostEcho\\reviews\\R8C-8d100c4-20261116\\source\\handoff\\20261116-r8-live-joint\\evidence\\real-model\\request.json",
+  "resultFile": "C:\\Users\\Administrator\\Documents\\ChatGPT\\工作学习\\research\\FrostEcho\\reviews\\R8C-8d100c4-20261116\\source\\handoff\\20261116-r8-live-joint\\evidence\\real-model\\run-6\\result.json",
+  "resultFileSha256": "6120b33614c612f18d340496728bc02e3184e62d7b475d7c298c9a881298329c",
+  "inputSha256": "f6fae18919a5c6ee3a4aedfcf8fff23c2f4fcc9d0429aff36aff7b1802e17b03",
+  "identity": {
+    "mode": "jev-experimental",
+    "scorerId": "jev-real-score-replay/1",
+    "checkpointSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+    "encoderId": "/data2/model_weights/Qwen3.8-27B",
+    "rendererId": "joint-c-action/1",
+    "memoryPolicyId": "conditional-experience",
+    "experimental": true,
+    "countsAsAdmitted": false
+  },
+  "selectedId": "a-0b3f9fd02e70",
+  "selectedCandidate": {
+    "id": "a-0b3f9fd02e70",
+    "kind": "move",
+    "description": "去仓库核实存粮",
+    "parameters": {
+      "action": "move",
+      "to": "warehouse",
+      "purpose": "verify-stock"
+    },
+    "preconditions": [
+      "alive"
+    ],
+    "expectedEffects": {},
+    "utilityComponents": {}
+  },
+  "scores": [
+    {
+      "candidateId": "a-bae1f2dab8ef",
+      "logit": 2.5664758219911126,
+      "probability": 0.00034632431681341547
+    },
+    {
+      "candidateId": "a-9b818e599fca",
+      "logit": -5.847411782261867,
+      "probability": 7.680297240512444e-8
+    },
+    {
+      "candidateId": "a-9dd795e76cba",
+      "logit": -5.7732597798577014,
+      "probability": 8.271453522088896e-8
+    },
+    {
+      "candidateId": "a-d83f6a3b1e99",
+      "logit": 5.308494580205792,
+      "probability": 0.005374358118667282
+    },
+    {
+      "candidateId": "a-0b3f9fd02e70",
+      "logit": 10.528867542716611,
+      "probability": 0.99427329109885
+    },
+    {
+      "candidateId": "a-4de955ab3c0e",
+      "logit": -3.6209242046043855,
+      "probability": 7.117529851538991e-7
+    },
+    {
+      "candidateId": "a-3bc7f19405a7",
+      "logit": -1.6408948674710067,
+      "probability": 0.000005155195176820877
+    }
+  ],
+  "before": {
+    "world": {
+      "schema": "frostecho.world-v2/2",
+      "rulesVersion": "survival-rules/2",
+      "day": 1,
+      "simTime": 480,
+      "version": 0,
+      "rngSeed": "r8-joint-probe",
+      "weather": "snow",
+      "npcs": {
+        "npc_01": {
+          "id": "npc_01",
+          "location": "dorm-a",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        },
+        "npc_02": {
+          "id": "npc_02",
+          "location": "dorm-b",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        },
+        "npc_03": {
+          "id": "npc_03",
+          "location": "dorm-a",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        },
+        "npc_04": {
+          "id": "npc_04",
+          "location": "dorm-b",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        },
+        "npc_05": {
+          "id": "npc_05",
+          "location": "dorm-a",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        },
+        "npc_06": {
+          "id": "npc_06",
+          "location": "dorm-b",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        },
+        "npc_07": {
+          "id": "npc_07",
+          "location": "dorm-a",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        },
+        "npc_08": {
+          "id": "npc_08",
+          "location": "dorm-b",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        }
+      },
+      "resources": {
+        "food": 130,
+        "firewood": 30,
+        "power": 30,
+        "medicine": 3
+      },
+      "furnace": {
+        "lit": true,
+        "fuel": 6,
+        "warmth": 18
+      },
+      "commandLog": [],
+      "dead": [],
+      "ending": "none",
+      "scenarioDays": 4,
+      "r8": {
+        "machines": {
+          "generator": "absent",
+          "lumberMill": "absent",
+          "foodCollector": "absent"
+        },
+        "machineProgress": {},
+        "facts": {}
+      }
+    },
+    "states": {
+      "survival": {
+        "outdoorMinutes": {},
+        "hypothermic": [],
+        "lastMinute": 0,
+        "reportedDeaths": []
+      },
+      "production": {
+        "machines": {
+          "generator": "absent",
+          "lumberMill": "absent",
+          "foodCollector": "absent"
+        },
+        "buildRemaining": {},
+        "buildWorker": {},
+        "ranMinutes": {},
+        "lastMinute": 0
+      },
+      "tasks": {
+        "tasks": [],
+        "seq": 0,
+        "dailyUsage": {}
+      },
+      "council": {
+        "meetings": [],
+        "seq": 0,
+        "cooldownUntil": 0
+      },
+      "crises": {
+        "active": [],
+        "history": [],
+        "seq": 0,
+        "lastFoodConflictMinute": null,
+        "foodConflictCooldownMinutes": 60
+      },
+      "life": {
+        "lifeNumber": 1,
+        "pastLives": [],
+        "ending": null,
+        "settled": false
+      }
+    }
+  },
+  "after": {
+    "world": {
+      "schema": "frostecho.world-v2/2",
+      "rulesVersion": "survival-rules/2",
+      "day": 1,
+      "simTime": 480,
+      "version": 1,
+      "rngSeed": "r8-joint-probe",
+      "weather": "snow",
+      "npcs": {
+        "npc_01": {
+          "id": "npc_01",
+          "location": "warehouse",
+          "hunger": 70,
+          "stamina": 77,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        },
+        "npc_02": {
+          "id": "npc_02",
+          "location": "dorm-b",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        },
+        "npc_03": {
+          "id": "npc_03",
+          "location": "dorm-a",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        },
+        "npc_04": {
+          "id": "npc_04",
+          "location": "dorm-b",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        },
+        "npc_05": {
+          "id": "npc_05",
+          "location": "dorm-a",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        },
+        "npc_06": {
+          "id": "npc_06",
+          "location": "dorm-b",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        },
+        "npc_07": {
+          "id": "npc_07",
+          "location": "dorm-a",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        },
+        "npc_08": {
+          "id": "npc_08",
+          "location": "dorm-b",
+          "hunger": 70,
+          "stamina": 80,
+          "health": 100,
+          "san": 80,
+          "alive": true
+        }
+      },
+      "resources": {
+        "food": 130,
+        "firewood": 30,
+        "power": 30,
+        "medicine": 3
+      },
+      "furnace": {
+        "lit": true,
+        "fuel": 6,
+        "warmth": 18
+      },
+      "commandLog": [
+        "npc_01-r8-0"
+      ],
+      "dead": [],
+      "ending": "none",
+      "scenarioDays": 4,
+      "r8": {
+        "machines": {
+          "generator": "absent",
+          "lumberMill": "absent",
+          "foodCollector": "absent"
+        },
+        "machineProgress": {},
+        "facts": {}
+      },
+      "receipts": {
+        "npc_01-r8-0": {
+          "digest": "014643a9f52433c2f135e5f3a43cb8830b5764c567076b27e9f29af8e0e9074e",
+          "eventIds": [
+            "npc_01-r8-0:moved:0"
+          ],
+          "postStateVersion": 1
+        }
+      }
+    },
+    "states": {
+      "survival": {
+        "outdoorMinutes": {},
+        "hypothermic": [],
+        "lastMinute": 0,
+        "reportedDeaths": []
+      },
+      "production": {
+        "machines": {
+          "generator": "absent",
+          "lumberMill": "absent",
+          "foodCollector": "absent"
+        },
+        "buildRemaining": {},
+        "buildWorker": {},
+        "ranMinutes": {},
+        "lastMinute": 0
+      },
+      "tasks": {
+        "tasks": [],
+        "seq": 0,
+        "dailyUsage": {}
+      },
+      "council": {
+        "meetings": [],
+        "seq": 0,
+        "cooldownUntil": 0
+      },
+      "crises": {
+        "active": [],
+        "history": [],
+        "seq": 0,
+        "lastFoodConflictMinute": null,
+        "foodConflictCooldownMinutes": 60
+      },
+      "life": {
+        "lifeNumber": 1,
+        "pastLives": [],
+        "ending": null,
+        "settled": false
+      }
+    }
+  },
+  "committedAdded": [
+    {
+      "eventId": "npc_01-r8-0:moved:0",
+      "type": "moved",
+      "actorId": "npc_01",
+      "simTime": 480,
+      "payload": {
+        "to": "warehouse"
+      }
+    }
+  ],
+  "worldVersionBefore": 0,
+  "worldVersionAfter": 1,
+  "executionValidated": true,
+  "encoderForwardCalls": 0,
+  "headForwardCalls": 0,
+  "scoreReplays": 1,
+  "sourceInferenceCounts": {
+    "encoderForwardCalls": 1,
+    "headForwardCalls": 1
+  },
+  "worldChanged": true,
+  "note": "Replays one measured real-model score on the identical input. Not an online service, new inference, action-quality result or calibration guarantee."
+}

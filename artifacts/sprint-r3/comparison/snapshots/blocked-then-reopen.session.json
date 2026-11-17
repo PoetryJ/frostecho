@@ -1,0 +1,571 @@
+{
+  "schema": "frostecho.session/1",
+  "world": {
+    "schema": "frostecho.world-v2/2",
+    "rulesVersion": "survival-rules/2",
+    "day": 1,
+    "simTime": 0,
+    "version": 2,
+    "rngSeed": "r3-compare-blocked-then-reopen",
+    "weather": "snow",
+    "npcs": {
+      "npc_01": {
+        "id": "npc_01",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_02": {
+        "id": "npc_02",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_03": {
+        "id": "npc_03",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_04": {
+        "id": "npc_04",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_05": {
+        "id": "npc_05",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_06": {
+        "id": "npc_06",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_07": {
+        "id": "npc_07",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_08": {
+        "id": "npc_08",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      }
+    },
+    "resources": {
+      "food": 24,
+      "firewood": 20,
+      "power": 40,
+      "medicine": 2
+    },
+    "furnace": {
+      "lit": true,
+      "fuel": 6,
+      "warmth": 18
+    },
+    "commandLog": [
+      "cmp-seal",
+      "cmp-reopen"
+    ],
+    "dead": [],
+    "ending": "none",
+    "scenarioDays": 4,
+    "spatial": {
+      "positions": {},
+      "carry": {},
+      "closedCells": [],
+      "stocks": {
+        "warehouse": {
+          "food": 4
+        }
+      },
+      "deliveredMeals": 0
+    },
+    "receipts": {
+      "cmp-seal": {
+        "digest": "86eb3c7e4c5f19f91fd299d1d8633cad8624f23c353d3f1fac71684652bade62",
+        "eventIds": [
+          "cmp-seal:road_closed:0"
+        ],
+        "postStateVersion": 1
+      },
+      "cmp-reopen": {
+        "digest": "362907a65c64e8f3dbc27440cd2aae26218890fca2577d99258cc2d3189ca8cd",
+        "eventIds": [
+          "cmp-reopen:road_reopened:1"
+        ],
+        "postStateVersion": 2
+      }
+    }
+  },
+  "memories": {
+    "npc_01": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmp-seal:road_closed:0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_closed",
+          "subjectIds": [
+            "npc_01",
+            "world"
+          ],
+          "payload": {
+            "cells": 6,
+            "added": 6,
+            "detail": "15,15;16,15;17,15;15,16;16,16;17,16"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cmp-seal:road_closed:0"
+          ],
+          "recordId": "m-6d03f7e1370d9d85",
+          "revision": 1
+        },
+        {
+          "eventId": "cmp-reopen:road_reopened:1",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_reopened",
+          "subjectIds": [
+            "npc_01",
+            "world"
+          ],
+          "payload": {
+            "cells": 6,
+            "removed": 6,
+            "detail": "15,15;16,15;17,15;15,16;16,16;17,16"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cmp-reopen:road_reopened:1"
+          ],
+          "recordId": "m-46860541d8094923",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_02": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmp-seal:road_closed:0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_closed",
+          "subjectIds": [
+            "npc_02",
+            "world"
+          ],
+          "payload": {
+            "cells": 6,
+            "added": 6,
+            "detail": "15,15;16,15;17,15;15,16;16,16;17,16"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "cmp-seal:road_closed:0"
+          ],
+          "recordId": "m-ba345363df7082d1",
+          "revision": 1
+        },
+        {
+          "eventId": "cmp-reopen:road_reopened:1",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_reopened",
+          "subjectIds": [
+            "npc_02",
+            "world"
+          ],
+          "payload": {
+            "cells": 6,
+            "removed": 6,
+            "detail": "15,15;16,15;17,15;15,16;16,16;17,16"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "cmp-reopen:road_reopened:1"
+          ],
+          "recordId": "m-4c0b15ded4beb377",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_03": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmp-seal:road_closed:0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_closed",
+          "subjectIds": [
+            "npc_03",
+            "world"
+          ],
+          "payload": {
+            "cells": 6,
+            "added": 6,
+            "detail": "15,15;16,15;17,15;15,16;16,16;17,16"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "cmp-seal:road_closed:0"
+          ],
+          "recordId": "m-e4a0f3d957c02159",
+          "revision": 1
+        },
+        {
+          "eventId": "cmp-reopen:road_reopened:1",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_reopened",
+          "subjectIds": [
+            "npc_03",
+            "world"
+          ],
+          "payload": {
+            "cells": 6,
+            "removed": 6,
+            "detail": "15,15;16,15;17,15;15,16;16,16;17,16"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "cmp-reopen:road_reopened:1"
+          ],
+          "recordId": "m-ca8cf51e94b9539d",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_04": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmp-seal:road_closed:0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_closed",
+          "subjectIds": [
+            "npc_04",
+            "world"
+          ],
+          "payload": {
+            "cells": 6,
+            "added": 6,
+            "detail": "15,15;16,15;17,15;15,16;16,16;17,16"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_04",
+          "sourceEventIds": [
+            "cmp-seal:road_closed:0"
+          ],
+          "recordId": "m-7ee8e4f2295e1a3c",
+          "revision": 1
+        },
+        {
+          "eventId": "cmp-reopen:road_reopened:1",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_reopened",
+          "subjectIds": [
+            "npc_04",
+            "world"
+          ],
+          "payload": {
+            "cells": 6,
+            "removed": 6,
+            "detail": "15,15;16,15;17,15;15,16;16,16;17,16"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_04",
+          "sourceEventIds": [
+            "cmp-reopen:road_reopened:1"
+          ],
+          "recordId": "m-21a4d803732a4f33",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_05": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmp-seal:road_closed:0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_closed",
+          "subjectIds": [
+            "npc_05",
+            "world"
+          ],
+          "payload": {
+            "cells": 6,
+            "added": 6,
+            "detail": "15,15;16,15;17,15;15,16;16,16;17,16"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_05",
+          "sourceEventIds": [
+            "cmp-seal:road_closed:0"
+          ],
+          "recordId": "m-568373ef8bc6d234",
+          "revision": 1
+        },
+        {
+          "eventId": "cmp-reopen:road_reopened:1",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_reopened",
+          "subjectIds": [
+            "npc_05",
+            "world"
+          ],
+          "payload": {
+            "cells": 6,
+            "removed": 6,
+            "detail": "15,15;16,15;17,15;15,16;16,16;17,16"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_05",
+          "sourceEventIds": [
+            "cmp-reopen:road_reopened:1"
+          ],
+          "recordId": "m-de146da5ad1bce21",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_06": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmp-seal:road_closed:0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_closed",
+          "subjectIds": [
+            "npc_06",
+            "world"
+          ],
+          "payload": {
+            "cells": 6,
+            "added": 6,
+            "detail": "15,15;16,15;17,15;15,16;16,16;17,16"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_06",
+          "sourceEventIds": [
+            "cmp-seal:road_closed:0"
+          ],
+          "recordId": "m-35d6a74739708435",
+          "revision": 1
+        },
+        {
+          "eventId": "cmp-reopen:road_reopened:1",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_reopened",
+          "subjectIds": [
+            "npc_06",
+            "world"
+          ],
+          "payload": {
+            "cells": 6,
+            "removed": 6,
+            "detail": "15,15;16,15;17,15;15,16;16,16;17,16"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_06",
+          "sourceEventIds": [
+            "cmp-reopen:road_reopened:1"
+          ],
+          "recordId": "m-b5da3740b5824335",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_07": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmp-seal:road_closed:0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_closed",
+          "subjectIds": [
+            "npc_07",
+            "world"
+          ],
+          "payload": {
+            "cells": 6,
+            "added": 6,
+            "detail": "15,15;16,15;17,15;15,16;16,16;17,16"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_07",
+          "sourceEventIds": [
+            "cmp-seal:road_closed:0"
+          ],
+          "recordId": "m-e042037b10748da4",
+          "revision": 1
+        },
+        {
+          "eventId": "cmp-reopen:road_reopened:1",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_reopened",
+          "subjectIds": [
+            "npc_07",
+            "world"
+          ],
+          "payload": {
+            "cells": 6,
+            "removed": 6,
+            "detail": "15,15;16,15;17,15;15,16;16,16;17,16"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_07",
+          "sourceEventIds": [
+            "cmp-reopen:road_reopened:1"
+          ],
+          "recordId": "m-b43d3bf318f45b49",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_08": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "cmp-seal:road_closed:0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_closed",
+          "subjectIds": [
+            "npc_08",
+            "world"
+          ],
+          "payload": {
+            "cells": 6,
+            "added": 6,
+            "detail": "15,15;16,15;17,15;15,16;16,16;17,16"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_08",
+          "sourceEventIds": [
+            "cmp-seal:road_closed:0"
+          ],
+          "recordId": "m-0182c2517091b16d",
+          "revision": 1
+        },
+        {
+          "eventId": "cmp-reopen:road_reopened:1",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "road_reopened",
+          "subjectIds": [
+            "npc_08",
+            "world"
+          ],
+          "payload": {
+            "cells": 6,
+            "removed": 6,
+            "detail": "15,15;16,15;17,15;15,16;16,16;17,16"
+          },
+          "source": "engine",
+          "authority": "engine",
+          "speakerId": "engine",
+          "observerId": "npc_08",
+          "sourceEventIds": [
+            "cmp-reopen:road_reopened:1"
+          ],
+          "recordId": "m-abe7879145eb774c",
+          "revision": 2
+        }
+      ]
+    }
+  },
+  "outcomes": {},
+  "plans": [],
+  "instances": [],
+  "generations": {},
+  "sequence": 0,
+  "seed": "r3-compare-blocked-then-reopen"
+}

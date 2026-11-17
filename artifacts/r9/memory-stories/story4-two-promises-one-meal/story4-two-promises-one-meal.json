@@ -1,0 +1,215 @@
+{
+  "story": "story4-two-promises-one-meal",
+  "passed": true,
+  "checks": [
+    {
+      "name": "two promises are live at once (different promisors, same resource)",
+      "passed": true,
+      "detail": {
+        "first": "active",
+        "second": "active"
+      }
+    },
+    {
+      "name": "the losing promise records a real shortage and proposes a change",
+      "passed": true,
+      "detail": {
+        "receipts": [
+          "npc_02-r8-5:out_of_stock:5"
+        ],
+        "status": "pending-change"
+      }
+    },
+    {
+      "name": "both promises and the shortage evidence survive the D2 restart",
+      "passed": true,
+      "detail": {
+        "before": "17ce2e52f7bb4a96",
+        "after": "17ce2e52f7bb4a96"
+      }
+    },
+    {
+      "name": "no repeated invalid action after the shortage (zero extra out_of_stock)",
+      "passed": true,
+      "detail": {
+        "outOfStockReceipts": 1,
+        "steps": [
+          "applied",
+          "applied",
+          "applied"
+        ]
+      }
+    },
+    {
+      "name": "the winning promise is fulfilled; the loser is not silently fulfilled",
+      "passed": true,
+      "detail": {
+        "first": "fulfilled",
+        "second": "pending-change",
+        "receipts": [
+          "npc_01-r8-57:meal_delivered:59"
+        ]
+      }
+    },
+    {
+      "name": "the cancelled loser stops and the exit is explicit",
+      "passed": true,
+      "detail": {
+        "candidates": 0
+      }
+    }
+  ],
+  "outcome": {
+    "winner": "fulfilled",
+    "loser": "cancelled",
+    "loserFinal": "cancelled",
+    "outOfStockReceipts": 1,
+    "repeatedInvalidActions": 0,
+    "winnerEvidence": [
+      "npc_01-r8-57:meal_delivered:59"
+    ]
+  },
+  "memory": {
+    "raw": {
+      "kinds": [
+        "r8_actor",
+        "r8_actor",
+        "r8_actor",
+        "r8_actor",
+        "r8_actor",
+        "r8_actor",
+        "r8_actor",
+        "r8_resource",
+        "r8_intent-note",
+        "heating_settled",
+        "commitment_fulfilled",
+        "commitment_cancelled"
+      ],
+      "kept": 12,
+      "dropped": 308,
+      "bytes": 4798
+    },
+    "obligationFirst": {
+      "kinds": [
+        "commitment_proposed",
+        "commitment_accepted",
+        "commitment_proposed",
+        "commitment_accepted",
+        "out_of_stock",
+        "commitment_action_committed",
+        "commitment_change_proposed",
+        "r8_resource",
+        "r8_intent-note",
+        "heating_settled",
+        "commitment_fulfilled",
+        "commitment_cancelled"
+      ],
+      "kept": 12,
+      "dropped": 308,
+      "bytes": 6217
+    },
+    "keptOnlyByNewPolicy": [
+      "commitment_proposed",
+      "commitment_accepted",
+      "commitment_proposed",
+      "commitment_accepted",
+      "out_of_stock",
+      "commitment_action_committed",
+      "commitment_change_proposed"
+    ],
+    "notesTotal": 1,
+    "notesApplicable": [
+      "note-shortage-npc_02"
+    ],
+    "condition": "shortage",
+    "observedAt": [
+      {
+        "kind": "commitment_proposed",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_01",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "commitment_accepted",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_01",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "commitment_proposed",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_02",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "commitment_accepted",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_02",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "out_of_stock",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "engine",
+        "heardBy": null
+      },
+      {
+        "kind": "commitment_action_committed",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": null,
+        "heardBy": null
+      },
+      {
+        "kind": "commitment_change_proposed",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_02",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "r8_resource",
+        "observedAt": 1935,
+        "source": "engine",
+        "speakerId": "council",
+        "heardBy": null
+      },
+      {
+        "kind": "r8_intent-note",
+        "observedAt": 1935,
+        "source": "engine",
+        "speakerId": "council",
+        "heardBy": null
+      },
+      {
+        "kind": "heating_settled",
+        "observedAt": 1935,
+        "source": "engine",
+        "speakerId": "council",
+        "heardBy": null
+      },
+      {
+        "kind": "commitment_fulfilled",
+        "observedAt": 1950,
+        "source": "engine",
+        "speakerId": "npc_01",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "commitment_cancelled",
+        "observedAt": 1950,
+        "source": "player_statement",
+        "speakerId": "player",
+        "heardBy": "npc_02"
+      }
+    ]
+  },
+  "files": [
+    "/data3/DATA/project/project_meishijiang/FrostEcho-r9/artifacts/r9/memory-stories/story4-two-promises-one-meal/story4-two-promises-one-meal.json"
+  ]
+}

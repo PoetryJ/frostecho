@@ -1,0 +1,15 @@
+{
+  "schema": "frostecho.jev04.encoder-train/1",
+  "at": "2026-11-12T04:04:12.315991+00:00",
+  "status": "refused",
+  "mode": "full",
+  "gate": {
+    "mayTrainOnJev": true,
+    "reason": "gate passed for small set"
+  },
+  "backbone": {
+    "ok": false,
+    "reason": "no REAL-registered weights present on disk (target Qwen/Qwen3.5-27B absent; HF outbound blocked; local checkpoints are fixture-registered substitutes)"
+  },
+  "note": "training entry is executable and wired; it refuses because the data gate and/or registered weights are not in place. No scores are reported as training results."
+}

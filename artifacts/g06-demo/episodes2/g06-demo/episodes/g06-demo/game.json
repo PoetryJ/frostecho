@@ -1,0 +1,299 @@
+{
+  "schema": "frostecho.g05.game/2",
+  "episodeId": "g06-demo",
+  "scenarioId": null,
+  "wakePolicy": "event",
+  "mode": "reference",
+  "thinking": true,
+  "actorOrder": [
+    "npc_a",
+    "npc_c"
+  ],
+  "initialState": {
+    "tick": 0,
+    "simTime": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 70
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "kitchen",
+        "hunger": 70
+      },
+      "npc_c": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 70
+      }
+    },
+    "food": {
+      "kitchen": 4,
+      "dorm": 0
+    }
+  },
+  "finalState": {
+    "tick": 3,
+    "simTime": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 70
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "kitchen",
+        "hunger": 100
+      },
+      "npc_c": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 70
+      }
+    },
+    "food": {
+      "kitchen": 3,
+      "dorm": 0
+    }
+  },
+  "commands": [
+    {
+      "seq": 1,
+      "command": {
+        "commandId": "g06-demo:player:npc_b:1",
+        "actorId": "npc_b",
+        "type": "move",
+        "payload": {
+          "to": "dorm"
+        }
+      },
+      "result": {
+        "commandId": "g06-demo:player:npc_b:1",
+        "seq": 1,
+        "status": "accepted",
+        "eventIds": [
+          "e1"
+        ]
+      }
+    },
+    {
+      "seq": 2,
+      "command": {
+        "commandId": "g06-demo:player:npc_b:2",
+        "actorId": "npc_b",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "result": {
+        "commandId": "g06-demo:player:npc_b:2",
+        "seq": 2,
+        "status": "accepted",
+        "eventIds": [
+          "e2"
+        ]
+      }
+    },
+    {
+      "seq": 3,
+      "command": {
+        "commandId": "g06-demo:player:npc_b:3",
+        "actorId": "npc_b",
+        "type": "eat",
+        "payload": {}
+      },
+      "result": {
+        "commandId": "g06-demo:player:npc_b:3",
+        "seq": 3,
+        "status": "accepted",
+        "eventIds": [
+          "e3",
+          "e4"
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_b",
+      "from": "kitchen",
+      "to": "dorm",
+      "eventId": "e1",
+      "seq": 1,
+      "commandId": "g06-demo:player:npc_b:1"
+    },
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_b",
+      "from": "dorm",
+      "to": "kitchen",
+      "eventId": "e2",
+      "seq": 2,
+      "commandId": "g06-demo:player:npc_b:2"
+    },
+    {
+      "type": "FoodConsumed",
+      "location": "kitchen",
+      "amount": 1,
+      "before": 4,
+      "after": 3,
+      "eventId": "e3",
+      "seq": 3,
+      "commandId": "g06-demo:player:npc_b:3"
+    },
+    {
+      "type": "HungerChanged",
+      "npcId": "npc_b",
+      "before": 70,
+      "after": 100,
+      "eventId": "e4",
+      "seq": 3,
+      "commandId": "g06-demo:player:npc_b:3"
+    }
+  ],
+  "cycles": {
+    "npc_a": [
+      {
+        "cycle": 1,
+        "reason": "initial cycle",
+        "startLogCursor": 0,
+        "endState": "satisfied",
+        "turns": [],
+        "providerCalls": 0
+      }
+    ],
+    "npc_c": [
+      {
+        "cycle": 1,
+        "reason": "initial cycle",
+        "startLogCursor": 0,
+        "endState": "satisfied",
+        "turns": [],
+        "providerCalls": 0
+      }
+    ]
+  },
+  "actors": {
+    "npc_a": {
+      "state": "satisfied",
+      "cycles": 1,
+      "providerCalls": 0,
+      "goalReached": true
+    },
+    "npc_c": {
+      "state": "satisfied",
+      "cycles": 1,
+      "providerCalls": 0,
+      "goalReached": true
+    }
+  },
+  "transitions": [
+    {
+      "seq": 1,
+      "actorId": "npc_a",
+      "cycle": 1,
+      "from": null,
+      "to": "active",
+      "reason": "initial cycle (cycle 1)",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 70,
+        "foodHere": 4,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 0
+    },
+    {
+      "seq": 2,
+      "actorId": "npc_c",
+      "cycle": 1,
+      "from": null,
+      "to": "active",
+      "reason": "initial cycle (cycle 1)",
+      "observation": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 70,
+        "foodHere": 4,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 0
+    },
+    {
+      "seq": 3,
+      "actorId": "npc_a",
+      "cycle": 1,
+      "from": "active",
+      "to": "satisfied",
+      "reason": "authoritative hunger 70 >= 70 at cycle start; no provider call",
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 70,
+        "foodHere": 4,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 0
+    },
+    {
+      "seq": 4,
+      "actorId": "npc_c",
+      "cycle": 1,
+      "from": "active",
+      "to": "satisfied",
+      "reason": "authoritative hunger 70 >= 70 at cycle start; no provider call",
+      "observation": {
+        "id": "npc_c",
+        "location": "kitchen",
+        "hunger": 70,
+        "foodHere": 4,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "logCursor": 0
+    }
+  ],
+  "stopReason": "completed",
+  "scenarioPass": null,
+  "replayMatches": true,
+  "idlePumps": {
+    "pumps": 0,
+    "callsBefore": 0,
+    "callsAfter": 0,
+    "cyclesBefore": 0,
+    "cyclesAfter": 0,
+    "actorStatesBefore": {},
+    "actorStatesAfter": {}
+  },
+  "requestConfig": {
+    "model": null,
+    "temperature": 0,
+    "max_tokens": 1024,
+    "stream": false,
+    "enableThinking": [
+      true
+    ],
+    "timeoutMs": 30000
+  },
+  "timing": {
+    "totalMs": 3224
+  },
+  "needPolicy": "recurring"
+}

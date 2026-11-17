@@ -1,0 +1,256 @@
+{
+  "schema": "frostecho.g10.correction/1",
+  "batch": "g10-action-contract-20261105-r1",
+  "createdAt": "2026-11-05T08:04:58.642Z",
+  "why": "The runner classified a 120s aborted action call as empty_output. The wire has status=null, error=aborted, no body and no usage: the honest classification is timeout. Code fixed in the follow-up commit; the record is NOT rewritten.",
+  "derivedProtocol": {
+    "planned": 8,
+    "completed": 6,
+    "failed": 1,
+    "notRun": 1,
+    "goalPhases": 7,
+    "actionPhases": 7
+  },
+  "derivedCosts": {
+    "chatRequests": 14,
+    "spent": 14,
+    "blocked": 0,
+    "unresolved": 0,
+    "usageUnknown": true,
+    "goalTokens": 1697,
+    "actionTokens": null,
+    "totalTokens": null,
+    "knownGoalTokens": 1697,
+    "knownActionTokens": 4734,
+    "knownTotalTokens": 6431,
+    "unknownPhases": 1,
+    "notRunPhases": 2,
+    "campaignLimit": 16,
+    "campaignSpent": 14,
+    "byCell": {
+      "s40-self_only": {
+        "goalTokens": 243,
+        "actionTokens": 534,
+        "requests": 2,
+        "knownGoalTokens": 243,
+        "knownActionTokens": 534,
+        "unknownPhases": 0
+      },
+      "s40-choice": {
+        "goalTokens": 462,
+        "actionTokens": null,
+        "requests": 4,
+        "knownGoalTokens": 462,
+        "knownActionTokens": 1392,
+        "unknownPhases": 1
+      },
+      "s60-self_only": {
+        "goalTokens": 486,
+        "actionTokens": 1078,
+        "requests": 4,
+        "knownGoalTokens": 486,
+        "knownActionTokens": 1078,
+        "unknownPhases": 0
+      },
+      "s60-choice": {
+        "goalTokens": 506,
+        "actionTokens": 1730,
+        "requests": 4,
+        "knownGoalTokens": 506,
+        "knownActionTokens": 1730,
+        "unknownPhases": 0
+      }
+    }
+  },
+  "facts": {
+    "chatRequests": 14,
+    "spentOfLimit": "14/16",
+    "failedPhase": {
+      "episodeId": "g09-r2-s40-choice",
+      "phase": "action",
+      "httpStatus": null,
+      "error": "aborted",
+      "elapsedMs": 119029,
+      "hasBody": false,
+      "hasUsage": false
+    },
+    "knownGoalTokens": 1697,
+    "knownActionTokens": 4734,
+    "knownTotalTokens": 6431,
+    "unknownPhases": 1,
+    "notRunPhases": 2,
+    "totalTokens": null
+  },
+  "corrections": [
+    "g09-r2-s40-choice: recorded outcome empty_output → derived timeout (120s abort, no HTTP status, no body, no usage).",
+    "protocol: 6 completed / 1 failed (timeout) / 1 not_run.",
+    "costs: goal known 1697; action known 4734 across 6 served calls; the aborted call has NO usage → action total null, total null, known subtotal 6431."
+  ],
+  "unchanged": [
+    "episodes/*",
+    "attempts/*",
+    "plan.json",
+    "summary.json",
+    "status/*",
+    "campaign ledger"
+  ],
+  "verifierExit": 1,
+  "originalFiles": [
+    {
+      "path": "attempts/att-0001.begin.json",
+      "sha256": "73c33fcbb0674aaf417f7ffdcc6a7601d751ecafbb27abdad4187aecf6fe348b"
+    },
+    {
+      "path": "attempts/att-0001.finish.json",
+      "sha256": "6d269ed72a4396a652ba95ad9da68fe1da16c6516b990ffb23723ad70f3b3dd2"
+    },
+    {
+      "path": "attempts/att-0002.begin.json",
+      "sha256": "55214b7c8a5f8c51403155e4b71683ccde77fbf4cddbcd9e058f0f0bc3f6b6b8"
+    },
+    {
+      "path": "attempts/att-0002.finish.json",
+      "sha256": "fa85d9802eef9913fc94770e4b218cba9a3deaa87c5a25dcbeb8264c3c6e976b"
+    },
+    {
+      "path": "attempts/att-0003.begin.json",
+      "sha256": "dd3f7e100b28d2649ac4216819eb99f978a6beddd85f4e06eebfd227d3b24d0c"
+    },
+    {
+      "path": "attempts/att-0003.finish.json",
+      "sha256": "0df2499d143cbeb1ad732ae385a9aaabe37f25bc3953a85e472e45a742a795dd"
+    },
+    {
+      "path": "attempts/att-0004.begin.json",
+      "sha256": "96be7dc3fe85f2e2d12646c46c8f9435ae285e3873fe5a9ba9b5720fbd41aa29"
+    },
+    {
+      "path": "attempts/att-0004.finish.json",
+      "sha256": "b0895b663e4de5d1fac103c2e7bb1beeca760082a9af77a58660d0c03c491487"
+    },
+    {
+      "path": "attempts/att-0005.begin.json",
+      "sha256": "03349a4c4182ce4b50af05c29b553303876291cfc6cf225fa94261581bf87d06"
+    },
+    {
+      "path": "attempts/att-0005.finish.json",
+      "sha256": "e4294bc5b2731455daeb992feb8e8003e4ad02ddd7673882c93ca0aa5aca1e64"
+    },
+    {
+      "path": "attempts/att-0006.begin.json",
+      "sha256": "104ca2ee77e6a6effb8d69c20c9ce34d262541ef7369ae66f46ba2b7b4555e9f"
+    },
+    {
+      "path": "attempts/att-0006.finish.json",
+      "sha256": "97f71cd6b45b7b1e75674c336b8c54a189434e0636c9840095afc63848ab6150"
+    },
+    {
+      "path": "attempts/att-0007.begin.json",
+      "sha256": "5a6f2d5c72f6034e18f06e52e72b00dd00d3adda64171f8725f01526853ff251"
+    },
+    {
+      "path": "attempts/att-0007.finish.json",
+      "sha256": "8700381c999026a970392f4016f4a13e0cc4e4391d42d2ecfb9f0ed9dd459531"
+    },
+    {
+      "path": "attempts/att-0008.begin.json",
+      "sha256": "2581235127d9cf6341560bd14171eae58231bf990f08a9d03a07d44590cab81a"
+    },
+    {
+      "path": "attempts/att-0008.finish.json",
+      "sha256": "9dde8aec09c028aca8d559251472c05de7446ca3f7997dde826245037f61b4f8"
+    },
+    {
+      "path": "attempts/att-0009.begin.json",
+      "sha256": "f9ea4adf6a6816a08d9f29ad9c1ec75fd75302d4c8b12556b4cb3429deefbedc"
+    },
+    {
+      "path": "attempts/att-0009.finish.json",
+      "sha256": "00a7ad20060f92e48ed8fee4360b0f91e4fefe4704ff8e264f3ab149b7f4704d"
+    },
+    {
+      "path": "attempts/att-0010.begin.json",
+      "sha256": "b74771c697d6696758fd8fd68a467922ea6cdf671d461138080be59e0fc29f62"
+    },
+    {
+      "path": "attempts/att-0010.finish.json",
+      "sha256": "83b6a2b1e22579c105aed290af6080d9e88d53a039b03fd09f19d25228b30653"
+    },
+    {
+      "path": "attempts/att-0011.begin.json",
+      "sha256": "75a5c84b9a72b1d7a95e9c6e93163d16364838a2f2511ce3787bb52f8924337d"
+    },
+    {
+      "path": "attempts/att-0011.finish.json",
+      "sha256": "eb771f36e9890155dc530cbaebcf8f2d3cb9016e4342187ffd763f4f34e9f24d"
+    },
+    {
+      "path": "attempts/att-0012.begin.json",
+      "sha256": "56806057cd8a5a21f2d5f39a1fdbc5dbf06b8cc81b2a62d234fde82eda75d423"
+    },
+    {
+      "path": "attempts/att-0012.finish.json",
+      "sha256": "5eeb48a5164d8c3a8af1029ddbdf7c2275176dd95770639584d71ce1ff363bcd"
+    },
+    {
+      "path": "attempts/att-0013.begin.json",
+      "sha256": "553e281fdc4047863cc8d27b5f2b165ce4c76cf967784bd9ab9871e6593297ef"
+    },
+    {
+      "path": "attempts/att-0013.finish.json",
+      "sha256": "f8a825cfdef72729ec3e6cde87c617bd32012f5a561a043e5baff9132bea0625"
+    },
+    {
+      "path": "attempts/att-0014.begin.json",
+      "sha256": "64267e62c21cd323bbfe9a7bd90fba205e32d6e2252b7211ebe21743d5a008db"
+    },
+    {
+      "path": "attempts/att-0014.finish.json",
+      "sha256": "a15e8ee78079f90e37b983094b57d3bf703a029776ceacfc38520ea8f4af4e30"
+    },
+    {
+      "path": "episodes/g09-r1-s40-choice.json",
+      "sha256": "9a7d0c2072d1c4cb49a75eb62e933d65795a476cd1e4b241b0e353188cd8b407"
+    },
+    {
+      "path": "episodes/g09-r1-s40-self_only.json",
+      "sha256": "812cec54c9c2d6371a117271c08f515850ae6ab777c1c302edbaa161abefafde"
+    },
+    {
+      "path": "episodes/g09-r1-s60-choice.json",
+      "sha256": "f308a1549740596c399fa56d247944ac9d1dc618a3df1fde504e6c4671079e67"
+    },
+    {
+      "path": "episodes/g09-r1-s60-self_only.json",
+      "sha256": "131f7673feced74d42a6899fecaf5a95197ce63dc867278b6836d2c26f4d7233"
+    },
+    {
+      "path": "episodes/g09-r2-s40-choice.json",
+      "sha256": "8a19c40e4ba25c556c47f03907ae5c09a349d3dcdb10b0ededeb5912f41cd9d6"
+    },
+    {
+      "path": "episodes/g09-r2-s40-self_only.json",
+      "sha256": "ebb531a26c5ac86a14ab9ba698e021cdc729acc1079f862ce0f16f7b3b615efe"
+    },
+    {
+      "path": "episodes/g09-r2-s60-choice.json",
+      "sha256": "8d28284a09caf4f770c1bb8381b0877e084bac2a26e1248ebcf0ef6e2089eca9"
+    },
+    {
+      "path": "episodes/g09-r2-s60-self_only.json",
+      "sha256": "413aff3c0bedf351575b81db0488dee3569270d3440dab19fd54972b5128499a"
+    },
+    {
+      "path": "plan.json",
+      "sha256": "fe6be583c6489b27f0df7af0a5377dceb773df78f755a2d3ecbb25bfe5927639"
+    },
+    {
+      "path": "status/finished.json",
+      "sha256": "ada93e53c342e3da8ad4deda07c984a93125332bcc147622e4f7fd1af354ae46"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "737e2da0d3a259199edb9ab862ab6eb3624f8ccbf13afbba60bb20a3e53985c6"
+    }
+  ]
+}

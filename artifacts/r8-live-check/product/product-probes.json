@@ -1,0 +1,50 @@
+[
+  {
+    "probe": "wood_receipt_completes_food",
+    "beforeFood": 130,
+    "afterFood": 130,
+    "receipt": {
+      "eventId": "wood-for-food-probe:gathered:0",
+      "type": "gathered",
+      "actorId": "npc_01",
+      "simTime": 480,
+      "payload": {
+        "resource": "firewood",
+        "amount": 3
+      }
+    },
+    "status": "accepted",
+    "rejected": [
+      {
+        "intentId": "tasks:task-1:complete",
+        "code": "receipt_goal_resource_mismatch",
+        "reason": "COLLECT_FOOD needs food, receipt is firewood"
+      }
+    ]
+  },
+  {
+    "probe": "restore_loses_committed_receipt",
+    "beforeCount": 3,
+    "afterCount": 4,
+    "sameClock": true,
+    "receiptId": "wood-for-food-probe:gathered:0",
+    "status": "done",
+    "rejected": []
+  },
+  {
+    "probe": "cancel_generation_then_late_result",
+    "requestId": "0-npc_01",
+    "beforeGeneration": 0,
+    "afterGeneration": 1,
+    "beforeVersion": 0,
+    "afterVersion": 0,
+    "executed": 0,
+    "records": [
+      {
+        "actorId": "npc_01",
+        "executionStatus": "stale",
+        "eventIds": []
+      }
+    ]
+  }
+]

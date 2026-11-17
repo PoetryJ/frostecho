@@ -1,0 +1,166 @@
+{
+  "batchId": "s3-thinking-on-rep-2",
+  "scenarioId": "s3",
+  "mode": "live",
+  "thinking": true,
+  "scenarioPass": false,
+  "goalReached": false,
+  "outcome": "provider_error",
+  "providerCalls": 1,
+  "commands": [],
+  "events": [],
+  "steps": [
+    {
+      "round": 1,
+      "observation": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "raw": "",
+      "parse": {
+        "ok": false,
+        "error": "provider_error"
+      },
+      "error": "network error",
+      "transport": {
+        "requestBody": {
+          "model": "qwen3.8-27b",
+          "temperature": 0,
+          "max_tokens": 1024,
+          "stream": false,
+          "chat_template_kwargs": {
+            "enable_thinking": true
+          },
+          "messages": [
+            {
+              "role": "user",
+              "content": "Reply with one JSON object and no other text.\nAllowed: {\"type\":\"move\",\"to\":\"dorm\"|\"kitchen\"}, {\"type\":\"eat\"}, {\"type\":\"stop\"}.\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\ngoal: hunger >= 70\nobservation: {\"id\":\"npc_a\",\"location\":\"dorm\",\"hunger\":40,\"foodHere\":0,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null"
+            }
+          ]
+        },
+        "responseContent": null,
+        "status": null,
+        "usage": null,
+        "latencyMs": 30,
+        "error": "network error"
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "round": 1,
+      "inputFeedback": null,
+      "step": {
+        "round": 1,
+        "observation": {
+          "id": "npc_a",
+          "location": "dorm",
+          "hunger": 40,
+          "foodHere": 0,
+          "reachable": [
+            "dorm",
+            "kitchen"
+          ]
+        },
+        "raw": "",
+        "parse": {
+          "ok": false,
+          "error": "provider_error"
+        },
+        "error": "network error",
+        "transport": {
+          "requestBody": {
+            "model": "qwen3.8-27b",
+            "temperature": 0,
+            "max_tokens": 1024,
+            "stream": false,
+            "chat_template_kwargs": {
+              "enable_thinking": true
+            },
+            "messages": [
+              {
+                "role": "user",
+                "content": "Reply with one JSON object and no other text.\nAllowed: {\"type\":\"move\",\"to\":\"dorm\"|\"kitchen\"}, {\"type\":\"eat\"}, {\"type\":\"stop\"}.\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\ngoal: hunger >= 70\nobservation: {\"id\":\"npc_a\",\"location\":\"dorm\",\"hunger\":40,\"foodHere\":0,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null"
+              }
+            ]
+          },
+          "responseContent": null,
+          "status": null,
+          "usage": null,
+          "latencyMs": 30,
+          "error": "network error"
+        }
+      },
+      "terminalStatus": "provider_error",
+      "providerCalled": true
+    }
+  ],
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "finalState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 1
+    }
+  },
+  "replayMatches": true,
+  "reasons": [
+    "pass: A goalReached stays false",
+    "fail: outcome stopped",
+    "fail: stop is not goalReached",
+    "fail: stale observe submitted eat and got NO_FOOD",
+    "fail: next step observes no food",
+    "fail: next step receives NO_FOOD feedback",
+    "fail: next step stops",
+    "pass: A hunger stays 40",
+    "pass: A has no HungerChanged",
+    "fail: B ate while A was waiting",
+    "pass: replay matches"
+  ],
+  "timing": {
+    "totalMs": 31,
+    "calls": [
+      {
+        "round": 1,
+        "ms": 30
+      }
+    ]
+  },
+  "error": "network error"
+}

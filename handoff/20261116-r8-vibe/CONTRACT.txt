@@ -1,0 +1,23 @@
+R8 新接口提案：以下尚未存在，由 O 在首个 contracts-freeze 提交建立。
+1. 领域
+src/r7/contracts.ts 导出 DomainModule<S>：
+id；initial(context):S；
+reduce(state:Readonly<S>, command:DomainCommand, context:Readonly<DomainContext>):DomainResult<S>；
+onTimeSpan(state, fromMinute, toMinute, context):DomainResult<S>。
+DomainContext = 只读权威快照、稳定排序的 actorIds、profile、seed、来源可见性查询。
+DomainResult = {state, intents, events, requests}；state 只含本领域附加状态；公共资源/身体/空间的改变以带 precondition 的 typed intents 提交，events 是事件提案，O 验证并原子提交后才算权威。禁止任意 JSON patch 直接写公共世界。
+各域不会互相调用、不自行推进时间；公共资源 intent 严格指定 resource/amount/actor/source。失败返回可观察拒绝结果。O 冻结具体 TS 联合类型、顺序和冲突政策；初版已有规则不重做。
+2. 时间/保存
+profile=gospel-5.8.19：D1 08:00 起，D4 18:00 终，日历 elapsed=4920。夜间跳过按原作 core/game-time.js 的恢复/日切/资源语义逐项实现，不自行替换成常规tick或零演化。旧 reference profile 独立。
+唯一 advanceWorld(to) 处理旅行、工作、休息、快进；按最早规则边界切分，稳定顺序结算、不得为一动作把全员演化扣两次。存档包含时间余量/PRNG状态/领域状态/输入游标/任务关联/记忆/模型身份。world-version 在同一事务提交。连续和跨进程恢复做同日历终点比较。
+3. JEV
+沿 ChoiceRequest，不另造一份公共输入。actor 可见事实+关系+目标+memory；候选语义为 kind/description/parameters/preconditions，ID 只做映射，不作训练特征。参考适配固定 action=kind、params=parameters、preconditions=当事人可知的前提，kind与parameters.action不一致须拒绝或由O显式映射。剥除规则 utility/rank/正确答案。无候选拒绝；唯一候选走明确 deterministic 路径；2..8 个有意义且可提出的备选交模型。
+未知库存不能被全知合法性筛选偷偷泄露；区分可提出/可尝试与执行时真实前提，缺货/封路能产生观察。最终 world 仍验证真实前提。
+M 提供持久本机 JSONL scorer 服务，输入 ChoiceRequest，输出 ChoiceResult + sidecar 元数据（checkpoint/encoder/renderer/memoryPolicy/数据证书 SHA）。主进程保持可 cancel/timeout/save。O 用既有 generation/version/memory checks 同步提交；不直接绕过 session.executeCandidate。
+shadow adapter 继续不执行。新增可信执行适配器验证工件身份；实验开关可在隔离副本跑真实未校准 argmax，必须 experimental=true、countsAsAdmitted=false，不改默认/伪造证书。正式执行仅原门通过并经负责人看到比较后决定。
+4. 批次
+D 输出 dynamic-cases.jsonl 与独立两审原文、split manifest。M/D 冻结 joint-c-action/1 renderer 和 acceptable-set 契约再批量编码；源组/模板/反事实链不跨分区。旧四分类样本不能改名变新行动标签。
+5. 新命令（须实现，当前不存在）
+O/H: node dist/scripts/r8/playthrough.js --profile gospel-5.8.19 --seed r8-1 --mode reference --out <newDir>
+M: python research/decision-choice/jev05/action/train.py --help（含 --preflight/encode/train/calibrate/serve 子命令，具体 CLI 写 RUNBOOK）。
+H: node dist/scripts/r8/verify.js --out <newDir>（逐门真实执行；缺/失败非零，不能拿旧 JSON 直接涂绿）。

@@ -1,0 +1,209 @@
+{
+  "commitments": [
+    {
+      "commitmentId": "cm-1bd36d87-b4b1-4cdd-90f3-ca744ebc5132",
+      "taskId": "task-001-deliver-meal",
+      "promisorId": "npc_01",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply",
+        "source:gather"
+      ],
+      "deadline": null,
+      "revision": 2,
+      "status": "active",
+      "evidenceEventIds": [],
+      "changes": [
+        {
+          "changeId": "chg-0f976330-36fa-4fe5-a922-624884fc181a",
+          "proposedRevision": 2,
+          "kind": "alt-source",
+          "terms": {
+            "source": "gather",
+            "reason": "仓库缺货，我改从村里采集再送来"
+          },
+          "reason": "warehouse-empty",
+          "proposedAt": 82,
+          "status": "accepted",
+          "respondedAt": 82,
+          "responseEventId": "commitment_change_accepted"
+        }
+      ],
+      "createdAt": 50,
+      "updatedAt": 82
+    }
+  ],
+  "receipts": {
+    "request:in-3-request": {
+      "digest": "{\"goal\":\"deliver-meal\",\"promisorId\":\"npc_01\",\"beneficiaryId\":\"player\",\"deadline\":null}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-1bd36d87-b4b1-4cdd-90f3-ca744ebc5132",
+          "taskId": null,
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "proposed",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 50,
+          "updatedAt": 50
+        },
+        "event": {
+          "type": "commitment_proposed",
+          "commitmentId": "cm-1bd36d87-b4b1-4cdd-90f3-ca744ebc5132",
+          "revision": 1,
+          "at": 50,
+          "actorId": "npc_01",
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_01",
+            "toId": "player",
+            "conditions": "warehouse-supply",
+            "deadline": -1
+          }
+        }
+      }
+    },
+    "respond:in-3-request:respond": {
+      "digest": "{\"commitmentId\":\"cm-1bd36d87-b4b1-4cdd-90f3-ca744ebc5132\",\"verdict\":\"accept\",\"reason\":\"available\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-1bd36d87-b4b1-4cdd-90f3-ca744ebc5132",
+          "taskId": null,
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "active",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 50,
+          "updatedAt": 50
+        },
+        "event": {
+          "type": "commitment_accepted",
+          "commitmentId": "cm-1bd36d87-b4b1-4cdd-90f3-ca744ebc5132",
+          "revision": 1,
+          "at": 50,
+          "actorId": "npc_01",
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "available"
+          }
+        }
+      }
+    },
+    "cancel:in-4-cancel-commitment": {
+      "digest": "{\"commitmentId\":\"cm-1bd36d87-b4b1-4cdd-90f3-ca744ebc5132\",\"action\":\"cancel\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-1bd36d87-b4b1-4cdd-90f3-ca744ebc5132",
+          "taskId": "task-001-deliver-meal",
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "cancelled",
+          "evidenceEventIds": [],
+          "changes": [
+            {
+              "changeId": "chg-0f976330-36fa-4fe5-a922-624884fc181a",
+              "proposedRevision": 2,
+              "kind": "alt-source",
+              "terms": {
+                "source": "gather",
+                "reason": "仓库缺货，我改从村里采集再送来"
+              },
+              "reason": "warehouse-empty",
+              "proposedAt": 82,
+              "status": "open",
+              "respondedAt": null,
+              "responseEventId": null
+            }
+          ],
+          "createdAt": 50,
+          "updatedAt": 82
+        },
+        "event": {
+          "type": "commitment_cancelled",
+          "commitmentId": "cm-1bd36d87-b4b1-4cdd-90f3-ca744ebc5132",
+          "revision": 1,
+          "at": 82,
+          "actorId": "npc_01",
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "玩家取消"
+          }
+        }
+      }
+    },
+    "respond-change:in-5-respond-change": {
+      "digest": "{\"commitmentId\":\"cm-1bd36d87-b4b1-4cdd-90f3-ca744ebc5132\",\"changeId\":\"chg-0f976330-36fa-4fe5-a922-624884fc181a\",\"verdict\":\"accept\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-1bd36d87-b4b1-4cdd-90f3-ca744ebc5132",
+          "taskId": "task-001-deliver-meal",
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply",
+            "source:gather"
+          ],
+          "deadline": null,
+          "revision": 2,
+          "status": "active",
+          "evidenceEventIds": [],
+          "changes": [
+            {
+              "changeId": "chg-0f976330-36fa-4fe5-a922-624884fc181a",
+              "proposedRevision": 2,
+              "kind": "alt-source",
+              "terms": {
+                "source": "gather",
+                "reason": "仓库缺货，我改从村里采集再送来"
+              },
+              "reason": "warehouse-empty",
+              "proposedAt": 82,
+              "status": "accepted",
+              "respondedAt": 82,
+              "responseEventId": "commitment_change_accepted"
+            }
+          ],
+          "createdAt": 50,
+          "updatedAt": 82
+        },
+        "event": {
+          "type": "commitment_change_accepted",
+          "commitmentId": "cm-1bd36d87-b4b1-4cdd-90f3-ca744ebc5132",
+          "revision": 2,
+          "at": 82,
+          "actorId": "npc_01",
+          "payload": {
+            "changeId": "chg-0f976330-36fa-4fe5-a922-624884fc181a",
+            "kind": "alt-source",
+            "revision": 2,
+            "status": "active"
+          }
+        }
+      }
+    }
+  }
+}

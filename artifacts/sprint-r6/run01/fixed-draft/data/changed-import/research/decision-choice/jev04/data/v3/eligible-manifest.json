@@ -1,0 +1,1287 @@
+{
+  "schema": "frostecho.jev04.eligible-manifest/1",
+  "reviewVersion": "v3-review/1",
+  "generatedCases": 39,
+  "eligible": 33,
+  "excluded": {
+    "no-acceptable-in-sample": 5,
+    "s1-disjoint-from-sealed": 1
+  },
+  "challengeV2Isolated": 25,
+  "revisedInV2": [
+    "v2-gQ07-A",
+    "v2-gQ07-B"
+  ],
+  "splits": {
+    "train": {
+      "cases": 23,
+      "groups": [
+        "gA05",
+        "gA06",
+        "gQ01",
+        "gQ07",
+        "gQ08",
+        "gR01",
+        "gR02",
+        "gR03",
+        "gR04",
+        "gR06",
+        "gR08",
+        "gY01",
+        "gY02",
+        "gY03",
+        "gY04",
+        "gY08"
+      ]
+    },
+    "dev": {
+      "cases": 10,
+      "groups": [
+        "gA02",
+        "gA08",
+        "gR05",
+        "gR07",
+        "gY06",
+        "gY07"
+      ]
+    }
+  },
+  "artifacts": {
+    "cases.v3.jsonl": {
+      "sha256": "544c0912cdd1f6ce2ff4093ab03072237c70c89a1ea210364fa8bcad3fb16342"
+    },
+    "labels.v3.sealed.jsonl": {
+      "sha256": "ab24b466a26cf1ed56c1f54f1e26c221b25b4658bb3cafcaec5f047e81230492"
+    },
+    "review-s1-20261112.jsonl": {
+      "sha256": "378cbbb202b80866703c9088e24cde3fac7fd880aaa51a9619664a3efbb79404"
+    },
+    "review-s2-20261112.jsonl": {
+      "sha256": "cce4431b2a62bf06b68814e46e3d5676ae20d770ce832d4c847730052ca7bdc8"
+    },
+    "train.jsonl": {
+      "sha256": "e87f53a83577f44b60b4bbf7568134938fc94fea6e29d13cdbd076112a55cb78"
+    },
+    "dev.jsonl": {
+      "sha256": "7f522871a7a0fe51d1da65f452881154172e2ab401b0729a78de7229c109f5b3"
+    }
+  },
+  "entries": [
+    {
+      "caseId": "v2-gA01-B",
+      "contentHash": "9f19ac89b20052d80aec450ed37e4e1378e25ab7831a06c8bdf3c3e8056167d4",
+      "reviewVersion": "v3-review/1",
+      "eligible": false,
+      "reason": "no-acceptable-in-sample",
+      "s1": {
+        "proposedOpaque": [],
+        "hit": [],
+        "note": "addressee rule: explicit=False others=0"
+      },
+      "s2": {
+        "proposedOpaque": [],
+        "hit": [],
+        "note": "narrative: 无对象"
+      },
+      "sealedOpaque": [],
+      "sourceGroup": "gA01",
+      "task": "reference_resolution",
+      "ruling": "sampling missed every acceptable action; no resample (would couple gold)"
+    },
+    {
+      "caseId": "v2-gA02-A",
+      "contentHash": "c9c5a9ee4c7af9f6493341eb72b589428b9daac2574656fc8248e0d8a1d2847e",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c1"
+        ],
+        "hit": [
+          "c1"
+        ],
+        "note": "addressee rule: explicit=False others=2"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c1"
+        ],
+        "hit": [
+          "c1"
+        ],
+        "note": "narrative: 多候选且无指向"
+      },
+      "sealedOpaque": [
+        "c1"
+      ],
+      "sourceGroup": "gA02",
+      "task": "reference_resolution",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gA03-B",
+      "contentHash": "b04edb582c56e330427f07b89a3b3a97887420e79a549052c664c0e716070e0d",
+      "reviewVersion": "v3-review/1",
+      "eligible": false,
+      "reason": "no-acceptable-in-sample",
+      "s1": {
+        "proposedOpaque": [],
+        "hit": [],
+        "note": "addressee rule: explicit=False others=2"
+      },
+      "s2": {
+        "proposedOpaque": [],
+        "hit": [],
+        "note": "narrative: 多候选且无指向"
+      },
+      "sealedOpaque": [],
+      "sourceGroup": "gA03",
+      "task": "reference_resolution",
+      "ruling": "sampling missed every acceptable action; no resample (would couple gold)"
+    },
+    {
+      "caseId": "v2-gA04-A",
+      "contentHash": "3c22550b0a83257126465933a21c01cc7d778afb4c1b0c6cbfc9c719e311d053",
+      "reviewVersion": "v3-review/1",
+      "eligible": false,
+      "reason": "no-acceptable-in-sample",
+      "s1": {
+        "proposedOpaque": [],
+        "hit": [],
+        "note": "addressee rule: explicit=False others=0"
+      },
+      "s2": {
+        "proposedOpaque": [],
+        "hit": [],
+        "note": "narrative: 无对象"
+      },
+      "sealedOpaque": [],
+      "sourceGroup": "gA04",
+      "task": "reference_resolution",
+      "ruling": "sampling missed every acceptable action; no resample (would couple gold)"
+    },
+    {
+      "caseId": "v2-gA05-A",
+      "contentHash": "d4c106f268c4092329ea62196b40be1ad0a0c77c9a3ea90dbc90b91e7b679c60",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c2"
+        ],
+        "hit": [
+          "c2"
+        ],
+        "note": "addressee rule: explicit=False others=2"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c2"
+        ],
+        "hit": [
+          "c2"
+        ],
+        "note": "narrative: 多候选且无指向"
+      },
+      "sealedOpaque": [
+        "c2"
+      ],
+      "sourceGroup": "gA05",
+      "task": "reference_resolution",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gA06-B",
+      "contentHash": "b422be626fbc2781b31c77072c5f51a87f095d478d5678f50a7983e205d870c5",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c0"
+        ],
+        "hit": [
+          "c0"
+        ],
+        "note": "addressee rule: explicit=False others=3"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c0"
+        ],
+        "hit": [
+          "c0"
+        ],
+        "note": "narrative: 多候选且无指向"
+      },
+      "sealedOpaque": [
+        "c0"
+      ],
+      "sourceGroup": "gA06",
+      "task": "reference_resolution",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gA08-B",
+      "contentHash": "5bbb92ac0fea2ab11bfb6794019af5d99b82e5ca99edb8a3cb0ea84574bfe014",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c3"
+        ],
+        "hit": [
+          "c3"
+        ],
+        "note": "addressee rule: explicit=False others=2"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c3"
+        ],
+        "hit": [
+          "c3"
+        ],
+        "note": "narrative: 多候选且无指向"
+      },
+      "sealedOpaque": [
+        "c3"
+      ],
+      "sourceGroup": "gA08",
+      "task": "reference_resolution",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gQ01-A",
+      "contentHash": "2c584b45beb23f3051c83c2d87738b64b728739e47b119b1082ec723467d8474",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c0"
+        ],
+        "hit": [
+          "c0"
+        ],
+        "note": "quotation rule: authorized=False depth>=1=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c0"
+        ],
+        "hit": [
+          "c0"
+        ],
+        "note": "narrative: 转述不构成指令"
+      },
+      "sealedOpaque": [
+        "c0"
+      ],
+      "sourceGroup": "gQ01",
+      "task": "reference_resolution",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gQ03-A",
+      "contentHash": "d19a175bfa6669f8ff6c567f33be69f1f292ce02ee08623d66e7174830655324",
+      "reviewVersion": "v3-review/1",
+      "eligible": false,
+      "reason": "no-acceptable-in-sample",
+      "s1": {
+        "proposedOpaque": [],
+        "hit": [],
+        "note": "quotation rule: authorized=True depth>=1=False"
+      },
+      "s2": {
+        "proposedOpaque": [],
+        "hit": [],
+        "note": "narrative: 直接且有权，但陈述是取消语义，仅不再留饭"
+      },
+      "sealedOpaque": [],
+      "sourceGroup": "gQ03",
+      "task": "reference_resolution",
+      "ruling": "sampling missed every acceptable action; no resample (would couple gold)"
+    },
+    {
+      "caseId": "v2-gQ07-A",
+      "contentHash": "efd43962c7d2ac0266761bc4b759a71249bb6c43e66950e0c7d5f151c5a164d1",
+      "reviewVersion": "v3-review/1",
+      "eligible": false,
+      "reason": "s1-disjoint-from-sealed",
+      "s1": {
+        "proposedOpaque": [],
+        "hit": [],
+        "note": "quotation rule: authorized=True depth>=1=False"
+      },
+      "s2": {
+        "proposedOpaque": [],
+        "hit": [],
+        "note": "narrative: 直接且有权，但陈述是取消语义，仅不再留饭"
+      },
+      "sealedOpaque": [
+        "c1",
+        "c2"
+      ],
+      "sourceGroup": "gQ07",
+      "task": "reference_resolution",
+      "ruling": "rule-table session diverges from sealed labels; isolated as challenge-v3 before training"
+    },
+    {
+      "caseId": "v2-gQ07-B",
+      "contentHash": "3640c21233903bff990c3dc56fe644c94ea9e6fef7946cd5b679f140966ee9cc",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c1"
+        ],
+        "hit": [
+          "c1"
+        ],
+        "note": "quotation rule: authorized=False depth>=1=False"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c1"
+        ],
+        "hit": [
+          "c1"
+        ],
+        "note": "narrative: 来源无权"
+      },
+      "sealedOpaque": [
+        "c1"
+      ],
+      "sourceGroup": "gQ07",
+      "task": "reference_resolution",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gQ08-A",
+      "contentHash": "eca07971821057c7914700badd192498403e6a89b80274dda9e504a3d7792c1a",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c0",
+          "c3"
+        ],
+        "hit": [
+          "c0",
+          "c3"
+        ],
+        "note": "quotation rule: authorized=False depth>=1=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c0",
+          "c3"
+        ],
+        "hit": [
+          "c0",
+          "c3"
+        ],
+        "note": "narrative: 转述不构成指令"
+      },
+      "sealedOpaque": [
+        "c0",
+        "c3"
+      ],
+      "sourceGroup": "gQ08",
+      "task": "reference_resolution",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gR01-A",
+      "contentHash": "c1a7beef1f0e72b1cf79c0b31e53ffc33429bd79982171d54aee090c84585f65",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c1",
+          "c3"
+        ],
+        "hit": [
+          "c1",
+          "c3"
+        ],
+        "note": "revocation rule: authorized=True heard=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c1",
+          "c3"
+        ],
+        "hit": [
+          "c1",
+          "c3"
+        ],
+        "note": "narrative: 有权且已获知，承诺失效"
+      },
+      "sealedOpaque": [
+        "c1",
+        "c3"
+      ],
+      "sourceGroup": "gR01",
+      "task": "promise_cancel",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gR01-B",
+      "contentHash": "5a77ef270d27d442c29a7cffbb0254ab1664c5b5516b76207e17217207e42ac8",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c0",
+          "c2"
+        ],
+        "hit": [
+          "c0",
+          "c2"
+        ],
+        "note": "revocation rule: authorized=True heard=False"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c0",
+          "c2"
+        ],
+        "hit": [
+          "c0",
+          "c2"
+        ],
+        "note": "narrative: 未获知，保留旧知识并可澄清"
+      },
+      "sealedOpaque": [
+        "c0",
+        "c2"
+      ],
+      "sourceGroup": "gR01",
+      "task": "promise_cancel",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gR02-A",
+      "contentHash": "93901900cb654dd327c4c7742c917d43be98a19e23c4e0e80e8ec2329c1fca26",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c0"
+        ],
+        "hit": [
+          "c0"
+        ],
+        "note": "revocation rule: authorized=True heard=False"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c0"
+        ],
+        "hit": [
+          "c0"
+        ],
+        "note": "narrative: 未获知，保留旧知识并可澄清"
+      },
+      "sealedOpaque": [
+        "c0"
+      ],
+      "sourceGroup": "gR02",
+      "task": "promise_cancel",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gR02-B",
+      "contentHash": "9582947803524f55ce841b284b1021f6a007f08cb176956400b926649bceeef5",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c2",
+          "c3"
+        ],
+        "hit": [
+          "c2",
+          "c3"
+        ],
+        "note": "revocation rule: authorized=True heard=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c2",
+          "c3"
+        ],
+        "hit": [
+          "c2",
+          "c3"
+        ],
+        "note": "narrative: 有权且已获知，承诺失效"
+      },
+      "sealedOpaque": [
+        "c2",
+        "c3"
+      ],
+      "sourceGroup": "gR02",
+      "task": "promise_cancel",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gR03-A",
+      "contentHash": "a71129ccc283ec78fa8f4873ccb9bf90582a6f9478b70d46f07fec16607b8b67",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c0"
+        ],
+        "hit": [
+          "c0"
+        ],
+        "note": "revocation rule: authorized=False heard=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c0"
+        ],
+        "hit": [
+          "c0"
+        ],
+        "note": "narrative: 无权来源，需核实"
+      },
+      "sealedOpaque": [
+        "c0"
+      ],
+      "sourceGroup": "gR03",
+      "task": "promise_cancel",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gR03-B",
+      "contentHash": "efa64fd6dee7b280d40f2ff4278af701c38a5ecc88300186266a5a1ffc0b9949",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c2",
+          "c3"
+        ],
+        "hit": [
+          "c2",
+          "c3"
+        ],
+        "note": "revocation rule: authorized=True heard=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c2",
+          "c3"
+        ],
+        "hit": [
+          "c2",
+          "c3"
+        ],
+        "note": "narrative: 有权且已获知，承诺失效"
+      },
+      "sealedOpaque": [
+        "c2",
+        "c3"
+      ],
+      "sourceGroup": "gR03",
+      "task": "promise_cancel",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gR04-A",
+      "contentHash": "d9a3a7f9a007393785d68e15fc0559a2bd43ab0feeee285debc4f19a3916124d",
+      "reviewVersion": "v3-review/1",
+      "eligible": false,
+      "reason": "no-acceptable-in-sample",
+      "s1": {
+        "proposedOpaque": [
+          "c0"
+        ],
+        "hit": [],
+        "note": "revocation rule: authorized=False heard=False"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c0"
+        ],
+        "hit": [],
+        "note": "narrative: 无权且未获知"
+      },
+      "sealedOpaque": [],
+      "sourceGroup": "gR04",
+      "task": "promise_cancel",
+      "ruling": "sampling missed every acceptable action; no resample (would couple gold)"
+    },
+    {
+      "caseId": "v2-gR04-B",
+      "contentHash": "0d821b811eba0c49b4db4cf86528fde6fced1ae941025e706d3d8f85ca60f3e4",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c1",
+          "c2"
+        ],
+        "hit": [
+          "c1",
+          "c2"
+        ],
+        "note": "revocation rule: authorized=False heard=False"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c1",
+          "c2"
+        ],
+        "hit": [
+          "c1",
+          "c2"
+        ],
+        "note": "narrative: 无权且未获知"
+      },
+      "sealedOpaque": [
+        "c1",
+        "c2"
+      ],
+      "sourceGroup": "gR04",
+      "task": "promise_cancel",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gR05-A",
+      "contentHash": "f5b8976de868ef2d2f8ef9668663a113f394bd8191033f346c9bad2e0d8c454d",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c0",
+          "c3"
+        ],
+        "hit": [
+          "c0",
+          "c3"
+        ],
+        "note": "revocation rule: authorized=True heard=False"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c0",
+          "c3"
+        ],
+        "hit": [
+          "c0",
+          "c3"
+        ],
+        "note": "narrative: 未获知，保留旧知识并可澄清"
+      },
+      "sealedOpaque": [
+        "c0",
+        "c3"
+      ],
+      "sourceGroup": "gR05",
+      "task": "promise_cancel",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gR05-B",
+      "contentHash": "adc7dca74242a9220f6bf232380daefc553114a1279e9e9222cf485a8062fc46",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c1",
+          "c3"
+        ],
+        "hit": [
+          "c1",
+          "c3"
+        ],
+        "note": "revocation rule: authorized=True heard=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c1",
+          "c3"
+        ],
+        "hit": [
+          "c1",
+          "c3"
+        ],
+        "note": "narrative: 有权且已获知，承诺失效"
+      },
+      "sealedOpaque": [
+        "c1",
+        "c3"
+      ],
+      "sourceGroup": "gR05",
+      "task": "promise_cancel",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gR06-B",
+      "contentHash": "9c5daca7e61db72a53eac97ccaa6bc3fbf561d454313e00aaf13c3cc8866b2a8",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c2",
+          "c3"
+        ],
+        "hit": [
+          "c2",
+          "c3"
+        ],
+        "note": "revocation rule: authorized=True heard=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c2",
+          "c3"
+        ],
+        "hit": [
+          "c2",
+          "c3"
+        ],
+        "note": "narrative: 有权且已获知，承诺失效"
+      },
+      "sealedOpaque": [
+        "c2",
+        "c3"
+      ],
+      "sourceGroup": "gR06",
+      "task": "promise_cancel",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gR07-A",
+      "contentHash": "4eca4fd3425be6419d2bc63cd214237b7373292ce8f386ca0063445099184671",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c0",
+          "c2"
+        ],
+        "hit": [
+          "c0",
+          "c2"
+        ],
+        "note": "revocation rule: authorized=True heard=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c0",
+          "c2"
+        ],
+        "hit": [
+          "c0",
+          "c2"
+        ],
+        "note": "narrative: 有权且已获知，承诺失效"
+      },
+      "sealedOpaque": [
+        "c0",
+        "c2"
+      ],
+      "sourceGroup": "gR07",
+      "task": "promise_cancel",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gR07-B",
+      "contentHash": "f9c816bd5d5376b0b1d2eee2f386c1312c9ff5cce285391da9e95ca1e5873383",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c0",
+          "c1"
+        ],
+        "hit": [
+          "c0",
+          "c1"
+        ],
+        "note": "revocation rule: authorized=True heard=False"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c0",
+          "c1"
+        ],
+        "hit": [
+          "c0",
+          "c1"
+        ],
+        "note": "narrative: 未获知，保留旧知识并可澄清"
+      },
+      "sealedOpaque": [
+        "c0",
+        "c1"
+      ],
+      "sourceGroup": "gR07",
+      "task": "promise_cancel",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gR08-A",
+      "contentHash": "64c6c0cdd25fc6ddf46f5a4abe4f21420d82aa68d9486e685d94d6922b15d7f8",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c1",
+          "c2"
+        ],
+        "hit": [
+          "c1",
+          "c2"
+        ],
+        "note": "revocation rule: authorized=False heard=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c1",
+          "c2"
+        ],
+        "hit": [
+          "c1",
+          "c2"
+        ],
+        "note": "narrative: 无权来源，需核实"
+      },
+      "sealedOpaque": [
+        "c1",
+        "c2"
+      ],
+      "sourceGroup": "gR08",
+      "task": "promise_cancel",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gR08-B",
+      "contentHash": "d63bb40a1402710509a4c7bd602b606fb4c8a83eac881c5ef5c9396a3128263c",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c3"
+        ],
+        "hit": [
+          "c3"
+        ],
+        "note": "revocation rule: authorized=True heard=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c3"
+        ],
+        "hit": [
+          "c3"
+        ],
+        "note": "narrative: 有权且已获知，承诺失效"
+      },
+      "sealedOpaque": [
+        "c3"
+      ],
+      "sourceGroup": "gR08",
+      "task": "promise_cancel",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gY01-A",
+      "contentHash": "e1c723dae068ce917cdb556d501e0fd10699b96590c82e11485f4d8ec30b801e",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c2"
+        ],
+        "hit": [
+          "c2"
+        ],
+        "note": "asymmetry rule: knows=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c2"
+        ],
+        "hit": [
+          "c2"
+        ],
+        "note": "narrative: 已获知撤销"
+      },
+      "sealedOpaque": [
+        "c2"
+      ],
+      "sourceGroup": "gY01",
+      "task": "info_asymmetry",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gY01-B",
+      "contentHash": "f88678131692776d95b09ab32ae1655c24224972751911cd1bfafb071ff1dc52",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c3"
+        ],
+        "hit": [
+          "c3"
+        ],
+        "note": "asymmetry rule: knows=False"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c3"
+        ],
+        "hit": [
+          "c3"
+        ],
+        "note": "narrative: 未获知，保留留饭计划"
+      },
+      "sealedOpaque": [
+        "c3"
+      ],
+      "sourceGroup": "gY01",
+      "task": "info_asymmetry",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gY02-A",
+      "contentHash": "5f27bf30ae468300cc724a25d6d668f7917f1bf876d0c5d6caae29603214c475",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c2"
+        ],
+        "hit": [
+          "c2"
+        ],
+        "note": "asymmetry rule: knows=False"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c2"
+        ],
+        "hit": [
+          "c2"
+        ],
+        "note": "narrative: 未获知，保留留饭计划"
+      },
+      "sealedOpaque": [
+        "c2"
+      ],
+      "sourceGroup": "gY02",
+      "task": "info_asymmetry",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gY02-B",
+      "contentHash": "127abbca432115b85aabd5c92d98ff39df06d080f32e26d8bfdcf3d21f8aeb33",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c0"
+        ],
+        "hit": [
+          "c0"
+        ],
+        "note": "asymmetry rule: knows=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c0"
+        ],
+        "hit": [
+          "c0"
+        ],
+        "note": "narrative: 已获知撤销"
+      },
+      "sealedOpaque": [
+        "c0"
+      ],
+      "sourceGroup": "gY02",
+      "task": "info_asymmetry",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gY03-B",
+      "contentHash": "3b38cbcfdcd4eea4b0c435b99d53b37864715cb7b58ec6374f14343e9a2a0f03",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c3"
+        ],
+        "hit": [
+          "c3"
+        ],
+        "note": "asymmetry rule: knows=False"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c3"
+        ],
+        "hit": [
+          "c3"
+        ],
+        "note": "narrative: 未获知，保留留饭计划"
+      },
+      "sealedOpaque": [
+        "c3"
+      ],
+      "sourceGroup": "gY03",
+      "task": "info_asymmetry",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gY04-A",
+      "contentHash": "160aac43877738208ef6dee7b57ae8bf8b7ab18f842714e8ca3a028a1b3ab41c",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c1"
+        ],
+        "hit": [
+          "c1"
+        ],
+        "note": "asymmetry rule: knows=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c1"
+        ],
+        "hit": [
+          "c1"
+        ],
+        "note": "narrative: 已获知撤销"
+      },
+      "sealedOpaque": [
+        "c1"
+      ],
+      "sourceGroup": "gY04",
+      "task": "info_asymmetry",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gY04-B",
+      "contentHash": "58f410da42a29f9cbb4836fd4bd2c6accb565b30a52b1414bec7e4113e22f9c5",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c3"
+        ],
+        "hit": [
+          "c3"
+        ],
+        "note": "asymmetry rule: knows=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c3"
+        ],
+        "hit": [
+          "c3"
+        ],
+        "note": "narrative: 已获知撤销"
+      },
+      "sealedOpaque": [
+        "c3"
+      ],
+      "sourceGroup": "gY04",
+      "task": "info_asymmetry",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gY06-A",
+      "contentHash": "e698b1bcc4e210e59e104515c950cd25ab9e88c40e637dec98ab70ae5001e264",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c2"
+        ],
+        "hit": [
+          "c2"
+        ],
+        "note": "asymmetry rule: knows=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c2"
+        ],
+        "hit": [
+          "c2"
+        ],
+        "note": "narrative: 已获知撤销"
+      },
+      "sealedOpaque": [
+        "c2"
+      ],
+      "sourceGroup": "gY06",
+      "task": "info_asymmetry",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gY06-B",
+      "contentHash": "5e4c79c17e0b45a02b1381f22c51fdd7b41369fec1ae8bb3fa0489356bbde5f1",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c3"
+        ],
+        "hit": [
+          "c3"
+        ],
+        "note": "asymmetry rule: knows=False"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c3"
+        ],
+        "hit": [
+          "c3"
+        ],
+        "note": "narrative: 未获知，保留留饭计划"
+      },
+      "sealedOpaque": [
+        "c3"
+      ],
+      "sourceGroup": "gY06",
+      "task": "info_asymmetry",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gY07-A",
+      "contentHash": "2bfbaacae7d81b9a5e1fac761ad8ff8660e15f8d3c7574f7d952674fc491c10b",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c2"
+        ],
+        "hit": [
+          "c2"
+        ],
+        "note": "asymmetry rule: knows=False"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c2"
+        ],
+        "hit": [
+          "c2"
+        ],
+        "note": "narrative: 未获知，保留留饭计划"
+      },
+      "sealedOpaque": [
+        "c2"
+      ],
+      "sourceGroup": "gY07",
+      "task": "info_asymmetry",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gY07-B",
+      "contentHash": "e7906c25ffa0bf7da73d2cbe40c072864ea89a8332e4e4307a093b13682377e6",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c1"
+        ],
+        "hit": [
+          "c1"
+        ],
+        "note": "asymmetry rule: knows=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c1"
+        ],
+        "hit": [
+          "c1"
+        ],
+        "note": "narrative: 已获知撤销"
+      },
+      "sealedOpaque": [
+        "c1"
+      ],
+      "sourceGroup": "gY07",
+      "task": "info_asymmetry",
+      "ruling": "both sessions express a sealed-acceptable action"
+    },
+    {
+      "caseId": "v2-gY08-B",
+      "contentHash": "823bdb27f0920f9c29c0d47e81e982eec291bd1c6e4ab457bbca4701815eaca0",
+      "reviewVersion": "v3-review/1",
+      "eligible": true,
+      "reason": "double-reviewed-agree",
+      "s1": {
+        "proposedOpaque": [
+          "c1"
+        ],
+        "hit": [
+          "c1"
+        ],
+        "note": "asymmetry rule: knows=True"
+      },
+      "s2": {
+        "proposedOpaque": [
+          "c1"
+        ],
+        "hit": [
+          "c1"
+        ],
+        "note": "narrative: 已获知撤销"
+      },
+      "sealedOpaque": [
+        "c1"
+      ],
+      "sourceGroup": "gY08",
+      "task": "info_asymmetry",
+      "ruling": "both sessions express a sealed-acceptable action"
+    }
+  ]
+}

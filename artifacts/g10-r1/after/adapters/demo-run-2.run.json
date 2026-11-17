@@ -1,0 +1,844 @@
+{
+  "schema": "frostecho.g10.run/2",
+  "createdAt": "2026-11-04T11:43:51.248Z",
+  "sha256": "00ff2226bc8421d49894d1d725198d2e831d25b87df8a29dbe1d2117b98993ea",
+  "payload": {
+    "schema": "frostecho.g10.run/2",
+    "at": "2026-11-04T11:43:51.241Z",
+    "lineage": {
+      "baseCommit": null,
+      "parentSlot": null,
+      "attemptRange": {
+        "first": null,
+        "last": null,
+        "count": 0
+      }
+    },
+    "meta": {
+      "schema": "frostecho.g10.app/2",
+      "episodeId": "demo",
+      "providerKind": "live",
+      "fixtureId": null,
+      "goalMode": "negotiated",
+      "candidateSet": "choice",
+      "satiety": 40,
+      "scripted": false,
+      "campaign": null
+    },
+    "config": {
+      "mode": "live",
+      "requestModel": "audit-model",
+      "thinking": true,
+      "timeoutMs": 120000
+    },
+    "beforeCloseView": {
+      "episodeId": "demo",
+      "mode": "live",
+      "providerKind": "live",
+      "fixtureId": null,
+      "goalMode": "negotiated",
+      "candidateSet": "choice",
+      "scripted": false,
+      "simTime": 0,
+      "tick": 0,
+      "player": {
+        "actorId": "npc_b",
+        "location": "kitchen",
+        "hunger": 40
+      },
+      "food": {
+        "kitchen": 1,
+        "dorm": 0
+      },
+      "npcs": [
+        {
+          "actorId": "npc_a",
+          "cycle": 1,
+          "phase": "goal_choice",
+          "status": "provider_error",
+          "providerCalls": 1,
+          "selectedGoal": null,
+          "selectedGoalAchieved": false,
+          "selectedGoalReached": false,
+          "hungerNeedSatisfied": false,
+          "sessionOutcome": "provider_error",
+          "wakeAtSimTime": null,
+          "request": {
+            "requestId": "demo-req-1",
+            "text": "请把最后一份食物留给我，你先不要吃。",
+            "status": "pending",
+            "outcome": "pending",
+            "outcomeReason": null,
+            "expiresAtSimTime": 1,
+            "acceptedAfterSeq": null,
+            "lastProcessedSeq": 0,
+            "decidedGoal": null
+          }
+        },
+        {
+          "actorId": "npc_c",
+          "cycle": 1,
+          "phase": "action",
+          "status": "ready",
+          "providerCalls": 0,
+          "selectedGoal": null,
+          "selectedGoalAchieved": false,
+          "selectedGoalReached": false,
+          "hungerNeedSatisfied": true,
+          "sessionOutcome": null,
+          "wakeAtSimTime": null,
+          "request": null
+        }
+      ],
+      "budget": {
+        "sessionCalls": 1,
+        "sessionLimit": 5,
+        "episodeCalls": 1,
+        "episodeLimit": 10
+      },
+      "campaign": {
+        "limit": 1,
+        "spent": 1,
+        "known": 5
+      },
+      "savedPath": null,
+      "closed": false,
+      "busy": false
+    },
+    "authoritative": {
+      "snapshot": {
+        "schema": "frostecho.g08.game/1",
+        "episodeId": "demo",
+        "scenarioId": null,
+        "wakePolicy": "event",
+        "mode": "live",
+        "thinking": true,
+        "requestModel": "audit-model",
+        "timeoutMs": 120000,
+        "actorOrder": [
+          "npc_a",
+          "npc_c"
+        ],
+        "initialState": {
+          "tick": 0,
+          "simTime": 0,
+          "npcs": {
+            "npc_a": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40
+            },
+            "npc_b": {
+              "id": "npc_b",
+              "location": "kitchen",
+              "hunger": 40
+            },
+            "npc_c": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 70
+            }
+          },
+          "food": {
+            "kitchen": 1,
+            "dorm": 0
+          }
+        },
+        "finalState": {
+          "tick": 0,
+          "simTime": 0,
+          "npcs": {
+            "npc_a": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40
+            },
+            "npc_b": {
+              "id": "npc_b",
+              "location": "kitchen",
+              "hunger": 40
+            },
+            "npc_c": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 70
+            }
+          },
+          "food": {
+            "kitchen": 1,
+            "dorm": 0
+          }
+        },
+        "commands": [],
+        "events": [],
+        "cycles": {
+          "npc_a": [
+            {
+              "cycle": 1,
+              "reason": "initial cycle",
+              "startLogCursor": 0,
+              "endState": "failed",
+              "turns": [
+                {
+                  "globalTurn": 1,
+                  "actorId": "npc_a",
+                  "cycle": 1,
+                  "actorRound": 1,
+                  "observation": {
+                    "id": "npc_a",
+                    "location": "kitchen",
+                    "hunger": 40,
+                    "foodHere": 1,
+                    "reachable": [
+                      "dorm",
+                      "kitchen"
+                    ]
+                  },
+                  "inputFeedback": null,
+                  "providerCalled": true,
+                  "status": "provider_error",
+                  "logCursorBefore": 0,
+                  "logCursorAfter": 0,
+                  "step": {
+                    "round": 1,
+                    "observation": {
+                      "id": "npc_a",
+                      "location": "kitchen",
+                      "hunger": 40,
+                      "foodHere": 1,
+                      "reachable": [
+                        "dorm",
+                        "kitchen"
+                      ]
+                    },
+                    "raw": "",
+                    "parse": {
+                      "ok": false,
+                      "error": "provider_error"
+                    },
+                    "goal": {
+                      "requestId": "demo-req-1",
+                      "goal": null,
+                      "decidedRound": 1,
+                      "decidedAtSimTime": 0,
+                      "parseOk": false
+                    },
+                    "error": "provider error"
+                  }
+                }
+              ],
+              "providerCalls": 1
+            }
+          ],
+          "npc_c": [
+            {
+              "cycle": 1,
+              "reason": "initial cycle",
+              "startLogCursor": 0,
+              "endState": "active",
+              "turns": [],
+              "providerCalls": 0
+            }
+          ]
+        },
+        "actors": {
+          "npc_a": {
+            "state": "failed",
+            "cycles": 1,
+            "providerCalls": 1,
+            "goalReached": false
+          },
+          "npc_c": {
+            "state": "active",
+            "cycles": 1,
+            "providerCalls": 0,
+            "goalReached": true
+          }
+        },
+        "transitions": [
+          {
+            "seq": 1,
+            "actorId": "npc_a",
+            "cycle": 1,
+            "from": null,
+            "to": "active",
+            "reason": "initial cycle (cycle 1)",
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40,
+              "foodHere": 1,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "logCursor": 0
+          },
+          {
+            "seq": 2,
+            "actorId": "npc_c",
+            "cycle": 1,
+            "from": null,
+            "to": "active",
+            "reason": "initial cycle (cycle 1)",
+            "observation": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 70,
+              "foodHere": 1,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "logCursor": 0
+          },
+          {
+            "seq": 3,
+            "actorId": "npc_a",
+            "cycle": 1,
+            "from": "active",
+            "to": "failed",
+            "reason": "transport provider_error",
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40,
+              "foodHere": 1,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "logCursor": 0
+          }
+        ],
+        "stopReason": "interrupted",
+        "scenarioPass": null,
+        "replayMatches": true,
+        "idlePumps": {
+          "pumps": 0,
+          "callsBefore": 0,
+          "callsAfter": 0,
+          "cyclesBefore": 0,
+          "cyclesAfter": 0,
+          "actorStatesBefore": {},
+          "actorStatesAfter": {}
+        },
+        "requestConfig": {
+          "model": "audit-model",
+          "temperature": 0,
+          "max_tokens": 1024,
+          "stream": false,
+          "enableThinking": [
+            true
+          ],
+          "timeoutMs": 120000
+        },
+        "timing": {
+          "totalMs": 398
+        },
+        "needPolicy": "recurring",
+        "actionSet": "timed_wait",
+        "wakeAtSimTime": {
+          "npc_a": null,
+          "npc_c": null
+        }
+      },
+      "checkpoint": {
+        "episodeId": "demo",
+        "actorIds": [
+          "npc_a",
+          "npc_c"
+        ],
+        "wakePolicy": "event",
+        "mode": "live",
+        "thinking": true,
+        "needPolicy": "recurring",
+        "requestModel": "audit-model",
+        "timeoutMs": 120000,
+        "engine": {
+          "version": 1,
+          "initialState": {
+            "tick": 0,
+            "simTime": 0,
+            "npcs": {
+              "npc_a": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 40
+              },
+              "npc_b": {
+                "id": "npc_b",
+                "location": "kitchen",
+                "hunger": 40
+              },
+              "npc_c": {
+                "id": "npc_c",
+                "location": "kitchen",
+                "hunger": 70
+              }
+            },
+            "food": {
+              "kitchen": 1,
+              "dorm": 0
+            }
+          },
+          "state": {
+            "tick": 0,
+            "simTime": 0,
+            "npcs": {
+              "npc_a": {
+                "id": "npc_a",
+                "location": "kitchen",
+                "hunger": 40
+              },
+              "npc_b": {
+                "id": "npc_b",
+                "location": "kitchen",
+                "hunger": 40
+              },
+              "npc_c": {
+                "id": "npc_c",
+                "location": "kitchen",
+                "hunger": 70
+              }
+            },
+            "food": {
+              "kitchen": 1,
+              "dorm": 0
+            }
+          },
+          "seq": 0,
+          "eventCounter": 0,
+          "events": [],
+          "log": [],
+          "processed": {}
+        },
+        "initialState": {
+          "tick": 0,
+          "simTime": 0,
+          "npcs": {
+            "npc_a": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40
+            },
+            "npc_b": {
+              "id": "npc_b",
+              "location": "kitchen",
+              "hunger": 40
+            },
+            "npc_c": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 70
+            }
+          },
+          "food": {
+            "kitchen": 1,
+            "dorm": 0
+          }
+        },
+        "startedAt": 1793792630843,
+        "states": {
+          "npc_a": "failed",
+          "npc_c": "active"
+        },
+        "transitions": [
+          {
+            "seq": 1,
+            "actorId": "npc_a",
+            "cycle": 1,
+            "from": null,
+            "to": "active",
+            "reason": "initial cycle (cycle 1)",
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40,
+              "foodHere": 1,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "logCursor": 0
+          },
+          {
+            "seq": 2,
+            "actorId": "npc_c",
+            "cycle": 1,
+            "from": null,
+            "to": "active",
+            "reason": "initial cycle (cycle 1)",
+            "observation": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 70,
+              "foodHere": 1,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "logCursor": 0
+          },
+          {
+            "seq": 3,
+            "actorId": "npc_a",
+            "cycle": 1,
+            "from": "active",
+            "to": "failed",
+            "reason": "transport provider_error",
+            "observation": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40,
+              "foodHere": 1,
+              "reachable": [
+                "dorm",
+                "kitchen"
+              ]
+            },
+            "logCursor": 0
+          }
+        ],
+        "cursor": 1,
+        "globalTurn": 1,
+        "playerSeq": 1,
+        "worldSeq": 1,
+        "busy": false,
+        "closed": false,
+        "interrupted": true,
+        "lastInterruptedActor": "npc_a",
+        "totalCalls": 1,
+        "idlePumps": {
+          "pumps": 0,
+          "callsBefore": 0,
+          "callsAfter": 0,
+          "cyclesBefore": 0,
+          "cyclesAfter": 0,
+          "actorStatesBefore": {},
+          "actorStatesAfter": {}
+        },
+        "cycles": {
+          "npc_a": [
+            {
+              "cycle": 1,
+              "reason": "initial cycle",
+              "startLogCursor": 0,
+              "endState": "failed",
+              "turns": [
+                {
+                  "globalTurn": 1,
+                  "actorId": "npc_a",
+                  "cycle": 1,
+                  "actorRound": 1,
+                  "observation": {
+                    "id": "npc_a",
+                    "location": "kitchen",
+                    "hunger": 40,
+                    "foodHere": 1,
+                    "reachable": [
+                      "dorm",
+                      "kitchen"
+                    ]
+                  },
+                  "inputFeedback": null,
+                  "providerCalled": true,
+                  "status": "provider_error",
+                  "logCursorBefore": 0,
+                  "logCursorAfter": 0,
+                  "step": {
+                    "round": 1,
+                    "observation": {
+                      "id": "npc_a",
+                      "location": "kitchen",
+                      "hunger": 40,
+                      "foodHere": 1,
+                      "reachable": [
+                        "dorm",
+                        "kitchen"
+                      ]
+                    },
+                    "raw": "",
+                    "parse": {
+                      "ok": false,
+                      "error": "provider_error"
+                    },
+                    "goal": {
+                      "requestId": "demo-req-1",
+                      "goal": null,
+                      "decidedRound": 1,
+                      "decidedAtSimTime": 0,
+                      "parseOk": false
+                    },
+                    "error": "provider error"
+                  }
+                }
+              ],
+              "session": {
+                "runId": "demo:npc_a:c1",
+                "actorId": "npc_a",
+                "round": 1,
+                "feedback": null,
+                "status": "provider_error",
+                "providerCalls": 1,
+                "steps": [
+                  {
+                    "round": 1,
+                    "observation": {
+                      "id": "npc_a",
+                      "location": "kitchen",
+                      "hunger": 40,
+                      "foodHere": 1,
+                      "reachable": [
+                        "dorm",
+                        "kitchen"
+                      ]
+                    },
+                    "raw": "",
+                    "parse": {
+                      "ok": false,
+                      "error": "provider_error"
+                    },
+                    "goal": {
+                      "requestId": "demo-req-1",
+                      "goal": null,
+                      "decidedRound": 1,
+                      "decidedAtSimTime": 0,
+                      "parseOk": false
+                    },
+                    "error": "provider error"
+                  }
+                ],
+                "timeoutMs": 120000,
+                "commandIdScheme": "g06-episode-cycle",
+                "timing": {
+                  "started": 1793792630844,
+                  "calls": [
+                    {
+                      "round": 1,
+                      "ms": 349
+                    }
+                  ]
+                },
+                "terminalOutcome": "provider_error",
+                "explicitError": "provider error",
+                "initialState": {
+                  "tick": 0,
+                  "simTime": 0,
+                  "npcs": {
+                    "npc_a": {
+                      "id": "npc_a",
+                      "location": "kitchen",
+                      "hunger": 40
+                    },
+                    "npc_b": {
+                      "id": "npc_b",
+                      "location": "kitchen",
+                      "hunger": 40
+                    },
+                    "npc_c": {
+                      "id": "npc_c",
+                      "location": "kitchen",
+                      "hunger": 70
+                    }
+                  },
+                  "food": {
+                    "kitchen": 1,
+                    "dorm": 0
+                  }
+                },
+                "eventsBefore": 0,
+                "schema": "frostecho.g09.session/2",
+                "actionSet": "timed_wait",
+                "wakeAtSimTime": null,
+                "goalProtocol": {
+                  "arm": "choice",
+                  "requestId": "demo-req-1",
+                  "text": "请把最后一份食物留给我，你先不要吃。",
+                  "options": [
+                    "feed_self",
+                    "yield_once"
+                  ],
+                  "expiresAtSimTime": 1,
+                  "playerId": "npc_b"
+                },
+                "goalBinding": null,
+                "goalDecision": null
+              }
+            }
+          ],
+          "npc_c": [
+            {
+              "cycle": 1,
+              "reason": "initial cycle",
+              "startLogCursor": 0,
+              "endState": "active",
+              "turns": [],
+              "session": {
+                "runId": "demo:npc_c:c1",
+                "actorId": "npc_c",
+                "round": 0,
+                "feedback": null,
+                "status": "ready",
+                "providerCalls": 0,
+                "steps": [],
+                "timeoutMs": 120000,
+                "commandIdScheme": "g06-episode-cycle",
+                "timing": {
+                  "started": 1793792630844,
+                  "calls": []
+                },
+                "terminalOutcome": null,
+                "initialState": {
+                  "tick": 0,
+                  "simTime": 0,
+                  "npcs": {
+                    "npc_a": {
+                      "id": "npc_a",
+                      "location": "kitchen",
+                      "hunger": 40
+                    },
+                    "npc_b": {
+                      "id": "npc_b",
+                      "location": "kitchen",
+                      "hunger": 40
+                    },
+                    "npc_c": {
+                      "id": "npc_c",
+                      "location": "kitchen",
+                      "hunger": 70
+                    }
+                  },
+                  "food": {
+                    "kitchen": 1,
+                    "dorm": 0
+                  }
+                },
+                "eventsBefore": 0,
+                "schema": "frostecho.g09.session/2",
+                "actionSet": "timed_wait",
+                "wakeAtSimTime": null,
+                "goalProtocol": null,
+                "goalBinding": null,
+                "goalDecision": null
+              }
+            }
+          ]
+        },
+        "goalMode": "negotiated",
+        "candidateSet": "choice",
+        "playerId": "npc_b",
+        "requestStore": {
+          "requests": {
+            "demo-req-1": {
+              "schema": "frostecho.g09.goal-request/2",
+              "requestId": "demo-req-1",
+              "episodeId": "demo",
+              "from": "player",
+              "to": "npc_a",
+              "kind": "yield_once",
+              "text": "请把最后一份食物留给我，你先不要吃。",
+              "options": [
+                "feed_self",
+                "yield_once"
+              ],
+              "createdAtSimTime": 0,
+              "expiresAtSimTime": 1,
+              "status": "pending",
+              "decision": null,
+              "acceptedAfterSeq": null,
+              "lastProcessedSeq": 0,
+              "outcome": "pending",
+              "outcomeReason": null
+            }
+          },
+          "processed": [
+            "demo-req-1"
+          ]
+        },
+        "foldCursor": 0,
+        "schema": "frostecho.g08.game/1",
+        "actionSet": "timed_wait",
+        "recordSchema": "frostecho.g08.game/1",
+        "wakeAtSimTime": {
+          "npc_a": null,
+          "npc_c": null
+        }
+      },
+      "engine": {
+        "state": {
+          "tick": 0,
+          "simTime": 0,
+          "npcs": {
+            "npc_a": {
+              "id": "npc_a",
+              "location": "kitchen",
+              "hunger": 40
+            },
+            "npc_b": {
+              "id": "npc_b",
+              "location": "kitchen",
+              "hunger": 40
+            },
+            "npc_c": {
+              "id": "npc_c",
+              "location": "kitchen",
+              "hunger": 70
+            }
+          },
+          "food": {
+            "kitchen": 1,
+            "dorm": 0
+          }
+        },
+        "log": []
+      },
+      "commands": [],
+      "events": [],
+      "processed": [
+        "demo-req-1"
+      ],
+      "requests": {
+        "demo-req-1": {
+          "schema": "frostecho.g09.goal-request/2",
+          "requestId": "demo-req-1",
+          "episodeId": "demo",
+          "from": "player",
+          "to": "npc_a",
+          "kind": "yield_once",
+          "text": "请把最后一份食物留给我，你先不要吃。",
+          "options": [
+            "feed_self",
+            "yield_once"
+          ],
+          "createdAtSimTime": 0,
+          "expiresAtSimTime": 1,
+          "status": "pending",
+          "decision": null,
+          "acceptedAfterSeq": null,
+          "lastProcessedSeq": 0,
+          "outcome": "pending",
+          "outcomeReason": null
+        }
+      },
+      "budget": {
+        "sessionLimit": 5,
+        "episodeLimit": 10,
+        "providerCalls": 1,
+        "episodeCalls": 1
+      }
+    },
+    "wire": [],
+    "campaign": {
+      "binding": null,
+      "limit": 1,
+      "spent": 1,
+      "known": 5
+    }
+  }
+}

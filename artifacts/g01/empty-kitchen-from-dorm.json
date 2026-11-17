@@ -1,0 +1,115 @@
+{
+  "runId": "empty-kitchen",
+  "actorId": "npc_a",
+  "outcome": "stopped",
+  "goalReached": false,
+  "providerCalls": 2,
+  "steps": [
+    {
+      "round": 1,
+      "observation": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "raw": "{\"type\":\"move\",\"to\":\"kitchen\"}",
+      "parse": {
+        "ok": true,
+        "action": {
+          "type": "move",
+          "to": "kitchen"
+        }
+      },
+      "command": {
+        "commandId": "empty-kitchen:1",
+        "actorId": "npc_a",
+        "type": "move",
+        "payload": {
+          "to": "kitchen"
+        }
+      },
+      "exec": {
+        "commandId": "empty-kitchen:1",
+        "seq": 1,
+        "status": "accepted",
+        "eventIds": [
+          "e1"
+        ]
+      }
+    },
+    {
+      "round": 2,
+      "observation": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40,
+        "foodHere": 0,
+        "reachable": [
+          "dorm",
+          "kitchen"
+        ]
+      },
+      "raw": "{\"type\":\"stop\"}",
+      "parse": {
+        "ok": true,
+        "action": {
+          "type": "stop"
+        }
+      }
+    }
+  ],
+  "initialState": {
+    "tick": 0,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "dorm",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 0
+    }
+  },
+  "events": [
+    {
+      "type": "NpcMoved",
+      "npcId": "npc_a",
+      "from": "dorm",
+      "to": "kitchen",
+      "eventId": "e1",
+      "seq": 1,
+      "commandId": "empty-kitchen:1"
+    }
+  ],
+  "finalState": {
+    "tick": 1,
+    "npcs": {
+      "npc_a": {
+        "id": "npc_a",
+        "location": "kitchen",
+        "hunger": 40
+      },
+      "npc_b": {
+        "id": "npc_b",
+        "location": "dorm",
+        "hunger": 20
+      }
+    },
+    "food": {
+      "dorm": 0,
+      "kitchen": 0
+    }
+  }
+}

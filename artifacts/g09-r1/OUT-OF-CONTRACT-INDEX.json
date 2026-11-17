@@ -1,0 +1,40 @@
+{
+  "schema": "frostecho.g09.correction-index/1",
+  "date": "2026-11-04",
+  "baseline": "e0f8c86",
+  "historicalBatches": [
+    {
+      "batch": "artifacts/g09/g09-live-20261104",
+      "status": "out_of_contract",
+      "reason": "defect run: the client timeout was the library default 15000 ms instead of the frozen 120000 ms; the first goal call was aborted locally. Original bytes preserved.",
+      "attempts": 1,
+      "completedEpisodes": 0,
+      "notRun": 7,
+      "knownTokens": null,
+      "serverSideProof": null
+    },
+    {
+      "batch": "artifacts/g09/g09-live-20261104-frozen",
+      "status": "out_of_contract_exploratory",
+      "reason": "executed with a rewritten contract: S1 text changed, self_only had no request, player satiety 20, npc_c 40, one-shot/legacy, rep2 not reversed, round-based deadline. Not an acceptance of the frozen G09 contract.",
+      "attempts": 17,
+      "completedEpisodes": 16,
+      "authorizedLimit": 16,
+      "exceededBy": 1,
+      "knownTokens": 9970,
+      "goalKnownTokens": 4338,
+      "actionKnownTokens": 5632,
+      "totalTokens": null,
+      "totalTokensReason": "the first interrupted attempt has unknown usage, so the task total is unknown",
+      "observedDescriptively": "choice 4/4 chose yield_once and then stopped (player satiety 20 -> 50); self_only 4/4 fed itself. This is a description of the out-of-contract run, not a candidate-only effect and not an autonomous refusal to the same request.",
+      "serverSideProof": null,
+      "missingWireEvidence": ["request bodies", "full responses", "source/prompt fingerprints of that run"]
+    }
+  ],
+  "thisRepair": {
+    "realChatLimit": 0,
+    "newRealModelCalls": 0,
+    "fakeEvidence": "artifacts/g09-r1/fixture-g09r1-fake",
+    "campaignLedger": "artifacts/g09-r1/campaign-fake"
+  }
+}

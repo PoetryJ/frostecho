@@ -1,0 +1,2 @@
+The frozen final_check eval-full call exceeded its 900 second cap and produced no TAP, because the runner buffers until the process exits.
+A streamed diagnostic of the same node --test file list reached test 119 in g04-cli.test.js (status only reads) and then stayed inside dist/tests/g04-cli.test.js. The next test is the pre-existing live CLI case "quit during an in-flight live request", which waits on play-g04.js. That file is not part of the R6 repair. The diagnostic was stopped rather than left running. This is not a pass of eval-full.

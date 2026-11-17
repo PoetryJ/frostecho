@@ -1,0 +1,90 @@
+TAP version 13
+# Subtest: F1a: a goal answer released after the deadline is discarded (no binding, no submit)
+ok 1 - F1a: a goal answer released after the deadline is discarded (no binding, no submit)
+  ---
+  duration_ms: 4.278295
+  ...
+# Subtest: F1b: a wait answer released after the action deadline creates no new wait deadline
+ok 2 - F1b: a wait answer released after the action deadline creates no new wait deadline
+  ---
+  duration_ms: 1.257342
+  ...
+# Subtest: F1c: a player eat before acceptance cannot fulfil the later promise, and the seq is the receive seq
+ok 3 - F1c: a player eat before acceptance cannot fulfil the later promise, and the seq is the receive seq
+  ---
+  duration_ms: 1.316821
+  ...
+# Subtest: F2a: yield -> stop -> player eat fulfils immediately; selected goal true, hunger need false
+ok 4 - F2a: yield -> stop -> player eat fulfils immediately; selected goal true, hunger need false
+  ---
+  duration_ms: 1.561305
+  ...
+# Subtest: F2b: NPC eats first -> violated forever, even at hunger 70 and after a later player eat
+ok 5 - F2b: NPC eats first -> violated forever, even at hunger 70 and after a later player eat
+  ---
+  duration_ms: 1.171064
+  ...
+# Subtest: F2d: a feed_self refusal is recorded in the store and still runs the ordinary hunger action
+ok 6 - F2d: a feed_self refusal is recorded in the store and still runs the ordinary hunger action
+  ---
+  duration_ms: 0.966758
+  ...
+# Subtest: F2c: close cancels an unfinished request; the terminal outcome is idempotent
+ok 7 - F2c: close cancels an unfinished request; the terminal outcome is idempotent
+  ---
+  duration_ms: 0.783832
+  ...
+# Subtest: F3: save at three cut points, load in another process, and keep the same yield goal
+ok 8 - F3: save at three cut points, load in another process, and keep the same yield goal
+  ---
+  duration_ms: 1424.293257
+  ...
+# Subtest: F4: --time advances the authoritative clock, expires the open request, and never rewrites a fulfilled one
+ok 9 - F4: --time advances the authoritative clock, expires the open request, and never rewrites a fulfilled one
+  ---
+  duration_ms: 810.573032
+  ...
+# Subtest: F5: eval --live records the REAL wire (8 episodes, 16 POST, verify green)
+ok 10 - F5: eval --live records the REAL wire (8 episodes, 16 POST, verify green)
+  ---
+  duration_ms: 405.765795
+  ...
+# Subtest: F5b: a 500 on the first call stops the batch, keeps the raw evidence, and invents no usage
+ok 11 - F5b: a 500 on the first call stops the batch, keeps the raw evidence, and invents no usage
+  ---
+  duration_ms: 226.146313
+  ...
+# Subtest: F6a: two processes race the FIRST open with limit 1 — only one authorization survives
+ok 12 - F6a: two processes race the FIRST open with limit 1 — only one authorization survives
+  ---
+  duration_ms: 1990.169699
+  ...
+# Subtest: F6b: eight processes on an existing limit-2 ledger grant at most two unique attempts
+ok 13 - F6b: eight processes on an existing limit-2 ledger grant at most two unique attempts
+  ---
+  duration_ms: 190.733783
+  ...
+# Subtest: F6c: limit 0 authorizes nothing, and a reserved-but-unfinished call stays spent
+ok 14 - F6c: limit 0 authorizes nothing, and a reserved-but-unfinished call stays spent
+  ---
+  duration_ms: 90.177568
+  ...
+# Subtest: F7: six short sequences are judged by the contract first, then continuous == resumed
+ok 15 - F7: six short sequences are judged by the contract first, then continuous == resumed
+  ---
+  duration_ms: 30.544809
+  ...
+# Subtest: F7b: post-acceptance continuation across processes equals the continuous run
+ok 16 - F7b: post-acceptance continuation across processes equals the continuous run
+  ---
+  duration_ms: 636.7629
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5974.162095

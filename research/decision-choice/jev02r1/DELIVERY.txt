@@ -1,0 +1,55 @@
+JEV-02R1 交付索引（2026-11-10）
+分支 codex/jev02-r1-selective，基线 e12ac4c，工作树 /data3/DATA/project/project_meishijiang/FrostEcho-jev02-r1
+
+结论：两条冻结策略 valid=false（不可用）；机制/接线/计量/数据已修好并有行为证据。
+只训练 0 个新头；M1-seed17 权重不变；未 push/merge；未调用 18872。
+
+代码
+  contract.json                 冻结语义合同 + 预注册策略/门槛（写数据前）
+  r1config.py                   预算/路径/身份/prompt 指纹
+  r1ledger.py                   按 operation 计费、窗口、失败不退款的 ledger
+  guards.py                     gold 访问阻断（行为级，非布尔字段）
+  policy.py                     唯一 policy 校验 + S1/S2 决策函数（CLI 与评测共用）
+  fit.py                        温度 T1/Tfit 对照 + 固定网格选 tau + 写 policy
+  score.py / cal_scores.py      冻结头 CPU 读出
+  extract.py                    单实例 27B 特征提取 + test JSON 生成（封存态）
+  predict_batch.py              封存 test 预测 + 阻断正向对照 + 哈希记录
+  latency.py                    单前向/双前向真实在线成本
+  unseal.py                     单次解封与计分（重复必须给 --reason）
+  report_stats.py               逐序/逐类/逐族 + 族 bootstrap
+  verify.py                     只读重算核验器
+  devselect.py                  未来训练的四序/分组均衡选模 + fixture
+  datagate.py / build_data.py / adjudicate_r1.py   数据门控、组装、盲标裁决
+  tests/test_r1.py              28 项 CPU 测试
+
+policy
+  policies/single_pass.json             valid=false, tau=null, T=2.018616
+  policies/reverse_pair_consensus.json  valid=false, tau=null, T=2.018616
+
+标注与分歧
+  data/blind/labels-1..4.jsonl  4 个独立会话盲标（只给合同+无标签输入）
+  data/disagreements.json       507/512 一致，5 处分歧全文
+  data/resolutions.json         逐条裁决理由（4 采纳盲标 / 1 维持作者）
+  data/card.md                  数据卡
+
+原始预测与结果
+  results/test-scores.jsonl                   原始逐序 logits（封存前写定）
+  results/test-predictions-single_pass.jsonl
+  results/test-predictions-reverse_pair_consensus.jsonl
+  results/test-json-generations.jsonl         Qwen JSON 基线原样输出
+  results/unseal-record.json                  预测/policy/特征哈希 + blockedAttempts
+  results/final.json                          解封后全部指标与诊断曲线
+  results/final-scoring-attempt1.json          第一次计分（比对代码有缺陷，保留）
+  results/report-stats.json                   逐序/类/族 + bootstrap
+  results/candidate-tables.json               cal 上全网格表
+  results/latency.json                        单/双前向在线成本
+  results/REPORT.md                           报告
+
+证据
+  evidence/jobs.jsonl           计费账本（含 1 个中断兼容前向，照常计费）
+  evidence/extract-seal.json    预测阶段 gold 阻断记录
+  evidence/cli-s1.json / cli-s2.json    同一 policy 的真实 CLI 输出（researchOnly）
+  evidence/model-identity.json  主干身份与显存峰值
+
+复现
+  README.md（含隔离 transformers 5.22 的安装步骤与完整命令序列）

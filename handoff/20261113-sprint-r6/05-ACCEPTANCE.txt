@@ -1,0 +1,45 @@
+R6 验收与运行隔离
+
+阶段一：环境与基线
+运行00中的preflight、npm ci/build、repro --expect baseline。四个defectObserved都应true，exit0只说明基线复现完成。缺运行时/构建/协议解析失败必须exit2/blocked，不能当修复拒绝。
+原始节点日志、Python stdout/stderr/exit和wrapper summary均保留。
+
+阶段二：定向修复
+每个修复有对应自动断言，不只修改日志。新增tests/acceptance-v6与Python regression tests；按02完成正负例。
+python handoff/20261113-sprint-r6/tools/repro.py --repo . --out artifacts/sprint-r6/run01/fixed --expect fixed
+要求四个fixed=true，任何失败非零。该wrapper是最小四探针，不替代完整验收。
+Node的单文件命令：node --test --test-reporter=tap dist/tests/acceptance-v6/gate-r6.test.js
+Python可用标准库，无需torch：
+python -m unittest discover -s research/decision-choice/jev04/tests -p "test_*.py" -v
+python -m unittest discover -s research/decision-choice/jev04/scorers/tests -p "test_*.py" -v
+若环境有pytest也可用原pytest入口，但如实记录pass/fail/skip；无scipy的oracle skip不能宣称与旧66/66完全等价。可在隔离Python环境安装scipy用于oracle，不必为了这个安装模型库。
+
+阶段三：集成
+运行03的两臂故事和04的CPU概率证据包，生成结构化pass/fail/blocked。不允许因为旧G11 known flake直接把本轮失败改pass；保留首跑证据，只为已登记同一失败做一次定向复跑并单独报告。
+node dist/scripts/verify-r6.js --out artifacts/sprint-r6/run01/integration
+
+最终全量只在隔离clone执行一次
+注意：eval-full --out只改汇总位置，还会写play-fixture的旧R1路径；bootstrap会写g11-live；encoder gate测试也可能写runs。因此不要直接在保留R5原始证据的主工作区跑全量。
+先提交代码/定向测试，可直接用本包工具，它创建隔离clone、临时目录，保存每条命令及汇总，并同时检查eval-full的failed/blocked字段：
+python handoff/20261113-sprint-r6/tools/final_check.py --repo . --out artifacts/sprint-r6/run01/full
+该副本不提交进Git、不放进证据manifest。等价的副本内步骤如下（供排错，不要再重复全量）：
+npm ci
+npm run build
+python handoff/20261113-sprint-r6/tools/preflight.py --repo . --out <新绝对输出目录>/preflight --restore-g11
+node dist/scripts/eval-full.js --out <新绝对输出目录>/eval-full
+node --test --test-reporter=tap dist/tests/acceptance-v6/gate-r6.test.js
+python -m unittest discover -s research/decision-choice/jev04/tests -p "test_*.py" -v
+python -m unittest discover -s research/decision-choice/jev04/scorers/tests -p "test_*.py" -v
+G11恢复的是打包历史证据，不是新live。preflight只核对/恢复缺失文件，存在且不同会拒绝覆盖。
+eval-full在只有blocked时可能exit0，必须同时读summary.json：failed=0且blocked=0才是全量通过。工具summary中Python unittest的skip单独保留，不计pass。
+final_check会在同一验收clone的测试后再次核验冻结证据；构建语法/类型失败属于验收失败，不能报成缺环境。
+
+验收判断
+通过（R6 CPU工程门）：P/R/D/M四项关闭、合法fixture正路径有效、四日两臂一致、核心与新增测试通过、冻结证据无污染。研究门仍blocked不是本轮造假通过理由，也不阻止CPU工程门单独通过。
+有限返工：有明确失败或必做项未完成，保留已有效工作，不扩下一轮功能。
+停止：无法访问可执行环境/正确基线、无法保全证据，或需要擅开真实训练/维护服务器才能继续；给具体阻断与已完成范围。
+无服务器只证明本次Bot实际OS上的CPU行为。不能补写Linux服务器、GPU吞吐、真实NPC模型或跨平台结论。
+
+冻结校验
+交付前再次运行preflight（新out）。原R5 971+272+128、原任务包SHA均应仍通过；根STATUS与.gitattributes不要改。
+出库后在一个新clone中校验本轮delivery manifest、build及关键验收；不用第二次全量刷绿。若新增修复，重跑受影响项；保留旧失败记录。

@@ -1,0 +1,26 @@
+JEV 本轮推进：可复算的概率/选择/拒绝机制，真实研究门继续关闭
+
+沿用生产组件，禁止另外写一个永远正确的演示计算器。
+分清三个量：logits为候选评分；softmax(logits/T)是给定候选集上的分布；它不是效用，也不是NPC最终履约成功率。阈值/证书验证的是冻结任务、标签和采样协议上的选择错误，不覆盖长程游戏成功或分布外风险。
+
+证据契约（可版本化；旧协议无原始记录时拒绝准入，不自动补造）
+每个分区记录schema/protocol、evidenceClass、identity、calibration_id、T/tau适用项、数据hash与逐样本记录。至少有sampleId/sourceGroup、候选顺序/id、logits、合法标签（本fixture用单一明确正确候选）、冻结决策结果/是否接受/是否错误。
+calT拟合T；select用冻结T在原固定TAU_GRID上选择tau；cert只评估已冻结T/tau，不能再调参。三分区样本和源组互斥；与拟合模型的训练/开发来源隔离也要记录，当前只能交合成fixture，不能冒充独立研究数据。
+统计定义：n是cert中被接受的记录数，errors是这些记录中的错误数；sampleIds通常是全体记录，不可把全体数当n。coverage=n/全体数。sampleId唯一，逐行记录数量、候选协议和标签一致。
+沿用单侧95% Clopper–Pearson上界：alpha=.05，maxRisk=.05；select至少100接受；cert coverage>=.30。按现有协议验证，不允许调大alpha、放宽阈值或选择cert子集过门。
+upper必须由生产cp_upper(errors,n,alpha)重算，与声明比较（给明确浮点容差，如1e-9）；边界n=0必须拒绝，errors=n应upper=1；整数必须是真整数，拒bool/截断浮点/NaN/Inf/负数。
+artifact实际temperature与calT结果相同，实际tau与select/cert冻结策略相同；identity包含model/head/adapter/tokenizer/renderer/task/K/policy/memory policy以及明确calibration_id，任一漂移不借旧证书继续执行。
+Python port真实决定与TS adapter的sealed状态必须用同一组证据fixtures给出一致拒绝/数值有效结论。TS即使数值有效也仍shadow、selectedId=null。
+
+正fixture（防止全部拒绝的伪修复）
+固定seed17/43生成小型合成CPU记录，明确fixture；calT/select/cert源组分开，每分区建议120–200例。使用生产fit_temperature/select_policy/certify与port贯通。
+至少一个正确、有效、coverage足够的证据包通过统计校验；若用0/120错误作算术基准，CP上界应为1-alpha^(1/120)，但整条pipeline的实际记录必须与最终计数一致，不能只填写这个数。
+构造高低pmax请求，展示temperature前后分布以及accept/abstain；两种结果都由port产生，fixture counts_as_real永远false，utility=null。
+同一合法包逐字段篡改生成M1反例；多个错误不得靠同一个“缺少文件”拒绝掩盖，例如测试T不匹配时其他字段必须合法。
+旧test_r5_gates中所谓valid fixture若仅4个sampleId却n=120/errors=2/upper=.03，必须换成真实逐样本生成的CPU fixture，不能继续沿用不自洽的假正例。
+
+39题与正式入口
+保留当前原始两审和裁决：0eligible/29ambiguous/10inconsistent，train/dev未达512/128。不得把29个acceptable-set直接转成单标签训练样本，10题不在本轮由同一Bot改题再自审。
+正式encoder_train.py隔离副本拒绝门测试仍需非零退出、torch/transformers导入0；缺审/不足/篡改均拒绝。不要安装torch或启动真实encoder来证明此事。
+交出capability.json：numericEvidenceValid、fixtureDecisionWorks、researchTrainReady=false、realModelLoaded=false、realExecutionEnabled=false分别记录，不用一个“JEV完成”掩盖差异。
+不交真实风险证书，不声称模型收益/概率已正确校准。真正模型和独立数据到位后再做原三臂实验，本轮没有调用它们的授权。

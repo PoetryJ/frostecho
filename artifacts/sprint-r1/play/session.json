@@ -1,0 +1,425 @@
+{
+  "schema": "frostecho.session/1",
+  "world": {
+    "schema": "frostecho.world-v2/2",
+    "rulesVersion": "survival-rules/2",
+    "day": 1,
+    "simTime": 0,
+    "version": 0,
+    "rngSeed": "play-8",
+    "weather": "snow",
+    "npcs": {
+      "npc_01": {
+        "id": "npc_01",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_02": {
+        "id": "npc_02",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_03": {
+        "id": "npc_03",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_04": {
+        "id": "npc_04",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_05": {
+        "id": "npc_05",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_06": {
+        "id": "npc_06",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_07": {
+        "id": "npc_07",
+        "location": "dorm-a",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      },
+      "npc_08": {
+        "id": "npc_08",
+        "location": "dorm-b",
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "alive": true
+      }
+    },
+    "resources": {
+      "food": 24,
+      "firewood": 20,
+      "power": 40,
+      "medicine": 2
+    },
+    "furnace": {
+      "lit": true,
+      "fuel": 6,
+      "warmth": 18
+    },
+    "commandLog": [],
+    "dead": [],
+    "ending": "none",
+    "scenarioDays": 4
+  },
+  "memories": {
+    "npc_01": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "promise-p-food-npc_01",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_made",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "p-food-npc_01",
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "给玩家留一份饭"
+          },
+          "source": "engine",
+          "authority": "npc",
+          "speakerId": "npc_01",
+          "relatedRequestId": "p-food-npc_01",
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "promise-p-food-npc_01"
+          ],
+          "recordId": "m-53d752723ec40c4d",
+          "revision": 1
+        },
+        {
+          "eventId": "cancel-p-food-npc_01-0",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_retract",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "p-food-npc_01",
+            "byId": "player",
+            "text": "不用留了"
+          },
+          "source": "player_statement",
+          "authority": "player",
+          "speakerId": "player",
+          "retracts": [
+            "promise-p-food-npc_01"
+          ],
+          "observerId": "npc_01",
+          "sourceEventIds": [
+            "cancel-p-food-npc_01-0"
+          ],
+          "recordId": "m-68c9a15f1ff2c7b7",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_02": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "promise-p-food-npc_01",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_made",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "p-food-npc_01",
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "给玩家留一份饭"
+          },
+          "source": "engine",
+          "authority": "npc",
+          "speakerId": "npc_01",
+          "relatedRequestId": "p-food-npc_01",
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "promise-p-food-npc_01"
+          ],
+          "recordId": "m-f018218817b272b5",
+          "revision": 1
+        },
+        {
+          "eventId": "relay-p-food-npc_01-1",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_retract",
+          "subjectIds": [
+            "npc_02",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "p-food-npc_01",
+            "byId": "player",
+            "text": "玩家当面说已经取消了"
+          },
+          "source": "player_statement",
+          "authority": "player",
+          "speakerId": "player",
+          "retracts": [
+            "promise-p-food-npc_01"
+          ],
+          "observerId": "npc_02",
+          "sourceEventIds": [
+            "relay-p-food-npc_01-1"
+          ],
+          "recordId": "m-8a8130ac9843dd62",
+          "revision": 2
+        }
+      ]
+    },
+    "npc_03": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "promise-p-food-npc_01",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_made",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "p-food-npc_01",
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "给玩家留一份饭"
+          },
+          "source": "engine",
+          "authority": "npc",
+          "speakerId": "npc_01",
+          "relatedRequestId": "p-food-npc_01",
+          "observerId": "npc_03",
+          "sourceEventIds": [
+            "promise-p-food-npc_01"
+          ],
+          "recordId": "m-356f65991a2902f1",
+          "revision": 1
+        }
+      ]
+    },
+    "npc_04": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "promise-p-food-npc_01",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_made",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "p-food-npc_01",
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "给玩家留一份饭"
+          },
+          "source": "engine",
+          "authority": "npc",
+          "speakerId": "npc_01",
+          "relatedRequestId": "p-food-npc_01",
+          "observerId": "npc_04",
+          "sourceEventIds": [
+            "promise-p-food-npc_01"
+          ],
+          "recordId": "m-d9f94e54180cef70",
+          "revision": 1
+        }
+      ]
+    },
+    "npc_05": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "promise-p-food-npc_01",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_made",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "p-food-npc_01",
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "给玩家留一份饭"
+          },
+          "source": "engine",
+          "authority": "npc",
+          "speakerId": "npc_01",
+          "relatedRequestId": "p-food-npc_01",
+          "observerId": "npc_05",
+          "sourceEventIds": [
+            "promise-p-food-npc_01"
+          ],
+          "recordId": "m-2b408afc8426ac96",
+          "revision": 1
+        }
+      ]
+    },
+    "npc_06": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "promise-p-food-npc_01",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_made",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "p-food-npc_01",
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "给玩家留一份饭"
+          },
+          "source": "engine",
+          "authority": "npc",
+          "speakerId": "npc_01",
+          "relatedRequestId": "p-food-npc_01",
+          "observerId": "npc_06",
+          "sourceEventIds": [
+            "promise-p-food-npc_01"
+          ],
+          "recordId": "m-e9020983cd8bdc26",
+          "revision": 1
+        }
+      ]
+    },
+    "npc_07": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "promise-p-food-npc_01",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_made",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "p-food-npc_01",
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "给玩家留一份饭"
+          },
+          "source": "engine",
+          "authority": "npc",
+          "speakerId": "npc_01",
+          "relatedRequestId": "p-food-npc_01",
+          "observerId": "npc_07",
+          "sourceEventIds": [
+            "promise-p-food-npc_01"
+          ],
+          "recordId": "m-0fb7007a0d5e49c6",
+          "revision": 1
+        }
+      ]
+    },
+    "npc_08": {
+      "schema": "frostecho.memory-store/1",
+      "policyVersion": "memory-policy/1",
+      "records": [
+        {
+          "eventId": "promise-p-food-npc_01",
+          "occurredAt": 0,
+          "observedAt": 0,
+          "kind": "promise_made",
+          "subjectIds": [
+            "npc_01",
+            "player"
+          ],
+          "payload": {
+            "promiseId": "p-food-npc_01",
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "给玩家留一份饭"
+          },
+          "source": "engine",
+          "authority": "npc",
+          "speakerId": "npc_01",
+          "relatedRequestId": "p-food-npc_01",
+          "observerId": "npc_08",
+          "sourceEventIds": [
+            "promise-p-food-npc_01"
+          ],
+          "recordId": "m-28a09d0d85371598",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  "outcomes": {},
+  "plans": [
+    {
+      "planId": "plan-npc_01-p-food-npc_01",
+      "ownerId": "npc_01",
+      "promiseId": "p-food-npc_01",
+      "dependencyRevision": 2,
+      "state": "invalidated"
+    }
+  ],
+  "sequence": 2,
+  "seed": "play-8"
+}

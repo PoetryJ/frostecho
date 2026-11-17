@@ -1,0 +1,35 @@
+{
+  "schema": "frostecho.jev04.trusted-policy-manifest/1",
+  "registrations": [
+    {
+      "identity": {
+        "model": "audit/fake",
+        "head": "shared-scalar/1",
+        "adapter": "audit",
+        "tokenizer": "audit",
+        "renderer": "audit",
+        "task": "choose_action",
+        "k": 4,
+        "policy_version": "audit",
+        "memory_policy_version": "audit"
+      },
+      "mode": "real",
+      "utility_source": null,
+      "evidence": {
+        "calT": {
+          "path": "/agent/repos/frostecho/artifacts/sprint-r6/run01/baseline/risk/calT.json",
+          "sha256": "53f3cfe59df3469a6d4a89cb490755aba9e0106319693bde55883ae341df6d61"
+        },
+        "select": {
+          "path": "/agent/repos/frostecho/artifacts/sprint-r6/run01/baseline/risk/select.json",
+          "sha256": "227755ded194814906d39b2772b1f1a7068f521d78ae1a68925a2cf1ff4165b3"
+        },
+        "cert": {
+          "path": "/agent/repos/frostecho/artifacts/sprint-r6/run01/baseline/risk/cert.json",
+          "sha256": "7e7a86aab5ddbe32e7a02cd3965311598fb7cd53d574ed9514e485375fa58f82"
+        },
+        "protocol_version": "jev04-risk/1"
+      }
+    }
+  ]
+}

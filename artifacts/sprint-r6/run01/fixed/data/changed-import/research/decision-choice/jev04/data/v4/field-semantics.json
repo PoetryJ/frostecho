@@ -1,0 +1,8 @@
+{
+  "schema": "frostecho.jev04.field-semantics/1",
+  "foodStock": "world food resource units available to the acting NPC; not a portion count",
+  "stockPortions": "the number of ready meal portions that can be promised; a separate store from foodStock, and not implied by the narrative",
+  "rule": "when the narrative only says '食物库存 N', stockPortions must not contradict it without an explicit stockScope fact",
+  "retractionExists": "an AUTHORIZED retraction event exists",
+  "retractionStatement": "a retraction-like statement was uttered (may be unauthorized); the current schema lacks this field"
+}

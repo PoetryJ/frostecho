@@ -1,0 +1,257 @@
+{
+  "schema": "frostecho.g09.episode/2",
+  "episodeId": "g09-r1-s40-choice",
+  "cell": "s40-choice",
+  "satiety": 40,
+  "arm": "choice",
+  "outcome": "completed",
+  "request": {
+    "schema": "frostecho.g09.goal-request/2",
+    "requestId": "g09-r1-s40-choice-req-1",
+    "episodeId": "g09-r1-s40-choice",
+    "from": "player",
+    "to": "npc_a",
+    "kind": "yield_once",
+    "text": "请把最后一份食物留给我，你先不要吃。",
+    "options": [
+      "feed_self",
+      "yield_once"
+    ],
+    "createdAtSimTime": 0,
+    "expiresAtSimTime": 1,
+    "status": "accepted",
+    "decision": {
+      "goal": "yield_once",
+      "round": 1,
+      "decidedAtSimTime": 0,
+      "raw": "\n\n{\"goal\":\"yield_once\"}"
+    },
+    "acceptedAfterSeq": 0,
+    "lastProcessedSeq": 1,
+    "outcome": "fulfilled",
+    "outcomeReason": "the player ate at seq 1"
+  },
+  "binding": {
+    "schema": "frostecho.g09.goal-binding/2",
+    "episodeId": "g09-r1-s40-choice",
+    "requestId": "g09-r1-s40-choice-req-1",
+    "goal": "yield_once",
+    "decidedRound": 1,
+    "decidedAtSimTime": 0,
+    "expiresAtSimTime": 1,
+    "acceptedAfterSeq": 0,
+    "raw": "\n\n{\"goal\":\"yield_once\"}"
+  },
+  "goal": {
+    "round": 1,
+    "raw": "\n\n{\"goal\":\"yield_once\"}",
+    "parseOk": true,
+    "error": null
+  },
+  "action": {
+    "round": 2,
+    "raw": "",
+    "parseOk": false,
+    "type": null,
+    "error": "invalid JSON"
+  },
+  "fulfilment": {
+    "verdict": "fulfilled",
+    "evidence": {
+      "goal": "yield_once",
+      "npcAteBeforePlayer": false,
+      "playerAte": true
+    },
+    "outcome": "fulfilled",
+    "reason": "the player ate at seq 1"
+  },
+  "playerEat": {
+    "ok": true,
+    "detail": "g09-r1-s40-choice:player:npc_b:1"
+  },
+  "http": [
+    {
+      "phase": "goal",
+      "attemptId": "att-0003",
+      "requestBody": {
+        "model": "qwen3.8-27b",
+        "temperature": 0,
+        "max_tokens": 1024,
+        "stream": false,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "你是 npc_a，位于kitchen。当前逻辑时间 0。\n你的饱食度：40。你所在位置的剩余食物：1。\n玩家说：“请把最后一份食物留给我，你先不要吃。”\n请从候选目标中选择一个，只回复一个 JSON 对象，不要输出任何其他内容。\ncandidateGoals: [\"feed_self\",\"yield_once\"]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "body": "{\"id\":\"chatcmpl-92ac0e8ab8c2fdfb\",\"object\":\"chat.completion\",\"created\":1793851051,\"model\":\"qwen3.8-27b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\\n\\n{\\\"goal\\\":\\\"yield_once\\\"}\",\"refusal\":null,\"annotations\":null,\"audio\":null,\"function_call\":null,\"reasoning\":\"We need answer user's request. Need produce final only JSON object. Need choose goal from candidateGoals: [\\\"feed_self\\\",\\\"yield_once\\\"]. Context: npc_a in kitchen, time 0, satiety 40, remaining food 1. Player says: \\\"Please leave the last food for me, don't eat it first.\\\" Need choose likely yield_once. Need output only JSON object. Maybe {\\\"goal\\\":\\\"yield_once\\\"}. Ensure no other content.\\n\"},\"logprobs\":null,\"finish_reason\":\"stop\",\"stop_reason\":null,\"token_ids\":null,\"routed_experts\":null}],\"service_tier\":null,\"system_fingerprint\":\"vllm-0.32.0-tp4-042ad0af\",\"usage\":{\"prompt_tokens\":128,\"total_tokens\":231,\"completion_tokens\":103,\"prompt_tokens_details\":null,\"completion_tokens_details\":{\"reasoning_tokens\":94}},\"prompt_logprobs\":null,\"prompt_token_ids\":null,\"prompt_text\":null,\"kv_transfer_params\":null,\"ec_transfer_params\":null,\"metrics\":null}",
+        "usage": {
+          "total_tokens": 231,
+          "prompt_tokens": 128,
+          "completion_tokens": 103
+        }
+      },
+      "prompt": "你是 npc_a，位于kitchen。当前逻辑时间 0。\n你的饱食度：40。你所在位置的剩余食物：1。\n玩家说：“请把最后一份食物留给我，你先不要吃。”\n请从候选目标中选择一个，只回复一个 JSON 对象，不要输出任何其他内容。\ncandidateGoals: [\"feed_self\",\"yield_once\"]",
+      "promptFingerprint": "8ae6fb0cf6e4d797b3422482fccb931df5116ca0b0b0ac69f7753451504490ed",
+      "elapsedMs": 12515,
+      "error": null
+    },
+    {
+      "phase": "action",
+      "attemptId": "att-0004",
+      "requestBody": {
+        "model": "qwen3.8-27b",
+        "temperature": 0,
+        "max_tokens": 1024,
+        "stream": false,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "Reply with one JSON object and no other text.\nallowedActions: [\"move\",\"eat\",\"stop\",\"wait\"]\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\n\"stop\" ends your current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows the outer restock-wait and new-cycle rules.\n\"wait\" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {\"type\":\"wait\"} only when allowedActions includes \"wait\".\n你已选择的目标：yield_once（把这份食物让给玩家，直到请求到期）。\ngoal: hunger >= 70\nobservation: {\"id\":\"npc_a\",\"location\":\"kitchen\",\"hunger\":40,\"foodHere\":1,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "body": "{\"id\":\"chatcmpl-a064b056b3f90e60\",\"object\":\"chat.completion\",\"created\":1793851065,\"model\":\"qwen3.8-27b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":null,\"refusal\":null,\"annotations\":null,\"audio\":null,\"function_call\":null,\"reasoning\":\"We need answer user's request. Need produce one JSON object and no other text. Need infer action. User says: Reply with one JSON object and no other text.\\nallowedActions: [\\\"move\\\",\\\"eat\\\",\\\"stop\\\",\\\"wait\\\"]\\nDo not set actorId or commandId. World changes happen only through Engine.submit.\\nhunger is satiety: higher means fuller.\\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\\nObservation includes only this actor, food at current location, and reachable places. Distant food, other NPCs, and global log omitted.\\n\\\"stop\\\" ends your current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows outer restock-wait and new-cycle rules.\\n\\\"wait\\\" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {\\\"type\\\":\\\"wait\\\"} only when allowedActions includes \\\"wait\\\".\\n你已选择的目标：yield_once（把这份食物让给玩家，直到请求到期）。\\ngoal: hunger >= 70\\nobservation: {\\\"id\\\":\\\"npc_a\\\",\\\"location\\\":\\\"kitchen\\\",\\\"hunger\\\":40,\\\"foodHere\\\":1,\\\"reachable\\\":[\\\"dorm\\\",\\\"kitchen\\\"]}\\nfeedback: null\\n\\nNeed output JSON object likely action. Need understand semantics. We have chosen goal yield_once: give this food to player until request expires. Goal hunger >=70. Observation: in kitchen, hunger 40, foodHere 1, reachable dorm/kitchen. allowedActions includes move, eat, stop, wait. Need decide action. Since yield_once means yield food to player, don't eat? But goal hunger >=70. If yield food, maybe stop? Let's parse.\\n\\nThis appears from some game engine prompt. We are NPC? We have selected goal: yield_once (把这份食物让给玩家，直到请求到期). Means \\\"You have chosen the goal: yield_once (give this food to the player, until the request expires).\\\" Goal: hunger >=70. Observation: foodHere 1. If yield_once, should not eat the food, perhaps wait or stop? Need output action JSON. allowedActions: move, eat, stop, wait. Need likely {\\\"type\\\":\\\"wait\\\"}? Or {\\\"type\\\":\\\"stop\\\"}? Let's reason.\\n\\nThe prompt: \\\"stop\\\" ends your current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows outer restock-wait and new-cycle rules.\\n\\\"wait\\\" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {\\\"type\\\":\\\"wait\\\"} only when allowedActions includes \\\"wait\\\".\\n\\nChosen goal yield_once: give this food to player until request expires. If there is food present and we are yielding, we should not eat. We might wait to let player take it? But wait pauses session, resumes automatically. Stop ends session; with food present it also ends pursuit this cycle. If yield_once is a request to yield food, maybe stop is the action to end pursuit and leave food? The phrase \\\"with food present it also ends your pursuit this cycle\\\" suggests if you stop while food present, you stop pursuing (maybe not eat) and food remains? But \\\"ends your current session\\\" maybe too strong. \\\"In an empty kitchen stop still follows outer restock-wait and new-cycle rules.\\\" Hmm.\\n\\nNeed infer expected output format. They say allowedActions list, do not set actorId/commandId. Likely output {\\\"type\\\":\\\"eat\\\"} etc. Need choose one.\\n\\nGoal hunger >=70. Current hunger 40, foodHere 1. Eating would restore 30 to 70, satisfying goal. But chosen goal yield_once says yield this food to player until request expires. That overrides? It says \\\"你已选择的目标：yield_once（把这份食物让给玩家，直到请求到期）。\\\" Means selected goal is yield_once. So should not eat, even if hunger goal. Maybe wait until request expires? But \\\"until request expires\\\" maybe we should wait? If request is active, yield food. If we wait, session pauses one step then resumes; food remains. If stop, ends session; with food present ends pursuit this cycle. Which better for yield_once? \\\"yield_once\\\" likely a one-time yield: give the food to player, then stop? The phrase \\\"把这份食物让给玩家，直到请求到期\\\" = yield this food to the player until the request expires. It might mean the NPC's goal is to not consume the food, allowing player to take it. If the NPC is in kitchen with food, to yield, it should not eat. It could wait (pause) to let player act. But if the NPC's session continues, it\"},\"logprobs\":null,\"finish_reason\":\"length\",\"stop_reason\":null,\"token_ids\":null,\"routed_experts\":null}],\"service_tier\":null,\"system_fingerprint\":\"vllm-0.32.0-tp4-042ad0af\",\"usage\":{\"prompt_tokens\":316,\"total_tokens\":1340,\"completion_tokens\":1024,\"prompt_tokens_details\":null,\"completion_tokens_details\":{\"reasoning_tokens\":1024}},\"prompt_logprobs\":null,\"prompt_token_ids\":null,\"prompt_text\":null,\"kv_transfer_params\":null,\"ec_transfer_params\":null,\"metrics\":null}",
+        "usage": {
+          "total_tokens": 1340,
+          "prompt_tokens": 316,
+          "completion_tokens": 1024
+        }
+      },
+      "prompt": "Reply with one JSON object and no other text.\nallowedActions: [\"move\",\"eat\",\"stop\",\"wait\"]\nDo not set actorId or commandId. World changes happen only through Engine.submit.\nhunger is satiety: higher means fuller.\nEat only in the kitchen. Each eat consumes 1 food and restores 30 hunger, clamped to 0..100.\nObservation includes only this actor, food at the current location, and reachable places. Distant food, other NPCs, and the global log are omitted.\n\"stop\" ends your current session; with food present it also ends your pursuit this cycle. In an empty kitchen stop still follows the outer restock-wait and new-cycle rules.\n\"wait\" pauses your current session for one logical time step, then it resumes automatically; wait does not eat, move, or change the world. You may output {\"type\":\"wait\"} only when allowedActions includes \"wait\".\n你已选择的目标：yield_once（把这份食物让给玩家，直到请求到期）。\ngoal: hunger >= 70\nobservation: {\"id\":\"npc_a\",\"location\":\"kitchen\",\"hunger\":40,\"foodHere\":1,\"reachable\":[\"dorm\",\"kitchen\"]}\nfeedback: null",
+      "promptFingerprint": "626fc8af76cc15ad9ff38ca527239a9f2a7d8ae368a6e21e9c857effbb5a4751",
+      "elapsedMs": 118431,
+      "error": "missing message content"
+    }
+  ],
+  "attempts": [
+    {
+      "attemptId": "att-0003",
+      "outcome": "success"
+    },
+    {
+      "attemptId": "att-0004",
+      "outcome": "provider_error"
+    }
+  ],
+  "tokens": {
+    "goal": 231,
+    "action": 1340,
+    "total": 1571
+  },
+  "snapshot": {
+    "initialState": {
+      "tick": 0,
+      "simTime": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_c": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 70
+        }
+      },
+      "food": {
+        "kitchen": 1,
+        "dorm": 0
+      }
+    },
+    "commands": [
+      {
+        "seq": 1,
+        "command": {
+          "commandId": "g09-r1-s40-choice:player:npc_b:1",
+          "actorId": "npc_b",
+          "type": "eat",
+          "payload": {}
+        },
+        "result": {
+          "commandId": "g09-r1-s40-choice:player:npc_b:1",
+          "seq": 1,
+          "status": "accepted",
+          "eventIds": [
+            "e1",
+            "e2"
+          ]
+        }
+      }
+    ],
+    "events": [
+      {
+        "type": "FoodConsumed",
+        "location": "kitchen",
+        "amount": 1,
+        "before": 1,
+        "after": 0,
+        "eventId": "e1",
+        "seq": 1,
+        "commandId": "g09-r1-s40-choice:player:npc_b:1"
+      },
+      {
+        "type": "HungerChanged",
+        "npcId": "npc_b",
+        "before": 40,
+        "after": 70,
+        "eventId": "e2",
+        "seq": 1,
+        "commandId": "g09-r1-s40-choice:player:npc_b:1"
+      }
+    ],
+    "finalState": {
+      "tick": 1,
+      "simTime": 0,
+      "npcs": {
+        "npc_a": {
+          "id": "npc_a",
+          "location": "kitchen",
+          "hunger": 40
+        },
+        "npc_b": {
+          "id": "npc_b",
+          "location": "kitchen",
+          "hunger": 70
+        },
+        "npc_c": {
+          "id": "npc_c",
+          "location": "kitchen",
+          "hunger": 70
+        }
+      },
+      "food": {
+        "kitchen": 0,
+        "dorm": 0
+      }
+    }
+  },
+  "runtime": {
+    "actorIds": [
+      "npc_a",
+      "npc_c"
+    ],
+    "needPolicy": "recurring",
+    "policy": "event",
+    "actionSet": "timed_wait",
+    "goalMode": "negotiated"
+  },
+  "failure": null
+}

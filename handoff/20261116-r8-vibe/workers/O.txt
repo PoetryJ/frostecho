@@ -1,0 +1,10 @@
+你是集成负责人，独占 world-v2.ts、gameplay-v2/{loop,tasks,decisions}.ts、application-v2/**、scripts/play-sprint.ts、src/r7/{contracts,integration}/**、package.json 和共享契约文件。
+问题：领域功能和 JEV 尚未进入同一游戏执行链；经典对应：单写入者状态机、分阶段迁移。
+1. 保留现场；记录 git status/branches/worktrees 和当前进程。建 codex/r8-integrate；运行旧 bootstrap，建立 CONTRACT.txt 的真实类型/空模块/领域注册器。冻结 ActorDecisionContext→Candidate[]→ChoiceRequest、memoryPolicyId、命令映射和H的运行接口；交缺货核实/晨会拒绝两个JSON样例，A/D/M核对同一输入SHA，再批量生产数据。提交 contracts-freeze。M的权重/容量探针不等冻结，现有入口也立即运行。
+2. python .../dispatch.py worktrees --base <freezeSHA> --out <绝对工作树父目录>，开八工。P1/P2/P3/P4+A+D/M/H 各用 brief；D 的两审不看对方输出。记录实际 agent ID，少槽分波不虚报。
+3. 立即接现有 play:r7；每合入一域跑其故事，第二次集成须能从开局到结局，不把接口冲突留最后。共享文件改动由你接收工人的最小补丁建议并实施。
+4. A 输出候选/持续任务模块；M 输出真实 scorer。把 game-step 中 chooseReference 的固定选择改成显式 reference/jev-experimental/jev-admitted 模式。当前play-sprint只把step入队、game-step同步执行：必须让game-step等待模型前登记job/actors/generation，接入同一stepJobs/stepChain/barrier，cancel/save控制消息保持可处理。通过原异步生命周期提交，候选不能先被规则选成一个再让模型签字。
+5. 旧传闻无授权、取消终态不复活、迟到结果零提交仅作为接线回归，不重新扩写一轮通用安全框架。
+6. P1..P4 补全原作有效玩法，更新 parity 为原作规则→新入口→行为证据。npm run play:r8 指向真实世界，启动命令可给普通用户；free-text→可执行任务的增强与原作禁用聊天分开说明。
+7. 收齐代码后 H 在同集成提交运行：完整通关/恢复/轮回，模型三臂及成本，全套测试一次。有真实回归修复后只跑相关项+最终全套；旧计时抖动保留而不无限循环。
+交付一个产品整合结果和一个实验比较。推 codex/r8-integrate+草稿 PR，绝不合 main。≤12行报告按模板，附首个可玩入口；研究未过也交付玩法，不能让一个模块拖住其余七线。

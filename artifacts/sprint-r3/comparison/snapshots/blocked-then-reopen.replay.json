@@ -1,0 +1,15 @@
+{
+  "scenario": "blocked-then-reopen",
+  "actorId": "npc_03",
+  "taskId": "task-001-deliver-meal",
+  "failureClass": "road-blocked",
+  "seed": "r3-compare-blocked-then-reopen",
+  "branchAtStep": 3,
+  "maxSteps": 16,
+  "externalEvents": {
+    "3": 1
+  },
+  "reset": "GameplayLoop.load('/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r3/comparison/snapshots/blocked-then-reopen.session.json')",
+  "branch": "GameplayLoop.load('/data3/DATA/project/project_meishijiang/FrostEcho/artifacts/sprint-r3/comparison/snapshots/blocked-then-reopen.session.json', { useExperience: false | true })",
+  "replay": "node dist/scripts/r3-compare.js --out <same dir>"
+}

@@ -1,0 +1,68 @@
+{
+  "schema": "frostecho.r8.live-encode-probe/1",
+  "encoder": "/data2/model_weights/Qwen3.8-27B",
+  "startedAt": "2026-11-16T16:50:56",
+  "before": {
+    "ramAvailableMiB": 73030,
+    "gpus": [
+      {
+        "index": 0,
+        "totalMiB": 23028,
+        "usedMiB": 18433,
+        "freeMiB": 4595
+      },
+      {
+        "index": 1,
+        "totalMiB": 24564,
+        "usedMiB": 18057,
+        "freeMiB": 6507
+      }
+    ]
+  },
+  "maxMemoryMiB": {
+    "0": 3059,
+    "1": 4971,
+    "cpu": 60742
+  },
+  "plan": "device_map=auto with explicit max_memory; BF16; low_cpu_mem_usage",
+  "case": {
+    "caseId": "case-g1-life1-480-npc_01",
+    "candidates": 8,
+    "inputSha256": "e5c89cd2df823f57b44135af16e5c2e7baf42117ca9c9ce3c0bbd341564a8af6"
+  },
+  "tokens": {
+    "perText": [
+      345,
+      28,
+      28,
+      31,
+      32,
+      24,
+      20,
+      27,
+      14
+    ],
+    "max": 345,
+    "truncated": false
+  },
+  "status": "blocked",
+  "reason": "ValueError: The checkpoint you are trying to load has model type `qwen3_5` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.\n\nYou can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`",
+  "loadSeconds": 0.0,
+  "after": {
+    "ramAvailableMiB": 72508,
+    "gpus": [
+      {
+        "index": 0,
+        "totalMiB": 23028,
+        "usedMiB": 18433,
+        "freeMiB": 4595
+      },
+      {
+        "index": 1,
+        "totalMiB": 24564,
+        "usedMiB": 18057,
+        "freeMiB": 6507
+      }
+    ]
+  }
+}

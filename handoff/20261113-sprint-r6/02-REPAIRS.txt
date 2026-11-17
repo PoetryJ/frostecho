@@ -1,0 +1,53 @@
+R6 四项修复：复现、验收与证据
+统一：使用tools/repro.py，repo/out转绝对路径；基线与修复后分别保留，不改冻结探针。wrapper没有代替下面的完整验收。
+
+P1 供仓承诺终态
+原探针：node checkpoints/20261112-r5/evidence/product-audit/supply-probe.cjs <repoAbs> <freshOutAbs>
+步骤：真实CLI新建8NPC→council-open/resolve/save/quit；从receipt读supply requestId；新进程恢复→接受该request→game-step×4→status/save/quit。
+基线：summary.task.status=done；commitment.status=active；evidenceEventIds=[]；warehouseFood=6（初值4）。
+定位：loop.ts约695–702仅board.complete；参照送饭分支及CommitmentStore.fulfil。
+契约：仅该actor、该command真实正数量stock_deposited才能完成对应task并结清task.commitmentId。amount取真实receipt；不能硬编码送饭数量1，不能拿eventIds[0]兜底，不能扫描NPC所有承诺结清。
+验收：
+P1a task=done且commitment=fulfilled；非空履约ID追溯同一stock_deposited。
+P1b 第三进程恢复后状态/履约ID保持；空闲步、重复命令不重复交存或结清。
+P1c 失败交存、无相应事件、另一actor/另一承诺回执均不结清；取消/退出后迟到结果0履约。
+P1d 原送饭、withdraw、cancel、counter-accept路径保持；无绑定承诺的legacy fixture任务不串账。
+证据：三进程stdin/stdout/stderr、state及全部sidecars、receipt-links.json，逐条列request→commitment→task→command→stock_deposited→fulfil。
+
+R1 捕获范围外排队任务
+原探针：node checkpoints/20261112-r5/evidence/lifecycle-audit/r5-lifecycle-probe.cjs <repoAbs> <freshOutAbs>
+时序：第一step npc_01真正started→输入save及第二step→收到saved回执→读取version0存档→release旧scorer→检查两条step→第三step/save/quit。
+基线：第一条正确0效果；第二条executed=false/reason=generation_changed_before_start；第三条正常；finalVersion=1。
+定位：play-sprint.ts约218–219更新record.expected，但约532–542启动仍读闭包旧expected。
+契约：启动读取该job当前授权记录；不能简单用当前全局generation给所有job重新授权。捕获内撤销与显式cancel优先，捕获外工作保留权利。
+验收：
+R1a 旧第一条0效果/0事件/0履约；第二条真实执行恰一次；第三条也执行，原probe最终version=2。
+R1b 两NPC都在save捕获集合内时，两个迟到结果仍0效果；保存完成后新step继续有效。
+R1c 捕获外第二条若随后明确cancel，不能因barrier超时更新代次而复活。
+R1d 无actor的批量step路径、cancel/EOF有界退出、跨进程travel首次receipt回放与异内容冲突保持。
+R1e 保存恢复后合法结果不重复、被撤销job不重放。使用started/release/saved握手；350ms是fixture触发阈值，不是吞吐承诺。
+证据：原始JSONL、握手时点、job捕获集合/取消原因、保存前后version、所有回执和sidecars。
+
+D1 审查必须绑定真实受审输入
+原负例：隔离复制v3/v4与冻结blind-review；改v3第一题候选文字为“未经新审查的候选：取消所有既有承诺”；运行复制树import_blind_review.py，再运行validator。
+基线：importExit=0，validatorExit=0；旧rawReviewSha不变却contentHash重绑新内容。现39题本身未发生此漂移。
+契约：迁移前核原packet/canonical-inputs、review原哈希与caseId，比较审查可见narrative/facts/candidate id-text-params及已定义语义字段。明确允许哪些纯schema补充及映射；不能给未经审查的kind/task映射任意背书。新增语义须重新审查，不自动改hash。
+必须连通canonical-inputs.serializedInput的SHA→packet可见输入→原A/B review声明的旧contentHash→当前源题的版本化语义投影；validator也核原始证据链，不能仅信几个可编辑JSON的新hash互相一致。候选顺序/问题/观察改变也属于语义变化。当前hash全部重算、缺原packet/review、重复caseId等反例仍须拒绝；合法迁移重复运行确定性一致。
+原始输入差异必须非零拒绝，诊断指出caseId/字段；在写入cases/reviews/adjudication/gate前完成整批验证，失败不留下半批新背书。原审查内容和SHA不变。
+验收：
+D1a 未变输入正常迁移：39题/78条原审查保留，仍0eligible/29ambiguous/10inconsistent；研究门false。
+D1b 分别改候选文字/params/事实/narrative、换caseId/packet/rawReviewSha均拒绝，不能只拦一个固定字符串。
+D1c 合法schema迁移有显式映射且可追溯；混合一条坏题的批次不能部分覆盖输出。
+D1d 本负例import非零且导入前后v4数据JSON/JSONL字节相同。拒绝后旧v4 validator继续exit0是正常，不能误要求旧有效快照一起损坏。
+证据：原packet和review SHA、变更diff、import stdout/stderr/exit、前后数据hash、有效迁移输出及门状态。正式encoder先检查门再导入torch/transformers的stub反例保持。
+
+M1 证书重算与实际参数绑定
+原负例（tools/repro.py直接调用生产port）：3份不同路径/分区/样本ID、SHA正确、身份匹配；cert n=120/errors=120/upper=.01但仅1个sampleId；calT温度1.2/select tau=.8，而artifact temperature=.01/tau=0。
+基线：decide返回accept且counts_as_real=true。纯CPU造假负例，无模型/世界动作。
+契约：见04-JEV-CPU。生产Python和TS sealed判定均从逐样本记录重算，绑定同一policy/calibration_id/temperature/tau/数据hash，不依赖valid=true或摘要数值。真实artifact缺完整证据返回明确拒绝/shadow；不要吞未知异常伪装正常拒绝。
+验收：
+M1a 原矛盾证书拒绝，counts_as_real=false、无可执行selected；明确原因。
+M1b 分别篡改errors/n/upper/coverage/alpha/T/tau、样本ID重复/分区或源组交叉、SHA/身份/策略版本/k/候选协议漂移，都拒绝。
+M1c 合法CPU fixture由同一生产统计组件生成，可通过数值验证、能产生accept和abstain两种结果；fixture始终counts_as_real=false。禁止“永远false”假修复。
+M1d 旧空证书/K/NaN/Inf/重复候选/身份漂移反例保持；TS仍selectedId=null；Python真实模型入口门仍false。
+证据：逐样本原始记录、calT/select/cert文件及hash、artifact/manifest、Python/TS共同fixture判定、每个拒绝原因、无模型加载证明。

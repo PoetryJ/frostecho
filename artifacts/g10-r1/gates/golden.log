@@ -1,0 +1,789 @@
+{
+  "schema": "frostecho.g05.golden/1",
+  "expectedReferenceCalls": 20,
+  "remoteCalls": 0,
+  "passed": 12,
+  "total": 12,
+  "rows": [
+    {
+      "scenario": "t1",
+      "order": "ac",
+      "needPolicy": "one-shot",
+      "ok": true,
+      "issues": [],
+      "checkpoints": [
+        {
+          "label": "initial",
+          "expected": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "food": 4,
+            "calls": 0
+          }
+        },
+        {
+          "label": "meal1",
+          "expected": {
+            "simTime": 3,
+            "a": 40,
+            "b": 40,
+            "c": 40,
+            "food": 4,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 3,
+            "a": 40,
+            "b": 40,
+            "c": 40,
+            "food": 4,
+            "calls": 0
+          }
+        },
+        {
+          "label": "meal2",
+          "expected": {
+            "simTime": 6,
+            "a": 10,
+            "b": 10,
+            "c": 10,
+            "food": 4,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 6,
+            "a": 10,
+            "b": 10,
+            "c": 10,
+            "food": 4,
+            "calls": 0
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "t1",
+      "order": "ac",
+      "needPolicy": "recurring",
+      "ok": true,
+      "issues": [],
+      "checkpoints": [
+        {
+          "label": "initial",
+          "expected": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "food": 4,
+            "calls": 0
+          }
+        },
+        {
+          "label": "meal1",
+          "expected": {
+            "simTime": 3,
+            "a": 70,
+            "b": 40,
+            "c": 70,
+            "food": 2,
+            "calls": 2
+          },
+          "actual": {
+            "simTime": 3,
+            "a": 70,
+            "b": 40,
+            "c": 70,
+            "food": 2,
+            "calls": 2
+          }
+        },
+        {
+          "label": "meal2",
+          "expected": {
+            "simTime": 6,
+            "a": 70,
+            "b": 10,
+            "c": 70,
+            "food": 0,
+            "calls": 4
+          },
+          "actual": {
+            "simTime": 6,
+            "a": 70,
+            "b": 10,
+            "c": 70,
+            "food": 0,
+            "calls": 4
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "t2",
+      "order": "ac",
+      "needPolicy": "one-shot",
+      "ok": true,
+      "issues": [],
+      "checkpoints": [
+        {
+          "label": "initial",
+          "expected": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "food": 2,
+            "calls": 0
+          }
+        },
+        {
+          "label": "rest100",
+          "expected": {
+            "simTime": 2,
+            "a": 50,
+            "b": 50,
+            "c": 50,
+            "food": 2,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 2,
+            "a": 50,
+            "b": 50,
+            "c": 50,
+            "food": 2,
+            "calls": 0
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "t2",
+      "order": "ac",
+      "needPolicy": "recurring",
+      "ok": true,
+      "issues": [],
+      "checkpoints": [
+        {
+          "label": "initial",
+          "expected": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "food": 2,
+            "calls": 0
+          }
+        },
+        {
+          "label": "rest100",
+          "expected": {
+            "simTime": 2,
+            "a": 50,
+            "b": 50,
+            "c": 50,
+            "food": 2,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 2,
+            "a": 50,
+            "b": 50,
+            "c": 50,
+            "food": 2,
+            "calls": 0
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "t3",
+      "order": "ac",
+      "needPolicy": "one-shot",
+      "ok": true,
+      "issues": [],
+      "checkpoints": [
+        {
+          "label": "initial",
+          "expected": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "food": 0,
+            "calls": 0
+          }
+        },
+        {
+          "label": "empty",
+          "expected": {
+            "simTime": 3,
+            "a": 40,
+            "b": 40,
+            "c": 40,
+            "food": 0,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 3,
+            "a": 40,
+            "b": 40,
+            "c": 40,
+            "food": 0,
+            "calls": 0
+          }
+        },
+        {
+          "label": "waiting_decay",
+          "expected": {
+            "simTime": 4,
+            "a": 30,
+            "b": 30,
+            "c": 30,
+            "food": 0,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 4,
+            "a": 30,
+            "b": 30,
+            "c": 30,
+            "food": 0,
+            "calls": 0
+          }
+        },
+        {
+          "label": "refed",
+          "expected": {
+            "simTime": 4,
+            "a": 30,
+            "b": 30,
+            "c": 30,
+            "food": 4,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 4,
+            "a": 30,
+            "b": 30,
+            "c": 30,
+            "food": 4,
+            "calls": 0
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "t3",
+      "order": "ac",
+      "needPolicy": "recurring",
+      "ok": true,
+      "issues": [],
+      "checkpoints": [
+        {
+          "label": "initial",
+          "expected": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "food": 0,
+            "calls": 0
+          }
+        },
+        {
+          "label": "empty",
+          "expected": {
+            "simTime": 3,
+            "a": 40,
+            "b": 40,
+            "c": 40,
+            "food": 0,
+            "calls": 2
+          },
+          "actual": {
+            "simTime": 3,
+            "a": 40,
+            "b": 40,
+            "c": 40,
+            "food": 0,
+            "calls": 2
+          }
+        },
+        {
+          "label": "waiting_decay",
+          "expected": {
+            "simTime": 4,
+            "a": 30,
+            "b": 30,
+            "c": 30,
+            "food": 0,
+            "calls": 2
+          },
+          "actual": {
+            "simTime": 4,
+            "a": 30,
+            "b": 30,
+            "c": 30,
+            "food": 0,
+            "calls": 2
+          }
+        },
+        {
+          "label": "refed",
+          "expected": {
+            "simTime": 4,
+            "a": 90,
+            "b": 30,
+            "c": 90,
+            "food": 0,
+            "calls": 6
+          },
+          "actual": {
+            "simTime": 4,
+            "a": 90,
+            "b": 30,
+            "c": 90,
+            "food": 0,
+            "calls": 6
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "t1",
+      "order": "ca",
+      "needPolicy": "one-shot",
+      "ok": true,
+      "issues": [],
+      "checkpoints": [
+        {
+          "label": "initial",
+          "expected": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "food": 4,
+            "calls": 0
+          }
+        },
+        {
+          "label": "meal1",
+          "expected": {
+            "simTime": 3,
+            "a": 40,
+            "b": 40,
+            "c": 40,
+            "food": 4,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 3,
+            "a": 40,
+            "b": 40,
+            "c": 40,
+            "food": 4,
+            "calls": 0
+          }
+        },
+        {
+          "label": "meal2",
+          "expected": {
+            "simTime": 6,
+            "a": 10,
+            "b": 10,
+            "c": 10,
+            "food": 4,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 6,
+            "a": 10,
+            "b": 10,
+            "c": 10,
+            "food": 4,
+            "calls": 0
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "t1",
+      "order": "ca",
+      "needPolicy": "recurring",
+      "ok": true,
+      "issues": [],
+      "checkpoints": [
+        {
+          "label": "initial",
+          "expected": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "food": 4,
+            "calls": 0
+          }
+        },
+        {
+          "label": "meal1",
+          "expected": {
+            "simTime": 3,
+            "a": 70,
+            "b": 40,
+            "c": 70,
+            "food": 2,
+            "calls": 2
+          },
+          "actual": {
+            "simTime": 3,
+            "a": 70,
+            "b": 40,
+            "c": 70,
+            "food": 2,
+            "calls": 2
+          }
+        },
+        {
+          "label": "meal2",
+          "expected": {
+            "simTime": 6,
+            "a": 70,
+            "b": 10,
+            "c": 70,
+            "food": 0,
+            "calls": 4
+          },
+          "actual": {
+            "simTime": 6,
+            "a": 70,
+            "b": 10,
+            "c": 70,
+            "food": 0,
+            "calls": 4
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "t2",
+      "order": "ca",
+      "needPolicy": "one-shot",
+      "ok": true,
+      "issues": [],
+      "checkpoints": [
+        {
+          "label": "initial",
+          "expected": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "food": 2,
+            "calls": 0
+          }
+        },
+        {
+          "label": "rest100",
+          "expected": {
+            "simTime": 2,
+            "a": 50,
+            "b": 50,
+            "c": 50,
+            "food": 2,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 2,
+            "a": 50,
+            "b": 50,
+            "c": 50,
+            "food": 2,
+            "calls": 0
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "t2",
+      "order": "ca",
+      "needPolicy": "recurring",
+      "ok": true,
+      "issues": [],
+      "checkpoints": [
+        {
+          "label": "initial",
+          "expected": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "food": 2,
+            "calls": 0
+          }
+        },
+        {
+          "label": "rest100",
+          "expected": {
+            "simTime": 2,
+            "a": 50,
+            "b": 50,
+            "c": 50,
+            "food": 2,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 2,
+            "a": 50,
+            "b": 50,
+            "c": 50,
+            "food": 2,
+            "calls": 0
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "t3",
+      "order": "ca",
+      "needPolicy": "one-shot",
+      "ok": true,
+      "issues": [],
+      "checkpoints": [
+        {
+          "label": "initial",
+          "expected": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "food": 0,
+            "calls": 0
+          }
+        },
+        {
+          "label": "empty",
+          "expected": {
+            "simTime": 3,
+            "a": 40,
+            "b": 40,
+            "c": 40,
+            "food": 0,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 3,
+            "a": 40,
+            "b": 40,
+            "c": 40,
+            "food": 0,
+            "calls": 0
+          }
+        },
+        {
+          "label": "waiting_decay",
+          "expected": {
+            "simTime": 4,
+            "a": 30,
+            "b": 30,
+            "c": 30,
+            "food": 0,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 4,
+            "a": 30,
+            "b": 30,
+            "c": 30,
+            "food": 0,
+            "calls": 0
+          }
+        },
+        {
+          "label": "refed",
+          "expected": {
+            "simTime": 4,
+            "a": 30,
+            "b": 30,
+            "c": 30,
+            "food": 4,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 4,
+            "a": 30,
+            "b": 30,
+            "c": 30,
+            "food": 4,
+            "calls": 0
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "t3",
+      "order": "ca",
+      "needPolicy": "recurring",
+      "ok": true,
+      "issues": [],
+      "checkpoints": [
+        {
+          "label": "initial",
+          "expected": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "calls": 0
+          },
+          "actual": {
+            "simTime": 0,
+            "a": 70,
+            "b": 70,
+            "c": 70,
+            "food": 0,
+            "calls": 0
+          }
+        },
+        {
+          "label": "empty",
+          "expected": {
+            "simTime": 3,
+            "a": 40,
+            "b": 40,
+            "c": 40,
+            "food": 0,
+            "calls": 2
+          },
+          "actual": {
+            "simTime": 3,
+            "a": 40,
+            "b": 40,
+            "c": 40,
+            "food": 0,
+            "calls": 2
+          }
+        },
+        {
+          "label": "waiting_decay",
+          "expected": {
+            "simTime": 4,
+            "a": 30,
+            "b": 30,
+            "c": 30,
+            "food": 0,
+            "calls": 2
+          },
+          "actual": {
+            "simTime": 4,
+            "a": 30,
+            "b": 30,
+            "c": 30,
+            "food": 0,
+            "calls": 2
+          }
+        },
+        {
+          "label": "refed",
+          "expected": {
+            "simTime": 4,
+            "a": 90,
+            "b": 30,
+            "c": 90,
+            "food": 0,
+            "calls": 6
+          },
+          "actual": {
+            "simTime": 4,
+            "a": 90,
+            "b": 30,
+            "c": 90,
+            "food": 0,
+            "calls": 6
+          }
+        }
+      ]
+    }
+  ]
+}
