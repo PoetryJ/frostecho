@@ -1,0 +1,1246 @@
+{
+  "schema": "frostecho.r10.d-fourday/1",
+  "seed": "r10-d-ref-2",
+  "profile": "gospel-5.8.19",
+  "sourceHEAD": null,
+  "node": "v22.23.4",
+  "startedAt": "2026-11-18T08:45:37.468Z",
+  "mode": "reference",
+  "memoryPolicy": "conditional-experience",
+  "memorySelection": "obligation-first",
+  "commitments": [
+    {
+      "commitmentId": "cm-95a90155-1923-42ed-9a4e-5315801a6c16",
+      "goal": "deliver-meal",
+      "promisorId": "npc_01",
+      "taskId": "task-001-deliver-meal"
+    },
+    {
+      "commitmentId": "cm-ae14d25f-b099-44d0-9a2d-6dc2def34103",
+      "goal": "deliver-meal",
+      "promisorId": "npc_02",
+      "taskId": "task-002-deliver-meal"
+    },
+    {
+      "commitmentId": "cm-316b5025-2637-4003-9b37-a6a583b5635f",
+      "goal": "supply-warehouse",
+      "promisorId": "npc_03",
+      "taskId": "task-003-supply-warehouse"
+    },
+    {
+      "commitmentId": "cm-8548f447-d787-4e45-90f1-7d6d6cd9d27c",
+      "goal": "supply-warehouse",
+      "promisorId": "npc_04",
+      "taskId": "task-004-supply-warehouse"
+    }
+  ],
+  "endedAt": 5400,
+  "elapsed": 4920,
+  "ending": {
+    "kind": "perfect",
+    "survivors": 8,
+    "settledAtElapsed": 4920
+  },
+  "dead": [],
+  "survivors": 8,
+  "resources": {
+    "food": 80,
+    "firewood": 0,
+    "power": 0.333333,
+    "medicine": 3
+  },
+  "furnace": {
+    "lit": true,
+    "fuel": 9.19999999999998,
+    "warmth": 18
+  },
+  "heating": {
+    "strength": 0.002431,
+    "indoorTemp": -65.800658,
+    "effective": false
+  },
+  "decisions": 352,
+  "decisionStates": {
+    "applied": 82,
+    "working": 270
+  },
+  "intents": 200,
+  "terminal": {
+    "applied": 195,
+    "rejected": 5,
+    "cancelled": 0,
+    "unresolved": 0
+  },
+  "rejectedAtSettlement": [
+    {
+      "actorId": "npc_03",
+      "intentId": "npc_03-r8-168",
+      "action": "work",
+      "reason": "too_tired"
+    },
+    {
+      "actorId": "npc_01",
+      "intentId": "npc_01-r8-320",
+      "action": "work",
+      "reason": "too_tired"
+    },
+    {
+      "actorId": "npc_01",
+      "intentId": "npc_01-r8-333",
+      "action": "work",
+      "reason": "too_tired"
+    },
+    {
+      "actorId": "npc_03",
+      "intentId": "npc_03-r8-333",
+      "action": "work",
+      "reason": "too_tired"
+    },
+    {
+      "actorId": "npc_01",
+      "intentId": "npc_01-r8-499",
+      "action": "work",
+      "reason": "too_tired"
+    }
+  ],
+  "rescues": [],
+  "nightWalks": [
+    {
+      "at": 2686,
+      "actorId": "npc_02",
+      "building": "dorm-b",
+      "minutes": 46,
+      "tiles": 23
+    },
+    {
+      "at": 2732,
+      "actorId": "npc_04",
+      "building": "dorm-b",
+      "minutes": 46,
+      "tiles": 23
+    },
+    {
+      "at": 4080,
+      "actorId": "npc_02",
+      "building": "dorm-b",
+      "minutes": 0,
+      "tiles": 0
+    },
+    {
+      "at": 4080,
+      "actorId": "npc_04",
+      "building": "dorm-b",
+      "minutes": 0,
+      "tiles": 0
+    }
+  ],
+  "strandedAtNight": [
+    {
+      "at": 1200,
+      "actorId": "npc_02",
+      "location": "dorm-a"
+    },
+    {
+      "at": 1200,
+      "actorId": "npc_03",
+      "location": "workshop"
+    },
+    {
+      "at": 1200,
+      "actorId": "npc_04",
+      "location": "dorm-a"
+    },
+    {
+      "at": 1200,
+      "actorId": "npc_05",
+      "location": "warehouse"
+    },
+    {
+      "at": 1200,
+      "actorId": "npc_06",
+      "location": "warehouse"
+    },
+    {
+      "at": 1200,
+      "actorId": "npc_07",
+      "location": "warehouse"
+    },
+    {
+      "at": 1200,
+      "actorId": "npc_08",
+      "location": "warehouse"
+    },
+    {
+      "at": 1680,
+      "actorId": "npc_02",
+      "location": "dorm-a"
+    },
+    {
+      "at": 1695,
+      "actorId": "npc_04",
+      "location": "dorm-a"
+    },
+    {
+      "at": 2640,
+      "actorId": "npc_01",
+      "location": "workshop"
+    },
+    {
+      "at": 2686,
+      "actorId": "npc_03",
+      "location": "workshop"
+    },
+    {
+      "at": 2732,
+      "actorId": "npc_05",
+      "location": "warehouse"
+    },
+    {
+      "at": 2732,
+      "actorId": "npc_06",
+      "location": "warehouse"
+    },
+    {
+      "at": 2732,
+      "actorId": "npc_07",
+      "location": "warehouse"
+    },
+    {
+      "at": 2732,
+      "actorId": "npc_08",
+      "location": "warehouse"
+    },
+    {
+      "at": 4080,
+      "actorId": "npc_01",
+      "location": "workshop"
+    },
+    {
+      "at": 4080,
+      "actorId": "npc_03",
+      "location": "workshop"
+    },
+    {
+      "at": 4080,
+      "actorId": "npc_05",
+      "location": "warehouse"
+    },
+    {
+      "at": 4080,
+      "actorId": "npc_06",
+      "location": "warehouse"
+    },
+    {
+      "at": 4080,
+      "actorId": "npc_07",
+      "location": "warehouse"
+    },
+    {
+      "at": 4080,
+      "actorId": "npc_08",
+      "location": "warehouse"
+    }
+  ],
+  "weatherVetoes": [
+    {
+      "at": 1020,
+      "actorId": "npc_02",
+      "candidate": "a-da38572f198c",
+      "reason": "day-4 outdoor is lethal (-60 C); choice refused"
+    },
+    {
+      "at": 1020,
+      "actorId": "npc_04",
+      "candidate": "a-da38572f198c",
+      "reason": "day-4 outdoor is lethal (-60 C); choice refused"
+    }
+  ],
+  "clock": [
+    {
+      "at": 480,
+      "day": 1,
+      "minuteOfDay": 480,
+      "firewood": 30,
+      "power": 30,
+      "food": 130,
+      "furnaceFuel": 6,
+      "furnaceLit": true,
+      "heatingStrength": 0.86875,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-b",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-b",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-b",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-b"
+      }
+    },
+    {
+      "at": 540,
+      "day": 1,
+      "minuteOfDay": 540,
+      "firewood": 29,
+      "power": 28,
+      "food": 130,
+      "furnaceFuel": 5.6000000000000005,
+      "furnaceLit": true,
+      "heatingStrength": 0.854167,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "warehouse",
+        "npc_02": "warehouse",
+        "npc_03": "warehouse",
+        "npc_04": "warehouse",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 600,
+      "day": 1,
+      "minuteOfDay": 600,
+      "firewood": 28,
+      "power": 26,
+      "food": 128,
+      "furnaceFuel": 5.200000000000001,
+      "furnaceLit": true,
+      "heatingStrength": 0.839583,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "warehouse",
+        "npc_02": "warehouse",
+        "npc_03": "warehouse",
+        "npc_04": "warehouse",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 660,
+      "day": 1,
+      "minuteOfDay": 660,
+      "firewood": 23,
+      "power": 24,
+      "food": 128,
+      "furnaceFuel": 12.8,
+      "furnaceLit": true,
+      "heatingStrength": 0.797917,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "kitchen",
+        "npc_02": "kitchen",
+        "npc_03": "warehouse",
+        "npc_04": "warehouse",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 720,
+      "day": 1,
+      "minuteOfDay": 720,
+      "firewood": 18,
+      "power": 22,
+      "food": 128,
+      "furnaceFuel": 20.4,
+      "furnaceLit": true,
+      "heatingStrength": 0.647917,
+      "heatingBand": "warm",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "kitchen",
+        "npc_02": "kitchen",
+        "npc_03": "warehouse",
+        "npc_04": "warehouse",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 780,
+      "day": 1,
+      "minuteOfDay": 780,
+      "firewood": 17,
+      "power": 20,
+      "food": 128,
+      "furnaceFuel": 19.999999999999996,
+      "furnaceLit": true,
+      "heatingStrength": 0.60625,
+      "heatingBand": "warm",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "village",
+        "npc_02": "village",
+        "npc_03": "workshop",
+        "npc_04": "village",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 840,
+      "day": 1,
+      "minuteOfDay": 840,
+      "firewood": 26,
+      "power": 19,
+      "food": 128,
+      "furnaceFuel": 19.599999999999994,
+      "furnaceLit": true,
+      "heatingStrength": 0.788542,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "village",
+        "npc_02": "village",
+        "npc_03": "workshop",
+        "npc_04": "village",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 900,
+      "day": 1,
+      "minuteOfDay": 900,
+      "firewood": 19,
+      "power": 18,
+      "food": 128,
+      "furnaceFuel": 31.199999999999992,
+      "furnaceLit": true,
+      "heatingStrength": 0.645833,
+      "heatingBand": "warm",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "village",
+        "npc_02": "village",
+        "npc_03": "workshop",
+        "npc_04": "village",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 960,
+      "day": 1,
+      "minuteOfDay": 960,
+      "firewood": 29,
+      "power": 17,
+      "food": 128,
+      "furnaceFuel": 30.79999999999999,
+      "furnaceLit": true,
+      "heatingStrength": 0.773958,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "village",
+        "npc_02": "village",
+        "npc_03": "workshop",
+        "npc_04": "village",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 1020,
+      "day": 1,
+      "minuteOfDay": 1020,
+      "firewood": 28,
+      "power": 16,
+      "food": 128,
+      "furnaceFuel": 30.399999999999988,
+      "furnaceLit": true,
+      "heatingStrength": 0.766667,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "workshop",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 1080,
+      "day": 1,
+      "minuteOfDay": 1080,
+      "firewood": 27,
+      "power": 15,
+      "food": 128,
+      "furnaceFuel": 29.999999999999986,
+      "furnaceLit": true,
+      "heatingStrength": 0.759375,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "workshop",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 1140,
+      "day": 1,
+      "minuteOfDay": 1140,
+      "firewood": 26,
+      "power": 14,
+      "food": 128,
+      "furnaceFuel": 29.599999999999984,
+      "furnaceLit": true,
+      "heatingStrength": 0.752083,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "village",
+        "npc_02": "village",
+        "npc_03": "workshop",
+        "npc_04": "village",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 1200,
+      "day": 1,
+      "minuteOfDay": 1200,
+      "firewood": 25,
+      "power": 13,
+      "food": 128,
+      "furnaceFuel": 29.19999999999998,
+      "furnaceLit": true,
+      "heatingStrength": 0.744792,
+      "heatingBand": "warm",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "workshop",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 1680,
+      "day": 2,
+      "minuteOfDay": 240,
+      "firewood": 17,
+      "power": 0,
+      "food": 128,
+      "furnaceFuel": 25.99999999999999,
+      "furnaceLit": true,
+      "heatingStrength": 0.460417,
+      "heatingBand": "warm",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "workshop",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 2160,
+      "day": 2,
+      "minuteOfDay": 720,
+      "firewood": 9,
+      "power": 0,
+      "food": 127,
+      "furnaceFuel": 22.79999999999999,
+      "furnaceLit": true,
+      "heatingStrength": 0.24375,
+      "heatingBand": "cold",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      }
+    },
+    {
+      "at": 2220,
+      "day": 2,
+      "minuteOfDay": 780,
+      "firewood": 8,
+      "power": 0,
+      "food": 126,
+      "furnaceFuel": 22.39999999999999,
+      "furnaceLit": true,
+      "heatingStrength": 0.216667,
+      "heatingBand": "cold",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      }
+    },
+    {
+      "at": 2280,
+      "day": 2,
+      "minuteOfDay": 840,
+      "firewood": 7,
+      "power": 0,
+      "food": 126,
+      "furnaceFuel": 21.99999999999999,
+      "furnaceLit": true,
+      "heatingStrength": 0.189583,
+      "heatingBand": "cold",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "workshop",
+        "npc_02": "village",
+        "npc_03": "dorm-a",
+        "npc_04": "village",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      }
+    },
+    {
+      "at": 2340,
+      "day": 2,
+      "minuteOfDay": 900,
+      "firewood": 6,
+      "power": 0.333333,
+      "food": 126,
+      "furnaceFuel": 21.599999999999987,
+      "furnaceLit": true,
+      "heatingStrength": 0.164931,
+      "heatingBand": "cold",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "workshop",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 2400,
+      "day": 2,
+      "minuteOfDay": 960,
+      "firewood": 5,
+      "power": 0,
+      "food": 125,
+      "furnaceFuel": 21.199999999999985,
+      "furnaceLit": true,
+      "heatingStrength": 0.135417,
+      "heatingBand": "cold",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "workshop",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 2460,
+      "day": 2,
+      "minuteOfDay": 1020,
+      "firewood": 4,
+      "power": 0.333333,
+      "food": 125,
+      "furnaceFuel": 20.799999999999983,
+      "furnaceLit": true,
+      "heatingStrength": 0.110764,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "workshop",
+        "npc_02": "dorm-a",
+        "npc_03": "workshop",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 2520,
+      "day": 2,
+      "minuteOfDay": 1080,
+      "firewood": 3,
+      "power": 0.333333,
+      "food": 122,
+      "furnaceFuel": 20.39999999999998,
+      "furnaceLit": true,
+      "heatingStrength": 0.083681,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "workshop",
+        "npc_02": "dorm-a",
+        "npc_03": "workshop",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 2580,
+      "day": 2,
+      "minuteOfDay": 1140,
+      "firewood": 2,
+      "power": 0.333333,
+      "food": 117,
+      "furnaceFuel": 19.999999999999982,
+      "furnaceLit": true,
+      "heatingStrength": 0.056597,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "workshop",
+        "npc_02": "dorm-a",
+        "npc_03": "workshop",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 2640,
+      "day": 2,
+      "minuteOfDay": 1200,
+      "firewood": 1,
+      "power": 0.333333,
+      "food": 117,
+      "furnaceFuel": 19.59999999999998,
+      "furnaceLit": true,
+      "heatingStrength": 0.029514,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "workshop",
+        "npc_02": "village",
+        "npc_03": "workshop",
+        "npc_04": "village",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 3120,
+      "day": 3,
+      "minuteOfDay": 240,
+      "firewood": 0,
+      "power": 0,
+      "food": 117,
+      "furnaceFuel": 16.399999999999984,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "workshop",
+        "npc_02": "dorm-a",
+        "npc_03": "workshop",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 3600,
+      "day": 3,
+      "minuteOfDay": 720,
+      "firewood": 0,
+      "power": 0,
+      "food": 109,
+      "furnaceFuel": 13.19999999999998,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-b",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-b",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      }
+    },
+    {
+      "at": 3660,
+      "day": 3,
+      "minuteOfDay": 780,
+      "firewood": 0,
+      "power": 0,
+      "food": 108,
+      "furnaceFuel": 12.79999999999998,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      }
+    },
+    {
+      "at": 3720,
+      "day": 3,
+      "minuteOfDay": 840,
+      "firewood": 0,
+      "power": 0,
+      "food": 106,
+      "furnaceFuel": 12.399999999999979,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      }
+    },
+    {
+      "at": 3780,
+      "day": 3,
+      "minuteOfDay": 900,
+      "firewood": 0,
+      "power": 0,
+      "food": 101,
+      "furnaceFuel": 11.999999999999979,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      }
+    },
+    {
+      "at": 3840,
+      "day": 3,
+      "minuteOfDay": 960,
+      "firewood": 0,
+      "power": 0,
+      "food": 101,
+      "furnaceFuel": 11.599999999999978,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      }
+    },
+    {
+      "at": 3900,
+      "day": 3,
+      "minuteOfDay": 1020,
+      "firewood": 0,
+      "power": 0,
+      "food": 101,
+      "furnaceFuel": 11.199999999999978,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "workshop",
+        "npc_02": "dorm-a",
+        "npc_03": "workshop",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 3960,
+      "day": 3,
+      "minuteOfDay": 1080,
+      "firewood": 0,
+      "power": 0.333333,
+      "food": 100,
+      "furnaceFuel": 10.79999999999998,
+      "furnaceLit": true,
+      "heatingStrength": 0.002431,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "workshop",
+        "npc_02": "village",
+        "npc_03": "workshop",
+        "npc_04": "village",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 4020,
+      "day": 3,
+      "minuteOfDay": 1140,
+      "firewood": 8.5,
+      "power": 1.333333,
+      "food": 100,
+      "furnaceFuel": 10.39999999999998,
+      "furnaceLit": true,
+      "heatingStrength": 0.239931,
+      "heatingBand": "cold",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "workshop",
+        "npc_02": "village",
+        "npc_03": "workshop",
+        "npc_04": "village",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 4080,
+      "day": 3,
+      "minuteOfDay": 1200,
+      "firewood": 3.5,
+      "power": 0.333333,
+      "food": 99,
+      "furnaceFuel": 17.99999999999998,
+      "furnaceLit": true,
+      "heatingStrength": 0.097222,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "workshop",
+        "npc_02": "village",
+        "npc_03": "workshop",
+        "npc_04": "village",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 4560,
+      "day": 4,
+      "minuteOfDay": 240,
+      "firewood": 0,
+      "power": 0,
+      "food": 99,
+      "furnaceFuel": 14.79999999999998,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "workshop",
+        "npc_02": "dorm-a",
+        "npc_03": "workshop",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 5040,
+      "day": 4,
+      "minuteOfDay": 720,
+      "firewood": 0,
+      "power": 0,
+      "food": 91,
+      "furnaceFuel": 11.59999999999998,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-b",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-b",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      }
+    },
+    {
+      "at": 5100,
+      "day": 4,
+      "minuteOfDay": 780,
+      "firewood": 0,
+      "power": 0,
+      "food": 84,
+      "furnaceFuel": 11.19999999999998,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-b",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-b",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      }
+    },
+    {
+      "at": 5160,
+      "day": 4,
+      "minuteOfDay": 840,
+      "firewood": 0,
+      "power": 0,
+      "food": 84,
+      "furnaceFuel": 10.79999999999998,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      }
+    },
+    {
+      "at": 5220,
+      "day": 4,
+      "minuteOfDay": 900,
+      "firewood": 0,
+      "power": 0,
+      "food": 82,
+      "furnaceFuel": 10.399999999999979,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      }
+    },
+    {
+      "at": 5280,
+      "day": 4,
+      "minuteOfDay": 960,
+      "firewood": 0,
+      "power": 0,
+      "food": 82,
+      "furnaceFuel": 9.999999999999979,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      }
+    },
+    {
+      "at": 5340,
+      "day": 4,
+      "minuteOfDay": 1020,
+      "firewood": 0,
+      "power": 0,
+      "food": 82,
+      "furnaceFuel": 9.599999999999978,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "workshop",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    },
+    {
+      "at": 5400,
+      "day": 4,
+      "minuteOfDay": 1080,
+      "firewood": 0,
+      "power": 0.333333,
+      "food": 80,
+      "furnaceFuel": 9.19999999999998,
+      "furnaceLit": true,
+      "heatingStrength": 0.002431,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "workshop",
+        "npc_02": "dorm-a",
+        "npc_03": "workshop",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      }
+    }
+  ],
+  "clockSha256": "cea0cde9aa22c5455453d78d18790f3d3d09655f9fcdbbe98c6f1430cbd680f9",
+  "trajectorySha256": "6d328156e4d81661cfb78928fbc9d3ff899dc612b9fb846c094901df35f025ed"
+}

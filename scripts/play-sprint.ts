@@ -544,6 +544,21 @@ async function runJob(job: PlayerJob, line: string,
         emit({ command, jobId: job.jobId, ...result, mode: 'reference-rules/1' });
         break;
       }
+      case 'propose-change': {
+        // R10-D: the web/CLI entry needs to *reach* the negotiation the loop
+        // already implements (`commitments.proposeChange`); without it a player
+        // could only answer a change, never raise one.
+        const input = inputIdFor('propose-change', rest);
+        const [commitmentId, reason, source] = input.parts;
+        const proposed = play.commitments.proposeChange(commitmentId, {
+          kind: 'alt-source', reason: reason ?? 'player-proposed',
+          terms: { source: source ?? 'gather' }, at: session.world.simTime,
+          inputId: input.id, evidenceEventIds: [] });
+        session.ingestCommitmentEvent(proposed.event);
+        emit({ command, jobId: job.jobId, commitment: proposed.commitment,
+          event: proposed.event, mode: 'reference-rules/1' });
+        break;
+      }
       case 'respond-change': {
         const input = inputIdFor('respond-change', rest);
         const verdict = input.parts[1] === 'accept' ? 'accept' as const : 'reject' as const;

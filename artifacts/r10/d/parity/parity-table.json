@@ -1,0 +1,275 @@
+{
+  "schema": "frostecho.r10.d-parity/1",
+  "generatedAt": "2026-11-18T08:45:13.568Z",
+  "rows": [
+    {
+      "task": "COLLECT_WOOD",
+      "originalPlace": "lumber_camp",
+      "originalMinutes": 30,
+      "originalStamina": 15,
+      "originalEffect": "木柴 +10（采集区 8/h，stand-in-area）",
+      "source": "task-system.js:39-46",
+      "enginePlace": "village",
+      "engineMinutes": 30,
+      "engineEffect": "gather(firewood,2) → 3..5 木柴/30 min（约 8/h）",
+      "status": "MATCH",
+      "note": ""
+    },
+    {
+      "task": "COLLECT_FOOD",
+      "originalPlace": "frozen_lake",
+      "originalMinutes": 30,
+      "originalStamina": 12,
+      "originalEffect": "食物 +8（采集区 5/h）",
+      "source": "task-system.js:47-54",
+      "enginePlace": "village",
+      "engineMinutes": 30,
+      "engineEffect": "gather(food,2) → 3..5 食物/30 min（约 8/h，原作 5/h）",
+      "status": "DIVERGES",
+      "note": "engine gather yields ~8/h, original GATHER_RATES.food = 5/h"
+    },
+    {
+      "task": "MAINTAIN_POWER",
+      "originalPlace": "workshop_door",
+      "originalMinutes": 40,
+      "originalStamina": 10,
+      "originalEffect": "电力 +15（40 min 内）",
+      "source": "task-system.js:55-62",
+      "enginePlace": "workshop",
+      "engineMinutes": 40,
+      "engineEffect": "work(power,40) → 电 +2/h×0.67h≈+1（原作 +15/40min）",
+      "status": "DIVERGES",
+      "note": "engine `work(power)` yields +2 power/h, original baseYield 15/40min"
+    },
+    {
+      "task": "COLLECT_MATERIAL",
+      "originalPlace": "ruins_site",
+      "originalMinutes": 60,
+      "originalStamina": 18,
+      "originalEffect": "无公共资源；完成 +5 San；每日 3 次",
+      "source": "task-system.js:63-70",
+      "enginePlace": "village",
+      "engineMinutes": 60,
+      "engineEffect": "work(explore,60) → 无资源、+5 San、每日 3 次",
+      "status": "MATCH",
+      "note": ""
+    },
+    {
+      "task": "PREPARE_WARMTH",
+      "originalPlace": "warehouse_door",
+      "originalMinutes": 30,
+      "originalStamina": 8,
+      "originalEffect": "全员 bodyTemp +0.5、San +3；当日供暖 ×1.1（不耗木柴）",
+      "source": "task-system.js:71-78, task-effects.js:320-336",
+      "enginePlace": null,
+      "engineMinutes": 30,
+      "engineEffect": "rest(30)@warehouse + 完成时全员 bodyTemp+0.5/San+3 + 当日 ×1.1",
+      "status": "NARROWED",
+      "note": "original accepts door-or-inside; engine requires the room null"
+    },
+    {
+      "task": "PREPARE_MEDICAL",
+      "originalPlace": "medical_door",
+      "originalMinutes": 30,
+      "originalStamina": 5,
+      "originalEffect": "同房间 health<60 者 +0.03/s、失温 +0.005/s；每 2h 产 1 急救包",
+      "source": "task-system.js:79-86, task-effects.js:216-240",
+      "enginePlace": "medical",
+      "engineMinutes": 30,
+      "engineEffect": "medical(1) → 患者 health+25、bodyTemp+2（按次，不按秒）",
+      "status": "DIVERGES",
+      "note": "per-treatment heal, not the original per-second aura"
+    },
+    {
+      "task": "BOOST_MORALE",
+      "originalPlace": "dorm_a_door",
+      "originalMinutes": 30,
+      "originalStamina": 8,
+      "originalEffect": "同房间 San +0.02/s（30 min → +36）",
+      "source": "task-system.js:87-94",
+      "enginePlace": "dorm-a",
+      "engineMinutes": 30,
+      "engineEffect": "work(morale,30) → 同房 San +36、自己 +5",
+      "status": "NARROWED",
+      "note": "original accepts door-or-inside; engine requires the room dorm-a"
+    },
+    {
+      "task": "COORDINATE",
+      "originalPlace": "dorm_a_door",
+      "originalMinutes": 60,
+      "originalStamina": 5,
+      "originalEffect": "同房间 San +0.01/s（60 min → +36）",
+      "source": "task-system.js:95-104",
+      "enginePlace": "dorm-a",
+      "engineMinutes": 60,
+      "engineEffect": "work(coordinate,60) → 同房 San +36、自己 +5",
+      "status": "NARROWED",
+      "note": "original accepts door-or-inside; engine requires the room dorm-a"
+    },
+    {
+      "task": "DISTRIBUTE_FOOD",
+      "originalPlace": "kitchen_door",
+      "originalMinutes": 20,
+      "originalStamina": 3,
+      "originalEffect": "消耗 1.5×人数 食物；全员饱食 +25、San +2",
+      "source": "task-system.js:105-112, task-effects.js:290-318",
+      "enginePlace": "warehouse",
+      "engineMinutes": 20,
+      "engineEffect": "deposit(1) 入库；完成时耗 1.5×人数、全员 +25 饱食/+2 San",
+      "status": "NARROWED",
+      "note": "shared deposit primitive charges 15 min; the task budget is 20"
+    },
+    {
+      "task": "MAINTAIN_ORDER",
+      "originalPlace": "dorm_a_door",
+      "originalMinutes": 60,
+      "originalStamina": 5,
+      "originalEffect": "同房间 San +0.015/s（60 min → +54）",
+      "source": "task-system.js:113-120",
+      "enginePlace": "dorm-a",
+      "engineMinutes": 60,
+      "engineEffect": "work(order,60) → 同房 San +54、自己 +5",
+      "status": "NARROWED",
+      "note": "original accepts door-or-inside; engine requires the room dorm-a"
+    },
+    {
+      "task": "REST_RECOVER",
+      "originalPlace": "dorm_a_door",
+      "originalMinutes": 60,
+      "originalStamina": 0,
+      "originalEffect": "有效供暖下 stamina +0.05/s、health +0.02/s",
+      "source": "task-system.js:121-128, task-effects.js:337-345",
+      "enginePlace": null,
+      "engineMinutes": 60,
+      "engineEffect": "rest(60) → 内核 +12 stamina/h、+1.5 health/h、+3 San/h",
+      "status": "NARROWED",
+      "note": "original accepts door-or-inside; engine requires the room null"
+    },
+    {
+      "task": "SCOUT_RUINS",
+      "originalPlace": "ruins_site",
+      "originalMinutes": 40,
+      "originalStamina": 20,
+      "originalEffect": "0.002/s 掉落 药品5/食物8/电力5；完成 +5 San",
+      "source": "task-system.js:129-137",
+      "enginePlace": "village",
+      "engineMinutes": 40,
+      "engineEffect": "work(scout,40) → 0.12/min 掉落 药5/食8/电5、自己 +5 San",
+      "status": "MATCH",
+      "note": ""
+    },
+    {
+      "task": "BUILD_GENERATOR",
+      "originalPlace": "workshop_door",
+      "originalMinutes": 240,
+      "originalStamina": 20,
+      "originalEffect": "发电机：木 3/h → 电 20/h",
+      "source": "task-system.js:138-145, machine-system.js:30-78",
+      "enginePlace": "workshop",
+      "engineMinutes": 240,
+      "engineEffect": "production.build → 木3/h → 电20/h（工时 240 min）",
+      "status": "MATCH",
+      "note": ""
+    },
+    {
+      "task": "BUILD_LUMBER_MILL",
+      "originalPlace": "workshop_door",
+      "originalMinutes": 360,
+      "originalStamina": 25,
+      "originalEffect": "伐木机：电 4/h → 木 24/h",
+      "source": "task-system.js:146-153, machine-system.js:30-78",
+      "enginePlace": "workshop",
+      "engineMinutes": 360,
+      "engineEffect": "production.build → 电4/h → 木24/h（工时 360 min）",
+      "status": "MATCH",
+      "note": ""
+    },
+    {
+      "task": "BUILD_FOOD_COLLECTOR",
+      "originalPlace": "workshop_door",
+      "originalMinutes": 240,
+      "originalStamina": 20,
+      "originalEffect": "捕猎机：电 3/h → 食 12/h",
+      "source": "task-system.js:154-162, machine-system.js:30-78",
+      "enginePlace": "workshop",
+      "engineMinutes": 240,
+      "engineEffect": "production.build → 电3/h → 食12/h（工时 240 min）",
+      "status": "MATCH",
+      "note": ""
+    }
+  ],
+  "maps": [
+    {
+      "map": "village",
+      "original": "src/map/village-map.js (50x40)",
+      "engine": "village (MAPS.village)",
+      "tasks": [
+        "COLLECT_WOOD@lumber_camp",
+        "COLLECT_FOOD@frozen_lake",
+        "COLLECT_MATERIAL@ruins_site",
+        "SCOUT_RUINS@ruins_site"
+      ]
+    },
+    {
+      "map": "warehouse",
+      "original": "src/map/indoor/warehouse.js (10x8)",
+      "engine": "warehouse",
+      "tasks": [
+        "PREPARE_WARMTH@warehouse_door"
+      ]
+    },
+    {
+      "map": "kitchen",
+      "original": "src/map/indoor/kitchen.js (8x8)",
+      "engine": "kitchen",
+      "tasks": [
+        "DISTRIBUTE_FOOD@kitchen_door"
+      ]
+    },
+    {
+      "map": "medical",
+      "original": "src/map/indoor/medical.js",
+      "engine": "medical",
+      "tasks": [
+        "PREPARE_MEDICAL@medical_door"
+      ]
+    },
+    {
+      "map": "workshop",
+      "original": "src/map/indoor/workshop.js",
+      "engine": "workshop",
+      "tasks": [
+        "MAINTAIN_POWER@workshop_door",
+        "BUILD_*@workshop_door"
+      ]
+    },
+    {
+      "map": "dorm-a",
+      "original": "src/map/indoor/dorm-a.js",
+      "engine": "dorm-a",
+      "tasks": [
+        "BOOST_MORALE",
+        "COORDINATE",
+        "MAINTAIN_ORDER",
+        "REST_RECOVER@dorm_a_door"
+      ]
+    },
+    {
+      "map": "dorm-b",
+      "original": "src/map/indoor/dorm-b.js",
+      "engine": "dorm-b",
+      "tasks": []
+    },
+    {
+      "map": "command",
+      "original": "src/map/indoor/command.js",
+      "engine": "command",
+      "tasks": []
+    }
+  ],
+  "counts": {
+    "MATCH": 6,
+    "DIVERGES": 3,
+    "NARROWED": 6
+  }
+}

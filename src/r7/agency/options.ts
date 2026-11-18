@@ -85,12 +85,14 @@ export interface OptionBuild {
 export const PLACE_FOR_TASK: Record<string, string | null> = {
   COLLECT_FOOD: 'village', COLLECT_WOOD: 'village', SCOUT_RUINS: 'village',
   MAINTAIN_POWER: 'workshop', COLLECT_MATERIAL: 'village',
-  PREPARE_WARMTH: 'workshop', PREPARE_MEDICAL: 'medical',
+  // `task-system.js:88` targetLocation `warehouse_door`; the port has no door
+  // cell, so the warehouse room stands for it (same narrowing as the others).
+  PREPARE_WARMTH: 'warehouse', PREPARE_MEDICAL: 'medical',
   DISTRIBUTE_FOOD: 'warehouse',
   BUILD_GENERATOR: 'workshop', BUILD_LUMBER_MILL: 'workshop',
   BUILD_FOOD_COLLECTOR: 'workshop',
   BOOST_MORALE: 'dorm-a', COORDINATE: 'dorm-a', MAINTAIN_ORDER: 'dorm-a',
-  REST_RECOVER: null,
+  REST_RECOVER: 'dorm-a',
 };
 
 export const MAX_OPTIONS = 8;
@@ -166,7 +168,7 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
     rules.push('need.eat');
   }
   if (npc.stamina < 70) {
-    candidates.push(candidate('rest', '就地休息', { minutes: 60 },
+    candidates.push(candidate('rest', '回宿舍休息', { minutes: 60, place: 'dorm-a' },
       ['awake'], { stamina: 20 }));
     rules.push('need.rest');
   }
@@ -177,9 +179,17 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
       ['stamina > 15'], { firewood: 10, stamina: -15 }));
     rules.push('yield.gather');
   }
-  if (resources.firewood >= 1 && furnace.fuel < 60) {
-    candidates.push(candidate('refuel', '给中央炉添柴', { amount: 3 },
-      ['firewood >= 1', 'fuel < 60'], { furnaceFuel: 6 }));
+  // R10-D (shared file, one line, disclosed in D-R10.md): the original has ONE
+  // central-heating model (`furnace-system.js:9-14`); its strength comes from
+  // the wood/power reserve and it needs no manual stoking. The legacy furnace
+  // tank remained a per-actor candidate at `fuel < 60`, so eight residents each
+  // spent 2-3 wood every hour for a 100-cap tank that burns 0.4/h — 55 wood of
+  // the four-day run's 70 went into it, and the town froze at D2 16:00 with the
+  // tank still at 72. Now the tank is fed only on a real deficit, and only while
+  // the town can still afford it.
+  if (resources.firewood >= 8 && furnace.fuel < 20) {
+    candidates.push(candidate('refuel', '给中央炉添柴', { amount: 2 },
+      ['firewood >= 8', 'fuel < 20'], { furnaceFuel: 4 }));
     rules.push('need.heat');
   }
   if (npc.health < 70 && resources.medicine >= 1) {
@@ -278,8 +288,16 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
         rules.push(`task.work-place-blocked:${task.type}@warehouse|kitchen`);
         break;
       case 'PREPARE_WARMTH':
-        candidates.push(candidate('refuel', '为御寒准备炉火', { amount: 2 },
-          ['firewood >= 1'], { furnaceFuel: 4 }));
+        // `task-effects.js:320-336`: 30 minutes of preparation in the warehouse
+        // (blankets/clothing), NOT a wood-burning stoke. The old `refuel(2)`
+        // candidate burned the town's firewood and could not close this task
+        // any more once the domain mapping was corrected.
+        if (npc.location !== 'warehouse') {
+          rules.push('task.work-place-blocked:PREPARE_WARMTH@warehouse');
+          break;
+        }
+        candidates.push(candidate('rest', '在仓库准备御寒物资', { minutes: 30, place: 'warehouse' },
+          ['alive'], { bodyTemp: 0.5, sanity: 3 }));
         rules.push('task.prepare-warmth');
         break;
       case 'PREPARE_MEDICAL':
@@ -325,7 +343,7 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
         break;
       }
       case 'REST_RECOVER':
-        candidates.push(candidate('rest', '按分工休息恢复', { minutes: 60 },
+        candidates.push(candidate('rest', '按分工休息恢复', { minutes: 60, place: 'dorm-a' },
           ['awake'], { stamina: 20 }));
         rules.push('task.rest');
         break;

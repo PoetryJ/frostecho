@@ -4,6 +4,12 @@
  * Ported from the original:
  *   - `src/npc/npc-body.js:32,36,48,65` outdoor cooling `|temp|*0.00025*dt`
  *     (frostbite x1.5, floor 25C), indoor recovery `+0.00333/s` toward 36.5C;
+ *   - `src/npc/npc-body.js:63-80` indoor without heating: `-|indoorTemp|*0.00003`
+ *     when the sheltered temperature is below zero, `+0.001` otherwise;
+ *   - `src/systems/furnace-system.js:100-140` central heating: strength from the
+ *     wood/power reserve hours (65/35, 24 h target), indoor bodyTemp recovery,
+ *     stamina `+0.018/s` and health `+0.006/s` scaled by that strength, and the
+ *     x1.1 warmth-preparation bonus;
  *   - `src/systems/weather-system.js:244-316` wind chill x1.3 and the three
  *     temperature bands (-50..-20, below -50, above 0);
  *   - `src/systems/weather-system.js:192-199` night temperature drop;
@@ -13,12 +19,20 @@
  * 60), so a per-second rate is a per-minute rate here. That conversion is the
  * only clock change and is listed in the parity table.
  *
+ * R10-D correction: the heating strength produced by the production domain was
+ * a write-only note — nothing consumed it, while the legacy furnace fuel
+ * (`world-v2` `evolveSpan`) was the only indoor survival channel. The original
+ * removed that furnace (`furnace-system.js:9-14`: one central heating model);
+ * the heating therefore now has its real effect here, and effective central
+ * heating cancels the obsolete "cold building" drain it replaces.
+ *
  * Base hunger/stamina/san decay stays in `survival-rules/2` (world-v2) and is
  * NOT re-applied here, so one span never charges a body twice.
  */
 import type { ActorDelta, DomainCommand, DomainContext, DomainModule,
   DomainResult } from '../../contracts';
 import { emptyResult } from '../../contracts';
+import { heatingStrength } from '../production/index';
 
 export interface SurvivalState {
   /** Accumulated outdoor minutes per actor, reset while indoors. */
@@ -45,6 +59,18 @@ export const HYPOTHERMIA_THRESHOLD = 34;
 /** Day-2 outdoor limit in the original: 2 game hours (`weather-system.js:29-40`). */
 export const OUTDOOR_LIMIT_MINUTES = 120;
 
+/** `furnace-system.js:22-30` central-heating constants. */
+export const HEATING_TARGET_RESERVE_HOURS = 24;
+export const HEATING_WARM_INDOOR_TEMP = 16;
+export const HEATING_PASSIVE_SHELTER_OFFSET = 4;
+export const HEATING_MIN_EFFECTIVE_STRENGTH = 0.08;
+export const HEATING_BODY_TEMP_RATE = 0.00333;
+export const HEATING_STAMINA_RATE = 0.018;
+export const HEATING_HEALTH_RATE = 0.006;
+export const HEATING_WARMTH_PREP_BONUS = 1.1;
+/** `world-v2 evolveSpan`: the legacy cold-building drain this replaces. */
+export const LEGACY_COLD_HEALTH_PER_HOUR = 1.2;
+
 /** Outdoor temperature per original day configuration. */
 export function outdoorTemperature(day: number, minuteOfDay: number,
   weather: string, difficultyOffset = 0): number {
@@ -54,6 +80,24 @@ export function outdoorTemperature(day: number, minuteOfDay: number,
   const storm = weather === 'storm' || weather === 'cold-snap';
   return base + (night ? drop : 0) + difficultyOffset - (storm ? 5 : 0);
 }
+
+/**
+ * The town's current heating strength, from the authoritative snapshot. Reads
+ * the note the production domain committed in the same span when present, so
+ * the two domains cannot disagree about the tank state.
+ */
+export function heatingOf(snapshot: Readonly<DomainContext['snapshot']>): {
+  strength: number; indoorTemp: number; effective: boolean;
+} {
+  const note = Number(snapshot.facts.heatingStrength);
+  const strength = Number.isFinite(note) && note >= 0
+    ? note : heatingStrength(snapshot.resources.firewood, snapshot.resources.power);
+  const outdoor = outdoorTemperature(snapshot.day, snapshot.minuteOfDay, snapshot.weather);
+  const passive = outdoor + HEATING_PASSIVE_SHELTER_OFFSET;
+  const indoorTemp = passive + (HEATING_WARM_INDOOR_TEMP - passive) * strength;
+  return { strength, indoorTemp, effective: strength >= HEATING_MIN_EFFECTIVE_STRENGTH };
+}
+
 
 export const survivalDomain: DomainModule<SurvivalState> = {
   id: 'survival',
@@ -117,6 +161,9 @@ export const survivalDomain: DomainModule<SurvivalState> = {
     const day = snapshot.day;
     const outdoor = outdoorTemperature(day, snapshot.minuteOfDay, snapshot.weather);
     const chill = outdoor < 0 ? outdoor * WIND_CHILL : outdoor;
+    const heating = heatingOf(snapshot);
+    const warmthBonus = snapshot.facts.warmthPreparedDay === day ? HEATING_WARMTH_PREP_BONUS : 1;
+    const heat = heating.strength * warmthBonus;
 
     for (const actorId of context.actorIds) {
       const actor = snapshot.npcs[actorId];
@@ -141,12 +188,23 @@ export const survivalDomain: DomainModule<SurvivalState> = {
         }
       } else {
         next.outdoorMinutes[actorId] = Math.max(0, (next.outdoorMinutes[actorId] ?? 0) - minutes);
-        const warmth = snapshot.furnace.lit || snapshot.furnace.warmth > 0;
-        if (warmth) {
-          delta.bodyTemp = Math.min(0.2 * minutes,
+        // `furnace-system.js:120-140`: effective central heating restores
+        // bodyTemp, stamina and health indoors; the rates are per game minute.
+        if (heating.effective) {
+          delta.bodyTemp = Math.min(HEATING_BODY_TEMP_RATE * minutes,
             BODY_TEMP_TARGET - actor.bodyTemp);
+          delta.stamina = HEATING_STAMINA_RATE * heat * minutes;
+          delta.health = HEATING_HEALTH_RATE * heat * minutes
+            // The legacy `evolveSpan` cold-building drain is what the original
+            // central heating replaced; effective heating cancels it, and only
+            // a town with no wood AND no power still freezes indoors.
+            + (snapshot.furnace.lit ? 0 : LEGACY_COLD_HEALTH_PER_HOUR / 60 * minutes);
+        } else if (heating.indoorTemp < 0) {
+          // `npc-body.js:70-74`: sheltered but unheated below zero.
+          delta.bodyTemp = -Math.abs(heating.indoorTemp) * 0.00003 * minutes;
         } else {
-          delta.bodyTemp = -Math.abs(outdoor) * 0.0001 * minutes;
+          // `npc-body.js:75-79`: sheltered and above zero.
+          delta.bodyTemp = 0.001 * minutes;
         }
       }
       const projected = actor.bodyTemp + (delta.bodyTemp ?? 0);

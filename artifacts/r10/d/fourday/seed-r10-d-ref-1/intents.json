@@ -1,0 +1,7937 @@
+[
+  {
+    "intentId": "npc_03-r8-154",
+    "commandId": "npc_03-r8-154",
+    "actorId": "npc_03",
+    "candidateId": "a-006678cedc77",
+    "candidate": {
+      "id": "a-006678cedc77",
+      "kind": "work",
+      "description": "去车间维护电力",
+      "parameters": {
+        "action": "work",
+        "minutes": 40,
+        "taskId": "task-4",
+        "taskType": "MAINTAIN_POWER"
+      },
+      "preconditions": [
+        "stamina > 10"
+      ],
+      "expectedEffects": {
+        "power": 15,
+        "stamina": -10
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "cfb873b6ec865ddf198ffc47eb80d88ba1aa95fb2f18efb9edf703d63ee0cedf",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1140,
+    "dueAt": 1180,
+    "requiredPlace": "workshop",
+    "startPlace": "workshop",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-154:worked:165"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1180
+  },
+  {
+    "intentId": "npc_07-r8-154",
+    "commandId": "npc_07-r8-154",
+    "actorId": "npc_07",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "4cef541497bf91e49161361d643e3ed5f4286e245aa2e649157cf801b17408d4",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1140,
+    "dueAt": 1155,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-154:moved:161"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1155
+  },
+  {
+    "intentId": "npc_08-r8-154",
+    "commandId": "npc_08-r8-154",
+    "actorId": "npc_08",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "0a1f47880c3cd8103a415317e6fd6daa42343721ab4a423ea1810b4eafb3010e",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1140,
+    "dueAt": 1155,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-154:moved:162"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1155
+  },
+  {
+    "intentId": "npc_01-r8-168",
+    "commandId": "npc_01-r8-168",
+    "actorId": "npc_01",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "51c1c6590a55c3c4966d31e61f11a545989e82afd06da4248d7adc3f265010b0",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1200,
+    "dueAt": 1260,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-168:rested:178"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1260
+  },
+  {
+    "intentId": "npc_02-r8-168",
+    "commandId": "npc_02-r8-168",
+    "actorId": "npc_02",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "653b325cad58b72547731a84fb12326fd78610b392caa07b78266682648cc6f4",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1200,
+    "dueAt": 1260,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-168:rested:179"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1260
+  },
+  {
+    "intentId": "npc_03-r8-168",
+    "commandId": "npc_03-r8-168",
+    "actorId": "npc_03",
+    "candidateId": "a-006678cedc77",
+    "candidate": {
+      "id": "a-006678cedc77",
+      "kind": "work",
+      "description": "去车间维护电力",
+      "parameters": {
+        "action": "work",
+        "minutes": 40,
+        "taskId": "task-4",
+        "taskType": "MAINTAIN_POWER"
+      },
+      "preconditions": [
+        "stamina > 10"
+      ],
+      "expectedEffects": {
+        "power": 15,
+        "stamina": -10
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "547d3702375512ff2781401abcdbef82180267bc387d45c4cc8be083fc85ac8c",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1200,
+    "dueAt": 1240,
+    "requiredPlace": "workshop",
+    "startPlace": "workshop",
+    "status": "rejected",
+    "receiptIds": [],
+    "failureReason": "too_tired",
+    "projections": [],
+    "settledAt": 1240
+  },
+  {
+    "intentId": "npc_04-r8-168",
+    "commandId": "npc_04-r8-168",
+    "actorId": "npc_04",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "c2918d0651059dc8ac8bedb87fca4e92d43a3fae94e05b094f770462c512ccce",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1200,
+    "dueAt": 1260,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-168:rested:180"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1260
+  },
+  {
+    "intentId": "npc_05-r8-168",
+    "commandId": "npc_05-r8-168",
+    "actorId": "npc_05",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "dbdcceb0c6aaf62573791d24485eb1178eaf28403caae5a3fde78920fdcf3866",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1200,
+    "dueAt": 1215,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-168:moved:170"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1215
+  },
+  {
+    "intentId": "npc_06-r8-168",
+    "commandId": "npc_06-r8-168",
+    "actorId": "npc_06",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "069900ffc94e9500b9045fc38231f3e1339f40b18ad67a763a954b6ece6c925c",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1200,
+    "dueAt": 1215,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-168:moved:171"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1215
+  },
+  {
+    "intentId": "npc_07-r8-168",
+    "commandId": "npc_07-r8-168",
+    "actorId": "npc_07",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "0d47d6218921af18ff7a4721e21041cbcc0e2e920e85ac12624c7562d7f8e3e4",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1200,
+    "dueAt": 1215,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-168:moved:172"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1215
+  },
+  {
+    "intentId": "npc_08-r8-168",
+    "commandId": "npc_08-r8-168",
+    "actorId": "npc_08",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "93351a82121ad3606a6b4c7b7b8269133bed480a62da950a0093299a70383783",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1200,
+    "dueAt": 1215,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-168:moved:173"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1215
+  },
+  {
+    "intentId": "npc_01-r8-195",
+    "commandId": "npc_01-r8-195",
+    "actorId": "npc_01",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "2ea1e855fffa5d84a79a675cf8fbc9c04865361539a81de8ec5288656d77e276",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1680,
+    "dueAt": 1740,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-195:rested:212"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1740
+  },
+  {
+    "intentId": "npc_02-r8-195",
+    "commandId": "npc_02-r8-195",
+    "actorId": "npc_02",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "6cc74c8fdf1262d99c85f16e06d35ee42da5342959ab64e69f5adf1111d6b60b",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1680,
+    "dueAt": 1740,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-195:rested:213"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1740
+  },
+  {
+    "intentId": "npc_04-r8-196",
+    "commandId": "npc_04-r8-196",
+    "actorId": "npc_04",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "bd9a626e2a2af259fd66e12b355f25b12154f82c7d91ff7a579ec64a1edb3d9a",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1680,
+    "dueAt": 1740,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-196:rested:214"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1740
+  },
+  {
+    "intentId": "npc_05-r8-196",
+    "commandId": "npc_05-r8-196",
+    "actorId": "npc_05",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "416c2b3eee71d52d2d354c16d079a080bd6f3e0d999543505006fe225a54ea92",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1680,
+    "dueAt": 1695,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-196:moved:199"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1695
+  },
+  {
+    "intentId": "npc_06-r8-196",
+    "commandId": "npc_06-r8-196",
+    "actorId": "npc_06",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "f145457152da80788de15266b7addc45283dc1665351b06a2c92e52f8e627768",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1680,
+    "dueAt": 1695,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-196:moved:200"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1695
+  },
+  {
+    "intentId": "npc_07-r8-196",
+    "commandId": "npc_07-r8-196",
+    "actorId": "npc_07",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "4603b93b65b36a0562dda55640fa4f41aae04df4d70e43fcdd035250c4a96d5c",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1680,
+    "dueAt": 1695,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-196:moved:201"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1695
+  },
+  {
+    "intentId": "npc_08-r8-196",
+    "commandId": "npc_08-r8-196",
+    "actorId": "npc_08",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "0b0048506fa1b6d1009fc0443b3e91921a6b92c7629ab4f6fcd832f70984dee9",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1680,
+    "dueAt": 1695,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-196:moved:202"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1695
+  },
+  {
+    "intentId": "d-move-npc_03-1680",
+    "commandId": "d-move-npc_03-1680",
+    "actorId": "npc_03",
+    "candidateId": "d-move-dorm-a-f0aa21",
+    "candidate": {
+      "id": "d-move-dorm-a-f0aa21",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1680,
+    "dueAt": 1695,
+    "requiredPlace": null,
+    "startPlace": "workshop",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_03-1680:moved:198"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1695
+  },
+  {
+    "intentId": "d-move-npc_05-1695",
+    "commandId": "d-move-npc_05-1695",
+    "actorId": "npc_05",
+    "candidateId": "d-move-dorm-a-ddf239",
+    "candidate": {
+      "id": "d-move-dorm-a-ddf239",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1695,
+    "dueAt": 1710,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_05-1695:moved:205"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1710
+  },
+  {
+    "intentId": "d-move-npc_06-1710",
+    "commandId": "d-move-npc_06-1710",
+    "actorId": "npc_06",
+    "candidateId": "d-move-dorm-a-607ee3",
+    "candidate": {
+      "id": "d-move-dorm-a-607ee3",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1710,
+    "dueAt": 1725,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_06-1710:moved:208"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1725
+  },
+  {
+    "intentId": "d-move-npc_07-1725",
+    "commandId": "d-move-npc_07-1725",
+    "actorId": "npc_07",
+    "candidateId": "d-move-dorm-a-639539",
+    "candidate": {
+      "id": "d-move-dorm-a-639539",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1725,
+    "dueAt": 1740,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_07-1725:moved:211"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1740
+  },
+  {
+    "intentId": "d-move-npc_08-1740",
+    "commandId": "d-move-npc_08-1740",
+    "actorId": "npc_08",
+    "candidateId": "d-move-dorm-a-fe24ba",
+    "candidate": {
+      "id": "d-move-dorm-a-fe24ba",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 1740,
+    "dueAt": 1755,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_08-1740:moved:217"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 1755
+  },
+  {
+    "intentId": "npc_01-r8-232",
+    "commandId": "npc_01-r8-232",
+    "actorId": "npc_01",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "2a17f1e5e42d1eb6f3a23ac340d9b6798775726d12ad6e91bea4bfbe463c3b7f",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2160,
+    "dueAt": 2220,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-232:rested:235"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2220
+  },
+  {
+    "intentId": "npc_02-r8-232",
+    "commandId": "npc_02-r8-232",
+    "actorId": "npc_02",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "5130f6e773e333a59c4c9e377d7291b88b07b63bc2ea91956d4784b6974f510f",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2160,
+    "dueAt": 2220,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-232:rested:236"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2220
+  },
+  {
+    "intentId": "npc_04-r8-233",
+    "commandId": "npc_04-r8-233",
+    "actorId": "npc_04",
+    "candidateId": "a-0811648aa308",
+    "candidate": {
+      "id": "a-0811648aa308",
+      "kind": "rest",
+      "description": "按分工休息恢复",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a",
+        "taskId": "task-12",
+        "taskType": "REST_RECOVER"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "3a9c1be578f72ecc59441b3328bfb6b86d0ab247f88674304723c70ef2f866ce",
+    "generation": 0,
+    "taskId": "task-12",
+    "taskType": "REST_RECOVER",
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2160,
+    "dueAt": 2220,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-233:rested:237"
+    ],
+    "failureReason": null,
+    "projections": [
+      {
+        "kind": "task",
+        "id": "task-12",
+        "revision": null,
+        "receiptId": "npc_04-r8-233:rested:237",
+        "applied": true,
+        "appliedAt": 2220
+      }
+    ],
+    "settledAt": 2220
+  },
+  {
+    "intentId": "npc_05-r8-233",
+    "commandId": "npc_05-r8-233",
+    "actorId": "npc_05",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "b83cb70627aabe2d46ebce39474bd3a54aa4b1053c68acd430d170d3ac3b137f",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2160,
+    "dueAt": 2220,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-233:rested:238"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2220
+  },
+  {
+    "intentId": "npc_06-r8-233",
+    "commandId": "npc_06-r8-233",
+    "actorId": "npc_06",
+    "candidateId": "a-403e4cbbf19e",
+    "candidate": {
+      "id": "a-403e4cbbf19e",
+      "kind": "rest",
+      "description": "按分工休息恢复",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a",
+        "taskId": "task-8",
+        "taskType": "REST_RECOVER"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "9dd6bdb0ad0556749bf4a681d1ed3130548d0f22e834096e937aec74bf68c933",
+    "generation": 0,
+    "taskId": "task-8",
+    "taskType": "REST_RECOVER",
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2160,
+    "dueAt": 2220,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-233:rested:239"
+    ],
+    "failureReason": null,
+    "projections": [
+      {
+        "kind": "task",
+        "id": "task-8",
+        "revision": null,
+        "receiptId": "npc_06-r8-233:rested:239",
+        "applied": true,
+        "appliedAt": 2220
+      }
+    ],
+    "settledAt": 2220
+  },
+  {
+    "intentId": "npc_07-r8-233",
+    "commandId": "npc_07-r8-233",
+    "actorId": "npc_07",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "2a75282c00605d4329cc873c8c9c2a47b9007a28eaa660634ccbd5c596359b4c",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2160,
+    "dueAt": 2220,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-233:rested:240"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2220
+  },
+  {
+    "intentId": "npc_08-r8-233",
+    "commandId": "npc_08-r8-233",
+    "actorId": "npc_08",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "bcda3f4f2baa2ebd2adc0e8f5c1ea62c051000624a61c727cbc84e0fce930a45",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2160,
+    "dueAt": 2220,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-233:rested:241"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2220
+  },
+  {
+    "intentId": "npc_01-r8-242",
+    "commandId": "npc_01-r8-242",
+    "actorId": "npc_01",
+    "candidateId": "a-bdf3be37fd7f",
+    "candidate": {
+      "id": "a-bdf3be37fd7f",
+      "kind": "move",
+      "description": "前往workshop",
+      "parameters": {
+        "action": "move",
+        "to": "workshop",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "f81d34c80c105a508137a465f6b76262c3ed6c6e8187bb4d552c90efab4c8238",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2220,
+    "dueAt": 2235,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-242:moved:244"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2235
+  },
+  {
+    "intentId": "npc_02-r8-242",
+    "commandId": "npc_02-r8-242",
+    "actorId": "npc_02",
+    "candidateId": "a-da38572f198c",
+    "candidate": {
+      "id": "a-da38572f198c",
+      "kind": "move",
+      "description": "前往village",
+      "parameters": {
+        "action": "move",
+        "to": "village",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "1fd444b181e3e32b64f0d5abcfb3d60a5975bcdb23c4bddf85643e77ae26908c",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2220,
+    "dueAt": 2235,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-242:moved:245"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2235
+  },
+  {
+    "intentId": "npc_03-r8-242",
+    "commandId": "npc_03-r8-242",
+    "actorId": "npc_03",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "13cd5efedae9631fd4227c5a27d57bb6d4382fbd18ab33e44ed809ca541cf000",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2220,
+    "dueAt": 2280,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-242:rested:249"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2280
+  },
+  {
+    "intentId": "npc_04-r8-242",
+    "commandId": "npc_04-r8-242",
+    "actorId": "npc_04",
+    "candidateId": "a-da38572f198c",
+    "candidate": {
+      "id": "a-da38572f198c",
+      "kind": "move",
+      "description": "前往village",
+      "parameters": {
+        "action": "move",
+        "to": "village",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "077eb833cdd1679bf52f6fd8978ff0ec3cc549d36662b9bbcb0839459fa11eb0",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2220,
+    "dueAt": 2235,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-242:moved:246"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2235
+  },
+  {
+    "intentId": "npc_05-r8-242",
+    "commandId": "npc_05-r8-242",
+    "actorId": "npc_05",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "b3b67d3cb86a76b8cd7dceaf1c97f370af977cc0240150897a8cff11912defe3",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2220,
+    "dueAt": 2280,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-242:rested:250"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2280
+  },
+  {
+    "intentId": "npc_06-r8-242",
+    "commandId": "npc_06-r8-242",
+    "actorId": "npc_06",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "58460a482b2fdbb9eecc22257ea3ac2a0c6174eaa5bc3ac39b4d3ab1f48efa51",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2220,
+    "dueAt": 2280,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-242:rested:251"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2280
+  },
+  {
+    "intentId": "npc_07-r8-242",
+    "commandId": "npc_07-r8-242",
+    "actorId": "npc_07",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "8fd5fc64f792b0b463f7900bf9f9f676471b79810636283ba9249d655b6bdedc",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2220,
+    "dueAt": 2280,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-242:rested:252"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2280
+  },
+  {
+    "intentId": "npc_08-r8-242",
+    "commandId": "npc_08-r8-242",
+    "actorId": "npc_08",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "b12bd129c02af3ed1947d9fcddcbbf1e3ee8298ea1727e9bb711bbebb23af0b8",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2220,
+    "dueAt": 2280,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-242:rested:253"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2280
+  },
+  {
+    "intentId": "npc_01-r8-254",
+    "commandId": "npc_01-r8-254",
+    "actorId": "npc_01",
+    "candidateId": "a-3f4f604d1b47",
+    "candidate": {
+      "id": "a-3f4f604d1b47",
+      "kind": "work",
+      "description": "去车间维护电力",
+      "parameters": {
+        "action": "work",
+        "minutes": 40,
+        "taskId": "task-11",
+        "taskType": "MAINTAIN_POWER"
+      },
+      "preconditions": [
+        "stamina > 10"
+      ],
+      "expectedEffects": {
+        "power": 15,
+        "stamina": -10
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "031b11f8b98a016f58fcd7ea05c0db8e59c06fe0b353e4a709f36f35e523b492",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2280,
+    "dueAt": 2320,
+    "requiredPlace": "workshop",
+    "startPlace": "workshop",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-254:worked:264"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2320
+  },
+  {
+    "intentId": "npc_02-r8-254",
+    "commandId": "npc_02-r8-254",
+    "actorId": "npc_02",
+    "candidateId": "a-a8d0a5c49052",
+    "candidate": {
+      "id": "a-a8d0a5c49052",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "2bc0ba0b62ba12b4f9018e47793dde599d7c81f16d067f48efa9b4b1e6ba0c15",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2280,
+    "dueAt": 2295,
+    "requiredPlace": null,
+    "startPlace": "village",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-254:moved:256"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2295
+  },
+  {
+    "intentId": "npc_03-r8-254",
+    "commandId": "npc_03-r8-254",
+    "actorId": "npc_03",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "6c7b9b73efb963d4b3fabb941bccdaf7420aee310053053aaf46f28eda7d6216",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2280,
+    "dueAt": 2340,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-254:rested:267"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2340
+  },
+  {
+    "intentId": "npc_04-r8-254",
+    "commandId": "npc_04-r8-254",
+    "actorId": "npc_04",
+    "candidateId": "a-a8d0a5c49052",
+    "candidate": {
+      "id": "a-a8d0a5c49052",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "deb3d5331d9306dd19cee6bd3226a48370a1c8905f13431919e116f3d6f50d19",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2280,
+    "dueAt": 2295,
+    "requiredPlace": null,
+    "startPlace": "village",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-254:moved:257"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2295
+  },
+  {
+    "intentId": "npc_05-r8-254",
+    "commandId": "npc_05-r8-254",
+    "actorId": "npc_05",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "314fef208fd788105804edcfe13263e242e4ec98ad432a2acc99ba04d68e57c5",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2280,
+    "dueAt": 2295,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-254:moved:258"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2295
+  },
+  {
+    "intentId": "npc_06-r8-254",
+    "commandId": "npc_06-r8-254",
+    "actorId": "npc_06",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "dc203d1a6b3238667e030854265d6a65e70efd41294fd808d55978627d81f2c3",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2280,
+    "dueAt": 2295,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-254:moved:259"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2295
+  },
+  {
+    "intentId": "npc_07-r8-254",
+    "commandId": "npc_07-r8-254",
+    "actorId": "npc_07",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "d4830148ea460fff34247ed0897d85b336152f69874fa02c8bd28ab48349aac2",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2280,
+    "dueAt": 2295,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-254:moved:260"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2295
+  },
+  {
+    "intentId": "npc_08-r8-254",
+    "commandId": "npc_08-r8-254",
+    "actorId": "npc_08",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "17f8bc97c68c63daa7d8ccc7f05a1e349865b027732506634e695a5d4a792699",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2280,
+    "dueAt": 2295,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-254:moved:261"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2295
+  },
+  {
+    "intentId": "npc_02-r8-269",
+    "commandId": "npc_02-r8-269",
+    "actorId": "npc_02",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "53a6df39c02c710cd35aff94af6ab6a2fc6e140b77fa7cfb446ffa7c4a13786c",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2340,
+    "dueAt": 2400,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-269:rested:277"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2400
+  },
+  {
+    "intentId": "npc_03-r8-269",
+    "commandId": "npc_03-r8-269",
+    "actorId": "npc_03",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "d7750a4c74618879c2b2a0eba5404087c177401f18f56aa03870f01272f41af7",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2340,
+    "dueAt": 2400,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-269:rested:278"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2400
+  },
+  {
+    "intentId": "npc_04-r8-269",
+    "commandId": "npc_04-r8-269",
+    "actorId": "npc_04",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "2ee7b211460314fd0e513c1bedc633ccc92f858de54373efa1db2c2747395637",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2340,
+    "dueAt": 2400,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-269:rested:279"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2400
+  },
+  {
+    "intentId": "npc_05-r8-269",
+    "commandId": "npc_05-r8-269",
+    "actorId": "npc_05",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "6b3e8ee534a05aa71759993679f9d1f99d2c99fcdda07add79ab01fc93ff8306",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2340,
+    "dueAt": 2355,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-269:moved:271"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2355
+  },
+  {
+    "intentId": "npc_06-r8-269",
+    "commandId": "npc_06-r8-269",
+    "actorId": "npc_06",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "f12b73aeb5d653ba66974cd061b2d06a5f6ed466e5248fc6de5b0ba8a6aa8ef5",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2340,
+    "dueAt": 2355,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-269:moved:272"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2355
+  },
+  {
+    "intentId": "npc_07-r8-269",
+    "commandId": "npc_07-r8-269",
+    "actorId": "npc_07",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "5e374b235042afd2c97126a4fe0a1575c8524b442b97571bc1b0952bd68a4c93",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2340,
+    "dueAt": 2355,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-269:moved:273"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2355
+  },
+  {
+    "intentId": "npc_08-r8-269",
+    "commandId": "npc_08-r8-269",
+    "actorId": "npc_08",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "70dd9316c8447673bd9bb5115ad3308cea95979c942dbd6a18756dbf5207f7f1",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2340,
+    "dueAt": 2355,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-269:moved:274"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2355
+  },
+  {
+    "intentId": "npc_01-r8-280",
+    "commandId": "npc_01-r8-280",
+    "actorId": "npc_01",
+    "candidateId": "a-3f4f604d1b47",
+    "candidate": {
+      "id": "a-3f4f604d1b47",
+      "kind": "work",
+      "description": "去车间维护电力",
+      "parameters": {
+        "action": "work",
+        "minutes": 40,
+        "taskId": "task-11",
+        "taskType": "MAINTAIN_POWER"
+      },
+      "preconditions": [
+        "stamina > 10"
+      ],
+      "expectedEffects": {
+        "power": 15,
+        "stamina": -10
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "63cde0142801a025fc58a4f3138e256c68439fe6c5583334363d81bebc1436cb",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2400,
+    "dueAt": 2440,
+    "requiredPlace": "workshop",
+    "startPlace": "workshop",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-280:worked:289"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2440
+  },
+  {
+    "intentId": "npc_02-r8-280",
+    "commandId": "npc_02-r8-280",
+    "actorId": "npc_02",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "fedc6a9be0237eff19d6db59a326b1ad3c3a6c49120b6b6cf21a3a5e6c0abe3a",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2400,
+    "dueAt": 2460,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-280:rested:292"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2460
+  },
+  {
+    "intentId": "npc_03-r8-280",
+    "commandId": "npc_03-r8-280",
+    "actorId": "npc_03",
+    "candidateId": "a-bdf3be37fd7f",
+    "candidate": {
+      "id": "a-bdf3be37fd7f",
+      "kind": "move",
+      "description": "前往workshop",
+      "parameters": {
+        "action": "move",
+        "to": "workshop",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "bb99c6a0c1f724d09cdcc6f6957ddb59f32a68f95cdc2be2a53b68eb8739b818",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2400,
+    "dueAt": 2415,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-280:moved:282"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2415
+  },
+  {
+    "intentId": "npc_04-r8-280",
+    "commandId": "npc_04-r8-280",
+    "actorId": "npc_04",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "5e622f5bb967b16abc805e6f91eba4201b9991a9d4fcc7f1e7b7111c91c52d2d",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2400,
+    "dueAt": 2460,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-280:rested:293"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2460
+  },
+  {
+    "intentId": "npc_05-r8-280",
+    "commandId": "npc_05-r8-280",
+    "actorId": "npc_05",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "2d32399e5d3bbd22780d23d8b02aa36267608692a0fa3e8fa16eaac9a2a48316",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2400,
+    "dueAt": 2415,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-280:moved:283"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2415
+  },
+  {
+    "intentId": "npc_06-r8-280",
+    "commandId": "npc_06-r8-280",
+    "actorId": "npc_06",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "b6cddb87322eefc22a18b5c8103bd474276b9addd440d433d5d3ae69d200034b",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2400,
+    "dueAt": 2415,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-280:moved:284"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2415
+  },
+  {
+    "intentId": "npc_07-r8-280",
+    "commandId": "npc_07-r8-280",
+    "actorId": "npc_07",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "8ad0ed049b74ecc644400273893c0598bfa2d8ceadc0bba697c6b99dd8019546",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2400,
+    "dueAt": 2415,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-280:moved:285"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2415
+  },
+  {
+    "intentId": "npc_08-r8-280",
+    "commandId": "npc_08-r8-280",
+    "actorId": "npc_08",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "e786ee30db8a2dce5e53ffceacea9f8c844535e67f6a1d4e860caa4936519c3c",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2400,
+    "dueAt": 2415,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-280:moved:286"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2415
+  },
+  {
+    "intentId": "npc_01-r8-294",
+    "commandId": "npc_01-r8-294",
+    "actorId": "npc_01",
+    "candidateId": "a-3f4f604d1b47",
+    "candidate": {
+      "id": "a-3f4f604d1b47",
+      "kind": "work",
+      "description": "去车间维护电力",
+      "parameters": {
+        "action": "work",
+        "minutes": 40,
+        "taskId": "task-11",
+        "taskType": "MAINTAIN_POWER"
+      },
+      "preconditions": [
+        "stamina > 10"
+      ],
+      "expectedEffects": {
+        "power": 15,
+        "stamina": -10
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "1ac8ad27d228b4ece50d6ec1dea29b3e01f796c152d4a57ff1ef7471c1971688",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2460,
+    "dueAt": 2500,
+    "requiredPlace": "workshop",
+    "startPlace": "workshop",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-294:worked:305"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2500
+  },
+  {
+    "intentId": "npc_05-r8-297",
+    "commandId": "npc_05-r8-297",
+    "actorId": "npc_05",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "5147c8dadde8f452e512ad632e17284e4b2d40c2cc9806351fb29c933d6742aa",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2460,
+    "dueAt": 2475,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-297:moved:299"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2475
+  },
+  {
+    "intentId": "npc_06-r8-297",
+    "commandId": "npc_06-r8-297",
+    "actorId": "npc_06",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "e8871f59c4e9b880ab8ab30e22044b9d70bc1fdf2240cdf5c9cfd475b0e89eae",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2460,
+    "dueAt": 2475,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-297:moved:300"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2475
+  },
+  {
+    "intentId": "npc_07-r8-297",
+    "commandId": "npc_07-r8-297",
+    "actorId": "npc_07",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "2b9cdc659d3c662103e983acc5eae5384e093737b8151d9c0697727e50667b12",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2460,
+    "dueAt": 2475,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-297:moved:301"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2475
+  },
+  {
+    "intentId": "npc_08-r8-297",
+    "commandId": "npc_08-r8-297",
+    "actorId": "npc_08",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "9a441af71fa0ce295a3cadbac227b832807a2914882120391a78e32bb1623139",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2460,
+    "dueAt": 2475,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-297:moved:302"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2475
+  },
+  {
+    "intentId": "npc_02-r8-309",
+    "commandId": "npc_02-r8-309",
+    "actorId": "npc_02",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "aec99b08950948f1cd6bd5bd1db77e41b9836baa9457efbc69752864fbab7bcf",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2520,
+    "dueAt": 2580,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-309:rested:318"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2580
+  },
+  {
+    "intentId": "npc_03-r8-309",
+    "commandId": "npc_03-r8-309",
+    "actorId": "npc_03",
+    "candidateId": "a-006678cedc77",
+    "candidate": {
+      "id": "a-006678cedc77",
+      "kind": "work",
+      "description": "去车间维护电力",
+      "parameters": {
+        "action": "work",
+        "minutes": 40,
+        "taskId": "task-4",
+        "taskType": "MAINTAIN_POWER"
+      },
+      "preconditions": [
+        "stamina > 10"
+      ],
+      "expectedEffects": {
+        "power": 15,
+        "stamina": -10
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "c5d8bf554efac5f9b118d27677c1d01d802bcb5aba82d98c60297550c4da9ad4",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2520,
+    "dueAt": 2560,
+    "requiredPlace": "workshop",
+    "startPlace": "workshop",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-309:worked:315"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2560
+  },
+  {
+    "intentId": "npc_04-r8-309",
+    "commandId": "npc_04-r8-309",
+    "actorId": "npc_04",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "b905e667063af088e1c14a52ebab09369eab8d27e42003ddfbc6932dc7a7c42b",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2520,
+    "dueAt": 2580,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-309:rested:319"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2580
+  },
+  {
+    "intentId": "npc_01-r8-320",
+    "commandId": "npc_01-r8-320",
+    "actorId": "npc_01",
+    "candidateId": "a-3f4f604d1b47",
+    "candidate": {
+      "id": "a-3f4f604d1b47",
+      "kind": "work",
+      "description": "去车间维护电力",
+      "parameters": {
+        "action": "work",
+        "minutes": 40,
+        "taskId": "task-11",
+        "taskType": "MAINTAIN_POWER"
+      },
+      "preconditions": [
+        "stamina > 10"
+      ],
+      "expectedEffects": {
+        "power": 15,
+        "stamina": -10
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "e77bc9ba966fdae8c37898584b32d7d82db8f0d99d7db81d00c52c6fe314326b",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2580,
+    "dueAt": 2620,
+    "requiredPlace": "workshop",
+    "startPlace": "workshop",
+    "status": "rejected",
+    "receiptIds": [],
+    "failureReason": "too_tired",
+    "projections": [],
+    "settledAt": 2620
+  },
+  {
+    "intentId": "npc_02-r8-320",
+    "commandId": "npc_02-r8-320",
+    "actorId": "npc_02",
+    "candidateId": "a-da38572f198c",
+    "candidate": {
+      "id": "a-da38572f198c",
+      "kind": "move",
+      "description": "前往village",
+      "parameters": {
+        "action": "move",
+        "to": "village",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "f94d8ab6493d110e0f0ce235c64fa484b556e3a0425237c33123766c20c9aec6",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2580,
+    "dueAt": 2595,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-320:moved:322"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2595
+  },
+  {
+    "intentId": "npc_03-r8-320",
+    "commandId": "npc_03-r8-320",
+    "actorId": "npc_03",
+    "candidateId": "a-006678cedc77",
+    "candidate": {
+      "id": "a-006678cedc77",
+      "kind": "work",
+      "description": "去车间维护电力",
+      "parameters": {
+        "action": "work",
+        "minutes": 40,
+        "taskId": "task-4",
+        "taskType": "MAINTAIN_POWER"
+      },
+      "preconditions": [
+        "stamina > 10"
+      ],
+      "expectedEffects": {
+        "power": 15,
+        "stamina": -10
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "77f58668d2da0c77bf8e94e257f5ec09e3adf75cd009182b5e087a75f2a65f48",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2580,
+    "dueAt": 2620,
+    "requiredPlace": "workshop",
+    "startPlace": "workshop",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-320:worked:330"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2620
+  },
+  {
+    "intentId": "npc_04-r8-320",
+    "commandId": "npc_04-r8-320",
+    "actorId": "npc_04",
+    "candidateId": "a-da38572f198c",
+    "candidate": {
+      "id": "a-da38572f198c",
+      "kind": "move",
+      "description": "前往village",
+      "parameters": {
+        "action": "move",
+        "to": "village",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "3f8e665415b65a7e99bd5ed6e4dec88e06a3794b1d14841ace0143844693e8d2",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2580,
+    "dueAt": 2595,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-320:moved:323"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2595
+  },
+  {
+    "intentId": "npc_05-r8-320",
+    "commandId": "npc_05-r8-320",
+    "actorId": "npc_05",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "6f7ec02876e9e3724417ab36592dcf9da3b0b652a4fa570f1e5ecf0c389b6c32",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2580,
+    "dueAt": 2595,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-320:moved:324"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2595
+  },
+  {
+    "intentId": "npc_06-r8-320",
+    "commandId": "npc_06-r8-320",
+    "actorId": "npc_06",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "b479a933b4c65bb910ba8133ff5b95ccbd4c799be91f0017eee5f3823b2c872c",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2580,
+    "dueAt": 2595,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-320:moved:325"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2595
+  },
+  {
+    "intentId": "npc_07-r8-320",
+    "commandId": "npc_07-r8-320",
+    "actorId": "npc_07",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "fc548e6af529ceeda837732bb0c9834aadc5733b2ec348ca67ac01243966926c",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2580,
+    "dueAt": 2595,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-320:moved:326"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2595
+  },
+  {
+    "intentId": "npc_08-r8-320",
+    "commandId": "npc_08-r8-320",
+    "actorId": "npc_08",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "521f2b3da44fe06a4631fc2c5c0a31ea5f3cc9fbe477c483779d030640edd814",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2580,
+    "dueAt": 2595,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-320:moved:327"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2595
+  },
+  {
+    "intentId": "npc_01-r8-333",
+    "commandId": "npc_01-r8-333",
+    "actorId": "npc_01",
+    "candidateId": "a-3f4f604d1b47",
+    "candidate": {
+      "id": "a-3f4f604d1b47",
+      "kind": "work",
+      "description": "去车间维护电力",
+      "parameters": {
+        "action": "work",
+        "minutes": 40,
+        "taskId": "task-11",
+        "taskType": "MAINTAIN_POWER"
+      },
+      "preconditions": [
+        "stamina > 10"
+      ],
+      "expectedEffects": {
+        "power": 15,
+        "stamina": -10
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "bd814356dc1f9aa2ada9a861678e9b1477449dcc041fdfeed629a92c2f19c814",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2640,
+    "dueAt": 2680,
+    "requiredPlace": "workshop",
+    "startPlace": "workshop",
+    "status": "rejected",
+    "receiptIds": [],
+    "failureReason": "too_tired",
+    "projections": [],
+    "settledAt": 2760
+  },
+  {
+    "intentId": "npc_02-r8-333",
+    "commandId": "npc_02-r8-333",
+    "actorId": "npc_02",
+    "candidateId": "a-a8d0a5c49052",
+    "candidate": {
+      "id": "a-a8d0a5c49052",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "e921e35607b490fb877d824933f4ae8cb5dadcc8462be98afced3f489b67b5c9",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2640,
+    "dueAt": 2655,
+    "requiredPlace": null,
+    "startPlace": "village",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-333:moved:337"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2760
+  },
+  {
+    "intentId": "npc_03-r8-333",
+    "commandId": "npc_03-r8-333",
+    "actorId": "npc_03",
+    "candidateId": "a-006678cedc77",
+    "candidate": {
+      "id": "a-006678cedc77",
+      "kind": "work",
+      "description": "去车间维护电力",
+      "parameters": {
+        "action": "work",
+        "minutes": 40,
+        "taskId": "task-4",
+        "taskType": "MAINTAIN_POWER"
+      },
+      "preconditions": [
+        "stamina > 10"
+      ],
+      "expectedEffects": {
+        "power": 15,
+        "stamina": -10
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "df0b917fd64908715dd14f594d8e70d276e670fcd0ad005a445d339185987fb3",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2640,
+    "dueAt": 2680,
+    "requiredPlace": "workshop",
+    "startPlace": "workshop",
+    "status": "rejected",
+    "receiptIds": [],
+    "failureReason": "too_tired",
+    "projections": [],
+    "settledAt": 2760
+  },
+  {
+    "intentId": "npc_04-r8-333",
+    "commandId": "npc_04-r8-333",
+    "actorId": "npc_04",
+    "candidateId": "a-a8d0a5c49052",
+    "candidate": {
+      "id": "a-a8d0a5c49052",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "1031d58c8a55c46a887baddb83be97bf95ce522451ce3c53a959199bb7eb99de",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2640,
+    "dueAt": 2655,
+    "requiredPlace": null,
+    "startPlace": "village",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-333:moved:338"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2760
+  },
+  {
+    "intentId": "npc_05-r8-333",
+    "commandId": "npc_05-r8-333",
+    "actorId": "npc_05",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "d67d64a87eab58e4a82ceb02a9935c389f2f61d9d4144243b4ee683017184a84",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2640,
+    "dueAt": 2655,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-333:moved:339"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2760
+  },
+  {
+    "intentId": "npc_06-r8-333",
+    "commandId": "npc_06-r8-333",
+    "actorId": "npc_06",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "8b9e22eae03bb8a0439e1cea2a7d7f8e55527cda468031150a92fadcc42e177d",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2640,
+    "dueAt": 2655,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-333:moved:340"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2760
+  },
+  {
+    "intentId": "npc_07-r8-333",
+    "commandId": "npc_07-r8-333",
+    "actorId": "npc_07",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "7ed64c859ec52cbcd8bede2d0882562304d80fef05bb93d83c98447f2f95de3a",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2640,
+    "dueAt": 2655,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-333:moved:341"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2760
+  },
+  {
+    "intentId": "npc_08-r8-333",
+    "commandId": "npc_08-r8-333",
+    "actorId": "npc_08",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "c0c94bd59485131ffa3c8aea8cd850aae96834e23669af6e83984f46c2bf635f",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 2640,
+    "dueAt": 2655,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-333:moved:342"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 2760
+  },
+  {
+    "intentId": "d-move-npc_01-3120",
+    "commandId": "d-move-npc_01-3120",
+    "actorId": "npc_01",
+    "candidateId": "d-move-dorm-a-2ad4e5",
+    "candidate": {
+      "id": "d-move-dorm-a-2ad4e5",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3120,
+    "dueAt": 3135,
+    "requiredPlace": null,
+    "startPlace": "workshop",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_01-3120:moved:365"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3135
+  },
+  {
+    "intentId": "d-move-npc_02-3135",
+    "commandId": "d-move-npc_02-3135",
+    "actorId": "npc_02",
+    "candidateId": "d-move-dorm-b-0c2306",
+    "candidate": {
+      "id": "d-move-dorm-b-0c2306",
+      "kind": "move",
+      "description": "前往dorm-b",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-b",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3135,
+    "dueAt": 3150,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_02-3135:moved:368"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3150
+  },
+  {
+    "intentId": "d-move-npc_03-3150",
+    "commandId": "d-move-npc_03-3150",
+    "actorId": "npc_03",
+    "candidateId": "d-move-dorm-a-f0aa21",
+    "candidate": {
+      "id": "d-move-dorm-a-f0aa21",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3150,
+    "dueAt": 3165,
+    "requiredPlace": null,
+    "startPlace": "workshop",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_03-3150:moved:371"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3165
+  },
+  {
+    "intentId": "d-move-npc_04-3165",
+    "commandId": "d-move-npc_04-3165",
+    "actorId": "npc_04",
+    "candidateId": "d-move-dorm-b-82d96e",
+    "candidate": {
+      "id": "d-move-dorm-b-82d96e",
+      "kind": "move",
+      "description": "前往dorm-b",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-b",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3165,
+    "dueAt": 3180,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_04-3165:moved:374"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3180
+  },
+  {
+    "intentId": "d-move-npc_05-3180",
+    "commandId": "d-move-npc_05-3180",
+    "actorId": "npc_05",
+    "candidateId": "d-move-dorm-a-ddf239",
+    "candidate": {
+      "id": "d-move-dorm-a-ddf239",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3180,
+    "dueAt": 3195,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_05-3180:moved:377"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3195
+  },
+  {
+    "intentId": "d-move-npc_06-3195",
+    "commandId": "d-move-npc_06-3195",
+    "actorId": "npc_06",
+    "candidateId": "d-move-dorm-a-607ee3",
+    "candidate": {
+      "id": "d-move-dorm-a-607ee3",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3195,
+    "dueAt": 3210,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_06-3195:moved:380"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3210
+  },
+  {
+    "intentId": "d-move-npc_07-3210",
+    "commandId": "d-move-npc_07-3210",
+    "actorId": "npc_07",
+    "candidateId": "d-move-dorm-a-639539",
+    "candidate": {
+      "id": "d-move-dorm-a-639539",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3210,
+    "dueAt": 3225,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_07-3210:moved:383"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3225
+  },
+  {
+    "intentId": "d-move-npc_08-3225",
+    "commandId": "d-move-npc_08-3225",
+    "actorId": "npc_08",
+    "candidateId": "d-move-dorm-a-fe24ba",
+    "candidate": {
+      "id": "d-move-dorm-a-fe24ba",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3225,
+    "dueAt": 3240,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_08-3225:moved:386"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3240
+  },
+  {
+    "intentId": "npc_01-r8-399",
+    "commandId": "npc_01-r8-399",
+    "actorId": "npc_01",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "7f584fef7de231dca0353aceb4a5f4b004fc424c61e66c27f1aa542f492965b2",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3600,
+    "dueAt": 3660,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-399:rested:406"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3660
+  },
+  {
+    "intentId": "npc_02-r8-399",
+    "commandId": "npc_02-r8-399",
+    "actorId": "npc_02",
+    "candidateId": "a-a8d0a5c49052",
+    "candidate": {
+      "id": "a-a8d0a5c49052",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "f72b5c45c8e39d6212199ac9efa203fc03480b895c7d8df91ded9e34fc0d9ae5",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3600,
+    "dueAt": 3615,
+    "requiredPlace": null,
+    "startPlace": "dorm-b",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-399:moved:402"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3615
+  },
+  {
+    "intentId": "npc_04-r8-400",
+    "commandId": "npc_04-r8-400",
+    "actorId": "npc_04",
+    "candidateId": "a-a8d0a5c49052",
+    "candidate": {
+      "id": "a-a8d0a5c49052",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "b132aee016c5132fdd04c639c7afc8623d3d098cf1b2fa0bfc5d194dedbdc808",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3600,
+    "dueAt": 3615,
+    "requiredPlace": null,
+    "startPlace": "dorm-b",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-400:moved:403"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3615
+  },
+  {
+    "intentId": "npc_05-r8-400",
+    "commandId": "npc_05-r8-400",
+    "actorId": "npc_05",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "aef8658d41ac4ceedf551317b45bc057f46417afa88e141437c524b018aa88f6",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3600,
+    "dueAt": 3660,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-400:rested:407"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3660
+  },
+  {
+    "intentId": "npc_06-r8-400",
+    "commandId": "npc_06-r8-400",
+    "actorId": "npc_06",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "acaf7f9119a54b30f8077ccda1dc103f12f53c9aca09070427a6446094b0446d",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3600,
+    "dueAt": 3660,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-400:rested:408"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3660
+  },
+  {
+    "intentId": "npc_07-r8-400",
+    "commandId": "npc_07-r8-400",
+    "actorId": "npc_07",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "695677048b839ea01f13bf07a6342f731722aa8631f2fd412594a8f3ef6ec03e",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3600,
+    "dueAt": 3660,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-400:rested:409"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3660
+  },
+  {
+    "intentId": "npc_08-r8-400",
+    "commandId": "npc_08-r8-400",
+    "actorId": "npc_08",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "371abb8928c975386498d9a2df302a1a75d9c1262b2cb441c1b86021139f8398",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3600,
+    "dueAt": 3660,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-400:rested:410"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3660
+  },
+  {
+    "intentId": "npc_01-r8-411",
+    "commandId": "npc_01-r8-411",
+    "actorId": "npc_01",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "e1c836d405647b71d0c75444c691bd99f029caf77535cde82121c5d048819398",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3660,
+    "dueAt": 3720,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-411:rested:415"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3720
+  },
+  {
+    "intentId": "npc_03-r8-412",
+    "commandId": "npc_03-r8-412",
+    "actorId": "npc_03",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "549f993d692d2825df76d643ac5846a44210084a7674749bbfade2df4272c6f0",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3660,
+    "dueAt": 3720,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-412:rested:416"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3720
+  },
+  {
+    "intentId": "npc_05-r8-413",
+    "commandId": "npc_05-r8-413",
+    "actorId": "npc_05",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "716f4f88f78e0769e7782d9cd3f2bb24663546b75a9899a90936c0d21888550c",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3660,
+    "dueAt": 3720,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-413:rested:417"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3720
+  },
+  {
+    "intentId": "npc_06-r8-413",
+    "commandId": "npc_06-r8-413",
+    "actorId": "npc_06",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "396afdbe91986ca04f6d5ff85edc3809b2904f1265b03bce3f81dddc3523eb79",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3660,
+    "dueAt": 3720,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-413:rested:418"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3720
+  },
+  {
+    "intentId": "npc_07-r8-413",
+    "commandId": "npc_07-r8-413",
+    "actorId": "npc_07",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "9f37ed6ab9f14ff24dc26e9102d8ade7251e6e56a86da12f4b5395021f49f039",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3660,
+    "dueAt": 3720,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-413:rested:419"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3720
+  },
+  {
+    "intentId": "npc_08-r8-413",
+    "commandId": "npc_08-r8-413",
+    "actorId": "npc_08",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "7cb8f35fcee116c03aef0bc32117a76995ab7bd2f7e4c8ee901ce91e92a93ea2",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3660,
+    "dueAt": 3720,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-413:rested:420"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3720
+  },
+  {
+    "intentId": "npc_02-r8-422",
+    "commandId": "npc_02-r8-422",
+    "actorId": "npc_02",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "5e58b7932386f1afa782fd826703b1e3f5329115d923e2860e36d1fa46b0628d",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3720,
+    "dueAt": 3780,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-422:rested:428"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3780
+  },
+  {
+    "intentId": "npc_03-r8-422",
+    "commandId": "npc_03-r8-422",
+    "actorId": "npc_03",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "564bec22cb52baf7aa96d7929d8698ba03905d72622f09d89d985f73de28b20b",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3720,
+    "dueAt": 3780,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-422:rested:429"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3780
+  },
+  {
+    "intentId": "npc_04-r8-422",
+    "commandId": "npc_04-r8-422",
+    "actorId": "npc_04",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "d8cc2cb6d8b1434d49c461892b846223c20458a0ab25f3a767590f580d0babf9",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3720,
+    "dueAt": 3780,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-422:rested:430"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3780
+  },
+  {
+    "intentId": "npc_01-r8-431",
+    "commandId": "npc_01-r8-431",
+    "actorId": "npc_01",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "ff9dc820b8e956f188fc2a8761a756b99f33e616aeffb0c70cc3412f20d29f51",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3780,
+    "dueAt": 3840,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-431:rested:433"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3840
+  },
+  {
+    "intentId": "npc_02-r8-431",
+    "commandId": "npc_02-r8-431",
+    "actorId": "npc_02",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "2fa3935ffa842a338a0662b5988fcbea429de6618d1bc5257398b07179e9dc40",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3780,
+    "dueAt": 3840,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-431:rested:434"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3840
+  },
+  {
+    "intentId": "npc_03-r8-431",
+    "commandId": "npc_03-r8-431",
+    "actorId": "npc_03",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "349d83d4402acb02b7c64b23b7add795dabacc7fb03ec2b6fa7f9903f4fb3123",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3780,
+    "dueAt": 3840,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-431:rested:435"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3840
+  },
+  {
+    "intentId": "npc_04-r8-431",
+    "commandId": "npc_04-r8-431",
+    "actorId": "npc_04",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "a0fe34104480999fa71da4223624af8998a3bb3ae4b447351c2be9b98659a050",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3780,
+    "dueAt": 3840,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-431:rested:436"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3840
+  },
+  {
+    "intentId": "npc_05-r8-431",
+    "commandId": "npc_05-r8-431",
+    "actorId": "npc_05",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "57ea0e8368c805df4f6cbdb2715f49097b83d8edd0378bbbee7e8a5284429ac5",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3780,
+    "dueAt": 3840,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-431:rested:437"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3840
+  },
+  {
+    "intentId": "npc_06-r8-431",
+    "commandId": "npc_06-r8-431",
+    "actorId": "npc_06",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "461d3081a2cf92449cbd9f6f8e58614a404e6591b453991a56db1a4322a19496",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3780,
+    "dueAt": 3840,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-431:rested:438"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3840
+  },
+  {
+    "intentId": "npc_07-r8-431",
+    "commandId": "npc_07-r8-431",
+    "actorId": "npc_07",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "9db9060f2c6b020fe6fc1a84ab1d3c9490bc2c48723305eb52635d06c6fd5389",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3780,
+    "dueAt": 3840,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-431:rested:439"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3840
+  },
+  {
+    "intentId": "npc_08-r8-431",
+    "commandId": "npc_08-r8-431",
+    "actorId": "npc_08",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "1fe5a4da6ac4ebb86755eae58b7570aeeae866662a15a3a4657709cdadc435d9",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3780,
+    "dueAt": 3840,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-431:rested:440"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3840
+  },
+  {
+    "intentId": "npc_01-r8-441",
+    "commandId": "npc_01-r8-441",
+    "actorId": "npc_01",
+    "candidateId": "a-bdf3be37fd7f",
+    "candidate": {
+      "id": "a-bdf3be37fd7f",
+      "kind": "move",
+      "description": "前往workshop",
+      "parameters": {
+        "action": "move",
+        "to": "workshop",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "7e4ab370b9a4a2326599ba4bd73035609c595b88cf34484a2b8a75605642f258",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3840,
+    "dueAt": 3855,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-441:moved:443"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3855
+  },
+  {
+    "intentId": "npc_02-r8-441",
+    "commandId": "npc_02-r8-441",
+    "actorId": "npc_02",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "a5798b9059a750ff01ad7fe7afa525be43dbf648fc2db93bfef11039bc2a2433",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3840,
+    "dueAt": 3900,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-441:rested:451"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3900
+  },
+  {
+    "intentId": "npc_03-r8-441",
+    "commandId": "npc_03-r8-441",
+    "actorId": "npc_03",
+    "candidateId": "a-bdf3be37fd7f",
+    "candidate": {
+      "id": "a-bdf3be37fd7f",
+      "kind": "move",
+      "description": "前往workshop",
+      "parameters": {
+        "action": "move",
+        "to": "workshop",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "1882c1093fbe428c5e74a7725f002f1d6d1650c04138e7f9bca9052b6902e1aa",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3840,
+    "dueAt": 3855,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-441:moved:444"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3855
+  },
+  {
+    "intentId": "npc_04-r8-441",
+    "commandId": "npc_04-r8-441",
+    "actorId": "npc_04",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "8b5f7a807cebf4849af190e7f55907a3f38196c335875fdd5770f4441c905715",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3840,
+    "dueAt": 3900,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-441:rested:452"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3900
+  },
+  {
+    "intentId": "npc_05-r8-441",
+    "commandId": "npc_05-r8-441",
+    "actorId": "npc_05",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "8c8f659c373215ab56012cbbac9fadff34fa8a3b324513f3bbd90f0254fe0d19",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3840,
+    "dueAt": 3855,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-441:moved:445"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3855
+  },
+  {
+    "intentId": "npc_06-r8-441",
+    "commandId": "npc_06-r8-441",
+    "actorId": "npc_06",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "eeeaa71a957c4653d169bc7c2e04a2b748f0c8ff17f37cda4fdef1db068cfe36",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3840,
+    "dueAt": 3855,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-441:moved:446"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3855
+  },
+  {
+    "intentId": "npc_07-r8-441",
+    "commandId": "npc_07-r8-441",
+    "actorId": "npc_07",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "f2d2ee60ede6013e21df557d60fcd75bed37d1bd7a13a8bdefc0a6a06262ba75",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3840,
+    "dueAt": 3855,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-441:moved:447"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3855
+  },
+  {
+    "intentId": "npc_08-r8-441",
+    "commandId": "npc_08-r8-441",
+    "actorId": "npc_08",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "47a44f516d8b3834fc3b2edcedaa1719124a3ee95929affb9fcf28f0ff409e5b",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3840,
+    "dueAt": 3855,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-441:moved:448"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3855
+  },
+  {
+    "intentId": "npc_01-r8-453",
+    "commandId": "npc_01-r8-453",
+    "actorId": "npc_01",
+    "candidateId": "a-3f4f604d1b47",
+    "candidate": {
+      "id": "a-3f4f604d1b47",
+      "kind": "work",
+      "description": "去车间维护电力",
+      "parameters": {
+        "action": "work",
+        "minutes": 40,
+        "taskId": "task-11",
+        "taskType": "MAINTAIN_POWER"
+      },
+      "preconditions": [
+        "stamina > 10"
+      ],
+      "expectedEffects": {
+        "power": 15,
+        "stamina": -10
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "d4300adc9097afd3a27d51397655ad909f90d12fccdd0f97bf0f2e143b3b0dd9",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3900,
+    "dueAt": 3940,
+    "requiredPlace": "workshop",
+    "startPlace": "workshop",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-453:worked:464"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3940
+  },
+  {
+    "intentId": "npc_02-r8-453",
+    "commandId": "npc_02-r8-453",
+    "actorId": "npc_02",
+    "candidateId": "a-da38572f198c",
+    "candidate": {
+      "id": "a-da38572f198c",
+      "kind": "move",
+      "description": "前往village",
+      "parameters": {
+        "action": "move",
+        "to": "village",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "35c06968ba3cab86dd3d723e406d2c337bcae2f8e873e4059051e634d9ef391b",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3900,
+    "dueAt": 3915,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-453:moved:456"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3915
+  },
+  {
+    "intentId": "npc_04-r8-454",
+    "commandId": "npc_04-r8-454",
+    "actorId": "npc_04",
+    "candidateId": "a-da38572f198c",
+    "candidate": {
+      "id": "a-da38572f198c",
+      "kind": "move",
+      "description": "前往village",
+      "parameters": {
+        "action": "move",
+        "to": "village",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "5f0569de26ea77d84b44b540321fa326a197ff78b6c4bba184cafde1ed97db42",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3900,
+    "dueAt": 3915,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-454:moved:457"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3915
+  },
+  {
+    "intentId": "npc_05-r8-454",
+    "commandId": "npc_05-r8-454",
+    "actorId": "npc_05",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "ae7d549621618f09d731a270988ab670a88348a22192bab7b54c0ec899acaad2",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3900,
+    "dueAt": 3915,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-454:moved:458"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3915
+  },
+  {
+    "intentId": "npc_06-r8-454",
+    "commandId": "npc_06-r8-454",
+    "actorId": "npc_06",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "fa0d0e26e74aa4781f388ceda33921d6bdd24dacef92db42200a7eedc4273b9f",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3900,
+    "dueAt": 3915,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-454:moved:459"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3915
+  },
+  {
+    "intentId": "npc_07-r8-454",
+    "commandId": "npc_07-r8-454",
+    "actorId": "npc_07",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "79bc9121935527191ca4457b748e81d17c92ceb3d573fea5eeea0d652013e9bc",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3900,
+    "dueAt": 3915,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-454:moved:460"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3915
+  },
+  {
+    "intentId": "npc_08-r8-454",
+    "commandId": "npc_08-r8-454",
+    "actorId": "npc_08",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "4e5dae2710233a64eba5c6555285eda935b9546fedcf4ce5a1338d37eebd5e3e",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3900,
+    "dueAt": 3915,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-454:moved:461"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3915
+  },
+  {
+    "intentId": "npc_01-r8-467",
+    "commandId": "npc_01-r8-467",
+    "actorId": "npc_01",
+    "candidateId": "a-3f4f604d1b47",
+    "candidate": {
+      "id": "a-3f4f604d1b47",
+      "kind": "work",
+      "description": "去车间维护电力",
+      "parameters": {
+        "action": "work",
+        "minutes": 40,
+        "taskId": "task-11",
+        "taskType": "MAINTAIN_POWER"
+      },
+      "preconditions": [
+        "stamina > 10"
+      ],
+      "expectedEffects": {
+        "power": 15,
+        "stamina": -10
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "114e4704079268e751ee87aeb334b4aab0456fa3385565c235c3f58a89694dec",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3960,
+    "dueAt": 4000,
+    "requiredPlace": "workshop",
+    "startPlace": "workshop",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-467:worked:479"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4000
+  },
+  {
+    "intentId": "npc_02-r8-467",
+    "commandId": "npc_02-r8-467",
+    "actorId": "npc_02",
+    "candidateId": "a-9dd795e76cba",
+    "candidate": {
+      "id": "a-9dd795e76cba",
+      "kind": "gather",
+      "description": "去伐木场收集木柴",
+      "parameters": {
+        "action": "gather",
+        "resource": "firewood",
+        "amount": 2
+      },
+      "preconditions": [
+        "stamina > 15"
+      ],
+      "expectedEffects": {
+        "firewood": 10,
+        "stamina": -15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "83412e93e45fb8b2136a7660c67f19f5970224e6718e2f980c260fa363e0d407",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3960,
+    "dueAt": 3990,
+    "requiredPlace": "village",
+    "startPlace": "village",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-467:gathered:475"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3990
+  },
+  {
+    "intentId": "npc_03-r8-467",
+    "commandId": "npc_03-r8-467",
+    "actorId": "npc_03",
+    "candidateId": "a-006678cedc77",
+    "candidate": {
+      "id": "a-006678cedc77",
+      "kind": "work",
+      "description": "去车间维护电力",
+      "parameters": {
+        "action": "work",
+        "minutes": 40,
+        "taskId": "task-4",
+        "taskType": "MAINTAIN_POWER"
+      },
+      "preconditions": [
+        "stamina > 10"
+      ],
+      "expectedEffects": {
+        "power": 15,
+        "stamina": -10
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "ce2f290f6332c2670983ea16973663ecaea41a7a695cbe3b8bed8602caf56b04",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3960,
+    "dueAt": 4000,
+    "requiredPlace": "workshop",
+    "startPlace": "workshop",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-467:worked:480"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4000
+  },
+  {
+    "intentId": "npc_04-r8-467",
+    "commandId": "npc_04-r8-467",
+    "actorId": "npc_04",
+    "candidateId": "a-9dd795e76cba",
+    "candidate": {
+      "id": "a-9dd795e76cba",
+      "kind": "gather",
+      "description": "去伐木场收集木柴",
+      "parameters": {
+        "action": "gather",
+        "resource": "firewood",
+        "amount": 2
+      },
+      "preconditions": [
+        "stamina > 15"
+      ],
+      "expectedEffects": {
+        "firewood": 10,
+        "stamina": -15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "43d0b610fe167f8f8853fd14f68135043712a6a31ff3d7d6c100c3711b6d1bcf",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3960,
+    "dueAt": 3990,
+    "requiredPlace": "village",
+    "startPlace": "village",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-467:gathered:476"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3990
+  },
+  {
+    "intentId": "npc_05-r8-467",
+    "commandId": "npc_05-r8-467",
+    "actorId": "npc_05",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "1c4e7fc94d7c244401a9f0c80a41c9ced01fef9313f7c9c968eb07167037c4a3",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3960,
+    "dueAt": 3975,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-467:moved:469"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3975
+  },
+  {
+    "intentId": "npc_06-r8-467",
+    "commandId": "npc_06-r8-467",
+    "actorId": "npc_06",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "538d37a8092662dca78bab4f419f18489a75c80f016e7bad4e55cfcc024d9fa6",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3960,
+    "dueAt": 3975,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-467:moved:470"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3975
+  },
+  {
+    "intentId": "npc_07-r8-467",
+    "commandId": "npc_07-r8-467",
+    "actorId": "npc_07",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "26f87a6547a42cc49f05cc3f952fe41a6889b540c7aff310e1e9d439c2fc93cb",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3960,
+    "dueAt": 3975,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-467:moved:471"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3975
+  },
+  {
+    "intentId": "npc_08-r8-467",
+    "commandId": "npc_08-r8-467",
+    "actorId": "npc_08",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "e776fee001339b9dca342083be48d97ab53c2fc032affa5fea727849d5bd18e2",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 3960,
+    "dueAt": 3975,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-467:moved:472"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 3975
+  },
+  {
+    "intentId": "npc_02-r8-484",
+    "commandId": "npc_02-r8-484",
+    "actorId": "npc_02",
+    "candidateId": "a-a8d0a5c49052",
+    "candidate": {
+      "id": "a-a8d0a5c49052",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "9dd08e80d9fc9b7a07c93dc86c25af5029a96d86882bbfb902635f9ff59b74e2",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4020,
+    "dueAt": 4035,
+    "requiredPlace": null,
+    "startPlace": "village",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-484:moved:486"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4035
+  },
+  {
+    "intentId": "npc_03-r8-484",
+    "commandId": "npc_03-r8-484",
+    "actorId": "npc_03",
+    "candidateId": "a-006678cedc77",
+    "candidate": {
+      "id": "a-006678cedc77",
+      "kind": "work",
+      "description": "去车间维护电力",
+      "parameters": {
+        "action": "work",
+        "minutes": 40,
+        "taskId": "task-4",
+        "taskType": "MAINTAIN_POWER"
+      },
+      "preconditions": [
+        "stamina > 10"
+      ],
+      "expectedEffects": {
+        "power": 15,
+        "stamina": -10
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "34c482dd9adb1b3520fe907591479e86caa46a0829947cb2278970c28aacf964",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4020,
+    "dueAt": 4060,
+    "requiredPlace": "workshop",
+    "startPlace": "workshop",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-484:worked:494"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4060
+  },
+  {
+    "intentId": "npc_04-r8-484",
+    "commandId": "npc_04-r8-484",
+    "actorId": "npc_04",
+    "candidateId": "a-a8d0a5c49052",
+    "candidate": {
+      "id": "a-a8d0a5c49052",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "9e10a6d20d30a33cb4a5e7962c6bf68200a0c36d325310a653d798b8bb07f1c2",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4020,
+    "dueAt": 4035,
+    "requiredPlace": null,
+    "startPlace": "village",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-484:moved:487"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4035
+  },
+  {
+    "intentId": "npc_05-r8-484",
+    "commandId": "npc_05-r8-484",
+    "actorId": "npc_05",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "d286c7555ae4b7c8f741306be50a29a89178ef9c758313c5dbbb3712ab22d93d",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4020,
+    "dueAt": 4035,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-484:moved:488"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4035
+  },
+  {
+    "intentId": "npc_06-r8-484",
+    "commandId": "npc_06-r8-484",
+    "actorId": "npc_06",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "29aded38027ee592a28776e5a75aff249f3c6740c9b8bc323e9a7bbb822776c9",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4020,
+    "dueAt": 4035,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-484:moved:489"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4035
+  },
+  {
+    "intentId": "npc_07-r8-484",
+    "commandId": "npc_07-r8-484",
+    "actorId": "npc_07",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "79b13b32398922eb7833d506b46a58cfb09b4ad7f8666f3866dc71672bf6b801",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4020,
+    "dueAt": 4035,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-484:moved:490"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4035
+  },
+  {
+    "intentId": "npc_08-r8-484",
+    "commandId": "npc_08-r8-484",
+    "actorId": "npc_08",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "cd4860cdd03289e2755836b151113f677d891d3cc2d37cc559a717f79da4e745",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4020,
+    "dueAt": 4035,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-484:moved:491"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4035
+  },
+  {
+    "intentId": "npc_01-r8-497",
+    "commandId": "npc_01-r8-497",
+    "actorId": "npc_01",
+    "candidateId": "a-3f4f604d1b47",
+    "candidate": {
+      "id": "a-3f4f604d1b47",
+      "kind": "work",
+      "description": "去车间维护电力",
+      "parameters": {
+        "action": "work",
+        "minutes": 40,
+        "taskId": "task-11",
+        "taskType": "MAINTAIN_POWER"
+      },
+      "preconditions": [
+        "stamina > 10"
+      ],
+      "expectedEffects": {
+        "power": 15,
+        "stamina": -10
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "6d9cfac177e4afabeface59f95f42142e63d2c577da4038881f78ac4b15777fe",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4080,
+    "dueAt": 4120,
+    "requiredPlace": "workshop",
+    "startPlace": "workshop",
+    "status": "rejected",
+    "receiptIds": [],
+    "failureReason": "too_tired",
+    "projections": [],
+    "settledAt": 4120
+  },
+  {
+    "intentId": "npc_02-r8-497",
+    "commandId": "npc_02-r8-497",
+    "actorId": "npc_02",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "32865356f6a803148277bb1e21c79f57191f47b7bc2bdfbad3b0ca60ec4e6906",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4080,
+    "dueAt": 4140,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-497:rested:508"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4140
+  },
+  {
+    "intentId": "npc_03-r8-497",
+    "commandId": "npc_03-r8-497",
+    "actorId": "npc_03",
+    "candidateId": "a-006678cedc77",
+    "candidate": {
+      "id": "a-006678cedc77",
+      "kind": "work",
+      "description": "去车间维护电力",
+      "parameters": {
+        "action": "work",
+        "minutes": 40,
+        "taskId": "task-4",
+        "taskType": "MAINTAIN_POWER"
+      },
+      "preconditions": [
+        "stamina > 10"
+      ],
+      "expectedEffects": {
+        "power": 15,
+        "stamina": -10
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "f594b4f877fb6fd19469c20cf94bd63e23085f5ead5b65039827e6a2260c5481",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4080,
+    "dueAt": 4120,
+    "requiredPlace": "workshop",
+    "startPlace": "workshop",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-497:worked:505"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4120
+  },
+  {
+    "intentId": "npc_04-r8-497",
+    "commandId": "npc_04-r8-497",
+    "actorId": "npc_04",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "2619e79d22081ad924198b3c0da5dc693ad3fe279e00726cc835871beab380d3",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4080,
+    "dueAt": 4140,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-497:rested:509"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4140
+  },
+  {
+    "intentId": "npc_05-r8-497",
+    "commandId": "npc_05-r8-497",
+    "actorId": "npc_05",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "2a347ff27f36b3b7ad6021d1ff5d377394bf708d80718d249ba5c3f34e04d400",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4080,
+    "dueAt": 4095,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-497:moved:499"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4095
+  },
+  {
+    "intentId": "npc_06-r8-497",
+    "commandId": "npc_06-r8-497",
+    "actorId": "npc_06",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "8684d4561661fce0c15afab95af8d6dcda57cc131c841d0d043374ba1fe489ea",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4080,
+    "dueAt": 4095,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-497:moved:500"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4095
+  },
+  {
+    "intentId": "npc_07-r8-497",
+    "commandId": "npc_07-r8-497",
+    "actorId": "npc_07",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "b0526ea9863eb5e029b001e07f155e11601362a98dc41c11474714f6d62fdf24",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4080,
+    "dueAt": 4095,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-497:moved:501"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4095
+  },
+  {
+    "intentId": "npc_08-r8-497",
+    "commandId": "npc_08-r8-497",
+    "actorId": "npc_08",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "2d406d8c45ccf58648ae81a4bd366053b807bc461a7d02b39c642b68108ad87c",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4080,
+    "dueAt": 4095,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-497:moved:502"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4095
+  },
+  {
+    "intentId": "d-move-npc_01-4560",
+    "commandId": "d-move-npc_01-4560",
+    "actorId": "npc_01",
+    "candidateId": "d-move-dorm-a-2ad4e5",
+    "candidate": {
+      "id": "d-move-dorm-a-2ad4e5",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4560,
+    "dueAt": 4575,
+    "requiredPlace": null,
+    "startPlace": "workshop",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_01-4560:moved:534"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4575
+  },
+  {
+    "intentId": "d-move-npc_02-4575",
+    "commandId": "d-move-npc_02-4575",
+    "actorId": "npc_02",
+    "candidateId": "d-move-dorm-b-0c2306",
+    "candidate": {
+      "id": "d-move-dorm-b-0c2306",
+      "kind": "move",
+      "description": "前往dorm-b",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-b",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4575,
+    "dueAt": 4590,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_02-4575:moved:537"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4590
+  },
+  {
+    "intentId": "d-move-npc_03-4590",
+    "commandId": "d-move-npc_03-4590",
+    "actorId": "npc_03",
+    "candidateId": "d-move-dorm-a-f0aa21",
+    "candidate": {
+      "id": "d-move-dorm-a-f0aa21",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4590,
+    "dueAt": 4605,
+    "requiredPlace": null,
+    "startPlace": "workshop",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_03-4590:moved:540"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4605
+  },
+  {
+    "intentId": "d-move-npc_04-4605",
+    "commandId": "d-move-npc_04-4605",
+    "actorId": "npc_04",
+    "candidateId": "d-move-dorm-b-82d96e",
+    "candidate": {
+      "id": "d-move-dorm-b-82d96e",
+      "kind": "move",
+      "description": "前往dorm-b",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-b",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4605,
+    "dueAt": 4620,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_04-4605:moved:543"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4620
+  },
+  {
+    "intentId": "d-move-npc_05-4620",
+    "commandId": "d-move-npc_05-4620",
+    "actorId": "npc_05",
+    "candidateId": "d-move-dorm-a-ddf239",
+    "candidate": {
+      "id": "d-move-dorm-a-ddf239",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4620,
+    "dueAt": 4635,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_05-4620:moved:546"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4635
+  },
+  {
+    "intentId": "d-move-npc_06-4635",
+    "commandId": "d-move-npc_06-4635",
+    "actorId": "npc_06",
+    "candidateId": "d-move-dorm-a-607ee3",
+    "candidate": {
+      "id": "d-move-dorm-a-607ee3",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4635,
+    "dueAt": 4650,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_06-4635:moved:549"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4650
+  },
+  {
+    "intentId": "d-move-npc_07-4650",
+    "commandId": "d-move-npc_07-4650",
+    "actorId": "npc_07",
+    "candidateId": "d-move-dorm-a-639539",
+    "candidate": {
+      "id": "d-move-dorm-a-639539",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4650,
+    "dueAt": 4665,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_07-4650:moved:552"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4665
+  },
+  {
+    "intentId": "d-move-npc_08-4665",
+    "commandId": "d-move-npc_08-4665",
+    "actorId": "npc_08",
+    "candidateId": "d-move-dorm-a-fe24ba",
+    "candidate": {
+      "id": "d-move-dorm-a-fe24ba",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "driver-walk"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": null,
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 4665,
+    "dueAt": 4680,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "d-move-npc_08-4665:moved:555"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 4680
+  },
+  {
+    "intentId": "npc_01-r8-568",
+    "commandId": "npc_01-r8-568",
+    "actorId": "npc_01",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "6d7217e29bb47dd1b7364c3c0f075175576bdc1fa1c27afaf563a3d0cd1f8427",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5040,
+    "dueAt": 5100,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-568:rested:576"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5100
+  },
+  {
+    "intentId": "npc_06-r8-572",
+    "commandId": "npc_06-r8-572",
+    "actorId": "npc_06",
+    "candidateId": "a-fd5b97af3723",
+    "candidate": {
+      "id": "a-fd5b97af3723",
+      "kind": "rest",
+      "description": "按分工休息恢复",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a",
+        "taskId": "task-41",
+        "taskType": "REST_RECOVER"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "7e4df60600474b099565fa38d924d862f516ea1592aebc11589f8865a83d3753",
+    "generation": 0,
+    "taskId": "task-41",
+    "taskType": "REST_RECOVER",
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5040,
+    "dueAt": 5100,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-572:rested:577"
+    ],
+    "failureReason": null,
+    "projections": [
+      {
+        "kind": "task",
+        "id": "task-41",
+        "revision": null,
+        "receiptId": "npc_06-r8-572:rested:577",
+        "applied": true,
+        "appliedAt": 5100
+      }
+    ],
+    "settledAt": 5100
+  },
+  {
+    "intentId": "npc_01-r8-578",
+    "commandId": "npc_01-r8-578",
+    "actorId": "npc_01",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "da0a94f4c35497e9161ae39b88187845eda5f35b4b134351f411eac77bdc92bd",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5100,
+    "dueAt": 5160,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-578:rested:585"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5160
+  },
+  {
+    "intentId": "npc_02-r8-578",
+    "commandId": "npc_02-r8-578",
+    "actorId": "npc_02",
+    "candidateId": "a-a8d0a5c49052",
+    "candidate": {
+      "id": "a-a8d0a5c49052",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "113e2f364c6d5aa21a4c2ca60bd7f7d534a01130bdace39048e984f87ab3ef47",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5100,
+    "dueAt": 5115,
+    "requiredPlace": null,
+    "startPlace": "dorm-b",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-578:moved:581"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5115
+  },
+  {
+    "intentId": "npc_03-r8-578",
+    "commandId": "npc_03-r8-578",
+    "actorId": "npc_03",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "256eaab3a64a5fd78c4a35fb2a8517be27ac31b4bdf5c678d7aa38303e40db8d",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5100,
+    "dueAt": 5160,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-578:rested:586"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5160
+  },
+  {
+    "intentId": "npc_04-r8-578",
+    "commandId": "npc_04-r8-578",
+    "actorId": "npc_04",
+    "candidateId": "a-a8d0a5c49052",
+    "candidate": {
+      "id": "a-a8d0a5c49052",
+      "kind": "move",
+      "description": "前往dorm-a",
+      "parameters": {
+        "action": "move",
+        "to": "dorm-a",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "5bd6ad71bfb3e46e7e6a0def6372740de28d063cf4d0a18011f0fcb4504b9931",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5100,
+    "dueAt": 5115,
+    "requiredPlace": null,
+    "startPlace": "dorm-b",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-578:moved:582"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5115
+  },
+  {
+    "intentId": "npc_05-r8-578",
+    "commandId": "npc_05-r8-578",
+    "actorId": "npc_05",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "6828c7468ef4003e8ff9a9df635d59c767084ae9332fc1303b6881a0cc4c8162",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5100,
+    "dueAt": 5160,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-578:rested:587"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5160
+  },
+  {
+    "intentId": "npc_07-r8-579",
+    "commandId": "npc_07-r8-579",
+    "actorId": "npc_07",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "a69fc30a7a2df3b51f0dbab788f409bc8c4deeb85677096bb4129437a67eec6d",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5100,
+    "dueAt": 5160,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-579:rested:588"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5160
+  },
+  {
+    "intentId": "npc_08-r8-579",
+    "commandId": "npc_08-r8-579",
+    "actorId": "npc_08",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "697f3e2d7dc19e99bedb815541e0dfae9afc1ac900e6b1e33746ff3d5ca2fb09",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5100,
+    "dueAt": 5160,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-579:rested:589"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5160
+  },
+  {
+    "intentId": "npc_02-r8-591",
+    "commandId": "npc_02-r8-591",
+    "actorId": "npc_02",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "ece2656c59a0e8aebb3614bfcb9719f54b5b4566f02132c5757feab09c4cfcfa",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5160,
+    "dueAt": 5220,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-591:rested:594"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5220
+  },
+  {
+    "intentId": "npc_04-r8-592",
+    "commandId": "npc_04-r8-592",
+    "actorId": "npc_04",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "5adcf1917940eac233ea533aa0562d09f6222723b5d2498c1844d93899e2cc66",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5160,
+    "dueAt": 5220,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-592:rested:595"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5220
+  },
+  {
+    "intentId": "npc_05-r8-592",
+    "commandId": "npc_05-r8-592",
+    "actorId": "npc_05",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "63ae009a31d8e9883558b5454e5c2ce4406d3a06c9767cf708ec6a1232f19990",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5160,
+    "dueAt": 5220,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-592:rested:596"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5220
+  },
+  {
+    "intentId": "npc_06-r8-592",
+    "commandId": "npc_06-r8-592",
+    "actorId": "npc_06",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "4590cfcd556fba056153ac4951daa3f7e0a609c1ea7a8de7c5e4c233074bfd40",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5160,
+    "dueAt": 5220,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-592:rested:597"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5220
+  },
+  {
+    "intentId": "npc_07-r8-592",
+    "commandId": "npc_07-r8-592",
+    "actorId": "npc_07",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "2e609c089fe5d6afc9e5edd0bfa6d2a4aa9bdd3f74683b7d5861d0dc8f37fcee",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5160,
+    "dueAt": 5220,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-592:rested:598"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5220
+  },
+  {
+    "intentId": "npc_08-r8-592",
+    "commandId": "npc_08-r8-592",
+    "actorId": "npc_08",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "b0fd7bf120f62d6f081d11993300ed3bd2241803e453b82cf6e8e5058e8e825f",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5160,
+    "dueAt": 5220,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-592:rested:599"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5220
+  },
+  {
+    "intentId": "npc_01-r8-600",
+    "commandId": "npc_01-r8-600",
+    "actorId": "npc_01",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "ae6931d1a4f39f09412152d63cd589a2c25cbb017bdce459892a066acc0e6977",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5220,
+    "dueAt": 5280,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-600:rested:602"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5280
+  },
+  {
+    "intentId": "npc_02-r8-600",
+    "commandId": "npc_02-r8-600",
+    "actorId": "npc_02",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "460d3e981ca6db9ead4fa853a4e2d3455c68f0e903e9d354d2a570128bd1069f",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5220,
+    "dueAt": 5280,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-600:rested:603"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5280
+  },
+  {
+    "intentId": "npc_03-r8-600",
+    "commandId": "npc_03-r8-600",
+    "actorId": "npc_03",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "be0891e412d2016a2ad0748d821b33688b3c3e9534bcab5ce43bea9355ab2de5",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5220,
+    "dueAt": 5280,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-600:rested:604"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5280
+  },
+  {
+    "intentId": "npc_04-r8-600",
+    "commandId": "npc_04-r8-600",
+    "actorId": "npc_04",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "9f9947fe2f925c3d52f27c432437f5e9f943a48253688feee47bf2d408989ddb",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5220,
+    "dueAt": 5280,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-600:rested:605"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5280
+  },
+  {
+    "intentId": "npc_05-r8-600",
+    "commandId": "npc_05-r8-600",
+    "actorId": "npc_05",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "af1659eabcc852fc909b3b07109b85b8c8eb91ff2b08e37cf474c4f6a6382af4",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5220,
+    "dueAt": 5280,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-600:rested:606"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5280
+  },
+  {
+    "intentId": "npc_06-r8-600",
+    "commandId": "npc_06-r8-600",
+    "actorId": "npc_06",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "3dac919c638510ddd8b58e06938ff5bf03047984a5b8b5936bbf7bae5f6f8cda",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5220,
+    "dueAt": 5280,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-600:rested:607"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5280
+  },
+  {
+    "intentId": "npc_07-r8-600",
+    "commandId": "npc_07-r8-600",
+    "actorId": "npc_07",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "b620beecf394d67cee8bf69b895c83d3a8418d5923a22993abec63d070af2daf",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5220,
+    "dueAt": 5280,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-600:rested:608"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5280
+  },
+  {
+    "intentId": "npc_08-r8-600",
+    "commandId": "npc_08-r8-600",
+    "actorId": "npc_08",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "4c88e828eb167f0024a9e9ff3b857453570e750e220ec8d02c978155d3c3c390",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5220,
+    "dueAt": 5280,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-600:rested:609"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5280
+  },
+  {
+    "intentId": "npc_01-r8-610",
+    "commandId": "npc_01-r8-610",
+    "actorId": "npc_01",
+    "candidateId": "a-bdf3be37fd7f",
+    "candidate": {
+      "id": "a-bdf3be37fd7f",
+      "kind": "move",
+      "description": "前往workshop",
+      "parameters": {
+        "action": "move",
+        "to": "workshop",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "4c9676f88a57c8bf9c1dc934822006b689dee669d918d688b2771dddfb7248a0",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5280,
+    "dueAt": 5295,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-610:moved:612"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5295
+  },
+  {
+    "intentId": "npc_02-r8-610",
+    "commandId": "npc_02-r8-610",
+    "actorId": "npc_02",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "6a90896a896e27151ac1fb0ef5e7615f3af24404f9524d5d1c46f56260dbc665",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5280,
+    "dueAt": 5340,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_02-r8-610:rested:619"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5340
+  },
+  {
+    "intentId": "npc_03-r8-610",
+    "commandId": "npc_03-r8-610",
+    "actorId": "npc_03",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "30c26bdf5e1f09839fb3bc22a294ff5cb0780cbdc3cfe357ab3260e43ae0550e",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5280,
+    "dueAt": 5340,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-610:rested:620"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5340
+  },
+  {
+    "intentId": "npc_04-r8-610",
+    "commandId": "npc_04-r8-610",
+    "actorId": "npc_04",
+    "candidateId": "a-9fc577614077",
+    "candidate": {
+      "id": "a-9fc577614077",
+      "kind": "rest",
+      "description": "回宿舍休息",
+      "parameters": {
+        "action": "rest",
+        "minutes": 60,
+        "place": "dorm-a"
+      },
+      "preconditions": [
+        "awake"
+      ],
+      "expectedEffects": {
+        "stamina": 20
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "5d5904ba12ebdbaf07e68b3cd1f520139561be57135dcf353b845ee8256b97b9",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5280,
+    "dueAt": 5340,
+    "requiredPlace": "dorm-a",
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_04-r8-610:rested:621"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5340
+  },
+  {
+    "intentId": "npc_05-r8-610",
+    "commandId": "npc_05-r8-610",
+    "actorId": "npc_05",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "54896258f7cd4b3e2f2d7d0f183972d887cef66f14b42cdcf064c62517b24e9a",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5280,
+    "dueAt": 5295,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-610:moved:613"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5295
+  },
+  {
+    "intentId": "npc_06-r8-610",
+    "commandId": "npc_06-r8-610",
+    "actorId": "npc_06",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "a5a4e7a2e14737ef2cd67a30a621a5eca0b9ea142ee4123c0cdcb5fb7a5c07eb",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5280,
+    "dueAt": 5295,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-610:moved:614"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5295
+  },
+  {
+    "intentId": "npc_07-r8-610",
+    "commandId": "npc_07-r8-610",
+    "actorId": "npc_07",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "7225ed1af244adc7cb7fb8e89f7bd7dc8bb467a205933bf920537c5554a5a3fa",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5280,
+    "dueAt": 5295,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-610:moved:615"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5295
+  },
+  {
+    "intentId": "npc_08-r8-610",
+    "commandId": "npc_08-r8-610",
+    "actorId": "npc_08",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "574c30866810d0af21ebf6bd97cb85a59e552fdc48a7f3e90f86541a6e6b0ea6",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5280,
+    "dueAt": 5295,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-610:moved:616"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5295
+  },
+  {
+    "intentId": "npc_01-r8-622",
+    "commandId": "npc_01-r8-622",
+    "actorId": "npc_01",
+    "candidateId": "a-3f4f604d1b47",
+    "candidate": {
+      "id": "a-3f4f604d1b47",
+      "kind": "work",
+      "description": "去车间维护电力",
+      "parameters": {
+        "action": "work",
+        "minutes": 40,
+        "taskId": "task-11",
+        "taskType": "MAINTAIN_POWER"
+      },
+      "preconditions": [
+        "stamina > 10"
+      ],
+      "expectedEffects": {
+        "power": 15,
+        "stamina": -10
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "3602395f5e76a18dffd467c46fef2b2ba3bcbc9550c4a7d2ecb2fce3a2378927",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5340,
+    "dueAt": 5380,
+    "requiredPlace": "workshop",
+    "startPlace": "workshop",
+    "status": "applied",
+    "receiptIds": [
+      "npc_01-r8-622:worked:633"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5380
+  },
+  {
+    "intentId": "npc_03-r8-623",
+    "commandId": "npc_03-r8-623",
+    "actorId": "npc_03",
+    "candidateId": "a-bdf3be37fd7f",
+    "candidate": {
+      "id": "a-bdf3be37fd7f",
+      "kind": "move",
+      "description": "前往workshop",
+      "parameters": {
+        "action": "move",
+        "to": "workshop",
+        "purpose": "task-place"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {
+        "travelMinutes": 15
+      },
+      "utilityComponents": {}
+    },
+    "inputSha256": "4efb5a89cadf45053c1320a651a2098d5ff6c7ef4722a12c0ce59b38a1643e34",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5340,
+    "dueAt": 5355,
+    "requiredPlace": null,
+    "startPlace": "dorm-a",
+    "status": "applied",
+    "receiptIds": [
+      "npc_03-r8-623:moved:626"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5355
+  },
+  {
+    "intentId": "npc_05-r8-624",
+    "commandId": "npc_05-r8-624",
+    "actorId": "npc_05",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "e0c604cb9d38290e2079d98f0bf8bcf50927b5a82fc805441f72be4cbf0ba677",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5340,
+    "dueAt": 5355,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_05-r8-624:moved:627"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5355
+  },
+  {
+    "intentId": "npc_06-r8-624",
+    "commandId": "npc_06-r8-624",
+    "actorId": "npc_06",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "2542bbca30b762dba952f67f0fbb3b8f95071b6d67fa76488e85691da6043997",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5340,
+    "dueAt": 5355,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_06-r8-624:moved:628"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5355
+  },
+  {
+    "intentId": "npc_07-r8-624",
+    "commandId": "npc_07-r8-624",
+    "actorId": "npc_07",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "ae64fb353071dba4ed3def8c0a604996c9b07f4ccb25801c52d5d5292b014913",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5340,
+    "dueAt": 5355,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_07-r8-624:moved:629"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5355
+  },
+  {
+    "intentId": "npc_08-r8-624",
+    "commandId": "npc_08-r8-624",
+    "actorId": "npc_08",
+    "candidateId": "a-0b3f9fd02e70",
+    "candidate": {
+      "id": "a-0b3f9fd02e70",
+      "kind": "move",
+      "description": "去仓库核实存粮",
+      "parameters": {
+        "action": "move",
+        "to": "warehouse",
+        "purpose": "verify-stock"
+      },
+      "preconditions": [
+        "alive"
+      ],
+      "expectedEffects": {},
+      "utilityComponents": {}
+    },
+    "inputSha256": "a833949dc5c63b7bdf30ea8ac7f0a49a27d6094b9f7829665e4d2fb76bc46e38",
+    "generation": 0,
+    "taskId": null,
+    "taskType": null,
+    "commitmentId": null,
+    "commitmentRevision": null,
+    "startedAt": 5340,
+    "dueAt": 5355,
+    "requiredPlace": null,
+    "startPlace": "warehouse",
+    "status": "applied",
+    "receiptIds": [
+      "npc_08-r8-624:moved:630"
+    ],
+    "failureReason": null,
+    "projections": [],
+    "settledAt": 5355
+  }
+]

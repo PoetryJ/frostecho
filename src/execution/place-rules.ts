@@ -14,7 +14,10 @@ export { WORK_MODE_PLACE };
 
 /** Minutes an action really occupies its actor (0 = committed immediately). */
 export const ACTION_MINUTES: Record<string, number> = {
-  rest: 60, work: 40, gather: 30, medical: 20, refuel: 10, deposit: 15, deliver: 15,
+  // R10-D: `medical` is the PREPARE_MEDICAL primitive and the original spends
+  // 1800 s on it (`task-system.js:79-86`); `deposit` stays the generic 15-minute
+  // store action, so DISTRIBUTE_FOOD's own 20 minutes is the catalog budget.
+  rest: 60, work: 40, gather: 30, medical: 30, refuel: 10, deposit: 15, deliver: 15,
   move: 15,
 };
 
@@ -51,6 +54,13 @@ export function requiredPlaceOf(action: string, parameters: Record<string, unkno
     case 'medical': return 'medical';
     case 'deposit': return 'warehouse';
     case 'deliver': return 'kitchen';
+    // R10-D (shared table, one line, disclosed in D-R10.md): the original REST_RECOVER
+    // happens at `dorm_a_door` (`task-system.js:171`) and the original has no
+    // "sleep in the snow" recovery. A rest candidate that names its site must
+    // happen there; a bare `rest` command keeps its legacy freedom so the older
+    // command tests and fixtures do not change meaning.
+    case 'rest':
+      return typeof parameters.place === 'string' ? String(parameters.place) : null;
     default: return null;
   }
 }
