@@ -1,0 +1,175 @@
+{
+  "schema": "frostecho.r10.matrix-start/1",
+  "pid": 3091283,
+  "arm": "reference-conditional",
+  "seed": "r10h-1",
+  "family": "reference",
+  "memorySelection": "obligation-first",
+  "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+  "source": {
+    "head": "054cab0178e1357980594e438a13d6d6c4b2b075",
+    "tree": "acac9d3e0e2121bba37d295cd8c5eea711d50de2",
+    "branch": "codex/r10-H"
+  },
+  "preflight": {
+    "headSha256": null,
+    "manifestSha256": null,
+    "rendererId": "joint-c-action/2",
+    "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e"
+  },
+  "worldInitSha": "5b3a5eec95f5de9a6146fa5510363ed1027820aafdc71659f9be9a5d5517a2f5",
+  "worldInit": {
+    "seed": "r10h-1",
+    "profile": "gospel-5.8.19",
+    "simTime": 480,
+    "resources": {
+      "food": 130,
+      "firewood": 30,
+      "power": 30,
+      "medicine": 3
+    },
+    "npcs": [
+      {
+        "id": "npc_01",
+        "location": "dorm-a",
+        "alive": true,
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_02",
+        "location": "dorm-b",
+        "alive": true,
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_03",
+        "location": "dorm-a",
+        "alive": true,
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_04",
+        "location": "dorm-b",
+        "alive": true,
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_05",
+        "location": "dorm-a",
+        "alive": true,
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_06",
+        "location": "dorm-b",
+        "alive": true,
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_07",
+        "location": "dorm-a",
+        "alive": true,
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_08",
+        "location": "dorm-b",
+        "alive": true,
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      }
+    ],
+    "commitments": [
+      {
+        "actorId": "npc_01",
+        "goal": "deliver-meal",
+        "status": "active",
+        "taskId": "task-001-deliver-meal"
+      },
+      {
+        "actorId": "npc_02",
+        "goal": "deliver-meal",
+        "status": "active",
+        "taskId": "task-002-deliver-meal"
+      },
+      {
+        "actorId": "npc_03",
+        "goal": "supply-warehouse",
+        "status": "active",
+        "taskId": "task-003-supply-warehouse"
+      },
+      {
+        "actorId": "npc_04",
+        "goal": "supply-warehouse",
+        "status": "active",
+        "taskId": "task-004-supply-warehouse"
+      }
+    ],
+    "memoryBudget": 640
+  },
+  "commitments": [
+    {
+      "actorId": "npc_01",
+      "goal": "deliver-meal",
+      "verdict": "accept",
+      "commitmentId": "cm-d75faf8c-2d14-4b53-b2f1-803b9259294f",
+      "taskId": "task-001-deliver-meal",
+      "status": "active"
+    },
+    {
+      "actorId": "npc_02",
+      "goal": "deliver-meal",
+      "verdict": "accept",
+      "commitmentId": "cm-0e79578e-bfb3-485b-8ec5-41ca49e5a025",
+      "taskId": "task-002-deliver-meal",
+      "status": "active"
+    },
+    {
+      "actorId": "npc_03",
+      "goal": "supply-warehouse",
+      "verdict": "accept",
+      "commitmentId": "cm-ea50b317-ef6e-4cd2-bf0a-d37eb1433f05",
+      "taskId": "task-003-supply-warehouse",
+      "status": "active"
+    },
+    {
+      "actorId": "npc_04",
+      "goal": "supply-warehouse",
+      "verdict": "accept",
+      "commitmentId": "cm-5fc707f4-0ae1-4391-bd4d-3201042ef9b8",
+      "taskId": "task-004-supply-warehouse",
+      "status": "active"
+    }
+  ]
+}
