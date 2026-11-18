@@ -15,3 +15,6 @@
 
 入库的大件（29 MiB）：`capture/cases.jsonl`、`labels-*/labels.jsonl`、`corpus-*/corpus.jsonl`、
 `enc/features.npz`（21 MiB，156 例 × 候选的真实 27B 特征，`featureIdentityHash=57bc3f50…`）、`enc/records.jsonl`。
+
+可复跑的一致性门：`node research/decision-choice/r10/check-consistency.mjs --root artifacts/r10/c`
+（本 checkout 里快照未入库，故该次运行 `snapshotsChecked=0`，见 `consistency-checkout.json`；对完整归档运行的结果在 `consistency.json`，`snapshotsChecked=156`、0 问题。）

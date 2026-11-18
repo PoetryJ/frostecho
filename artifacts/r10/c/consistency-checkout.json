@@ -1,0 +1,40 @@
+{
+  "schema": "frostecho.r10c.consistency/1",
+  "ok": true,
+  "problems": [],
+  "notes": {
+    "cases": 312,
+    "corpus": 156,
+    "labels": 312,
+    "splits": {
+      "train": 91,
+      "test": 26,
+      "dev": 39
+    },
+    "episodes": {
+      "r10c-ep00": "train",
+      "r10c-ep01": "train",
+      "r10c-ep02": "test",
+      "r10c-ep03": "dev",
+      "r10c-ep04": "train",
+      "r10c-ep05": "dev",
+      "r10c-ep06": "train",
+      "r10c-ep07": "train",
+      "r10c-ep08": "train",
+      "r10c-ep09": "train",
+      "r10c-ep10": "dev",
+      "r10c-ep11": "test"
+    },
+    "distinctTexts": 156,
+    "cache": {
+      "cases": 156,
+      "identityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+      "forwards": 158
+    },
+    "snapshotsChecked": 0,
+    "snapshotsArchived": false,
+    "snapshotsNote": "snapshot archive not present in this checkout (827 MiB); see POINTER.md - re-run capture-cases.mjs to verify",
+    "labelRule": "first-action-applied && actor-alive && no-population-loss && no-accepted-task-lost",
+    "renderer": "joint-c-action/2"
+  }
+}

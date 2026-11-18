@@ -28,6 +28,7 @@ const labelDir = args.includes('--labels') ? resolve(args[args.indexOf('--labels
   : join(root, 'labels-base');
 
 const problems = [];
+let snapshotsChecked = 0;
 const notes = {};
 const fail = (code, detail) => { problems.push({ code, detail }); };
 
@@ -53,10 +54,16 @@ for (const row of corpus) {
     fail('corpus-labels', `${row.caseId} acceptableIds are not candidates`);
   }
   // The stored `snapshotBase` is the run-time path; the portable location is
-  // `<capture>/snapshots/<caseId>` (the labeller copies it per branch).
-  const snapshot = join(root, 'capture/snapshots', source.caseId);
-  if (!existsSync(snapshot) || !existsSync(`${snapshot}.r8.json`)) {
-    fail('snapshot-missing', source.caseId);
+  // `<capture>/snapshots/<caseId>` (the labeller copies it per branch). The
+  // 827 MiB snapshot archive is not committed: if the whole directory is absent
+  // the check reports "not archived here" instead of pretending to verify it.
+  const snapshotDir = join(root, 'capture/snapshots');
+  if (existsSync(snapshotDir)) {
+    snapshotsChecked += 1;
+    const snapshot = join(snapshotDir, source.caseId);
+    if (!existsSync(snapshot) || !existsSync(`${snapshot}.r8.json`)) {
+      fail('snapshot-missing', source.caseId);
+    }
   }
 }
 
@@ -120,6 +127,11 @@ notes.splits = corpus.reduce((acc, row) => {
 notes.episodes = Object.fromEntries(episodeOwner);
 notes.distinctTexts = textOwner.size;
 notes.cache = cache;
+notes.snapshotsChecked = snapshotsChecked;
+notes.snapshotsArchived = existsSync(join(root, 'capture/snapshots'));
+notes.snapshotsNote = snapshotsChecked === 0
+  ? 'snapshot archive not present in this checkout (827 MiB); see POINTER.md - re-run capture-cases.mjs to verify'
+  : 'every case has a restorable session + sidecar pair';
 notes.labelRule = corpus[0]?.labelRule ?? null;
 notes.renderer = corpus[0]?.envelope.rendered.rendererId ?? null;
 const report = { schema: 'frostecho.r10c.consistency/1', ok: problems.length === 0,
