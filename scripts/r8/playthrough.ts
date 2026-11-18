@@ -10,11 +10,13 @@
  * recorded with the exact request that was scored.
  */
 import { createHash } from 'node:crypto';
-import { mkdirSync, writeFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
 import { R8Runtime } from '../../src/r7/integration/runtime';
 import { GameplayLoop } from '../../src/gameplay-v2/loop';
 import { createCommitmentBridge } from '../../src/r7/integration/commitment-bridge';
+import { auditSettlement, loadFourDaySidecars, saveFourDaySidecars,
+  type SettlementAudit } from '../../src/r7/integration/sidecar';
 import { GOSPEL_PROFILE, REFERENCE_PROFILE, type TimeProfile } from '../../src/r7/contracts';
 import { referenceAgencyScorer } from '../../src/r7/agency/reference';
 import { applicableNotes, type MemoryPolicyId,
@@ -43,6 +45,16 @@ interface Args {
   fullMap: boolean;
   /** Skip the four seeded promises (reference arms only). */
   noCommitments: boolean;
+  /** CLI-identical save bundle: session + boards + R8 sidecar. */
+  state: string;
+  /** Continue a four-day run from a saved state instead of creating one. */
+  restore: string | null;
+  /** Stop (and save with pending work) on this day, for the D2 restore story. */
+  stopAfterDays: number | null;
+  /** Ask for the four pledges on this day instead of at the start. */
+  pledgeAfterDay: number | null;
+  /** Control arm: keep the reference survival exit out of the picture. */
+  noSurvivalExit: boolean;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -71,6 +83,23 @@ function parseArgs(argv: string[]): Args {
   const scorer = get('--scorer-command-json') ?? process.env.FROSTECHO_SCORER_COMMAND_JSON;
   if (mode === 'jev-admitted') throw new Error('admitted mode requires a verified certificate; use jev-experimental');
   if (mode !== 'reference' && !scorer) throw new Error('jev-experimental requires --scorer-command-json');
+  const restore = get('--restore');
+  const stopAfterDays = get('--stop-after-days') === undefined
+    ? null : Number(get('--stop-after-days'));
+  if (stopAfterDays !== null && (!Number.isInteger(stopAfterDays) || stopAfterDays < 1)) {
+    throw new Error(`invalid --stop-after-days ${String(stopAfterDays)}`);
+  }
+  if (restore && stopAfterDays !== null) {
+    throw new Error('--restore and --stop-after-days are mutually exclusive');
+  }
+  const pledgeAfterDay = get('--pledge-after-day') === undefined
+    ? null : Number(get('--pledge-after-day'));
+  if (pledgeAfterDay !== null && (!Number.isInteger(pledgeAfterDay) || pledgeAfterDay < 1)) {
+    throw new Error(`invalid --pledge-after-day ${String(pledgeAfterDay)}`);
+  }
+  if (restore && pledgeAfterDay !== null) {
+    throw new Error('--restore adopts the pledges recorded in the save');
+  }
   return {
     profile, seed: get('--seed') ?? 'r8-1', mode, out: resolve(out), lives,
     npcCount: Number(get('--npc') ?? 8), food: Number(get('--food') ?? 130),
@@ -78,7 +107,50 @@ function parseArgs(argv: string[]): Args {
     noCommitments: argv.includes('--no-commitments'),
     fullMap: argv.includes('--full-map'),
     scorerCommand: scorer ? parseScorerCommand(scorer) : null,
+    // A resumed process writes its own state; the D2 save it read stays byte
+    // for byte as evidence, so no restore can quietly rewrite its own input.
+    state: resolve(get('--state') ?? join(resolve(out), 'state.json')),
+    restore: restore ? resolve(restore) : null,
+    stopAfterDays,
+    pledgeAfterDay,
+    noSurvivalExit: argv.includes('--no-survival-exit'),
   };
+}
+
+/** Runner bookkeeping that must survive the process exit, never a world fact. */
+interface RunnerState {
+  schema: 'frostecho.r10.playthrough-state/1';
+  seed: string;
+  mode: Mode;
+  lives: number;
+  profile: string;
+  /** The D2 interference is applied once per run, not once per process. */
+  interfered: boolean;
+  /** The four pledges exist once per run; a restored process never re-pledges. */
+  pledged: boolean;
+  pledgeAfterDay: number | null;
+  noSurvivalExit: boolean;
+  requestedCommitmentIds: string[];
+  stopAfterDays: number | null;
+  savedAt: string | null;
+  restoredFrom: string | null;
+}
+
+function runnerStatePath(base: string): string { return `${base}.runner.json`; }
+
+function readRunnerState(base: string): RunnerState {
+  const path = runnerStatePath(base);
+  if (!existsSync(path)) throw new Error(`missing_four_day_runner_state:${path}`);
+  const document = JSON.parse(readFileSync(path, 'utf8')) as RunnerState;
+  if (document.schema !== 'frostecho.r10.playthrough-state/1') {
+    throw new Error(`unsupported runner state ${document.schema}`);
+  }
+  return document;
+}
+
+function writeRunnerState(base: string, document: RunnerState): void {
+  mkdirSync(dirname(runnerStatePath(base)), { recursive: true });
+  writeFileSync(runnerStatePath(base), `${JSON.stringify(document, null, 2)}\n`, 'utf8');
 }
 
 const sha256 = (text: string): string => createHash('sha256').update(text).digest('hex');
@@ -136,12 +208,20 @@ interface RunReport {
     rejectedAtSettlement: { actorId: string; intentId: string; action: string;
       reason: string | null }[];
     unsettledWork: { actorId: string; selectedId: string | null; requestId: string }[];
+    scope: 'fresh-run' | 'restored-process';
     reconciled: boolean;
   };
   timeline: { at: number; elapsed: number; day: number; type: string;
     actorId: string; payload: Record<string, unknown> }[];
   environment: Record<string, unknown>;
   files: Record<string, string>;
+  /** Set when the run stopped on purpose to leave pending work on disk. */
+  stopped?: { requestedDay: number; day: number; simTime: number; pending: number;
+    state: string; sidecars: Record<string, string> };
+  /** Set when this process continued another process's save. */
+  restore?: { from: string; savedAt: string | null; clock: number;
+    commitments: number; pendingIntents: number };
+  settlementAudit?: SettlementAudit;
 }
 
 /** Notes this actor holds. Built from its own records, never from world truth. */
@@ -344,8 +424,45 @@ async function main(): Promise<void> {
   const timeline: RunReport['timeline'] = [];
   const scenario = { seed: args.seed, profile: args.profile,
     npcCount: args.npcCount, resources: { food: args.food } };
-  let runtime = R8Runtime.create(scenario);
-  if (args.fullMap) runtime.enableLegacySpatial();
+  let runtime: R8Runtime;
+  let play: GameplayLoop;
+  let runner: RunnerState;
+  let restoreInfo: RunReport['restore'] | undefined;
+  let restoredCommitments: Record<string, unknown>[] | undefined;
+  if (args.restore) {
+    // The D2 exit is a real second process: no session is rebuilt here, the
+    // saved one is the authority and the boards come from the same base path.
+    const saved = readRunnerState(args.restore);
+    if (saved.seed !== args.seed) throw new Error(`restore seed ${saved.seed} != ${args.seed}`);
+    if (saved.mode !== args.mode) throw new Error(`restore mode ${saved.mode} != ${args.mode}`);
+    if (saved.lives !== args.lives) throw new Error(`restore lives ${saved.lives} != ${args.lives}`);
+    if (saved.noSurvivalExit !== args.noSurvivalExit)
+      throw new Error('restore survival-exit flag does not match the save');
+    const restored = loadFourDaySidecars(args.restore);
+    runtime = restored.runtime;
+    play = restored.play;
+    runner = { ...saved, restoredFrom: args.restore, stopAfterDays: null };
+    const spatial = runtime.legacyPosition(runtime.session.npcIds[0]) !== null;
+    if (spatial !== args.fullMap) throw new Error('restore full-map flag does not match the save');
+    restoreInfo = { from: args.restore, savedAt: saved.savedAt,
+      clock: runtime.world.simTime,
+      commitments: play.commitments.all().length,
+      pendingIntents: [...runtime.intents.values()]
+        .filter(intent => intent.status === 'working').length };
+    restoredCommitments = play.commitments.all().map(row => ({
+      commitmentId: row.commitmentId, goal: row.goal, status: row.status,
+      revision: row.revision, promisorId: row.promisorId }));
+  } else {
+    runtime = R8Runtime.create(scenario);
+    if (args.fullMap) runtime.enableLegacySpatial();
+    play = new GameplayLoop(runtime.session);
+    runner = { schema: 'frostecho.r10.playthrough-state/1', seed: args.seed,
+      mode: args.mode, lives: args.lives, profile: args.profile.id, interfered: false,
+      pledged: false, pledgeAfterDay: args.pledgeAfterDay,
+      noSurvivalExit: args.noSurvivalExit,
+      requestedCommitmentIds: [], stopAfterDays: args.stopAfterDays, savedAt: null,
+      restoredFrom: null };
+  }
 
   const service = args.mode === 'reference' ? null
     : new JointScorerClient(process.cwd(), args.scorerCommand!,
@@ -361,34 +478,57 @@ async function main(): Promise<void> {
     environment: { node: process.version, platform: process.platform, fullMap: args.fullMap },
     files: {},
   };
+  if (restoreInfo) report.restore = restoreInfo;
+  if (restoredCommitments) report.environment.restoredCommitments = restoredCommitments;
 
   try {
   for (let life = 1; life <= args.lives; life += 1) {
     // R10 (B): the four-day runner uses the SAME commitment bridge, task board
     // and memory projection as the CLI/web entry - not a second policy.
-    const play = new GameplayLoop(runtime.session);
+    if (life > 1) play = new GameplayLoop(runtime.session);
     const bridge = createCommitmentBridge(runtime, play);
     // Four long-horizon stories with interference; each actor keeps its own
     // record of what it was told, so an unheard change cannot leak.
-    if (!args.noCommitments) {
+    // A restored process must NOT re-create promises: they came from disk.
+    const pledge = (): void => {
+      if (args.restore || args.noCommitments || runner.pledged) return;
       const promises = ['npc_01', 'npc_02', 'npc_03', 'npc_04'].map((actorId, index) => {
         const goal = index < 2 ? 'deliver-meal' : 'supply-warehouse';
         return play.requestCommitment(actorId, goal, { verdict: 'accept' });
       });
+      runner.pledged = true;
+      runner.requestedCommitmentIds = promises.map(entry => entry.commitment.commitmentId);
       report.environment.commitments = promises.map(entry => ({
         commitmentId: entry.commitment.commitmentId,
         goal: entry.commitment.goal, promisorId: entry.commitment.promisorId,
         taskId: entry.task?.taskId ?? null }));
-    }
-    let interfered = false;
+    };
+    // Default arms pledge at the start; the D2-restore arm pledges on the day
+    // it exits, so the promises are live across the process boundary.
+    if (runner.pledgeAfterDay === null) pledge();
+    let interfered = runner.interfered;
     let guard = 0;
     while (!runtime.ended && guard < 1200) {
       guard += 1;
       runCouncilIfDue(runtime, decisions, args.seed);
+      // "Day N" means N 08:00, the original start hour, not N 00:00: a midnight
+      // snapshot has every body cold and the reference arm would exit the
+      // promise it just made, which is not a promise carried across a restart.
+      const reached = (day: number): boolean => {
+        const snapshot = runtime.snapshot();
+        return snapshot.day > day
+          || (snapshot.day === day && snapshot.minuteOfDay >= args.profile.startMinuteOfDay);
+      };
+      if (runner.pledgeAfterDay !== null && !runner.pledged
+        && reached(runner.pledgeAfterDay)) pledge();
+      // This iteration ends the run on purpose: the decisions below queue REAL
+      // work and then the state is saved. The interference is deferred so the
+      // RESUMED process applies the private cancel, not the exiting one.
+      const willStop = args.stopAfterDays !== null && reached(args.stopAfterDays);
       // The D2 interference: one promise is cancelled by the player and only
       // npc_02 hears it; another gets a source-change proposal. This is the
       // story the model must carry across the restart.
-      if (!interfered && runtime.snapshot().day >= 2) {
+      if (!interfered && !willStop && runner.pledged && runtime.snapshot().day >= 2) {
         interfered = true;
         const rows = play.commitments.all().filter(row => row.status === 'active');
         if (rows[0]) {
@@ -409,11 +549,14 @@ async function main(): Promise<void> {
             kind: 'change-proposed', commitmentId: rows[1].commitmentId,
             status: proposed.commitment.status, at: runtime.world.simTime };
         }
+        runner.interfered = true;
       }
       for (const actorId of runtime.context().actorIds) {
         // A reference arm that never lets a body quit would die holding a
-        // promise; the honest baseline is an explicit, recorded exit.
-        if (args.mode === 'reference') {
+        // promise; the honest baseline is an explicit, recorded exit. The
+        // `--no-survival-exit` control keeps the promise alive across the D2
+        // boundary so the cross-process settlement itself can be observed.
+        if (args.mode === 'reference' && !args.noSurvivalExit) {
           const npc = runtime.world.npcs[actorId];
           const danger = npc?.alive && (npc.hunger < 45 || npc.stamina < 35
             || (npc.bodyTemp ?? 36.5) < 35.9);
@@ -431,6 +574,21 @@ async function main(): Promise<void> {
         }
         await decide(runtime, scorer, actorId, args, decisions, bridge);
         if (runtime.ended) break;
+      }
+      // The D2 exit: stop with REAL queued work, so the file on disk carries a
+      // working intent and open promises instead of a tidy between-actions gap.
+      if (willStop) {
+        const pending = [...runtime.intents.values()]
+          .filter(intent => intent.status === 'working');
+        if (pending.length > 0) {
+          const paths = saveFourDaySidecars(runtime, play, args.state);
+          runner.savedAt = new Date().toISOString();
+          writeRunnerState(args.state, runner);
+          report.stopped = { requestedDay: args.stopAfterDays!,
+            day: runtime.snapshot().day, simTime: runtime.world.simTime,
+            pending: pending.length, state: args.state, sidecars: { ...paths } };
+          break;
+        }
       }
       // One game hour, or the night skip when the original window is open.
       const before = runtime.world.simTime;
@@ -515,7 +673,8 @@ async function main(): Promise<void> {
       error: (error as Error).message, decisions: decisions.length,
       simTime: runtime.world.simTime, mode: args.mode, countsAsAdmitted: false }, null, 2) + '\n');
     writeFileSync(trajectoryPath, decisions.map(row => JSON.stringify(row)).join('\n') + '\n');
-    runtime.save(join(args.out, `partial-${runId}.json`));
+    // A crash must not drop the promises either: same bundle as the CLI.
+    saveFourDaySidecars(runtime, play, join(args.out, `partial-${runId}.json`));
     throw error;
   } finally { service?.close(); }
 
@@ -543,6 +702,8 @@ async function main(): Promise<void> {
     .map(record => ({ actorId: record.actorId, selectedId: record.selectedId,
       requestId: record.requestId }));
   const settlementRejections = intents.filter(intent => intent.status === 'rejected');
+  // Re-derived from the persisted queue + ledgers, never from a process flag.
+  const audit = auditSettlement(runtime, play);
   report.settlement = {
     intents: intents.length,
     pending: intents.filter(intent => intent.status === 'working').length,
@@ -554,35 +715,56 @@ async function main(): Promise<void> {
       action: String(intent.candidate.parameters.action),
       reason: intent.failureReason })),
     unsettledWork: unsettled,
-    reconciled: unsettled.length === 0
-      && decisions.length === intents.length + decisions.filter(record =>
+    // On a restore the queue legitimately contains intents queued by the other
+    // process, so the decision-count identity is not applicable; the restored
+    // run reconciles against the persisted audit instead of pretending.
+    scope: args.restore ? 'restored-process' : 'fresh-run',
+    reconciled: unsettled.length === 0 && (args.restore ? audit.ok
+      : decisions.length === intents.length + decisions.filter(record =>
         ['applied', 'abstained', 'rejected', 'busy', 'stale'].includes(String(record.executionStatus))
         && !intents.some(intent => intent.actorId === record.actorId
-          && intent.candidateId === record.selectedId)).length,
+          && intent.candidateId === record.selectedId)).length),
   };
   report.rejected = decisions.filter(record => record.executionStatus === 'rejected').length
     + settlementRejections.length;
   report.environment.scorerIdentity = { ...scorer.identity };
   report.environment.referenceCouncilDecisions = decisions.filter(record => record.scorerId === 'council-reference/1').length;
   report.environment.actionDecisions = decisions.filter(record => record.scorerId !== 'council-reference/1').length;
+  report.environment.duplicateDemands = runtime.duplicateDemands.length;
+  report.environment.survivalExit = !args.noSurvivalExit;
   report.rejections = runtime.rejections.map(entry => ({ code: entry.code,
     reason: entry.reason }));
   report.files.trajectory = trajectoryPath;
   const summaryPath = join(args.out, `summary-${runId}.json`);
   report.files.summary = summaryPath;
   report.files.runtimeDocument = join(args.out, `runtime-${runId}.json`);
-  report.files.session = join(args.out, `session-${runId}.json`);
-  runtime.save(report.files.session);
+  // ONE bundle, the same file set the CLI writes: without the gameplay boards
+  // a restored four-day run loses every promise while keeping the world.
+  const paths = saveFourDaySidecars(runtime, play, args.state);
+  runner.savedAt = new Date().toISOString();
+  writeRunnerState(args.state, runner);
+  report.files = { ...report.files, session: paths.session, tasks: paths.tasks,
+    experience: paths.experience, commitments: paths.commitments,
+    council: paths.council, longTermMemory: paths.longTermMemory,
+    r8Runtime: paths.runtime, runnerState: runnerStatePath(args.state) };
+  report.settlementAudit = audit;
   writeFileSync(summaryPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
   writeFileSync(report.files.runtimeDocument,
     `${JSON.stringify(runtime.toDocument(), null, 2)}\n`, 'utf8');
+  writeFileSync(join(args.out, `settlement-audit-${runId}.json`),
+    `${JSON.stringify(report.settlementAudit, null, 2)}\n`, 'utf8');
   const last = endings.at(-1);
-  console.log(JSON.stringify({ ok: Boolean(last), profile: args.profile.id,
+  console.log(JSON.stringify({ ok: Boolean(last) || Boolean(report.stopped),
+    profile: args.profile.id,
     seed: args.seed, mode: args.mode, lives: args.lives, ending: last?.ending ?? null,
     survivors: last?.survivors ?? null, elapsed: last?.elapsed ?? null,
     decisions: report.decisions, executed: report.executed,
-    rejected: report.rejected, out: args.out, summary: summaryPath }, null, 2));
-  if (!last) process.exitCode = 1;
+    rejected: report.rejected, out: args.out, summary: summaryPath,
+    state: args.state, restoredFrom: report.restore?.from ?? null,
+    stopped: report.stopped ?? null,
+    settlementAuditOk: report.settlementAudit.ok }, null, 2));
+  if (!last && !report.stopped) process.exitCode = 1;
+  if (report.settlementAudit && !report.settlementAudit.ok) process.exitCode = 1;
 }
 
 if (require.main === module) main().catch(error => {

@@ -1,0 +1,69 @@
+{
+  "schema": "frostecho.r10.negative-control/1",
+  "generatedAt": "2026-11-18T08:23:44.937Z",
+  "sourceHead": "054cab0178e1357980594e438a13d6d6c4b2b075",
+  "artifact": {
+    "path": "/data3/DATA/project/project_meishijiang/r10-wt/A/dist/src/r7/integration/runtime.js",
+    "sha256Before": "e0507e91d3c63c957ed448acdbe4aaa5e9661d2cba4b383b8246ff8264c534d4",
+    "sha256After": "e0507e91d3c63c957ed448acdbe4aaa5e9661d2cba4b383b8246ff8264c534d4",
+    "restored": true
+  },
+  "sourceArtifact": {
+    "path": "/data3/DATA/project/project_meishijiang/r10-wt/A/src/r7/integration/runtime.ts",
+    "sha256": "98b83a6f268900049f146aa42257b886710ec0ed1dfa98aaa23ba1e41d7375cb"
+  },
+  "mutation": {
+    "needle": "this.session.generationFor(intent.actorId) !== intent.generation",
+    "replacement": "false /* R10 negative control: generation guard disabled */",
+    "kind": "generation-guard-disabled"
+  },
+  "positive": {
+    "clock": {
+      "file": "/data3/DATA/project/project_meishijiang/r10-wt/A/dist/tests/r10/clock-boundary.test.js",
+      "tap": "/data3/DATA/project/project_meishijiang/r10-wt/A/artifacts/r10/negative-control/positive-clock.tap",
+      "exitCode": 0,
+      "failing": [],
+      "errorLine": null
+    },
+    "sidecar": {
+      "file": "/data3/DATA/project/project_meishijiang/r10-wt/A/dist/tests/r10/four-day-sidecar.test.js",
+      "tap": "/data3/DATA/project/project_meishijiang/r10-wt/A/artifacts/r10/negative-control/positive-sidecar.tap",
+      "exitCode": 0,
+      "failing": [],
+      "errorLine": null
+    },
+    "demand": {
+      "file": "/data3/DATA/project/project_meishijiang/r10-wt/A/dist/tests/r10/duplicate-demand.test.js",
+      "tap": "/data3/DATA/project/project_meishijiang/r10-wt/A/artifacts/r10/negative-control/positive-demand.tap",
+      "exitCode": 0,
+      "failing": [],
+      "errorLine": null
+    }
+  },
+  "negative": {
+    "clock": {
+      "file": "/data3/DATA/project/project_meishijiang/r10-wt/A/dist/tests/r10/clock-boundary.test.js",
+      "tap": "/data3/DATA/project/project_meishijiang/r10-wt/A/artifacts/r10/negative-control/negative-clock.tap",
+      "exitCode": 1,
+      "failing": [
+        "not ok 1 - same-minute dues settle in (dueAt, intentId) order and a revoked body has 0 receipts"
+      ],
+      "errorLine": "  error: |-"
+    },
+    "sidecar": {
+      "file": "/data3/DATA/project/project_meishijiang/r10-wt/A/dist/tests/r10/four-day-sidecar.test.js",
+      "tap": "/data3/DATA/project/project_meishijiang/r10-wt/A/artifacts/r10/negative-control/negative-sidecar.tap",
+      "exitCode": 0,
+      "failing": [],
+      "errorLine": null
+    },
+    "demand": {
+      "file": "/data3/DATA/project/project_meishijiang/r10-wt/A/dist/tests/r10/duplicate-demand.test.js",
+      "tap": "/data3/DATA/project/project_meishijiang/r10-wt/A/artifacts/r10/negative-control/negative-demand.tap",
+      "exitCode": 0,
+      "failing": [],
+      "errorLine": null
+    }
+  },
+  "verdict": "valid: generation guard removal makes the clock test red"
+}

@@ -1,0 +1,268 @@
+{
+  "schema": "frostecho.r10.d2-restore-verify/1",
+  "generatedAt": "2026-11-18T08:25:28.399Z",
+  "sourceHead": null,
+  "inputs": {
+    "d2": "/data3/DATA/project/project_meishijiang/r10-wt/A/artifacts/r10/a-d2-restore/d2/state.json",
+    "d2Runtime": "/data3/DATA/project/project_meishijiang/r10-wt/A/artifacts/r10/a-d2-restore/d2/state.json.r8.json",
+    "runner": "/data3/DATA/project/project_meishijiang/r10-wt/A/artifacts/r10/a-d2-restore/d2/state.json.runner.json",
+    "summary": "/data3/DATA/project/project_meishijiang/r10-wt/A/artifacts/r10/a-d2-restore/d4/summary-reference-r10-a-d2-2026-11-18T08-25-17-944Z.json",
+    "audit": "/data3/DATA/project/project_meishijiang/r10-wt/A/artifacts/r10/a-d2-restore/d4/settlement-audit-reference-r10-a-d2-2026-11-18T08-25-17-944Z.json"
+  },
+  "checks": [
+    {
+      "name": "the D2 save carries open promises",
+      "passed": true,
+      "detail": {
+        "commitments": 4,
+        "active": 4
+      }
+    },
+    {
+      "name": "the D2 save carries real queued work",
+      "passed": true,
+      "detail": {
+        "pending": 8,
+        "dueAt": [
+          2220
+        ]
+      }
+    },
+    {
+      "name": "the D2 save used the CLI sidecar set",
+      "passed": true,
+      "detail": {
+        "savedAt": "2026-11-18T08:25:17.799Z",
+        "pledged": true
+      }
+    },
+    {
+      "name": "the D4 process restored that exact state",
+      "passed": true,
+      "detail": {
+        "restoredFrom": "/data3/DATA/project/project_meishijiang/r10-wt/A/artifacts/r10/a-d2-restore/d2/state.json",
+        "clock": 2160
+      }
+    },
+    {
+      "name": "the restored board count matches the save",
+      "passed": true,
+      "detail": {
+        "saved": {
+          "commitments": 4,
+          "pending": 8
+        },
+        "restored": {
+          "from": "/data3/DATA/project/project_meishijiang/r10-wt/A/artifacts/r10/a-d2-restore/d2/state.json",
+          "savedAt": "2026-11-18T08:25:17.799Z",
+          "clock": 2160,
+          "commitments": 4,
+          "pendingIntents": 8
+        }
+      }
+    },
+    {
+      "name": "the RESUMED process applied the D2 interference",
+      "passed": true,
+      "detail": {
+        "interference": {
+          "kind": "private-cancel",
+          "commitmentId": "cm-0f278751-27b3-4e76-b3b8-e619e81e44a6",
+          "heardBy": [
+            "npc_02"
+          ],
+          "status": "cancelled",
+          "at": 2160
+        },
+        "interference2": {
+          "kind": "change-proposed",
+          "commitmentId": "cm-75d5b702-a573-4766-80d6-182daa178bf2",
+          "status": "pending-change",
+          "at": 2160
+        }
+      }
+    },
+    {
+      "name": "every promise settled at most once",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "every promise has at most one applied projection",
+      "passed": true,
+      "detail": [
+        [
+          "cm-0f278751-27b3-4e76-b3b8-e619e81e44a6",
+          0
+        ],
+        [
+          "cm-18a71c3f-5ac5-4282-a192-ecda0eec14a0",
+          1
+        ],
+        [
+          "cm-75d5b702-a573-4766-80d6-182daa178bf2",
+          0
+        ],
+        [
+          "cm-96f2b080-7de4-4b6d-bf0e-f730f2b95a70",
+          1
+        ]
+      ]
+    },
+    {
+      "name": "every promise carries at most one evidence id per settlement",
+      "passed": true,
+      "detail": [
+        [
+          "cm-0f278751-27b3-4e76-b3b8-e619e81e44a6",
+          0,
+          {
+            "npc_01": 0,
+            "npc_02": 0,
+            "npc_03": 0,
+            "npc_04": 0,
+            "npc_05": 0,
+            "npc_06": 0,
+            "npc_07": 0,
+            "npc_08": 0
+          },
+          {
+            "npc_01": 0,
+            "npc_02": 0,
+            "npc_03": 0,
+            "npc_04": 0,
+            "npc_05": 0,
+            "npc_06": 0,
+            "npc_07": 0,
+            "npc_08": 0
+          }
+        ],
+        [
+          "cm-18a71c3f-5ac5-4282-a192-ecda0eec14a0",
+          1,
+          {
+            "npc_01": 1,
+            "npc_02": 1,
+            "npc_03": 1,
+            "npc_04": 1,
+            "npc_05": 1,
+            "npc_06": 1,
+            "npc_07": 1,
+            "npc_08": 1
+          },
+          {
+            "npc_01": 0,
+            "npc_02": 0,
+            "npc_03": 0,
+            "npc_04": 1,
+            "npc_05": 0,
+            "npc_06": 0,
+            "npc_07": 0,
+            "npc_08": 0
+          }
+        ],
+        [
+          "cm-75d5b702-a573-4766-80d6-182daa178bf2",
+          0,
+          {
+            "npc_01": 0,
+            "npc_02": 0,
+            "npc_03": 0,
+            "npc_04": 0,
+            "npc_05": 0,
+            "npc_06": 0,
+            "npc_07": 0,
+            "npc_08": 0
+          },
+          {
+            "npc_01": 0,
+            "npc_02": 0,
+            "npc_03": 0,
+            "npc_04": 0,
+            "npc_05": 0,
+            "npc_06": 0,
+            "npc_07": 0,
+            "npc_08": 0
+          }
+        ],
+        [
+          "cm-96f2b080-7de4-4b6d-bf0e-f730f2b95a70",
+          1,
+          {
+            "npc_01": 1,
+            "npc_02": 1,
+            "npc_03": 1,
+            "npc_04": 1,
+            "npc_05": 1,
+            "npc_06": 1,
+            "npc_07": 1,
+            "npc_08": 1
+          },
+          {
+            "npc_01": 0,
+            "npc_02": 0,
+            "npc_03": 1,
+            "npc_04": 0,
+            "npc_05": 0,
+            "npc_06": 0,
+            "npc_07": 0,
+            "npc_08": 0
+          }
+        ]
+      ]
+    },
+    {
+      "name": "every intent projected at most once",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "no duplicate settlement / projection anywhere",
+      "passed": true,
+      "detail": {
+        "settledTwice": [],
+        "projectedTwice": [],
+        "duplicateFulfilments": []
+      }
+    },
+    {
+      "name": "the final queue is reconciled",
+      "passed": true,
+      "detail": {
+        "pendingIntents": 0,
+        "ok": true,
+        "clock": 5400
+      }
+    },
+    {
+      "name": "a promise active at the boundary was settled afterwards, exactly once",
+      "passed": true,
+      "detail": [
+        {
+          "commitmentId": "cm-18a71c3f-5ac5-4282-a192-ecda0eec14a0",
+          "status": "fulfilled",
+          "updatedAt": 2355,
+          "savedClock": 2160,
+          "evidence": [
+            "npc_04-r8-234:stock_deposited:237"
+          ]
+        },
+        {
+          "commitmentId": "cm-96f2b080-7de4-4b6d-bf0e-f730f2b95a70",
+          "status": "fulfilled",
+          "updatedAt": 2355,
+          "savedClock": 2160,
+          "evidence": [
+            "npc_03-r8-234:stock_deposited:236"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "no promise disappeared across the process boundary",
+      "passed": true,
+      "detail": []
+    }
+  ],
+  "ok": true
+}

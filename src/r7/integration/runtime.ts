@@ -17,7 +17,7 @@ import {
 } from '../contracts';
 import { commitIntents, ensureR8, snapshotOf } from './intents';
 import { mintWorkGrant, requiredPlaceOf } from '../../execution/place-rules';
-import { createIntent, projectionOf, type ActionIntent, type ActionStatus,
+import { createIntent, demandIdOf, projectionOf, type ActionIntent, type ActionStatus,
   type ProjectionClaim } from './action-intent';
 import { survivalDomain, type SurvivalState } from '../domains/survival/index';
 import { productionDomain, type ProductionState } from '../domains/production/index';
@@ -80,6 +80,8 @@ export interface WorkItem {
   actorId: string;
   kind: string;
   commandId: string;
+  /** Demand identity: a re-issued identical action dedupes onto this record. */
+  demandId: string;
   candidate: import('../../decision/contracts').Candidate;
   taskId: string | null;
   commitmentId: string | null;
@@ -174,8 +176,15 @@ export class R8Runtime {
   /** Occupancy view derived from `intents`; several actors overlap in time. */
   readonly work = new Map<string, WorkItem>();
   /** Completed work items, in commit order (evidence for the time story). */
-  readonly workLog: { intentId: string; actorId: string; kind: string; startedAt: number;
-    endsAt: number; status: string; eventIds: string[]; failureReason: string | null }[] = [];
+  readonly workLog: { intentId: string; actorId: string; kind: string; demandId?: string;
+    startedAt: number; endsAt: number; settledAt: number; status: string;
+    eventIds: string[]; failureReason: string | null }[] = [];
+  /**
+   * Re-issued demands that were absorbed instead of queued a second time. Kept
+   * as evidence, not as behaviour: a duplicate must be visible, not silent.
+   */
+  readonly duplicateDemands: { at: number; actorId: string; demandId: string;
+    intentId: string; commandId: string; dueAt: number }[] = [];
   /**
    * Authorisation guards and ledger projectors are behaviour, not state: they
    * are re-registered by the owning subsystem after a restore, and every
@@ -459,10 +468,27 @@ export class R8Runtime {
     candidate: import('../../decision/contracts').Candidate; minutes: number;
     inputSha256?: string | null; taskId?: string | null; taskType?: string | null;
     commitmentId?: string | null; commitmentRevision?: number | null;
-  }): { intent: ActionIntent } | { rejected: string } {
+    demandId?: string | null;
+  }): { intent: ActionIntent; duplicate?: boolean } | { rejected: string } {
     const npc = this.world.npcs[input.actorId];
     if (!npc) return { rejected: `unknown actor ${input.actorId}` };
     if (!npc.alive) return { rejected: `actor ${input.actorId} is not alive` };
+    // The SAME demand re-issued while it is still queued is not a second job:
+    // it maps onto the intent that already occupies this body, so work minutes
+    // and receipts cannot be counted twice. A different ledger instance has a
+    // different demandId and still goes through the ordinary busy check.
+    const demandId = input.demandId ?? demandIdOf({
+      actorId: input.actorId, candidate: input.candidate,
+      taskId: input.taskId ?? null, commitmentId: input.commitmentId ?? null,
+      commitmentRevision: input.commitmentRevision ?? null });
+    const queued = [...this.intents.values()].find(intent => intent.status === 'working'
+      && intent.actorId === input.actorId
+      && (intent.demandId ?? demandIdOf(intent)) === demandId);
+    if (queued) {
+      this.duplicateDemands.push({ at: this.world.simTime, actorId: input.actorId,
+        demandId, intentId: queued.intentId, commandId: input.commandId, dueAt: queued.dueAt });
+      return { intent: queued, duplicate: true };
+    }
     const busy = this.work.get(input.actorId);
     if (busy) return { rejected: `actor ${input.actorId} is busy until ${busy.endsAt}` };
     if (!Number.isFinite(input.minutes) || input.minutes <= 0)
@@ -474,7 +500,8 @@ export class R8Runtime {
     if (place && npc.location !== place) {
       return { rejected: `wrong_location: ${action} needs ${place}, actor is at ${npc.location}` };
     }
-    const intent = createIntent({ ...input, generation: this.session.generationFor(input.actorId) },
+    const intent = createIntent({ ...input, demandId,
+      generation: this.session.generationFor(input.actorId) },
       this.world.simTime, place, npc.location);
     this.intents.set(intent.intentId, intent);
     this.syncWorkView();
@@ -491,6 +518,15 @@ export class R8Runtime {
     if ('rejected' in begun) return { rejected: begun.rejected };
     void kind;
     return { startedAt: begun.intent.startedAt, endsAt: begun.intent.dueAt };
+  }
+
+  /** The queued intent that already carries this demand, if any. */
+  queuedDemand(actorId: string, demandId: string): ActionIntent | null {
+    for (const intent of this.intents.values()) {
+      if (intent.status !== 'working' || intent.actorId !== actorId) continue;
+      if ((intent.demandId ?? demandIdOf(intent)) === demandId) return intent;
+    }
+    return null;
   }
 
   busyUntil(actorId: string): number | null {
@@ -549,8 +585,10 @@ export class R8Runtime {
   settleDueIntents(): { actorId: string; kind: string; status: string; eventIds: string[] }[] {
     const due = [...this.intents.values()]
       .filter(intent => intent.status === 'working' && this.world.simTime >= intent.dueAt)
+      // A strict total order that does not depend on ICU/locale or Map
+      // insertion order: (dueAt, intentId) with a code-unit comparison.
       .sort((left, right) => left.dueAt - right.dueAt
-        || left.intentId.localeCompare(right.intentId));
+        || (left.intentId < right.intentId ? -1 : left.intentId > right.intentId ? 1 : 0));
     const done: { actorId: string; kind: string; status: string; eventIds: string[] }[] = [];
     for (const intent of due) {
       let status: ActionStatus = 'applied';
@@ -716,8 +754,10 @@ export class R8Runtime {
 
   private logIntent(intent: ActionIntent): void {
     this.workLog.push({ intentId: intent.intentId, actorId: intent.actorId,
-      kind: String(intent.candidate.parameters.action), startedAt: intent.startedAt,
-      endsAt: intent.dueAt, status: intent.status, eventIds: [...intent.receiptIds],
+      kind: String(intent.candidate.parameters.action), demandId: intent.demandId,
+      startedAt: intent.startedAt,
+      endsAt: intent.dueAt, settledAt: intent.settledAt ?? this.world.simTime,
+      status: intent.status, eventIds: [...intent.receiptIds],
       failureReason: intent.failureReason });
     this.syncWorkView();
     this.pruneTerminalIntents();
@@ -729,6 +769,7 @@ export class R8Runtime {
       if (intent.status !== 'working') continue;
       this.work.set(intent.actorId, { intentId: intent.intentId, actorId: intent.actorId,
         kind: String(intent.candidate.parameters.action), commandId: intent.commandId,
+        demandId: intent.demandId,
         candidate: intent.candidate, taskId: intent.taskId, commitmentId: intent.commitmentId,
         commitmentRevision: intent.commitmentRevision, generation: intent.generation,
         startedAt: intent.startedAt, endsAt: intent.dueAt });
@@ -808,6 +849,7 @@ export class R8Runtime {
       intents?: ActionIntent[];
       work?: WorkItem[];
       workLog?: R8Runtime['workLog'];
+      duplicateDemands?: R8Runtime['duplicateDemands'];
     };
     if (document.schema !== 'frostecho.r8-runtime/1') {
       throw new Error(`unsupported runtime sidecar ${document.schema}`);
@@ -823,20 +865,31 @@ export class R8Runtime {
     for (const event of document.committed ?? []) {
       runtime.committed.set(event.eventId, event);
     }
-    for (const intent of document.intents ?? []) runtime.intents.set(intent.intentId, intent);
+    for (const intent of document.intents ?? []) {
+      // Pre-R10 intents predate the demand identity; backfill it from the same
+      // content hash so a restored queue still dedupes re-issued demands.
+      if (!intent.demandId) intent.demandId = demandIdOf(intent);
+      runtime.intents.set(intent.intentId, intent);
+    }
     // R9 sidecars only stored the occupancy tuple. Migrate it into a real
     // intent so the resumed process settles from data, not from a closure.
     for (const item of document.work ?? []) {
       if (runtime.intents.has(item.intentId ?? item.commandId)) continue;
       const intentId = (item as WorkItem).intentId ?? item.commandId;
+      const taskId = (item as WorkItem).taskId ?? null;
+      const commitmentId = (item as WorkItem).commitmentId ?? null;
+      const commitmentRevision = (item as WorkItem).commitmentRevision ?? null;
       runtime.intents.set(intentId, {
         intentId, commandId: item.commandId, actorId: item.actorId,
-        candidateId: item.candidate.id, candidate: item.candidate, inputSha256: null,
+        candidateId: item.candidate.id,
+        demandId: demandIdOf({ actorId: item.actorId, candidate: item.candidate,
+          taskId, commitmentId, commitmentRevision }),
+        candidate: item.candidate, inputSha256: null,
         generation: runtime.session.generationFor(item.actorId),
-        taskId: (item as WorkItem).taskId ?? null,
+        taskId,
         taskType: workTaskType(item.candidate),
-        commitmentId: (item as WorkItem).commitmentId ?? null,
-        commitmentRevision: (item as WorkItem).commitmentRevision ?? null,
+        commitmentId,
+        commitmentRevision,
         startedAt: item.startedAt, dueAt: item.endsAt,
         requiredPlace: requiredPlaceOf(String(item.candidate.parameters.action ?? ''),
           item.candidate.parameters as Record<string, unknown>),
@@ -847,6 +900,7 @@ export class R8Runtime {
     }
     runtime.syncWorkView();
     if (document.workLog) runtime.workLog.push(...document.workLog);
+    if (document.duplicateDemands) runtime.duplicateDemands.push(...document.duplicateDemands);
     if (document.rejections) runtime.rejections.push(...document.rejections);
     if (runtime.legacySpatial.enabled()) {
       if (profile.id !== 'gospel-5.8.19') throw new Error('original_map_save_requires_gospel_profile');
@@ -870,6 +924,7 @@ export class R8Runtime {
       // Derived view kept for readers of the R9 sidecar shape.
       work: [...this.work.values()],
       workLog: this.workLog,
+      duplicateDemands: this.duplicateDemands.slice(-200),
       rejections: this.rejections.slice(-200),
     };
   }
