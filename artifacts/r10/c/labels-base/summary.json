@@ -1,0 +1,36 @@
+{
+  "schema": "frostecho.r10c.labels/2",
+  "derivedFrom": "/data3/DATA/project/project_meishijiang/artifacts/r10/c/labels-primary/labels.jsonl",
+  "derivedFromSha256": "296a0cd0e460ee33d49d9d3584cff5b054a5ddc60a676888f80a3a450d0f4e2d",
+  "rule": "base",
+  "labelRule": "first-action-applied && actor-alive && no-population-loss && no-accepted-task-lost",
+  "cases": 312,
+  "totalBranches": 2039,
+  "allAcceptableCases": 281,
+  "noneAcceptableCases": 0,
+  "partialCases": 31,
+  "meanAcceptablePerCase": 6.4327,
+  "randomBaseline": {
+    "expectedTop1GivenUniformPick": 0.9861,
+    "seededDrawTop1": 0.986,
+    "draws": 62400
+  },
+  "ruleBaseline": {
+    "top1InAcceptable": 1,
+    "cases": 312
+  },
+  "byCaptureKind": {
+    "natural": {
+      "cases": 300,
+      "allAcceptable": 269,
+      "ruleOk": 300
+    },
+    "cancel-after-work": {
+      "cases": 12,
+      "allAcceptable": 12,
+      "ruleOk": 12
+    }
+  },
+  "labelsSha256": "adc210953ede91caadc8c92601d53a64cdc166f221a6bfb1598651bf7e4c9260",
+  "note": "Derived from stored branch facts; no rollout was re-run and no non-wait rule was applied."
+}

@@ -1,0 +1,62 @@
+{
+  "schema": "frostecho.r10c.corpus/1",
+  "cases": 156,
+  "bySplit": {
+    "train": 91,
+    "test": 26,
+    "dev": 39
+  },
+  "byEpisode": {
+    "train": {
+      "r10c-ep00": 13,
+      "r10c-ep01": 13,
+      "r10c-ep04": 13,
+      "r10c-ep06": 13,
+      "r10c-ep07": 13,
+      "r10c-ep08": 13,
+      "r10c-ep09": 13
+    },
+    "test": {
+      "r10c-ep02": 13,
+      "r10c-ep11": 13
+    },
+    "dev": {
+      "r10c-ep03": 13,
+      "r10c-ep05": 13,
+      "r10c-ep10": 13
+    }
+  },
+  "episodes": {
+    "r10c-ep00": "train",
+    "r10c-ep09": "train",
+    "r10c-ep06": "train",
+    "r10c-ep08": "train",
+    "r10c-ep04": "train",
+    "r10c-ep07": "train",
+    "r10c-ep01": "train",
+    "r10c-ep03": "dev",
+    "r10c-ep05": "dev",
+    "r10c-ep10": "dev",
+    "r10c-ep02": "test",
+    "r10c-ep11": "test"
+  },
+  "splitSeed": "r10c-split-1",
+  "splitUnit": "sourceEpisodeId",
+  "sampleEvery": 2,
+  "sampledFrom": 312,
+  "labelFamily": "same-snapshot-branch-rollout",
+  "labelRule": "first-action-applied && actor-alive && no-population-loss && no-accepted-task-lost",
+  "allAcceptableCases": 141,
+  "noneAcceptableCases": 0,
+  "partialCases": 15,
+  "missingLabels": 0,
+  "emptyAcceptable": 0,
+  "crossSplitTextMoves": 0,
+  "corpusSha256": "01b8f42340b06a396803f22402896d4cd4f4f324f4740db9652ffde0f9660463",
+  "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+  "rendererBuildSha256": "3c4b7b395053a6f7d948594f761316f96b994c14f8cb0c1c855ca4da893c6237",
+  "rendererId": "joint-c-action/2",
+  "casesSha256": "d3e15b5cc13c469fa8ffabbac418ca8e38cd1b9072943c27fbd3c5cc751065df",
+  "labelsSha256": "17375f7afb85bf89c5b576cb050766530c3e210fb3115d23319fc559696fdd99",
+  "note": "Cases with an empty acceptable set stay in the file as evidence and are excluded from every loss."
+}

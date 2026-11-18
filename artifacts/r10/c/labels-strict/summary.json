@@ -1,0 +1,46 @@
+{
+  "schema": "frostecho.r10c.labels/1",
+  "cases": 312,
+  "totalBranches": 2039,
+  "allAcceptableCases": 216,
+  "noneAcceptableCases": 78,
+  "meanAcceptablePerCase": 4.5545,
+  "randomBaseline": {
+    "expectedTop1GivenUniformPick": 0.7113,
+    "seededDrawTop1": 0.7113,
+    "draws": 62400
+  },
+  "ruleBaseline": {
+    "top1InAcceptable": 0.7468,
+    "cases": 312
+  },
+  "byCaptureKind": {
+    "natural": {
+      "cases": 300,
+      "allAcceptable": 204,
+      "ruleOk": 221
+    },
+    "cancel-after-work": {
+      "cases": 12,
+      "allAcceptable": 12,
+      "ruleOk": 12
+    }
+  },
+  "horizonMinutes": 120,
+  "sliceMinutes": 30,
+  "requireDischarge": true,
+  "focalIdle": true,
+  "labelRule": "first-action-applied && actor-alive && no-population-loss && no-accepted-task-lost && obligations-discharged",
+  "rendererIdentity": "joint-c-action/2",
+  "controller": {
+    "mode": "reference",
+    "scorerId": "reference-rule/1",
+    "rendererId": "agency-options/1",
+    "experimental": false,
+    "countsAsAdmitted": false
+  },
+  "wallSeconds": 921.673,
+  "casesSha256": "851a4883783f7d525a55e9cea00f4f851d1669d4d6d8ca649035665d0972f968",
+  "labelsSha256": "08606b0d3546ced7ec76da01126a27548769ec26dce0709ab7438a673c0523ee",
+  "note": "Acceptable sets come only from terminal rollouts under one fixed controller; no non-wait rule is applied."
+}
