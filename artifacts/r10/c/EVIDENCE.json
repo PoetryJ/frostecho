@@ -1,15 +1,12 @@
 {
   "schema": "frostecho.r10c.evidence/1",
-  "generatedAt": "2026-11-18T11:54:45.924Z",
+  "generatedAt": "2026-11-18T11:56:57.096Z",
   "source": {
     "branch": "codex/r10-c",
-    "head": "054cab0178e1357980594e438a13d6d6c4b2b075",
-    "tree": "acac9d3e0e2121bba37d295cd8c5eea711d50de2",
+    "head": "e816a17ad8d662a1f9727cba2614a1d340542e82",
+    "tree": "ad705a70478b60ff061c6b78f4ccc868afa3ec10",
     "base": "054cab0 (codex/r10-commitment)",
-    "dirty": [
-      "?? C-R10.md",
-      "?? research/decision-choice/r10/"
-    ]
+    "dirty": []
   },
   "renderer": {
     "id": "joint-c-action/2",
@@ -803,6 +800,12 @@
       "exploratory": false
     }
   },
+  "tests": {
+    "command": "npm test",
+    "result": "see tests/npm-test.log: 822 tests, 821 pass, 0 skip, 1 fail",
+    "knownFailure": "IDE safe-delete shim cannot write /.Trash-1003 (environment, not a product path)"
+  },
+  "selfReferenceNote": "EVIDENCE.json is generated before its own commit, so source.head is the source commit and this file lands in the follow-up commit.",
   "negativeControls": [
     {
       "name": "c1-old-renderer",
