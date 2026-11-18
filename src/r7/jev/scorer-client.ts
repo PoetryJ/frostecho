@@ -13,6 +13,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { renderRequest } from './render';
+import { resolveTokenCounter, type TokenCounter } from './token-budget';
 import {
   makeChoiceResult, validateChoiceRequest, ContractError,
   type ChoiceRequest, type ChoiceResult, type CandidateScore,
@@ -42,13 +43,20 @@ interface Pending {
 }
 
 /** Exactly the structure `joint_encoder.prepare` validates. */
-export function buildEnvelope(request: ChoiceRequest): Record<string, unknown> {
+export function buildEnvelope(request: ChoiceRequest,
+  counter: TokenCounter = resolveTokenCounter()): Record<string, unknown> {
+  const ruler = resolveTokenCounter(counter);
   const rendered = renderRequest(request);
   const requestJson = JSON.stringify(request);
   const hash = (text: string | Buffer): string =>
     createHash('sha256').update(text).digest('hex');
   const source = readFileSync(join(process.cwd(), 'src/r7/jev/render.ts'));
   const built = readFileSync(join(process.cwd(), 'dist/src/r7/jev/render.js'));
+  // Measured on the rendered text itself, not on a copy of it: the encode side
+  // and the memory budget must be the same number, or the budget governs
+  // something the model never receives.
+  const memorySegment = rendered.segments.find(segment => segment.kind === 'memory');
+  const memoryText = memorySegment ? memorySegment.text.replace(/^\n记忆:\n/, '') : '';
   return {
     schema: 'frostecho.joint-encoding-request/1',
     sourceHEAD: process.env.FROSTECHO_SOURCE_HEAD ?? null,
@@ -59,6 +67,12 @@ export function buildEnvelope(request: ChoiceRequest): Record<string, unknown> {
     rendererSourceSha256: hash(source),
     rendererBuildSha256: hash(built),
     renderedTextSha256: hash(rendered.text),
+    tokens: {
+      counterId: ruler.id,
+      total: ruler.count(rendered.text),
+      memory: ruler.count(memoryText),
+      memoryFacts: request.memoryFacts.length,
+    },
     modelCalls: 0, worldCommits: 0, realModel: false,
   };
 }

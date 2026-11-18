@@ -1,0 +1,69 @@
+{
+  "schema": "frostecho.r10b.unheard-bytes/1",
+  "rendererId": "joint-c-action/2",
+  "counter": "utf8-bytes/3-ceil/1",
+  "exactHashesStableAcrossRuns": false,
+  "cancelled": {
+    "unheardCommitment": "cm-6dea48a7-a1b9-4f0a-9e89-11444a8d10bf",
+    "heardCommitment": "cm-b8a16153-256a-462e-9425-29df90dc30b8",
+    "audience": [
+      "npc_02"
+    ]
+  },
+  "unheard": {
+    "actor": "npc_01",
+    "beforeSha256": "11fbf63ed3777095a90d326722c477b5978f2de233d5dbff122a1236df9c9757",
+    "afterSha256": "11fbf63ed3777095a90d326722c477b5978f2de233d5dbff122a1236df9c9757",
+    "identical": true,
+    "beforeBytes": 3121,
+    "afterBytes": 3121,
+    "memoryBlockSha256": [
+      "f04d5784b9378bfc040915ea4e8f7404a3e21a3129a7bdf985c2dff797eda790",
+      "f04d5784b9378bfc040915ea4e8f7404a3e21a3129a7bdf985c2dff797eda790"
+    ],
+    "envelopeHashes": [
+      "11fbf63ed3777095a90d326722c477b5978f2de233d5dbff122a1236df9c9757",
+      "11fbf63ed3777095a90d326722c477b5978f2de233d5dbff122a1236df9c9757"
+    ],
+    "cancellationRecords": 0
+  },
+  "reference": {
+    "actor": "npc_03",
+    "beforeSha256": "78eab1c4e9e227d3db315c1e00c7c3b239fed9ce84b61f370c691421d67cd2b4",
+    "afterSha256": "78eab1c4e9e227d3db315c1e00c7c3b239fed9ce84b61f370c691421d67cd2b4",
+    "identical": true
+  },
+  "heard": {
+    "actor": "npc_02",
+    "beforeSha256": "977b683b21f91a62455da7d0fb7256ef45c81dbf10f32f3120fb5ba55c5ceec6",
+    "afterSha256": "d595e7bb02f1f03cce2cfb424e9f1d22672a9786644929f44f7d31426bc629fe",
+    "identical": false,
+    "changedGoalEntries": [
+      {
+        "index": 1,
+        "commitmentId": "cm-b8a16153-256a-462e-9425-29df90dc30b8",
+        "status": [
+          "active",
+          "cancelled"
+        ],
+        "ready": [
+          true,
+          false
+        ]
+      }
+    ],
+    "unchangedGoalEntries": [
+      {
+        "taskId": "task-1",
+        "type": "COLLECT_WOOD",
+        "status": "accepted"
+      }
+    ],
+    "candidatesRemoved": [
+      "从仓库取一份饭用于当前送饭承诺 [withdraw] {action=withdraw amount=1 bridgeStep=withdraw commitmentId=cm-b8a16153-256a-462e-9425-29df90d"
+    ],
+    "candidatesAdded": [],
+    "memoryFactsAdded": [],
+    "cancellationRecords": 2
+  }
+}

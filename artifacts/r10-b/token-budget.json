@@ -1,0 +1,65 @@
+{
+  "schema": "frostecho.r10b.token-budget/1",
+  "counter": {
+    "id": "utf8-bytes/3-ceil/1",
+    "definition": "ceil(utf8 bytes / 3)",
+    "budgetTokens": 640,
+    "where": [
+      "src/r7/integration/step.ts visibleMemory",
+      "src/r7/jev/scorer-client.ts buildEnvelope tokens.memory"
+    ]
+  },
+  "fixture": {
+    "seed": "r10b-budget",
+    "actorId": "npc_01",
+    "chatter": 20
+  },
+  "arms": [
+    {
+      "arm": "raw-last12",
+      "counterId": "utf8-bytes/3-ceil/1",
+      "budgetTokens": 640,
+      "memoryTokens": 610,
+      "memoryBytes": 1829,
+      "memoryFacts": 10,
+      "kept": 10,
+      "dropped": 12,
+      "legacyCaliber": 475,
+      "perLineSum": 610,
+      "memoryBlockSha256": "9989ef63371a7fdf0a2c922f7110401b0eb6d7650985cfcf405c6107f2881c26",
+      "renderSha256": "f86712569fdbea316246f6cfdbb1a6215c90edaea98d474edc8691cf8a8d1abb",
+      "rendererId": "joint-c-action/2",
+      "envelope": {
+        "counterId": "utf8-bytes/3-ceil/1",
+        "total": 851,
+        "memory": 610,
+        "memoryFacts": 10
+      },
+      "overBudget": false
+    },
+    {
+      "arm": "obligation-first",
+      "counterId": "utf8-bytes/3-ceil/1",
+      "budgetTokens": 640,
+      "memoryTokens": 612,
+      "memoryBytes": 1836,
+      "memoryFacts": 7,
+      "kept": 7,
+      "dropped": 15,
+      "legacyCaliber": 472,
+      "perLineSum": 612,
+      "memoryBlockSha256": "cc77fb8d4c505f99fb7c0574189ae2f511dc41fec8278434bd26bc0e31e91492",
+      "renderSha256": "20ac9ab003f80192d14d93fdcafcd0260a781e4e7949eb4f5039ce26d12111cb",
+      "rendererId": "joint-c-action/2",
+      "envelope": {
+        "counterId": "utf8-bytes/3-ceil/1",
+        "total": 853,
+        "memory": 612,
+        "memoryFacts": 7
+      },
+      "overBudget": false
+    }
+  ],
+  "countsDifferByDesign": true,
+  "bothInsideBudget": true
+}
