@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0c1721" />
+    <meta
+      name="description"
+      content="飞进 FrostEcho 的雪原，在风雪与炉火之间寻找庇护。一个程序化 WebGPU 场景原型。"
+    />
+    <title>FrostEcho · 雪原回响</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <canvas
+      id="scene"
+      aria-label="可自由飞行的 FrostEcho 雪原村庄；拖动画面环顾，WASD 移动，Q/E 升降"
+      tabindex="0"
+    ></canvas>
+    <div id="loading" role="status">
+      <span class="eyebrow">FROSTECHO / WORLD STUDY 01</span>
+      <h1>雪原正在醒来</h1>
+      <p id="load-message">编织松林、雪雾与一盏未熄的灯…</p>
+      <div class="loading-line"></div>
+    </div>
+    <header class="hud">
+      <div class="brand">
+        <span class="brand-mark">F</span>
+        <div>
+          <span class="wordmark">FROSTECHO</span
+          ><span class="brand-sub">雪原回响 · 世界场景研究</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span id="gpu-status" class="status">WebGPU 正在初始化</span
+        ><button id="sound" aria-pressed="false" title="开启或关闭程序化环境声">
+          环境声 关闭</button
+        ><button id="hide-ui" title="隐藏界面；按 H 恢复">纯净画面 H</button>
+      </div>
+    </header>
+    <main class="intro" id="intro">
+      <span class="eyebrow" id="scene-kicker">01 / THE LIGHT WE KEEP</span>
+      <h1 id="scene-title">风雪很远，<br />灯火很近。</h1>
+      <p id="scene-description">
+        一片无声的松林，一栋仍有温度的小屋。<br />循着灯光，走进雪原。
+      </p>
+      <button class="enter" id="enter">进入雪原 <span>↗</span></button>
+      <span class="fineprint">自由观察原型 · FrostEcho 原地图空间布局</span>
+    </main>
+    <aside class="scene-panel" aria-label="场景与视角">
+      <div class="panel-label">ATMOSPHERES <span>选择一种雪原</span></div>
+      <div class="modes" id="modes">
+        <button data-mode="0" class="active" aria-pressed="true">
+          <span class="mode-number">01</span
+          ><span>静雪守夜<small>冷暮色 / 暖窗 / 松林</small></span
+          ><span class="mode-dot"></span>
+        </button>
+        <button data-mode="1" aria-pressed="false">
+          <span class="mode-number">02</span
+          ><span>微缩雪镇<small>晨光 / 柔和材质 / 总览</small></span
+          ><span class="mode-dot"></span>
+        </button>
+        <button data-mode="2" aria-pressed="false">
+          <span class="mode-number">03</span
+          ><span>白障风暴<small>侧风 / 雪雾 / 庇护所</small></span
+          ><span class="mode-dot"></span>
+        </button>
+      </div>
+      <div class="panel-label view-label">
+        VIEWPOINTS <span>换一个距离</span>
+      </div>
+      <div class="views" id="views">
+        <button data-view="cabin" class="active">小屋近景</button
+        ><button data-view="village">村庄总览</button
+        ><button data-view="inside">小屋内部</button
+        ><button data-view="forest">林间远望</button>
+      </div>
+      <div class="weather-control">
+        <label for="snow">风雪强度</label
+        ><input
+          id="snow"
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value="0.35"
+        /><output id="snow-label">35%</output>
+      </div>
+      <div class="map-preview">
+        <svg
+          id="map"
+          viewBox="0 0 150 120"
+          role="img"
+          aria-label="FrostEcho 原始村庄建筑位置与当前相机"
+        ></svg>
+        <div>
+          <span>50 × 40</span>
+          <p>原始村庄布局</p>
+          <small>七栋建筑 · 当前聚焦炊事房</small>
+        </div>
+      </div>
+    </aside>
+    <footer class="hud">
+      <div class="controls">
+        <span><kbd>W A S D</kbd> 飞行</span><span><kbd>Q / E</kbd> 升降</span
+        ><span><kbd>拖动</kbd> 环顾</span><span><kbd>Shift</kbd> 加速</span
+        ><span><kbd>1–4</kbd> 视角</span><span><kbd>Esc</kbd> 释放鼠标</span>
+      </div>
+      <button id="tour">自动环游</button>
+    </footer>
+    <div id="telemetry" aria-live="off">准备场景</div>
+    <div id="crosshair" aria-hidden="true"></div>
+    <div id="notice" role="status"></div>
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>

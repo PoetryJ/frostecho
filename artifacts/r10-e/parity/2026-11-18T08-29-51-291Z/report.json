@@ -1,0 +1,2059 @@
+{
+  "schema": "frostecho.r10-e.scene-parity/1",
+  "at": "2026-11-18T08:30:09.840Z",
+  "verdict": "pass",
+  "browser": {
+    "available": false,
+    "found": [],
+    "browserBinaries": [],
+    "note": "no browser binary on this host; no browser recording was made"
+  },
+  "identity": {
+    "repo": "/data3/DATA/project/project_meishijiang/r10-wt/E",
+    "head": "054cab0178e1357980594e438a13d6d6c4b2b075",
+    "tree": "acac9d3e0e2121bba37d295cd8c5eea711d50de2",
+    "branch": "codex/r10-E",
+    "base": "054cab0178e1357980594e438a13d6d6c4b2b075",
+    "visualSnapshot": "frostecho.visual/1"
+  },
+  "run": {
+    "ticks": 9,
+    "profile": "gospel-5.8.19",
+    "mode": "reference",
+    "gamePort": 43157,
+    "visualPort": 38891,
+    "note": "the CLI save directory is deleted after the run; only the transcripts are kept"
+  },
+  "checks": [
+    {
+      "name": "session_started_through_adapter",
+      "ok": true,
+      "detail": {
+        "sessionId": "1794990592192-03f9245e"
+      }
+    },
+    {
+      "name": "original_map_positions_enabled",
+      "ok": true,
+      "detail": {
+        "npcsWithLegacyPosition": 8
+      }
+    },
+    {
+      "name": "tick_0_3d_equals_2d",
+      "ok": true,
+      "detail": {
+        "line": "game-step",
+        "problems": []
+      }
+    },
+    {
+      "name": "tick_1_3d_equals_2d",
+      "ok": true,
+      "detail": {
+        "line": "advance 15",
+        "problems": []
+      }
+    },
+    {
+      "name": "tick_2_3d_equals_2d",
+      "ok": true,
+      "detail": {
+        "line": "game-step",
+        "problems": []
+      }
+    },
+    {
+      "name": "tick_3_3d_equals_2d",
+      "ok": true,
+      "detail": {
+        "line": "advance 15",
+        "problems": []
+      }
+    },
+    {
+      "name": "tick_4_3d_equals_2d",
+      "ok": true,
+      "detail": {
+        "line": "game-step",
+        "problems": []
+      }
+    },
+    {
+      "name": "tick_5_3d_equals_2d",
+      "ok": true,
+      "detail": {
+        "line": "advance 15",
+        "problems": []
+      }
+    },
+    {
+      "name": "tick_6_3d_equals_2d",
+      "ok": true,
+      "detail": {
+        "line": "game-step",
+        "problems": []
+      }
+    },
+    {
+      "name": "tick_7_3d_equals_2d",
+      "ok": true,
+      "detail": {
+        "line": "advance 15",
+        "problems": []
+      }
+    },
+    {
+      "name": "tick_8_3d_equals_2d",
+      "ok": true,
+      "detail": {
+        "line": "observe",
+        "problems": []
+      }
+    },
+    {
+      "name": "negative_unknown_npc_rejected",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "error": "unknown npc npc_99"
+      }
+    },
+    {
+      "name": "negative_rejection_changed_nothing",
+      "ok": true,
+      "detail": {
+        "simTime": 760,
+        "worldVersion": 701
+      }
+    },
+    {
+      "name": "negative_stale_snapshot_refused",
+      "ok": true,
+      "detail": {
+        "verdict": "stale",
+        "reason": "older_than_shown:v701@760"
+      }
+    },
+    {
+      "name": "positive_newer_snapshot_accepted",
+      "ok": true,
+      "detail": {}
+    },
+    {
+      "name": "negative_session_switch_requires_resync",
+      "ok": true,
+      "detail": {}
+    },
+    {
+      "name": "negative_private_memory_absent",
+      "ok": true,
+      "detail": {
+        "schema": "frostecho.visual/1"
+      }
+    },
+    {
+      "name": "negative_leak_guard_trips",
+      "ok": true,
+      "detail": {}
+    },
+    {
+      "name": "display_projection_matches_2d_positions",
+      "ok": true,
+      "detail": {
+        "rows": 8,
+        "sample": {
+          "id": "npc_01",
+          "name": "李婶",
+          "phase": "idle",
+          "mapId": "warehouse",
+          "indoor": true,
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "x": -18,
+          "z": -10,
+          "drawX": -17.2,
+          "drawZ": -10,
+          "displayOffset": {
+            "x": 0.8,
+            "z": 0
+          },
+          "y": 0,
+          "yaw": 0,
+          "color": [
+            0.42,
+            0.53,
+            0.63
+          ],
+          "emission": 0,
+          "scale": [
+            0.46,
+            1.34,
+            0.32
+          ],
+          "headScale": [
+            0.3,
+            0.3,
+            0.28
+          ],
+          "dueAt": null,
+          "kind": null,
+          "label": "李婶（室内）"
+        }
+      }
+    },
+    {
+      "name": "display_offset_is_bounded_label",
+      "ok": true,
+      "detail": {
+        "maxOffsetMeters": 0.8,
+        "distinctDrawnPositions": 8,
+        "actors": 8
+      }
+    },
+    {
+      "name": "display_overlay_batch_built",
+      "ok": true,
+      "detail": {
+        "instances": 48,
+        "active": 17
+      }
+    },
+    {
+      "name": "display_hud_reads_authority",
+      "ok": true,
+      "detail": {
+        "clock": "第 1 天 · 760 分 · v701",
+        "furnace": "炉火 点着 · 燃料 50.1333333333331 · 暖度 18 · 供热 0.21",
+        "phases": "空闲 8 / 工作 0 / 受阻 0 / 死亡 0"
+      }
+    },
+    {
+      "name": "display_static_assets_served",
+      "ok": true,
+      "detail": {
+        "served": [
+          {
+            "asset": "/",
+            "status": 200,
+            "bytes": 5180
+          },
+          {
+            "asset": "/game.js",
+            "status": 200,
+            "bytes": 18219
+          },
+          {
+            "asset": "/game.css",
+            "status": 200,
+            "bytes": 1952
+          },
+          {
+            "asset": "/style.css",
+            "status": 200,
+            "bytes": 9284
+          },
+          {
+            "asset": "/npc-projection.js",
+            "status": 200,
+            "bytes": 7664
+          },
+          {
+            "asset": "/src/world.js",
+            "status": 200,
+            "bytes": 20535
+          },
+          {
+            "asset": "/src/renderer.js",
+            "status": 200,
+            "bytes": 19204
+          },
+          {
+            "asset": "/src/shaders.js",
+            "status": 200,
+            "bytes": 11694
+          },
+          {
+            "asset": "/src/math.js",
+            "status": 200,
+            "bytes": 9977
+          },
+          {
+            "asset": "/data/frostecho-map.json",
+            "status": 200,
+            "bytes": 16053
+          },
+          {
+            "asset": "/VENDORED.json",
+            "status": 200,
+            "bytes": 2213
+          }
+        ]
+      }
+    },
+    {
+      "name": "display_module_graph_resolves",
+      "ok": true,
+      "detail": {
+        "unresolved": [],
+        "modules": 9
+      }
+    },
+    {
+      "name": "observation_clock_overshoot_reproduced",
+      "ok": true,
+      "detail": {
+        "withoutPendingWork": {
+          "line": "advance 15",
+          "from": 480,
+          "to": 495,
+          "cliSimTime": null,
+          "observedSimTime": 495
+        },
+        "afterBatchStep": {
+          "line": "advance 15",
+          "from": 480,
+          "to": 495,
+          "cliSimTime": null,
+          "observedSimTime": 605
+        },
+        "note": "CLI/engine behavior; display mirrors observe, 2D page shows the same clock"
+      }
+    }
+  ],
+  "ticks": [
+    {
+      "tick": 0,
+      "line": "game-step",
+      "simTime": 480,
+      "worldVersion": 1,
+      "expectedVersion": 1,
+      "actorPhases": [
+        [
+          "npc_01",
+          "working"
+        ],
+        [
+          "npc_02",
+          "working"
+        ],
+        [
+          "npc_03",
+          "working"
+        ],
+        [
+          "npc_04",
+          "working"
+        ],
+        [
+          "npc_05",
+          "working"
+        ],
+        [
+          "npc_06",
+          "working"
+        ],
+        [
+          "npc_07",
+          "working"
+        ],
+        [
+          "npc_08",
+          "working"
+        ]
+      ],
+      "lastCommittedOrdinal": 32,
+      "gate": {
+        "verdict": "accepted",
+        "reason": "same_version"
+      },
+      "npcs": [
+        {
+          "id": "npc_01",
+          "mapId": "dorm_a",
+          "cell": {
+            "x": 6,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": 6
+          },
+          "phase": "working",
+          "dueAt": 490,
+          "ok": true
+        },
+        {
+          "id": "npc_02",
+          "mapId": "dorm_b",
+          "cell": {
+            "x": 6,
+            "y": 4
+          },
+          "placement": "building-door",
+          "world": {
+            "x": 16,
+            "y": 0,
+            "z": 6
+          },
+          "phase": "working",
+          "dueAt": 490,
+          "ok": true
+        },
+        {
+          "id": "npc_03",
+          "mapId": "dorm_a",
+          "cell": {
+            "x": 6,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": 6
+          },
+          "phase": "working",
+          "dueAt": 490,
+          "ok": true
+        },
+        {
+          "id": "npc_04",
+          "mapId": "dorm_b",
+          "cell": {
+            "x": 6,
+            "y": 4
+          },
+          "placement": "building-door",
+          "world": {
+            "x": 16,
+            "y": 0,
+            "z": 6
+          },
+          "phase": "working",
+          "dueAt": 490,
+          "ok": true
+        },
+        {
+          "id": "npc_05",
+          "mapId": "dorm_a",
+          "cell": {
+            "x": 6,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": 6
+          },
+          "phase": "working",
+          "dueAt": 495,
+          "ok": true
+        },
+        {
+          "id": "npc_06",
+          "mapId": "dorm_b",
+          "cell": {
+            "x": 6,
+            "y": 4
+          },
+          "placement": "building-door",
+          "world": {
+            "x": 16,
+            "y": 0,
+            "z": 6
+          },
+          "phase": "working",
+          "dueAt": 495,
+          "ok": true
+        },
+        {
+          "id": "npc_07",
+          "mapId": "dorm_a",
+          "cell": {
+            "x": 6,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": 6
+          },
+          "phase": "working",
+          "dueAt": 495,
+          "ok": true
+        },
+        {
+          "id": "npc_08",
+          "mapId": "dorm_b",
+          "cell": {
+            "x": 6,
+            "y": 4
+          },
+          "placement": "building-door",
+          "world": {
+            "x": 16,
+            "y": 0,
+            "z": 6
+          },
+          "phase": "working",
+          "dueAt": 495,
+          "ok": true
+        }
+      ],
+      "problems": []
+    },
+    {
+      "tick": 1,
+      "line": "advance 15",
+      "simTime": 605,
+      "worldVersion": 347,
+      "expectedVersion": 347,
+      "actorPhases": [
+        [
+          "npc_01",
+          "idle"
+        ],
+        [
+          "npc_02",
+          "idle"
+        ],
+        [
+          "npc_03",
+          "idle"
+        ],
+        [
+          "npc_04",
+          "idle"
+        ],
+        [
+          "npc_05",
+          "idle"
+        ],
+        [
+          "npc_06",
+          "idle"
+        ],
+        [
+          "npc_07",
+          "idle"
+        ],
+        [
+          "npc_08",
+          "idle"
+        ]
+      ],
+      "lastCommittedOrdinal": 1982,
+      "gate": {
+        "verdict": "accepted",
+        "reason": "same_version"
+      },
+      "npcs": [
+        {
+          "id": "npc_01",
+          "mapId": "dorm_a",
+          "cell": {
+            "x": 6,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": 6
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_02",
+          "mapId": "dorm_b",
+          "cell": {
+            "x": 6,
+            "y": 4
+          },
+          "placement": "building-door",
+          "world": {
+            "x": 16,
+            "y": 0,
+            "z": 6
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_03",
+          "mapId": "dorm_a",
+          "cell": {
+            "x": 6,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": 6
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_04",
+          "mapId": "dorm_b",
+          "cell": {
+            "x": 6,
+            "y": 4
+          },
+          "placement": "building-door",
+          "world": {
+            "x": 16,
+            "y": 0,
+            "z": 6
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_05",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_06",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_07",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_08",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        }
+      ],
+      "problems": []
+    },
+    {
+      "tick": 2,
+      "line": "game-step",
+      "simTime": 605,
+      "worldVersion": 347,
+      "expectedVersion": 347,
+      "actorPhases": [
+        [
+          "npc_01",
+          "working"
+        ],
+        [
+          "npc_02",
+          "working"
+        ],
+        [
+          "npc_03",
+          "working"
+        ],
+        [
+          "npc_04",
+          "working"
+        ],
+        [
+          "npc_05",
+          "working"
+        ],
+        [
+          "npc_06",
+          "working"
+        ],
+        [
+          "npc_07",
+          "working"
+        ],
+        [
+          "npc_08",
+          "working"
+        ]
+      ],
+      "lastCommittedOrdinal": 1982,
+      "gate": {
+        "verdict": "accepted",
+        "reason": "same_version"
+      },
+      "npcs": [
+        {
+          "id": "npc_01",
+          "mapId": "dorm_a",
+          "cell": {
+            "x": 6,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": 6
+          },
+          "phase": "working",
+          "dueAt": 620,
+          "ok": true
+        },
+        {
+          "id": "npc_02",
+          "mapId": "dorm_b",
+          "cell": {
+            "x": 6,
+            "y": 4
+          },
+          "placement": "building-door",
+          "world": {
+            "x": 16,
+            "y": 0,
+            "z": 6
+          },
+          "phase": "working",
+          "dueAt": 620,
+          "ok": true
+        },
+        {
+          "id": "npc_03",
+          "mapId": "dorm_a",
+          "cell": {
+            "x": 6,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": 6
+          },
+          "phase": "working",
+          "dueAt": 620,
+          "ok": true
+        },
+        {
+          "id": "npc_04",
+          "mapId": "dorm_b",
+          "cell": {
+            "x": 6,
+            "y": 4
+          },
+          "placement": "building-door",
+          "world": {
+            "x": 16,
+            "y": 0,
+            "z": 6
+          },
+          "phase": "working",
+          "dueAt": 620,
+          "ok": true
+        },
+        {
+          "id": "npc_05",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 615,
+          "ok": true
+        },
+        {
+          "id": "npc_06",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 615,
+          "ok": true
+        },
+        {
+          "id": "npc_07",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 615,
+          "ok": true
+        },
+        {
+          "id": "npc_08",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 615,
+          "ok": true
+        }
+      ],
+      "problems": []
+    },
+    {
+      "tick": 3,
+      "line": "advance 15",
+      "simTime": 730,
+      "worldVersion": 693,
+      "expectedVersion": 693,
+      "actorPhases": [
+        [
+          "npc_01",
+          "idle"
+        ],
+        [
+          "npc_02",
+          "idle"
+        ],
+        [
+          "npc_03",
+          "idle"
+        ],
+        [
+          "npc_04",
+          "idle"
+        ],
+        [
+          "npc_05",
+          "idle"
+        ],
+        [
+          "npc_06",
+          "idle"
+        ],
+        [
+          "npc_07",
+          "idle"
+        ],
+        [
+          "npc_08",
+          "idle"
+        ]
+      ],
+      "lastCommittedOrdinal": 3928,
+      "gate": {
+        "verdict": "accepted",
+        "reason": "same_version"
+      },
+      "npcs": [
+        {
+          "id": "npc_01",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_02",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_03",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_04",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_05",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_06",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_07",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_08",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        }
+      ],
+      "problems": []
+    },
+    {
+      "tick": 4,
+      "line": "game-step",
+      "simTime": 730,
+      "worldVersion": 693,
+      "expectedVersion": 693,
+      "actorPhases": [
+        [
+          "npc_01",
+          "working"
+        ],
+        [
+          "npc_02",
+          "working"
+        ],
+        [
+          "npc_03",
+          "working"
+        ],
+        [
+          "npc_04",
+          "working"
+        ],
+        [
+          "npc_05",
+          "working"
+        ],
+        [
+          "npc_06",
+          "working"
+        ],
+        [
+          "npc_07",
+          "working"
+        ],
+        [
+          "npc_08",
+          "working"
+        ]
+      ],
+      "lastCommittedOrdinal": 3928,
+      "gate": {
+        "verdict": "accepted",
+        "reason": "same_version"
+      },
+      "npcs": [
+        {
+          "id": "npc_01",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 740,
+          "ok": true
+        },
+        {
+          "id": "npc_02",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 740,
+          "ok": true
+        },
+        {
+          "id": "npc_03",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 740,
+          "ok": true
+        },
+        {
+          "id": "npc_04",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 740,
+          "ok": true
+        },
+        {
+          "id": "npc_05",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 740,
+          "ok": true
+        },
+        {
+          "id": "npc_06",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 740,
+          "ok": true
+        },
+        {
+          "id": "npc_07",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 740,
+          "ok": true
+        },
+        {
+          "id": "npc_08",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 740,
+          "ok": true
+        }
+      ],
+      "problems": []
+    },
+    {
+      "tick": 5,
+      "line": "advance 15",
+      "simTime": 745,
+      "worldVersion": 697,
+      "expectedVersion": 697,
+      "actorPhases": [
+        [
+          "npc_01",
+          "idle"
+        ],
+        [
+          "npc_02",
+          "idle"
+        ],
+        [
+          "npc_03",
+          "idle"
+        ],
+        [
+          "npc_04",
+          "idle"
+        ],
+        [
+          "npc_05",
+          "idle"
+        ],
+        [
+          "npc_06",
+          "idle"
+        ],
+        [
+          "npc_07",
+          "idle"
+        ],
+        [
+          "npc_08",
+          "idle"
+        ]
+      ],
+      "lastCommittedOrdinal": 3960,
+      "gate": {
+        "verdict": "accepted",
+        "reason": "same_version"
+      },
+      "npcs": [
+        {
+          "id": "npc_01",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_02",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_03",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_04",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_05",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_06",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_07",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_08",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        }
+      ],
+      "problems": []
+    },
+    {
+      "tick": 6,
+      "line": "game-step",
+      "simTime": 745,
+      "worldVersion": 698,
+      "expectedVersion": 698,
+      "actorPhases": [
+        [
+          "npc_01",
+          "working"
+        ],
+        [
+          "npc_02",
+          "working"
+        ],
+        [
+          "npc_03",
+          "working"
+        ],
+        [
+          "npc_04",
+          "working"
+        ],
+        [
+          "npc_05",
+          "working"
+        ],
+        [
+          "npc_06",
+          "working"
+        ],
+        [
+          "npc_07",
+          "working"
+        ],
+        [
+          "npc_08",
+          "working"
+        ]
+      ],
+      "lastCommittedOrdinal": 3960,
+      "gate": {
+        "verdict": "accepted",
+        "reason": "same_version"
+      },
+      "npcs": [
+        {
+          "id": "npc_01",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 755,
+          "ok": true
+        },
+        {
+          "id": "npc_02",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 755,
+          "ok": true
+        },
+        {
+          "id": "npc_03",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 755,
+          "ok": true
+        },
+        {
+          "id": "npc_04",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 755,
+          "ok": true
+        },
+        {
+          "id": "npc_05",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 755,
+          "ok": true
+        },
+        {
+          "id": "npc_06",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 755,
+          "ok": true
+        },
+        {
+          "id": "npc_07",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 755,
+          "ok": true
+        },
+        {
+          "id": "npc_08",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "working",
+          "dueAt": 755,
+          "ok": true
+        }
+      ],
+      "problems": []
+    },
+    {
+      "tick": 7,
+      "line": "advance 15",
+      "simTime": 760,
+      "worldVersion": 701,
+      "expectedVersion": 701,
+      "actorPhases": [
+        [
+          "npc_01",
+          "idle"
+        ],
+        [
+          "npc_02",
+          "idle"
+        ],
+        [
+          "npc_03",
+          "idle"
+        ],
+        [
+          "npc_04",
+          "idle"
+        ],
+        [
+          "npc_05",
+          "idle"
+        ],
+        [
+          "npc_06",
+          "idle"
+        ],
+        [
+          "npc_07",
+          "idle"
+        ],
+        [
+          "npc_08",
+          "idle"
+        ]
+      ],
+      "lastCommittedOrdinal": 3992,
+      "gate": {
+        "verdict": "accepted",
+        "reason": "same_version"
+      },
+      "npcs": [
+        {
+          "id": "npc_01",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_02",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_03",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_04",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_05",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_06",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_07",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_08",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        }
+      ],
+      "problems": []
+    },
+    {
+      "tick": 8,
+      "line": "observe",
+      "simTime": 760,
+      "worldVersion": 701,
+      "expectedVersion": 701,
+      "actorPhases": [
+        [
+          "npc_01",
+          "idle"
+        ],
+        [
+          "npc_02",
+          "idle"
+        ],
+        [
+          "npc_03",
+          "idle"
+        ],
+        [
+          "npc_04",
+          "idle"
+        ],
+        [
+          "npc_05",
+          "idle"
+        ],
+        [
+          "npc_06",
+          "idle"
+        ],
+        [
+          "npc_07",
+          "idle"
+        ],
+        [
+          "npc_08",
+          "idle"
+        ]
+      ],
+      "lastCommittedOrdinal": 3992,
+      "gate": {
+        "verdict": "accepted",
+        "reason": "same_version"
+      },
+      "npcs": [
+        {
+          "id": "npc_01",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_02",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_03",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_04",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_05",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_06",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_07",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        },
+        {
+          "id": "npc_08",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          },
+          "placement": "building-door",
+          "world": {
+            "x": -18,
+            "y": 0,
+            "z": -10
+          },
+          "phase": "idle",
+          "dueAt": null,
+          "ok": true
+        }
+      ],
+      "problems": []
+    }
+  ],
+  "observations": {
+    "clockProbe": [
+      {
+        "label": "without_pending_work",
+        "rows": [
+          {
+            "line": "r8-map-enable",
+            "from": null,
+            "to": null,
+            "cliSimTime": null,
+            "observedSimTime": 480
+          },
+          {
+            "line": "advance 15",
+            "from": 480,
+            "to": 495,
+            "cliSimTime": null,
+            "observedSimTime": 495
+          },
+          {
+            "line": "observe",
+            "from": null,
+            "to": null,
+            "cliSimTime": 495,
+            "observedSimTime": 495
+          }
+        ]
+      },
+      {
+        "label": "after_batch_step",
+        "rows": [
+          {
+            "line": "r8-map-enable",
+            "from": null,
+            "to": null,
+            "cliSimTime": null,
+            "observedSimTime": 480
+          },
+          {
+            "line": "game-step",
+            "from": null,
+            "to": null,
+            "cliSimTime": null,
+            "observedSimTime": 480
+          },
+          {
+            "line": "advance 15",
+            "from": 480,
+            "to": 495,
+            "cliSimTime": null,
+            "observedSimTime": 605
+          },
+          {
+            "line": "observe",
+            "from": null,
+            "to": null,
+            "cliSimTime": 605,
+            "observedSimTime": 605
+          }
+        ]
+      }
+    ],
+    "transcriptsStored": 1
+  },
+  "commands": 10,
+  "note": "no model call, no GPU training, no browser; every position comes from the real CLI"
+}
