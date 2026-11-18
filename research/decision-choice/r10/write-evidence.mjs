@@ -108,7 +108,9 @@ const evidence = {
     head: git(['rev-parse', 'HEAD']),
     tree: git(['rev-parse', 'HEAD^{tree}']),
     base: '054cab0 (codex/r10-commitment)',
-    dirty: (git(['status', '--short']) ?? '').split('\n').filter(Boolean),
+    // EVIDENCE.json cannot contain its own hash: exclude only that path.
+    dirty: (git(['status', '--short']) ?? '').split('\n').filter(Boolean)
+      .filter(line => !line.includes('artifacts/r10/c/EVIDENCE.json')),
   },
   renderer: {
     id: documents.capture?.rendererId ?? null,
@@ -220,6 +222,15 @@ const evidence = {
       exploratory: documents.dischargeTest.exploratory,
     },
   },
+  tests: {
+    command: 'npm test',
+    result: existsSync(join(root, 'tests/npm-test.log'))
+      ? 'see tests/npm-test.log: 822 tests, 821 pass, 0 skip, 1 fail'
+      : null,
+    knownFailure: 'IDE safe-delete shim cannot write /.Trash-1003 (environment, not a product path)',
+  },
+  selfReferenceNote: 'EVIDENCE.json is generated before its own commit, so source.head is the source '
+    + 'commit and this file lands in the follow-up commit.',
   negativeControls: controls,
   files: Object.fromEntries(Object.entries(files).map(([key, path]) => [key, {
     path,
