@@ -1,0 +1,61 @@
+{
+  "schema": "frostecho.r10b.memory-double-booking/1",
+  "fixture": {
+    "seed": "r10b-double-booking",
+    "actorId": "npc_01",
+    "stock": 4,
+    "receipts": [
+      "npc_01-r10b-withdraw-1:stock_withdrawn:1",
+      "npc_01-r10b-withdraw-2:out_of_stock:2"
+    ],
+    "outOfStock": "npc_01-r10b-withdraw-2:out_of_stock:2"
+  },
+  "note": {
+    "noteId": "note-shortage-npc_01",
+    "lesson": "delay-should-be-reported",
+    "conditions": {
+      "place": "warehouse",
+      "stock": "shortage"
+    },
+    "sourceEventIds": [
+      "npc_01-r10b-withdraw-2:out_of_stock:2"
+    ],
+    "observedAt": 480
+  },
+  "before": {
+    "dedupe": false,
+    "memoryNoteSuppressed": 0,
+    "kept": 3,
+    "tokens": 220,
+    "factsKinds": [
+      "moved",
+      "stock_withdrawn",
+      "out_of_stock"
+    ],
+    "receiptInMemory": true,
+    "receiptInText": true,
+    "memoryBlockSha256": "d5cf672f5da99f1262efe196c3bdc54af862274d3a26360ec36b1cfc26b36a07"
+  },
+  "after": {
+    "dedupe": true,
+    "memoryNoteSuppressed": 1,
+    "kept": 2,
+    "tokens": 143,
+    "keptBefore": 3,
+    "tokensBefore": 220,
+    "factsKinds": [
+      "moved",
+      "stock_withdrawn"
+    ],
+    "receiptInMemory": false,
+    "receiptInText": false,
+    "memoryBlockSha256": "3c641856f051d3e283e5f2b14aafb147dbf086858c5ad74b170765d862965890"
+  },
+  "saved": {
+    "records": 1,
+    "bytes": 232,
+    "tokens": 77
+  },
+  "overlapRemaining": [],
+  "behaviourKept": true
+}

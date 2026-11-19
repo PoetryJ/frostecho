@@ -1,0 +1,22 @@
+第1天 第480分钟
+天气:snow
+公共资源 食物130 木柴30 电力30 药品3
+炉火:点着 燃料6
+自身:位置warehouse 饥饿70 体力77 健康100 精神80 体温36.50
+仓库认知:未核实
+问题:现在最该做什么？
+记忆:
+- [engine] commitment_accepted 知于480 发生于480 关于npc_02,player {"fromId":"npc_02","toId":"player","text":"accepted-by-resident","commitmentId":"cm-b8a16153-256a-462e-9425-29df90dc30b8","revision":1,"heardBy":"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08","toldBy":"npc_02","occurredAt":480,"authority":"engine","speakerId":"npc_02","sourceEventIds":["cmt-commitment_accepted-cm-b8a16153-256a-462e-9425-29df90dc30b8-3"]}
+- [engine] task_proposed 知于480 发生于480 关于npc_01,council {"taskId":"task-1","type":"COLLECT_WOOD","assigneeId":"npc_02","occurredAt":480,"authority":"engine","speakerId":"council","sourceEventIds":["team-task_proposed-4"]}
+- [engine] task_accepted 知于480 发生于480 关于npc_01,council {"taskId":"task-1","revision":2,"occurredAt":480,"authority":"engine","speakerId":"council","sourceEventIds":["team-task_accepted-5"]}
+- [engine] commitment_proposed 知于480 发生于480 关于npc_03,player {"goal":"deliver-meal","fromId":"npc_03","toId":"player","conditions":"warehouse-supply","deadline":-1,"commitmentId":"cm-68f0d992-a61b-4e72-8365-a5d9a9180d42","revision":1,"heardBy":"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08","toldBy":"npc_03","occurredAt":480,"authority":"engine","speakerId":"npc_03","sourceEventIds":["cmt-commitment_proposed-cm-68f0d992-a61b-4e72-8365-a5d9a9180d42-6"]}
+- [engine] commitment_accepted 知于480 发生于480 关于npc_03,player {"fromId":"npc_03","toId":"player","text":"accepted-by-resident","commitmentId":"cm-68f0d992-a61b-4e72-8365-a5d9a9180d42","revision":1,"heardBy":"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08","toldBy":"npc_03","occurredAt":480,"authority":"engine","speakerId":"npc_03","sourceEventIds":["cmt-commitment_accepted-cm-68f0d992-a61b-4e72-8365-a5d9a9180d42-7"]}
+目标:{"source":"legacy-commitment","taskId":"task-001-deliver-meal","legacyTaskId":"task-001-deliver-meal","commitmentId":"cm-6dea48a7-a1b9-4f0a-9e89-11444a8d10bf","revision":1,"type":"DELIVER_MEAL","status":"active","ready":true,"conditions":["warehouse-supply"],"deadline":null,"beneficiaryId":"player"}
+可选行动:
+1. 从仓库取一份饭用于当前送饭承诺 [withdraw] {action=withdraw amount=1 bridgeStep=withdraw commitmentId=cm-6dea48a7-a1b9-4f0a-9e89-11444a8d10bf commitmentRevision=1 legacyTaskId=task-001-deliver-meal place=warehouse} 前提:alive、accepted commitment revision unchanged
+2. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80
+3. 给中央炉添柴 [refuel] {action=refuel amount=3} 前提:firewood >= 1、fuel < 60
+4. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive
+5. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive
+6. 原地等待 [wait] {action=wait} 前提:alive
+7. 前往village [move] {action=move purpose=task-place to=village} 前提:alive

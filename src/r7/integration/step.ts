@@ -14,6 +14,8 @@ import type { ScorePort } from '../contracts';
 import { applicableNotes, buildActionOptions, taskBindingOfCandidate,
   type MemoryPolicyId, type ExperienceNote } from '../agency/options';
 import { renderRequest } from '../jev/render';
+import { byteTokenCounter, renderMemoryBlock, renderMemoryLine,
+  resolveTokenCounter, type TokenCounter } from '../jev/token-budget';
 import { TASK_CATALOG, receiptTypesFor, requiredPlaceOf } from '../domains/tasks/index';
 import type { R8Runtime } from './runtime';
 
@@ -32,6 +34,18 @@ export interface StepOptions {
   notes?: (actorId: string) => ExperienceNote[];
   /** Same token budget for both memory arms (default 640). */
   memoryTokenBudget?: number;
+  /**
+   * The one counter used for BOTH the memory budget and the encode side.
+   * Swapping it changes the budget and the reported envelope number together.
+   */
+  tokenCounter?: TokenCounter;
+  /**
+   * One record, one billing slot: a record an applicable note already carries is
+   * not listed again as a memory entry. Default on. Turning it off reproduces
+   * the pre-R10 double booking deliberately, so the before/after numbers in the
+   * evidence are measured rather than asserted.
+   */
+  memoryNoteDedupe?: boolean;
   /** Projection over an existing task/commitment ledger, never a second queue. */
   goalBridge?: {
     view(actorId: string): { goals: unknown[]; candidates: Candidate[] };
@@ -66,6 +80,16 @@ export interface StepRecord {
   memoryBytes?: number;
   memoryTokens?: number;
   memoryBudget?: number;
+  /** Id of the counter that produced `memoryTokens` (budget == encode side). */
+  memoryCounterId?: string;
+  /** Counts before the one-record-one-slot rule was applied. */
+  memoryKeptBefore?: number;
+  memoryTokensBefore?: number;
+  /** Records not listed twice because an applicable note already carries them. */
+  memoryNoteSuppressed?: number;
+  /** The notes that owned those records, with their provenance. */
+  memoryNotes?: { noteId: string; lesson: string; conditions: Record<string, string | number>;
+    sourceEventIds: string[]; observedAt: number | null }[];
   worldVersion: number;
 }
 
@@ -184,18 +208,27 @@ export function memoryPriority(kind: string): number {
  * actor's own records only. Selection is explicit so the raw window stays a
  * real control arm rather than being silently replaced.
  */
-function estimateTokens(text: string): number {
-  let tokens = 0;
-  for (const char of text) tokens += /[\u3000-\u9fff\uff00-\uffef]/.test(char) ? 1 : 0.25;
-  return Math.ceil(tokens);
+
+/**
+ * Cost of ONE memory line. Exported for evidence only: a line is not a billing
+ * unit, because `ceil` per line is not additive. The budget is charged on the
+ * block, exactly as the renderer joins it.
+ */
+export function memoryFactTokens(fact: ObservedFact,
+  counter: TokenCounter = byteTokenCounter): number {
+  return resolveTokenCounter(counter).count(renderMemoryLine(fact));
 }
 
-/** Cost of one memory fact exactly as the renderer will show it. */
-export function memoryFactTokens(fact: ObservedFact): number {
-  const payload = fact.payload as Record<string, unknown>;
-  return estimateTokens(`- [${fact.source}] ${fact.kind} 知于${fact.simTime} `
-    + `发生于${String(payload?.occurredAt ?? '')} 关于${fact.subjectIds.join(',')} `
-    + `${JSON.stringify(fact.payload)}`);
+/** How the bounded window handles a record that another channel already owns. */
+export interface MemoryWindowOptions {
+  /** Counter used for the budget; the encode side gets the same object. */
+  counter?: TokenCounter;
+  /**
+   * Event ids already carried by another prompt channel (an applicable
+   * experience note). A record whose evidence is in this set is NOT listed
+   * again as a memory entry: one record, one billing slot.
+   */
+  excludeEventIds?: readonly string[];
 }
 
 /**
@@ -203,16 +236,29 @@ export function memoryFactTokens(fact: ObservedFact): number {
  * budget. Both arms get the same budget; only the selection rule differs, so a
  * difference between them comes from what the actor was allowed to know, not
  * from one arm being fed more text.
+ *
+ * The budget is charged on `renderMemoryBlock(facts)` — the exact bytes the
+ * renderer puts after the `记忆:` header — through the passed-in counter, so
+ * the number recorded here is the number the encoder measures.
  */
 export function visibleMemory(runtime: R8Runtime, actorId: string, topK = 12,
-  selection: MemorySelection = 'obligation-first', budgetTokens = 640):
+  selection: MemorySelection = 'obligation-first', budgetTokens = 640,
+  options: MemoryWindowOptions = {}):
   { facts: ObservedFact[]; relationships: unknown; truncated: boolean;
     selection: MemorySelection; kept: number; dropped: number; bytes: number;
-    tokens: number; budgetTokens: number } {
+    tokens: number; budgetTokens: number; counterId: string; suppressed: number } {
+  const counter = resolveTokenCounter(options.counter);
   const store = runtime.session.memories.get(actorId);
   if (!store) return { facts: [], relationships: {}, truncated: false,
-    selection, kept: 0, dropped: 0, bytes: 0, tokens: 0, budgetTokens };
-  const records = store.toJSON().records.filter(record => record.observerId === actorId);
+    selection, kept: 0, dropped: 0, bytes: 0, tokens: 0, budgetTokens,
+    counterId: counter.id, suppressed: 0 };
+  const all = store.toJSON().records.filter(record => record.observerId === actorId);
+  // One record, one slot: a record whose evidence an applicable note already
+  // carries is not listed (and not billed) a second time as a memory entry.
+  const occupied = new Set(options.excludeEventIds ?? []);
+  const records = occupied.size === 0 ? all
+    : all.filter(record => !record.sourceEventIds.some(id => occupied.has(id)));
+  const suppressed = all.length - records.length;
   // Same count AND same token budget for both arms; only the choice differs.
   const candidates = selection === 'raw-last12'
     ? records.slice(-topK).map((record, index) => ({ record,
@@ -222,13 +268,13 @@ export function visibleMemory(runtime: R8Runtime, actorId: string, topK = 12,
         || right.index - left.index
         || left.record.recordId.localeCompare(right.record.recordId));
   const chosen: { record: typeof records[number]; index: number }[] = [];
-  let tokens = 0;
   for (const entry of candidates) {
     if (chosen.length >= topK) break;
     const fact = factOf(actorId, entry.record);
-    const cost = memoryFactTokens(fact);
-    if (chosen.length > 0 && tokens + cost > budgetTokens) continue;
-    tokens += cost;
+    // Charge the block as it will be rendered, not a per-line sum: `ceil` per
+    // line over-bills and a different ORDER never changes byte length.
+    const trial = [...chosen.map(row => factOf(actorId, row.record)), fact];
+    if (chosen.length > 0 && counter.count(renderMemoryBlock(trial)) > budgetTokens) continue;
     chosen.push(entry);
   }
   chosen.sort((left, right) => left.index - right.index);
@@ -238,7 +284,8 @@ export function visibleMemory(runtime: R8Runtime, actorId: string, topK = 12,
   return { facts, relationships, truncated: records.length > facts.length,
     selection, kept: facts.length, dropped: Math.max(0, records.length - facts.length),
     bytes: Buffer.byteLength(JSON.stringify(facts), 'utf8'),
-    tokens: facts.reduce((sum, fact) => sum + memoryFactTokens(fact), 0), budgetTokens };
+    tokens: counter.count(renderMemoryBlock(facts)), budgetTokens,
+    counterId: counter.id, suppressed };
 }
 
 /** One stored record as the actor may see it, with its provenance intact. */
@@ -392,6 +439,17 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
     const tasks = (runtime.states.tasks as { tasks: { taskId: string; type: string;
       status: string; assigneeId: string }[] }).tasks
       .filter(task => task.assigneeId === actorId);
+    // Notes are resolved once: they drive the candidate block AND they own the
+    // records they were distilled from, so the same evidence is never billed
+    // twice (once as a note, once as a memory entry).
+    const notes = applicableNotes(options.notes?.(actorId) ?? notesFor(runtime, actorId),
+      memoryPolicy, {
+        place: 'warehouse',
+        taskState: 'declined',
+        // The condition the actor can see right now: a witnessed restock
+        // lifts the shortage lesson; otherwise it still applies.
+        stock: latestStockCondition(runtime, actorId),
+      });
     const built = buildActionOptions({
       actorId,
       npc: { id: npc.id, location: npc.location, hunger: npc.hunger,
@@ -404,14 +462,7 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
       tasks: tasks.map(task => ({ taskId: task.taskId, type: task.type,
         status: task.status })),
       stockBelief: beliefOf(runtime, actorId),
-      notes: applicableNotes(options.notes?.(actorId) ?? notesFor(runtime, actorId),
-        memoryPolicy, {
-          place: 'warehouse',
-          taskState: 'declined',
-          // The condition the actor can see right now: a witnessed restock
-          // lifts the shortage lesson; otherwise it still applies.
-          stock: latestStockCondition(runtime, actorId),
-        }),
+      notes,
     });
     const bridgeView = options.goalBridge?.view(actorId) ?? { goals: [], candidates: [] };
     if (bridgeView.candidates.length > 0) {
@@ -423,7 +474,29 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
     if (built.candidates.length === 0) continue;
     const memorySelection = options.memorySelection ?? 'obligation-first';
     const memoryBudget = options.memoryTokenBudget ?? 640;
-    const memory = visibleMemory(runtime, actorId, 12, memorySelection, memoryBudget);
+    const counter = resolveTokenCounter(options.tokenCounter);
+    const noteEventIds = (options.memoryNoteDedupe ?? true)
+      ? [...new Set(notes.flatMap(note => note.sourceEventIds))] : [];
+    const readMemory = () => noteEventIds.length === 0
+      ? visibleMemory(runtime, actorId, 12, memorySelection, memoryBudget, { counter })
+      : visibleMemory(runtime, actorId, 12, memorySelection, memoryBudget,
+        { counter, excludeEventIds: noteEventIds });
+    const memory = readMemory();
+    // Before/after counts travel with the record, so the saved slot is visible
+    // evidence rather than a claim in a report. With no notes the two reads are
+    // the same, so the second read is skipped.
+    const memoryBefore = noteEventIds.length === 0 ? memory
+      : visibleMemory(runtime, actorId, 12, memorySelection, memoryBudget, { counter });
+    // Provenance of the notes that own suppressed records: the lesson survives
+    // in the record even though its raw line no longer occupies the window.
+    const store = runtime.session.memories.get(actorId);
+    const storedRecords = store?.toJSON().records ?? [];
+    const memoryNotes = notes.map(note => {
+      const owner = storedRecords.find(record => record.sourceEventIds
+        .some(id => note.sourceEventIds.includes(id)));
+      return { noteId: note.noteId, lesson: note.lesson, conditions: note.conditions,
+        sourceEventIds: [...note.sourceEventIds], observedAt: owner?.observedAt ?? null };
+    });
     const request = makeChoiceRequest({
       requestId: runtime.session.nextInputId('r8-score', actorId),
       task: 'choose_action',
@@ -456,7 +529,7 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
     // commit: a cancel/timeout or a newer world version voids this result.
     const fresh = runtime.world.version === startedVersion
       && runtime.session.generationFor(actorId) === startedGeneration
-      && memoryHash(visibleMemory(runtime, actorId, 12, memorySelection, memoryBudget)) === startedMemory
+      && memoryHash(readMemory()) === startedMemory
       && memoryHash(options.goalBridge?.view(actorId) ?? { goals: [], candidates: [] }) === startedBridge;
     if (!fresh) {
       records.push({
@@ -470,7 +543,10 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
         eventIds: [], taskCompleted: null,
         memorySelection, memoryKept: memory.kept, memoryDropped: memory.dropped,
         memoryBytes: memory.bytes, memoryTokens: memory.tokens,
-        memoryBudget: memory.budgetTokens, worldVersion: runtime.world.version,
+        memoryBudget: memory.budgetTokens, memoryCounterId: memory.counterId,
+        memoryKeptBefore: memoryBefore.kept, memoryTokensBefore: memoryBefore.tokens,
+        memoryNoteSuppressed: memoryBefore.kept - memory.kept, memoryNotes,
+        worldVersion: runtime.world.version,
       });
       continue;
     }
@@ -529,7 +605,9 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
       taskCompletionEvidence: taskCompleted && selected ? taskBindingOfCandidate(selected)?.evidenceClass ?? null : null,
       memorySelection, memoryKept: memory.kept, memoryDropped: memory.dropped,
       memoryBytes: memory.bytes, memoryTokens: memory.tokens,
-      memoryBudget: memory.budgetTokens,
+      memoryBudget: memory.budgetTokens, memoryCounterId: memory.counterId,
+      memoryKeptBefore: memoryBefore.kept, memoryTokensBefore: memoryBefore.tokens,
+      memoryNoteSuppressed: memoryBefore.kept - memory.kept, memoryNotes,
       worldVersion: runtime.world.version,
     });
   }
