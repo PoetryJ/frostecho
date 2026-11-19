@@ -130,7 +130,7 @@ export const crisesDomain: DomainModule<CrisesState> = {
             + `victim is at ${victim.location}` });
         return result;
       }
-      crisis.resolvedAtMinute = context.snapshot.elapsed;
+      crisis.resolvedAtMinute = context.snapshot.absoluteMinute;
       crisis.stage = 'escorting';
       next.active = next.active.filter(entry => entry.crisisId !== crisis.crisisId);
       next.history.push({ ...crisis });
@@ -143,7 +143,7 @@ export const crisesDomain: DomainModule<CrisesState> = {
         payload: { crisisId: crisis.crisisId, kind: crisis.kind, victimId, rescuerId,
           at: 'medical',
           escortMinutes: crisis.reachedAtMinute !== undefined
-            ? context.snapshot.elapsed - crisis.reachedAtMinute : 0 } });
+            ? context.snapshot.absoluteMinute - crisis.reachedAtMinute : 0 } });
       return result;
     }
 
@@ -168,7 +168,7 @@ export const crisesDomain: DomainModule<CrisesState> = {
     }
     crisis.stage = 'reached';
     crisis.rescuerId = rescuerId;
-    crisis.reachedAtMinute = context.snapshot.elapsed;
+    crisis.reachedAtMinute = context.snapshot.absoluteMinute;
     result.intents.push({ id: `crises:${victimId}:reach:warm`, kind: 'actor',
       actorId: victimId, delta: { bodyTemp: RESCUE_BODY_TEMP_GAIN },
       source: 'crises.rescue',
@@ -194,7 +194,10 @@ export const crisesDomain: DomainModule<CrisesState> = {
       foodConflictCooldownMinutes: state.foodConflictCooldownMinutes,
     };
     const result = emptyResult(next);
-    const now = context.snapshot.elapsed;
+    // R10-D: crisis times live on the WORLD clock (absolute minutes), the same
+    // clock every other record uses. The old code wrote `elapsed`, which made a
+    // D2 00:00 crisis read "14:20" to anyone comparing it with the journal.
+    const now = context.snapshot.absoluteMinute;
     if (toMinute <= fromMinute) return result;
     const snapshot = context.snapshot;
     const alive = Object.values(snapshot.npcs).filter(npc => npc.alive);
