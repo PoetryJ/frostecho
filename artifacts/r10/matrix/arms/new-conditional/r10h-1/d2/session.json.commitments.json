@@ -1,0 +1,173 @@
+{
+  "commitments": [
+    {
+      "commitmentId": "cm-2c892257-0783-4389-84e1-7da549ee2f6e",
+      "taskId": "task-001-deliver-meal",
+      "promisorId": "npc_01",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "fulfilled",
+      "evidenceEventIds": [
+        "npc_01-r8-119:meal_delivered:121"
+      ],
+      "changes": [],
+      "createdAt": 480,
+      "updatedAt": 1095
+    },
+    {
+      "commitmentId": "cm-958219e3-9e8a-4378-bf11-898ad1ef6f96",
+      "taskId": "task-002-deliver-meal",
+      "promisorId": "npc_02",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "fulfilled",
+      "evidenceEventIds": [
+        "npc_02-r8-119:meal_delivered:122"
+      ],
+      "changes": [],
+      "createdAt": 480,
+      "updatedAt": 1095
+    },
+    {
+      "commitmentId": "cm-89adadda-ccc4-4870-b454-25d74c39f53c",
+      "taskId": "task-003-supply-warehouse",
+      "promisorId": "npc_03",
+      "beneficiaryId": "player",
+      "goal": "supply-warehouse",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "cancelled",
+      "evidenceEventIds": [],
+      "changes": [],
+      "createdAt": 480,
+      "updatedAt": 1680
+    },
+    {
+      "commitmentId": "cm-09be4405-75a8-41ba-bf69-9a8e636f7d5d",
+      "taskId": "task-004-supply-warehouse",
+      "promisorId": "npc_04",
+      "beneficiaryId": "player",
+      "goal": "supply-warehouse",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "pending-change",
+      "evidenceEventIds": [],
+      "changes": [
+        {
+          "changeId": "chg-cebac88b-db5f-4a95-b4a8-929278a61939",
+          "proposedRevision": 2,
+          "kind": "alt-source",
+          "terms": {
+            "source": "gather",
+            "reason": "先采集再交付"
+          },
+          "reason": "warehouse-empty",
+          "proposedAt": 1680,
+          "status": "open",
+          "respondedAt": null,
+          "responseEventId": null
+        }
+      ],
+      "createdAt": 480,
+      "updatedAt": 1680
+    }
+  ],
+  "receipts": {
+    "fulfil:bridge-fulfil:npc_01-r8-119:meal_delivered:121": {
+      "digest": "{\"commitmentId\":\"cm-2c892257-0783-4389-84e1-7da549ee2f6e\",\"receiptEventId\":\"npc_01-r8-119:meal_delivered:121\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-2c892257-0783-4389-84e1-7da549ee2f6e",
+          "taskId": "task-001-deliver-meal",
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "fulfilled",
+          "evidenceEventIds": [
+            "npc_01-r8-119:meal_delivered:121"
+          ],
+          "changes": [],
+          "createdAt": 480,
+          "updatedAt": 1095
+        },
+        "event": {
+          "type": "commitment_fulfilled",
+          "commitmentId": "cm-2c892257-0783-4389-84e1-7da549ee2f6e",
+          "revision": 1,
+          "at": 1095,
+          "actorId": "npc_01",
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "receiptEventId": "npc_01-r8-119:meal_delivered:121",
+            "receiptCommandId": "npc_01-r8-119",
+            "amount": 1,
+            "promiseId": "cm-cm-2c892257-0783-4389-84e1-7da549ee2f6e",
+            "text": "按约定送达"
+          }
+        }
+      }
+    },
+    "fulfil:bridge-fulfil:npc_02-r8-119:meal_delivered:122": {
+      "digest": "{\"commitmentId\":\"cm-958219e3-9e8a-4378-bf11-898ad1ef6f96\",\"receiptEventId\":\"npc_02-r8-119:meal_delivered:122\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-958219e3-9e8a-4378-bf11-898ad1ef6f96",
+          "taskId": "task-002-deliver-meal",
+          "promisorId": "npc_02",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "fulfilled",
+          "evidenceEventIds": [
+            "npc_02-r8-119:meal_delivered:122"
+          ],
+          "changes": [],
+          "createdAt": 480,
+          "updatedAt": 1095
+        },
+        "event": {
+          "type": "commitment_fulfilled",
+          "commitmentId": "cm-958219e3-9e8a-4378-bf11-898ad1ef6f96",
+          "revision": 1,
+          "at": 1095,
+          "actorId": "npc_02",
+          "payload": {
+            "fromId": "npc_02",
+            "toId": "player",
+            "receiptEventId": "npc_02-r8-119:meal_delivered:122",
+            "receiptCommandId": "npc_02-r8-119",
+            "amount": 1,
+            "promiseId": "cm-cm-958219e3-9e8a-4378-bf11-898ad1ef6f96",
+            "text": "按约定送达"
+          }
+        }
+      }
+    }
+  }
+}

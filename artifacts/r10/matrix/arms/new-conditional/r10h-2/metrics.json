@@ -1,0 +1,202 @@
+{
+  "decisions": 234,
+  "decisionStates": {
+    "applied": 21,
+    "working": 213
+  },
+  "decisionsByPolicy": {
+    "council": 8,
+    "model": 226,
+    "reference": 0
+  },
+  "modelDecisions": 226,
+  "busySkips": 0,
+  "staleSkips": 0,
+  "abstained": 0,
+  "rejectedAtExecution": 0,
+  "realFulfilment": {
+    "fulfilled": 2,
+    "verified": 2,
+    "withoutReceipt": 0,
+    "byGoal": [
+      {
+        "promisorId": "npc_01",
+        "goal": "deliver-meal"
+      },
+      {
+        "promisorId": "npc_02",
+        "goal": "deliver-meal"
+      }
+    ]
+  },
+  "authorisedExit": {
+    "withdrawn": 0,
+    "recorded": 0,
+    "reasons": []
+  },
+  "deadlineTimeouts": 0,
+  "cancelled": 1,
+  "effectsAfterCancel": {
+    "cancelled": 1,
+    "lateAppliedIntents": 0,
+    "lateReceipts": 0,
+    "lateEffects": [],
+    "lateReceiptDetails": []
+  },
+  "unauthorisedChanges": [],
+  "duplicateReceipts": {
+    "duplicates": 0,
+    "instances": [],
+    "duplicateFulfilAttempts": 0
+  },
+  "settlement": {
+    "intents": 200,
+    "byStatus": {
+      "applied": 189,
+      "rejected": 9,
+      "cancelled": 2
+    },
+    "failures": 9,
+    "failureList": [
+      {
+        "intentId": "npc_02-r8-76",
+        "actorId": "npc_02",
+        "action": "refuel",
+        "status": "rejected",
+        "reason": "insufficient_firewood"
+      },
+      {
+        "intentId": "npc_01-r8-87",
+        "actorId": "npc_01",
+        "action": "refuel",
+        "status": "rejected",
+        "reason": "insufficient_firewood"
+      },
+      {
+        "intentId": "npc_02-r8-87",
+        "actorId": "npc_02",
+        "action": "refuel",
+        "status": "rejected",
+        "reason": "insufficient_firewood"
+      },
+      {
+        "intentId": "npc_03-r8-87",
+        "actorId": "npc_03",
+        "action": "refuel",
+        "status": "rejected",
+        "reason": "insufficient_firewood"
+      },
+      {
+        "intentId": "npc_04-r8-87",
+        "actorId": "npc_04",
+        "action": "refuel",
+        "status": "rejected",
+        "reason": "insufficient_firewood"
+      },
+      {
+        "intentId": "npc_01-r8-97",
+        "actorId": "npc_01",
+        "action": "refuel",
+        "status": "rejected",
+        "reason": "insufficient_firewood"
+      },
+      {
+        "intentId": "npc_02-r8-97",
+        "actorId": "npc_02",
+        "action": "refuel",
+        "status": "rejected",
+        "reason": "insufficient_firewood"
+      },
+      {
+        "intentId": "npc_03-r8-97",
+        "actorId": "npc_03",
+        "action": "refuel",
+        "status": "rejected",
+        "reason": "insufficient_firewood"
+      },
+      {
+        "intentId": "npc_04-r8-97",
+        "actorId": "npc_04",
+        "action": "refuel",
+        "status": "rejected",
+        "reason": "insufficient_firewood"
+      }
+    ],
+    "cancelledIntents": 2,
+    "unsettledDecisions": 0,
+    "unsettled": [],
+    "pendingBeyondEnd": 0
+  },
+  "noProgressRounds": 0,
+  "loopRounds": 25,
+  "survivors": 4,
+  "alive": 4,
+  "ending": "bleak",
+  "elapsedMinutes": 4920,
+  "resources": {
+    "food": 119,
+    "firewood": 0,
+    "power": 0,
+    "medicine": 3
+  },
+  "resourceCoverageHours": {
+    "food": 16.52777777777778,
+    "firewood": 0,
+    "power": 0
+  },
+  "furnaceLitHours": 54,
+  "workHours": 109.083,
+  "crises": {
+    "crisis_started": 1
+  },
+  "memory": {
+    "budgetTokens": 640,
+    "decisionsWithMemory": 226,
+    "minBudget": 640,
+    "maxBudget": 640,
+    "maxKept": 11,
+    "totalTokens": 138644
+  },
+  "scorer": {
+    "requests": 110,
+    "singleCandidateSkips": 0,
+    "timeouts": 0,
+    "forwardCalls": 110,
+    "serviceWallSeconds": 1076.409,
+    "identity": {
+      "certificateSha256": null,
+      "countsAsAdmitted": false,
+      "encoderForwardAttempts": 110,
+      "encoderForwardCalls": 110,
+      "encoderId": "/data2/model_weights/Qwen3.8-27B",
+      "experimental": true,
+      "featureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+      "headSha256": "f3eb6a95e12eef8d584de41560622af1a6637d9e8ca987126a3a02156c480e3a",
+      "independentReviews": null,
+      "labelSource": null,
+      "memoryPolicyId": "conditional-experience",
+      "mode": "jev-experimental",
+      "realModel": true,
+      "rendererId": "joint-c-action/2",
+      "requestsFailed": 0,
+      "requestsReceived": 110,
+      "scorerId": "jev-joint-c/1",
+      "scoresSucceeded": 110,
+      "tau": 0,
+      "temperature": 1,
+      "trainingManifestSha256": null,
+      "utility": null
+    }
+  },
+  "checks": {
+    "noUnsettledDecision": true,
+    "noPendingIntent": true,
+    "allFulfilmentReceipted": true,
+    "noLateCancelEffect": true,
+    "noUnauthorisedChange": true,
+    "noDuplicateReceipt": true,
+    "noProgressLoopClosed": true
+  },
+  "reconciled": true,
+  "replay": "separate control (replay.json)"
+}

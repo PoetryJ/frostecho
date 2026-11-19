@@ -866,11 +866,19 @@ function collectMetrics(ctx) {
   const alive = Object.values(snapshot.npcs).filter(npc => npc.alive).length;
   const life = runtime.states.life;
   const ending = life.ending;
+  // `runtime.intents` is pruned to the most recent records, so an early
+  // working decision can lose its intent while its settlement is still in the
+  // work log (which keeps every completed item). Match the deterministic
+  // command id against both, never against the surviving intents alone.
+  const terminalIntentIds = new Set([
+    ...intents.filter(intent => intent.status !== 'working').map(intent => intent.intentId),
+    ...runtime.workLog.filter(item => item.status !== 'working').map(item => item.intentId),
+  ]);
   const unsettled = decisions.filter(record => record.executionStatus === 'working')
-    .filter(record => !intents.some(intent => intent.actorId === record.actorId
-      && intent.candidateId === record.selectedId && intent.status !== 'working'))
+    .filter(record => !terminalIntentIds.has(`${record.actorId}-r8-${record.worldVersion}`))
     .map(record => ({ actorId: record.actorId, selectedId: record.selectedId,
-      requestId: record.requestId }));
+      requestId: record.requestId,
+      intentId: `${record.actorId}-r8-${record.worldVersion}` }));
   const pendingBeyondEnd = intents.filter(intent => intent.status === 'working'
     && intent.dueAt > PROFILE.endDay * PROFILE.minutesPerDay + PROFILE.endMinuteOfDay);
 
@@ -1564,6 +1572,15 @@ function matrixMarkdown(table) {
     + '(11:00-13:00), so at the D2 checkpoint it has no active commitment to cancel or '
     + 'renegotiate. `exit/post-cancel/unauth` are therefore 0-of-0 for that arm, not '
     + 'verified zeros.');
+  const fixed = table.rows.filter(row => row.exitsBeforeFix);
+  if (fixed.length > 0) {
+    lines.push('');
+    lines.push('Harness-fix note: '
+      + fixed.map(row => `${row.dir} resume exited ${row.exitsBeforeFix.resume} on the first pass`
+        + ' because settled intents were looked up in the pruned `runtime.intents`;'
+        + ' the verdict was recomputed from `workLog` (`--reconcile`), so the original'
+        + ' exit stays in `summary.json.exitsBeforeFix`').join('; ') + '.');
+  }
   const startedLive = table.rows.filter(row => row.family === 'live' && row.exits.start !== 0
     && row.head?.ok === true);
   if (startedLive.length > 0) {
@@ -1593,6 +1610,58 @@ function regenerateTable() {
   return EXIT.ok;
 }
 
+/**
+ * Recompute the settlement verdict from persisted evidence when a harness
+ * check was wrong. Only the two derived fields move; the game's own metrics,
+ * decisions and receipts are untouched, and the original process exit stays in
+ * phase-resume.json as exitBeforeFix.
+ */
+function reconcileEvidence(dir) {
+  const metricsPath = join(dir, 'metrics.json');
+  const finalPath = join(dir, 'final-state.json');
+  if (!existsSync(metricsPath) || !existsSync(finalPath)) {
+    console.error(`reconcile needs metrics.json and final-state.json in ${rel(dir)}`);
+    return EXIT.internal;
+  }
+  const metrics = JSON.parse(readFileSync(metricsPath, 'utf8'));
+  const final = JSON.parse(readFileSync(finalPath, 'utf8'));
+  const readRows = name => existsSync(join(dir, name))
+    ? readFileSync(join(dir, name), 'utf8').split('\n').filter(Boolean).map(line => JSON.parse(line))
+    : [];
+  const decisions = [...readRows('decisions-start.jsonl'), ...readRows('decisions-resume.jsonl')];
+  const terminal = new Set([
+    ...(final.fingerprint.intents ?? []).filter(intent => intent.status !== 'working')
+      .map(intent => intent.intentId),
+    ...(final.fingerprint.workLog ?? []).filter(item => item.status !== 'working')
+      .map(item => item.intentId),
+  ]);
+  const unsettled = decisions.filter(record => record.executionStatus === 'working')
+    .filter(record => !terminal.has(`${record.actorId}-r8-${record.worldVersion}`))
+    .map(record => ({ actorId: record.actorId, selectedId: record.selectedId,
+      requestId: record.requestId, intentId: `${record.actorId}-r8-${record.worldVersion}` }));
+  const before = metrics.reconciled;
+  metrics.settlement = { ...metrics.settlement, unsettled, unsettledDecisions: unsettled.length };
+  metrics.checks = { ...metrics.checks, noUnsettledDecision: unsettled.length === 0 };
+  metrics.reconciled = Object.values(metrics.checks).every(Boolean);
+  metrics.reconciliationFix = { reason: 'runtime.intents is pruned; settled work was looked up in workLog',
+    at: new Date().toISOString(), before, after: metrics.reconciled,
+    startDecisions: readRows('decisions-start.jsonl').length,
+    resumeDecisions: readRows('decisions-resume.jsonl').length };
+  writeJson(metricsPath, metrics);
+  const phasePath = join(dir, 'phase-resume.json');
+  if (existsSync(phasePath)) {
+    const phase = JSON.parse(readFileSync(phasePath, 'utf8'));
+    phase.exitBeforeFix = phase.exitCode;
+    phase.exitCode = metrics.reconciled ? EXIT.ok : EXIT.settlement;
+    phase.reconciled = metrics.reconciled;
+    phase.checks = metrics.checks;
+    phase.reconciliationFix = metrics.reconciliationFix;
+    writeJson(phasePath, phase);
+  }
+  console.log(`[${rel(dir)}] reconciled=${metrics.reconciled} unsettled=${unsettled.length}`);
+  return metrics.reconciled ? EXIT.ok : EXIT.settlement;
+}
+
 /** Recompute per-game identities/summaries from the evidence already on disk. */
 function regenerateSummaries() {
   const out = resolve(arg('--out') ?? 'artifacts/r10/matrix');
@@ -1601,10 +1670,24 @@ function regenerateSummaries() {
   for (const row of prior.rows) {
     const arm = ARMS.find(entry => entry.id === row.arm);
     const dir = resolve(ROOT, row.dir);
-    const built = gameIdentity({ arm, seed: row.seed, dir, exits: row.exits });
-    writeJson(join(dir, 'summary.json'), { ...built.identity, status: row.status,
-      evidence: built.evidence });
-    rows.push({ ...built.identity, status: row.status, dir: row.dir });
+    const phase = name => existsSync(join(dir, `phase-${name}.json`))
+      ? JSON.parse(readFileSync(join(dir, `phase-${name}.json`), 'utf8')) : null;
+    const exits = { start: phase('start')?.exitCode ?? null,
+      resume: phase('resume')?.exitCode ?? null,
+      replay: phase('replay')?.exitCode ?? null };
+    const beforeFix = phase('resume')?.exitBeforeFix ?? null;
+    const built = gameIdentity({ arm, seed: row.seed, dir, exits });
+    const status = exits.start !== 0
+      ? (built.identity.head?.ok ? `failed:start:${exits.start}`
+        : `refused:${built.identity.head?.reason ?? exits.start}`)
+      : exits.resume !== 0 ? `failed:resume:${exits.resume}`
+        : exits.replay !== 0 ? `failed:replay:${exits.replay}` : 'completed';
+    const identity = { ...built.identity, exits, status, dir: row.dir,
+      ...(beforeFix !== null ? { exitsBeforeFix: { resume: beforeFix } } : {}) };
+    const { gameSha256, ...withoutSha } = identity;
+    identity.gameSha256 = sha(canonical(withoutSha));
+    writeJson(join(dir, 'summary.json'), { ...identity, evidence: built.evidence });
+    rows.push(identity);
   }
   const checks = { ...prior.checks,
     scenarioIdentical: rows.every(row => row.scenarioSha === SCENARIO_SHA),
@@ -1634,6 +1717,10 @@ async function main() {
   if (flag('--matrix')) return matrix();
   if (flag('--regenerate-table')) return regenerateTable();
   if (flag('--regenerate-summaries')) return regenerateSummaries();
+  if (flag('--reconcile')) {
+    if (!arg('--out')) { console.error('--reconcile needs --out <gameDir>'); return EXIT.internal; }
+    return reconcileEvidence(resolve(arg('--out')));
+  }
   if (flag('--preflight-only')) {
     const arm = ARMS.find(entry => entry.id === arg('--arm'));
     if (!arm) { console.error(`unknown arm ${arg('--arm')}`); return EXIT.internal; }

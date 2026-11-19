@@ -1,19 +1,51 @@
 {
   "schema": "frostecho.r10.matrix-phase/1",
   "phase": "start",
-  "pid": 4040876,
+  "pid": 4179691,
   "arm": "new-conditional",
   "seed": "r10h-1",
   "family": "live",
   "memorySelection": "obligation-first",
   "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
   "source": {
-    "head": "e320c919c647da0a4f17773b64914f691b9f5b71",
-    "tree": "c618355227f4435b47f9c522f4816281e7ca1bea",
+    "head": "4479999492339642a72000134783be4d62c8d8fa",
+    "tree": "24a8c578bdad039478082357dc420f97d8c4895c",
     "branch": "codex/r10-H"
   },
-  "at": "2026-11-19T03:01:54.092Z",
-  "exitCode": 16,
-  "error": "online_feature_identity_differs:4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
-  "forwards": 1
+  "at": "2026-11-19T07:55:55.095Z",
+  "exitCode": 0,
+  "outcome": "checkpoint",
+  "pending": 6,
+  "decisions": 124,
+  "scorer": {
+    "requests": 116,
+    "singleCandidateSkips": 0,
+    "timeouts": 0,
+    "forwardCalls": 116,
+    "serviceWallSeconds": 1153.523,
+    "identity": {
+      "certificateSha256": null,
+      "countsAsAdmitted": false,
+      "encoderForwardAttempts": 116,
+      "encoderForwardCalls": 116,
+      "encoderId": "/data2/model_weights/Qwen3.8-27B",
+      "experimental": true,
+      "featureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+      "headSha256": "f3eb6a95e12eef8d584de41560622af1a6637d9e8ca987126a3a02156c480e3a",
+      "independentReviews": null,
+      "labelSource": null,
+      "memoryPolicyId": "conditional-experience",
+      "mode": "jev-experimental",
+      "realModel": true,
+      "rendererId": "joint-c-action/2",
+      "requestsFailed": 0,
+      "requestsReceived": 116,
+      "scorerId": "jev-joint-c/1",
+      "scoresSucceeded": 116,
+      "tau": 0,
+      "temperature": 1,
+      "trainingManifestSha256": null,
+      "utility": null
+    }
+  }
 }
