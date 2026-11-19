@@ -417,6 +417,23 @@ def main():
         'weightDecay': args.weight_decay,
         'normalisation': 'non-affine LayerNorm eps=1e-5 (serve_joint.normalized)',
         'seconds': time.monotonic() - started,
+        # serve_joint.load_training_manifest hard-requires the weak-reference
+        # schema and labelSource='reference-imitation'. This corpus is a
+        # same-snapshot branch rollout, so the mismatch is stated, not papered
+        # over by relabelling the data.
+        'serveCompatibility': {
+            'requiredSchema': 'frostecho.action-weak-experiment/1',
+            'requiredLabelSource': 'reference-imitation',
+            'matchesSchema': False,
+            'matchesLabelSource': False,
+            'presentFields': ['experimental', 'countsAsAdmitted', 'calibrated',
+                              'researchTrainReady', 'mayTrainOnJev', 'featureIdentity',
+                              'featureIdentityHash', 'encodingExecution',
+                              'encodingQualification', 'selectedCheckpointSha256'],
+            'note': 'fields serve checks are present and honest; the schema id and '
+                    'labelSource differ because these labels are branch rollouts, '
+                    'not reference imitation. Extending the serve allowlist is a src/ change.',
+        },
         'limitations': [
             'Weak branch labels from one fixed rule controller; not human preference.',
             'All-acceptable cases carry zero gradient; see counts/discriminativeCounts.',

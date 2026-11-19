@@ -1,0 +1,41 @@
+{
+  "schema": "frostecho.r10c.identity-ladder/1",
+  "encoder": "/data2/model_weights/Qwen3.8-27B",
+  "renderer": "joint-c-action/2",
+  "placement": "auto",
+  "rule": "feature identity includes deviceMap/actualParameterBytesByDevice/rotaryBufferDevices, so the number of layers that fit on the card is part of the contract",
+  "servingBaseline": "4dae52c7... is what serve_joint produces with GPU1 idle (~23.8 GiB free at load); it is the identity the four R10-C heads are trained on",
+  "ladder": [
+    {
+      "hogMiB": 0,
+      "freeMiBWhenPlaced": {
+        "1": 23796
+      },
+      "layersOnGpu": 24,
+      "gpuBytes": 20063183744,
+      "hash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+      "loadSeconds": 7.7
+    },
+    {
+      "hogMiB": 1024,
+      "freeMiBWhenPlaced": {
+        "1": 22734
+      },
+      "layersOnGpu": 23,
+      "gpuBytes": 19296637376,
+      "hash": "fb54542aecad9b18350fefe45f5803018d4821a97be6b755e3db84810f44fa58",
+      "loadSeconds": 7.1
+    },
+    {
+      "hogMiB": 2048,
+      "freeMiBWhenPlaced": {
+        "1": 21710
+      },
+      "layersOnGpu": 22,
+      "gpuBytes": 18530091008,
+      "hash": "518e60ee42d808764c3f2a9925f1363080490ae9824f88f4c8ad2161d8a0179a",
+      "loadSeconds": 6.7
+    }
+  ],
+  "preflight": "python research/decision-choice/r10/probe-identity.py --hog-mib 0  -> compare featureIdentityHash with training-manifest.json before a game run"
+}

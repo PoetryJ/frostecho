@@ -32,13 +32,18 @@ const files = {
   corpusBase: join(root, 'corpus-base/manifest.json'),
   corpusDischarge: join(root, 'corpus-discharge/manifest.json'),
   encoding: join(root, 'enc/metadata.json'),
+  encodingGpu: join(root, 'enc-gpu1/metadata.json'),
   encodingTiming: join(root, 'enc-timing-auto2/metadata.json'),
-  primaryTraining: join(root, 'train-primary/training-manifest.json'),
-  primaryDev: join(root, 'train-primary/dev-decisions.json'),
-  primaryTest: join(root, 'train-primary/test-eval.json'),
-  dischargeTraining: join(root, 'train-discharge/training-manifest.json'),
-  dischargeDev: join(root, 'train-discharge/dev-decisions.json'),
-  dischargeTest: join(root, 'train-discharge/test-eval.json'),
+  placementDiagnosis: join(root, 'placement-diagnosis.json'),
+  identityLadder: join(root, 'identity-ladder.json'),
+  primaryTraining: join(root, 'train-base-gpu1/training-manifest.json'),
+  primaryDev: join(root, 'train-base-gpu1/dev-decisions.json'),
+  primaryTest: join(root, 'train-base-gpu1/test-eval.json'),
+  dischargeTraining: join(root, 'train-discharge-gpu1/training-manifest.json'),
+  dischargeDev: join(root, 'train-discharge-gpu1/dev-decisions.json'),
+  dischargeTest: join(root, 'train-discharge-gpu1/test-eval.json'),
+  supersededTraining: join(root, 'train-primary/training-manifest.json'),
+  supersededDischarge: join(root, 'train-discharge/training-manifest.json'),
 };
 const documents = Object.fromEntries(Object.entries(files).map(([key, path]) => [key, read(path)]));
 const caseRows = existsSync(join(root, 'capture/cases.jsonl'))
@@ -65,6 +70,8 @@ const TRACKED = new Set([
   'corpus-base-e2/corpus.jsonl', 'corpus-base-e2/manifest.json',
   'corpus-discharge-e2/corpus.jsonl', 'corpus-discharge-e2/manifest.json',
   'enc/features.npz', 'enc/records.jsonl', 'enc/metadata.json',
+  'enc-gpu1/features.npz', 'enc-gpu1/records.jsonl', 'enc-gpu1/metadata.json',
+  'enc-gpu1/qualification.json', 'placement-diagnosis.json', 'identity-ladder.json',
   'enc/qualification.json', 'enc/forward-events.jsonl',
   'EVIDENCE.json', 'consistency.json',
 ]);
@@ -185,11 +192,34 @@ const evidence = {
     crossSplitTextMoves: documents.corpusBase.crossSplitTextMoves,
     corpusSha256: documents.corpusBase.corpusSha256,
   },
+  identity: {
+    serving: documents.encodingGpu ? {
+      featureIdentityHash: documents.encodingGpu.featureIdentityHash,
+      parameterDevices: documents.encodingGpu.featureIdentity?.actualParameterBytesByDevice,
+      secondsPerForward: documents.encodingGpu.encoderForwardCalls
+        ? Number((documents.encodingGpu.wallSecondsThisInvocation
+          / documents.encodingGpu.encoderForwardCalls).toFixed(2)) : null,
+      note: 'mixed placement on one free GPU; this is what serve_joint produces with GPU1 idle',
+    } : null,
+    supersededCpu: documents.encoding ? {
+      featureIdentityHash: documents.encoding.featureIdentityHash,
+      parameterDevices: documents.encoding.featureIdentity?.actualParameterBytesByDevice,
+      note: 'all-CPU placement because GPU1 had 4000 MiB free at load; kept for provenance, not for serving',
+    } : null,
+  },
+  placementDiagnosis: documents.placementDiagnosis,
+  identityLadder: documents.identityLadder,
   cost: [
-    costOf(documents.encodingTiming, 'encoder timing probe (4 forwards)'),
-    costOf(documents.encoding, 'R10 corpus encoding'),
+    costOf(documents.encodingTiming, 'encoder timing probe (4 forwards, CPU)'),
+    costOf(documents.encoding, 'corpus encoding #1 (all-CPU, superseded)'),
+    costOf(documents.encodingGpu, 'corpus encoding #2 (GPU1 mixed, delivered)'),
   ].filter(Boolean),
   training: {
+    supersededCpuIdentity: documents.supersededTraining && {
+      selected: documents.supersededTraining.selectedCheckpoint,
+      featureIdentityHash: documents.supersededTraining.featureIdentityHash,
+      note: 'trained on the all-CPU identity; must not be served',
+    },
     primary: documents.primaryTraining && {
       selected: documents.primaryTraining.selectedCheckpoint,
       selectedSha256: documents.primaryTraining.selectedCheckpointSha256,
@@ -240,13 +270,15 @@ const evidence = {
     sha256: shas[key] ?? null,
     bytes: existsSync(path) ? statSync(path).size : null,
   }])),
-  headWeights: ['train-primary', 'train-discharge'].flatMap(dir => {
-    const base = join(root, dir);
-    if (!existsSync(base)) return [];
-    return readdirSync(base).filter(name => name.endsWith('.safetensors')).sort()
-      .map(name => ({ path: `${dir}/${name}`, sha256: sha(join(base, name)),
-        bytes: statSync(join(base, name)).size }));
-  }),
+  headWeights: ['train-base-gpu1', 'train-discharge-gpu1', 'train-primary', 'train-discharge']
+    .flatMap(dir => {
+      const base = join(root, dir);
+      if (!existsSync(base)) return [];
+      const superseded = dir === 'train-primary' || dir === 'train-discharge';
+      return readdirSync(base).filter(name => name.endsWith('.safetensors')).sort()
+        .map(name => ({ path: `${dir}/${name}`, sha256: sha(join(base, name)),
+          bytes: statSync(join(base, name)).size, superseded }));
+    }),
 };
 writeFileSync(join(root, 'EVIDENCE.json'), `${JSON.stringify(evidence, null, 2)}\n`);
 const gpuHours = evidence.cost.reduce((sum, entry) => sum + entry.cardHoursActuallyResident, 0);

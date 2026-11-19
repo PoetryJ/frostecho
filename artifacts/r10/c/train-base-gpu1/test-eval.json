@@ -1,0 +1,46 @@
+{
+  "schema": "frostecho.r10c.test-eval/1",
+  "firstAndOnlyRun": true,
+  "exploratory": false,
+  "exploratoryReason": null,
+  "evaluatedAt": "2026-11-19T11:38:54",
+  "outputDir": "/data3/DATA/project/project_meishijiang/artifacts/r10/c/train-base-gpu1",
+  "selectedCheckpoint": "warm-17.safetensors",
+  "selectedCheckpointSha256": "f3eb6a95e12eef8d584de41560622af1a6637d9e8ca987126a3a02156c480e3a",
+  "corpusSha256": "38030697c9f4d05b9f3e18a25b5a3265460eaf4af6a6a23ac2ab3404b4dc4b98",
+  "cacheSha256": "5641735757d581ce635b14ccf2d9de61747dd1a0ad266a9ccf9efd551432645c",
+  "featureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+  "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+  "counts": {
+    "test": 26
+  },
+  "metrics": {
+    "cases": 26,
+    "setNll": 0.0,
+    "top1InAcceptable": 1.0,
+    "discriminativeCases": 3,
+    "discriminativeSetNll": 1e-06,
+    "discriminativeTop1": 1.0
+  },
+  "trainEpochs": 40,
+  "epochs": 40,
+  "selection": "lowest dev set-NLL, never test",
+  "limitations": [
+    "Weak branch labels from one fixed rule controller; not human preference.",
+    "All-acceptable cases carry zero gradient; see counts/discriminativeCounts.",
+    "No independent blind review, no calibration or risk certificate."
+  ],
+  "baseline": {
+    "weight": "initial head",
+    "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+    "dev": {
+      "cases": 39,
+      "labelledCases": 39,
+      "discriminativeCases": 4,
+      "setNll": 0.002624,
+      "top1InAcceptable": 1.0,
+      "discriminativeSetNll": 0.025579,
+      "discriminativeTop1": 1.0
+    }
+  }
+}
