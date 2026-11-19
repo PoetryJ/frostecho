@@ -1,6 +1,8 @@
 # R10 C 线交接包（对应 B 线的 B-R10.md + artifacts/r10-b + emit-evidence.mjs）
 
-分支 `codex/r10-c`，基线 `054cab0`，HEAD `a855f5e`，tree `ea354cba0bdcec3bbb6772c44d58384ebee8dd97`。
+分支 `codex/r10-c`，基线 `054cab0`。
+交付内容提交 `a855f5e`，tree `ea354cba0bdcec3bbb6772c44d58384ebee8dd97`。
+`r10-c.bundle` 冻结在 `a855f5e`（不含其后只加本目录 `patch/` 的交接提交），因此取回后 tree 仍是 `ea354cba…`。
 
 | 交付物 | 路径 |
 |---|---|
