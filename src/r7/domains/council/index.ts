@@ -22,6 +22,152 @@ export interface CouncilProposal {
   rationale: string;
 }
 
+/**
+ * Original assignment policy (`task-generator.js:277-340`,
+ * `resource-report.js:296-315`), transcribed so the daily board is not an
+ * invented priority list:
+ *   - only living residents with stamina >= 30 and health >= 30 are assignable;
+ *   - a resource is CRITICAL at <= 6 hours of wood/power cover or <= 1 meal,
+ *     and then wood/food get up to 2 workers and power 1;
+ *   - specialists come first (`task-system.js:198-285`), 老钱 last
+ *     (the original reserves him for mediation).
+ */
+export const ASSIGN_MIN_STAMINA = 30;
+export const ASSIGN_MIN_HEALTH = 30;
+export const CRITICAL_HOURS = 6;
+/** `resource-system.js:35-39` consumption constants. */
+export const HEATING_WOOD_PER_HOUR = 1.0;
+export const HEATING_POWER_PER_HOUR = 2.0;
+export const FOOD_PER_MEAL_PER_PERSON = 1.8;
+
+/** legacy `npc-configs.js` order -> the engine's immutable npc ids. */
+export const NPCS_BY_LEGACY_ID: Record<string, string> = {
+  li_shen: 'npc_01', zhao_chef: 'npc_02', wang_teacher: 'npc_03', old_qian: 'npc_04',
+  su_doctor: 'npc_05', lu_chen: 'npc_06', ling_yue: 'npc_07', qing_xuan: 'npc_08',
+};
+
+/** `task-system.js:198-285` bonuses, keyed by engine actor id. */
+export const SPECIALTY_BONUS: Record<string, Partial<Record<TaskTypeId, number>>> = {
+  npc_01: { DISTRIBUTE_FOOD: 2.0, COLLECT_FOOD: 1.5, PREPARE_WARMTH: 1.5, PREPARE_MEDICAL: 1.2 },
+  npc_02: { COLLECT_WOOD: 1.5, COLLECT_MATERIAL: 1.3, COLLECT_FOOD: 1.3,
+    BUILD_GENERATOR: 1.3, BUILD_LUMBER_MILL: 1.3, BUILD_FOOD_COLLECTOR: 1.3 },
+  npc_03: { MAINTAIN_POWER: 2.0, COORDINATE: 1.5, BUILD_GENERATOR: 1.5,
+    BUILD_LUMBER_MILL: 1.5, BUILD_FOOD_COLLECTOR: 1.5 },
+  npc_04: { MAINTAIN_ORDER: 2.0, COORDINATE: 2.0, BOOST_MORALE: 1.5 },
+  npc_05: { PREPARE_MEDICAL: 2.0, REST_RECOVER: 1.5, BOOST_MORALE: 1.2 },
+  npc_06: { COLLECT_MATERIAL: 1.5, COLLECT_FOOD: 1.3, COLLECT_WOOD: 1.3,
+    BUILD_GENERATOR: 1.2, BUILD_LUMBER_MILL: 1.2, BUILD_FOOD_COLLECTOR: 1.2 },
+  npc_07: { SCOUT_RUINS: 2.0, PREPARE_MEDICAL: 1.5, BOOST_MORALE: 1.3, COLLECT_MATERIAL: 1.3 },
+  npc_08: { PREPARE_MEDICAL: 1.5, BOOST_MORALE: 1.1 },
+};
+
+export function specialtyOf(actorId: string, type: TaskTypeId): number {
+  return SPECIALTY_BONUS[actorId]?.[type] ?? 1;
+}
+
+export interface AssignmentView {
+  day: number;
+  resources: { food: number; firewood: number; power: number; medicine: number };
+  furnace: { lit: boolean; fuel: number };
+  machines: Record<string, string>;
+  npcs: Record<string, { id: string; alive: boolean; stamina: number; health: number;
+    hunger: number; san: number; location: string }>;
+}
+
+export interface PlannedAssignment { actorId: string; type: TaskTypeId; reason: string }
+
+/**
+ * The daily board, in the original's order: critical resources first (wood,
+ * food, power), then each resident's own state. `budget` caps the number of
+ * proposals (the original proposes at most four per meeting).
+ */
+export function planAssignments(view: AssignmentView, budget = 4): PlannedAssignment[] {
+  const alive = Object.values(view.npcs).filter(npc => npc.alive)
+    .sort((left, right) => left.id.localeCompare(right.id));
+  if (alive.length === 0) return [];
+  const population = Math.max(0.1, alive.length / 8);
+  // `getWoodFuelHoursRemaining` / `getPowerHoursRemaining` scale the hourly burn
+  // by the population ratio, so cover hours are what the original compares.
+  const woodHours = view.resources.firewood / (HEATING_WOOD_PER_HOUR * population);
+  const powerHours = view.resources.power / (HEATING_POWER_PER_HOUR * population);
+  const meals = view.resources.food / (alive.length * FOOD_PER_MEAL_PER_PERSON);
+  const woodCritical = woodHours <= CRITICAL_HOURS;
+  const powerCritical = powerHours <= CRITICAL_HOURS;
+  const foodCritical = meals <= 1;
+
+  const assignable = alive.filter(npc => npc.stamina >= ASSIGN_MIN_STAMINA
+    && npc.health >= ASSIGN_MIN_HEALTH);
+  const pool = assignable.length > 0 ? [...assignable] : [...alive].sort((left, right) =>
+    right.stamina - left.stamina).slice(0, 2);
+  const taken = new Set<string>();
+  const plan: PlannedAssignment[] = [];
+  const pick = (type: TaskTypeId, count: number, reason: string): void => {
+    const today = alive.filter(npc => npc.alive && !taken.has(npc.id));
+    today.sort((left, right) => specialtyOf(right.id, type) - specialtyOf(left.id, type)
+      || (right.id === 'npc_04' ? -1 : 0) - (left.id === 'npc_04' ? -1 : 0)
+      || right.stamina - left.stamina);
+    for (let index = 0; index < Math.min(count, today.length)
+      && plan.length < budget; index += 1) {
+      const npc = today[index];
+      taken.add(npc.id);
+      plan.push({ actorId: npc.id, type, reason });
+    }
+  };
+
+  // `event-system.js:405-441`: the day-4 broadcast says -60 C outdoors and that
+  // going out loses body heat fast; the outdoor band then costs ~3 health per
+  // game minute. A board that still sends residents to the lumber camp on day 4
+  // is not "prioritising logging", it is signing a death warrant, so no outdoor
+  // task is proposed once the outdoor grid is lethal.
+  const outdoorLethal = view.day >= 4;
+  const OUTDOOR: ReadonlySet<TaskTypeId> = new Set(['COLLECT_WOOD', 'COLLECT_FOOD',
+    'COLLECT_MATERIAL', 'SCOUT_RUINS']);
+  const pickOutdoor = (type: TaskTypeId, count: number, reason: string): void => {
+    if (outdoorLethal) return;
+    pick(type, count, reason);
+  };
+
+  // `resource-system.js:17`: "木柴 — 初始30单位，Day1够烧但需采集为Day2囤".
+  // Day 1 is the only safe outdoor day (0 C, no band damage), so the board
+  // stocks up then instead of discovering the shortage on the -30 C day.
+  if (view.day === 1) {
+    pickOutdoor('COLLECT_WOOD', 3, 'day-1 stocking for day 2 (RESOURCE_DEFAULTS note)');
+    if (view.resources.food < 100) pickOutdoor('COLLECT_FOOD', 1, 'day-1 food stocking');
+  }
+  // Heating is 65% wood and 35% power (`furnace-system.js:63-67`), so a power
+  // shift keeps the town alive when the wood runs out. Power cover below a full
+  // day means the whole town cools tonight; keep one indoor worker on it.
+  if (powerHours < 24) {
+    pick('MAINTAIN_POWER', 1, `power ${powerHours.toFixed(1)}h < 24h cover`);
+  }
+  // The original never leaves the wood tank under six hours while people are
+  // idle: this is the "伐木优先级" the R10 reference run was missing.
+  if (woodCritical) pickOutdoor('COLLECT_WOOD', 2, `firewood ${woodHours.toFixed(1)}h <= ${CRITICAL_HOURS}h`);
+  if (foodCritical) pickOutdoor('COLLECT_FOOD', 2, `food ${meals.toFixed(1)} meals <= 1`);
+  if (powerCritical) pick('MAINTAIN_POWER', 1, `power ${powerHours.toFixed(1)}h <= ${CRITICAL_HOURS}h`);
+
+  for (const npc of pool) {
+    if (plan.length >= budget) break;
+    if (taken.has(npc.id)) continue;
+    const indoorOnly = outdoorLethal;
+    // A resident's own hunger is not a reason to send them to the frozen lake:
+    // the original handles personal need by eating (`resource-consumption.js`),
+    // and a collection trip with a full warehouse is pure exposure. Only the
+    // stock level may justify an outdoor trip.
+    const type: TaskTypeId | null = npc.health < 50 ? 'PREPARE_MEDICAL'
+      : npc.san < 40 ? 'BOOST_MORALE'
+        : npc.stamina < 35 ? 'REST_RECOVER'
+          : view.resources.firewood < 24 && !indoorOnly ? 'COLLECT_WOOD'
+            : view.resources.food < 60 && !indoorOnly ? 'COLLECT_FOOD'
+              : view.furnace.fuel < 20 ? 'PREPARE_WARMTH'
+                : view.machines.lumberMill === 'absent' && !indoorOnly ? 'BUILD_LUMBER_MILL'
+                  : indoorOnly ? 'MAINTAIN_ORDER' : 'COORDINATE';
+    taken.add(npc.id);
+    plan.push({ actorId: npc.id, type, reason: `own state (${type})` });
+  }
+  return plan.slice(0, budget);
+}
+
 export interface CouncilMeeting {
   meetingId: string;
   openedAtMinute: number;

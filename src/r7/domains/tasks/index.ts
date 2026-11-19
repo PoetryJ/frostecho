@@ -53,27 +53,27 @@ export const TASK_CATALOG: Record<TaskTypeId, TaskDefinition> = {
   COLLECT_MATERIAL: { id: 'COLLECT_MATERIAL', name: '🔍 探索废墟', minutes: 60,
     staminaCost: 18, place: 'ruins_site', dailyLimit: 3 },
   PREPARE_WARMTH: { id: 'PREPARE_WARMTH', name: '🧥 准备御寒物资', minutes: 30,
-    staminaCost: 8, place: 'workshop' },
-  PREPARE_MEDICAL: { id: 'PREPARE_MEDICAL', name: '💊 医疗救治', minutes: 40,
-    staminaCost: 10, place: 'medical' },
+    staminaCost: 8, place: 'warehouse_door' },
+  PREPARE_MEDICAL: { id: 'PREPARE_MEDICAL', name: '💊 医疗救治', minutes: 30,
+    staminaCost: 5, place: 'medical_door' },
   BOOST_MORALE: { id: 'BOOST_MORALE', name: '🎵 鼓舞士气', minutes: 30,
     staminaCost: 8, place: 'dorm_a_door' },
   COORDINATE: { id: 'COORDINATE', name: '📢 统筹协调', minutes: 60,
     staminaCost: 5, place: 'dorm_a_door' },
   DISTRIBUTE_FOOD: { id: 'DISTRIBUTE_FOOD', name: '🍲 分配食物', minutes: 20,
-    staminaCost: 5, place: 'kitchen' },
+    staminaCost: 3, place: 'kitchen_door' },
   MAINTAIN_ORDER: { id: 'MAINTAIN_ORDER', name: '🛡️ 维持秩序', minutes: 60,
     staminaCost: 5, place: 'dorm_a_door' },
   REST_RECOVER: { id: 'REST_RECOVER', name: '🛏️ 休息恢复', minutes: 60,
-    staminaCost: -20, place: 'dorm' },
+    staminaCost: 0, place: 'dorm_a_door' },
   SCOUT_RUINS: { id: 'SCOUT_RUINS', name: '🔍 废墟侦察', minutes: 40,
     staminaCost: 20, place: 'ruins_site' },
   BUILD_GENERATOR: { id: 'BUILD_GENERATOR', name: '⚡ 建造自动发电机', minutes: 240,
-    staminaCost: 20, place: 'workshop', builds: 'generator' },
-  BUILD_LUMBER_MILL: { id: 'BUILD_LUMBER_MILL', name: '🪵 建造自动伐木机', minutes: 300,
-    staminaCost: 20, place: 'workshop', builds: 'lumberMill' },
-  BUILD_FOOD_COLLECTOR: { id: 'BUILD_FOOD_COLLECTOR', name: '🍞 建造自动捕猎机', minutes: 300,
-    staminaCost: 20, place: 'workshop', builds: 'foodCollector' },
+    staminaCost: 20, place: 'workshop_door', builds: 'generator' },
+  BUILD_LUMBER_MILL: { id: 'BUILD_LUMBER_MILL', name: '🪵 建造自动伐木机', minutes: 360,
+    staminaCost: 25, place: 'workshop_door', builds: 'lumberMill' },
+  BUILD_FOOD_COLLECTOR: { id: 'BUILD_FOOD_COLLECTOR', name: '🍞 建造自动捕猎机', minutes: 240,
+    staminaCost: 20, place: 'workshop_door', builds: 'foodCollector' },
 };
 
 export const TASK_IDS = Object.keys(TASK_CATALOG) as TaskTypeId[];
@@ -87,7 +87,7 @@ export const RECEIPT_TYPES: Record<TaskTypeId, string[]> = {
   COLLECT_FOOD: ['gathered'],
   MAINTAIN_POWER: ['worked'],
   COLLECT_MATERIAL: ['gathered', 'worked'],
-  PREPARE_WARMTH: ['refuelled'],
+  PREPARE_WARMTH: ['rested'],
   PREPARE_MEDICAL: ['treated'],
   BOOST_MORALE: ['worked'],
   COORDINATE: ['worked'],
@@ -118,7 +118,11 @@ export const WORK_RULES: Record<TaskTypeId, WorkRule | null> = {
   COLLECT_FOOD: { action: 'gather', resource: 'food', amount: 2 },
   MAINTAIN_POWER: { action: 'work', mode: 'power', minutes: 40 },
   COLLECT_MATERIAL: { action: 'work', mode: 'explore', minutes: 60 },
-  PREPARE_WARMTH: { action: 'refuel', amount: 2 },
+  // `task-effects.js:320-336`: PREPARE_WARMTH is warmth preparation in the
+  // warehouse. It spends NO wood; the earlier `refuel(2)` mapping invented a
+  // wood sink (four residents burned 23 wood in five hours in the R10 run) and
+  // is replaced by the original indoor 30-minute preparation.
+  PREPARE_WARMTH: { action: 'rest', minutes: 30 },
   PREPARE_MEDICAL: { action: 'medical', amount: 1 },
   BOOST_MORALE: { action: 'work', mode: 'morale', minutes: 30 },
   COORDINATE: { action: 'work', mode: 'coordinate', minutes: 60 },
@@ -467,6 +471,51 @@ export const tasksDomain: DomainModule<TasksState> = {
       result.events.push({ proposalId: `tasks:${taskId}:done`, type: 'task_completed',
         actorId: task.assigneeId, observedBy: 'all',
         payload: { taskId, type: task.type, receipt: receiptId, receiptType: receipt.type } });
+
+      // ---- `task-effects.js` completion effects (both are world effects, so
+      // they are typed intents for every living resident, never a silent write).
+      const living = context.actorIds.filter(id => context.snapshot.npcs[id]?.alive);
+      if (task.type === 'PREPARE_WARMTH') {
+        // `task-effects.js:320-336`: +0.5 bodyTemp and +3 sanity to everyone,
+        // and the day's warmth-preparation bonus (furnace-system.js:117 +10%).
+        for (const id of living) {
+          result.intents.push({ id: `tasks:${taskId}:warmth:${id}`, kind: 'actor', actorId: id,
+            delta: { bodyTemp: 0.5, san: 3 }, source: 'tasks.warmth-prepared',
+            preconditions: [{ kind: 'actor_alive', actorId: id }] });
+        }
+        result.intents.push({ id: `tasks:${taskId}:warmth-bonus`, kind: 'intent-note',
+          key: 'warmthPreparedDay', value: context.snapshot.day, actorId: task.assigneeId,
+          source: 'tasks.warmth-prepared', preconditions: [] });
+        result.events.push({ proposalId: `tasks:${taskId}:warmth`,
+          type: 'warmth_prepared', actorId: task.assigneeId, observedBy: 'all',
+          payload: { taskId, residents: living.length, bodyTemp: 0.5, san: 3,
+            day: context.snapshot.day } });
+      }
+      if (task.type === 'DISTRIBUTE_FOOD') {
+        // `task-effects.js:290-318`: one meal costs 1.5 food per resident and
+        // gives +25 satiety and +2 sanity. With too little food nothing is
+        // served (the original logs the shortage instead of pretending).
+        const cost = living.length * 1.5;
+        if (context.snapshot.resources.food >= cost) {
+          result.intents.push({ id: `tasks:${taskId}:meal-food`, kind: 'resource',
+            resource: 'food', delta: -cost, actorId: task.assigneeId,
+            source: 'tasks.meal-distributed',
+            preconditions: [{ kind: 'resource_at_least', resource: 'food', amount: cost }] });
+          for (const id of living) {
+            result.intents.push({ id: `tasks:${taskId}:meal:${id}`, kind: 'actor', actorId: id,
+              delta: { hunger: 25, san: 2 }, source: 'tasks.meal-distributed',
+              preconditions: [{ kind: 'actor_alive', actorId: id }] });
+          }
+          result.events.push({ proposalId: `tasks:${taskId}:meal`, type: 'food_distributed',
+            actorId: task.assigneeId, observedBy: 'all',
+            payload: { taskId, residents: living.length, foodCost: cost, hunger: 25 } });
+        } else {
+          result.events.push({ proposalId: `tasks:${taskId}:meal-short`,
+            type: 'food_distribution_insufficient', actorId: task.assigneeId,
+            observedBy: 'all', payload: { taskId, need: cost,
+              have: context.snapshot.resources.food } });
+        }
+      }
       return result;
     }
 
