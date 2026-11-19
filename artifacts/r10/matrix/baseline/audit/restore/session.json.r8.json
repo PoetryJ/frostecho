@@ -1,0 +1,136 @@
+{
+  "schema": "frostecho.r8-runtime/1",
+  "profile": "gospel-5.8.19",
+  "clock": 480,
+  "ended": false,
+  "endingKind": null,
+  "states": {
+    "survival": {
+      "outdoorMinutes": {},
+      "hypothermic": [],
+      "lastMinute": 0,
+      "reportedDeaths": []
+    },
+    "production": {
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "buildRemaining": {},
+      "buildWorker": {},
+      "ranMinutes": {},
+      "lastMinute": 0
+    },
+    "tasks": {
+      "tasks": [],
+      "seq": 0,
+      "dailyUsage": {},
+      "usedReceipts": []
+    },
+    "council": {
+      "meetings": [],
+      "seq": 0,
+      "cooldownUntil": 0
+    },
+    "crises": {
+      "active": [],
+      "history": [],
+      "seq": 0,
+      "lastFoodConflictMinute": {
+        "$frostechoNumber": "-Infinity"
+      },
+      "foodConflictCooldownMinutes": 60
+    },
+    "life": {
+      "lifeNumber": 1,
+      "pastLives": [],
+      "ending": null,
+      "settled": false
+    }
+  },
+  "journal": [],
+  "committed": [],
+  "intents": [
+    {
+      "intentId": "npc_01-r8-1",
+      "commandId": "npc_01-r8-1",
+      "actorId": "npc_01",
+      "candidateId": "b-97ac2f01fbadf535",
+      "candidate": {
+        "id": "b-97ac2f01fbadf535",
+        "kind": "deliver",
+        "description": "把携带的饭送达厨房，完成这份送饭承诺",
+        "parameters": {
+          "action": "deliver",
+          "to": "kitchen",
+          "amount": 1,
+          "bridgeStep": "deliver",
+          "legacyTaskId": "task-001-deliver-meal",
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "commitmentRevision": 1
+        },
+        "preconditions": [
+          "alive",
+          "accepted commitment revision unchanged",
+          "carrying meals >= 1"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "96ebe42edef6b416b98a0d50992f539649a016e94b29875cd680817eb13db5c5",
+      "generation": 0,
+      "taskId": "task-001-deliver-meal",
+      "taskType": null,
+      "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+      "commitmentRevision": 1,
+      "startedAt": 480,
+      "dueAt": 495,
+      "requiredPlace": "kitchen",
+      "startPlace": "kitchen",
+      "status": "working",
+      "receiptIds": [],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": null
+    }
+  ],
+  "work": [
+    {
+      "intentId": "npc_01-r8-1",
+      "actorId": "npc_01",
+      "kind": "deliver",
+      "commandId": "npc_01-r8-1",
+      "candidate": {
+        "id": "b-97ac2f01fbadf535",
+        "kind": "deliver",
+        "description": "把携带的饭送达厨房，完成这份送饭承诺",
+        "parameters": {
+          "action": "deliver",
+          "to": "kitchen",
+          "amount": 1,
+          "bridgeStep": "deliver",
+          "legacyTaskId": "task-001-deliver-meal",
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "commitmentRevision": 1
+        },
+        "preconditions": [
+          "alive",
+          "accepted commitment revision unchanged",
+          "carrying meals >= 1"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "taskId": "task-001-deliver-meal",
+      "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+      "commitmentRevision": 1,
+      "generation": 0,
+      "startedAt": 480,
+      "endsAt": 495
+    }
+  ],
+  "workLog": [],
+  "rejections": [],
+  "numberEncoding": "frostecho.nonfinite-number/1"
+}

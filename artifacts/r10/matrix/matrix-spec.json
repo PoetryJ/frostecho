@@ -1,0 +1,72 @@
+{
+  "schema": "frostecho.r10.matrix-spec/1",
+  "generatedAt": "2026-11-19T06:15:27.089Z",
+  "source": {
+    "head": "4479999492339642a72000134783be4d62c8d8fa",
+    "tree": "24a8c578bdad039478082357dc420f97d8c4895c",
+    "branch": "codex/r10-H"
+  },
+  "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+  "seeds": [
+    "r10h-1",
+    "r10h-2"
+  ],
+  "arms": [
+    {
+      "id": "old-raw",
+      "family": "live",
+      "head": {
+        "label": "old-r9-v3-warm17",
+        "head": "artifacts/r9/trained-v3/warm-17.safetensors",
+        "manifest": "artifacts/r9/trained-v3/selected.json"
+      },
+      "memory": "raw-last12"
+    },
+    {
+      "id": "old-conditional",
+      "family": "live",
+      "head": {
+        "label": "old-r9-v3-warm17",
+        "head": "artifacts/r9/trained-v3/warm-17.safetensors",
+        "manifest": "artifacts/r9/trained-v3/selected.json"
+      },
+      "memory": "obligation-first"
+    },
+    {
+      "id": "new-raw",
+      "family": "live",
+      "head": {
+        "label": "new-r10-joint-c-action-2",
+        "head": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-base-gpu1/warm-17.safetensors",
+        "manifest": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-base-gpu1/training-manifest.json"
+      },
+      "memory": "raw-last12"
+    },
+    {
+      "id": "new-conditional",
+      "family": "live",
+      "head": {
+        "label": "new-r10-joint-c-action-2",
+        "head": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-base-gpu1/warm-17.safetensors",
+        "manifest": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-base-gpu1/training-manifest.json"
+      },
+      "memory": "obligation-first"
+    },
+    {
+      "id": "reference-raw",
+      "family": "reference",
+      "head": null,
+      "memory": "raw-last12"
+    },
+    {
+      "id": "reference-conditional",
+      "family": "reference",
+      "head": null,
+      "memory": "obligation-first"
+    }
+  ],
+  "liveGames": 8,
+  "referenceGames": 4,
+  "memoryBudgetTokens": 640,
+  "note": "live arms refuse to start when their head is missing/stale; they never fall back to rules"
+}

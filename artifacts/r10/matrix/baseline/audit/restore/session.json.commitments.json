@@ -1,0 +1,93 @@
+{
+  "commitments": [
+    {
+      "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+      "taskId": "task-001-deliver-meal",
+      "promisorId": "npc_01",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "active",
+      "evidenceEventIds": [],
+      "changes": [],
+      "createdAt": 480,
+      "updatedAt": 480
+    }
+  ],
+  "receipts": {
+    "request:restore-delivery": {
+      "digest": "{\"goal\":\"deliver-meal\",\"promisorId\":\"npc_01\",\"beneficiaryId\":\"player\",\"deadline\":null,\"source\":null}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "taskId": null,
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "proposed",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 480,
+          "updatedAt": 480
+        },
+        "event": {
+          "type": "commitment_proposed",
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "at": 480,
+          "actorId": "npc_01",
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_01",
+            "toId": "player",
+            "conditions": "warehouse-supply",
+            "deadline": -1
+          }
+        }
+      }
+    },
+    "respond:restore-delivery:respond": {
+      "digest": "{\"commitmentId\":\"cm-1f402859-bc6c-403a-ad45-b516edb5ac24\",\"verdict\":\"accept\",\"reason\":\"accepted-by-resident\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "taskId": null,
+          "promisorId": "npc_01",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "active",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 480,
+          "updatedAt": 480
+        },
+        "event": {
+          "type": "commitment_accepted",
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "at": 480,
+          "actorId": "npc_01",
+          "payload": {
+            "fromId": "npc_01",
+            "toId": "player",
+            "text": "accepted-by-resident"
+          }
+        }
+      }
+    }
+  }
+}

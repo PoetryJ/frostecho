@@ -1,0 +1,69 @@
+{
+  "schema": "frostecho.r10.matrix-phase/1",
+  "phase": "resume",
+  "pid": 4149027,
+  "arm": "new-raw",
+  "seed": "r10h-1",
+  "family": "live",
+  "memorySelection": "raw-last12",
+  "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+  "source": {
+    "head": "4479999492339642a72000134783be4d62c8d8fa",
+    "tree": "24a8c578bdad039478082357dc420f97d8c4895c",
+    "branch": "codex/r10-H"
+  },
+  "at": "2026-11-19T06:58:15.058Z",
+  "exitCode": 0,
+  "reconciled": true,
+  "checks": {
+    "noUnsettledDecision": true,
+    "noPendingIntent": true,
+    "allFulfilmentReceipted": true,
+    "noLateCancelEffect": true,
+    "noUnauthorisedChange": true,
+    "noDuplicateReceipt": true,
+    "noProgressLoopClosed": true
+  },
+  "decisions": 140,
+  "scorer": {
+    "requests": 140,
+    "singleCandidateSkips": 0,
+    "timeouts": 0,
+    "forwardCalls": 140,
+    "serviceWallSeconds": 1377.844,
+    "identity": {
+      "certificateSha256": null,
+      "countsAsAdmitted": false,
+      "encoderForwardAttempts": 140,
+      "encoderForwardCalls": 140,
+      "encoderId": "/data2/model_weights/Qwen3.8-27B",
+      "experimental": true,
+      "featureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+      "headSha256": "f3eb6a95e12eef8d584de41560622af1a6637d9e8ca987126a3a02156c480e3a",
+      "independentReviews": null,
+      "labelSource": null,
+      "memoryPolicyId": "conditional-experience",
+      "mode": "jev-experimental",
+      "realModel": true,
+      "rendererId": "joint-c-action/2",
+      "requestsFailed": 0,
+      "requestsReceived": 140,
+      "scorerId": "jev-joint-c/1",
+      "scoresSucceeded": 140,
+      "tau": 0,
+      "temperature": 1,
+      "trainingManifestSha256": null,
+      "utility": null
+    }
+  },
+  "realForwards": 140,
+  "exitBeforeFix": 17,
+  "reconciliationFix": {
+    "reason": "runtime.intents is pruned; settled work was looked up in workLog",
+    "at": "2026-11-19T07:07:15.632Z",
+    "before": false,
+    "after": true,
+    "startDecisions": 128,
+    "resumeDecisions": 140
+  }
+}

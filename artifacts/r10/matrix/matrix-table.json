@@ -1,0 +1,894 @@
+{
+  "schema": "frostecho.r10.matrix-table/1",
+  "generatedAt": "2026-11-19T08:51:17.848Z",
+  "source": {
+    "head": "4479999492339642a72000134783be4d62c8d8fa",
+    "tree": "24a8c578bdad039478082357dc420f97d8c4895c",
+    "branch": "codex/r10-H"
+  },
+  "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+  "seeds": [
+    "r10h-1",
+    "r10h-2"
+  ],
+  "memoryBudgetTokens": 640,
+  "checks": {
+    "scenarioIdentical": true,
+    "worldInitIdenticalPerSeed": true,
+    "memoryBudgetIdentical": true,
+    "commitmentInputPositiveControl": true,
+    "commitmentInputNegativeControl": true,
+    "liveArmsStarted": 4,
+    "liveArmsRefusedAtPreflight": 4,
+    "liveArmsFailedAfterStart": 0,
+    "referenceGamesCompleted": 4,
+    "resumeUsedNewProcess": true,
+    "realForwards": 945,
+    "gpuWallSeconds": 9325.6
+  },
+  "rows": [
+    {
+      "schema": "frostecho.r10.matrix-game/1",
+      "arm": "old-raw",
+      "family": "live",
+      "seed": "r10h-1",
+      "memorySelection": "raw-last12",
+      "memoryTokenBudget": 640,
+      "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+      "source": {
+        "head": "4479999492339642a72000134783be4d62c8d8fa",
+        "tree": "24a8c578bdad039478082357dc420f97d8c4895c",
+        "branch": "codex/r10-H"
+      },
+      "exits": {
+        "start": 14,
+        "resume": null,
+        "replay": null
+      },
+      "head": {
+        "headPath": "artifacts/r9/trained-v3/warm-17.safetensors",
+        "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+        "manifestPath": "artifacts/r9/trained-v3/selected.json",
+        "manifestSha256": "786bdfba71c110b8990d76846be811ce659517c6f22277d81ff85765d2d63ae3",
+        "labelSource": null,
+        "featureIdentityHash": null,
+        "manifestBinding": null,
+        "rendererId": "joint-c-action/2",
+        "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+        "ok": false,
+        "reason": "head_was_trained_on_another_renderer"
+      },
+      "commitmentInput": null,
+      "replica": null,
+      "pids": {
+        "start": 3085072,
+        "resume": null,
+        "replay": null
+      },
+      "final": null,
+      "metrics": null,
+      "failure": null,
+      "forwards": 0,
+      "gpuWallSeconds": 0,
+      "evidenceSha256": "907c91be75b3185eed13fbc39451921927ea78774f377bbee2d6bbf991430143",
+      "gameSha256": "d43f6dcad88aa41299c98976f7f7ec3aec444cd9df43577e1d100d7e258dca7a",
+      "status": "refused:head_was_trained_on_another_renderer",
+      "dir": "artifacts/r10/matrix/arms/old-raw/r10h-1"
+    },
+    {
+      "schema": "frostecho.r10.matrix-game/1",
+      "arm": "old-raw",
+      "family": "live",
+      "seed": "r10h-2",
+      "memorySelection": "raw-last12",
+      "memoryTokenBudget": 640,
+      "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+      "source": {
+        "head": "4479999492339642a72000134783be4d62c8d8fa",
+        "tree": "24a8c578bdad039478082357dc420f97d8c4895c",
+        "branch": "codex/r10-H"
+      },
+      "exits": {
+        "start": 14,
+        "resume": null,
+        "replay": null
+      },
+      "head": {
+        "headPath": "artifacts/r9/trained-v3/warm-17.safetensors",
+        "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+        "manifestPath": "artifacts/r9/trained-v3/selected.json",
+        "manifestSha256": "786bdfba71c110b8990d76846be811ce659517c6f22277d81ff85765d2d63ae3",
+        "labelSource": null,
+        "featureIdentityHash": null,
+        "manifestBinding": null,
+        "rendererId": "joint-c-action/2",
+        "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+        "ok": false,
+        "reason": "head_was_trained_on_another_renderer"
+      },
+      "commitmentInput": null,
+      "replica": null,
+      "pids": {
+        "start": 3085088,
+        "resume": null,
+        "replay": null
+      },
+      "final": null,
+      "metrics": null,
+      "failure": null,
+      "forwards": 0,
+      "gpuWallSeconds": 0,
+      "evidenceSha256": "345a877689c16b98b51180b2ab44a2f61133f3ffe9fc02f042577dc41e6fe857",
+      "gameSha256": "758026e69286a33c0a660de548b9ddf73cece59ce6ca5a8fce636cb298a1c984",
+      "status": "refused:head_was_trained_on_another_renderer",
+      "dir": "artifacts/r10/matrix/arms/old-raw/r10h-2"
+    },
+    {
+      "schema": "frostecho.r10.matrix-game/1",
+      "arm": "old-conditional",
+      "family": "live",
+      "seed": "r10h-1",
+      "memorySelection": "obligation-first",
+      "memoryTokenBudget": 640,
+      "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+      "source": {
+        "head": "4479999492339642a72000134783be4d62c8d8fa",
+        "tree": "24a8c578bdad039478082357dc420f97d8c4895c",
+        "branch": "codex/r10-H"
+      },
+      "exits": {
+        "start": 14,
+        "resume": null,
+        "replay": null
+      },
+      "head": {
+        "headPath": "artifacts/r9/trained-v3/warm-17.safetensors",
+        "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+        "manifestPath": "artifacts/r9/trained-v3/selected.json",
+        "manifestSha256": "786bdfba71c110b8990d76846be811ce659517c6f22277d81ff85765d2d63ae3",
+        "labelSource": null,
+        "featureIdentityHash": null,
+        "manifestBinding": null,
+        "rendererId": "joint-c-action/2",
+        "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+        "ok": false,
+        "reason": "head_was_trained_on_another_renderer"
+      },
+      "commitmentInput": null,
+      "replica": null,
+      "pids": {
+        "start": 3085098,
+        "resume": null,
+        "replay": null
+      },
+      "final": null,
+      "metrics": null,
+      "failure": null,
+      "forwards": 0,
+      "gpuWallSeconds": 0,
+      "evidenceSha256": "6311aa91c5bb1a6de8510df15a4c4ce94054adad85cb5c337393cc1183623251",
+      "gameSha256": "f61b1ddf946456959dd55e049e9d6c55c4f4bf6e86de36abf92b109409bb5bc4",
+      "status": "refused:head_was_trained_on_another_renderer",
+      "dir": "artifacts/r10/matrix/arms/old-conditional/r10h-1"
+    },
+    {
+      "schema": "frostecho.r10.matrix-game/1",
+      "arm": "old-conditional",
+      "family": "live",
+      "seed": "r10h-2",
+      "memorySelection": "obligation-first",
+      "memoryTokenBudget": 640,
+      "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+      "source": {
+        "head": "4479999492339642a72000134783be4d62c8d8fa",
+        "tree": "24a8c578bdad039478082357dc420f97d8c4895c",
+        "branch": "codex/r10-H"
+      },
+      "exits": {
+        "start": 14,
+        "resume": null,
+        "replay": null
+      },
+      "head": {
+        "headPath": "artifacts/r9/trained-v3/warm-17.safetensors",
+        "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+        "manifestPath": "artifacts/r9/trained-v3/selected.json",
+        "manifestSha256": "786bdfba71c110b8990d76846be811ce659517c6f22277d81ff85765d2d63ae3",
+        "labelSource": null,
+        "featureIdentityHash": null,
+        "manifestBinding": null,
+        "rendererId": "joint-c-action/2",
+        "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+        "ok": false,
+        "reason": "head_was_trained_on_another_renderer"
+      },
+      "commitmentInput": null,
+      "replica": null,
+      "pids": {
+        "start": 3085122,
+        "resume": null,
+        "replay": null
+      },
+      "final": null,
+      "metrics": null,
+      "failure": null,
+      "forwards": 0,
+      "gpuWallSeconds": 0,
+      "evidenceSha256": "9007113f654f816301922508edf7eb443e5344fb75bd1bb2ab458af10d4c6ca2",
+      "gameSha256": "97b8ffede2ef2f8eeb4022549da33a81cbf671cab30b23434f5334ded493702b",
+      "status": "refused:head_was_trained_on_another_renderer",
+      "dir": "artifacts/r10/matrix/arms/old-conditional/r10h-2"
+    },
+    {
+      "schema": "frostecho.r10.matrix-game/1",
+      "arm": "new-raw",
+      "family": "live",
+      "seed": "r10h-1",
+      "memorySelection": "raw-last12",
+      "memoryTokenBudget": 640,
+      "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+      "source": {
+        "head": "4479999492339642a72000134783be4d62c8d8fa",
+        "tree": "24a8c578bdad039478082357dc420f97d8c4895c",
+        "branch": "codex/r10-H"
+      },
+      "exits": {
+        "start": 0,
+        "resume": 0,
+        "replay": 0
+      },
+      "head": {
+        "headPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-base-gpu1/warm-17.safetensors",
+        "headSha256": "f3eb6a95e12eef8d584de41560622af1a6637d9e8ca987126a3a02156c480e3a",
+        "manifestPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-base-gpu1/training-manifest.json",
+        "manifestSha256": "5c8a3a80685e3b4d7392a91a5ee3da0977853ae69b572249c849650e55c8da3b",
+        "labelSource": "same-snapshot-branch-rollout",
+        "featureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+        "manifestBinding": {
+          "reason": "serve_joint.py accepts only labelSource \"reference-imitation\"; this head is \"same-snapshot-branch-rollout\". The harness passes the same head without --training-manifest and verifies headSha256, featureIdentityHash and rendererId on every reply.",
+          "headSha256": "f3eb6a95e12eef8d584de41560622af1a6637d9e8ca987126a3a02156c480e3a",
+          "featureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+          "labelSource": "same-snapshot-branch-rollout"
+        },
+        "rendererId": "joint-c-action/2",
+        "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+        "ok": true,
+        "reason": null
+      },
+      "commitmentInput": {
+        "passed": true,
+        "problems": [],
+        "commitments": 4
+      },
+      "replica": {
+        "equivalent": true,
+        "countsAsModelResult": false
+      },
+      "pids": {
+        "start": 4138159,
+        "resume": 4149027,
+        "replay": 4164478
+      },
+      "final": {
+        "simTime": 5400,
+        "ending": "normal",
+        "fingerprintSha256": "1030a76b48b19b3f98c3558b467673ea85a1ff0d55ca834356cd0c01ddb8b9e0"
+      },
+      "metrics": {
+        "decisions": 268,
+        "modelDecisions": 260,
+        "realForwards": 260,
+        "scorerTimeouts": 0,
+        "reconciled": true,
+        "survivors": 5,
+        "ending": "normal",
+        "fulfilled": 3,
+        "withdrawn": 0,
+        "deadlineTimeouts": 0,
+        "lateEffects": 0,
+        "unauthorisedChanges": 0,
+        "duplicateReceipts": 0,
+        "noProgressRounds": 0,
+        "busySkips": 0,
+        "settlementFailures": 23,
+        "workHours": 107.25,
+        "coverageHours": 0,
+        "furnaceLitHours": 54,
+        "crises": 1,
+        "gpuWallSeconds": 2566.123
+      },
+      "failure": null,
+      "forwards": 260,
+      "gpuWallSeconds": 2566.123,
+      "evidenceSha256": "7e0dece5c956afc2b678865ddbd36dbd02f602f67179de09851d476a7587da2f",
+      "gameSha256": "07c31f6e1198d7e9bbfbf00e5583da228ed2e463ac974df158550aac26f95e7f",
+      "status": "completed",
+      "dir": "artifacts/r10/matrix/arms/new-raw/r10h-1",
+      "exitsBeforeFix": {
+        "resume": 17
+      }
+    },
+    {
+      "schema": "frostecho.r10.matrix-game/1",
+      "arm": "new-raw",
+      "family": "live",
+      "seed": "r10h-2",
+      "memorySelection": "raw-last12",
+      "memoryTokenBudget": 640,
+      "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+      "source": {
+        "head": "4479999492339642a72000134783be4d62c8d8fa",
+        "tree": "24a8c578bdad039478082357dc420f97d8c4895c",
+        "branch": "codex/r10-H"
+      },
+      "exits": {
+        "start": 0,
+        "resume": 0,
+        "replay": 0
+      },
+      "head": {
+        "headPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-base-gpu1/warm-17.safetensors",
+        "headSha256": "f3eb6a95e12eef8d584de41560622af1a6637d9e8ca987126a3a02156c480e3a",
+        "manifestPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-base-gpu1/training-manifest.json",
+        "manifestSha256": "5c8a3a80685e3b4d7392a91a5ee3da0977853ae69b572249c849650e55c8da3b",
+        "labelSource": "same-snapshot-branch-rollout",
+        "featureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+        "manifestBinding": {
+          "reason": "serve_joint.py accepts only labelSource \"reference-imitation\"; this head is \"same-snapshot-branch-rollout\". The harness passes the same head without --training-manifest and verifies headSha256, featureIdentityHash and rendererId on every reply.",
+          "headSha256": "f3eb6a95e12eef8d584de41560622af1a6637d9e8ca987126a3a02156c480e3a",
+          "featureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+          "labelSource": "same-snapshot-branch-rollout"
+        },
+        "rendererId": "joint-c-action/2",
+        "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+        "ok": true,
+        "reason": null
+      },
+      "commitmentInput": {
+        "passed": true,
+        "problems": [],
+        "commitments": 4
+      },
+      "replica": {
+        "equivalent": true,
+        "countsAsModelResult": false
+      },
+      "pids": {
+        "start": 4160014,
+        "resume": 4170228,
+        "replay": 4179656
+      },
+      "final": {
+        "simTime": 5400,
+        "ending": "bleak",
+        "fingerprintSha256": "dd4b35c9be39d868e5d877d6226a8f82c6a5df0bf5e86d5c8eec0d436a478375"
+      },
+      "metrics": {
+        "decisions": 241,
+        "modelDecisions": 233,
+        "realForwards": 233,
+        "scorerTimeouts": 0,
+        "reconciled": true,
+        "survivors": 4,
+        "ending": "bleak",
+        "fulfilled": 3,
+        "withdrawn": 0,
+        "deadlineTimeouts": 0,
+        "lateEffects": 0,
+        "unauthorisedChanges": 0,
+        "duplicateReceipts": 0,
+        "noProgressRounds": 0,
+        "busySkips": 0,
+        "settlementFailures": 6,
+        "workHours": 114.083,
+        "coverageHours": 0,
+        "furnaceLitHours": 54,
+        "crises": 1,
+        "gpuWallSeconds": 2296.995
+      },
+      "failure": null,
+      "forwards": 233,
+      "gpuWallSeconds": 2296.995,
+      "evidenceSha256": "2b5197ab50a9bc9446bf0a1f62f89c32c4506f2a12634cf865a036b2705a2390",
+      "gameSha256": "49e2a7a59b5c28e011c686f0212fdf70cb759c22b59bd41fc17c2280eb0c5a17",
+      "status": "completed",
+      "dir": "artifacts/r10/matrix/arms/new-raw/r10h-2"
+    },
+    {
+      "schema": "frostecho.r10.matrix-game/1",
+      "arm": "new-conditional",
+      "family": "live",
+      "seed": "r10h-1",
+      "memorySelection": "obligation-first",
+      "memoryTokenBudget": 640,
+      "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+      "source": {
+        "head": "4479999492339642a72000134783be4d62c8d8fa",
+        "tree": "24a8c578bdad039478082357dc420f97d8c4895c",
+        "branch": "codex/r10-H"
+      },
+      "exits": {
+        "start": 0,
+        "resume": 0,
+        "replay": 0
+      },
+      "head": {
+        "headPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-base-gpu1/warm-17.safetensors",
+        "headSha256": "f3eb6a95e12eef8d584de41560622af1a6637d9e8ca987126a3a02156c480e3a",
+        "manifestPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-base-gpu1/training-manifest.json",
+        "manifestSha256": "5c8a3a80685e3b4d7392a91a5ee3da0977853ae69b572249c849650e55c8da3b",
+        "labelSource": "same-snapshot-branch-rollout",
+        "featureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+        "manifestBinding": {
+          "reason": "serve_joint.py accepts only labelSource \"reference-imitation\"; this head is \"same-snapshot-branch-rollout\". The harness passes the same head without --training-manifest and verifies headSha256, featureIdentityHash and rendererId on every reply.",
+          "headSha256": "f3eb6a95e12eef8d584de41560622af1a6637d9e8ca987126a3a02156c480e3a",
+          "featureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+          "labelSource": "same-snapshot-branch-rollout"
+        },
+        "rendererId": "joint-c-action/2",
+        "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+        "ok": true,
+        "reason": null
+      },
+      "commitmentInput": {
+        "passed": true,
+        "problems": [],
+        "commitments": 4
+      },
+      "replica": {
+        "equivalent": true,
+        "countsAsModelResult": false
+      },
+      "pids": {
+        "start": 4179691,
+        "resume": 4188984,
+        "replay": 3937
+      },
+      "final": {
+        "simTime": 5400,
+        "ending": "bleak",
+        "fingerprintSha256": "b84c66f6a425a702c06945a69e5cbab6d8bb8804ee1c817570f5448a69298a12"
+      },
+      "metrics": {
+        "decisions": 234,
+        "modelDecisions": 226,
+        "realForwards": 226,
+        "scorerTimeouts": 0,
+        "reconciled": true,
+        "survivors": 4,
+        "ending": "bleak",
+        "fulfilled": 2,
+        "withdrawn": 0,
+        "deadlineTimeouts": 0,
+        "lateEffects": 0,
+        "unauthorisedChanges": 0,
+        "duplicateReceipts": 0,
+        "noProgressRounds": 0,
+        "busySkips": 0,
+        "settlementFailures": 9,
+        "workHours": 109.083,
+        "coverageHours": 0,
+        "furnaceLitHours": 54,
+        "crises": 1,
+        "gpuWallSeconds": 2232.115
+      },
+      "failure": null,
+      "forwards": 226,
+      "gpuWallSeconds": 2232.115,
+      "evidenceSha256": "1fb5c7b956b8353092650006c1540d523afae9d9ebc57a14bc8350da1d89628b",
+      "gameSha256": "71e513cbaa75fcb3ac98e0c97da2fdd11db9902f0032a5a4c3515ee643893553",
+      "status": "completed",
+      "dir": "artifacts/r10/matrix/arms/new-conditional/r10h-1"
+    },
+    {
+      "schema": "frostecho.r10.matrix-game/1",
+      "arm": "new-conditional",
+      "family": "live",
+      "seed": "r10h-2",
+      "memorySelection": "obligation-first",
+      "memoryTokenBudget": 640,
+      "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+      "source": {
+        "head": "4479999492339642a72000134783be4d62c8d8fa",
+        "tree": "24a8c578bdad039478082357dc420f97d8c4895c",
+        "branch": "codex/r10-H"
+      },
+      "exits": {
+        "start": 0,
+        "resume": 0,
+        "replay": 0
+      },
+      "head": {
+        "headPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-base-gpu1/warm-17.safetensors",
+        "headSha256": "f3eb6a95e12eef8d584de41560622af1a6637d9e8ca987126a3a02156c480e3a",
+        "manifestPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-base-gpu1/training-manifest.json",
+        "manifestSha256": "5c8a3a80685e3b4d7392a91a5ee3da0977853ae69b572249c849650e55c8da3b",
+        "labelSource": "same-snapshot-branch-rollout",
+        "featureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+        "manifestBinding": {
+          "reason": "serve_joint.py accepts only labelSource \"reference-imitation\"; this head is \"same-snapshot-branch-rollout\". The harness passes the same head without --training-manifest and verifies headSha256, featureIdentityHash and rendererId on every reply.",
+          "headSha256": "f3eb6a95e12eef8d584de41560622af1a6637d9e8ca987126a3a02156c480e3a",
+          "featureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+          "labelSource": "same-snapshot-branch-rollout"
+        },
+        "rendererId": "joint-c-action/2",
+        "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+        "ok": true,
+        "reason": null
+      },
+      "commitmentInput": {
+        "passed": true,
+        "problems": [],
+        "commitments": 4
+      },
+      "replica": {
+        "equivalent": true,
+        "countsAsModelResult": false
+      },
+      "pids": {
+        "start": 3966,
+        "resume": 13583,
+        "replay": 22167
+      },
+      "final": {
+        "simTime": 5400,
+        "ending": "bleak",
+        "fingerprintSha256": "8563dccb3905ed6544742b316766cb0291d89953da870560ffa6c49394872d9c"
+      },
+      "metrics": {
+        "decisions": 234,
+        "modelDecisions": 226,
+        "realForwards": 226,
+        "scorerTimeouts": 0,
+        "reconciled": true,
+        "survivors": 4,
+        "ending": "bleak",
+        "fulfilled": 2,
+        "withdrawn": 0,
+        "deadlineTimeouts": 0,
+        "lateEffects": 0,
+        "unauthorisedChanges": 0,
+        "duplicateReceipts": 0,
+        "noProgressRounds": 0,
+        "busySkips": 0,
+        "settlementFailures": 9,
+        "workHours": 109.083,
+        "coverageHours": 0,
+        "furnaceLitHours": 54,
+        "crises": 1,
+        "gpuWallSeconds": 2230.365
+      },
+      "failure": null,
+      "forwards": 226,
+      "gpuWallSeconds": 2230.365,
+      "evidenceSha256": "eb04d92f59e54712f3b23b17e1171a0f9617b75d746fa587a1ec5e93d191edc9",
+      "gameSha256": "6843916562504f676ecb33b9aadca9cb71028e70c6e7573581b84d7147b554ff",
+      "status": "completed",
+      "dir": "artifacts/r10/matrix/arms/new-conditional/r10h-2"
+    },
+    {
+      "schema": "frostecho.r10.matrix-game/1",
+      "arm": "reference-raw",
+      "family": "reference",
+      "seed": "r10h-1",
+      "memorySelection": "raw-last12",
+      "memoryTokenBudget": 640,
+      "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+      "source": {
+        "head": "4479999492339642a72000134783be4d62c8d8fa",
+        "tree": "24a8c578bdad039478082357dc420f97d8c4895c",
+        "branch": "codex/r10-H"
+      },
+      "exits": {
+        "start": 0,
+        "resume": 0,
+        "replay": 0
+      },
+      "head": {
+        "headPath": null,
+        "headSha256": null,
+        "manifestPath": null,
+        "manifestSha256": null,
+        "labelSource": null,
+        "featureIdentityHash": null,
+        "manifestBinding": null,
+        "rendererId": "joint-c-action/2",
+        "rendererSourceSha256": null,
+        "ok": true,
+        "reason": null
+      },
+      "commitmentInput": {
+        "passed": true,
+        "problems": [],
+        "commitments": 4
+      },
+      "replica": {
+        "equivalent": true,
+        "countsAsModelResult": false
+      },
+      "pids": {
+        "start": 3085193,
+        "resume": 3085220,
+        "replay": 3085242
+      },
+      "final": {
+        "simTime": 5400,
+        "ending": "bleak",
+        "fingerprintSha256": "67e38694736216d5d09e4d97bc57fdfbfa09f88c63ae68ae7b1ddb4deb7c92ac"
+      },
+      "metrics": {
+        "decisions": 252,
+        "modelDecisions": 0,
+        "realForwards": 0,
+        "scorerTimeouts": 0,
+        "reconciled": true,
+        "survivors": 4,
+        "ending": "bleak",
+        "fulfilled": 4,
+        "withdrawn": 0,
+        "deadlineTimeouts": 0,
+        "lateEffects": 0,
+        "unauthorisedChanges": 0,
+        "duplicateReceipts": 0,
+        "noProgressRounds": 0,
+        "busySkips": 0,
+        "settlementFailures": 7,
+        "workHours": 88.667,
+        "coverageHours": 0,
+        "furnaceLitHours": 54,
+        "crises": 1,
+        "gpuWallSeconds": 0
+      },
+      "failure": null,
+      "forwards": 0,
+      "gpuWallSeconds": 0,
+      "evidenceSha256": "eabdbdf34ed794f34aed662f6277287a407ecc3c463bb419399073fb20bdfca1",
+      "gameSha256": "5d9c9c4ea9ab693fe37d8b25639d5c9cd74d094e8add093505ae9e2685e8746e",
+      "status": "completed",
+      "dir": "artifacts/r10/matrix/reference/reference-raw/r10h-1"
+    },
+    {
+      "schema": "frostecho.r10.matrix-game/1",
+      "arm": "reference-raw",
+      "family": "reference",
+      "seed": "r10h-2",
+      "memorySelection": "raw-last12",
+      "memoryTokenBudget": 640,
+      "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+      "source": {
+        "head": "4479999492339642a72000134783be4d62c8d8fa",
+        "tree": "24a8c578bdad039478082357dc420f97d8c4895c",
+        "branch": "codex/r10-H"
+      },
+      "exits": {
+        "start": 0,
+        "resume": 0,
+        "replay": 0
+      },
+      "head": {
+        "headPath": null,
+        "headSha256": null,
+        "manifestPath": null,
+        "manifestSha256": null,
+        "labelSource": null,
+        "featureIdentityHash": null,
+        "manifestBinding": null,
+        "rendererId": "joint-c-action/2",
+        "rendererSourceSha256": null,
+        "ok": true,
+        "reason": null
+      },
+      "commitmentInput": {
+        "passed": true,
+        "problems": [],
+        "commitments": 4
+      },
+      "replica": {
+        "equivalent": true,
+        "countsAsModelResult": false
+      },
+      "pids": {
+        "start": 3087748,
+        "resume": 3089356,
+        "replay": 3090858
+      },
+      "final": {
+        "simTime": 5400,
+        "ending": "bleak",
+        "fingerprintSha256": "97330ddc23196b299e524fcadbd2051d5e908a4b1db19cba5a4e59fbec7049df"
+      },
+      "metrics": {
+        "decisions": 248,
+        "modelDecisions": 0,
+        "realForwards": 0,
+        "scorerTimeouts": 0,
+        "reconciled": true,
+        "survivors": 4,
+        "ending": "bleak",
+        "fulfilled": 4,
+        "withdrawn": 0,
+        "deadlineTimeouts": 0,
+        "lateEffects": 0,
+        "unauthorisedChanges": 0,
+        "duplicateReceipts": 0,
+        "noProgressRounds": 0,
+        "busySkips": 0,
+        "settlementFailures": 7,
+        "workHours": 89.333,
+        "coverageHours": 0,
+        "furnaceLitHours": 54,
+        "crises": 1,
+        "gpuWallSeconds": 0
+      },
+      "failure": null,
+      "forwards": 0,
+      "gpuWallSeconds": 0,
+      "evidenceSha256": "ef64a33a0dfc817da533467b4b69435918c1c65fcaf67cbcd5d35e4bd92f32ae",
+      "gameSha256": "ddd98be3654686926c1a5787b74cbef6c8da678f6a87988bc50c928bbb112659",
+      "status": "completed",
+      "dir": "artifacts/r10/matrix/reference/reference-raw/r10h-2"
+    },
+    {
+      "schema": "frostecho.r10.matrix-game/1",
+      "arm": "reference-conditional",
+      "family": "reference",
+      "seed": "r10h-1",
+      "memorySelection": "obligation-first",
+      "memoryTokenBudget": 640,
+      "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+      "source": {
+        "head": "4479999492339642a72000134783be4d62c8d8fa",
+        "tree": "24a8c578bdad039478082357dc420f97d8c4895c",
+        "branch": "codex/r10-H"
+      },
+      "exits": {
+        "start": 0,
+        "resume": 0,
+        "replay": 0
+      },
+      "head": {
+        "headPath": null,
+        "headSha256": null,
+        "manifestPath": null,
+        "manifestSha256": null,
+        "labelSource": null,
+        "featureIdentityHash": null,
+        "manifestBinding": null,
+        "rendererId": "joint-c-action/2",
+        "rendererSourceSha256": null,
+        "ok": true,
+        "reason": null
+      },
+      "commitmentInput": {
+        "passed": true,
+        "problems": [],
+        "commitments": 4
+      },
+      "replica": {
+        "equivalent": true,
+        "countsAsModelResult": false
+      },
+      "pids": {
+        "start": 3091283,
+        "resume": 3091479,
+        "replay": 3091907
+      },
+      "final": {
+        "simTime": 5400,
+        "ending": "bleak",
+        "fingerprintSha256": "25257390ce38b40ea606ba23e4856864b36b8cfe5e863566b1276ef798544d03"
+      },
+      "metrics": {
+        "decisions": 252,
+        "modelDecisions": 0,
+        "realForwards": 0,
+        "scorerTimeouts": 0,
+        "reconciled": true,
+        "survivors": 4,
+        "ending": "bleak",
+        "fulfilled": 4,
+        "withdrawn": 0,
+        "deadlineTimeouts": 0,
+        "lateEffects": 0,
+        "unauthorisedChanges": 0,
+        "duplicateReceipts": 0,
+        "noProgressRounds": 0,
+        "busySkips": 0,
+        "settlementFailures": 7,
+        "workHours": 88.667,
+        "coverageHours": 0,
+        "furnaceLitHours": 54,
+        "crises": 1,
+        "gpuWallSeconds": 0
+      },
+      "failure": null,
+      "forwards": 0,
+      "gpuWallSeconds": 0,
+      "evidenceSha256": "b9dc6f394b26ec76d37e98f05f97ce2d3af631bfeeecdb120c5d89c870314540",
+      "gameSha256": "dac8a3c976d219d06e91c9cb7f5d01dcf85d5b24b0db28991c6575e350c165cd",
+      "status": "completed",
+      "dir": "artifacts/r10/matrix/reference/reference-conditional/r10h-1"
+    },
+    {
+      "schema": "frostecho.r10.matrix-game/1",
+      "arm": "reference-conditional",
+      "family": "reference",
+      "seed": "r10h-2",
+      "memorySelection": "obligation-first",
+      "memoryTokenBudget": 640,
+      "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+      "source": {
+        "head": "4479999492339642a72000134783be4d62c8d8fa",
+        "tree": "24a8c578bdad039478082357dc420f97d8c4895c",
+        "branch": "codex/r10-H"
+      },
+      "exits": {
+        "start": 0,
+        "resume": 0,
+        "replay": 0
+      },
+      "head": {
+        "headPath": null,
+        "headSha256": null,
+        "manifestPath": null,
+        "manifestSha256": null,
+        "labelSource": null,
+        "featureIdentityHash": null,
+        "manifestBinding": null,
+        "rendererId": "joint-c-action/2",
+        "rendererSourceSha256": null,
+        "ok": true,
+        "reason": null
+      },
+      "commitmentInput": {
+        "passed": true,
+        "problems": [],
+        "commitments": 4
+      },
+      "replica": {
+        "equivalent": true,
+        "countsAsModelResult": false
+      },
+      "pids": {
+        "start": 3091984,
+        "resume": 3092012,
+        "replay": 3092077
+      },
+      "final": {
+        "simTime": 5400,
+        "ending": "bleak",
+        "fingerprintSha256": "2ae3ded2f567ada9eaa040bd33c46653420b7334a0fcb7494d9e3ed95c8cfff3"
+      },
+      "metrics": {
+        "decisions": 248,
+        "modelDecisions": 0,
+        "realForwards": 0,
+        "scorerTimeouts": 0,
+        "reconciled": true,
+        "survivors": 4,
+        "ending": "bleak",
+        "fulfilled": 4,
+        "withdrawn": 0,
+        "deadlineTimeouts": 0,
+        "lateEffects": 0,
+        "unauthorisedChanges": 0,
+        "duplicateReceipts": 0,
+        "noProgressRounds": 0,
+        "busySkips": 0,
+        "settlementFailures": 7,
+        "workHours": 89.333,
+        "coverageHours": 0,
+        "furnaceLitHours": 54,
+        "crises": 1,
+        "gpuWallSeconds": 0
+      },
+      "failure": null,
+      "forwards": 0,
+      "gpuWallSeconds": 0,
+      "evidenceSha256": "e31f9ed6f99faa10108eb9f56829203da3f107bdcf2d9ec850e5c71cf071baf3",
+      "gameSha256": "53ff30ee68b39e07e59e77121d4ec05525293114431e460b50001419617ef7be",
+      "status": "completed",
+      "dir": "artifacts/r10/matrix/reference/reference-conditional/r10h-2"
+    }
+  ]
+}

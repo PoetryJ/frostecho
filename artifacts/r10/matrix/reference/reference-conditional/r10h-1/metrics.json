@@ -1,0 +1,165 @@
+{
+  "decisions": 252,
+  "decisionStates": {
+    "applied": 62,
+    "working": 190
+  },
+  "decisionsByPolicy": {
+    "council": 40,
+    "model": 0,
+    "reference": 212
+  },
+  "modelDecisions": 0,
+  "busySkips": 0,
+  "staleSkips": 0,
+  "abstained": 0,
+  "rejectedAtExecution": 0,
+  "realFulfilment": {
+    "fulfilled": 4,
+    "verified": 4,
+    "withoutReceipt": 0,
+    "byGoal": [
+      {
+        "promisorId": "npc_01",
+        "goal": "deliver-meal"
+      },
+      {
+        "promisorId": "npc_02",
+        "goal": "deliver-meal"
+      },
+      {
+        "promisorId": "npc_03",
+        "goal": "supply-warehouse"
+      },
+      {
+        "promisorId": "npc_04",
+        "goal": "supply-warehouse"
+      }
+    ]
+  },
+  "authorisedExit": {
+    "withdrawn": 0,
+    "recorded": 0,
+    "reasons": []
+  },
+  "deadlineTimeouts": 0,
+  "cancelled": 0,
+  "effectsAfterCancel": {
+    "cancelled": 0,
+    "lateAppliedIntents": 0,
+    "lateReceipts": 0,
+    "lateEffects": [],
+    "lateReceiptDetails": []
+  },
+  "unauthorisedChanges": [],
+  "duplicateReceipts": {
+    "duplicates": 0,
+    "instances": [],
+    "duplicateFulfilAttempts": 0
+  },
+  "settlement": {
+    "intents": 190,
+    "byStatus": {
+      "applied": 183,
+      "rejected": 7
+    },
+    "failures": 7,
+    "failureList": [
+      {
+        "intentId": "npc_02-r8-68",
+        "actorId": "npc_02",
+        "action": "refuel",
+        "status": "rejected",
+        "reason": "insufficient_firewood"
+      },
+      {
+        "intentId": "npc_03-r8-68",
+        "actorId": "npc_03",
+        "action": "refuel",
+        "status": "rejected",
+        "reason": "insufficient_firewood"
+      },
+      {
+        "intentId": "npc_04-r8-68",
+        "actorId": "npc_04",
+        "action": "refuel",
+        "status": "rejected",
+        "reason": "insufficient_firewood"
+      },
+      {
+        "intentId": "npc_01-r8-79",
+        "actorId": "npc_01",
+        "action": "refuel",
+        "status": "rejected",
+        "reason": "insufficient_firewood"
+      },
+      {
+        "intentId": "npc_02-r8-79",
+        "actorId": "npc_02",
+        "action": "refuel",
+        "status": "rejected",
+        "reason": "insufficient_firewood"
+      },
+      {
+        "intentId": "npc_03-r8-79",
+        "actorId": "npc_03",
+        "action": "refuel",
+        "status": "rejected",
+        "reason": "insufficient_firewood"
+      },
+      {
+        "intentId": "npc_04-r8-79",
+        "actorId": "npc_04",
+        "action": "refuel",
+        "status": "rejected",
+        "reason": "insufficient_firewood"
+      }
+    ],
+    "cancelledIntents": 0,
+    "unsettledDecisions": 0,
+    "unsettled": [],
+    "pendingBeyondEnd": 0
+  },
+  "noProgressRounds": 0,
+  "loopRounds": 25,
+  "survivors": 4,
+  "alive": 4,
+  "ending": "bleak",
+  "elapsedMinutes": 4920,
+  "resources": {
+    "food": 108,
+    "firewood": 0,
+    "power": 0,
+    "medicine": 3
+  },
+  "resourceCoverageHours": {
+    "food": 15,
+    "firewood": 0,
+    "power": 0
+  },
+  "furnaceLitHours": 54,
+  "workHours": 88.667,
+  "crises": {
+    "crisis_started": 1
+  },
+  "memory": {
+    "budgetTokens": 640,
+    "decisionsWithMemory": 212,
+    "minBudget": 640,
+    "maxBudget": 640,
+    "maxKept": 11,
+    "totalTokens": 132606
+  },
+  "scorer": null,
+  "checks": {
+    "noUnsettledDecision": true,
+    "noPendingIntent": true,
+    "allFulfilmentReceipted": true,
+    "noLateCancelEffect": true,
+    "noUnauthorisedChange": true,
+    "noDuplicateReceipt": true,
+    "noProgressLoopClosed": true
+  },
+  "reconciled": true,
+  "replay": "separate control (replay.json)"
+}

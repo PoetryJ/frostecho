@@ -1,0 +1,183 @@
+{
+  "schema": "frostecho.r10.matrix-d2-exit/1",
+  "pid": 3091984,
+  "arm": "reference-conditional",
+  "seed": "r10h-2",
+  "family": "reference",
+  "memorySelection": "obligation-first",
+  "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+  "simTime": 2160,
+  "inputSequence": 112,
+  "checkpoint": {
+    "at": 2160,
+    "pending": 4,
+    "commitmentBound": 0,
+    "intents": [
+      {
+        "intentId": "npc_05-r8-201",
+        "actorId": "npc_05",
+        "action": "rest",
+        "startedAt": 2160,
+        "dueAt": 2220,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null
+      },
+      {
+        "intentId": "npc_06-r8-201",
+        "actorId": "npc_06",
+        "action": "rest",
+        "startedAt": 2160,
+        "dueAt": 2220,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null
+      },
+      {
+        "intentId": "npc_07-r8-201",
+        "actorId": "npc_07",
+        "action": "rest",
+        "startedAt": 2160,
+        "dueAt": 2220,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null
+      },
+      {
+        "intentId": "npc_08-r8-201",
+        "actorId": "npc_08",
+        "action": "rest",
+        "startedAt": 2160,
+        "dueAt": 2220,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null
+      }
+    ]
+  },
+  "interference": {
+    "at": 1680,
+    "activeRows": 0,
+    "cancel": null,
+    "change": null
+  },
+  "interferenceApplied": true,
+  "commitments": [
+    {
+      "commitmentId": "cm-fd3b2c4a-8136-4ce3-8a9d-efdf995b712a",
+      "taskId": "task-001-deliver-meal",
+      "promisorId": "npc_01",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "fulfilled",
+      "evidenceEventIds": [
+        "npc_01-r8-54:meal_delivered:60"
+      ],
+      "changes": [],
+      "createdAt": 480,
+      "updatedAt": 735
+    },
+    {
+      "commitmentId": "cm-251f316c-30ed-43e7-9beb-5e8ed486b0e6",
+      "taskId": "task-002-deliver-meal",
+      "promisorId": "npc_02",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "fulfilled",
+      "evidenceEventIds": [
+        "npc_02-r8-54:meal_delivered:61"
+      ],
+      "changes": [],
+      "createdAt": 480,
+      "updatedAt": 735
+    },
+    {
+      "commitmentId": "cm-5872abf0-820d-48ba-aa91-07c01bda1e0d",
+      "taskId": "task-003-supply-warehouse",
+      "promisorId": "npc_03",
+      "beneficiaryId": "player",
+      "goal": "supply-warehouse",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "fulfilled",
+      "evidenceEventIds": [
+        "npc_03-r8-26:stock_deposited:32"
+      ],
+      "changes": [],
+      "createdAt": 480,
+      "updatedAt": 615
+    },
+    {
+      "commitmentId": "cm-83358d7c-bd83-48e4-8a10-52a4444b2533",
+      "taskId": "task-004-supply-warehouse",
+      "promisorId": "npc_04",
+      "beneficiaryId": "player",
+      "goal": "supply-warehouse",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "fulfilled",
+      "evidenceEventIds": [
+        "npc_04-r8-26:stock_deposited:33"
+      ],
+      "changes": [],
+      "createdAt": 480,
+      "updatedAt": 615
+    }
+  ],
+  "tasks": [
+    {
+      "taskId": "task-001-deliver-meal",
+      "actorId": "npc_01",
+      "kind": "deliver-meal",
+      "status": "done",
+      "assignedAt": 480,
+      "commitmentId": "cm-fd3b2c4a-8136-4ce3-8a9d-efdf995b712a"
+    },
+    {
+      "taskId": "task-002-deliver-meal",
+      "actorId": "npc_02",
+      "kind": "deliver-meal",
+      "status": "done",
+      "assignedAt": 480,
+      "commitmentId": "cm-251f316c-30ed-43e7-9beb-5e8ed486b0e6"
+    },
+    {
+      "taskId": "task-003-supply-warehouse",
+      "actorId": "npc_03",
+      "kind": "supply-warehouse",
+      "status": "done",
+      "assignedAt": 480,
+      "commitmentId": "cm-5872abf0-820d-48ba-aa91-07c01bda1e0d"
+    },
+    {
+      "taskId": "task-004-supply-warehouse",
+      "actorId": "npc_04",
+      "kind": "supply-warehouse",
+      "status": "done",
+      "assignedAt": 480,
+      "commitmentId": "cm-83358d7c-bd83-48e4-8a10-52a4444b2533"
+    }
+  ],
+  "exits": [],
+  "decisions": 128,
+  "decisionsSha256": "3c2a278e24b90fb2b43404bf770288fb8b471ac0ad718e8fbdd3f18652391025",
+  "fingerprintSha256": "11372db4b00662d922b7b8d274cb0ce506ecb7e5835f608723fb16823b9fb05f",
+  "nextClockTarget": 2220,
+  "countsAsModelResult": false
+}

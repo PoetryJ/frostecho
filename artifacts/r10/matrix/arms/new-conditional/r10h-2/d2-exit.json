@@ -1,0 +1,223 @@
+{
+  "schema": "frostecho.r10.matrix-d2-exit/1",
+  "pid": 3966,
+  "arm": "new-conditional",
+  "seed": "r10h-2",
+  "family": "live",
+  "memorySelection": "obligation-first",
+  "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+  "simTime": 2160,
+  "inputSequence": 116,
+  "checkpoint": {
+    "at": 2160,
+    "pending": 6,
+    "commitmentBound": 0,
+    "intents": [
+      {
+        "intentId": "npc_01-r8-193",
+        "actorId": "npc_01",
+        "action": "rest",
+        "startedAt": 2160,
+        "dueAt": 2220,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null
+      },
+      {
+        "intentId": "npc_02-r8-193",
+        "actorId": "npc_02",
+        "action": "rest",
+        "startedAt": 2160,
+        "dueAt": 2220,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null
+      },
+      {
+        "intentId": "npc_05-r8-193",
+        "actorId": "npc_05",
+        "action": "rest",
+        "startedAt": 2160,
+        "dueAt": 2220,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null
+      },
+      {
+        "intentId": "npc_06-r8-193",
+        "actorId": "npc_06",
+        "action": "rest",
+        "startedAt": 2160,
+        "dueAt": 2220,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null
+      },
+      {
+        "intentId": "npc_07-r8-193",
+        "actorId": "npc_07",
+        "action": "rest",
+        "startedAt": 2160,
+        "dueAt": 2220,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null
+      },
+      {
+        "intentId": "npc_08-r8-193",
+        "actorId": "npc_08",
+        "action": "rest",
+        "startedAt": 2160,
+        "dueAt": 2220,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null
+      }
+    ]
+  },
+  "interference": {
+    "at": 1680,
+    "activeRows": 2,
+    "cancel": {
+      "commitmentId": "cm-1fc16740-8f8d-489c-a493-28bfcd16b9f5",
+      "status": "cancelled",
+      "heardBy": [
+        "npc_02"
+      ]
+    },
+    "change": {
+      "commitmentId": "cm-3980fc09-2b97-4221-be10-3d8911e3827c",
+      "status": "pending-change"
+    }
+  },
+  "interferenceApplied": true,
+  "commitments": [
+    {
+      "commitmentId": "cm-4989fe0d-add6-414e-8526-b62333b12a7c",
+      "taskId": "task-001-deliver-meal",
+      "promisorId": "npc_01",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "fulfilled",
+      "evidenceEventIds": [
+        "npc_01-r8-119:meal_delivered:121"
+      ],
+      "changes": [],
+      "createdAt": 480,
+      "updatedAt": 1095
+    },
+    {
+      "commitmentId": "cm-8d0174a2-4d03-4154-a768-32bf7cb701a4",
+      "taskId": "task-002-deliver-meal",
+      "promisorId": "npc_02",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "fulfilled",
+      "evidenceEventIds": [
+        "npc_02-r8-119:meal_delivered:122"
+      ],
+      "changes": [],
+      "createdAt": 480,
+      "updatedAt": 1095
+    },
+    {
+      "commitmentId": "cm-1fc16740-8f8d-489c-a493-28bfcd16b9f5",
+      "taskId": "task-003-supply-warehouse",
+      "promisorId": "npc_03",
+      "beneficiaryId": "player",
+      "goal": "supply-warehouse",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "cancelled",
+      "evidenceEventIds": [],
+      "changes": [],
+      "createdAt": 480,
+      "updatedAt": 1680
+    },
+    {
+      "commitmentId": "cm-3980fc09-2b97-4221-be10-3d8911e3827c",
+      "taskId": "task-004-supply-warehouse",
+      "promisorId": "npc_04",
+      "beneficiaryId": "player",
+      "goal": "supply-warehouse",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "pending-change",
+      "evidenceEventIds": [],
+      "changes": [
+        {
+          "changeId": "chg-c4b9512b-fb7b-45cd-9193-ea1d36ab7bd9",
+          "proposedRevision": 2,
+          "kind": "alt-source",
+          "terms": {
+            "source": "gather",
+            "reason": "先采集再交付"
+          },
+          "reason": "warehouse-empty",
+          "proposedAt": 1680,
+          "status": "open",
+          "respondedAt": null,
+          "responseEventId": null
+        }
+      ],
+      "createdAt": 480,
+      "updatedAt": 1680
+    }
+  ],
+  "tasks": [
+    {
+      "taskId": "task-001-deliver-meal",
+      "actorId": "npc_01",
+      "kind": "deliver-meal",
+      "status": "done",
+      "assignedAt": 480,
+      "commitmentId": "cm-4989fe0d-add6-414e-8526-b62333b12a7c"
+    },
+    {
+      "taskId": "task-002-deliver-meal",
+      "actorId": "npc_02",
+      "kind": "deliver-meal",
+      "status": "done",
+      "assignedAt": 480,
+      "commitmentId": "cm-8d0174a2-4d03-4154-a768-32bf7cb701a4"
+    },
+    {
+      "taskId": "task-003-supply-warehouse",
+      "actorId": "npc_03",
+      "kind": "supply-warehouse",
+      "status": "cancelled",
+      "assignedAt": 480,
+      "commitmentId": "cm-1fc16740-8f8d-489c-a493-28bfcd16b9f5"
+    },
+    {
+      "taskId": "task-004-supply-warehouse",
+      "actorId": "npc_04",
+      "kind": "supply-warehouse",
+      "status": "active",
+      "assignedAt": 480,
+      "commitmentId": "cm-3980fc09-2b97-4221-be10-3d8911e3827c"
+    }
+  ],
+  "exits": [],
+  "decisions": 124,
+  "decisionsSha256": "9dd16db54d90c193d4059569e0e94e32c0fd16a2d80c280d8d43c75c7d17819e",
+  "fingerprintSha256": "ca0ee83f504473bd49539087bc5369904d9879ad9d6ecf1a80fc03c5b8247911",
+  "nextClockTarget": 2220,
+  "countsAsModelResult": true
+}

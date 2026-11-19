@@ -1,0 +1,50 @@
+{
+  "ok": true,
+  "code": 0,
+  "headPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-base-gpu1/warm-17.safetensors",
+  "manifestPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-base-gpu1/training-manifest.json",
+  "rendererId": "joint-c-action/2",
+  "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+  "headExists": true,
+  "manifestExists": true,
+  "headSha256": "f3eb6a95e12eef8d584de41560622af1a6637d9e8ca987126a3a02156c480e3a",
+  "manifestSha256": "5c8a3a80685e3b4d7392a91a5ee3da0977853ae69b572249c849650e55c8da3b",
+  "manifestSelectedSha256": "f3eb6a95e12eef8d584de41560622af1a6637d9e8ca987126a3a02156c480e3a",
+  "manifestSelectedCheckpoint": "warm-17.safetensors",
+  "manifestRendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+  "manifestDimension": 5120,
+  "labelSource": "same-snapshot-branch-rollout",
+  "manifestFeatureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+  "placement": "auto",
+  "physicalGpus": [
+    1
+  ],
+  "manifestBinding": {
+    "reason": "serve_joint.py accepts only labelSource \"reference-imitation\"; this head is \"same-snapshot-branch-rollout\". The harness passes the same head without --training-manifest and verifies headSha256, featureIdentityHash and rendererId on every reply.",
+    "headSha256": "f3eb6a95e12eef8d584de41560622af1a6637d9e8ca987126a3a02156c480e3a",
+    "featureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+    "labelSource": "same-snapshot-branch-rollout"
+  },
+  "arm": "new-raw",
+  "seed": "r10h-1",
+  "family": "live",
+  "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+  "command": [
+    "/data/home/user_00/frostecho-r7/.venv/bin/python",
+    "research/decision-choice/jev05/action/serve_joint.py",
+    "--encoder",
+    "/data2/model_weights/Qwen3.8-27B",
+    "--physical-gpus",
+    "1",
+    "--placement",
+    "auto",
+    "--head",
+    "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-base-gpu1/warm-17.safetensors",
+    "--max-length",
+    "2048",
+    "--memory-policy",
+    "conditional-experience",
+    "--output-dir",
+    "/data3/DATA/project/project_meishijiang/r10-wt/H/artifacts/r10/matrix/arms/new-raw/r10h-1/scorer"
+  ]
+}

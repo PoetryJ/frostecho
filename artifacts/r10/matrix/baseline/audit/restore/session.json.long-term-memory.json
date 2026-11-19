@@ -1,0 +1,414 @@
+{
+  "schema": "frostecho.gameplay-decision-memory/1",
+  "mode": "layered",
+  "tokenBudget": 1200,
+  "memory": {
+    "schema": "frostecho.jev-memory/1",
+    "initialLifeId": "life-1",
+    "currentLifeId": "life-1",
+    "events": [
+      {
+        "eventId": "record:m-71ff652e9f0ae89e",
+        "lifeId": "life-1",
+        "simTime": 480,
+        "occurredAt": 480,
+        "kind": "moved",
+        "payload": {
+          "to": "kitchen"
+        },
+        "actorId": "npc_01",
+        "observedBy": [
+          "npc_01"
+        ],
+        "source": "observation",
+        "originEventId": "to-kitchen:moved:0",
+        "sourceRecordId": "m-71ff652e9f0ae89e"
+      },
+      {
+        "eventId": "record:m-4c8d4b032c0df18d",
+        "lifeId": "life-1",
+        "simTime": 480,
+        "occurredAt": 480,
+        "kind": "commitment_proposed",
+        "payload": {
+          "goal": "deliver-meal",
+          "fromId": "npc_01",
+          "toId": "player",
+          "conditions": "warehouse-supply",
+          "deadline": -1,
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08",
+          "toldBy": "npc_01"
+        },
+        "actorId": "npc_01",
+        "observedBy": [
+          "npc_01"
+        ],
+        "source": "observation",
+        "originEventId": "cmt-commitment_proposed-cm-1f402859-bc6c-403a-ad45-b516edb5ac24-0",
+        "sourceRecordId": "m-4c8d4b032c0df18d"
+      },
+      {
+        "eventId": "record:m-bac3ddb11182833b",
+        "lifeId": "life-1",
+        "simTime": 480,
+        "occurredAt": 480,
+        "kind": "commitment_accepted",
+        "payload": {
+          "fromId": "npc_01",
+          "toId": "player",
+          "text": "accepted-by-resident",
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08",
+          "toldBy": "npc_01"
+        },
+        "actorId": "npc_01",
+        "observedBy": [
+          "npc_01"
+        ],
+        "source": "observation",
+        "originEventId": "cmt-commitment_accepted-cm-1f402859-bc6c-403a-ad45-b516edb5ac24-1",
+        "sourceRecordId": "m-bac3ddb11182833b"
+      },
+      {
+        "eventId": "record:m-9ab3d28e779ee98c",
+        "lifeId": "life-1",
+        "simTime": 480,
+        "occurredAt": 480,
+        "kind": "commitment_proposed",
+        "payload": {
+          "goal": "deliver-meal",
+          "fromId": "npc_01",
+          "toId": "player",
+          "conditions": "warehouse-supply",
+          "deadline": -1,
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08",
+          "toldBy": "npc_01"
+        },
+        "actorId": "npc_01",
+        "observedBy": [
+          "npc_02"
+        ],
+        "source": "observation",
+        "originEventId": "cmt-commitment_proposed-cm-1f402859-bc6c-403a-ad45-b516edb5ac24-0",
+        "sourceRecordId": "m-9ab3d28e779ee98c"
+      },
+      {
+        "eventId": "record:m-8bae460bfabc98aa",
+        "lifeId": "life-1",
+        "simTime": 480,
+        "occurredAt": 480,
+        "kind": "commitment_accepted",
+        "payload": {
+          "fromId": "npc_01",
+          "toId": "player",
+          "text": "accepted-by-resident",
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08",
+          "toldBy": "npc_01"
+        },
+        "actorId": "npc_01",
+        "observedBy": [
+          "npc_02"
+        ],
+        "source": "observation",
+        "originEventId": "cmt-commitment_accepted-cm-1f402859-bc6c-403a-ad45-b516edb5ac24-1",
+        "sourceRecordId": "m-8bae460bfabc98aa"
+      },
+      {
+        "eventId": "record:m-3ec9a9211139ed6e",
+        "lifeId": "life-1",
+        "simTime": 480,
+        "occurredAt": 480,
+        "kind": "commitment_proposed",
+        "payload": {
+          "goal": "deliver-meal",
+          "fromId": "npc_01",
+          "toId": "player",
+          "conditions": "warehouse-supply",
+          "deadline": -1,
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08",
+          "toldBy": "npc_01"
+        },
+        "actorId": "npc_01",
+        "observedBy": [
+          "npc_03"
+        ],
+        "source": "observation",
+        "originEventId": "cmt-commitment_proposed-cm-1f402859-bc6c-403a-ad45-b516edb5ac24-0",
+        "sourceRecordId": "m-3ec9a9211139ed6e"
+      },
+      {
+        "eventId": "record:m-8d832ded621ee4a5",
+        "lifeId": "life-1",
+        "simTime": 480,
+        "occurredAt": 480,
+        "kind": "commitment_accepted",
+        "payload": {
+          "fromId": "npc_01",
+          "toId": "player",
+          "text": "accepted-by-resident",
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08",
+          "toldBy": "npc_01"
+        },
+        "actorId": "npc_01",
+        "observedBy": [
+          "npc_03"
+        ],
+        "source": "observation",
+        "originEventId": "cmt-commitment_accepted-cm-1f402859-bc6c-403a-ad45-b516edb5ac24-1",
+        "sourceRecordId": "m-8d832ded621ee4a5"
+      },
+      {
+        "eventId": "record:m-a6bc3870882057e6",
+        "lifeId": "life-1",
+        "simTime": 480,
+        "occurredAt": 480,
+        "kind": "commitment_proposed",
+        "payload": {
+          "goal": "deliver-meal",
+          "fromId": "npc_01",
+          "toId": "player",
+          "conditions": "warehouse-supply",
+          "deadline": -1,
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08",
+          "toldBy": "npc_01"
+        },
+        "actorId": "npc_01",
+        "observedBy": [
+          "npc_04"
+        ],
+        "source": "observation",
+        "originEventId": "cmt-commitment_proposed-cm-1f402859-bc6c-403a-ad45-b516edb5ac24-0",
+        "sourceRecordId": "m-a6bc3870882057e6"
+      },
+      {
+        "eventId": "record:m-862d9bf731161179",
+        "lifeId": "life-1",
+        "simTime": 480,
+        "occurredAt": 480,
+        "kind": "commitment_accepted",
+        "payload": {
+          "fromId": "npc_01",
+          "toId": "player",
+          "text": "accepted-by-resident",
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08",
+          "toldBy": "npc_01"
+        },
+        "actorId": "npc_01",
+        "observedBy": [
+          "npc_04"
+        ],
+        "source": "observation",
+        "originEventId": "cmt-commitment_accepted-cm-1f402859-bc6c-403a-ad45-b516edb5ac24-1",
+        "sourceRecordId": "m-862d9bf731161179"
+      },
+      {
+        "eventId": "record:m-7dd25c9c35fc8833",
+        "lifeId": "life-1",
+        "simTime": 480,
+        "occurredAt": 480,
+        "kind": "commitment_proposed",
+        "payload": {
+          "goal": "deliver-meal",
+          "fromId": "npc_01",
+          "toId": "player",
+          "conditions": "warehouse-supply",
+          "deadline": -1,
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08",
+          "toldBy": "npc_01"
+        },
+        "actorId": "npc_01",
+        "observedBy": [
+          "npc_05"
+        ],
+        "source": "observation",
+        "originEventId": "cmt-commitment_proposed-cm-1f402859-bc6c-403a-ad45-b516edb5ac24-0",
+        "sourceRecordId": "m-7dd25c9c35fc8833"
+      },
+      {
+        "eventId": "record:m-dac8275a0c224f65",
+        "lifeId": "life-1",
+        "simTime": 480,
+        "occurredAt": 480,
+        "kind": "commitment_accepted",
+        "payload": {
+          "fromId": "npc_01",
+          "toId": "player",
+          "text": "accepted-by-resident",
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08",
+          "toldBy": "npc_01"
+        },
+        "actorId": "npc_01",
+        "observedBy": [
+          "npc_05"
+        ],
+        "source": "observation",
+        "originEventId": "cmt-commitment_accepted-cm-1f402859-bc6c-403a-ad45-b516edb5ac24-1",
+        "sourceRecordId": "m-dac8275a0c224f65"
+      },
+      {
+        "eventId": "record:m-5f7bb4104ddec478",
+        "lifeId": "life-1",
+        "simTime": 480,
+        "occurredAt": 480,
+        "kind": "commitment_proposed",
+        "payload": {
+          "goal": "deliver-meal",
+          "fromId": "npc_01",
+          "toId": "player",
+          "conditions": "warehouse-supply",
+          "deadline": -1,
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08",
+          "toldBy": "npc_01"
+        },
+        "actorId": "npc_01",
+        "observedBy": [
+          "npc_06"
+        ],
+        "source": "observation",
+        "originEventId": "cmt-commitment_proposed-cm-1f402859-bc6c-403a-ad45-b516edb5ac24-0",
+        "sourceRecordId": "m-5f7bb4104ddec478"
+      },
+      {
+        "eventId": "record:m-2370606ec77e9e8b",
+        "lifeId": "life-1",
+        "simTime": 480,
+        "occurredAt": 480,
+        "kind": "commitment_accepted",
+        "payload": {
+          "fromId": "npc_01",
+          "toId": "player",
+          "text": "accepted-by-resident",
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08",
+          "toldBy": "npc_01"
+        },
+        "actorId": "npc_01",
+        "observedBy": [
+          "npc_06"
+        ],
+        "source": "observation",
+        "originEventId": "cmt-commitment_accepted-cm-1f402859-bc6c-403a-ad45-b516edb5ac24-1",
+        "sourceRecordId": "m-2370606ec77e9e8b"
+      },
+      {
+        "eventId": "record:m-9e52d37e960ae6af",
+        "lifeId": "life-1",
+        "simTime": 480,
+        "occurredAt": 480,
+        "kind": "commitment_proposed",
+        "payload": {
+          "goal": "deliver-meal",
+          "fromId": "npc_01",
+          "toId": "player",
+          "conditions": "warehouse-supply",
+          "deadline": -1,
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08",
+          "toldBy": "npc_01"
+        },
+        "actorId": "npc_01",
+        "observedBy": [
+          "npc_07"
+        ],
+        "source": "observation",
+        "originEventId": "cmt-commitment_proposed-cm-1f402859-bc6c-403a-ad45-b516edb5ac24-0",
+        "sourceRecordId": "m-9e52d37e960ae6af"
+      },
+      {
+        "eventId": "record:m-166b04b550a285e3",
+        "lifeId": "life-1",
+        "simTime": 480,
+        "occurredAt": 480,
+        "kind": "commitment_accepted",
+        "payload": {
+          "fromId": "npc_01",
+          "toId": "player",
+          "text": "accepted-by-resident",
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08",
+          "toldBy": "npc_01"
+        },
+        "actorId": "npc_01",
+        "observedBy": [
+          "npc_07"
+        ],
+        "source": "observation",
+        "originEventId": "cmt-commitment_accepted-cm-1f402859-bc6c-403a-ad45-b516edb5ac24-1",
+        "sourceRecordId": "m-166b04b550a285e3"
+      },
+      {
+        "eventId": "record:m-fb02f13f94a7aae7",
+        "lifeId": "life-1",
+        "simTime": 480,
+        "occurredAt": 480,
+        "kind": "commitment_proposed",
+        "payload": {
+          "goal": "deliver-meal",
+          "fromId": "npc_01",
+          "toId": "player",
+          "conditions": "warehouse-supply",
+          "deadline": -1,
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08",
+          "toldBy": "npc_01"
+        },
+        "actorId": "npc_01",
+        "observedBy": [
+          "npc_08"
+        ],
+        "source": "observation",
+        "originEventId": "cmt-commitment_proposed-cm-1f402859-bc6c-403a-ad45-b516edb5ac24-0",
+        "sourceRecordId": "m-fb02f13f94a7aae7"
+      },
+      {
+        "eventId": "record:m-3decf8a5950db853",
+        "lifeId": "life-1",
+        "simTime": 480,
+        "occurredAt": 480,
+        "kind": "commitment_accepted",
+        "payload": {
+          "fromId": "npc_01",
+          "toId": "player",
+          "text": "accepted-by-resident",
+          "commitmentId": "cm-1f402859-bc6c-403a-ad45-b516edb5ac24",
+          "revision": 1,
+          "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08",
+          "toldBy": "npc_01"
+        },
+        "actorId": "npc_01",
+        "observedBy": [
+          "npc_08"
+        ],
+        "source": "observation",
+        "originEventId": "cmt-commitment_accepted-cm-1f402859-bc6c-403a-ad45-b516edb5ac24-1",
+        "sourceRecordId": "m-3decf8a5950db853"
+      }
+    ],
+    "transitions": []
+  }
+}
