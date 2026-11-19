@@ -7,41 +7,75 @@
   "memoryTokenBudget": 640,
   "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
   "source": {
-    "head": "054cab0178e1357980594e438a13d6d6c4b2b075",
-    "tree": "acac9d3e0e2121bba37d295cd8c5eea711d50de2",
+    "head": "e320c919c647da0a4f17773b64914f691b9f5b71",
+    "tree": "c618355227f4435b47f9c522f4816281e7ca1bea",
     "branch": "codex/r10-H"
   },
   "exits": {
-    "start": 12,
+    "start": 16,
     "resume": null,
     "replay": null
   },
   "head": {
-    "headPath": "artifacts/r10/heads/warm-17/warm-17.safetensors",
-    "headSha256": null,
-    "manifestPath": "artifacts/r10/heads/warm-17/selected.json",
-    "manifestSha256": null,
+    "headPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-primary/warm-17.safetensors",
+    "headSha256": "0b9d203f96c4dd8fb3c8d707eeaff2b5bbbcdac28a8c85aaafb3f43b0b205106",
+    "manifestPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-primary/training-manifest.json",
+    "manifestSha256": "e049519dc258f1562c90c29a0db2c3fd5d78e8ca52665db269953adb2d0d0151",
+    "labelSource": "same-snapshot-branch-rollout",
+    "featureIdentityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+    "manifestBinding": {
+      "reason": "serve_joint.py accepts only labelSource \"reference-imitation\"; this head is \"same-snapshot-branch-rollout\". The harness passes the same head without --training-manifest and verifies headSha256, featureIdentityHash and rendererId on every reply.",
+      "headSha256": "0b9d203f96c4dd8fb3c8d707eeaff2b5bbbcdac28a8c85aaafb3f43b0b205106",
+      "featureIdentityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+      "labelSource": "same-snapshot-branch-rollout"
+    },
     "rendererId": "joint-c-action/2",
     "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
-    "ok": false,
-    "reason": "head_artifact_missing"
+    "ok": true,
+    "reason": null
   },
-  "commitmentInput": null,
+  "commitmentInput": {
+    "passed": true,
+    "problems": [],
+    "commitments": 4
+  },
   "replica": null,
   "pids": {
-    "start": 3085154,
+    "start": 4040566,
     "resume": null,
     "replay": null
   },
   "final": null,
   "metrics": null,
-  "evidenceSha256": "8f1b6a46775d5edeb83302a9ef6f837e9c3ba04dfd5e1798d538fe3c24b19687",
-  "gameSha256": "b68b221972e2f9b55cd4dd929126488eb96191667863f090ceccefa163b65905",
-  "status": "refused:head_artifact_missing",
+  "failure": {
+    "error": "online_feature_identity_differs:4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+    "forwards": 1,
+    "serviceWallSeconds": 24.622,
+    "bindingDiffKeys": [
+      "actualParameterBytesByDevice",
+      "deviceMap",
+      "rotaryBufferDevices"
+    ],
+    "manifestFeatureIdentityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+    "runtimeFeatureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0"
+  },
+  "forwards": 1,
+  "gpuWallSeconds": 24.622,
+  "evidenceSha256": "e4e1777869d83ff50b1744b96d3369f41ccb8c68e2c22202929e6b7ef3ae79bf",
+  "gameSha256": "2bd1fd828deb82f80725021cf78abbe81f17476ac9651a028d617ba72c61b748",
+  "status": "failed:start:16",
   "evidence": {
-    "phase-start.json": "f0c6a0632ac26ab90602593c6881daa413243c5b564ffb1c38c3221f109b9421",
-    "phase-start.stderr.log": "423193fc7d4952460bcbd9a8973a2d1b484f87787465441904433e5666914934",
+    "commitment-input.json": "8f97a53fd6a824fc5e75f89204309c3508cd549e63b6d20367b46ac096d20473",
+    "d1-start.json": "ca07b05f5d1b063da0bb189c6ec51f5b3fb27d3e6dd3c7833feb224998323a69",
+    "failure.json": "4cde036828e6a31c7ef5dd8cf82da2ccf3cfb39fba7be4647f789c4093d66bfe",
+    "phase-start.json": "1cc307ee595de5e06b4f79e838d69ddb21dbcc1c58a53ea7ed396e40af16a3f2",
+    "phase-start.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "phase-start.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "preflight.json": "860281c1d1a26c9e9a91b30a942cc0f32968e510bc76f9ac594df8c8ed97c8bc"
+    "preflight.json": "57c8ddc37997e12f3bd84b759307e4bb69a5dd5b59077a7756206dfa1b8f38c9",
+    "scorer/session-20261119T030102-4040576-1795057262854254308/000001.features.npz": "4b17efe0d658401d4676900180c0a6fe1409d38a7dabeaae456821214660b7c7",
+    "scorer/session-20261119T030102-4040576-1795057262854254308/000001.request.json": "3ec9c881622eba8fb79587aad7378d20bc55ba5f917a8da60fb93e7de795f6df",
+    "scorer/session-20261119T030102-4040576-1795057262854254308/000001.result.json": "80abc6d670b686e84ad5f533c6471d0f8baa1093f5a2d12296fdfdee9ced2296",
+    "scorer/session-20261119T030102-4040576-1795057262854254308/startup.json": "613a2fae02d8b89c869b45bc269103aedc0a828f002a81b8569f21d0fbb41f28",
+    "scorer-start.jsonl": "827401106f3bc8031d9f3a3acc2088a5e65cd3f764382d9c46a07162722a2436"
   }
 }

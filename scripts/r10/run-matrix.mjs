@@ -230,7 +230,11 @@ function preflightHead(arm) {
   const shapeOk = manifest.schema === 'frostecho.action-weak-experiment/1'
     && manifest.experimental === true && manifest.countsAsAdmitted === false
     && manifest.calibrated === false && manifest.researchTrainReady === false
-    && manifest.mayTrainOnJev === false && manifest.labelSource === 'reference-imitation'
+    && manifest.mayTrainOnJev === false
+    // serve_joint.py only accepts labelSource "reference-imitation"; R10 heads
+    // use a different (still unadmitted) label source, so the label source is
+    // recorded here and bound by this harness instead of being silently lost.
+    && typeof manifest.labelSource === 'string' && manifest.labelSource.length > 0
     && manifest.encodingExecution?.batchSize === 1
     && manifest.encodingExecution?.padMultiple === 8
     && typeof manifest.encodingQualification?.sha256 === 'string';
@@ -242,12 +246,26 @@ function preflightHead(arm) {
   checks.manifestSelectedCheckpoint = manifest.selectedCheckpoint ?? null;
   checks.manifestRendererSourceSha256 = manifest.featureIdentity?.rendererSourceSha256 ?? null;
   checks.manifestDimension = manifest.featureIdentity?.dimension ?? null;
+  checks.labelSource = manifest.labelSource;
+  checks.manifestFeatureIdentityHash = manifest.featureIdentityHash ?? null;
+  checks.placement = manifest.encodingExecution?.placement ?? 'auto';
+  checks.physicalGpus = Array.isArray(manifest.featureIdentity?.physicalGpus)
+    ? manifest.featureIdentity.physicalGpus : [1];
   if (manifest.selectedCheckpointSha256 !== headSha) return refuse(EXIT.headSha, 'head_sha_differs_from_manifest');
   if (manifest.selectedCheckpoint && basename(headPath) !== manifest.selectedCheckpoint)
     return refuse(EXIT.headSha, `head_file_${basename(headPath)}_differs_from_manifest_${manifest.selectedCheckpoint}`);
   if (manifest.featureIdentity?.dimension !== 5120) return refuse(EXIT.headManifest, 'head_dimension_not_5120');
   if (checks.manifestRendererSourceSha256 !== checks.rendererSourceSha256)
     return refuse(EXIT.headRenderer, 'head_was_trained_on_another_renderer');
+  if (!checks.manifestFeatureIdentityHash) return refuse(EXIT.headManifest, 'head_manifest_lacks_feature_identity_hash');
+  checks.manifestBinding = {
+    reason: manifest.labelSource === 'reference-imitation' ? null
+      : `serve_joint.py accepts only labelSource "reference-imitation"; this head is "${manifest.labelSource}". `
+        + 'The harness passes the same head without --training-manifest and verifies headSha256, '
+        + 'featureIdentityHash and rendererId on every reply.',
+    headSha256: headSha, featureIdentityHash: checks.manifestFeatureIdentityHash,
+    labelSource: manifest.labelSource,
+  };
   return { ok: true, code: EXIT.ok, ...checks };
 }
 
@@ -353,10 +371,11 @@ function fingerprint(runtime, play) {
 
 /* ------------------------------ scorers ------------------------------ */
 class LiveScorer {
-  constructor(command, { transcript, timeoutMs = 300000 } = {}) {
+  constructor(command, { transcript, timeoutMs = 300000, binding = null } = {}) {
     this.command = command;
     this.transcript = transcript;
     this.timeoutMs = timeoutMs;
+    this.binding = binding;
     this.child = null;
     this.pending = new Map();
     this.pinned = null;
@@ -366,6 +385,8 @@ class LiveScorer {
     this.requests = 0;
     this.singleCandidateSkips = 0;
     this.timeouts = 0;
+    this.ready = null;
+    this.stderrBuffer = '';
     this.serviceStartedAt = null;
     this.serviceClosedAt = null;
     if (transcript) mkdirSync(dirname(transcript), { recursive: true });
@@ -398,7 +419,20 @@ class LiveScorer {
         this.pending.delete(key); clearTimeout(waiting.timer); waiting.resolve(reply);
       } catch (error) { fail(new Error(`scorer_protocol:${error.message}`)); }
     });
-    child.stderr.on('data', data => this.record({ event: 'scorer_stderr', text: String(data) }));
+    child.stderr.on('data', data => {
+      const text = String(data);
+      this.record({ event: 'scorer_stderr', text });
+      this.stderrBuffer += text;
+      const lines = this.stderrBuffer.split('\n');
+      this.stderrBuffer = lines.pop() ?? '';
+      for (const line of lines) {
+        if (!line.trim().startsWith('{')) continue;
+        try {
+          const parsed = JSON.parse(line);
+          if (parsed.event === 'ready') this.ready = parsed;
+        } catch { /* diagnostics, not JSONL */ }
+      }
+    });
     child.on('error', error => { if (this.child === child) this.child = null; fail(error); });
     child.on('exit', code => {
       if (this.child === child) this.child = null;
@@ -449,8 +483,24 @@ class LiveScorer {
     if (!identity || identity.mode !== 'jev-experimental' || identity.experimental !== true
       || identity.countsAsAdmitted !== false || identity.rendererId !== RENDERER_ID)
       throw new Error(`untrusted_experimental_scorer_identity:${identity?.rendererId}`);
+    // Count the forward that already happened before a binding refusal is raised:
+    // the encoder really ran, and that cost must stay in the evidence.
     if (typeof identity.encoderForwardCalls === 'number')
       this.forwardCalls = Math.max(this.forwardCalls, identity.encoderForwardCalls);
+    if (this.binding) {
+      // The head's own manifest is not passed to serve_joint (it would reject
+      // a non-imitation label source), so the same technical binding is
+      // enforced here: exact head bytes, exact online feature identity, and no
+      // manifest the service could have substituted.
+      if (identity.headSha256 !== this.binding.headSha256)
+        throw new Error(`head_sha_differs_from_manifest:${identity.headSha256}`);
+      if (identity.featureIdentityHash !== this.binding.featureIdentityHash)
+        throw new Error(`online_feature_identity_differs:${identity.featureIdentityHash}`);
+      if (identity.trainingManifestSha256)
+        throw new Error('scorer_loaded_an_unexpected_manifest');
+      if (identity.rendererId !== this.binding.rendererId)
+        throw new Error(`renderer_differs:${identity.rendererId}`);
+    }
     const counters = new Set(['requestsReceived', 'scoresSucceeded', 'requestsFailed',
       'encoderForwardCalls', 'encoderForwardAttempts']);
     const pinned = canonical(Object.entries(identity)
@@ -950,7 +1000,10 @@ async function phaseStart(arm, seed, dir) {
 
   const ctx = { arm, seed, phase: 'start', runtime: world.runtime, play: world.play,
     bridge: world.bridge, scorer: arm.family === 'live'
-      ? new LiveScorer(preflight.command, { transcript: files.transcript('start') })
+      ? new LiveScorer(preflight.command, { transcript: files.transcript('start'),
+        binding: { headSha256: preflight.headSha256,
+          featureIdentityHash: preflight.manifestFeatureIdentityHash,
+          rendererId: RENDERER_ID, labelSource: preflight.labelSource } })
       : referenceAgencyScorer(),
     decisions: [], councilDecisions: [], exits: [], timeline: [],
     interference: null, interferenceApplied: false, checkpoint: null,
@@ -960,7 +1013,11 @@ async function phaseStart(arm, seed, dir) {
     arm: arm.id, seed, family: arm.family, memorySelection: arm.memory,
     scenarioSha: SCENARIO_SHA, source: SOURCE,
     preflight: { headSha256: preflight.headSha256 ?? null,
-      manifestSha256: preflight.manifestSha256 ?? null, rendererId: RENDERER_ID,
+      manifestSha256: preflight.manifestSha256 ?? null,
+      featureIdentityHash: preflight.manifestFeatureIdentityHash ?? null,
+      labelSource: preflight.labelSource ?? null,
+      manifestBinding: preflight.manifestBinding ?? null,
+      rendererId: RENDERER_ID,
       rendererSourceSha256: preflight.rendererSourceSha256 ?? shaFile(join(ROOT, 'src/r7/jev/render.ts')) },
     worldInitSha: sha(canonical(init)), worldInit: init,
     commitments: world.seeds });
@@ -968,10 +1025,33 @@ async function phaseStart(arm, seed, dir) {
   try {
     outcome = await playGame(ctx, { fromCheckpoint: false });
   } catch (error) {
+    const spec = headSpec(arm);
+    const manifestPath = resolve(ROOT, spec.manifest);
+    const manifest = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, 'utf8')) : null;
+    const ready = ctx.scorer?.ready ?? null;
+    const expected = manifest?.featureIdentity ?? null;
+    const actual = ready?.featureIdentity ?? null;
+    const bindingDiff = {};
+    if (expected && actual) {
+      for (const key of new Set([...Object.keys(expected), ...Object.keys(actual)])) {
+        const left = JSON.stringify(expected[key]);
+        const right = JSON.stringify(actual[key]);
+        if (left !== right) bindingDiff[key] = { manifest: expected[key], runtime: actual[key] };
+      }
+    }
     writeJson(files.failure, { phase: 'start', error: error.message, pid: process.pid,
-      countsAsModelResult: false, at: ctx.runtime.world.simTime });
+      countsAsModelResult: false, at: ctx.runtime.world.simTime,
+      forwards: ctx.scorer?.forwardCalls ?? 0,
+      serviceWallSeconds: ctx.scorer?.stats?.().serviceWallSeconds ?? null,
+      manifest: manifest ? { path: rel(manifestPath), sha256: shaFile(manifestPath),
+        featureIdentityHash: manifest.featureIdentityHash ?? null,
+        labelSource: manifest.labelSource ?? null } : null,
+      runtimeIdentity: ready ? { identity: ready.identity,
+        featureIdentity: ready.featureIdentity, encoder: ready.encoder } : null,
+      bindingDiff });
     writeJson(files.phase('start'), phaseRecord('start', ctx, {
-      exitCode: EXIT.scorer, error: error.message }));
+      exitCode: EXIT.scorer, error: error.message,
+      forwards: ctx.scorer?.forwardCalls ?? 0 }));
     ctx.scorer?.close?.();
     return EXIT.scorer;
   }
@@ -1071,8 +1151,13 @@ async function phaseResume(arm, seed, dir, { replay = false } = {}) {
   const startDecisions = existsSync(files.decisionsStart)
     ? readFileSync(files.decisionsStart, 'utf8').split('\n').filter(Boolean).map(line => JSON.parse(line))
     : [];
+  const priorPreflight = existsSync(files.preflight)
+    ? JSON.parse(readFileSync(files.preflight, 'utf8')) : null;
   const scorer = replay ? new ReplayScorer(resumeDecisions) : arm.family === 'live'
-    ? new LiveScorer(scorerCommand(arm, dir), { transcript: files.transcript('resume') })
+    ? new LiveScorer(scorerCommand(arm, dir), { transcript: files.transcript('resume'),
+      binding: priorPreflight ? { headSha256: priorPreflight.headSha256,
+        featureIdentityHash: priorPreflight.manifestFeatureIdentityHash,
+        rendererId: RENDERER_ID, labelSource: priorPreflight.labelSource } : null })
     : referenceAgencyScorer();
   const ctx = { arm, seed, phase: replay ? 'replay' : 'resume', runtime, play, bridge, scorer,
     decisions: [], councilDecisions: [], exits: [], timeline: [],
@@ -1150,11 +1235,24 @@ function scorerCommand(arm, dir) {
 function defaultScorerCommand(arm, dir) {
   const spec = headSpec(arm);
   const head = resolve(ROOT, spec.head);
-  const manifest = resolve(ROOT, spec.manifest);
+  const manifestPath = resolve(ROOT, spec.manifest);
+  // The encoder must reproduce the exact placement/GPU set the head was
+  // trained on; the manifest records it. `--training-manifest` is deliberately
+  // not passed: serve_joint.py would reject the R10 label source, so the
+  // harness binds headSha256/featureIdentityHash/rendererId itself.
+  let placement = 'auto';
+  let gpus = '1';
+  if (existsSync(manifestPath)) {
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+    placement = manifest.encodingExecution?.placement ?? 'auto';
+    const recorded = manifest.featureIdentity?.physicalGpus;
+    if (Array.isArray(recorded) && recorded.length > 0) gpus = recorded.join(',');
+  }
   return [PYTHON, 'research/decision-choice/jev05/action/serve_joint.py',
-    '--encoder', ENCODER, '--physical-gpus', process.env.FROSTECHO_PHYSICAL_GPUS ?? '1',
-    '--placement', process.env.FROSTECHO_PLACEMENT ?? 'one-layer-offload',
-    '--head', head, '--training-manifest', manifest,
+    '--encoder', ENCODER,
+    '--physical-gpus', process.env.FROSTECHO_PHYSICAL_GPUS ?? gpus,
+    '--placement', process.env.FROSTECHO_PLACEMENT ?? placement,
+    '--head', head, '--max-length', '2048',
     '--memory-policy', 'conditional-experience',
     '--output-dir', join(dir, 'scorer')];
 }
@@ -1195,6 +1293,21 @@ function gameIdentity({ arm, seed, dir, exits, files }) {
   const final = read('final-state.json');
   const replay = read('replay.json');
   const load = read('commitment-input.json');
+  const failure = read('failure.json');
+  // A binding refusal happens after the encoder ran; the transcript is the
+  // independent record of that forward.
+  let transcriptForwards = 0;
+  const transcriptPath = join(dir, 'scorer-start.jsonl');
+  if (existsSync(transcriptPath)) {
+    for (const line of readFileSync(transcriptPath, 'utf8').split('\n')) {
+      if (!line.includes('"score_reply"')) continue;
+      try {
+        const row = JSON.parse(line);
+        const count = row.reply?.identity?.encoderForwardCalls;
+        if (typeof count === 'number') transcriptForwards = Math.max(transcriptForwards, count);
+      } catch { /* partial line */ }
+    }
+  }
   const evidence = shaMap(dir);
   const identity = {
     schema: 'frostecho.r10.matrix-game/1', arm: arm.id, family: arm.family, seed,
@@ -1204,6 +1317,9 @@ function gameIdentity({ arm, seed, dir, exits, files }) {
       headSha256: preflight.headSha256 ?? null,
       manifestPath: preflight.manifestPath ?? null,
       manifestSha256: preflight.manifestSha256 ?? null,
+      labelSource: preflight.labelSource ?? null,
+      featureIdentityHash: preflight.manifestFeatureIdentityHash ?? null,
+      manifestBinding: preflight.manifestBinding ?? null,
       rendererId: preflight.rendererId ?? null,
       rendererSourceSha256: preflight.rendererSourceSha256 ?? null,
       ok: preflight.ok, reason: preflight.reason ?? null } : null,
@@ -1248,7 +1364,17 @@ function gameIdentity({ arm, seed, dir, exits, files }) {
         crises,
         gpuWallSeconds };
     })() : null,
+    failure: failure ? { error: failure.error,
+      forwards: failure.forwards ?? 0,
+      serviceWallSeconds: failure.serviceWallSeconds ?? 0,
+      bindingDiffKeys: Object.keys(failure.bindingDiff ?? {}),
+      manifestFeatureIdentityHash: failure.manifest?.featureIdentityHash ?? null,
+      runtimeFeatureIdentityHash: failure.runtimeIdentity?.identity?.featureIdentityHash ?? null } : null,
   };
+  identity.forwards = identity.metrics?.realForwards
+    ?? Math.max(identity.failure?.forwards ?? 0, transcriptForwards);
+  identity.gpuWallSeconds = identity.metrics?.gpuWallSeconds
+    ?? identity.failure?.serviceWallSeconds ?? 0;
   identity.evidenceSha256 = sha(canonical(evidence));
   identity.gameSha256 = sha(canonical(identity));
   return { identity, evidence };
@@ -1279,8 +1405,16 @@ async function matrix() {
   if (positive !== 0 || negative !== EXIT.commitmentInput)
     console.error(`commitment-input controls failed: positive=${positive} negative=${negative}`);
 
-  const rows = [];
-  for (const arm of LIVE_ARMS) {
+  // `--only` reruns a subset (e.g. the four new-head games after the head
+  // arrives) and merges those rows into the existing table without touching
+  // the evidence of the other games.
+  const only = (arg('--only') ?? '').split(',').map(value => value.trim()).filter(Boolean);
+  const liveArms = only.length ? LIVE_ARMS.filter(arm => only.includes(arm.id)) : LIVE_ARMS;
+  const referenceArms = only.length ? REFERENCE_ARMS.filter(arm => only.includes(arm.id)) : REFERENCE_ARMS;
+  if (only.length && liveArms.length === 0 && referenceArms.length === 0)
+    throw new Error(`--only matched no arm: ${only.join(',')}`);
+  const fresh = [];
+  for (const arm of liveArms) {
     for (const seed of seeds) {
       const dir = join(out, 'arms', arm.id, seed);
       mkdirSync(dir, { recursive: true });
@@ -1297,14 +1431,15 @@ async function matrix() {
       }
       const exits = { start, resume, replay };
       const built = gameIdentity({ arm, seed, dir, exits });
-      const status = start !== 0 ? `refused:${JSON.parse(readFileSync(join(dir, 'preflight.json'), 'utf8')).reason}`
+      const early = JSON.parse(readFileSync(join(dir, 'preflight.json'), 'utf8'));
+      const status = start !== 0 ? (early.ok ? `failed:start:${start}` : `refused:${early.reason}`)
         : resume !== 0 ? `failed:resume:${resume}`
           : replay !== 0 ? `failed:replay:${replay}` : 'completed';
       writeJson(join(dir, 'summary.json'), { ...built.identity, status, evidence: built.evidence });
-      rows.push({ ...built.identity, status, dir: rel(dir) });
+      fresh.push({ ...built.identity, status, dir: rel(dir) });
     }
   }
-  for (const arm of REFERENCE_ARMS) {
+  for (const arm of referenceArms) {
     for (const seed of seeds) {
       const dir = join(out, 'reference', arm.id, seed);
       mkdirSync(dir, { recursive: true });
@@ -1320,9 +1455,16 @@ async function matrix() {
       const status = start !== 0 ? `refused:${start}` : resume !== 0 ? `failed:resume:${resume}`
         : replay !== 0 ? `failed:replay:${replay}` : 'completed';
       writeJson(join(dir, 'summary.json'), { ...built.identity, status, evidence: built.evidence });
-      rows.push({ ...built.identity, status, dir: rel(dir) });
+      fresh.push({ ...built.identity, status, dir: rel(dir) });
     }
   }
+  const priorPath = join(out, 'matrix-table.json');
+  const prior = existsSync(priorPath) ? JSON.parse(readFileSync(priorPath, 'utf8')) : null;
+  const replaced = new Set(fresh.map(row => `${row.arm}|${row.seed}`));
+  const rows = [...(prior?.rows ?? []).filter(row => !replaced.has(`${row.arm}|${row.seed}`)), ...fresh];
+  rows.sort((left, right) => (ARMS.findIndex(arm => arm.id === left.arm)
+    - ARMS.findIndex(arm => arm.id === right.arm))
+    || (seeds.indexOf(left.seed) - seeds.indexOf(right.seed)));
 
   const seedGroups = {};
   for (const row of rows.filter(entry => entry.family === 'reference')) {
@@ -1337,14 +1479,17 @@ async function matrix() {
     commitmentInputPositiveControl: positive === 0,
     commitmentInputNegativeControl: negative === EXIT.commitmentInput,
     liveArmsStarted: rows.filter(row => row.family === 'live' && row.exits.start === 0).length,
-    liveArmsRefused: rows.filter(row => row.family === 'live' && row.exits.start !== 0).length,
+    liveArmsRefusedAtPreflight: rows.filter(row => row.family === 'live'
+      && row.exits.start !== 0 && row.head?.ok === false).length,
+    liveArmsFailedAfterStart: rows.filter(row => row.family === 'live'
+      && row.exits.start !== 0 && row.head?.ok === true).length,
     referenceGamesCompleted: rows.filter(row => row.family === 'reference'
       && row.status === 'completed').length,
     resumeUsedNewProcess: rows.filter(row => row.exits.resume === 0)
       .every(row => row.pids.start !== null && row.pids.resume !== null
         && row.pids.start !== row.pids.resume),
-    realForwards: rows.reduce((sum, row) => sum + (row.metrics?.realForwards ?? 0), 0),
-    gpuWallSeconds: rows.reduce((sum, row) => sum + (row.metrics?.gpuWallSeconds ?? 0), 0),
+    realForwards: rows.reduce((sum, row) => sum + (row.forwards ?? 0), 0),
+    gpuWallSeconds: rows.reduce((sum, row) => sum + (row.gpuWallSeconds ?? 0), 0),
   };
   const table = { schema: 'frostecho.r10.matrix-table/1', generatedAt: new Date().toISOString(),
     source: SOURCE, scenarioSha: SCENARIO_SHA, seeds,
@@ -1389,7 +1534,7 @@ function matrixMarkdown(table) {
       m.coverageHours === null || m.coverageHours === undefined ? '—' : fmt(m.coverageHours, 1),
       m.furnaceLitHours === undefined ? '—' : fmt(m.furnaceLitHours, 1),
       m.workHours === undefined ? '—' : fmt(m.workHours, 1),
-      row.family === 'live' ? fmt(m.realForwards) : '0 (rule)',
+      row.family === 'live' ? fmt(row.forwards ?? 0) : '0 (rule)',
       row.gameSha256.slice(0, 12),
     ];
     lines.push(`| ${cells.join(' | ')} |`);
@@ -1409,17 +1554,30 @@ function matrixMarkdown(table) {
       + `${m.coverageHours === null || m.coverageHours === undefined ? '—' : fmt(m.coverageHours, 1)} | `
       + `${m.furnaceLitHours === undefined ? '—' : fmt(m.furnaceLitHours, 1)} | `
       + `${m.workHours === undefined ? '—' : fmt(m.workHours, 1)} | `
-      + `${row.family === 'live' ? fmt(m.realForwards) : '0 (rule)'} | `
+      + `${row.family === 'live' ? fmt(row.forwards ?? 0) : '0 (rule)'} | `
       + `${fmt(m.scorerTimeouts)} | `
-      + `${m.gpuWallSeconds === undefined ? '—' : fmt(m.gpuWallSeconds, 1)} | `
+      + `${fmt(row.gpuWallSeconds ?? 0, 1)} | `
       + `${row.replica ? (row.replica.equivalent ? 'equivalent' : 'DIFFERS') : '—'} |`);
   }
   lines.push('');
   lines.push('Reference-arm note: the reference policy fulfils all four promises on D1 '
     + '(11:00-13:00), so at the D2 checkpoint it has no active commitment to cancel or '
     + 'renegotiate. `exit/post-cancel/unauth` are therefore 0-of-0 for that arm, not '
-    + 'verified zeros; the eight live arms that would exercise them never started '
-    + '(no head trained on `joint-c-action/2`).');
+    + 'verified zeros.');
+  const startedLive = table.rows.filter(row => row.family === 'live' && row.exits.start !== 0
+    && row.head?.ok === true);
+  if (startedLive.length > 0) {
+    const reasons = new Set();
+    for (const row of startedLive) {
+      const path = join(ROOT, row.dir, 'failure.json');
+      if (existsSync(path)) reasons.add(JSON.parse(readFileSync(path, 'utf8')).error ?? 'unknown');
+    }
+    lines.push('');
+    lines.push(`Live note: ${startedLive.length} game(s) loaded a real joint-c-action/2 head and then `
+      + `failed the online binding at start (exit ${startedLive[0].exits.start}): `
+      + `${[...reasons].join('; ') || 'see failure.json'}. Those failures are kept in the evidence `
+      + 'and are not replaced by rules or replay.');
+  }
   lines.push('');
   lines.push('checks: ' + Object.entries(table.checks)
     .map(([key, value]) => `${key}=${value}`).join(' · '));
@@ -1449,9 +1607,21 @@ function regenerateSummaries() {
     rows.push({ ...built.identity, status: row.status, dir: row.dir });
   }
   const checks = { ...prior.checks,
+    scenarioIdentical: rows.every(row => row.scenarioSha === SCENARIO_SHA),
+    memoryBudgetIdentical: rows.every(row => row.memoryTokenBudget === SCENARIO.memory.budgetTokens),
+    liveArmsStarted: rows.filter(row => row.family === 'live' && row.exits.start === 0).length,
+    liveArmsRefusedAtPreflight: rows.filter(row => row.family === 'live'
+      && row.exits.start !== 0 && row.head?.ok === false).length,
+    liveArmsFailedAfterStart: rows.filter(row => row.family === 'live'
+      && row.exits.start !== 0 && row.head?.ok === true).length,
+    referenceGamesCompleted: rows.filter(row => row.family === 'reference'
+      && row.status === 'completed').length,
     resumeUsedNewProcess: rows.filter(row => row.exits.resume === 0)
       .every(row => row.pids.start !== null && row.pids.resume !== null
-        && row.pids.start !== row.pids.resume) };
+        && row.pids.start !== row.pids.resume),
+    realForwards: rows.reduce((sum, row) => sum + (row.forwards ?? 0), 0),
+    gpuWallSeconds: Number(rows.reduce((sum, row) =>
+      sum + (row.gpuWallSeconds ?? 0), 0).toFixed(1)) };
   const table = { ...prior, rows, checks };
   writeJson(join(out, 'matrix-table.json'), table);
   writeFileSync(join(out, 'MATRIX.md'), matrixMarkdown(table), 'utf8');
@@ -1464,6 +1634,18 @@ async function main() {
   if (flag('--matrix')) return matrix();
   if (flag('--regenerate-table')) return regenerateTable();
   if (flag('--regenerate-summaries')) return regenerateSummaries();
+  if (flag('--preflight-only')) {
+    const arm = ARMS.find(entry => entry.id === arg('--arm'));
+    if (!arm) { console.error(`unknown arm ${arg('--arm')}`); return EXIT.internal; }
+    const dir = resolve(arg('--out') ?? './preflight');
+    mkdirSync(dir, { recursive: true });
+    const preflight = { ...preflightHead(arm), arm: arm.id,
+      seed: arg('--seed') ?? null, scenarioSha: SCENARIO_SHA };
+    if (preflight.ok) preflight.command = scorerCommand(arm, dir);
+    writeJson(join(dir, 'preflight.json'), preflight);
+    console.log(JSON.stringify(preflight, null, 2));
+    return preflight.code;
+  }
   if (flag('--probe-commitment-input')) return probe(true, resolve(arg('--out') ?? './probe-positive'));
   if (flag('--probe-missing-commitments')) return probe(false, resolve(arg('--out') ?? './probe-negative'));
   const phase = arg('--phase');

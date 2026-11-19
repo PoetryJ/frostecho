@@ -1,0 +1,183 @@
+{
+  "schema": "frostecho.r10.matrix-start/1",
+  "pid": 4040876,
+  "arm": "new-conditional",
+  "seed": "r10h-1",
+  "family": "live",
+  "memorySelection": "obligation-first",
+  "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
+  "source": {
+    "head": "e320c919c647da0a4f17773b64914f691b9f5b71",
+    "tree": "c618355227f4435b47f9c522f4816281e7ca1bea",
+    "branch": "codex/r10-H"
+  },
+  "preflight": {
+    "headSha256": "0b9d203f96c4dd8fb3c8d707eeaff2b5bbbcdac28a8c85aaafb3f43b0b205106",
+    "manifestSha256": "e049519dc258f1562c90c29a0db2c3fd5d78e8ca52665db269953adb2d0d0151",
+    "featureIdentityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+    "labelSource": "same-snapshot-branch-rollout",
+    "manifestBinding": {
+      "reason": "serve_joint.py accepts only labelSource \"reference-imitation\"; this head is \"same-snapshot-branch-rollout\". The harness passes the same head without --training-manifest and verifies headSha256, featureIdentityHash and rendererId on every reply.",
+      "headSha256": "0b9d203f96c4dd8fb3c8d707eeaff2b5bbbcdac28a8c85aaafb3f43b0b205106",
+      "featureIdentityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+      "labelSource": "same-snapshot-branch-rollout"
+    },
+    "rendererId": "joint-c-action/2",
+    "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e"
+  },
+  "worldInitSha": "5b3a5eec95f5de9a6146fa5510363ed1027820aafdc71659f9be9a5d5517a2f5",
+  "worldInit": {
+    "seed": "r10h-1",
+    "profile": "gospel-5.8.19",
+    "simTime": 480,
+    "resources": {
+      "food": 130,
+      "firewood": 30,
+      "power": 30,
+      "medicine": 3
+    },
+    "npcs": [
+      {
+        "id": "npc_01",
+        "location": "dorm-a",
+        "alive": true,
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_02",
+        "location": "dorm-b",
+        "alive": true,
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_03",
+        "location": "dorm-a",
+        "alive": true,
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_04",
+        "location": "dorm-b",
+        "alive": true,
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_05",
+        "location": "dorm-a",
+        "alive": true,
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_06",
+        "location": "dorm-b",
+        "alive": true,
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_07",
+        "location": "dorm-a",
+        "alive": true,
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_08",
+        "location": "dorm-b",
+        "alive": true,
+        "hunger": 70,
+        "stamina": 80,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      }
+    ],
+    "commitments": [
+      {
+        "actorId": "npc_01",
+        "goal": "deliver-meal",
+        "status": "active",
+        "taskId": "task-001-deliver-meal"
+      },
+      {
+        "actorId": "npc_02",
+        "goal": "deliver-meal",
+        "status": "active",
+        "taskId": "task-002-deliver-meal"
+      },
+      {
+        "actorId": "npc_03",
+        "goal": "supply-warehouse",
+        "status": "active",
+        "taskId": "task-003-supply-warehouse"
+      },
+      {
+        "actorId": "npc_04",
+        "goal": "supply-warehouse",
+        "status": "active",
+        "taskId": "task-004-supply-warehouse"
+      }
+    ],
+    "memoryBudget": 640
+  },
+  "commitments": [
+    {
+      "actorId": "npc_01",
+      "goal": "deliver-meal",
+      "verdict": "accept",
+      "commitmentId": "cm-609a0636-ebe0-432e-94e1-8fd4cf241a23",
+      "taskId": "task-001-deliver-meal",
+      "status": "active"
+    },
+    {
+      "actorId": "npc_02",
+      "goal": "deliver-meal",
+      "verdict": "accept",
+      "commitmentId": "cm-f6bbec6f-4b4a-40c9-805e-2e18536c6b47",
+      "taskId": "task-002-deliver-meal",
+      "status": "active"
+    },
+    {
+      "actorId": "npc_03",
+      "goal": "supply-warehouse",
+      "verdict": "accept",
+      "commitmentId": "cm-2e3ba21a-8a41-4205-af96-d485a9158778",
+      "taskId": "task-003-supply-warehouse",
+      "status": "active"
+    },
+    {
+      "actorId": "npc_04",
+      "goal": "supply-warehouse",
+      "verdict": "accept",
+      "commitmentId": "cm-026d8ab3-8e85-4dbb-850f-353a37004066",
+      "taskId": "task-004-supply-warehouse",
+      "status": "active"
+    }
+  ]
+}

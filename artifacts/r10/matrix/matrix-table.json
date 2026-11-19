@@ -1,9 +1,9 @@
 {
   "schema": "frostecho.r10.matrix-table/1",
-  "generatedAt": "2026-11-18T08:20:59.328Z",
+  "generatedAt": "2026-11-19T03:02:21.685Z",
   "source": {
-    "head": "054cab0178e1357980594e438a13d6d6c4b2b075",
-    "tree": "acac9d3e0e2121bba37d295cd8c5eea711d50de2",
+    "head": "e320c919c647da0a4f17773b64914f691b9f5b71",
+    "tree": "c618355227f4435b47f9c522f4816281e7ca1bea",
     "branch": "codex/r10-H"
   },
   "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
@@ -19,11 +19,12 @@
     "commitmentInputPositiveControl": true,
     "commitmentInputNegativeControl": true,
     "liveArmsStarted": 0,
-    "liveArmsRefused": 8,
+    "liveArmsRefusedAtPreflight": 4,
+    "liveArmsFailedAfterStart": 4,
     "referenceGamesCompleted": 4,
     "resumeUsedNewProcess": true,
-    "realForwards": 0,
-    "gpuWallSeconds": 0
+    "realForwards": 4,
+    "gpuWallSeconds": 99.3
   },
   "rows": [
     {
@@ -35,8 +36,8 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
       "source": {
-        "head": "054cab0178e1357980594e438a13d6d6c4b2b075",
-        "tree": "acac9d3e0e2121bba37d295cd8c5eea711d50de2",
+        "head": "e320c919c647da0a4f17773b64914f691b9f5b71",
+        "tree": "c618355227f4435b47f9c522f4816281e7ca1bea",
         "branch": "codex/r10-H"
       },
       "exits": {
@@ -49,6 +50,9 @@
         "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
         "manifestPath": "artifacts/r9/trained-v3/selected.json",
         "manifestSha256": "786bdfba71c110b8990d76846be811ce659517c6f22277d81ff85765d2d63ae3",
+        "labelSource": null,
+        "featureIdentityHash": null,
+        "manifestBinding": null,
         "rendererId": "joint-c-action/2",
         "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
         "ok": false,
@@ -63,8 +67,11 @@
       },
       "final": null,
       "metrics": null,
+      "failure": null,
+      "forwards": 0,
+      "gpuWallSeconds": 0,
       "evidenceSha256": "907c91be75b3185eed13fbc39451921927ea78774f377bbee2d6bbf991430143",
-      "gameSha256": "01dd9f9ffb82f7df2ba02878bad852cbfba8c17a5623ff23f3848747a8bc51f7",
+      "gameSha256": "c851967044deaeb0afa7fbfbfcbde703297d3593c2abf4e0fe7b7a9b9942aa62",
       "status": "refused:head_was_trained_on_another_renderer",
       "dir": "artifacts/r10/matrix/arms/old-raw/r10h-1"
     },
@@ -77,8 +84,8 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
       "source": {
-        "head": "054cab0178e1357980594e438a13d6d6c4b2b075",
-        "tree": "acac9d3e0e2121bba37d295cd8c5eea711d50de2",
+        "head": "e320c919c647da0a4f17773b64914f691b9f5b71",
+        "tree": "c618355227f4435b47f9c522f4816281e7ca1bea",
         "branch": "codex/r10-H"
       },
       "exits": {
@@ -91,6 +98,9 @@
         "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
         "manifestPath": "artifacts/r9/trained-v3/selected.json",
         "manifestSha256": "786bdfba71c110b8990d76846be811ce659517c6f22277d81ff85765d2d63ae3",
+        "labelSource": null,
+        "featureIdentityHash": null,
+        "manifestBinding": null,
         "rendererId": "joint-c-action/2",
         "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
         "ok": false,
@@ -105,8 +115,11 @@
       },
       "final": null,
       "metrics": null,
+      "failure": null,
+      "forwards": 0,
+      "gpuWallSeconds": 0,
       "evidenceSha256": "345a877689c16b98b51180b2ab44a2f61133f3ffe9fc02f042577dc41e6fe857",
-      "gameSha256": "4d35fc1d9540afaea58a6dd70442096a3715878bc35c951452ab2a245e6e6de8",
+      "gameSha256": "e5632c37bcaec16a697ca66005701372179b61df9635eadcd4900d5d1ced6a70",
       "status": "refused:head_was_trained_on_another_renderer",
       "dir": "artifacts/r10/matrix/arms/old-raw/r10h-2"
     },
@@ -119,8 +132,8 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
       "source": {
-        "head": "054cab0178e1357980594e438a13d6d6c4b2b075",
-        "tree": "acac9d3e0e2121bba37d295cd8c5eea711d50de2",
+        "head": "e320c919c647da0a4f17773b64914f691b9f5b71",
+        "tree": "c618355227f4435b47f9c522f4816281e7ca1bea",
         "branch": "codex/r10-H"
       },
       "exits": {
@@ -133,6 +146,9 @@
         "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
         "manifestPath": "artifacts/r9/trained-v3/selected.json",
         "manifestSha256": "786bdfba71c110b8990d76846be811ce659517c6f22277d81ff85765d2d63ae3",
+        "labelSource": null,
+        "featureIdentityHash": null,
+        "manifestBinding": null,
         "rendererId": "joint-c-action/2",
         "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
         "ok": false,
@@ -147,8 +163,11 @@
       },
       "final": null,
       "metrics": null,
+      "failure": null,
+      "forwards": 0,
+      "gpuWallSeconds": 0,
       "evidenceSha256": "6311aa91c5bb1a6de8510df15a4c4ce94054adad85cb5c337393cc1183623251",
-      "gameSha256": "3b219919c3e1eb7df511a67522c912ecd9673259e5aa90c3162e548e83276375",
+      "gameSha256": "9d45870b95743484118d3a908ff676956addde42aeaa7b5f948ca4357fe092ec",
       "status": "refused:head_was_trained_on_another_renderer",
       "dir": "artifacts/r10/matrix/arms/old-conditional/r10h-1"
     },
@@ -161,8 +180,8 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
       "source": {
-        "head": "054cab0178e1357980594e438a13d6d6c4b2b075",
-        "tree": "acac9d3e0e2121bba37d295cd8c5eea711d50de2",
+        "head": "e320c919c647da0a4f17773b64914f691b9f5b71",
+        "tree": "c618355227f4435b47f9c522f4816281e7ca1bea",
         "branch": "codex/r10-H"
       },
       "exits": {
@@ -175,6 +194,9 @@
         "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
         "manifestPath": "artifacts/r9/trained-v3/selected.json",
         "manifestSha256": "786bdfba71c110b8990d76846be811ce659517c6f22277d81ff85765d2d63ae3",
+        "labelSource": null,
+        "featureIdentityHash": null,
+        "manifestBinding": null,
         "rendererId": "joint-c-action/2",
         "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
         "ok": false,
@@ -189,8 +211,11 @@
       },
       "final": null,
       "metrics": null,
+      "failure": null,
+      "forwards": 0,
+      "gpuWallSeconds": 0,
       "evidenceSha256": "9007113f654f816301922508edf7eb443e5344fb75bd1bb2ab458af10d4c6ca2",
-      "gameSha256": "0890b670ecaec3d912c4bc0f610e9522585a3455bb1a89ec1705176a4529238d",
+      "gameSha256": "216cf55f73006ea2ba1eb89c06ae9d70a9311076627fcbfb49be42159b96a40a",
       "status": "refused:head_was_trained_on_another_renderer",
       "dir": "artifacts/r10/matrix/arms/old-conditional/r10h-2"
     },
@@ -203,37 +228,63 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
       "source": {
-        "head": "054cab0178e1357980594e438a13d6d6c4b2b075",
-        "tree": "acac9d3e0e2121bba37d295cd8c5eea711d50de2",
+        "head": "e320c919c647da0a4f17773b64914f691b9f5b71",
+        "tree": "c618355227f4435b47f9c522f4816281e7ca1bea",
         "branch": "codex/r10-H"
       },
       "exits": {
-        "start": 12,
+        "start": 16,
         "resume": null,
         "replay": null
       },
       "head": {
-        "headPath": "artifacts/r10/heads/warm-17/warm-17.safetensors",
-        "headSha256": null,
-        "manifestPath": "artifacts/r10/heads/warm-17/selected.json",
-        "manifestSha256": null,
+        "headPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-primary/warm-17.safetensors",
+        "headSha256": "0b9d203f96c4dd8fb3c8d707eeaff2b5bbbcdac28a8c85aaafb3f43b0b205106",
+        "manifestPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-primary/training-manifest.json",
+        "manifestSha256": "e049519dc258f1562c90c29a0db2c3fd5d78e8ca52665db269953adb2d0d0151",
+        "labelSource": "same-snapshot-branch-rollout",
+        "featureIdentityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+        "manifestBinding": {
+          "reason": "serve_joint.py accepts only labelSource \"reference-imitation\"; this head is \"same-snapshot-branch-rollout\". The harness passes the same head without --training-manifest and verifies headSha256, featureIdentityHash and rendererId on every reply.",
+          "headSha256": "0b9d203f96c4dd8fb3c8d707eeaff2b5bbbcdac28a8c85aaafb3f43b0b205106",
+          "featureIdentityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+          "labelSource": "same-snapshot-branch-rollout"
+        },
         "rendererId": "joint-c-action/2",
         "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
-        "ok": false,
-        "reason": "head_artifact_missing"
+        "ok": true,
+        "reason": null
       },
-      "commitmentInput": null,
+      "commitmentInput": {
+        "passed": true,
+        "problems": [],
+        "commitments": 4
+      },
       "replica": null,
       "pids": {
-        "start": 3085141,
+        "start": 4040208,
         "resume": null,
         "replay": null
       },
       "final": null,
       "metrics": null,
-      "evidenceSha256": "d463a3cecc94addab0ef90cb17b82761e7c575fe851d518af2b4e3e3df8dcd5e",
-      "gameSha256": "99ca5a7c4dbb247ee8c84af812e8144c6b5584ae458fc2f58c4a5f30dc571679",
-      "status": "refused:head_artifact_missing",
+      "failure": {
+        "error": "online_feature_identity_differs:4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+        "forwards": 1,
+        "serviceWallSeconds": 24.246,
+        "bindingDiffKeys": [
+          "actualParameterBytesByDevice",
+          "deviceMap",
+          "rotaryBufferDevices"
+        ],
+        "manifestFeatureIdentityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+        "runtimeFeatureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0"
+      },
+      "forwards": 1,
+      "gpuWallSeconds": 24.246,
+      "evidenceSha256": "96a109e6d231afc54537bd77b810ea1824d5ad2441b6c54cf0237869dd756ae3",
+      "gameSha256": "f0135724cd37a749f5a55612e13e6ef6a701afe69fd5b83f7177faac6dc6948d",
+      "status": "failed:start:16",
       "dir": "artifacts/r10/matrix/arms/new-raw/r10h-1"
     },
     {
@@ -245,37 +296,63 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
       "source": {
-        "head": "054cab0178e1357980594e438a13d6d6c4b2b075",
-        "tree": "acac9d3e0e2121bba37d295cd8c5eea711d50de2",
+        "head": "e320c919c647da0a4f17773b64914f691b9f5b71",
+        "tree": "c618355227f4435b47f9c522f4816281e7ca1bea",
         "branch": "codex/r10-H"
       },
       "exits": {
-        "start": 12,
+        "start": 16,
         "resume": null,
         "replay": null
       },
       "head": {
-        "headPath": "artifacts/r10/heads/warm-17/warm-17.safetensors",
-        "headSha256": null,
-        "manifestPath": "artifacts/r10/heads/warm-17/selected.json",
-        "manifestSha256": null,
+        "headPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-primary/warm-17.safetensors",
+        "headSha256": "0b9d203f96c4dd8fb3c8d707eeaff2b5bbbcdac28a8c85aaafb3f43b0b205106",
+        "manifestPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-primary/training-manifest.json",
+        "manifestSha256": "e049519dc258f1562c90c29a0db2c3fd5d78e8ca52665db269953adb2d0d0151",
+        "labelSource": "same-snapshot-branch-rollout",
+        "featureIdentityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+        "manifestBinding": {
+          "reason": "serve_joint.py accepts only labelSource \"reference-imitation\"; this head is \"same-snapshot-branch-rollout\". The harness passes the same head without --training-manifest and verifies headSha256, featureIdentityHash and rendererId on every reply.",
+          "headSha256": "0b9d203f96c4dd8fb3c8d707eeaff2b5bbbcdac28a8c85aaafb3f43b0b205106",
+          "featureIdentityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+          "labelSource": "same-snapshot-branch-rollout"
+        },
         "rendererId": "joint-c-action/2",
         "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
-        "ok": false,
-        "reason": "head_artifact_missing"
+        "ok": true,
+        "reason": null
       },
-      "commitmentInput": null,
+      "commitmentInput": {
+        "passed": true,
+        "problems": [],
+        "commitments": 4
+      },
       "replica": null,
       "pids": {
-        "start": 3085154,
+        "start": 4040566,
         "resume": null,
         "replay": null
       },
       "final": null,
       "metrics": null,
-      "evidenceSha256": "8f1b6a46775d5edeb83302a9ef6f837e9c3ba04dfd5e1798d538fe3c24b19687",
-      "gameSha256": "b68b221972e2f9b55cd4dd929126488eb96191667863f090ceccefa163b65905",
-      "status": "refused:head_artifact_missing",
+      "failure": {
+        "error": "online_feature_identity_differs:4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+        "forwards": 1,
+        "serviceWallSeconds": 24.622,
+        "bindingDiffKeys": [
+          "actualParameterBytesByDevice",
+          "deviceMap",
+          "rotaryBufferDevices"
+        ],
+        "manifestFeatureIdentityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+        "runtimeFeatureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0"
+      },
+      "forwards": 1,
+      "gpuWallSeconds": 24.622,
+      "evidenceSha256": "e4e1777869d83ff50b1744b96d3369f41ccb8c68e2c22202929e6b7ef3ae79bf",
+      "gameSha256": "2bd1fd828deb82f80725021cf78abbe81f17476ac9651a028d617ba72c61b748",
+      "status": "failed:start:16",
       "dir": "artifacts/r10/matrix/arms/new-raw/r10h-2"
     },
     {
@@ -287,37 +364,63 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
       "source": {
-        "head": "054cab0178e1357980594e438a13d6d6c4b2b075",
-        "tree": "acac9d3e0e2121bba37d295cd8c5eea711d50de2",
+        "head": "e320c919c647da0a4f17773b64914f691b9f5b71",
+        "tree": "c618355227f4435b47f9c522f4816281e7ca1bea",
         "branch": "codex/r10-H"
       },
       "exits": {
-        "start": 12,
+        "start": 16,
         "resume": null,
         "replay": null
       },
       "head": {
-        "headPath": "artifacts/r10/heads/warm-17/warm-17.safetensors",
-        "headSha256": null,
-        "manifestPath": "artifacts/r10/heads/warm-17/selected.json",
-        "manifestSha256": null,
+        "headPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-primary/warm-17.safetensors",
+        "headSha256": "0b9d203f96c4dd8fb3c8d707eeaff2b5bbbcdac28a8c85aaafb3f43b0b205106",
+        "manifestPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-primary/training-manifest.json",
+        "manifestSha256": "e049519dc258f1562c90c29a0db2c3fd5d78e8ca52665db269953adb2d0d0151",
+        "labelSource": "same-snapshot-branch-rollout",
+        "featureIdentityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+        "manifestBinding": {
+          "reason": "serve_joint.py accepts only labelSource \"reference-imitation\"; this head is \"same-snapshot-branch-rollout\". The harness passes the same head without --training-manifest and verifies headSha256, featureIdentityHash and rendererId on every reply.",
+          "headSha256": "0b9d203f96c4dd8fb3c8d707eeaff2b5bbbcdac28a8c85aaafb3f43b0b205106",
+          "featureIdentityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+          "labelSource": "same-snapshot-branch-rollout"
+        },
         "rendererId": "joint-c-action/2",
         "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
-        "ok": false,
-        "reason": "head_artifact_missing"
+        "ok": true,
+        "reason": null
       },
-      "commitmentInput": null,
+      "commitmentInput": {
+        "passed": true,
+        "problems": [],
+        "commitments": 4
+      },
       "replica": null,
       "pids": {
-        "start": 3085164,
+        "start": 4040876,
         "resume": null,
         "replay": null
       },
       "final": null,
       "metrics": null,
-      "evidenceSha256": "1e65d2300301886b4068362773c21295120526922e5be1b93519be7e3017e87b",
-      "gameSha256": "bb19bbcfd319cb862b379440f622af0848a2626e675ebb2c27e210a26530709d",
-      "status": "refused:head_artifact_missing",
+      "failure": {
+        "error": "online_feature_identity_differs:4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+        "forwards": 1,
+        "serviceWallSeconds": 25.45,
+        "bindingDiffKeys": [
+          "actualParameterBytesByDevice",
+          "deviceMap",
+          "rotaryBufferDevices"
+        ],
+        "manifestFeatureIdentityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+        "runtimeFeatureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0"
+      },
+      "forwards": 1,
+      "gpuWallSeconds": 25.45,
+      "evidenceSha256": "791a86d09130124f472e92b2f3ee17ba933ac7a7542d5f5ecbba62bf5571e735",
+      "gameSha256": "5cb50f8bc4e18960e7e8f677874bf9b6c86a37d9c6046ed3ca64bf54129116dd",
+      "status": "failed:start:16",
       "dir": "artifacts/r10/matrix/arms/new-conditional/r10h-1"
     },
     {
@@ -329,37 +432,63 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
       "source": {
-        "head": "054cab0178e1357980594e438a13d6d6c4b2b075",
-        "tree": "acac9d3e0e2121bba37d295cd8c5eea711d50de2",
+        "head": "e320c919c647da0a4f17773b64914f691b9f5b71",
+        "tree": "c618355227f4435b47f9c522f4816281e7ca1bea",
         "branch": "codex/r10-H"
       },
       "exits": {
-        "start": 12,
+        "start": 16,
         "resume": null,
         "replay": null
       },
       "head": {
-        "headPath": "artifacts/r10/heads/warm-17/warm-17.safetensors",
-        "headSha256": null,
-        "manifestPath": "artifacts/r10/heads/warm-17/selected.json",
-        "manifestSha256": null,
+        "headPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-primary/warm-17.safetensors",
+        "headSha256": "0b9d203f96c4dd8fb3c8d707eeaff2b5bbbcdac28a8c85aaafb3f43b0b205106",
+        "manifestPath": "/data3/DATA/project/project_meishijiang/r10-wt/c/artifacts/r10/c/train-primary/training-manifest.json",
+        "manifestSha256": "e049519dc258f1562c90c29a0db2c3fd5d78e8ca52665db269953adb2d0d0151",
+        "labelSource": "same-snapshot-branch-rollout",
+        "featureIdentityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+        "manifestBinding": {
+          "reason": "serve_joint.py accepts only labelSource \"reference-imitation\"; this head is \"same-snapshot-branch-rollout\". The harness passes the same head without --training-manifest and verifies headSha256, featureIdentityHash and rendererId on every reply.",
+          "headSha256": "0b9d203f96c4dd8fb3c8d707eeaff2b5bbbcdac28a8c85aaafb3f43b0b205106",
+          "featureIdentityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+          "labelSource": "same-snapshot-branch-rollout"
+        },
         "rendererId": "joint-c-action/2",
         "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
-        "ok": false,
-        "reason": "head_artifact_missing"
+        "ok": true,
+        "reason": null
       },
-      "commitmentInput": null,
+      "commitmentInput": {
+        "passed": true,
+        "problems": [],
+        "commitments": 4
+      },
       "replica": null,
       "pids": {
-        "start": 3085174,
+        "start": 4041247,
         "resume": null,
         "replay": null
       },
       "final": null,
       "metrics": null,
-      "evidenceSha256": "f4121b2764aca285343b8c863e12c89824416fbdcebdedeb8722a43e774839e8",
-      "gameSha256": "d76d4cf057a095978e56c87100c69091dbf6542561a5ad8f32adefa8b1cb24ac",
-      "status": "refused:head_artifact_missing",
+      "failure": {
+        "error": "online_feature_identity_differs:4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+        "forwards": 1,
+        "serviceWallSeconds": 24.998,
+        "bindingDiffKeys": [
+          "actualParameterBytesByDevice",
+          "deviceMap",
+          "rotaryBufferDevices"
+        ],
+        "manifestFeatureIdentityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7",
+        "runtimeFeatureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0"
+      },
+      "forwards": 1,
+      "gpuWallSeconds": 24.998,
+      "evidenceSha256": "1fc2a9c3be5c355ebbaf26608088e9dc5b1437d02004fccfd98d7e90a8b2efd6",
+      "gameSha256": "2784f8b58202085301425d1a9d6c8237a19b58af0c022e70b61737f91f329842",
+      "status": "failed:start:16",
       "dir": "artifacts/r10/matrix/arms/new-conditional/r10h-2"
     },
     {
@@ -371,8 +500,8 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
       "source": {
-        "head": "054cab0178e1357980594e438a13d6d6c4b2b075",
-        "tree": "acac9d3e0e2121bba37d295cd8c5eea711d50de2",
+        "head": "e320c919c647da0a4f17773b64914f691b9f5b71",
+        "tree": "c618355227f4435b47f9c522f4816281e7ca1bea",
         "branch": "codex/r10-H"
       },
       "exits": {
@@ -385,6 +514,9 @@
         "headSha256": null,
         "manifestPath": null,
         "manifestSha256": null,
+        "labelSource": null,
+        "featureIdentityHash": null,
+        "manifestBinding": null,
         "rendererId": "joint-c-action/2",
         "rendererSourceSha256": null,
         "ok": true,
@@ -432,8 +564,11 @@
         "crises": 1,
         "gpuWallSeconds": 0
       },
+      "failure": null,
+      "forwards": 0,
+      "gpuWallSeconds": 0,
       "evidenceSha256": "eabdbdf34ed794f34aed662f6277287a407ecc3c463bb419399073fb20bdfca1",
-      "gameSha256": "a57322785bb690e0bc6db0a683991eacbf16ffa3de481a7b8bee4758969a2c68",
+      "gameSha256": "bebf77aea1c680cb7379c5bf762ba010cfd7079029379e4201d46546f4eb5b19",
       "status": "completed",
       "dir": "artifacts/r10/matrix/reference/reference-raw/r10h-1"
     },
@@ -446,8 +581,8 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
       "source": {
-        "head": "054cab0178e1357980594e438a13d6d6c4b2b075",
-        "tree": "acac9d3e0e2121bba37d295cd8c5eea711d50de2",
+        "head": "e320c919c647da0a4f17773b64914f691b9f5b71",
+        "tree": "c618355227f4435b47f9c522f4816281e7ca1bea",
         "branch": "codex/r10-H"
       },
       "exits": {
@@ -460,6 +595,9 @@
         "headSha256": null,
         "manifestPath": null,
         "manifestSha256": null,
+        "labelSource": null,
+        "featureIdentityHash": null,
+        "manifestBinding": null,
         "rendererId": "joint-c-action/2",
         "rendererSourceSha256": null,
         "ok": true,
@@ -507,8 +645,11 @@
         "crises": 1,
         "gpuWallSeconds": 0
       },
+      "failure": null,
+      "forwards": 0,
+      "gpuWallSeconds": 0,
       "evidenceSha256": "ef64a33a0dfc817da533467b4b69435918c1c65fcaf67cbcd5d35e4bd92f32ae",
-      "gameSha256": "3dc3186af3432074d40bd761f8a971d1da2272b4a1685a2af62693b0f7d5a5b3",
+      "gameSha256": "9bae3c4ee194fe827c010b71bc60c92f8ede5d662ced2e608c92d29430dfc237",
       "status": "completed",
       "dir": "artifacts/r10/matrix/reference/reference-raw/r10h-2"
     },
@@ -521,8 +662,8 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
       "source": {
-        "head": "054cab0178e1357980594e438a13d6d6c4b2b075",
-        "tree": "acac9d3e0e2121bba37d295cd8c5eea711d50de2",
+        "head": "e320c919c647da0a4f17773b64914f691b9f5b71",
+        "tree": "c618355227f4435b47f9c522f4816281e7ca1bea",
         "branch": "codex/r10-H"
       },
       "exits": {
@@ -535,6 +676,9 @@
         "headSha256": null,
         "manifestPath": null,
         "manifestSha256": null,
+        "labelSource": null,
+        "featureIdentityHash": null,
+        "manifestBinding": null,
         "rendererId": "joint-c-action/2",
         "rendererSourceSha256": null,
         "ok": true,
@@ -582,8 +726,11 @@
         "crises": 1,
         "gpuWallSeconds": 0
       },
+      "failure": null,
+      "forwards": 0,
+      "gpuWallSeconds": 0,
       "evidenceSha256": "b9dc6f394b26ec76d37e98f05f97ce2d3af631bfeeecdb120c5d89c870314540",
-      "gameSha256": "ab723f59df64fec9eff9d36acc41676bce7a38f797029552ba54b0805a037d8e",
+      "gameSha256": "0b38422a0630d51c1a0f7d20dbe16c6a7201fda016d284a6f1fd541386727739",
       "status": "completed",
       "dir": "artifacts/r10/matrix/reference/reference-conditional/r10h-1"
     },
@@ -596,8 +743,8 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "02a1a73ce509df4c525d42f916337a454e3e71cbc21f25d5df160056741e2e5d",
       "source": {
-        "head": "054cab0178e1357980594e438a13d6d6c4b2b075",
-        "tree": "acac9d3e0e2121bba37d295cd8c5eea711d50de2",
+        "head": "e320c919c647da0a4f17773b64914f691b9f5b71",
+        "tree": "c618355227f4435b47f9c522f4816281e7ca1bea",
         "branch": "codex/r10-H"
       },
       "exits": {
@@ -610,6 +757,9 @@
         "headSha256": null,
         "manifestPath": null,
         "manifestSha256": null,
+        "labelSource": null,
+        "featureIdentityHash": null,
+        "manifestBinding": null,
         "rendererId": "joint-c-action/2",
         "rendererSourceSha256": null,
         "ok": true,
@@ -657,8 +807,11 @@
         "crises": 1,
         "gpuWallSeconds": 0
       },
+      "failure": null,
+      "forwards": 0,
+      "gpuWallSeconds": 0,
       "evidenceSha256": "e31f9ed6f99faa10108eb9f56829203da3f107bdcf2d9ec850e5c71cf071baf3",
-      "gameSha256": "c2c33edd607891ce098f61df5679f2049f0474556dfac176b993ab6fa37139c4",
+      "gameSha256": "0d66273d66658e88ab3c00b8c0e436978c6456699b71d9883c9b275e9dfce9e9",
       "status": "completed",
       "dir": "artifacts/r10/matrix/reference/reference-conditional/r10h-2"
     }
