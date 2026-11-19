@@ -1,0 +1,787 @@
+{
+  "schema": "frostecho.webgpu-map/1",
+  "source": {
+    "repository": "https://github.com/PoetryJ/frostecho",
+    "commit": "586034fbe8b10f26aa5def8e05a8d55673522e7f",
+    "path": "src/spatial-v2/legacy-map-data.ts",
+    "sha256": "34931364f80ad2e80b835750885affa1a7fcc81aa93875e0d3cf46dd7949ffa8",
+    "profile": "frostecho.legacy-map-extraction/1"
+  },
+  "tileMetres": 2,
+  "village": {
+    "id": "village",
+    "name": "末日据点",
+    "w": 50,
+    "h": 40,
+    "blockedRows": [
+      "..................................................",
+      ".#.......#.............................#.......#..",
+      "...............#...................#..............",
+      "..................................................",
+      "..................................................",
+      "..................................................",
+      "..................................................",
+      "................................................#.",
+      ".#........#.......................................",
+      "...........#############..##############..........",
+      ".....#.....#...........................#....#.....",
+      "...........#.######...........######...#..........",
+      "...........#.######...........######...#..........",
+      "...........#.######...........######...#..........",
+      "...........#.######...........######...#..........",
+      "..........##...........................##.........",
+      "...........#...........#...............#..........",
+      "...........#...........................#..........",
+      "...........#.#######....##....#######..#..........",
+      "...........#.#######...####...#######..#..........",
+      "...........#.#######...####...#######..#..........",
+      "...........#.#######....##....#######..#..........",
+      "...........#.#######..........#######..#..........",
+      "...........#...........................#..........",
+      "...........#...........................#..........",
+      "..........##...........................##.........",
+      "...........#.#####...#######.....####..#..........",
+      "...........#.#####...#######.....####..#..........",
+      "...........#.#####...#######.....####..#..........",
+      "...........#.#####...#######...........#..........",
+      ".....#.....#...........................#....#.....",
+      "...........#############..##############..........",
+      "..................................................",
+      ".#.............................................#..",
+      "..................................................",
+      "..................................................",
+      "..................................................",
+      "........#......#...................#..............",
+      ".#.....................................#........#.",
+      ".................................................."
+    ],
+    "triggers": [
+      {
+        "x": 16,
+        "y": 15,
+        "w": 1,
+        "h": 1,
+        "target": "warehouse",
+        "name": "📦location.warehouse",
+        "spawnX": 16,
+        "spawnY": 16
+      },
+      {
+        "x": 33,
+        "y": 15,
+        "w": 1,
+        "h": 1,
+        "target": "medical",
+        "name": "🏥location.medical",
+        "spawnX": 33,
+        "spawnY": 16
+      },
+      {
+        "x": 16,
+        "y": 23,
+        "w": 1,
+        "h": 1,
+        "target": "dorm_a",
+        "name": "🏠location.dorm_a",
+        "spawnX": 16,
+        "spawnY": 24
+      },
+      {
+        "x": 33,
+        "y": 23,
+        "w": 1,
+        "h": 1,
+        "target": "dorm_b",
+        "name": "🏠location.dorm_b",
+        "spawnX": 33,
+        "spawnY": 24
+      },
+      {
+        "x": 15,
+        "y": 30,
+        "w": 1,
+        "h": 1,
+        "target": "kitchen",
+        "name": "🍳location.kitchen",
+        "spawnX": 15,
+        "spawnY": 31
+      },
+      {
+        "x": 24,
+        "y": 30,
+        "w": 1,
+        "h": 1,
+        "target": "workshop",
+        "name": "🔧location.workshop",
+        "spawnX": 24,
+        "spawnY": 31
+      },
+      {
+        "x": 35,
+        "y": 29,
+        "w": 1,
+        "h": 1,
+        "target": "command",
+        "name": "🏛️location.command",
+        "spawnX": 35,
+        "spawnY": 30
+      }
+    ],
+    "interests": {
+      "warehouse_door": {
+        "x": 16,
+        "y": 16
+      },
+      "medical_door": {
+        "x": 33,
+        "y": 16
+      },
+      "dorm_a_door": {
+        "x": 16,
+        "y": 24
+      },
+      "dorm_b_door": {
+        "x": 33,
+        "y": 24
+      },
+      "kitchen_door": {
+        "x": 15,
+        "y": 30
+      },
+      "workshop_door": {
+        "x": 24,
+        "y": 30
+      },
+      "furnace_plaza": {
+        "x": 25,
+        "y": 22
+      },
+      "north_gate": {
+        "x": 25,
+        "y": 10
+      },
+      "south_gate": {
+        "x": 25,
+        "y": 30
+      },
+      "lumber_camp": {
+        "x": 6,
+        "y": 5
+      },
+      "ruins_site": {
+        "x": 43,
+        "y": 5
+      },
+      "frozen_lake": {
+        "x": 6,
+        "y": 35
+      },
+      "ore_pile": {
+        "x": 43,
+        "y": 35
+      }
+    },
+    "furniture": [],
+    "buildings": [
+      {
+        "id": "warehouse",
+        "name": "📦仓库",
+        "x": 13,
+        "y": 11,
+        "w": 6,
+        "h": 4,
+        "wallColor": "#8B7050",
+        "roofColor": "#7B5830",
+        "doorX": 16,
+        "doorY": 15,
+        "target": "warehouse",
+        "displayName": "📦location.warehouse"
+      },
+      {
+        "id": "medical",
+        "name": "🏥医疗站",
+        "x": 30,
+        "y": 11,
+        "w": 6,
+        "h": 4,
+        "wallColor": "#D8D2C4",
+        "roofColor": "#A03828",
+        "doorX": 33,
+        "doorY": 15,
+        "target": "medical",
+        "displayName": "🏥location.medical"
+      },
+      {
+        "id": "dorm_a",
+        "name": "🏠宿舍A",
+        "x": 13,
+        "y": 18,
+        "w": 7,
+        "h": 5,
+        "wallColor": "#8B7050",
+        "roofColor": "#405880",
+        "doorX": 16,
+        "doorY": 23,
+        "target": "dorm_a",
+        "displayName": "🏠location.dorm_a"
+      },
+      {
+        "id": "dorm_b",
+        "name": "🏠宿舍B",
+        "x": 30,
+        "y": 18,
+        "w": 7,
+        "h": 5,
+        "wallColor": "#8B7050",
+        "roofColor": "#406840",
+        "doorX": 33,
+        "doorY": 23,
+        "target": "dorm_b",
+        "displayName": "🏠location.dorm_b"
+      },
+      {
+        "id": "kitchen",
+        "name": "🍳炊事房",
+        "x": 13,
+        "y": 26,
+        "w": 5,
+        "h": 4,
+        "wallColor": "#8E8A82",
+        "roofColor": "#A03828",
+        "doorX": 15,
+        "doorY": 30,
+        "target": "kitchen",
+        "displayName": "🍳location.kitchen"
+      },
+      {
+        "id": "workshop",
+        "name": "🔧工坊",
+        "x": 21,
+        "y": 26,
+        "w": 7,
+        "h": 4,
+        "wallColor": "#8E8A82",
+        "roofColor": "#7B5830",
+        "doorX": 24,
+        "doorY": 30,
+        "target": "workshop",
+        "displayName": "🔧location.workshop"
+      },
+      {
+        "id": "command",
+        "name": "🏛️指挥所",
+        "x": 33,
+        "y": 26,
+        "w": 4,
+        "h": 3,
+        "wallColor": "#8E8A82",
+        "roofColor": "#7B5830",
+        "doorX": 35,
+        "doorY": 29,
+        "target": "command",
+        "displayName": "🏛️location.command"
+      }
+    ],
+    "decorations": [
+      {
+        "type": "tree",
+        "x": 1,
+        "y": 1,
+        "color": "#7A8088",
+        "solid": true
+      },
+      {
+        "type": "tree",
+        "x": 9,
+        "y": 1,
+        "color": "#7A8088",
+        "solid": true
+      },
+      {
+        "type": "tree",
+        "x": 1,
+        "y": 8,
+        "color": "#7A8088",
+        "solid": true
+      },
+      {
+        "type": "tree",
+        "x": 10,
+        "y": 8,
+        "color": "#7A8088",
+        "solid": true
+      },
+      {
+        "type": "tree",
+        "x": 39,
+        "y": 1,
+        "color": "#7A8088",
+        "solid": true
+      },
+      {
+        "type": "tree",
+        "x": 47,
+        "y": 1,
+        "color": "#7A8088",
+        "solid": true
+      },
+      {
+        "type": "tree",
+        "x": 48,
+        "y": 7,
+        "color": "#7A8088",
+        "solid": true
+      },
+      {
+        "type": "tree",
+        "x": 1,
+        "y": 33,
+        "color": "#7A8088",
+        "solid": true
+      },
+      {
+        "type": "tree",
+        "x": 8,
+        "y": 37,
+        "color": "#7A8088",
+        "solid": true
+      },
+      {
+        "type": "tree",
+        "x": 1,
+        "y": 38,
+        "color": "#7A8088",
+        "solid": true
+      },
+      {
+        "type": "tree",
+        "x": 39,
+        "y": 38,
+        "color": "#7A8088",
+        "solid": true
+      },
+      {
+        "type": "tree",
+        "x": 47,
+        "y": 33,
+        "color": "#7A8088",
+        "solid": true
+      },
+      {
+        "type": "tree",
+        "x": 48,
+        "y": 38,
+        "color": "#7A8088",
+        "solid": true
+      },
+      {
+        "type": "tree",
+        "x": 10,
+        "y": 15,
+        "color": "#7A8088",
+        "solid": true
+      },
+      {
+        "type": "tree",
+        "x": 10,
+        "y": 25,
+        "color": "#7A8088",
+        "solid": true
+      },
+      {
+        "type": "tree",
+        "x": 40,
+        "y": 15,
+        "color": "#7A8088",
+        "solid": true
+      },
+      {
+        "type": "tree",
+        "x": 40,
+        "y": 25,
+        "color": "#7A8088",
+        "solid": true
+      },
+      {
+        "type": "snowpile",
+        "x": 20,
+        "y": 16,
+        "label": "雪堆"
+      },
+      {
+        "type": "snowpile",
+        "x": 29,
+        "y": 16,
+        "label": "雪堆"
+      },
+      {
+        "type": "snowpile",
+        "x": 20,
+        "y": 24,
+        "label": "雪堆"
+      },
+      {
+        "type": "snowpile",
+        "x": 29,
+        "y": 24,
+        "label": "雪堆"
+      },
+      {
+        "type": "snowpile",
+        "x": 12,
+        "y": 20,
+        "label": "雪堆"
+      },
+      {
+        "type": "snowpile",
+        "x": 37,
+        "y": 20,
+        "label": "雪堆"
+      },
+      {
+        "type": "snowpile",
+        "x": 25,
+        "y": 10,
+        "label": "雪堆"
+      },
+      {
+        "type": "snowpile",
+        "x": 25,
+        "y": 30,
+        "label": "雪堆"
+      },
+      {
+        "type": "icicle",
+        "x": 14,
+        "y": 11
+      },
+      {
+        "type": "icicle",
+        "x": 17,
+        "y": 11
+      },
+      {
+        "type": "icicle",
+        "x": 31,
+        "y": 11
+      },
+      {
+        "type": "icicle",
+        "x": 34,
+        "y": 11
+      },
+      {
+        "type": "icicle",
+        "x": 14,
+        "y": 18
+      },
+      {
+        "type": "icicle",
+        "x": 17,
+        "y": 18
+      },
+      {
+        "type": "icicle",
+        "x": 31,
+        "y": 18
+      },
+      {
+        "type": "icicle",
+        "x": 34,
+        "y": 18
+      },
+      {
+        "type": "debris",
+        "x": 5,
+        "y": 10,
+        "label": "废墟碎片",
+        "solid": true
+      },
+      {
+        "type": "debris",
+        "x": 44,
+        "y": 10,
+        "label": "废墟碎片",
+        "solid": true
+      },
+      {
+        "type": "debris",
+        "x": 5,
+        "y": 30,
+        "label": "废墟碎片",
+        "solid": true
+      },
+      {
+        "type": "debris",
+        "x": 44,
+        "y": 30,
+        "label": "废墟碎片",
+        "solid": true
+      },
+      {
+        "type": "debris",
+        "x": 15,
+        "y": 2,
+        "label": "废墟碎片",
+        "solid": true
+      },
+      {
+        "type": "debris",
+        "x": 35,
+        "y": 2,
+        "label": "废墟碎片",
+        "solid": true
+      },
+      {
+        "type": "debris",
+        "x": 15,
+        "y": 37,
+        "label": "废墟碎片",
+        "solid": true
+      },
+      {
+        "type": "debris",
+        "x": 35,
+        "y": 37,
+        "label": "废墟碎片",
+        "solid": true
+      },
+      {
+        "type": "lamppost",
+        "x": 20,
+        "y": 20,
+        "label": "火把"
+      },
+      {
+        "type": "lamppost",
+        "x": 29,
+        "y": 20,
+        "label": "火把"
+      },
+      {
+        "type": "lamppost",
+        "x": 25,
+        "y": 16,
+        "label": "火把"
+      },
+      {
+        "type": "lamppost",
+        "x": 25,
+        "y": 24,
+        "label": "火把"
+      },
+      {
+        "type": "sign",
+        "x": 23,
+        "y": 16,
+        "label": "任务告示栏",
+        "solid": true
+      }
+    ],
+    "resourceAreas": [
+      {
+        "id": "lumber_camp",
+        "name": "🌲伐木场",
+        "x": 2,
+        "y": 2,
+        "w": 8,
+        "h": 6,
+        "color": "#5A6B50",
+        "resource": "wood",
+        "danger": "中"
+      },
+      {
+        "id": "ruins_site",
+        "name": "🔍废墟",
+        "x": 38,
+        "y": 2,
+        "w": 10,
+        "h": 6,
+        "color": "#7A6A5A",
+        "resource": "explore",
+        "danger": "高"
+      },
+      {
+        "id": "frozen_lake",
+        "name": "🎣冰湖",
+        "x": 2,
+        "y": 32,
+        "w": 8,
+        "h": 6,
+        "color": "#90B8D0",
+        "resource": "food",
+        "danger": "中"
+      },
+      {
+        "id": "ore_pile",
+        "name": "⛏️矿渣堆",
+        "x": 38,
+        "y": 32,
+        "w": 10,
+        "h": 6,
+        "color": "#8A7A6A",
+        "resource": "power",
+        "danger": "中"
+      }
+    ],
+    "furnacePlaza": {
+      "x": 22,
+      "y": 18,
+      "w": 6,
+      "h": 4
+    },
+    "beds": [],
+    "seats": [],
+    "referenceEntry": null,
+    "referenceExitSpawn": null,
+    "scheduleDoor": null,
+    "assetKey": "village_base",
+    "assetFile": "asset/map/village_base_clean.png",
+    "assetSha256": "e885267a6c74dd99ab7021a02c2c99a8002f3b671dd4e7eed5eb54bbc2d428c0",
+    "assetSize": [
+      1600,
+      1280
+    ],
+    "gates": [
+      {
+        "x": 24,
+        "y": 9,
+        "w": 2
+      },
+      {
+        "x": 24,
+        "y": 31,
+        "w": 2
+      }
+    ],
+    "wallBounds": {
+      "x1": 11,
+      "y1": 9,
+      "x2": 39,
+      "y2": 31
+    }
+  },
+  "kitchen": {
+    "id": "kitchen",
+    "name": "炊事房",
+    "w": 8,
+    "h": 8,
+    "blockedRows": [
+      "########",
+      "####.###",
+      "#....###",
+      "#......#",
+      "#.####.#",
+      "#.####.#",
+      "#......#",
+      "###..###"
+    ],
+    "triggers": [
+      {
+        "x": 3,
+        "y": 7,
+        "w": 2,
+        "h": 1,
+        "target": "village",
+        "name": "misc.exit",
+        "spawnX": 15,
+        "spawnY": 31
+      }
+    ],
+    "interests": {
+      "kitchen_inside": {
+        "x": 3,
+        "y": 3
+      },
+      "kitchen_indoor_door": {
+        "x": 3,
+        "y": 7
+      }
+    },
+    "furniture": [
+      {
+        "x": 1,
+        "y": 1,
+        "w": 3,
+        "h": 1,
+        "color": "#606060",
+        "name": "灶台"
+      },
+      {
+        "x": 5,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "color": "#8B5520",
+        "name": "食材架"
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "w": 4,
+        "h": 2,
+        "color": "#B08040",
+        "name": "餐桌"
+      }
+    ],
+    "buildings": [],
+    "decorations": [],
+    "resourceAreas": [],
+    "furnacePlaza": null,
+    "beds": [],
+    "seats": [
+      {
+        "x": 2,
+        "y": 2,
+        "name": "灶台旁"
+      },
+      {
+        "x": 6,
+        "y": 2,
+        "name": "食材架旁"
+      },
+      {
+        "x": 1,
+        "y": 4,
+        "name": "餐桌左1"
+      },
+      {
+        "x": 1,
+        "y": 5,
+        "name": "餐桌左2"
+      },
+      {
+        "x": 6,
+        "y": 4,
+        "name": "餐桌右1"
+      },
+      {
+        "x": 6,
+        "y": 5,
+        "name": "餐桌右2"
+      }
+    ],
+    "referenceEntry": {
+      "x": 3,
+      "y": 3
+    },
+    "referenceExitSpawn": {
+      "x": 15,
+      "y": 31
+    },
+    "scheduleDoor": {
+      "scene": "village",
+      "x": 15,
+      "y": 30
+    },
+    "assetKey": "kitchen_indoor",
+    "assetFile": "asset/indoor/kitchen.png",
+    "assetSha256": "a23a13badd06edd3c8ec839ab7c7218dc47762073604e7a9a2b54bd9e6ab6b8b",
+    "assetSize": [
+      256,
+      256
+    ],
+    "gates": [],
+    "wallBounds": null
+  }
+}
