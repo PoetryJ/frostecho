@@ -1,0 +1,101 @@
+{
+  "schema": "frostecho.r10c.dev-decision/1",
+  "selectionRule": "lowest dev set-NLL, tie-break earliest epoch, then warm, then seed; test never read",
+  "candidates": [
+    {
+      "checkpoint": "warm-17.safetensors",
+      "init": "warm",
+      "seed": 17,
+      "selectedEpoch": 2,
+      "dev": {
+        "cases": 39,
+        "labelledCases": 32,
+        "discriminativeCases": 2,
+        "setNll": 0.00237,
+        "top1InAcceptable": 1.0,
+        "discriminativeSetNll": 0.037921,
+        "discriminativeTop1": 1.0
+      }
+    },
+    {
+      "checkpoint": "warm-43.safetensors",
+      "init": "warm",
+      "seed": 43,
+      "selectedEpoch": 2,
+      "dev": {
+        "cases": 39,
+        "labelledCases": 32,
+        "discriminativeCases": 2,
+        "setNll": 0.002503,
+        "top1InAcceptable": 1.0,
+        "discriminativeSetNll": 0.040041,
+        "discriminativeTop1": 1.0
+      }
+    },
+    {
+      "checkpoint": "random-17.safetensors",
+      "init": "random",
+      "seed": 17,
+      "selectedEpoch": 3,
+      "dev": {
+        "cases": 39,
+        "labelledCases": 32,
+        "discriminativeCases": 2,
+        "setNll": 0.0,
+        "top1InAcceptable": 1.0,
+        "discriminativeSetNll": 2e-06,
+        "discriminativeTop1": 1.0
+      }
+    },
+    {
+      "checkpoint": "random-43.safetensors",
+      "init": "random",
+      "seed": 43,
+      "selectedEpoch": 28,
+      "dev": {
+        "cases": 39,
+        "labelledCases": 32,
+        "discriminativeCases": 2,
+        "setNll": 5e-06,
+        "top1InAcceptable": 1.0,
+        "discriminativeSetNll": 8.7e-05,
+        "discriminativeTop1": 1.0
+      }
+    }
+  ],
+  "chosen": "random-17.safetensors",
+  "chosenDev": {
+    "cases": 39,
+    "labelledCases": 32,
+    "discriminativeCases": 2,
+    "setNll": 0.0,
+    "top1InAcceptable": 1.0,
+    "discriminativeSetNll": 2e-06,
+    "discriminativeTop1": 1.0
+  },
+  "baselineDev": {
+    "cases": 39,
+    "labelledCases": 32,
+    "discriminativeCases": 2,
+    "setNll": 0.088083,
+    "top1InAcceptable": 0.96875,
+    "discriminativeSetNll": 1.409326,
+    "discriminativeTop1": 0.5
+  },
+  "counts": {
+    "train": 91,
+    "dev": 39,
+    "test": 26
+  },
+  "labelledCounts": {
+    "train": 74,
+    "dev": 32,
+    "test": 19
+  },
+  "discriminativeCounts": {
+    "train": 6,
+    "dev": 2,
+    "test": 3
+  },
+  "testTouched": false
+}

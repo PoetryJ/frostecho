@@ -1,0 +1,50 @@
+{
+  "schema": "frostecho.r10c.capture/1",
+  "cases": 312,
+  "episodes": 12,
+  "slices": 30,
+  "injured": false,
+  "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+  "rendererBuildSha256": "3c4b7b395053a6f7d948594f761316f96b994c14f8cb0c1c855ca4da893c6237",
+  "rendererId": "joint-c-action/2",
+  "policy": {
+    "scorerId": "reference-rule/1",
+    "mode": "reference",
+    "mount": {
+      "memorySelection": "obligation-first",
+      "memoryPolicy": "conditional-experience",
+      "memoryTokenBudget": 640
+    }
+  },
+  "totals": {
+    "requests": 2880,
+    "kept": 312,
+    "withMedical": 8,
+    "cancelAfterWork": 12,
+    "refused": 0
+  },
+  "byKind": {
+    "natural": 300,
+    "cancel-after-work": 12
+  },
+  "byEpisode": {
+    "r10c-ep00": 26,
+    "r10c-ep01": 26,
+    "r10c-ep02": 26,
+    "r10c-ep03": 26,
+    "r10c-ep04": 26,
+    "r10c-ep05": 26,
+    "r10c-ep06": 26,
+    "r10c-ep07": 26,
+    "r10c-ep08": 26,
+    "r10c-ep09": 26,
+    "r10c-ep10": 26,
+    "r10c-ep11": 26
+  },
+  "withMedicalCandidate": 8,
+  "withAcceptedGoals": 91,
+  "wallSeconds": 64.045,
+  "sourceHEAD": null,
+  "casesSha256": "c6e58bfb92aa4141b94636c989740127fb68bd89a928df00eb3407980caa4814",
+  "note": "States are produced by the reference policy through runStep; nothing here is a hand-written observation."
+}

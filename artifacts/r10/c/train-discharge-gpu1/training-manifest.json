@@ -1,0 +1,285 @@
+{
+  "schema": "frostecho.action-weak-experiment/1",
+  "experimental": true,
+  "researchTrainReady": false,
+  "mayTrainOnJev": false,
+  "countsAsAdmitted": false,
+  "calibrated": false,
+  "labelSource": "same-snapshot-branch-rollout",
+  "independentReviews": 0,
+  "device": "cpu",
+  "torchVersion": "2.5.1+cu121",
+  "corpusSha256": "533eeafe484bba47719df7218abe311dab17bc1ce62ffdd56566ab0ab3c704bf",
+  "cacheSha256": "5641735757d581ce635b14ccf2d9de61747dd1a0ad266a9ccf9efd551432645c",
+  "featureIdentityHash": "4dae52c75035ccf7d9e196e90b79fd1af98af852d7f453dcd139acee778015d0",
+  "featureIdentity": {
+    "actualParameterBytesByDevice": {
+      "cuda:0": 20063183744,
+      "meta": 33728813184
+    },
+    "attention": "eager",
+    "class": "Qwen3_5ForCausalLM",
+    "deviceMap": {
+      "lm_head": "cpu",
+      "model.embed_tokens": "0",
+      "model.layers.0": "0",
+      "model.layers.1": "0",
+      "model.layers.10": "0",
+      "model.layers.11": "0",
+      "model.layers.12": "0",
+      "model.layers.13": "0",
+      "model.layers.14": "0",
+      "model.layers.15": "0",
+      "model.layers.16": "0",
+      "model.layers.17": "0",
+      "model.layers.18": "0",
+      "model.layers.19": "0",
+      "model.layers.2": "0",
+      "model.layers.20": "0",
+      "model.layers.21": "0",
+      "model.layers.22": "0",
+      "model.layers.23": "cpu",
+      "model.layers.24": "cpu",
+      "model.layers.25": "cpu",
+      "model.layers.26": "cpu",
+      "model.layers.27": "cpu",
+      "model.layers.28": "cpu",
+      "model.layers.29": "cpu",
+      "model.layers.3": "0",
+      "model.layers.30": "cpu",
+      "model.layers.31": "cpu",
+      "model.layers.32": "cpu",
+      "model.layers.33": "cpu",
+      "model.layers.34": "cpu",
+      "model.layers.35": "cpu",
+      "model.layers.36": "cpu",
+      "model.layers.37": "cpu",
+      "model.layers.38": "cpu",
+      "model.layers.39": "cpu",
+      "model.layers.4": "0",
+      "model.layers.40": "cpu",
+      "model.layers.41": "cpu",
+      "model.layers.42": "cpu",
+      "model.layers.43": "cpu",
+      "model.layers.44": "cpu",
+      "model.layers.45": "cpu",
+      "model.layers.46": "cpu",
+      "model.layers.47": "cpu",
+      "model.layers.48": "cpu",
+      "model.layers.49": "cpu",
+      "model.layers.5": "0",
+      "model.layers.50": "cpu",
+      "model.layers.51": "cpu",
+      "model.layers.52": "cpu",
+      "model.layers.53": "cpu",
+      "model.layers.54": "cpu",
+      "model.layers.55": "cpu",
+      "model.layers.56": "cpu",
+      "model.layers.57": "cpu",
+      "model.layers.58": "cpu",
+      "model.layers.59": "cpu",
+      "model.layers.6": "0",
+      "model.layers.60": "cpu",
+      "model.layers.61": "cpu",
+      "model.layers.62": "cpu",
+      "model.layers.63": "cpu",
+      "model.layers.7": "0",
+      "model.layers.8": "0",
+      "model.layers.9": "0",
+      "model.norm": "cpu",
+      "model.rotary_emb": "cpu"
+    },
+    "dimension": 5120,
+    "encoderSourceSha256": "1e9f9bfb2271008e9c95da9af9453990b7447151eae80458138243795e6d3d98",
+    "metadataSha256": {
+      "config.json": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab",
+      "model.safetensors.index.json": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+      "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27"
+    },
+    "modelPath": "/data2/model_weights/Qwen3.8-27B",
+    "padMultiple": 8,
+    "padding": "right-masked-position-ids/1",
+    "physicalGpus": [
+      1
+    ],
+    "precision": "bfloat16",
+    "quantization": "none",
+    "readout": "joint-candidate-end-token",
+    "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+    "rotaryBufferDevices": {
+      "inv_freq": "cuda:0",
+      "original_inv_freq": "cuda:0"
+    },
+    "schema": "frostecho.joint-c-feature-identity/1",
+    "torch": "2.5.1+cu121",
+    "transformers": "5.2.0",
+    "weightIdentityScope": "local checkpoint metadata; no new full-shard hash claim"
+  },
+  "encodingExecution": {
+    "batchSize": 1,
+    "maxTokens": 2048,
+    "padMultiple": 8,
+    "placement": "auto",
+    "qualificationLimits": [
+      0.02,
+      1.0,
+      0.001
+    ],
+    "runnerSourceSha256": "03263ee097f7915daee12c67906828e85b59ee11b73ecacdd0a1b83de35aaafc"
+  },
+  "encodingQualification": {
+    "featuresSha256": "8ce402734f740e607c47e6312dd947f867b1a1d1de3ce1f596d88f9eb4bfc7e8",
+    "path": "qualification.json",
+    "sha256": "de0d2273c3ff9aa7c14216794dd569dec5a5197d84d17a6ca7ed94727385efc7"
+  },
+  "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+  "initialHeadSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+  "selectedCheckpoint": "random-17.safetensors",
+  "selectedCheckpointSha256": "bb3b577637c72d11a66d54a5ff01acd28b24bd6124324e00a5551ccb962d1249",
+  "selection": "lowest dev set-NLL, never test",
+  "counts": {
+    "train": 91,
+    "dev": 39,
+    "test": 26
+  },
+  "labelledCounts": {
+    "train": 74,
+    "dev": 32,
+    "test": 19
+  },
+  "baseline": {
+    "weight": "initial head",
+    "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+    "dev": {
+      "cases": 39,
+      "labelledCases": 32,
+      "discriminativeCases": 2,
+      "setNll": 0.084438,
+      "top1InAcceptable": 0.96875,
+      "discriminativeSetNll": 1.351004,
+      "discriminativeTop1": 0.5
+    }
+  },
+  "selectedMetrics": {
+    "init": "random",
+    "seed": 17,
+    "selectedEpoch": 3,
+    "dev": {
+      "cases": 39,
+      "labelledCases": 32,
+      "discriminativeCases": 2,
+      "setNll": 0.0,
+      "top1InAcceptable": 1.0,
+      "discriminativeSetNll": 1e-06,
+      "discriminativeTop1": 1.0
+    },
+    "train": {
+      "cases": 91,
+      "labelledCases": 74,
+      "discriminativeCases": 6,
+      "setNll": 7e-06,
+      "top1InAcceptable": 1.0,
+      "discriminativeSetNll": 8.9e-05,
+      "discriminativeTop1": 1.0
+    }
+  },
+  "fourHeads": [
+    {
+      "init": "warm",
+      "seed": 17,
+      "checkpoint": "warm-17.safetensors",
+      "checkpointSha256": "dfeeb44acf386691dc8dc4ef985c8c630981850c08521d608e90f8a0ec2fb981",
+      "selectedEpoch": 2,
+      "dev": {
+        "cases": 39,
+        "labelledCases": 32,
+        "discriminativeCases": 2,
+        "setNll": 0.002159,
+        "top1InAcceptable": 1.0,
+        "discriminativeSetNll": 0.034546,
+        "discriminativeTop1": 1.0
+      }
+    },
+    {
+      "init": "warm",
+      "seed": 43,
+      "checkpoint": "warm-43.safetensors",
+      "checkpointSha256": "f9fe88ea2ebc98e959624ac594912c631874aa179a37d17c3d2aede64f89ad57",
+      "selectedEpoch": 2,
+      "dev": {
+        "cases": 39,
+        "labelledCases": 32,
+        "discriminativeCases": 2,
+        "setNll": 0.002293,
+        "top1InAcceptable": 1.0,
+        "discriminativeSetNll": 0.03669,
+        "discriminativeTop1": 1.0
+      }
+    },
+    {
+      "init": "random",
+      "seed": 17,
+      "checkpoint": "random-17.safetensors",
+      "checkpointSha256": "bb3b577637c72d11a66d54a5ff01acd28b24bd6124324e00a5551ccb962d1249",
+      "selectedEpoch": 3,
+      "dev": {
+        "cases": 39,
+        "labelledCases": 32,
+        "discriminativeCases": 2,
+        "setNll": 0.0,
+        "top1InAcceptable": 1.0,
+        "discriminativeSetNll": 1e-06,
+        "discriminativeTop1": 1.0
+      }
+    },
+    {
+      "init": "random",
+      "seed": 43,
+      "checkpoint": "random-43.safetensors",
+      "checkpointSha256": "4913a123333107cbb40da48877230bcbb14d5e82e88bc5443ed1522e44bec99f",
+      "selectedEpoch": 40,
+      "dev": {
+        "cases": 39,
+        "labelledCases": 32,
+        "discriminativeCases": 2,
+        "setNll": 4e-06,
+        "top1InAcceptable": 1.0,
+        "discriminativeSetNll": 7.1e-05,
+        "discriminativeTop1": 1.0
+      }
+    }
+  ],
+  "trainingCodeSha256": "597fc187f8be20c2007380be36290eaa8a60d3d2d3a6135659509e03ad04e8f2",
+  "backboneGradients": 0,
+  "backboneLoadedByTrainer": false,
+  "epochs": 40,
+  "batchSize": 16,
+  "learningRate": 0.001,
+  "weightDecay": 0.01,
+  "normalisation": "non-affine LayerNorm eps=1e-5 (serve_joint.normalized)",
+  "seconds": 9.964289017021656,
+  "serveCompatibility": {
+    "requiredSchema": "frostecho.action-weak-experiment/1",
+    "requiredLabelSource": "reference-imitation",
+    "matchesSchema": false,
+    "matchesLabelSource": false,
+    "presentFields": [
+      "experimental",
+      "countsAsAdmitted",
+      "calibrated",
+      "researchTrainReady",
+      "mayTrainOnJev",
+      "featureIdentity",
+      "featureIdentityHash",
+      "encodingExecution",
+      "encodingQualification",
+      "selectedCheckpointSha256"
+    ],
+    "note": "fields serve checks are present and honest; the schema id and labelSource differ because these labels are branch rollouts, not reference imitation. Extending the serve allowlist is a src/ change."
+  },
+  "limitations": [
+    "Weak branch labels from one fixed rule controller; not human preference.",
+    "All-acceptable cases carry zero gradient; see counts/discriminativeCounts.",
+    "No independent blind review, no calibration or risk certificate."
+  ]
+}

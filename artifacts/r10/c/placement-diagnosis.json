@@ -1,0 +1,32 @@
+{
+  "schema": "frostecho.r10c.placement-diagnosis/1",
+  "finding": "the 2026-11-18 17:58 corpus encode ran with every parameter on CPU, so its feature identity (57bc3f50) is not the online identity",
+  "measuredAtEncode": {
+    "freeGpuMiBByPhysical": {
+      "1": 4000
+    },
+    "gpuBudgetMiB": 2464,
+    "maxMemoryBytes0": 2583691264,
+    "deviceMap": {},
+    "actualParameterBytesByDevice": {
+      "cpu": 53791996928
+    }
+  },
+  "blockSizesMiB": {
+    "embedTokens": 2425,
+    "decoderLayerMin": 710,
+    "decoderLayerMax": 731,
+    "totalWeights": 48875
+  },
+  "reason": "embed_tokens alone is 2425 MiB > 2464 MiB budget; auto cannot place the embedding plus one 710-731 MiB layer, so accelerate returns an empty device map and the whole 48.9 GiB model runs on CPU. one-layer-offload was also refused: resident(731)+largest(2425)+512 reserve = 3756 MiB > 2464 MiB budget.",
+  "competition": {
+    "gpu0": "pid 2186658 held 19.6 GiB",
+    "gpu1": "pid 3376309 (foreign Qwen3-8B server) held 19.7 GiB until 2026-11-19"
+  },
+  "remedy": "re-encode with one free GPU: budget = free-1536 MiB, which at 24 GiB free admits the embedding plus ~20+ layers (mixed placement, ~14.7 s/forward)",
+  "freeNowMiB": {
+    "0": 22503,
+    "1": 24030
+  },
+  "identityRule": "feature_identity excludes memoryPlan/loadSeconds but includes deviceMap, actualParameterBytesByDevice and rotaryBufferDevices, so placement IS part of the contract by design"
+}
