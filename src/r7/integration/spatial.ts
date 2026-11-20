@@ -213,7 +213,9 @@ export class LegacySpatialController {
     const walk = (goal: Cell): string | null => {
       const route = findLegacyRoute(mapId, cell, goal, this.closedCells(mapId), registry);
       if (!route.path) return 'original_route_blocked';
-      if (route.path.length < 2) return 'already_at_destination';
+      // Standing ON the door tile is not a failure: the leg list simply starts
+      // at the door itself, exactly like the synchronous walk accepted it.
+      if (route.path.length < 2) return null;
       for (const step of route.path.slice(1)) {
         path.push({ index: path.length, kind: 'cell', mapId,
           cell: { x: step.x, y: step.y }, targetMapId: null, minutes: LEGACY_TILE_MINUTES });

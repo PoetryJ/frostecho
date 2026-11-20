@@ -16,6 +16,7 @@ import { spawnSync } from 'node:child_process';
 import { R8Runtime } from './runtime';
 import type { ActionIntent } from './action-intent';
 import { PlaySession } from '../../application-v2/session';
+import { createLegacyMapRegistry } from '../../spatial-v2/legacy-profile';
 import { TRAVEL_STAMINA_PER_TILE } from '../../survival/world-v2';
 import type { Candidate } from '../../decision/contracts';
 
@@ -324,6 +325,44 @@ test('R11-A8: a handed-in session keeps its own authority (legacy drivers still 
   assert.ok(runtime.world.resources.firewood > before, 'the legacy entry still gathers');
   assert.equal(runtime.session.inlineWorkExecutions.length, 0,
     'a session that declared the legacy authority is not an audit finding');
+});
+
+test('R11-A10: standing on the door tile still plans the trip', () => {
+  const runtime = R8Runtime.create({ seed: 'r11-a10' });
+  runtime.enableLegacySpatial();
+  const registry = createLegacyMapRegistry();
+  const exit = registry.maps.dorm_a.triggers[0];
+  const walked = runtime.walkLegacy('npc_01', { x: exit.x, y: exit.y }, 'walk-to-door');
+  assert.equal(walked.status, 'applied', JSON.stringify(walked));
+  const intent = beginMove(runtime, 'from-door', 'npc_01', 'village');
+  // The zero-length walk to the door is not a refusal: the first leg is the door.
+  assert.equal(intent.move!.path[0].kind, 'door');
+  runtime.advanceWorld(intent.dueAt);
+  assert.equal(intent.status, 'applied');
+  assert.equal(runtime.world.npcs.npc_01.location, 'village');
+});
+
+test('R11-A11: a route already blocked when queued fails in one paid minute', () => {
+  const runtime = R8Runtime.create({ seed: 'r11-a11' });
+  runtime.enableLegacySpatial();
+  const registry = createLegacyMapRegistry();
+  const entry = registry.maps.village.triggers.find(trigger => trigger.target === 'warehouse')!;
+  const closed = runtime.session.submitWorldCommand({ commandId: 'close-before',
+    type: 'close-road', cells: [{ x: entry.x, y: entry.y }] });
+  assert.equal(closed.status, 'applied');
+  const started = runtime.world.simTime;
+  const intent = beginMove(runtime, 'blocked-before', 'npc_01', 'warehouse');
+  assert.equal(intent.move!.refusedReason, 'original_route_blocked');
+  assert.equal(intent.dueAt, started + 1, 'the attempt costs one minute, not the whole trip');
+  runtime.advanceWorld(intent.dueAt);
+  assert.equal(intent.status, 'rejected');
+  assert.equal(runtime.workLog.length, 1);
+  assert.equal(runtime.world.npcs.npc_01.location, 'dorm-a');
+  // The refusal is the actor's own observation, not a silent drop.
+  const rejected = runtime.session.memories.get('npc_01')!.toJSON().records
+    .filter(record => record.kind === 'action_rejected');
+  assert.equal(rejected.length, 1);
+  assert.equal(runtime.committedEvent(rejected[0].sourceEventIds[0])?.type, 'action_rejected');
 });
 
 test('R11-A9: a nested clock advance is refused instead of re-charging the span', () => {
