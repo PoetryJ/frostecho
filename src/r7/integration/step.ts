@@ -15,7 +15,10 @@ import { applicableNotes, buildActionOptions, taskBindingOfCandidate,
   type MemoryPolicyId, type ExperienceNote } from '../agency/options';
 import { renderRequest } from '../jev/render';
 import { byteTokenCounter, renderMemoryBlock, renderMemoryLine,
-  resolveTokenCounter, type TokenCounter } from '../jev/token-budget';
+  resolveTokenCounter, type MemoryEncoderPort, type MemoryTruncationRecord,
+  type TokenCounter } from '../jev/token-budget';
+import { projectMemory, type MemoryProjection, type MemorySelection }
+  from '../memory/window';
 import { TASK_CATALOG, receiptTypesFor, requiredPlaceOf } from '../domains/tasks/index';
 import type { R8Runtime } from './runtime';
 
@@ -32,13 +35,21 @@ export interface StepOptions {
   mode?: 'reference' | 'jev-experimental' | 'jev-admitted';
   /** Conditional notes per actor; empty by default. */
   notes?: (actorId: string) => ExperienceNote[];
-  /** Same token budget for both memory arms (default 640). */
+  /** Same budget for both memory arms (default 640); 0 or negative means none. */
   memoryTokenBudget?: number;
+  /** Records the window may hold (default 12). The count and the units both bind. */
+  memoryMaxRecords?: number;
   /**
    * The one counter used for BOTH the memory budget and the encode side.
    * Swapping it changes the budget and the reported envelope number together.
    */
   tokenCounter?: TokenCounter;
+  /**
+   * The REAL tokenizer of the model that will read this input. Its count is
+   * reported next to the estimate (`memoryEncoderTokens`), never instead of it;
+   * without it the record says `not-attached` rather than pretending.
+   */
+  encoder?: MemoryEncoderPort | null;
   /**
    * One record, one billing slot: a record an applicable note already carries is
    * not listed again as a memory entry. Default on. Turning it off reproduces
@@ -77,11 +88,32 @@ export interface StepRecord {
   memorySelection?: MemorySelection;
   memoryKept?: number;
   memoryDropped?: number;
+  /** UTF-8 bytes of the memory block, i.e. exactly what the encoder receives. */
   memoryBytes?: number;
+  /**
+   * BUDGET units, counted by `memoryCounterId` (default `utf8-bytes/3-ceil/1`).
+   * This is an ESTIMATE (`memoryUnitKind`), not the model's tokenizer count.
+   */
   memoryTokens?: number;
+  memoryUnitKind?: 'estimated-token';
   memoryBudget?: number;
   /** Id of the counter that produced `memoryTokens` (budget == encode side). */
   memoryCounterId?: string;
+  /** The real tokenizer count, reported only when a real encoder was attached. */
+  memoryEncoderId?: string | null;
+  memoryEncoderTokens?: number | null;
+  memoryEncoderStatus?: 'counted' | 'not-attached';
+  /** Identity of the projection rule that produced this window. */
+  memoryProjectionId?: string;
+  /** Sha/bytes of the exact memory segment; the pre-encode byte check. */
+  memoryBlockSha256?: string;
+  memorySegmentSha256?: string;
+  memorySegmentBytes?: number;
+  memoryTruncated?: boolean;
+  memoryTruncatedFacts?: MemoryTruncationRecord[];
+  /** Records the actor holds and the identity of its newest one (restore proof). */
+  memoryCursor?: { records: number; keptRecords: number;
+    lastRecordId: string | null; lastObservedAt: number | null };
   /** Counts before the one-record-one-slot rule was applied. */
   memoryKeptBefore?: number;
   memoryTokensBefore?: number;
@@ -182,32 +214,14 @@ export function notesFor(runtime: R8Runtime, actorId: string): ExperienceNote[] 
 /**
  * How the bounded memory window is filled. `raw-last12` is the frozen control
  * (newest twelve records, whatever they are); `obligation-first` keeps the same
- * count/token budget but prefers what governs the next action: the current
+ * count/unit budget but prefers what governs the next action: the current
  * obligation, an authorized change, and a changed condition.
+ *
+ * Both the type and the priority table live in `src/r7/memory/window.ts`; they
+ * are re-exported here because every front-end already imports from this module.
  */
-export type MemorySelection = 'raw-last12' | 'obligation-first';
-
-const MEMORY_PRIORITY: Record<string, number> = {
-  task_proposed: 100, task_accepted: 100, task_reassigned: 100, task_countered: 100,
-  commitment_proposed: 100, commitment_accepted: 100, commitment_change_proposed: 100,
-  commitment_change_accepted: 90, commitment_change_rejected: 90, commitment_resumed: 90,
-  out_of_stock: 80, stock_restocked: 80, stock_deposited: 80, stock_withdrawn: 80,
-  warehouse_stock_observed: 80, restock_rumor: 80, commitment_cancelled: 80,
-  commitment_withdrawn: 80, commitment_fulfilled: 80, commitment_declined: 80,
-  promise_kept: 70, promise_broken: 70, task_vacated: 70, commitment_action_committed: 70,
-};
-
-/** Priority of one record for the next decision; ties break on recency. */
-export function memoryPriority(kind: string): number {
-  return MEMORY_PRIORITY[kind] ?? 10;
-}
-
-/**
- * The actor's own visible memory, bounded. `memoryFacts` used to be empty, which
- * meant the model never saw a single promise or relationship; it now carries the
- * actor's own records only. Selection is explicit so the raw window stays a
- * real control arm rather than being silently replaced.
- */
+export type { MemorySelection } from '../memory/window';
+export { memoryPriority } from '../memory/window';
 
 /**
  * Cost of ONE memory line. Exported for evidence only: a line is not a billing
@@ -223,6 +237,8 @@ export function memoryFactTokens(fact: ObservedFact,
 export interface MemoryWindowOptions {
   /** Counter used for the budget; the encode side gets the same object. */
   counter?: TokenCounter;
+  /** The real tokenizer count, recorded beside the budget's estimate. */
+  encoder?: MemoryEncoderPort | null;
   /**
    * Event ids already carried by another prompt channel (an applicable
    * experience note). A record whose evidence is in this set is NOT listed
@@ -232,86 +248,40 @@ export interface MemoryWindowOptions {
 }
 
 /**
- * The actor's own visible memory, bounded by COUNT and by an explicit token
- * budget. Both arms get the same budget; only the selection rule differs, so a
- * difference between them comes from what the actor was allowed to know, not
- * from one arm being fed more text.
+ * The actor's own visible memory, bounded by COUNT and by an explicit budget.
  *
- * The budget is charged on `renderMemoryBlock(facts)` — the exact bytes the
- * renderer puts after the `记忆:` header — through the passed-in counter, so
- * the number recorded here is the number the encoder measures.
+ * R11: this is a thin wrapper over `projectMemory` — the ONE projection shared
+ * by the CLI, the web bridge, the data collector and the four-day runner. The
+ * budget is charged on `renderMemoryBlock(facts)` (the exact bytes the renderer
+ * puts after `记忆:`), including the first record; a record that does not fit is
+ * trimmed and its trim record is returned, never admitted whole.
  */
 export function visibleMemory(runtime: R8Runtime, actorId: string, topK = 12,
   selection: MemorySelection = 'obligation-first', budgetTokens = 640,
-  options: MemoryWindowOptions = {}):
-  { facts: ObservedFact[]; relationships: unknown; truncated: boolean;
-    selection: MemorySelection; kept: number; dropped: number; bytes: number;
-    tokens: number; budgetTokens: number; counterId: string; suppressed: number } {
-  const counter = resolveTokenCounter(options.counter);
+  options: MemoryWindowOptions = {}): MemoryProjection {
   const store = runtime.session.memories.get(actorId);
-  if (!store) return { facts: [], relationships: {}, truncated: false,
-    selection, kept: 0, dropped: 0, bytes: 0, tokens: 0, budgetTokens,
-    counterId: counter.id, suppressed: 0 };
-  const all = store.toJSON().records.filter(record => record.observerId === actorId);
-  // One record, one slot: a record whose evidence an applicable note already
-  // carries is not listed (and not billed) a second time as a memory entry.
-  const occupied = new Set(options.excludeEventIds ?? []);
-  const records = occupied.size === 0 ? all
-    : all.filter(record => !record.sourceEventIds.some(id => occupied.has(id)));
-  const suppressed = all.length - records.length;
-  // Same count AND same token budget for both arms; only the choice differs.
-  const candidates = selection === 'raw-last12'
-    ? records.slice(-topK).map((record, index) => ({ record,
-      index: Math.max(0, records.length - topK) + index })).reverse()
-    : records.map((record, index) => ({ record, index }))
-      .sort((left, right) => memoryPriority(right.record.kind) - memoryPriority(left.record.kind)
-        || right.index - left.index
-        || left.record.recordId.localeCompare(right.record.recordId));
-  const chosen: { record: typeof records[number]; index: number }[] = [];
-  for (const entry of candidates) {
-    if (chosen.length >= topK) break;
-    const fact = factOf(actorId, entry.record);
-    // Charge the block as it will be rendered, not a per-line sum: `ceil` per
-    // line over-bills and a different ORDER never changes byte length.
-    const trial = [...chosen.map(row => factOf(actorId, row.record)), fact];
-    if (chosen.length > 0 && counter.count(renderMemoryBlock(trial)) > budgetTokens) continue;
-    chosen.push(entry);
-  }
-  chosen.sort((left, right) => left.index - right.index);
-  const facts: ObservedFact[] = chosen.map(({ record }) => factOf(actorId, record));
+  const records = store === undefined ? []
+    : store.toJSON().records.filter(record => record.observerId === actorId);
   const knowledge = runtime.session.knowledge();
-  const relationships = knowledge[actorId] ?? { promises: [], relation: null };
-  return { facts, relationships, truncated: records.length > facts.length,
-    selection, kept: facts.length, dropped: Math.max(0, records.length - facts.length),
-    bytes: Buffer.byteLength(JSON.stringify(facts), 'utf8'),
-    tokens: counter.count(renderMemoryBlock(facts)), budgetTokens,
-    counterId: counter.id, suppressed };
+  return projectMemory({
+    actorId, records, topK, selection, budgetUnits: budgetTokens,
+    counter: options.counter, encoder: options.encoder ?? null,
+    excludeEventIds: options.excludeEventIds,
+    relationships: knowledge[actorId] ?? { promises: [], relation: null },
+  });
 }
 
-/** One stored record as the actor may see it, with its provenance intact. */
-function factOf(actorId: string, record: {
-  recordId: string; kind: string; observedAt: number; occurredAt: number;
-  authority: string; speakerId?: string | null; source: string;
-  sourceEventIds: string[]; subjectIds: string[]; payload: unknown }): ObservedFact {
-  return {
-    eventId: record.sourceEventIds[0] ?? record.recordId,
-    observerId: actorId,
-    // When THIS actor learned it, not when the event happened.
-    simTime: record.observedAt,
-    subjectIds: record.subjectIds.length > 0 ? [...record.subjectIds] : [actorId],
-    kind: record.kind,
-    payload: {
-      ...((record.payload as Record<string, unknown> | undefined) ?? {}),
-      occurredAt: record.occurredAt,
-      authority: record.authority,
-      speakerId: record.speakerId ?? null,
-      sourceEventIds: [...record.sourceEventIds],
-    },
-    // Provenance is carried, never forced: a player statement stays a player
-    // statement and an inference stays an inference.
-    source: record.source === 'player_statement' ? 'player_statement'
-      : record.source === 'inference' ? 'inference' : 'engine',
-  };
+/**
+ * The projection must be the text the renderer really emits. Checked before the
+ * request leaves the step: if these two ever diverge, the budget governs a copy
+ * and the model reads something else.
+ */
+export function assertMemorySegmentMatchesRender(projection: MemoryProjection,
+  request: { memoryFacts: readonly ObservedFact[] }): void {
+  const rendered = renderMemoryBlock(request.memoryFacts);
+  if (rendered !== projection.block || request.memoryFacts.length !== projection.facts.length)
+    throw new Error('memory_projection_render_mismatch: the billed block is not the '
+      + 'block the renderer emits');
 }
 
 /**
@@ -401,6 +371,32 @@ export function closeTaskOnReceipt(runtime: R8Runtime, actorId: string,
     ? task.taskId : null;
 }
 
+/**
+ * The memory evidence of one step, in ONE place so the live record, the stale
+ * record and the evidence scripts cannot disagree about which number is which.
+ */
+function memoryEvidence(memory: MemoryProjection, before: MemoryProjection) {
+  return {
+    memorySelection: memory.selection,
+    memoryKept: memory.kept, memoryDropped: memory.dropped,
+    memoryBytes: memory.bytes, memoryTokens: memory.units,
+    memoryUnitKind: memory.unitKind, memoryBudget: memory.budgetUnits,
+    memoryCounterId: memory.unitId,
+    memoryEncoderId: memory.encoder.id,
+    memoryEncoderTokens: memory.encoder.tokens,
+    memoryEncoderStatus: memory.encoder.status,
+    memoryProjectionId: memory.projectionId,
+    memoryBlockSha256: memory.blockSha256,
+    memorySegmentSha256: memory.segmentSha256,
+    memorySegmentBytes: memory.segmentBytes,
+    memoryTruncated: memory.truncated,
+    memoryTruncatedFacts: memory.truncatedFacts,
+    memoryCursor: memory.cursor,
+    memoryKeptBefore: before.kept, memoryTokensBefore: before.units,
+    memoryNoteSuppressed: before.kept - memory.kept,
+  } as const;
+}
+
 export async function runStep(runtime: R8Runtime, scorer: ScorePort,
   options: StepOptions = {}): Promise<StepResult> {
   const memoryPolicy = options.memoryPolicy ?? 'conditional-experience';
@@ -474,19 +470,23 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
     if (built.candidates.length === 0) continue;
     const memorySelection = options.memorySelection ?? 'obligation-first';
     const memoryBudget = options.memoryTokenBudget ?? 640;
+    const memoryMaxRecords = options.memoryMaxRecords ?? 12;
     const counter = resolveTokenCounter(options.tokenCounter);
+    const encoder = options.encoder ?? null;
     const noteEventIds = (options.memoryNoteDedupe ?? true)
       ? [...new Set(notes.flatMap(note => note.sourceEventIds))] : [];
     const readMemory = () => noteEventIds.length === 0
-      ? visibleMemory(runtime, actorId, 12, memorySelection, memoryBudget, { counter })
-      : visibleMemory(runtime, actorId, 12, memorySelection, memoryBudget,
-        { counter, excludeEventIds: noteEventIds });
+      ? visibleMemory(runtime, actorId, memoryMaxRecords, memorySelection, memoryBudget,
+        { counter, encoder })
+      : visibleMemory(runtime, actorId, memoryMaxRecords, memorySelection, memoryBudget,
+        { counter, encoder, excludeEventIds: noteEventIds });
     const memory = readMemory();
     // Before/after counts travel with the record, so the saved slot is visible
     // evidence rather than a claim in a report. With no notes the two reads are
     // the same, so the second read is skipped.
     const memoryBefore = noteEventIds.length === 0 ? memory
-      : visibleMemory(runtime, actorId, 12, memorySelection, memoryBudget, { counter });
+      : visibleMemory(runtime, actorId, memoryMaxRecords, memorySelection, memoryBudget,
+        { counter, encoder });
     // Provenance of the notes that own suppressed records: the lesson survives
     // in the record even though its raw line no longer occupies the window.
     const store = runtime.session.memories.get(actorId);
@@ -515,6 +515,12 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
       memoryPolicyVersion: memoryPolicy,
     });
     const rendered = renderRequest(request);
+    // The billed block and the encoded block are the same bytes, checked here
+    // rather than asserted in a report. A projection that exceeds its own budget
+    // must never reach the scorer.
+    assertMemorySegmentMatchesRender(memory, request);
+    if (memory.units > memory.budgetUnits)
+      throw new Error(`memory_budget_exceeded: ${memory.units} > ${memory.budgetUnits}`);
     const inputSha256 = createHash('sha256').update(JSON.stringify(request)).digest('hex');
     const startedVersion = runtime.world.version;
     const startedGeneration = runtime.session.generationFor(actorId);
@@ -541,11 +547,7 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
         disposition: 'stale', scorerId: result.scorerId, latencyMs,
         executionStatus: 'stale', reason: 'generation_version_or_memory_changed',
         eventIds: [], taskCompleted: null,
-        memorySelection, memoryKept: memory.kept, memoryDropped: memory.dropped,
-        memoryBytes: memory.bytes, memoryTokens: memory.tokens,
-        memoryBudget: memory.budgetTokens, memoryCounterId: memory.counterId,
-        memoryKeptBefore: memoryBefore.kept, memoryTokensBefore: memoryBefore.tokens,
-        memoryNoteSuppressed: memoryBefore.kept - memory.kept, memoryNotes,
+        ...memoryEvidence(memory, memoryBefore), memoryNotes,
         worldVersion: runtime.world.version,
       });
       continue;
@@ -603,11 +605,7 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
       executionStatus: outcome.status, reason: outcome.reason,
       eventIds: outcome.eventIds, taskCompleted,
       taskCompletionEvidence: taskCompleted && selected ? taskBindingOfCandidate(selected)?.evidenceClass ?? null : null,
-      memorySelection, memoryKept: memory.kept, memoryDropped: memory.dropped,
-      memoryBytes: memory.bytes, memoryTokens: memory.tokens,
-      memoryBudget: memory.budgetTokens, memoryCounterId: memory.counterId,
-      memoryKeptBefore: memoryBefore.kept, memoryTokensBefore: memoryBefore.tokens,
-      memoryNoteSuppressed: memoryBefore.kept - memory.kept, memoryNotes,
+      ...memoryEvidence(memory, memoryBefore), memoryNotes,
       worldVersion: runtime.world.version,
     });
   }

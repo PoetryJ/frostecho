@@ -8,6 +8,7 @@
  * Ids are never rendered: they are mapping handles only (CONTRACT §3).
  */
 import type { Candidate, ChoiceRequest } from '../../decision/contracts';
+import { renderMemorySegment } from './token-budget';
 
 export const RENDERER_ID = 'joint-c-action/2';
 
@@ -98,15 +99,12 @@ export function renderRequest(request: ChoiceRequest): RenderedRequest {
     // Provenance is part of the input, not a debug annotation: the actor must
     // be able to tell its own inference from a player statement from an engine
     // observation, and when it learned it versus when it happened.
-    const memory = request.memoryFacts.slice(0, 12).map(fact => {
-      const payload = fact.payload as Record<string, unknown>;
-      const occurredAt = payload?.occurredAt ?? null;
-      const subjects = fact.subjectIds.length > 0 ? fact.subjectIds.join(',') : '-';
-      return `- [${fact.source}] ${fact.kind} 知于${fact.simTime}`
-        + `${occurredAt === null ? '' : ` 发生于${scalar(occurredAt)}`}`
-        + ` 关于${subjects} ${JSON.stringify(fact.payload)}`;
-    }).join('\n');
-    push(parts, segments, 'memory', `\n记忆:\n${memory}`, null);
+    //
+    // The line builder is shared with the budget (`token-budget.ts`) so the
+    // bytes billed and the bytes encoded cannot drift. The window itself is
+    // already bounded by `projectMemory`; the slice is a shape guard only.
+    push(parts, segments, 'memory',
+      renderMemorySegment(request.memoryFacts.slice(0, 12)), null);
   }
   const goals = Array.isArray(request.goals) ? request.goals as unknown[] : [];
   if (goals.length > 0) {
