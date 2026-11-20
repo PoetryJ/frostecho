@@ -105,6 +105,12 @@ export interface IntentProgress {
   legReceiptIds: string[];
   /** Clock of each landed leg, in order (evidence of the paid minutes). */
   landedAt: number[];
+  /**
+   * Why the route was refused at enqueue time (a closed door/gate on the only
+   * path). Such a trip still occupies its actor for one minute and then really
+   * fails, so the refusal is an observation the actor gets, not a silent drop.
+   */
+  refusedReason: string | null;
 }
 
 /** Atomic settlement claim: a nested settlement must not take the same work. */
@@ -197,14 +203,14 @@ export function createIntent(input: BeginIntentInput, startedAt: number,
 /** Clock at which the next unlanded leg falls due (null when the path is done). */
 export function nextLegAt(intent: ActionIntent): number | null {
   const move = intent.move;
-  if (!move || move.leg >= move.path.length) return null;
+  if (!move || move.refusedReason || move.leg >= move.path.length) return null;
   return intent.startedAt + move.progress + move.path[move.leg].minutes;
 }
 
 /** Every remaining leg time: advanceWorld must split the span at each of them. */
 export function remainingLegTimes(intent: ActionIntent): number[] {
   const move = intent.move;
-  if (!move) return [];
+  if (!move || move.refusedReason) return [];
   const times: number[] = [];
   let paid = move.progress;
   for (let index = move.leg; index < move.path.length; index += 1) {

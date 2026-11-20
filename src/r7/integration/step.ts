@@ -267,25 +267,73 @@ export function visibleMemory(runtime: R8Runtime, actorId: string, topK = 12,
       .sort((left, right) => memoryPriority(right.record.kind) - memoryPriority(left.record.kind)
         || right.index - left.index
         || left.record.recordId.localeCompare(right.record.recordId));
-  const chosen: { record: typeof records[number]; index: number }[] = [];
+  const chosen: { record: typeof records[number]; index: number; fact: ObservedFact }[] = [];
   for (const entry of candidates) {
     if (chosen.length >= topK) break;
     const fact = factOf(actorId, entry.record);
     // Charge the block as it will be rendered, not a per-line sum: `ceil` per
     // line over-bills and a different ORDER never changes byte length.
-    const trial = [...chosen.map(row => factOf(actorId, row.record)), fact];
-    if (chosen.length > 0 && counter.count(renderMemoryBlock(trial)) > budgetTokens) continue;
-    chosen.push(entry);
+    const prior = chosen.map(row => row.fact);
+    if (counter.count(renderMemoryBlock([...prior, fact])) <= budgetTokens) {
+      chosen.push({ ...entry, fact });
+      continue;
+    }
+    // R11-B: the FIRST record has no exemption. An oversized record is fitted
+    // deterministically (source/time/revision/truncation mark stay), so the
+    // actor sees the evidence but never more than its own budget.
+    const fitted = fitFactToBudget(fact, prior, budgetTokens, counter);
+    if (fitted) chosen.push({ ...entry, fact: fitted });
   }
   chosen.sort((left, right) => left.index - right.index);
-  const facts: ObservedFact[] = chosen.map(({ record }) => factOf(actorId, record));
+  const facts: ObservedFact[] = chosen.map(({ fact }) => fact);
   const knowledge = runtime.session.knowledge();
   const relationships = knowledge[actorId] ?? { promises: [], relation: null };
-  return { facts, relationships, truncated: records.length > facts.length,
+  return { facts, relationships,
+    truncated: records.length > facts.length
+      || facts.some(fact => (fact.payload as Record<string, unknown>).truncated === true),
     selection, kept: facts.length, dropped: Math.max(0, records.length - facts.length),
-    bytes: Buffer.byteLength(JSON.stringify(facts), 'utf8'),
+    // The renderer's own bytes, not a JSON paraphrase: this is what the model reads.
+    bytes: Buffer.byteLength(renderMemoryBlock(facts), 'utf8'),
     tokens: counter.count(renderMemoryBlock(facts)), budgetTokens,
     counterId: counter.id, suppressed };
+}
+
+/**
+ * Fit ONE over-budget fact into the remaining window without lying about it.
+ * The largest string field (`text`) is cut by binary search for a deterministic
+ * prefix; provenance (`eventId`, source, occurredAt, authority, revision,
+ * sourceEventIds) stays in the payload and `truncated: true` marks the cut.
+ * A budget too small for even the provenance line returns null: the record is
+ * counted as dropped, never rendered outside the budget.
+ */
+function fitFactToBudget(fact: ObservedFact, prior: readonly ObservedFact[],
+  budgetTokens: number, counter: TokenCounter): ObservedFact | null {
+  const within = (candidate: ObservedFact): boolean =>
+    counter.count(renderMemoryBlock([...prior, candidate])) <= budgetTokens;
+  const payload = { ...(fact.payload as Record<string, unknown>) };
+  const text = payload.text;
+  if (typeof text === 'string') {
+    let low = 0;
+    let high = text.length;
+    let best: ObservedFact | null = null;
+    while (low <= high) {
+      const middle = Math.floor((low + high) / 2);
+      const fitted: ObservedFact = { ...fact, payload: { ...payload, text: text.slice(0, middle),
+        truncated: true, originalChars: text.length, evidenceRef: fact.eventId } };
+      if (within(fitted)) { best = fitted; low = middle + 1; } else high = middle - 1;
+    }
+    if (best) return best;
+  }
+  // Compact provenance-only line (short keys are deliberate: they are the last
+  // form that fits a 64-token window). `ref` is the evidence pointer, `at` the
+  // original time, `by` the authority and `rev` the authorised revision.
+  const minimal: ObservedFact = { ...fact, payload: {
+    ref: fact.eventId,
+    at: payload.occurredAt ?? fact.simTime,
+    by: payload.authority ?? payload.speakerId ?? null,
+    rev: payload.revision ?? null,
+    trunc: true } };
+  return within(minimal) ? minimal : null;
 }
 
 /** One stored record as the actor may see it, with its provenance intact. */

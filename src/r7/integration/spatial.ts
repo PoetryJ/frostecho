@@ -267,6 +267,9 @@ export class LegacySpatialController {
     if (!this.enabled()) return failed('original_map_not_enabled');
     if (!this.runtime.world.npcs[actorId]?.alive) return failed('actor_not_alive');
     if (this.runtime.ended) return failed('world_already_ended');
+    // The way was already shut when the trip was queued: the actor still spends
+    // the minute, and the refusal is a real record rather than a silent drop.
+    if (move.refusedReason) return failed(move.refusedReason);
     if (move.leg >= move.path.length)
       return { status: 'applied', reason: 'original_maps_traversed', eventId: null,
         observedEventIds: [], position: this.position(actorId) };

@@ -25,7 +25,8 @@ import { tasksDomain, WORK_MODE_TASK, type TasksState, type WorkMode } from '../
 import { councilDomain, type CouncilState } from '../domains/council/index';
 import { crisesDomain, type CrisesState } from '../domains/crises/index';
 import { lifeDomain, type LifeState } from '../domains/life/index';
-import { LegacySpatialController, type LegacyMovementResult } from './spatial';
+import { LEGACY_TILE_MINUTES, LegacySpatialController,
+  type LegacyMovementResult } from './spatial';
 import type { Cell } from '../../spatial-v2/map';
 import type { LegacyPosition } from '../../spatial-v2/legacy-profile';
 
@@ -90,6 +91,14 @@ export interface WorkItem {
   startedAt: number;
   endsAt: number;
 }
+
+/**
+ * Refusals that mean "the trip is real but the way is shut": they occupy the
+ * actor for one minute and then fail, so the refusal is observable.
+ */
+const BLOCKED_ROUTE_REASONS = new Set([
+  'original_route_blocked', 'original_door_closed', 'actor_not_at_original_door',
+]);
 
 /** Can this queued action still be settled? Returning a string revokes it. */
 export type IntentGuard = (intent: ActionIntent) => string | null;
@@ -199,6 +208,12 @@ export class R8Runtime {
   /** Guard: `advanceWorld` is the only clock owner and never re-enters itself. */
   private advancing = false;
   private claimSequence = 0;
+  /**
+   * R10 called this "suppressed": how often a nested clock advance had to be
+   * neutralised. R11 refuses the nested call instead of absorbing it, so this
+   * counts refusals, and a clean run must leave it at 0.
+   */
+  nestedAdvanceSuppressed = 0;
 
   constructor(readonly session: PlaySession, profile: TimeProfile = GOSPEL_PROFILE,
     states?: DomainStates) {
@@ -280,6 +295,15 @@ export class R8Runtime {
   travelLegacyTo(actorId: string, location: string, commandId?: string): LegacyMovementResult {
     return this.legacySpatial.travelTo(actorId, location, commandId);
   }
+  /**
+   * Planned minutes of a macro move, without moving anything. This is what a
+   * caller must budget: a queue entry's `due` is derived from it, never from a
+   * flat per-action estimate.
+   */
+  legacySpatialMinutes(actorId: string, targetLocation: string): number | null {
+    const plan = this.legacySpatial.planTravel(actorId, targetLocation);
+    return plan.status === 'planned' ? plan.minutes : null;
+  }
   observeLegacyStock(actorId: string, commandId?: string): LegacyMovementResult {
     return this.legacySpatial.observeStock(actorId, commandId);
   }
@@ -324,7 +348,10 @@ export class R8Runtime {
     // The single clock owner. A nested call would advance time inside a span
     // that is already being paid for, which is exactly the R10 defect; refuse
     // it instead of silently charging the same minutes twice.
-    if (this.advancing) throw new Error('reentrant_advance_world: advanceWorld is the only clock owner');
+    if (this.advancing) {
+      this.nestedAdvanceSuppressed += 1;
+      throw new Error('reentrant_advance_world: advanceWorld is the only clock owner');
+    }
     this.advancing = true;
     try {
       return this.advanceSpan(from, to);
@@ -531,12 +558,23 @@ export class R8Runtime {
     // visible as `requestedMinutes` instead of silently becoming the promise.
     let move: IntentProgress | null = null;
     if (action === 'move' && this.legacySpatial.enabled() && this.offersTravel(input.actorId, input.candidate)) {
-      const plan = this.legacySpatial.planTravel(input.actorId, String(input.candidate.parameters.to ?? ''));
-      if (plan.status === 'rejected') return { rejected: plan.reason };
-      move = { kind: 'legacy-travel', target: String(input.candidate.parameters.to ?? ''),
-        path: plan.path, leg: 0, progress: 0, plannedMinutes: plan.minutes,
-        requestedMinutes: input.minutes, cancelAt: null, committedAt: null,
-        legReceiptIds: [], landedAt: [] };
+      const target = String(input.candidate.parameters.to ?? '');
+      const plan = this.legacySpatial.planTravel(input.actorId, target);
+      if (plan.status === 'rejected') {
+        // A request that is invalid on its face is refused without queueing; a
+        // route that is only physically blocked is a real attempt, so it takes
+        // one minute of the actor's time and then fails with a receipt'd note.
+        if (!BLOCKED_ROUTE_REASONS.has(plan.reason)) return { rejected: plan.reason };
+        move = { kind: 'legacy-travel', target, path: [], leg: 0, progress: 0,
+          plannedMinutes: LEGACY_TILE_MINUTES, requestedMinutes: input.minutes,
+          cancelAt: null, committedAt: null, legReceiptIds: [], landedAt: [],
+          refusedReason: plan.reason };
+      } else {
+        move = { kind: 'legacy-travel', target, path: plan.path, leg: 0, progress: 0,
+          plannedMinutes: plan.minutes, requestedMinutes: input.minutes,
+          cancelAt: null, committedAt: null, legReceiptIds: [], landedAt: [],
+          refusedReason: null };
+      }
     }
     const intent = createIntent({ ...input, demandId, move,
       generation: this.session.generationFor(input.actorId) },

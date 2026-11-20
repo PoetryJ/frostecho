@@ -124,6 +124,12 @@ export class PlaySession {
   private inlineAllowance = 0;
   /** R3 (M): injectable scorer seam for real-model / async acceptance runs. */
   private readonly scorerProvider: () => ScorerPort;
+  /**
+   * R11-A capability: when the R8 authority owns this session, a work action
+   * cannot run without an intent-minted grant. Legacy sessions keep `false`.
+   * It is a capability, not a model of the world, so it is not persisted.
+   */
+  requireWorkGrant = false;
 
   constructor(world: WorldV2, npcIds: string[], seed: string,
     scorerProvider: () => ScorerPort = referenceScorer) {
@@ -592,6 +598,15 @@ export class PlaySession {
           reason: `work_requires_intent: ${action} spends authoritative time; `
             + 'queue it and settle on the clock' };
       }
+    }
+    // R11-A: a new-profile authority sets this capability. Then an omitted
+    // grant is not a legacy escape hatch: a time-spending action must be queued
+    // as an intent and settled on the clock. Legacy PlaySession callers keep
+    // the default (false) so historical command tests keep their meaning.
+    if (requiresWorkIntent(candidate) && grant === undefined && this.requireWorkGrant) {
+      return { status: 'rejected', eventIds: [], postStateVersion: this.world.version,
+        reason: `work_requires_intent: ${action} spends authoritative time; `
+          + 'queue it and settle on the clock' };
     }
     let command: Command | null;
     try {
