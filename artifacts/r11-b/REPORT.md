@@ -82,6 +82,30 @@ CLI（`scripts/play-sprint.ts`）、网页（`CliBridge` 驱动同一 CLI）、�
 决策记忆及其**摄取游标**（`memoryCursors`）。游标在 R11 前不落盘，恢复时从 0 重扫；
 现在随 `*.long-term-memory.json` 保存并在 `GameplayLoop.fromSidecars` 恢复。
 
+### 5b. 真实四日 runner：连续 vs 拆段（`continuous-vs-restored.json`）
+
+同一 seed 跑两遍真实的 `scripts/r8/playthrough.ts`（`--profile gospel-5.8.19 --mode reference`）：
+
+- 连续：一个进程跑到 D4 → 318 次决策、68 次执行、4 人存活、`bleak`；
+- 拆段：`--stop-after-days 2`（D2 08:00 保存）→ 新进程 `--restore` 跑到 D4 →
+  136 + 190 次决策、19 + 49 次执行、4 人存活、`bleak`。
+
+按 `(actorId, 世界时钟, requestId)` 把恢复段的每条决策与连续段的同一条配对，
+**166/166 条的 `memoryBlockSha256 / memoryTokens / memoryKept / memoryDropped` 完全相同**。
+
+（连续与拆段的决策条数不同：318 vs 136+190，`rejected` 4 vs 6；同一 seed 在**基线 `24406c4`**
+上跑出同样的 318/326 与 4/6，说明这是保存/恢复的既有差异，不属于记忆投影，
+留给 D/H 的权威等价比较，不在这里改。）
+
+复跑：
+
+```
+node dist/scripts/r8/playthrough.js --profile gospel-5.8.19 --seed r11b-runner --mode reference --out /tmp/cont
+node dist/scripts/r8/playthrough.js --profile gospel-5.8.19 --seed r11b-runner --mode reference --out /tmp/split --stop-after-days 2
+node dist/scripts/r8/playthrough.js --profile gospel-5.8.19 --seed r11b-runner --mode reference --out /tmp/split --restore /tmp/split/state.json
+node scripts/r11-b/compare-continuous.mjs /tmp/cont /tmp/split --out artifacts/r11-b/continuous-vs-restored.json
+```
+
 ## 6. 复跑
 
 ```
