@@ -1,0 +1,49 @@
+{
+  "schema": "frostecho.r11.freeze/1",
+  "status": "frozen",
+  "sourceCommit": "1d140c25dfe009f8e80580bd0d597b67274417dd",
+  "sourceTree": "277813af58975b23c0622f4ddf7150701b49eced",
+  "frozenAt": "2026-11-20T14:40:00+08:00",
+  "renderer": {
+    "id": "joint-c-action/2",
+    "sourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+    "buildSha256": "2309464ebb800c07ffa8904df962a87010a6595d11d09b857f6277235a9c7c1d"
+  },
+  "memory": {
+    "policy": "conditional-experience",
+    "selection": "obligation-first",
+    "tokenBudget": 640
+  },
+  "deadline": {
+    "horizonMinutes": 240,
+    "protocol": "same-snapshot-absolute-deadline/1",
+    "pendingIsNotFailure": true
+  },
+  "scenario": {
+    "episodes": 12,
+    "slices": 8,
+    "capPerEpisode": 8,
+    "npcCount": 8,
+    "profile": "gospel-5.8.19",
+    "start": { "day": 1, "minuteOfDay": 480 },
+    "end": { "day": 4, "minuteOfDay": 1080 },
+    "resources": { "food": 130, "firewood": 30, "power": 30, "medicine": 3 }
+  },
+  "splits": {
+    "seed": "frostecho-r11-split-20261120",
+    "unit": "sourceEpisodeId",
+    "train": 0.6,
+    "dev": 0.2,
+    "test": 0.2
+  },
+  "runner": {
+    "entry": "scripts/r10/run-matrix.mjs",
+    "scenarioFreeze": "H/SCENARIO-FREEZE.json",
+    "clockGate": "strict: refuse to write labels on re-settlement or t* overrun"
+  },
+  "identity": {
+    "encoderSourceSha256": "1e9f9bfb2271008e9c95da9af9453990b7447151eae80458138243795e6d3d98",
+    "manifestValidatorSha256": "30ba99a3e566fd29dbb3b70b11b9538ffc21658c6958c87f56554a4e13a22e82"
+  },
+  "notes": "Frozen on the integrated R11 tree (A e208def + B d291669 + C 5a096eb + D 857cbd7). CPU capture/labels/corpora/packets may run now; the 27B encoding and eight-head training remain blocked while both A10s are occupied by external processes. Any renderer/source change needs a new FREEZE.json and a new out-of-band SHA; reviews bound to this SHA cannot be reused."
+}

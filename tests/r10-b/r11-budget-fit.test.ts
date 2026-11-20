@@ -46,14 +46,15 @@ test('an oversized FIRST record is fitted inside budget 64, never rendered whole
   // The whole long text never reaches the renderer.
   assert.ok(Buffer.byteLength(capture.memoryBlock, 'utf8') < 300,
     `rendered ${Buffer.byteLength(capture.memoryBlock, 'utf8')} bytes`);
-  // Provenance survives the cut.
+  // Provenance survives the cut: the pointer, the original time and an
+  // explicit truncation mark are part of the admitted fact.
   const fact = capture.request.memoryFacts[0];
   const payload = fact.payload as Record<string, unknown>;
-  assert.equal(payload.trunc, true);
-  assert.equal(payload.ref, 'large-realistic-commitment');
-  assert.equal(payload.at, 480);
-  assert.equal(payload.by, 'player');
-  assert.equal(payload.rev, 1);
+  assert.equal(payload.truncated, true);
+  assert.equal(payload.pointer, 'large-realistic-commitment');
+  assert.equal(payload.occurredAt, 480);
+  assert.equal(String(payload.text ?? '').length < 100, true,
+    'the whole 6500-char text must not survive the trim');
 });
 
 test('budget 0 keeps nothing and bills nothing', async () => {

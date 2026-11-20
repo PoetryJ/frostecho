@@ -113,6 +113,15 @@ function testEnv() {
     env.GENIE_TRASH_DIR = join(tmpdir(), 'frostecho-no-native-trash');
     console.error('safe-delete: using freedesktop trash fallback (native binary probe disabled)');
   }
+  // Several sessions share /tmp on this host. The r61 test uses a fixed
+  // `tmpdir()/py dir r61` path, so a concurrent run from another worktree can
+  // leave that directory behind and turn a real assertion green/red by race.
+  // Give every suite run its own TMPDIR; the child's tmpdir() follows it.
+  const scratch = mkdtempSync(join(tmpdir(), 'frostecho-tests-'));
+  env.TMPDIR = scratch;
+  env.TMP = scratch;
+  env.TEMP = scratch;
+  console.error(`tests: private TMPDIR ${scratch}`);
   return env;
 }
 
