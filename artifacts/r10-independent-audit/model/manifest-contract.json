@@ -1,0 +1,27 @@
+{
+  "actualModelForwards": 0,
+  "torchImported": false,
+  "cases": [
+    {
+      "recipe": "base",
+      "actualSchema": "frostecho.action-weak-experiment/1",
+      "actualLabelSource": "same-snapshot-branch-rollout",
+      "schemaMatchesRequired": true,
+      "labelSourceMatchesService": false,
+      "reportedMatchesSchema": false,
+      "loaderRejected": true,
+      "reason": "training manifest must identify the unadmitted weak-reference experiment"
+    },
+    {
+      "recipe": "discharge",
+      "actualSchema": "frostecho.action-weak-experiment/1",
+      "actualLabelSource": "same-snapshot-branch-rollout",
+      "schemaMatchesRequired": true,
+      "labelSourceMatchesService": false,
+      "reportedMatchesSchema": false,
+      "loaderRejected": true,
+      "reason": "training manifest must identify the unadmitted weak-reference experiment"
+    }
+  ],
+  "harnessBinding": "run-matrix.mjs deliberately omits manifest, but validates headSha256/featureIdentityHash/rendererId against its loaded manifest on every reply. This is a documented adapter, unlike the R9 unbound run. A shared loader supporting honest branch-rollout label provenance should replace the duplicated compatibility path."
+}

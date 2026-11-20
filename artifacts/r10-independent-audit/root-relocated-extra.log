@@ -1,0 +1,78 @@
+{
+  "sourceHead": "288a288",
+  "gpuCalls": 0,
+  "cases": [
+    {
+      "name": "first-oversized-memory-bypasses-budget",
+      "budget": 64,
+      "kept": 1,
+      "tokens": 6580,
+      "renderedMemorySegment": [
+        {
+          "bytes": 19748,
+          "hasTail": true
+        }
+      ],
+      "stepRecorded": [
+        {
+          "memoryBudget": 64,
+          "memoryTokens": 6580
+        }
+      ],
+      "issueReproduced": true
+    },
+    {
+      "name": "correct-place-undefined-grant-bypasses-time",
+      "before": {
+        "time": 480,
+        "wood": 30
+      },
+      "wrapper": {
+        "status": "rejected",
+        "eventIds": [],
+        "reason": "work_requires_intent: gather spends authoritative time; queue it and settle on the clock"
+      },
+      "low": {
+        "status": "applied",
+        "eventIds": [
+          "no-grant:gathered:1"
+        ],
+        "postStateVersion": 2,
+        "reason": null,
+        "events": [
+          {
+            "eventId": "no-grant:gathered:1",
+            "type": "gathered",
+            "simTime": 480,
+            "actorId": "npc_01",
+            "payload": {
+              "resource": "firewood",
+              "amount": 3
+            }
+          }
+        ]
+      },
+      "after": {
+        "time": 480,
+        "wood": 33
+      },
+      "issueReproduced": true
+    },
+    {
+      "name": "queued-demand-dedup-positive",
+      "first": "first",
+      "repeat": "first",
+      "duplicate": true,
+      "intents": 1,
+      "receipts": 1,
+      "ok": true
+    },
+    {
+      "name": "original-map-due-move-reentrancy",
+      "exit": 0,
+      "signal": null,
+      "stdout": "{\"clock\":516,\"target\":495,\"workLog\":22,\"status\":\"rejected\",\"failures\":[{\"intentId\":\"original-move\",\"actorId\":\"npc_01\",\"kind\":\"move\",\"demandId\":\"dem-632c94dbd0242a6d2c136e21\",\"startedAt\":480,\"endsAt\":495,\"settledAt\":516,\"status\":\"rejected\",\"eventIds\":[\"legacy-step:ab88337716f0cacaa5fde051e5fef36d24d9ec2b5dcc253f50aa257c9b166385\",\"legacy-command:ab88337716f0cacaa5fde051e5fef36d24d9ec2b5dcc253f50aa257c9b166385\",\"legacy-command:f7bbfd1e5c73449081b7232d14f5d680ecdce7520d4e86734d538b51deb0f5c5\"],\"failureReason\":\"original_entry_interrupted\"},{\"intentId\":\"original-move\",\"actorId\":\"npc_01\",\"kind\":\"move\",\"demandId\":\"dem-632c94dbd0242a6d2c136e21\",\"startedAt\":480,\"endsAt\":495,\"settledAt\":516,\"status\":\"rejected\",\"eventIds\":[\"legacy-step:a8b6614b204c1c181243e9108daa97411f56d6216532c4806b20863d151fec51\",\"legacy-command:a8b6614b204c1c181243e9108daa97411f56d6216532c4806b20863d151fec51\",\"legacy-command:762f8f484b31a2cf1b49125684ee474450fb9e4cb0d288e34a886809cc1fde44\",\"legacy-command:f7bbfd1e5c73449081b7232d14f5d680ecdce7520d4e86734d538b51deb0f5c5\"],\"failureReason\":\"original_exit_interrupted\"},{\"intentId\":\"original-move\",\"actorId\":\"npc_01\",\"kind\":\"move\",\"demandId\":\"dem-632c94dbd0242a6d2c136e21\",\"startedAt\":480,\"endsAt\":495,\"settledAt\":516,\"status\":\"rejected\",\"eventIds\":[\"legacy-step:a8b6614b204c1c181243e9108daa97411f56d6216532c4806b20863d151fec51\",\"legacy-command:a8b6614b204c1c181243e9108daa97411f56d6216532c4806b20863d151fec51\",\"legacy-command:762f8f484b31a2cf1b49125684ee474450fb9e4cb0d288e34a886809cc1fde44\",\"legacy-command:f7bbfd1e5c73449081b7232d14f5d680ecdce7520d4e86734d538b51deb0f5c5\"],\"failureReason\":\"original_exit_interrupted\"}],\"actor\":\"warehouse\"}\n",
+      "stderr": ""
+    }
+  ]
+}

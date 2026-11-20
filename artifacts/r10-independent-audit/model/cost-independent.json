@@ -1,0 +1,55 @@
+{
+  "scope": "R10 C evidence only; no new GPU/model invocation",
+  "realGpuEncodingForwardsVerified": 158,
+  "allCallsHaveLogicalGpuPeak": true,
+  "physicalGpu": [
+    1
+  ],
+  "peakAllocatedMiB": 19606.89013671875,
+  "sumForwardSeconds": 1521.1230145320296,
+  "forwardCardHours": 0.42253417070334154,
+  "forwardJournalSpanSeconds": 1657.814466,
+  "invocationWallSeconds": 1672.4003917053342,
+  "invocationCardHourEstimate": 0.4645556643625928,
+  "entireGpuResidentSeconds": null,
+  "entireGpuResidentCardHours": null,
+  "allR10CResourceConsumption": null,
+  "unknownReason": "Forward traces prove GPU use during calls. No complete independent allocation/free monitor or process lifetime for encoding, three identity loads, intervening idle periods and all attempts; cannot claim exact total GPU residence or billing.",
+  "supersededEvidence": [
+    {
+      "label": "encoder timing probe (4 forwards, CPU)",
+      "forwards": 4,
+      "wallSeconds": 1157,
+      "wallMinutes": 19.3,
+      "placement": "auto",
+      "parameterDevices": [
+        "cpu"
+      ],
+      "gpuResidentDevices": [],
+      "cardHoursIfAllGpusHeld": 0.321,
+      "cardHoursActuallyResident": 0,
+      "secondsPerForward": 289.3,
+      "identityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7"
+    },
+    {
+      "label": "corpus encoding #1 (all-CPU, superseded)",
+      "forwards": 158,
+      "wallSeconds": 5803,
+      "wallMinutes": 96.7,
+      "placement": "auto",
+      "parameterDevices": [
+        "cpu"
+      ],
+      "gpuResidentDevices": [],
+      "cardHoursIfAllGpusHeld": 1.612,
+      "cardHoursActuallyResident": 0,
+      "secondsPerForward": 36.73,
+      "identityHash": "57bc3f50aa0cd0337b8effc1ef18745d328c17eaac3f5903e997d167e94bd0f7"
+    }
+  ],
+  "deliveredTrainerCpuSeconds": {
+    "base": 11.76944274455309,
+    "discharge": 9.964289017021656
+  },
+  "interpretation": "About 0.465 single-card hours is an invocation-duration estimate, not audited full lifetime. Delivered heads are CPU-trained on GPU-extracted features. Do not count superseded all-CPU wall time as GPU-card hours."
+}
