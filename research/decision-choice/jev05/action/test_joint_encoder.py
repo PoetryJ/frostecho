@@ -57,7 +57,7 @@ def envelope():
             'rendererSourceSha256': core.file_sha(core.ROOT / 'src/r7/jev/render.ts'),
             'renderedTextSha256': core.digest_bytes(text.encode()),
             'rendered': {'text': text, 'candidateSpans': spans,
-                         'spanUnit': 'utf16-code-unit', 'rendererId': 'joint-c-action/1'}}
+                         'spanUnit': 'utf16-code-unit', 'rendererId': 'joint-c-action/2'}}
 
 
 class JointEncoderMechanismTests(unittest.TestCase):
