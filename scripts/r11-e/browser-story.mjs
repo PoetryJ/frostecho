@@ -353,6 +353,35 @@ async function clickActor(id) {
 
 let cdp = null;
 
+/** The 2D page reads the same snapshot; capture it at the same tick per step. */
+async function capture2d(name, expected) {
+  const viewer = await context.newPage();
+  try {
+    await viewer.goto(report.url.replace(/\/$/, '') + '/2d.html', { waitUntil: 'load' });
+    await viewer.waitForFunction(() => window.frostEcho2d?.anchors()?.sessionId != null, null,
+      { timeout: 20_000 });
+    let anchors = null;
+    for (let attempt = 0; attempt < 60; attempt += 1) {
+      anchors = await Promise.race([
+        viewer.evaluate(() => window.frostEcho2d?.anchors() ?? null),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('2d_eval_timeout')), 10_000)),
+      ]);
+      if (anchors && expected && anchors.worldVersion === expected.worldVersion
+        && anchors.simTime === expected.simTime) break;
+      await viewer.waitForTimeout(120);
+    }
+    const path2d = join(shotDir, `${String(report.screenshots.length + 1).padStart(2, '0')}-${name}-2d.png`);
+    await viewer.screenshot({ path: path2d, timeout: 20_000 });
+    report.screenshots.push({ name: `${name}-2d`, path: path2d.replace(root + '/', ''),
+      sha256: sha256(path2d), worldVersion: anchors?.worldVersion ?? null, simTime: anchors?.simTime ?? null });
+    report.twoD ??= [];
+    report.twoD.push({ name, worldVersion: anchors?.worldVersion ?? null,
+      simTime: anchors?.simTime ?? null, expected });
+  } finally {
+    await viewer.close().catch(() => {});
+  }
+}
+
 async function shot(name) {
   trace('shot:start', { name });
   const path = join(shotDir, `${String(report.screenshots.length + 1).padStart(2, '0')}-${name}.png`);
@@ -389,6 +418,16 @@ async function shot(name) {
   const captured = existsSync(path) && statSync(path).size > 1000;
   if (captured) {
     report.screenshots.push({ name, path: path.replace(root + '/', ''), sha256: sha256(path) });
+  }
+  try {
+    const expected = await evalTimed(() => {
+      const s = window.frostEcho.snapshot();
+      return s ? { worldVersion: s.worldVersion, simTime: s.simTime } : null;
+    }, null, 10_000);
+    if (expected) await capture2d(name, expected);
+  } catch (error) {
+    report.screenshotFailures ??= [];
+    report.screenshotFailures.push({ name: `${name}-2d`, error: error.message.split('\n')[0] });
   }
   trace('shot:done', { name, captured });
   return path;
