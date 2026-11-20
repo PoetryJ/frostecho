@@ -356,32 +356,41 @@ let cdp = null;
 async function shot(name) {
   trace('shot:start', { name });
   const path = join(shotDir, `${String(report.screenshots.length + 1).padStart(2, '0')}-${name}.png`);
-  try {
+  const capture = async () => {
     const health = await evalTimed(() => ({
       errors: window.frostEcho?.errors ?? [],
       loading: document.getElementById('loading')?.className ?? '',
     }), null, 10_000);
     if (health.errors.length > 0 || !/ready/.test(health.loading)) {
-      report.screenshotFailures ??= [];
-      report.screenshotFailures.push({ name, error: `page_unhealthy:${JSON.stringify(health).slice(0, 160)}` });
-      await recoverPage(`unhealthy:${name}`).catch(() => {});
-      return path;
+      throw new Error(`page_unhealthy:${JSON.stringify(health).slice(0, 160)}`);
     }
     // Freeze GPU submission for the still; the last presented frame stays.
     await evalTimed(() => window.frostEcho.pauseRender(true), null, 5000);
     await page.waitForTimeout(200);
     await page.screenshot({ path, timeout: 45_000 });
-    report.screenshots.push({ name, path: path.replace(root + '/', ''), sha256: sha256(path) });
-  } catch (error) {
-    report.screenshotFailures ??= [];
-    report.screenshotFailures.push({ name, error: error.message.split('\n')[0] });
-    // A wedged compositor is a view-only problem: replace the tab, keep the CLI.
+  };
+  try {
+    await capture();
+  } catch (first) {
+    // One retry on a fresh tab at the same authority state; the 3D surface can
+    // stall the compositor once, and the evidence should not lose the step.
     await recoverPage(`screenshot:${name}`).catch(() => {});
+    try {
+      await capture();
+      report.recoveredShots = [...(report.recoveredShots ?? []), { name, first: first.message.split('\n')[0] }];
+    } catch (second) {
+      report.screenshotFailures ??= [];
+      report.screenshotFailures.push({ name, error: second.message.split('\n')[0] });
+    }
   } finally {
     try { await evalTimed(() => window.frostEcho.pauseRender(false), null, 5000); } catch { /* page gone */ }
     await ensurePageAlive(`post-shot:${name}`);
   }
-  trace('shot:done', { name });
+  const captured = existsSync(path) && statSync(path).size > 1000;
+  if (captured) {
+    report.screenshots.push({ name, path: path.replace(root + '/', ''), sha256: sha256(path) });
+  }
+  trace('shot:done', { name, captured });
   return path;
 }
 
