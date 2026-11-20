@@ -259,7 +259,7 @@
     "physicalGpus": [
       1
     ],
-    "cardHoursCharged": 0.33,
+    "cardHoursCharged": 0.36,
     "cacheSha256": "14a5f3718ff3ba165c0e33c410ff9fcde173eb8b6d07381229c8798bc1509578"
   },
   "heads": {
@@ -361,5 +361,26 @@
     "labels use 60-minute continuation cadence (12-way parallel) rather than 30; same reference rule, coarser decision points",
     "no live-JEV states: reference only; GPU1 was used for encoding, not for a live scorer",
     "12 episodes, 4 stories x 3"
-  ]
+  ],
+  "jevProbe": {
+    "cases": 4,
+    "episodes": 1,
+    "accessState": "real-jev",
+    "scorerId": "jev-experimental-live",
+    "manifestSha256": "48ef46913c85781c5e3bed9033538dc60b421a979e744e0f7dc566335e9b4d5c",
+    "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+    "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475",
+    "allBound": true,
+    "allAccept": true,
+    "loadSeconds": 89.08949171751738,
+    "gpuLayers": 24,
+    "cpuLayers": 44,
+    "wallMinutesCharged": 0.13,
+    "note": "4 real replies were captured before the 16:00 slot; 24 transformer tensors were on GPU1 and 40 on CPU, so one forward took ~60-90 s and a full JEV stratum did not fit. These 4 states are evidence of the live path, NOT part of the 48-state reference corpus."
+  },
+  "cost": {
+    "encodingCardHours": 0.36,
+    "jevProbeCardHours": 0.13,
+    "totalCardHours": 0.49
+  }
 }

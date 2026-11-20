@@ -103,7 +103,8 @@ if (policy === 'jev' && (!scorerCommand || !manifestPath)) {
 const manifestSha = manifestPath ? sha(readFileSync(manifestPath)) : null;
 const manifestDocument = manifestPath ? JSON.parse(readFileSync(manifestPath, 'utf8')) : null;
 if (policy === 'jev') {
-  if (manifestDocument.schema !== 'frostecho.action-training-manifest/2'
+  if (!['frostecho.action-training-manifest/2',
+    'frostecho.training-manifest/r11'].includes(manifestDocument.schema)
       || manifestDocument.experimental !== true
       || manifestDocument.countsAsAdmitted !== false
       || !manifestDocument.labelSource) {
