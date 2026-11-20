@@ -114,6 +114,17 @@ test('B projection is summarised without prompt text or lesson copy', () => {
   assert.ok(!JSON.stringify(snapshot.projections).includes('delay-should-be-reported'));
 });
 
+test('promise progress receipts are exposed in order, display-safe', () => {
+  const { snapshot } = buildVisualSnapshot(bridge, catalog);
+  const types = snapshot.progress.map(row => row.type);
+  assert.ok(types.includes('warehouse_stock_observed'));
+  assert.ok(types.includes('gathered'));
+  assert.ok(types.includes('stock_deposited'));
+  assert.ok(types.includes('stock_withdrawn'));
+  assert.ok(types.includes('meal_delivered'));
+  assert.doesNotThrow(() => assertNoPrivateMemory(snapshot));
+});
+
 test('the change, the pending work and the scorer identity are visible', () => {
   const { snapshot } = buildVisualSnapshot(bridge, catalog);
   const row = snapshot.obligations[0];

@@ -354,7 +354,10 @@ async function clickActor(id) {
 let cdp = null;
 
 /** The 2D page reads the same snapshot; capture it at the same tick per step. */
-async function capture2d(name, expected) {
+async function capture2d(name, expected, focusId) {
+  // The compositor is shared; freeze the WebGPU page so the 2D still is not
+  // blocked behind it, then resume (display-only, the clock is untouched).
+  try { await evalTimed(() => window.frostEcho.pauseRender(true), null, 5000); } catch { /* ignore */ }
   const viewer = await context.newPage();
   try {
     await viewer.goto(report.url.replace(/\/$/, '') + '/2d.html', { waitUntil: 'load' });
@@ -370,8 +373,13 @@ async function capture2d(name, expected) {
         && anchors.simTime === expected.simTime) break;
       await viewer.waitForTimeout(120);
     }
+    if (focusId) {
+      // Same selection as the 3D panel so the 2D page draws that actor's route.
+      await viewer.click(`#roster li[data-npc="${focusId}"]`, { timeout: 5000 }).catch(() => {});
+      await viewer.waitForTimeout(200);
+    }
     const path2d = join(shotDir, `${String(report.screenshots.length + 1).padStart(2, '0')}-${name}-2d.png`);
-    await viewer.screenshot({ path: path2d, timeout: 20_000 });
+    await viewer.screenshot({ path: path2d, timeout: 45_000 });
     report.screenshots.push({ name: `${name}-2d`, path: path2d.replace(root + '/', ''),
       sha256: sha256(path2d), worldVersion: anchors?.worldVersion ?? null, simTime: anchors?.simTime ?? null });
     report.twoD ??= [];
@@ -379,6 +387,7 @@ async function capture2d(name, expected) {
       simTime: anchors?.simTime ?? null, expected });
   } finally {
     await viewer.close().catch(() => {});
+    try { await evalTimed(() => window.frostEcho.pauseRender(false), null, 5000); } catch { /* ignore */ }
   }
 }
 
@@ -424,7 +433,7 @@ async function shot(name) {
       const s = window.frostEcho.snapshot();
       return s ? { worldVersion: s.worldVersion, simTime: s.simTime } : null;
     }, null, 10_000);
-    if (expected) await capture2d(name, expected);
+    if (expected) await capture2d(name, expected, selectedId);
   } catch (error) {
     report.screenshotFailures ??= [];
     report.screenshotFailures.push({ name: `${name}-2d`, error: error.message.split('\n')[0] });
@@ -559,11 +568,10 @@ async function main() {
       .some(entry => entry.actorId === 'npc_03' && entry.endsAt));
     if (hasWork) await clickButton('等到当前工时', `promisor-wait-${round}`);
     const fp = await fingerprint();
-    const recent = (await evalTimed(() => window.frostEcho.snapshot()?.recentEvents ?? []))
-      .map(event => event.type);
-    receipts.push(...recent.filter(type => ['gathered', 'stock_deposited', 'out_of_stock',
-      'warehouse_stock_observed', 'stock_withdrawn', 'meal_delivered'].includes(type)));
-    if (hasReceipt('stock_deposited') && recent.includes('stock_deposited')) break;
+    const progress = await evalTimed(() => window.frostEcho.snapshot()?.progress ?? []);
+    receipts.push(...progress.map(row => row.type).filter(type => ['gathered', 'stock_deposited',
+      'out_of_stock', 'warehouse_stock_observed', 'stock_withdrawn', 'meal_delivered'].includes(type)));
+    if (progress.some(row => row.type === 'stock_deposited' && row.actorId === 'npc_03')) break;
     if (deliverRow(fp)?.status === 'fulfilled') break;
     if (fp.simTime === before && !hasWork) break;
   }
@@ -626,9 +634,9 @@ async function main() {
     const hasWork = await evalTimed(() => (window.frostEcho.snapshot()?.work ?? [])
       .some(entry => entry.actorId === 'npc_03' && entry.endsAt));
     if (hasWork) await clickButton('等到当前工时', `continue-wait-${round}`);
-    const recent = (await evalTimed(() => window.frostEcho.snapshot()?.recentEvents ?? []))
-      .map(event => event.type);
-    afterRestoreReceipts.push(...recent.filter(type => ['stock_withdrawn', 'meal_delivered'].includes(type)));
+    const progress = await evalTimed(() => window.frostEcho.snapshot()?.progress ?? []);
+    afterRestoreReceipts.push(...progress.map(row => row.type)
+      .filter(type => ['stock_withdrawn', 'meal_delivered'].includes(type)));
     const fp = await fingerprint();
     if (deliverRow(fp)?.status === 'fulfilled') break;
   }

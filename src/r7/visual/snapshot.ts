@@ -163,6 +163,15 @@ export interface VisualProjection {
   encoderTokens: number | null;
 }
 
+/** One receipt that moves a promise forward; the page never recomputes it. */
+export interface VisualProgress {
+  eventId: string;
+  type: string;
+  actorId: string;
+  simTime: number;
+  detail: Record<string, string | number | boolean | null>;
+}
+
 export interface VisualWork {
   intentId: string;
   actorId: string;
@@ -196,6 +205,8 @@ export interface VisualSnapshot {
   tasks: VisualTask[];
   obligations: VisualObligation[];
   work: VisualWork[];
+  /** Last receipts that can move a promise forward, newest last. */
+  progress: VisualProgress[];
   stock: VisualStock;
   routes: VisualRoute[];
   projections: Record<string, VisualProjection>;
@@ -549,6 +560,18 @@ export function buildVisualSnapshot(bridge: BridgeState,
     .map(row => summariseEvent(row.event, row.order));
 
   const routes = collectRoutes(rows);
+  const PROGRESS_TYPES = new Set(['gathered', 'stock_deposited', 'stock_withdrawn',
+    'out_of_stock', 'warehouse_stock_observed', 'meal_delivered', 'commitment_proposed',
+    'commitment_accepted', 'commitment_change_proposed', 'commitment_change_accepted',
+    'commitment_cancelled', 'commitment_fulfilled', 'commitment_withdrawn']);
+  const progress: VisualProgress[] = [...rows]
+    .sort((a, b) => (numberOrNull(a.event?.simTime) ?? 0) - (numberOrNull(b.event?.simTime) ?? 0)
+      || a.order - b.order)
+    .filter(row => PROGRESS_TYPES.has(String(row.event?.type ?? '')))
+    .slice(-48)
+    .map(row => summariseEvent(row.event, row.order))
+    .map(event => ({ eventId: event.eventId, type: event.type, actorId: event.actorId,
+      simTime: event.simTime, detail: event.detail }));
   const stock = collectStock(rows, observation.resources && typeof observation.resources === 'object'
     ? observation.resources : {});
   const projections: Record<string, VisualProjection> = {};
@@ -626,6 +649,7 @@ export function buildVisualSnapshot(bridge: BridgeState,
         .map((id: unknown) => String(id)),
     })),
     work,
+    progress,
     stock,
     routes,
     projections,
