@@ -68,6 +68,15 @@ CLI（`scripts/play-sprint.ts`）、网页（`CliBridge` 驱动同一 CLI）、�
 并把 `memoryBytes / memoryBlockSha256 / memorySegmentSha256 / memorySegmentBytes`
 写成 step 证据（编码前字节）。
 
+四个入口的实际核对：
+
+| 入口 | 命令 | 观察 |
+|---|---|---|
+| CLI / 网页（`CliBridge` 驱动同一 CLI） | `printf 'r8-step npc_01\nr8-step npc_02\nquit\n' \| node dist/scripts/play-sprint.js --profile gospel-5.8.19 --state …/state.json --fresh` | 两条记录 `memoryTokens=636/640`、`memoryBytes=1907`、`memoryProjectionId=memory-projection/2`、`memoryEncoderStatus=not-attached` |
+| 数据采集 | `node --test dist/tests/r11-b/shared-projection.test.js` | step 记录与 `renderRequest` 记忆段、`buildEnvelope().tokens.memory` 三方同值 |
+| 四日 runner | `node dist/scripts/r8/playthrough.js … --mode reference`（连续 / D2 保存后恢复） | 166/166 条决策记忆块 SHA 相同，见 §5b |
+| 证据脚本 | `node dist/scripts/r11-b/memory-evidence.js` | 42 用例 `withinBudget=true`，6 条 step `agreesWithRender=true` |
+
 ## 5. 四故事与恢复（`memory-stories/`，`allPassed=true`）
 
 每个故事都含 D2 08:00 保存 → 退出 → 新进程加载，全部检查通过：
