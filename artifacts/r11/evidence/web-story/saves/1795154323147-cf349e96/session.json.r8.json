@@ -1,0 +1,3583 @@
+{
+  "schema": "frostecho.r8-runtime/1",
+  "profile": "gospel-5.8.19",
+  "clock": 555,
+  "ended": false,
+  "endingKind": null,
+  "states": {
+    "survival": {
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      },
+      "hypothermic": [],
+      "lastMinute": 555,
+      "reportedDeaths": []
+    },
+    "production": {
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "buildRemaining": {},
+      "buildWorker": {},
+      "ranMinutes": {},
+      "lastMinute": 555
+    },
+    "tasks": {
+      "tasks": [
+        {
+          "taskId": "task-1",
+          "type": "PREPARE_WARMTH",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_01",
+          "status": "accepted",
+          "revision": 2,
+          "workedMinutes": 0,
+          "createdAtMinute": 0,
+          "goal": {
+            "amount": 1
+          }
+        },
+        {
+          "taskId": "task-2",
+          "type": "PREPARE_WARMTH",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_02",
+          "status": "accepted",
+          "revision": 2,
+          "workedMinutes": 0,
+          "createdAtMinute": 0,
+          "goal": {
+            "amount": 1
+          }
+        },
+        {
+          "taskId": "task-3",
+          "type": "PREPARE_WARMTH",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_03",
+          "status": "accepted",
+          "revision": 2,
+          "workedMinutes": 0,
+          "createdAtMinute": 0,
+          "goal": {
+            "amount": 1
+          }
+        },
+        {
+          "taskId": "task-4",
+          "type": "PREPARE_WARMTH",
+          "proposerId": "old_qian",
+          "assigneeId": "npc_04",
+          "status": "accepted",
+          "revision": 2,
+          "workedMinutes": 0,
+          "createdAtMinute": 0,
+          "goal": {
+            "amount": 1
+          }
+        }
+      ],
+      "seq": 4,
+      "dailyUsage": {},
+      "usedReceipts": []
+    },
+    "council": {
+      "meetings": [
+        {
+          "meetingId": "council-1",
+          "openedAtMinute": 0,
+          "reason": "morning",
+          "proposals": [
+            {
+              "proposalId": "p-council-1-1",
+              "authorId": "old_qian",
+              "assignments": [
+                {
+                  "actorId": "npc_01",
+                  "type": "PREPARE_WARMTH"
+                },
+                {
+                  "actorId": "npc_02",
+                  "type": "PREPARE_WARMTH"
+                },
+                {
+                  "actorId": "npc_03",
+                  "type": "PREPARE_WARMTH"
+                },
+                {
+                  "actorId": "npc_04",
+                  "type": "PREPARE_WARMTH"
+                }
+              ],
+              "rationale": "power is the scarcest resource"
+            }
+          ],
+          "votes": {
+            "npc_01": "p-council-1-1",
+            "npc_02": "p-council-1-1",
+            "npc_03": "p-council-1-1",
+            "npc_04": "p-council-1-1",
+            "npc_05": "p-council-1-1",
+            "npc_06": "p-council-1-1",
+            "npc_07": "p-council-1-1",
+            "npc_08": "p-council-1-1"
+          },
+          "status": "resolved",
+          "winnerProposalId": "p-council-1-1"
+        }
+      ],
+      "seq": 1,
+      "cooldownUntil": 480
+    },
+    "crises": {
+      "active": [],
+      "history": [],
+      "seq": 0,
+      "lastFoodConflictMinute": {
+        "$frostechoNumber": "-Infinity"
+      },
+      "foodConflictCooldownMinutes": 60
+    },
+    "life": {
+      "lifeNumber": 1,
+      "pastLives": [],
+      "ending": null,
+      "settled": false
+    }
+  },
+  "journal": [
+    {
+      "at": 480,
+      "proposalId": "council:council-1:opened",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-1",
+        "reason": "morning"
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "council:council-1:resolved",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "meetingId": "council-1",
+        "winner": "p-council-1-1",
+        "tieBreakBy": "",
+        "votes": 8
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "tasks:task-1:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-1",
+        "type": "PREPARE_WARMTH",
+        "assigneeId": "npc_01"
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "tasks:task-1:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-1",
+        "revision": 2
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "tasks:task-2:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-2",
+        "type": "PREPARE_WARMTH",
+        "assigneeId": "npc_02"
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "tasks:task-2:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_02",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-2",
+        "revision": 2
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "tasks:task-3:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-3",
+        "type": "PREPARE_WARMTH",
+        "assigneeId": "npc_03"
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "tasks:task-3:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_03",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-3",
+        "revision": 2
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "tasks:task-4:proposed",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-4",
+        "type": "PREPARE_WARMTH",
+        "assigneeId": "npc_04"
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "tasks:task-4:accepted",
+      "type": "task_accepted",
+      "actorId": "npc_04",
+      "observedBy": "all",
+      "payload": {
+        "taskId": "task-4",
+        "revision": 2
+      }
+    },
+    {
+      "at": 480,
+      "proposalId": "production:heating:495",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.865104,
+        "band": "hot",
+        "wood": 0.25,
+        "power": 0.5
+      }
+    },
+    {
+      "at": 495,
+      "proposalId": "production:heating:510",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.861458,
+        "band": "hot",
+        "wood": 0.25,
+        "power": 0.5
+      }
+    },
+    {
+      "at": 510,
+      "proposalId": "production:heating:525",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.857812,
+        "band": "hot",
+        "wood": 0.25,
+        "power": 0.5
+      }
+    },
+    {
+      "at": 525,
+      "proposalId": "production:heating:540",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.854167,
+        "band": "hot",
+        "wood": 0.25,
+        "power": 0.5
+      }
+    },
+    {
+      "at": 540,
+      "proposalId": "production:heating:555",
+      "type": "heating_settled",
+      "actorId": "system",
+      "observedBy": "all",
+      "payload": {
+        "strength": 0.850521,
+        "band": "hot",
+        "wood": 0.25,
+        "power": 0.5
+      }
+    }
+  ],
+  "committed": [
+    {
+      "eventId": "d:480:council_opened:old_qian",
+      "type": "council_opened",
+      "actorId": "old_qian",
+      "simTime": 480,
+      "payload": {
+        "meetingId": "council-1",
+        "reason": "morning"
+      }
+    },
+    {
+      "eventId": "d:480:council_resolved:old_qian",
+      "type": "council_resolved",
+      "actorId": "old_qian",
+      "simTime": 480,
+      "payload": {
+        "meetingId": "council-1",
+        "winner": "p-council-1-1",
+        "tieBreakBy": "",
+        "votes": 8
+      }
+    },
+    {
+      "eventId": "d:480:task_proposed:old_qian",
+      "type": "task_proposed",
+      "actorId": "old_qian",
+      "simTime": 480,
+      "payload": {
+        "taskId": "task-4",
+        "type": "PREPARE_WARMTH",
+        "assigneeId": "npc_04"
+      }
+    },
+    {
+      "eventId": "d:480:task_accepted:npc_01",
+      "type": "task_accepted",
+      "actorId": "npc_01",
+      "simTime": 480,
+      "payload": {
+        "taskId": "task-1",
+        "revision": 2
+      }
+    },
+    {
+      "eventId": "d:480:task_accepted:npc_02",
+      "type": "task_accepted",
+      "actorId": "npc_02",
+      "simTime": 480,
+      "payload": {
+        "taskId": "task-2",
+        "revision": 2
+      }
+    },
+    {
+      "eventId": "d:480:task_accepted:npc_03",
+      "type": "task_accepted",
+      "actorId": "npc_03",
+      "simTime": 480,
+      "payload": {
+        "taskId": "task-3",
+        "revision": 2
+      }
+    },
+    {
+      "eventId": "d:480:task_accepted:npc_04",
+      "type": "task_accepted",
+      "actorId": "npc_04",
+      "simTime": 480,
+      "payload": {
+        "taskId": "task-4",
+        "revision": 2
+      }
+    },
+    {
+      "eventId": "v1:actor:survival:npc_01:span:495",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 480,
+      "payload": {
+        "intentId": "survival:npc_01:span:495",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23456249999999998,\"health\":0.07818750000000001}"
+      }
+    },
+    {
+      "eventId": "v1:actor:survival:npc_02:span:495",
+      "type": "r8_actor",
+      "actorId": "npc_02",
+      "simTime": 480,
+      "payload": {
+        "intentId": "survival:npc_02:span:495",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23456249999999998,\"health\":0.07818750000000001}"
+      }
+    },
+    {
+      "eventId": "v1:actor:survival:npc_03:span:495",
+      "type": "r8_actor",
+      "actorId": "npc_03",
+      "simTime": 480,
+      "payload": {
+        "intentId": "survival:npc_03:span:495",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23456249999999998,\"health\":0.07818750000000001}"
+      }
+    },
+    {
+      "eventId": "v1:actor:survival:npc_04:span:495",
+      "type": "r8_actor",
+      "actorId": "npc_04",
+      "simTime": 480,
+      "payload": {
+        "intentId": "survival:npc_04:span:495",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23456249999999998,\"health\":0.07818750000000001}"
+      }
+    },
+    {
+      "eventId": "v1:actor:survival:npc_05:span:495",
+      "type": "r8_actor",
+      "actorId": "npc_05",
+      "simTime": 480,
+      "payload": {
+        "intentId": "survival:npc_05:span:495",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23456249999999998,\"health\":0.07818750000000001}"
+      }
+    },
+    {
+      "eventId": "v1:actor:survival:npc_06:span:495",
+      "type": "r8_actor",
+      "actorId": "npc_06",
+      "simTime": 480,
+      "payload": {
+        "intentId": "survival:npc_06:span:495",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23456249999999998,\"health\":0.07818750000000001}"
+      }
+    },
+    {
+      "eventId": "v1:actor:survival:npc_07:span:495",
+      "type": "r8_actor",
+      "actorId": "npc_07",
+      "simTime": 480,
+      "payload": {
+        "intentId": "survival:npc_07:span:495",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23456249999999998,\"health\":0.07818750000000001}"
+      }
+    },
+    {
+      "eventId": "v1:actor:survival:npc_08:span:495",
+      "type": "r8_actor",
+      "actorId": "npc_08",
+      "simTime": 480,
+      "payload": {
+        "intentId": "survival:npc_08:span:495",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23456249999999998,\"health\":0.07818750000000001}"
+      }
+    },
+    {
+      "eventId": "v1:resource:production:heating:wood:495",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 480,
+      "payload": {
+        "intentId": "production:heating:wood:495",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -0.25
+      }
+    },
+    {
+      "eventId": "v1:resource:production:heating:power:495",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 480,
+      "payload": {
+        "intentId": "production:heating:power:495",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -0.5
+      }
+    },
+    {
+      "eventId": "v1:intent-note:production:heating:warmth:495",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 480,
+      "payload": {
+        "intentId": "production:heating:warmth:495",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.865104
+      }
+    },
+    {
+      "eventId": "d:480:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 480,
+      "payload": {
+        "strength": 0.865104,
+        "band": "hot",
+        "wood": 0.25,
+        "power": 0.5
+      }
+    },
+    {
+      "eventId": "npc_01-r8-0:moved:2",
+      "type": "moved",
+      "actorId": "npc_01",
+      "simTime": 495,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_02-r8-0:moved:3",
+      "type": "moved",
+      "actorId": "npc_02",
+      "simTime": 495,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_03-r8-0:moved:4",
+      "type": "moved",
+      "actorId": "npc_03",
+      "simTime": 495,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_04-r8-0:moved:5",
+      "type": "moved",
+      "actorId": "npc_04",
+      "simTime": 495,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_05-r8-0:moved:6",
+      "type": "moved",
+      "actorId": "npc_05",
+      "simTime": 495,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_06-r8-0:moved:7",
+      "type": "moved",
+      "actorId": "npc_06",
+      "simTime": 495,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_07-r8-0:moved:8",
+      "type": "moved",
+      "actorId": "npc_07",
+      "simTime": 495,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_08-r8-0:moved:9",
+      "type": "moved",
+      "actorId": "npc_08",
+      "simTime": 495,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "v11:actor:survival:npc_01:span:510",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 495,
+      "payload": {
+        "intentId": "survival:npc_01:span:510",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23357808,\"health\":0.07785935999999999}"
+      }
+    },
+    {
+      "eventId": "v11:actor:survival:npc_02:span:510",
+      "type": "r8_actor",
+      "actorId": "npc_02",
+      "simTime": 495,
+      "payload": {
+        "intentId": "survival:npc_02:span:510",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23357808,\"health\":0.07785935999999999}"
+      }
+    },
+    {
+      "eventId": "v11:actor:survival:npc_03:span:510",
+      "type": "r8_actor",
+      "actorId": "npc_03",
+      "simTime": 495,
+      "payload": {
+        "intentId": "survival:npc_03:span:510",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23357808,\"health\":0.07785935999999999}"
+      }
+    },
+    {
+      "eventId": "v11:actor:survival:npc_04:span:510",
+      "type": "r8_actor",
+      "actorId": "npc_04",
+      "simTime": 495,
+      "payload": {
+        "intentId": "survival:npc_04:span:510",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23357808,\"health\":0.07785935999999999}"
+      }
+    },
+    {
+      "eventId": "v11:actor:survival:npc_05:span:510",
+      "type": "r8_actor",
+      "actorId": "npc_05",
+      "simTime": 495,
+      "payload": {
+        "intentId": "survival:npc_05:span:510",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23357808,\"health\":0.07785935999999999}"
+      }
+    },
+    {
+      "eventId": "v11:actor:survival:npc_06:span:510",
+      "type": "r8_actor",
+      "actorId": "npc_06",
+      "simTime": 495,
+      "payload": {
+        "intentId": "survival:npc_06:span:510",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23357808,\"health\":0.07785935999999999}"
+      }
+    },
+    {
+      "eventId": "v11:actor:survival:npc_07:span:510",
+      "type": "r8_actor",
+      "actorId": "npc_07",
+      "simTime": 495,
+      "payload": {
+        "intentId": "survival:npc_07:span:510",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23357808,\"health\":0.07785935999999999}"
+      }
+    },
+    {
+      "eventId": "v11:actor:survival:npc_08:span:510",
+      "type": "r8_actor",
+      "actorId": "npc_08",
+      "simTime": 495,
+      "payload": {
+        "intentId": "survival:npc_08:span:510",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23357808,\"health\":0.07785935999999999}"
+      }
+    },
+    {
+      "eventId": "v11:resource:production:heating:wood:510",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 495,
+      "payload": {
+        "intentId": "production:heating:wood:510",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -0.25
+      }
+    },
+    {
+      "eventId": "v11:resource:production:heating:power:510",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 495,
+      "payload": {
+        "intentId": "production:heating:power:510",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -0.5
+      }
+    },
+    {
+      "eventId": "v11:intent-note:production:heating:warmth:510",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 495,
+      "payload": {
+        "intentId": "production:heating:warmth:510",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.861458
+      }
+    },
+    {
+      "eventId": "d:495:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 495,
+      "payload": {
+        "strength": 0.861458,
+        "band": "hot",
+        "wood": 0.25,
+        "power": 0.5
+      }
+    },
+    {
+      "eventId": "npc_01-r8-10:moved:12",
+      "type": "moved",
+      "actorId": "npc_01",
+      "simTime": 510,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_02-r8-10:moved:13",
+      "type": "moved",
+      "actorId": "npc_02",
+      "simTime": 510,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_03-r8-10:moved:14",
+      "type": "moved",
+      "actorId": "npc_03",
+      "simTime": 510,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_04-r8-10:moved:15",
+      "type": "moved",
+      "actorId": "npc_04",
+      "simTime": 510,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_05-r8-10:moved:16",
+      "type": "moved",
+      "actorId": "npc_05",
+      "simTime": 510,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_06-r8-10:moved:17",
+      "type": "moved",
+      "actorId": "npc_06",
+      "simTime": 510,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_07-r8-10:moved:18",
+      "type": "moved",
+      "actorId": "npc_07",
+      "simTime": 510,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_08-r8-10:moved:19",
+      "type": "moved",
+      "actorId": "npc_08",
+      "simTime": 510,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "v21:actor:survival:npc_01:span:525",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 510,
+      "payload": {
+        "intentId": "survival:npc_01:span:525",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23259365999999995,\"health\":0.07753122}"
+      }
+    },
+    {
+      "eventId": "v21:actor:survival:npc_02:span:525",
+      "type": "r8_actor",
+      "actorId": "npc_02",
+      "simTime": 510,
+      "payload": {
+        "intentId": "survival:npc_02:span:525",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23259365999999995,\"health\":0.07753122}"
+      }
+    },
+    {
+      "eventId": "v21:actor:survival:npc_03:span:525",
+      "type": "r8_actor",
+      "actorId": "npc_03",
+      "simTime": 510,
+      "payload": {
+        "intentId": "survival:npc_03:span:525",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23259365999999995,\"health\":0.07753122}"
+      }
+    },
+    {
+      "eventId": "v21:actor:survival:npc_04:span:525",
+      "type": "r8_actor",
+      "actorId": "npc_04",
+      "simTime": 510,
+      "payload": {
+        "intentId": "survival:npc_04:span:525",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23259365999999995,\"health\":0.07753122}"
+      }
+    },
+    {
+      "eventId": "v21:actor:survival:npc_05:span:525",
+      "type": "r8_actor",
+      "actorId": "npc_05",
+      "simTime": 510,
+      "payload": {
+        "intentId": "survival:npc_05:span:525",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23259365999999995,\"health\":0.07753122}"
+      }
+    },
+    {
+      "eventId": "v21:actor:survival:npc_06:span:525",
+      "type": "r8_actor",
+      "actorId": "npc_06",
+      "simTime": 510,
+      "payload": {
+        "intentId": "survival:npc_06:span:525",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23259365999999995,\"health\":0.07753122}"
+      }
+    },
+    {
+      "eventId": "v21:actor:survival:npc_07:span:525",
+      "type": "r8_actor",
+      "actorId": "npc_07",
+      "simTime": 510,
+      "payload": {
+        "intentId": "survival:npc_07:span:525",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23259365999999995,\"health\":0.07753122}"
+      }
+    },
+    {
+      "eventId": "v21:actor:survival:npc_08:span:525",
+      "type": "r8_actor",
+      "actorId": "npc_08",
+      "simTime": 510,
+      "payload": {
+        "intentId": "survival:npc_08:span:525",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23259365999999995,\"health\":0.07753122}"
+      }
+    },
+    {
+      "eventId": "v21:resource:production:heating:wood:525",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 510,
+      "payload": {
+        "intentId": "production:heating:wood:525",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -0.25
+      }
+    },
+    {
+      "eventId": "v21:resource:production:heating:power:525",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 510,
+      "payload": {
+        "intentId": "production:heating:power:525",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -0.5
+      }
+    },
+    {
+      "eventId": "v21:intent-note:production:heating:warmth:525",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 510,
+      "payload": {
+        "intentId": "production:heating:warmth:525",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.857812
+      }
+    },
+    {
+      "eventId": "d:510:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 510,
+      "payload": {
+        "strength": 0.857812,
+        "band": "hot",
+        "wood": 0.25,
+        "power": 0.5
+      }
+    },
+    {
+      "eventId": "npc_01-r8-20:moved:22",
+      "type": "moved",
+      "actorId": "npc_01",
+      "simTime": 525,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_02-r8-20:moved:23",
+      "type": "moved",
+      "actorId": "npc_02",
+      "simTime": 525,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_03-r8-20:moved:24",
+      "type": "moved",
+      "actorId": "npc_03",
+      "simTime": 525,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_04-r8-20:moved:25",
+      "type": "moved",
+      "actorId": "npc_04",
+      "simTime": 525,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_05-r8-20:moved:26",
+      "type": "moved",
+      "actorId": "npc_05",
+      "simTime": 525,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_06-r8-20:moved:27",
+      "type": "moved",
+      "actorId": "npc_06",
+      "simTime": 525,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_07-r8-20:moved:28",
+      "type": "moved",
+      "actorId": "npc_07",
+      "simTime": 525,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_08-r8-20:moved:29",
+      "type": "moved",
+      "actorId": "npc_08",
+      "simTime": 525,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "v31:actor:survival:npc_01:span:540",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 525,
+      "payload": {
+        "intentId": "survival:npc_01:span:540",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23160924,\"health\":0.07720308000000001}"
+      }
+    },
+    {
+      "eventId": "v31:actor:survival:npc_02:span:540",
+      "type": "r8_actor",
+      "actorId": "npc_02",
+      "simTime": 525,
+      "payload": {
+        "intentId": "survival:npc_02:span:540",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23160924,\"health\":0.07720308000000001}"
+      }
+    },
+    {
+      "eventId": "v31:actor:survival:npc_03:span:540",
+      "type": "r8_actor",
+      "actorId": "npc_03",
+      "simTime": 525,
+      "payload": {
+        "intentId": "survival:npc_03:span:540",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23160924,\"health\":0.07720308000000001}"
+      }
+    },
+    {
+      "eventId": "v31:actor:survival:npc_04:span:540",
+      "type": "r8_actor",
+      "actorId": "npc_04",
+      "simTime": 525,
+      "payload": {
+        "intentId": "survival:npc_04:span:540",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23160924,\"health\":0.07720308000000001}"
+      }
+    },
+    {
+      "eventId": "v31:actor:survival:npc_05:span:540",
+      "type": "r8_actor",
+      "actorId": "npc_05",
+      "simTime": 525,
+      "payload": {
+        "intentId": "survival:npc_05:span:540",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23160924,\"health\":0.07720308000000001}"
+      }
+    },
+    {
+      "eventId": "v31:actor:survival:npc_06:span:540",
+      "type": "r8_actor",
+      "actorId": "npc_06",
+      "simTime": 525,
+      "payload": {
+        "intentId": "survival:npc_06:span:540",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23160924,\"health\":0.07720308000000001}"
+      }
+    },
+    {
+      "eventId": "v31:actor:survival:npc_07:span:540",
+      "type": "r8_actor",
+      "actorId": "npc_07",
+      "simTime": 525,
+      "payload": {
+        "intentId": "survival:npc_07:span:540",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23160924,\"health\":0.07720308000000001}"
+      }
+    },
+    {
+      "eventId": "v31:actor:survival:npc_08:span:540",
+      "type": "r8_actor",
+      "actorId": "npc_08",
+      "simTime": 525,
+      "payload": {
+        "intentId": "survival:npc_08:span:540",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23160924,\"health\":0.07720308000000001}"
+      }
+    },
+    {
+      "eventId": "v31:resource:production:heating:wood:540",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 525,
+      "payload": {
+        "intentId": "production:heating:wood:540",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -0.25
+      }
+    },
+    {
+      "eventId": "v31:resource:production:heating:power:540",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 525,
+      "payload": {
+        "intentId": "production:heating:power:540",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -0.5
+      }
+    },
+    {
+      "eventId": "v31:intent-note:production:heating:warmth:540",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 525,
+      "payload": {
+        "intentId": "production:heating:warmth:540",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.854167
+      }
+    },
+    {
+      "eventId": "d:525:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 525,
+      "payload": {
+        "strength": 0.854167,
+        "band": "hot",
+        "wood": 0.25,
+        "power": 0.5
+      }
+    },
+    {
+      "eventId": "npc_01-r8-30:moved:32",
+      "type": "moved",
+      "actorId": "npc_01",
+      "simTime": 540,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_02-r8-30:moved:33",
+      "type": "moved",
+      "actorId": "npc_02",
+      "simTime": 540,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_03-r8-30:moved:34",
+      "type": "moved",
+      "actorId": "npc_03",
+      "simTime": 540,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_04-r8-30:moved:35",
+      "type": "moved",
+      "actorId": "npc_04",
+      "simTime": 540,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_05-r8-30:moved:36",
+      "type": "moved",
+      "actorId": "npc_05",
+      "simTime": 540,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_06-r8-30:moved:37",
+      "type": "moved",
+      "actorId": "npc_06",
+      "simTime": 540,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_07-r8-30:moved:38",
+      "type": "moved",
+      "actorId": "npc_07",
+      "simTime": 540,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_08-r8-30:moved:39",
+      "type": "moved",
+      "actorId": "npc_08",
+      "simTime": 540,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "v41:actor:survival:npc_01:span:555",
+      "type": "r8_actor",
+      "actorId": "npc_01",
+      "simTime": 540,
+      "payload": {
+        "intentId": "survival:npc_01:span:555",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23062508999999998,\"health\":0.07687503}"
+      }
+    },
+    {
+      "eventId": "v41:actor:survival:npc_02:span:555",
+      "type": "r8_actor",
+      "actorId": "npc_02",
+      "simTime": 540,
+      "payload": {
+        "intentId": "survival:npc_02:span:555",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23062508999999998,\"health\":0.07687503}"
+      }
+    },
+    {
+      "eventId": "v41:actor:survival:npc_03:span:555",
+      "type": "r8_actor",
+      "actorId": "npc_03",
+      "simTime": 540,
+      "payload": {
+        "intentId": "survival:npc_03:span:555",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23062508999999998,\"health\":0.07687503}"
+      }
+    },
+    {
+      "eventId": "v41:actor:survival:npc_04:span:555",
+      "type": "r8_actor",
+      "actorId": "npc_04",
+      "simTime": 540,
+      "payload": {
+        "intentId": "survival:npc_04:span:555",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23062508999999998,\"health\":0.07687503}"
+      }
+    },
+    {
+      "eventId": "v41:actor:survival:npc_05:span:555",
+      "type": "r8_actor",
+      "actorId": "npc_05",
+      "simTime": 540,
+      "payload": {
+        "intentId": "survival:npc_05:span:555",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23062508999999998,\"health\":0.07687503}"
+      }
+    },
+    {
+      "eventId": "v41:actor:survival:npc_06:span:555",
+      "type": "r8_actor",
+      "actorId": "npc_06",
+      "simTime": 540,
+      "payload": {
+        "intentId": "survival:npc_06:span:555",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23062508999999998,\"health\":0.07687503}"
+      }
+    },
+    {
+      "eventId": "v41:actor:survival:npc_07:span:555",
+      "type": "r8_actor",
+      "actorId": "npc_07",
+      "simTime": 540,
+      "payload": {
+        "intentId": "survival:npc_07:span:555",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23062508999999998,\"health\":0.07687503}"
+      }
+    },
+    {
+      "eventId": "v41:actor:survival:npc_08:span:555",
+      "type": "r8_actor",
+      "actorId": "npc_08",
+      "simTime": 540,
+      "payload": {
+        "intentId": "survival:npc_08:span:555",
+        "source": "survival.onTimeSpan",
+        "delta": "{\"bodyTemp\":0,\"stamina\":0.23062508999999998,\"health\":0.07687503}"
+      }
+    },
+    {
+      "eventId": "v41:resource:production:heating:wood:555",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 540,
+      "payload": {
+        "intentId": "production:heating:wood:555",
+        "source": "production.heating",
+        "resource": "firewood",
+        "delta": -0.25
+      }
+    },
+    {
+      "eventId": "v41:resource:production:heating:power:555",
+      "type": "r8_resource",
+      "actorId": "system",
+      "simTime": 540,
+      "payload": {
+        "intentId": "production:heating:power:555",
+        "source": "production.heating",
+        "resource": "power",
+        "delta": -0.5
+      }
+    },
+    {
+      "eventId": "v41:intent-note:production:heating:warmth:555",
+      "type": "r8_intent-note",
+      "actorId": "system",
+      "simTime": 540,
+      "payload": {
+        "intentId": "production:heating:warmth:555",
+        "source": "production.heating",
+        "key": "heatingStrength",
+        "value": 0.850521
+      }
+    },
+    {
+      "eventId": "d:540:heating_settled:system",
+      "type": "heating_settled",
+      "actorId": "system",
+      "simTime": 540,
+      "payload": {
+        "strength": 0.850521,
+        "band": "hot",
+        "wood": 0.25,
+        "power": 0.5
+      }
+    },
+    {
+      "eventId": "npc_01-r8-40:moved:42",
+      "type": "moved",
+      "actorId": "npc_01",
+      "simTime": 555,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_02-r8-40:moved:43",
+      "type": "moved",
+      "actorId": "npc_02",
+      "simTime": 555,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_03-r8-40:moved:44",
+      "type": "moved",
+      "actorId": "npc_03",
+      "simTime": 555,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_04-r8-40:moved:45",
+      "type": "moved",
+      "actorId": "npc_04",
+      "simTime": 555,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_05-r8-40:moved:46",
+      "type": "moved",
+      "actorId": "npc_05",
+      "simTime": 555,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_06-r8-40:moved:47",
+      "type": "moved",
+      "actorId": "npc_06",
+      "simTime": 555,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_07-r8-40:moved:48",
+      "type": "moved",
+      "actorId": "npc_07",
+      "simTime": 555,
+      "payload": {
+        "to": "warehouse"
+      }
+    },
+    {
+      "eventId": "npc_08-r8-40:moved:49",
+      "type": "moved",
+      "actorId": "npc_08",
+      "simTime": 555,
+      "payload": {
+        "to": "warehouse"
+      }
+    }
+  ],
+  "intents": [
+    {
+      "intentId": "npc_01-r8-0",
+      "commandId": "npc_01-r8-0",
+      "actorId": "npc_01",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-d89ea5de622ad5a702bcf06b",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "d6f89afdf11998159c159e0b88e7962d02a8e6e89414fdc7a4fe95f41b759598",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 480,
+      "dueAt": 495,
+      "requiredPlace": null,
+      "startPlace": "dorm-a",
+      "status": "applied",
+      "receiptIds": [
+        "npc_01-r8-0:moved:2"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 495
+    },
+    {
+      "intentId": "npc_02-r8-0",
+      "commandId": "npc_02-r8-0",
+      "actorId": "npc_02",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-d5115b7dd71081658bfb0c27",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "03140def17b0da23809b21ccc95dc63a85041e8daa2163b10bcc20dac1acce1a",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 480,
+      "dueAt": 495,
+      "requiredPlace": null,
+      "startPlace": "dorm-b",
+      "status": "applied",
+      "receiptIds": [
+        "npc_02-r8-0:moved:3"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 495
+    },
+    {
+      "intentId": "npc_03-r8-0",
+      "commandId": "npc_03-r8-0",
+      "actorId": "npc_03",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-db8857caa1f4073759182ea1",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "ba13c14fceba08075365236df4d81950fb1b7c30f6b472dfb5e1bfaa07a2d7b7",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 480,
+      "dueAt": 495,
+      "requiredPlace": null,
+      "startPlace": "dorm-a",
+      "status": "applied",
+      "receiptIds": [
+        "npc_03-r8-0:moved:4"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 495
+    },
+    {
+      "intentId": "npc_04-r8-0",
+      "commandId": "npc_04-r8-0",
+      "actorId": "npc_04",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-c07a9249d07ad32ce0331fc2",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "15c5277b31722e6c26ecf0ad4236948d77f238a9f9dac6ad8df4fd6a6c2898ec",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 480,
+      "dueAt": 495,
+      "requiredPlace": null,
+      "startPlace": "dorm-b",
+      "status": "applied",
+      "receiptIds": [
+        "npc_04-r8-0:moved:5"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 495
+    },
+    {
+      "intentId": "npc_05-r8-0",
+      "commandId": "npc_05-r8-0",
+      "actorId": "npc_05",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-91313db2ddebbc23a02fa992",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "c372f078546d80f4e2851c779cc433e160f455dec8e793779a9288bc3d4927a5",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 480,
+      "dueAt": 495,
+      "requiredPlace": null,
+      "startPlace": "dorm-a",
+      "status": "applied",
+      "receiptIds": [
+        "npc_05-r8-0:moved:6"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 495
+    },
+    {
+      "intentId": "npc_06-r8-0",
+      "commandId": "npc_06-r8-0",
+      "actorId": "npc_06",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-8c85e3f79fb48c04b145d094",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "174229ced1a77990b7daa26898d8039586157b5c12d6d1453d699d288a44813f",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 480,
+      "dueAt": 495,
+      "requiredPlace": null,
+      "startPlace": "dorm-b",
+      "status": "applied",
+      "receiptIds": [
+        "npc_06-r8-0:moved:7"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 495
+    },
+    {
+      "intentId": "npc_07-r8-0",
+      "commandId": "npc_07-r8-0",
+      "actorId": "npc_07",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-2b1a4d5938b47c1a87cf84b9",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "cce7eb8c56de3c45c2c772bb8db43754d665dcd31a831c2e539782b6b0780c55",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 480,
+      "dueAt": 495,
+      "requiredPlace": null,
+      "startPlace": "dorm-a",
+      "status": "applied",
+      "receiptIds": [
+        "npc_07-r8-0:moved:8"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 495
+    },
+    {
+      "intentId": "npc_08-r8-0",
+      "commandId": "npc_08-r8-0",
+      "actorId": "npc_08",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-db10c603acc0dcb8c3055857",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "bc33feb7e38ac9b537906aadd6afaafe22ea619f5e493f901ef9baf6fd42995f",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 480,
+      "dueAt": 495,
+      "requiredPlace": null,
+      "startPlace": "dorm-b",
+      "status": "applied",
+      "receiptIds": [
+        "npc_08-r8-0:moved:9"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 495
+    },
+    {
+      "intentId": "npc_01-r8-10",
+      "commandId": "npc_01-r8-10",
+      "actorId": "npc_01",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-d89ea5de622ad5a702bcf06b",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "cb261853c710e16711fcb7495e632785fb988d9cd6ac61dbeaf8cedbcfb2d530",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 495,
+      "dueAt": 510,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_01-r8-10:moved:12"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 510
+    },
+    {
+      "intentId": "npc_02-r8-10",
+      "commandId": "npc_02-r8-10",
+      "actorId": "npc_02",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-d5115b7dd71081658bfb0c27",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "0c5e91c7a04d4b881f11d5c9be4241a2b3f14cd890554312e7e6f14a48e84ef5",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 495,
+      "dueAt": 510,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_02-r8-10:moved:13"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 510
+    },
+    {
+      "intentId": "npc_03-r8-10",
+      "commandId": "npc_03-r8-10",
+      "actorId": "npc_03",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-db8857caa1f4073759182ea1",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "7b7de7d80833490fcc90677888c0d7ed59fc170b0179b0c762288fe4d98cd533",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 495,
+      "dueAt": 510,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_03-r8-10:moved:14"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 510
+    },
+    {
+      "intentId": "npc_04-r8-10",
+      "commandId": "npc_04-r8-10",
+      "actorId": "npc_04",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-c07a9249d07ad32ce0331fc2",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "2919dfbe44c903a65fb802d7aa821cea75fa9a1a10f59e4db380e9d14b36b085",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 495,
+      "dueAt": 510,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_04-r8-10:moved:15"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 510
+    },
+    {
+      "intentId": "npc_05-r8-10",
+      "commandId": "npc_05-r8-10",
+      "actorId": "npc_05",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-91313db2ddebbc23a02fa992",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "cfbde2f20639b5ce566ea858950c47fff64d03de439e4bad6879264315a4bbef",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 495,
+      "dueAt": 510,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_05-r8-10:moved:16"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 510
+    },
+    {
+      "intentId": "npc_06-r8-10",
+      "commandId": "npc_06-r8-10",
+      "actorId": "npc_06",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-8c85e3f79fb48c04b145d094",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "9de1ff1608464dc8a37231e08d8fb4e40faa84cba545dfa54919b62c7efa742a",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 495,
+      "dueAt": 510,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_06-r8-10:moved:17"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 510
+    },
+    {
+      "intentId": "npc_07-r8-10",
+      "commandId": "npc_07-r8-10",
+      "actorId": "npc_07",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-2b1a4d5938b47c1a87cf84b9",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "b7c1a407f4a3d8b600322f6afb0d18d4abb204fb7efbcc559ea9e1d27c027031",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 495,
+      "dueAt": 510,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_07-r8-10:moved:18"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 510
+    },
+    {
+      "intentId": "npc_08-r8-10",
+      "commandId": "npc_08-r8-10",
+      "actorId": "npc_08",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-db10c603acc0dcb8c3055857",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "30de5102ef30cc4aa576cf0d0e8775a40b82ba461982b5bd3f48d29dcbe0f6be",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 495,
+      "dueAt": 510,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_08-r8-10:moved:19"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 510
+    },
+    {
+      "intentId": "npc_01-r8-20",
+      "commandId": "npc_01-r8-20",
+      "actorId": "npc_01",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-d89ea5de622ad5a702bcf06b",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "b7e28e41c6d5463868d12bfc11d2e7889672f8e1e4c0505131ca47de5bb79fd4",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 510,
+      "dueAt": 525,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_01-r8-20:moved:22"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 525
+    },
+    {
+      "intentId": "npc_02-r8-20",
+      "commandId": "npc_02-r8-20",
+      "actorId": "npc_02",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-d5115b7dd71081658bfb0c27",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "b25e55a6dcddef16ecfe5cfbcd229e6006a2636d5917cbde9f3db5fe119da852",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 510,
+      "dueAt": 525,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_02-r8-20:moved:23"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 525
+    },
+    {
+      "intentId": "npc_03-r8-20",
+      "commandId": "npc_03-r8-20",
+      "actorId": "npc_03",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-db8857caa1f4073759182ea1",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "62d8878c336d437895c5f8e44d1b0b16b216ad6efb223286b9fa2ba51f73bfb5",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 510,
+      "dueAt": 525,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_03-r8-20:moved:24"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 525
+    },
+    {
+      "intentId": "npc_04-r8-20",
+      "commandId": "npc_04-r8-20",
+      "actorId": "npc_04",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-c07a9249d07ad32ce0331fc2",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "3f7b3ae99c84b634d1596f01281bb96fdd95cce92881c91bc155e8057ab8a064",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 510,
+      "dueAt": 525,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_04-r8-20:moved:25"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 525
+    },
+    {
+      "intentId": "npc_05-r8-20",
+      "commandId": "npc_05-r8-20",
+      "actorId": "npc_05",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-91313db2ddebbc23a02fa992",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "8908009de9c772abc3a7457ffd648e222beb456f7f0c11829096cc7680ee6003",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 510,
+      "dueAt": 525,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_05-r8-20:moved:26"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 525
+    },
+    {
+      "intentId": "npc_06-r8-20",
+      "commandId": "npc_06-r8-20",
+      "actorId": "npc_06",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-8c85e3f79fb48c04b145d094",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "77d05068fb4ebda2a541db1d68a434f335d559d09f3e284650d3908273b429d6",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 510,
+      "dueAt": 525,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_06-r8-20:moved:27"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 525
+    },
+    {
+      "intentId": "npc_07-r8-20",
+      "commandId": "npc_07-r8-20",
+      "actorId": "npc_07",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-2b1a4d5938b47c1a87cf84b9",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "e07fe4aacee3342498b69373894ec806726d0af47907c6d7e36389b471a6bce1",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 510,
+      "dueAt": 525,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_07-r8-20:moved:28"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 525
+    },
+    {
+      "intentId": "npc_08-r8-20",
+      "commandId": "npc_08-r8-20",
+      "actorId": "npc_08",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-db10c603acc0dcb8c3055857",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "811b151b5a5481cfff597f257d9f639e945dc73b8f12d44ece64649792d09530",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 510,
+      "dueAt": 525,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_08-r8-20:moved:29"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 525
+    },
+    {
+      "intentId": "npc_01-r8-30",
+      "commandId": "npc_01-r8-30",
+      "actorId": "npc_01",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-d89ea5de622ad5a702bcf06b",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "b153c84fc9e057472542b0c178f9847af84eed4387dbf2daf96b817f403e3420",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 525,
+      "dueAt": 540,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_01-r8-30:moved:32"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 540
+    },
+    {
+      "intentId": "npc_02-r8-30",
+      "commandId": "npc_02-r8-30",
+      "actorId": "npc_02",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-d5115b7dd71081658bfb0c27",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "2c2657bbc6f17316ee9dce9468b96f6e400e7f3d6fcddeb335757130855a70cf",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 525,
+      "dueAt": 540,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_02-r8-30:moved:33"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 540
+    },
+    {
+      "intentId": "npc_03-r8-30",
+      "commandId": "npc_03-r8-30",
+      "actorId": "npc_03",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-db8857caa1f4073759182ea1",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "4d638f426befdd96b4fcb9b5be2600f171824c291a02e8585c2b50b6324ae4d2",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 525,
+      "dueAt": 540,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_03-r8-30:moved:34"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 540
+    },
+    {
+      "intentId": "npc_04-r8-30",
+      "commandId": "npc_04-r8-30",
+      "actorId": "npc_04",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-c07a9249d07ad32ce0331fc2",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "083dd3c95f7709fbdc30a741db3c691e0232f28bd8224240a46bfe20782a2cfc",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 525,
+      "dueAt": 540,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_04-r8-30:moved:35"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 540
+    },
+    {
+      "intentId": "npc_05-r8-30",
+      "commandId": "npc_05-r8-30",
+      "actorId": "npc_05",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-91313db2ddebbc23a02fa992",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "4de8628cb8508a7a669c6cd55d7a1eddd2afabd272fdcfe2a498d7c0041b9425",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 525,
+      "dueAt": 540,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_05-r8-30:moved:36"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 540
+    },
+    {
+      "intentId": "npc_06-r8-30",
+      "commandId": "npc_06-r8-30",
+      "actorId": "npc_06",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-8c85e3f79fb48c04b145d094",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "312301148a6ab5d1bb8a1c153626151a8527a0b4ffba123417ab88da50c8a54c",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 525,
+      "dueAt": 540,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_06-r8-30:moved:37"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 540
+    },
+    {
+      "intentId": "npc_07-r8-30",
+      "commandId": "npc_07-r8-30",
+      "actorId": "npc_07",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-2b1a4d5938b47c1a87cf84b9",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "717aec69804a2835e68a59458f616da651f0f684537e0d9164713e74fc3f47ff",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 525,
+      "dueAt": 540,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_07-r8-30:moved:38"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 540
+    },
+    {
+      "intentId": "npc_08-r8-30",
+      "commandId": "npc_08-r8-30",
+      "actorId": "npc_08",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-db10c603acc0dcb8c3055857",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "ceed6b8e57142b1753bae0c53306cde34e7ee9e71308911c9b6429076e770b25",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 525,
+      "dueAt": 540,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_08-r8-30:moved:39"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 540
+    },
+    {
+      "intentId": "npc_01-r8-40",
+      "commandId": "npc_01-r8-40",
+      "actorId": "npc_01",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-d89ea5de622ad5a702bcf06b",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "b471c2d154bd05a9bf1e57983ce9d3f41220a5f52533a7fc7baf2bc4bd9cfe93",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 540,
+      "dueAt": 555,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_01-r8-40:moved:42"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 555
+    },
+    {
+      "intentId": "npc_02-r8-40",
+      "commandId": "npc_02-r8-40",
+      "actorId": "npc_02",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-d5115b7dd71081658bfb0c27",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "d19f42f155d01efdbedcd55729b83a20a9d5de638a786e5ad2e6f05c46a1b348",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 540,
+      "dueAt": 555,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_02-r8-40:moved:43"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 555
+    },
+    {
+      "intentId": "npc_03-r8-40",
+      "commandId": "npc_03-r8-40",
+      "actorId": "npc_03",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-db8857caa1f4073759182ea1",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "185a07767b4362a7ae7e16de62f0e6e5ea86e4a23da579615e6198a2988152aa",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 540,
+      "dueAt": 555,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_03-r8-40:moved:44"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 555
+    },
+    {
+      "intentId": "npc_04-r8-40",
+      "commandId": "npc_04-r8-40",
+      "actorId": "npc_04",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-c07a9249d07ad32ce0331fc2",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "df9d63314710c393aa81b2bfb4e71ee625b2f60281ca81db21c0c86f1ba4c437",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 540,
+      "dueAt": 555,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_04-r8-40:moved:45"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 555
+    },
+    {
+      "intentId": "npc_05-r8-40",
+      "commandId": "npc_05-r8-40",
+      "actorId": "npc_05",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-91313db2ddebbc23a02fa992",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "3130d2240dcd14cad231c2cb57f2d4735c110e9da21423c906e0f8f4eae3cebf",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 540,
+      "dueAt": 555,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_05-r8-40:moved:46"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 555
+    },
+    {
+      "intentId": "npc_06-r8-40",
+      "commandId": "npc_06-r8-40",
+      "actorId": "npc_06",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-8c85e3f79fb48c04b145d094",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "14c0ba9dfb8740f1f0936da5aa9f98b150bfb18ea03cb7d39f4d5326156b0a4d",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 540,
+      "dueAt": 555,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_06-r8-40:moved:47"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 555
+    },
+    {
+      "intentId": "npc_07-r8-40",
+      "commandId": "npc_07-r8-40",
+      "actorId": "npc_07",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-2b1a4d5938b47c1a87cf84b9",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "387ed53d1a5bf50a20d0b9a154a9bf50dbefe76b3fd612b50c5026c8e9bcd8c5",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 540,
+      "dueAt": 555,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_07-r8-40:moved:48"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 555
+    },
+    {
+      "intentId": "npc_08-r8-40",
+      "commandId": "npc_08-r8-40",
+      "actorId": "npc_08",
+      "candidateId": "a-0b3f9fd02e70",
+      "demandId": "dem-db10c603acc0dcb8c3055857",
+      "candidate": {
+        "id": "a-0b3f9fd02e70",
+        "kind": "move",
+        "description": "去仓库核实存粮",
+        "parameters": {
+          "action": "move",
+          "to": "warehouse",
+          "purpose": "verify-stock"
+        },
+        "preconditions": [
+          "alive"
+        ],
+        "expectedEffects": {},
+        "utilityComponents": {}
+      },
+      "inputSha256": "c82cb2b4c1c4f28e2db504cca429c25258b3b0495034dea03ececd77f8f668e0",
+      "generation": 0,
+      "taskId": null,
+      "taskType": null,
+      "commitmentId": null,
+      "commitmentRevision": null,
+      "startedAt": 540,
+      "dueAt": 555,
+      "requiredPlace": null,
+      "startPlace": "warehouse",
+      "status": "applied",
+      "receiptIds": [
+        "npc_08-r8-40:moved:49"
+      ],
+      "failureReason": null,
+      "projections": [],
+      "settledAt": 555
+    }
+  ],
+  "work": [],
+  "workLog": [
+    {
+      "intentId": "npc_01-r8-0",
+      "actorId": "npc_01",
+      "kind": "move",
+      "demandId": "dem-d89ea5de622ad5a702bcf06b",
+      "startedAt": 480,
+      "endsAt": 495,
+      "settledAt": 495,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-0:moved:2"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_02-r8-0",
+      "actorId": "npc_02",
+      "kind": "move",
+      "demandId": "dem-d5115b7dd71081658bfb0c27",
+      "startedAt": 480,
+      "endsAt": 495,
+      "settledAt": 495,
+      "status": "applied",
+      "eventIds": [
+        "npc_02-r8-0:moved:3"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_03-r8-0",
+      "actorId": "npc_03",
+      "kind": "move",
+      "demandId": "dem-db8857caa1f4073759182ea1",
+      "startedAt": 480,
+      "endsAt": 495,
+      "settledAt": 495,
+      "status": "applied",
+      "eventIds": [
+        "npc_03-r8-0:moved:4"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_04-r8-0",
+      "actorId": "npc_04",
+      "kind": "move",
+      "demandId": "dem-c07a9249d07ad32ce0331fc2",
+      "startedAt": 480,
+      "endsAt": 495,
+      "settledAt": 495,
+      "status": "applied",
+      "eventIds": [
+        "npc_04-r8-0:moved:5"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_05-r8-0",
+      "actorId": "npc_05",
+      "kind": "move",
+      "demandId": "dem-91313db2ddebbc23a02fa992",
+      "startedAt": 480,
+      "endsAt": 495,
+      "settledAt": 495,
+      "status": "applied",
+      "eventIds": [
+        "npc_05-r8-0:moved:6"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_06-r8-0",
+      "actorId": "npc_06",
+      "kind": "move",
+      "demandId": "dem-8c85e3f79fb48c04b145d094",
+      "startedAt": 480,
+      "endsAt": 495,
+      "settledAt": 495,
+      "status": "applied",
+      "eventIds": [
+        "npc_06-r8-0:moved:7"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_07-r8-0",
+      "actorId": "npc_07",
+      "kind": "move",
+      "demandId": "dem-2b1a4d5938b47c1a87cf84b9",
+      "startedAt": 480,
+      "endsAt": 495,
+      "settledAt": 495,
+      "status": "applied",
+      "eventIds": [
+        "npc_07-r8-0:moved:8"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_08-r8-0",
+      "actorId": "npc_08",
+      "kind": "move",
+      "demandId": "dem-db10c603acc0dcb8c3055857",
+      "startedAt": 480,
+      "endsAt": 495,
+      "settledAt": 495,
+      "status": "applied",
+      "eventIds": [
+        "npc_08-r8-0:moved:9"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_01-r8-10",
+      "actorId": "npc_01",
+      "kind": "move",
+      "demandId": "dem-d89ea5de622ad5a702bcf06b",
+      "startedAt": 495,
+      "endsAt": 510,
+      "settledAt": 510,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-10:moved:12"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_02-r8-10",
+      "actorId": "npc_02",
+      "kind": "move",
+      "demandId": "dem-d5115b7dd71081658bfb0c27",
+      "startedAt": 495,
+      "endsAt": 510,
+      "settledAt": 510,
+      "status": "applied",
+      "eventIds": [
+        "npc_02-r8-10:moved:13"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_03-r8-10",
+      "actorId": "npc_03",
+      "kind": "move",
+      "demandId": "dem-db8857caa1f4073759182ea1",
+      "startedAt": 495,
+      "endsAt": 510,
+      "settledAt": 510,
+      "status": "applied",
+      "eventIds": [
+        "npc_03-r8-10:moved:14"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_04-r8-10",
+      "actorId": "npc_04",
+      "kind": "move",
+      "demandId": "dem-c07a9249d07ad32ce0331fc2",
+      "startedAt": 495,
+      "endsAt": 510,
+      "settledAt": 510,
+      "status": "applied",
+      "eventIds": [
+        "npc_04-r8-10:moved:15"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_05-r8-10",
+      "actorId": "npc_05",
+      "kind": "move",
+      "demandId": "dem-91313db2ddebbc23a02fa992",
+      "startedAt": 495,
+      "endsAt": 510,
+      "settledAt": 510,
+      "status": "applied",
+      "eventIds": [
+        "npc_05-r8-10:moved:16"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_06-r8-10",
+      "actorId": "npc_06",
+      "kind": "move",
+      "demandId": "dem-8c85e3f79fb48c04b145d094",
+      "startedAt": 495,
+      "endsAt": 510,
+      "settledAt": 510,
+      "status": "applied",
+      "eventIds": [
+        "npc_06-r8-10:moved:17"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_07-r8-10",
+      "actorId": "npc_07",
+      "kind": "move",
+      "demandId": "dem-2b1a4d5938b47c1a87cf84b9",
+      "startedAt": 495,
+      "endsAt": 510,
+      "settledAt": 510,
+      "status": "applied",
+      "eventIds": [
+        "npc_07-r8-10:moved:18"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_08-r8-10",
+      "actorId": "npc_08",
+      "kind": "move",
+      "demandId": "dem-db10c603acc0dcb8c3055857",
+      "startedAt": 495,
+      "endsAt": 510,
+      "settledAt": 510,
+      "status": "applied",
+      "eventIds": [
+        "npc_08-r8-10:moved:19"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_01-r8-20",
+      "actorId": "npc_01",
+      "kind": "move",
+      "demandId": "dem-d89ea5de622ad5a702bcf06b",
+      "startedAt": 510,
+      "endsAt": 525,
+      "settledAt": 525,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-20:moved:22"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_02-r8-20",
+      "actorId": "npc_02",
+      "kind": "move",
+      "demandId": "dem-d5115b7dd71081658bfb0c27",
+      "startedAt": 510,
+      "endsAt": 525,
+      "settledAt": 525,
+      "status": "applied",
+      "eventIds": [
+        "npc_02-r8-20:moved:23"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_03-r8-20",
+      "actorId": "npc_03",
+      "kind": "move",
+      "demandId": "dem-db8857caa1f4073759182ea1",
+      "startedAt": 510,
+      "endsAt": 525,
+      "settledAt": 525,
+      "status": "applied",
+      "eventIds": [
+        "npc_03-r8-20:moved:24"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_04-r8-20",
+      "actorId": "npc_04",
+      "kind": "move",
+      "demandId": "dem-c07a9249d07ad32ce0331fc2",
+      "startedAt": 510,
+      "endsAt": 525,
+      "settledAt": 525,
+      "status": "applied",
+      "eventIds": [
+        "npc_04-r8-20:moved:25"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_05-r8-20",
+      "actorId": "npc_05",
+      "kind": "move",
+      "demandId": "dem-91313db2ddebbc23a02fa992",
+      "startedAt": 510,
+      "endsAt": 525,
+      "settledAt": 525,
+      "status": "applied",
+      "eventIds": [
+        "npc_05-r8-20:moved:26"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_06-r8-20",
+      "actorId": "npc_06",
+      "kind": "move",
+      "demandId": "dem-8c85e3f79fb48c04b145d094",
+      "startedAt": 510,
+      "endsAt": 525,
+      "settledAt": 525,
+      "status": "applied",
+      "eventIds": [
+        "npc_06-r8-20:moved:27"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_07-r8-20",
+      "actorId": "npc_07",
+      "kind": "move",
+      "demandId": "dem-2b1a4d5938b47c1a87cf84b9",
+      "startedAt": 510,
+      "endsAt": 525,
+      "settledAt": 525,
+      "status": "applied",
+      "eventIds": [
+        "npc_07-r8-20:moved:28"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_08-r8-20",
+      "actorId": "npc_08",
+      "kind": "move",
+      "demandId": "dem-db10c603acc0dcb8c3055857",
+      "startedAt": 510,
+      "endsAt": 525,
+      "settledAt": 525,
+      "status": "applied",
+      "eventIds": [
+        "npc_08-r8-20:moved:29"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_01-r8-30",
+      "actorId": "npc_01",
+      "kind": "move",
+      "demandId": "dem-d89ea5de622ad5a702bcf06b",
+      "startedAt": 525,
+      "endsAt": 540,
+      "settledAt": 540,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-30:moved:32"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_02-r8-30",
+      "actorId": "npc_02",
+      "kind": "move",
+      "demandId": "dem-d5115b7dd71081658bfb0c27",
+      "startedAt": 525,
+      "endsAt": 540,
+      "settledAt": 540,
+      "status": "applied",
+      "eventIds": [
+        "npc_02-r8-30:moved:33"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_03-r8-30",
+      "actorId": "npc_03",
+      "kind": "move",
+      "demandId": "dem-db8857caa1f4073759182ea1",
+      "startedAt": 525,
+      "endsAt": 540,
+      "settledAt": 540,
+      "status": "applied",
+      "eventIds": [
+        "npc_03-r8-30:moved:34"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_04-r8-30",
+      "actorId": "npc_04",
+      "kind": "move",
+      "demandId": "dem-c07a9249d07ad32ce0331fc2",
+      "startedAt": 525,
+      "endsAt": 540,
+      "settledAt": 540,
+      "status": "applied",
+      "eventIds": [
+        "npc_04-r8-30:moved:35"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_05-r8-30",
+      "actorId": "npc_05",
+      "kind": "move",
+      "demandId": "dem-91313db2ddebbc23a02fa992",
+      "startedAt": 525,
+      "endsAt": 540,
+      "settledAt": 540,
+      "status": "applied",
+      "eventIds": [
+        "npc_05-r8-30:moved:36"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_06-r8-30",
+      "actorId": "npc_06",
+      "kind": "move",
+      "demandId": "dem-8c85e3f79fb48c04b145d094",
+      "startedAt": 525,
+      "endsAt": 540,
+      "settledAt": 540,
+      "status": "applied",
+      "eventIds": [
+        "npc_06-r8-30:moved:37"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_07-r8-30",
+      "actorId": "npc_07",
+      "kind": "move",
+      "demandId": "dem-2b1a4d5938b47c1a87cf84b9",
+      "startedAt": 525,
+      "endsAt": 540,
+      "settledAt": 540,
+      "status": "applied",
+      "eventIds": [
+        "npc_07-r8-30:moved:38"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_08-r8-30",
+      "actorId": "npc_08",
+      "kind": "move",
+      "demandId": "dem-db10c603acc0dcb8c3055857",
+      "startedAt": 525,
+      "endsAt": 540,
+      "settledAt": 540,
+      "status": "applied",
+      "eventIds": [
+        "npc_08-r8-30:moved:39"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_01-r8-40",
+      "actorId": "npc_01",
+      "kind": "move",
+      "demandId": "dem-d89ea5de622ad5a702bcf06b",
+      "startedAt": 540,
+      "endsAt": 555,
+      "settledAt": 555,
+      "status": "applied",
+      "eventIds": [
+        "npc_01-r8-40:moved:42"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_02-r8-40",
+      "actorId": "npc_02",
+      "kind": "move",
+      "demandId": "dem-d5115b7dd71081658bfb0c27",
+      "startedAt": 540,
+      "endsAt": 555,
+      "settledAt": 555,
+      "status": "applied",
+      "eventIds": [
+        "npc_02-r8-40:moved:43"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_03-r8-40",
+      "actorId": "npc_03",
+      "kind": "move",
+      "demandId": "dem-db8857caa1f4073759182ea1",
+      "startedAt": 540,
+      "endsAt": 555,
+      "settledAt": 555,
+      "status": "applied",
+      "eventIds": [
+        "npc_03-r8-40:moved:44"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_04-r8-40",
+      "actorId": "npc_04",
+      "kind": "move",
+      "demandId": "dem-c07a9249d07ad32ce0331fc2",
+      "startedAt": 540,
+      "endsAt": 555,
+      "settledAt": 555,
+      "status": "applied",
+      "eventIds": [
+        "npc_04-r8-40:moved:45"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_05-r8-40",
+      "actorId": "npc_05",
+      "kind": "move",
+      "demandId": "dem-91313db2ddebbc23a02fa992",
+      "startedAt": 540,
+      "endsAt": 555,
+      "settledAt": 555,
+      "status": "applied",
+      "eventIds": [
+        "npc_05-r8-40:moved:46"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_06-r8-40",
+      "actorId": "npc_06",
+      "kind": "move",
+      "demandId": "dem-8c85e3f79fb48c04b145d094",
+      "startedAt": 540,
+      "endsAt": 555,
+      "settledAt": 555,
+      "status": "applied",
+      "eventIds": [
+        "npc_06-r8-40:moved:47"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_07-r8-40",
+      "actorId": "npc_07",
+      "kind": "move",
+      "demandId": "dem-2b1a4d5938b47c1a87cf84b9",
+      "startedAt": 540,
+      "endsAt": 555,
+      "settledAt": 555,
+      "status": "applied",
+      "eventIds": [
+        "npc_07-r8-40:moved:48"
+      ],
+      "failureReason": null
+    },
+    {
+      "intentId": "npc_08-r8-40",
+      "actorId": "npc_08",
+      "kind": "move",
+      "demandId": "dem-db10c603acc0dcb8c3055857",
+      "startedAt": 540,
+      "endsAt": 555,
+      "settledAt": 555,
+      "status": "applied",
+      "eventIds": [
+        "npc_08-r8-40:moved:49"
+      ],
+      "failureReason": null
+    }
+  ],
+  "duplicateDemands": [],
+  "rejections": [],
+  "numberEncoding": "frostecho.nonfinite-number/1"
+}

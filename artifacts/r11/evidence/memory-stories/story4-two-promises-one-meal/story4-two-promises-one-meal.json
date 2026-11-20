@@ -1,0 +1,167 @@
+{
+  "story": "story4-two-promises-one-meal",
+  "passed": true,
+  "checks": [
+    {
+      "name": "two promises are live at once (different promisors, same resource)",
+      "passed": true,
+      "detail": {
+        "first": "active",
+        "second": "active"
+      }
+    },
+    {
+      "name": "the losing promise records a real shortage and proposes a change",
+      "passed": true,
+      "detail": {
+        "receipts": [
+          "npc_02-r8-5:out_of_stock:5"
+        ],
+        "status": "pending-change"
+      }
+    },
+    {
+      "name": "both promises and the shortage evidence survive the D2 restart",
+      "passed": true,
+      "detail": {
+        "before": "37a64394f58d470d",
+        "after": "37a64394f58d470d"
+      }
+    },
+    {
+      "name": "pending work survives the D2 exit and settles once in the new process",
+      "passed": true,
+      "detail": {
+        "restoredStatus": "working",
+        "finalStatus": "applied",
+        "receipts": 1,
+        "settleRecords": 1,
+        "laterRecords": 1,
+        "failureReason": null,
+        "dueAt": 1935
+      }
+    },
+    {
+      "name": "no repeated invalid action after the shortage (zero extra out_of_stock)",
+      "passed": true,
+      "detail": {
+        "outOfStockReceipts": 1,
+        "steps": [
+          "applied",
+          "applied",
+          "applied"
+        ]
+      }
+    },
+    {
+      "name": "the winning promise is fulfilled; the loser is not silently fulfilled",
+      "passed": true,
+      "detail": {
+        "first": "fulfilled",
+        "second": "pending-change",
+        "receipts": [
+          "npc_01-r8-63:meal_delivered:65"
+        ]
+      }
+    },
+    {
+      "name": "the cancelled loser stops and the exit is explicit",
+      "passed": true,
+      "detail": {
+        "candidates": 0
+      }
+    }
+  ],
+  "outcome": {
+    "winner": "fulfilled",
+    "loser": "cancelled",
+    "loserFinal": "cancelled",
+    "outOfStockReceipts": 1,
+    "repeatedInvalidActions": 0,
+    "winnerEvidence": [
+      "npc_01-r8-63:meal_delivered:65"
+    ]
+  },
+  "memory": {
+    "raw": {
+      "kinds": [
+        "r8_resource",
+        "r8_intent-note",
+        "heating_settled",
+        "commitment_fulfilled",
+        "commitment_cancelled"
+      ],
+      "kept": 5,
+      "dropped": 348,
+      "bytes": 1827,
+      "tokens": 609,
+      "budget": 640
+    },
+    "obligationFirst": {
+      "kinds": [
+        "commitment_proposed",
+        "commitment_accepted",
+        "commitment_proposed",
+        "commitment_accepted",
+        "commitment_change_proposed"
+      ],
+      "kept": 5,
+      "dropped": 348,
+      "bytes": 1904,
+      "tokens": 635,
+      "budget": 640
+    },
+    "keptOnlyByNewPolicy": [
+      "commitment_proposed",
+      "commitment_accepted",
+      "commitment_proposed",
+      "commitment_accepted",
+      "commitment_change_proposed"
+    ],
+    "notesTotal": 1,
+    "notesApplicable": [
+      "note-shortage-npc_02"
+    ],
+    "condition": "shortage",
+    "observedAt": [
+      {
+        "kind": "commitment_proposed",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": null,
+        "heardBy": null
+      },
+      {
+        "kind": "commitment_accepted",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": null,
+        "heardBy": null
+      },
+      {
+        "kind": "commitment_proposed",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_02",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "commitment_accepted",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_02",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "commitment_change_proposed",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_02",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      }
+    ]
+  },
+  "files": [
+    "/data3/DATA/project/project_meishijiang/r11-wt/o/artifacts/r11/evidence/memory-stories/story4-two-promises-one-meal/story4-two-promises-one-meal.json"
+  ]
+}

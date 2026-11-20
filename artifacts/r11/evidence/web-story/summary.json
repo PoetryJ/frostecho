@@ -1,0 +1,83 @@
+{
+  "schema": "frostecho.r10.d-web-story/1",
+  "port": 18771,
+  "out": "/data3/DATA/project/project_meishijiang/r11-wt/o/artifacts/r11/evidence/web-story",
+  "tracePath": "/data3/DATA/project/project_meishijiang/r11-wt/o/artifacts/r11/evidence/web-story/web-story.jsonl",
+  "steps": 9,
+  "assertions": [
+    {
+      "at": "2026-11-20T05:23:21.931Z",
+      "kind": "assert",
+      "name": "save->restore identity",
+      "same": true,
+      "beforeKill": {
+        "simTime": 2471,
+        "version": null,
+        "ending": "none",
+        "day": 2,
+        "locations": {
+          "npc_01": "village",
+          "npc_02": "warehouse",
+          "npc_03": "warehouse",
+          "npc_04": "warehouse",
+          "npc_05": "warehouse",
+          "npc_06": "warehouse",
+          "npc_07": "warehouse",
+          "npc_08": "warehouse"
+        },
+        "commitments": [
+          {
+            "id": "cm-c1afec17-5c8d-44be-8885-3b734accca25",
+            "status": "active",
+            "revision": 1
+          },
+          {
+            "id": "cm-ff0a0757-8fdc-4825-9b30-ea6d51689769",
+            "status": "cancelled",
+            "revision": 1
+          }
+        ]
+      },
+      "afterRestore": {
+        "simTime": 2471,
+        "version": null,
+        "ending": "none",
+        "day": 2,
+        "locations": {
+          "npc_01": "village",
+          "npc_02": "warehouse",
+          "npc_03": "warehouse",
+          "npc_04": "warehouse",
+          "npc_05": "warehouse",
+          "npc_06": "warehouse",
+          "npc_07": "warehouse",
+          "npc_08": "warehouse"
+        },
+        "commitments": [
+          {
+            "id": "cm-c1afec17-5c8d-44be-8885-3b734accca25",
+            "status": "active",
+            "revision": 1
+          },
+          {
+            "id": "cm-ff0a0757-8fdc-4825-9b30-ea6d51689769",
+            "status": "cancelled",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-11-20T05:23:26.107Z",
+      "kind": "assert",
+      "name": "promise fulfilled by a real receipt",
+      "fulfilled": true,
+      "status": "fulfilled",
+      "evidence": [
+        "npc_03-r8-246:meal_delivered:250"
+      ]
+    }
+  ],
+  "failures": 0,
+  "passed": true
+}

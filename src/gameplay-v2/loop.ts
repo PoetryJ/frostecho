@@ -63,6 +63,12 @@ export interface GameplayLoopOptions {
   longTermMemory?: LongTermMemory;
   decisionMemoryMode?: 'raw' | 'layered';
   decisionMemoryTokenBudget?: number;
+  /**
+   * R11 (B): per-actor ingest cursor of the decision memory. It is part of the
+   * saved state: without it a restore re-scans every record from zero, and a
+   * later retention rule would silently re-ingest or skip records.
+   */
+  memoryCursors?: Record<string, number>;
   /** Called with the actual pre-action context. Does not choose/commit an action. */
   onDecisionContext?: (context: MemoryContext) => void;
 }
@@ -172,6 +178,14 @@ export class GameplayLoop {
     this.decisionMemoryMode = options.decisionMemoryMode ?? 'layered';
     this.decisionMemoryTokenBudget = options.decisionMemoryTokenBudget ?? 1200;
     this.onDecisionContext = options.onDecisionContext;
+    for (const [id, value] of Object.entries(options.memoryCursors ?? {})) {
+      if (Number.isFinite(value) && value >= 0) this.memoryCursor.set(id, Math.floor(value));
+    }
+  }
+
+  /** The persisted per-actor ingest cursor; part of the saved memory state. */
+  memoryCursors(): Record<string, number> {
+    return Object.fromEntries([...this.memoryCursor].map(([id, value]) => [id, value]));
   }
 
   /** Ingest only the records actually delivered to each NPC's existing mailbox. */
@@ -935,12 +949,25 @@ export class GameplayLoop {
     writeFileSync(`${path}.long-term-memory.json`, `${JSON.stringify({
       schema: 'frostecho.gameplay-decision-memory/1', mode: this.decisionMemoryMode,
       tokenBudget: this.decisionMemoryTokenBudget, memory: this.longTermMemory.serialize(),
+      // R11 (B): the cursor is saved WITH the memory, so a restore resumes the
+      // same position instead of re-walking the ledger from zero.
+      cursors: this.memoryCursors(),
     }, null, 2)}\n`, 'utf8');
   }
 
   static load(path: string, options: GameplayLoopOptions = {},
     scorerProvider?: () => ScorerPort): GameplayLoop {
-    const session = PlaySession.load(path, scorerProvider);
+    return GameplayLoop.fromSidecars(PlaySession.load(path, scorerProvider), path, options);
+  }
+
+  /**
+   * Rebuild this loop on an ALREADY-restored session (the R8 runtime owns the
+   * load). One reader for every sidecar, so the CLI, the web bridge, the
+   * collector and the four-day runner cannot disagree about what a save
+   * contains — including the decision-memory cursor that used to be dropped.
+   */
+  static fromSidecars(session: PlaySession, path: string,
+    options: GameplayLoopOptions = {}): GameplayLoop {
     const sidecar = `${path}.tasks.json`;
     const board = existsSync(sidecar)
       ? TaskBoard.fromJSON(JSON.parse(readFileSync(sidecar, 'utf8'))) : new TaskBoard();
@@ -966,7 +993,9 @@ export class GameplayLoop {
     return new GameplayLoop(session, board,
       { experience, commitments, council, longTermMemory,
         ...(memoryDocument ? { decisionMemoryMode: memoryDocument.mode,
-          decisionMemoryTokenBudget: memoryDocument.tokenBudget } : {}), ...options });
+          decisionMemoryTokenBudget: memoryDocument.tokenBudget,
+          memoryCursors: memoryDocument.cursors as Record<string, number> | undefined } : {}),
+        ...options });
   }
 }
 

@@ -1,0 +1,37 @@
+{
+  "commitments": [
+    {
+      "commitmentId": "cm-8a6df2c8-2a04-4775-a829-5a6a8369a81c",
+      "taskId": "task-001-deliver-meal",
+      "promisorId": "npc_01",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "pending-change",
+      "evidenceEventIds": [],
+      "changes": [
+        {
+          "changeId": "chg-5254e031-624a-4547-88b7-0fc362f54a75",
+          "proposedRevision": 2,
+          "kind": "alt-source",
+          "terms": {
+            "source": "gather",
+            "reason": "亲见仓库缺货，我采集后补仓，再把饭送来"
+          },
+          "reason": "warehouse-empty",
+          "proposedAt": 480,
+          "status": "open",
+          "respondedAt": null,
+          "responseEventId": null
+        }
+      ],
+      "createdAt": 480,
+      "updatedAt": 480
+    }
+  ],
+  "receipts": {}
+}

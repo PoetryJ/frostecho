@@ -1,0 +1,381 @@
+{
+  "commitments": [
+    {
+      "commitmentId": "cm-c1afec17-5c8d-44be-8885-3b734accca25",
+      "taskId": "task-001-deliver-meal",
+      "promisorId": "npc_03",
+      "beneficiaryId": "player",
+      "goal": "deliver-meal",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "fulfilled",
+      "evidenceEventIds": [
+        "npc_03-r8-246:meal_delivered:250"
+      ],
+      "changes": [
+        {
+          "changeId": "chg-7bf1087e-5ecc-4c6a-8078-709b24279f6d",
+          "proposedRevision": 2,
+          "kind": "alt-source",
+          "terms": {
+            "source": "gather"
+          },
+          "reason": "warehouse-empty",
+          "proposedAt": 480,
+          "status": "rejected",
+          "respondedAt": 480,
+          "responseEventId": "commitment_change_rejected"
+        }
+      ],
+      "createdAt": 480,
+      "updatedAt": 2531
+    },
+    {
+      "commitmentId": "cm-ff0a0757-8fdc-4825-9b30-ea6d51689769",
+      "taskId": "task-002-supply-warehouse",
+      "promisorId": "npc_05",
+      "beneficiaryId": "player",
+      "goal": "supply-warehouse",
+      "conditions": [
+        "warehouse-supply"
+      ],
+      "deadline": null,
+      "revision": 1,
+      "status": "cancelled",
+      "evidenceEventIds": [],
+      "changes": [],
+      "createdAt": 480,
+      "updatedAt": 480
+    }
+  ],
+  "receipts": {
+    "request:in-1-request": {
+      "digest": "{\"goal\":\"deliver-meal\",\"promisorId\":\"npc_03\",\"beneficiaryId\":\"player\",\"deadline\":null,\"source\":null}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-c1afec17-5c8d-44be-8885-3b734accca25",
+          "taskId": null,
+          "promisorId": "npc_03",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "proposed",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 480,
+          "updatedAt": 480
+        },
+        "event": {
+          "type": "commitment_proposed",
+          "commitmentId": "cm-c1afec17-5c8d-44be-8885-3b734accca25",
+          "revision": 1,
+          "at": 480,
+          "actorId": "npc_03",
+          "payload": {
+            "goal": "deliver-meal",
+            "fromId": "npc_03",
+            "toId": "player",
+            "conditions": "warehouse-supply",
+            "deadline": -1
+          }
+        }
+      }
+    },
+    "respond:in-1-request:respond": {
+      "digest": "{\"commitmentId\":\"cm-c1afec17-5c8d-44be-8885-3b734accca25\",\"verdict\":\"accept\",\"reason\":\"available\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-c1afec17-5c8d-44be-8885-3b734accca25",
+          "taskId": null,
+          "promisorId": "npc_03",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "active",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 480,
+          "updatedAt": 480
+        },
+        "event": {
+          "type": "commitment_accepted",
+          "commitmentId": "cm-c1afec17-5c8d-44be-8885-3b734accca25",
+          "revision": 1,
+          "at": 480,
+          "actorId": "npc_03",
+          "payload": {
+            "fromId": "npc_03",
+            "toId": "player",
+            "text": "available"
+          }
+        }
+      }
+    },
+    "propose-change:in-2-propose-change": {
+      "digest": "{\"commitmentId\":\"cm-c1afec17-5c8d-44be-8885-3b734accca25\",\"kind\":\"alt-source\",\"reason\":\"warehouse-empty\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-c1afec17-5c8d-44be-8885-3b734accca25",
+          "taskId": "task-001-deliver-meal",
+          "promisorId": "npc_03",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "pending-change",
+          "evidenceEventIds": [],
+          "changes": [
+            {
+              "changeId": "chg-7bf1087e-5ecc-4c6a-8078-709b24279f6d",
+              "proposedRevision": 2,
+              "kind": "alt-source",
+              "terms": {
+                "source": "gather"
+              },
+              "reason": "warehouse-empty",
+              "proposedAt": 480,
+              "status": "open",
+              "respondedAt": null,
+              "responseEventId": null
+            }
+          ],
+          "createdAt": 480,
+          "updatedAt": 480
+        },
+        "event": {
+          "type": "commitment_change_proposed",
+          "commitmentId": "cm-c1afec17-5c8d-44be-8885-3b734accca25",
+          "revision": 1,
+          "at": 480,
+          "actorId": "npc_03",
+          "payload": {
+            "changeId": "chg-7bf1087e-5ecc-4c6a-8078-709b24279f6d",
+            "kind": "alt-source",
+            "reason": "warehouse-empty",
+            "proposedRevision": 2,
+            "terms": "{\"source\":\"gather\"}"
+          }
+        }
+      }
+    },
+    "respond-change:in-3-respond-change": {
+      "digest": "{\"commitmentId\":\"cm-c1afec17-5c8d-44be-8885-3b734accca25\",\"changeId\":\"chg-7bf1087e-5ecc-4c6a-8078-709b24279f6d\",\"verdict\":\"reject\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-c1afec17-5c8d-44be-8885-3b734accca25",
+          "taskId": "task-001-deliver-meal",
+          "promisorId": "npc_03",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "active",
+          "evidenceEventIds": [],
+          "changes": [
+            {
+              "changeId": "chg-7bf1087e-5ecc-4c6a-8078-709b24279f6d",
+              "proposedRevision": 2,
+              "kind": "alt-source",
+              "terms": {
+                "source": "gather"
+              },
+              "reason": "warehouse-empty",
+              "proposedAt": 480,
+              "status": "rejected",
+              "respondedAt": 480,
+              "responseEventId": "commitment_change_rejected"
+            }
+          ],
+          "createdAt": 480,
+          "updatedAt": 480
+        },
+        "event": {
+          "type": "commitment_change_rejected",
+          "commitmentId": "cm-c1afec17-5c8d-44be-8885-3b734accca25",
+          "revision": 1,
+          "at": 480,
+          "actorId": "npc_03",
+          "payload": {
+            "changeId": "chg-7bf1087e-5ecc-4c6a-8078-709b24279f6d",
+            "text": "不同意调整，按原约定"
+          }
+        }
+      }
+    },
+    "request:in-4-request": {
+      "digest": "{\"goal\":\"supply-warehouse\",\"promisorId\":\"npc_05\",\"beneficiaryId\":\"player\",\"deadline\":null,\"source\":null}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-ff0a0757-8fdc-4825-9b30-ea6d51689769",
+          "taskId": null,
+          "promisorId": "npc_05",
+          "beneficiaryId": "player",
+          "goal": "supply-warehouse",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "proposed",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 480,
+          "updatedAt": 480
+        },
+        "event": {
+          "type": "commitment_proposed",
+          "commitmentId": "cm-ff0a0757-8fdc-4825-9b30-ea6d51689769",
+          "revision": 1,
+          "at": 480,
+          "actorId": "npc_05",
+          "payload": {
+            "goal": "supply-warehouse",
+            "fromId": "npc_05",
+            "toId": "player",
+            "conditions": "warehouse-supply",
+            "deadline": -1
+          }
+        }
+      }
+    },
+    "respond:in-4-request:respond": {
+      "digest": "{\"commitmentId\":\"cm-ff0a0757-8fdc-4825-9b30-ea6d51689769\",\"verdict\":\"accept\",\"reason\":\"available\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-ff0a0757-8fdc-4825-9b30-ea6d51689769",
+          "taskId": null,
+          "promisorId": "npc_05",
+          "beneficiaryId": "player",
+          "goal": "supply-warehouse",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "active",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 480,
+          "updatedAt": 480
+        },
+        "event": {
+          "type": "commitment_accepted",
+          "commitmentId": "cm-ff0a0757-8fdc-4825-9b30-ea6d51689769",
+          "revision": 1,
+          "at": 480,
+          "actorId": "npc_05",
+          "payload": {
+            "fromId": "npc_05",
+            "toId": "player",
+            "text": "available"
+          }
+        }
+      }
+    },
+    "cancel:in-5-cancel-commitment": {
+      "digest": "{\"commitmentId\":\"cm-ff0a0757-8fdc-4825-9b30-ea6d51689769\",\"action\":\"cancel\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-ff0a0757-8fdc-4825-9b30-ea6d51689769",
+          "taskId": "task-002-supply-warehouse",
+          "promisorId": "npc_05",
+          "beneficiaryId": "player",
+          "goal": "supply-warehouse",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "cancelled",
+          "evidenceEventIds": [],
+          "changes": [],
+          "createdAt": 480,
+          "updatedAt": 480
+        },
+        "event": {
+          "type": "commitment_cancelled",
+          "commitmentId": "cm-ff0a0757-8fdc-4825-9b30-ea6d51689769",
+          "revision": 1,
+          "at": 480,
+          "actorId": "npc_05",
+          "payload": {
+            "fromId": "npc_05",
+            "toId": "player",
+            "text": "玩家取消"
+          }
+        }
+      }
+    },
+    "fulfil:bridge-fulfil:npc_03-r8-246:meal_delivered:250": {
+      "digest": "{\"commitmentId\":\"cm-c1afec17-5c8d-44be-8885-3b734accca25\",\"receiptEventId\":\"npc_03-r8-246:meal_delivered:250\"}",
+      "result": {
+        "commitment": {
+          "commitmentId": "cm-c1afec17-5c8d-44be-8885-3b734accca25",
+          "taskId": "task-001-deliver-meal",
+          "promisorId": "npc_03",
+          "beneficiaryId": "player",
+          "goal": "deliver-meal",
+          "conditions": [
+            "warehouse-supply"
+          ],
+          "deadline": null,
+          "revision": 1,
+          "status": "fulfilled",
+          "evidenceEventIds": [
+            "npc_03-r8-246:meal_delivered:250"
+          ],
+          "changes": [
+            {
+              "changeId": "chg-7bf1087e-5ecc-4c6a-8078-709b24279f6d",
+              "proposedRevision": 2,
+              "kind": "alt-source",
+              "terms": {
+                "source": "gather"
+              },
+              "reason": "warehouse-empty",
+              "proposedAt": 480,
+              "status": "rejected",
+              "respondedAt": 480,
+              "responseEventId": "commitment_change_rejected"
+            }
+          ],
+          "createdAt": 480,
+          "updatedAt": 2531
+        },
+        "event": {
+          "type": "commitment_fulfilled",
+          "commitmentId": "cm-c1afec17-5c8d-44be-8885-3b734accca25",
+          "revision": 1,
+          "at": 2531,
+          "actorId": "npc_03",
+          "payload": {
+            "fromId": "npc_03",
+            "toId": "player",
+            "receiptEventId": "npc_03-r8-246:meal_delivered:250",
+            "receiptCommandId": "npc_03-r8-246",
+            "amount": 1,
+            "promiseId": "cm-cm-c1afec17-5c8d-44be-8885-3b734accca25",
+            "text": "按约定送达"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,288 @@
+{
+  "story": "story1-heard-unheard-cancel",
+  "passed": true,
+  "checks": [
+    {
+      "name": "the present NPC heard the cancellation and stops",
+      "passed": true,
+      "detail": {
+        "goals": [
+          {
+            "status": "cancelled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "the absent NPC never heard it and still holds a live goal",
+      "passed": true,
+      "detail": {
+        "goals": [
+          {
+            "status": "active"
+          }
+        ],
+        "leaked": false,
+        "candidates": [
+          "to-warehouse"
+        ]
+      }
+    },
+    {
+      "name": "the unheard attempt is refused with a real, non-leaking observation",
+      "passed": true,
+      "detail": {
+        "actions": [
+          {
+            "step": "b-119af36c45bb5f03",
+            "status": "working"
+          },
+          {
+            "step": null,
+            "status": "abstained"
+          }
+        ],
+        "rejections": [
+          {
+            "intentId": "npc_01-r8-3",
+            "action": "move",
+            "reason": "authorisation_withdrawn"
+          }
+        ],
+        "cancellationsKnownToNpc01": 0
+      }
+    },
+    {
+      "name": "D2 exit restores the same commitment + memory state",
+      "passed": true,
+      "detail": {
+        "before": "45aeb6ca1eb21fdf",
+        "after": "45aeb6ca1eb21fdf",
+        "partsBefore": {
+          "commitments": "4d4212abd6e765821daf41ea29ed688105a1e511fb5dc93ee1162d3a1564ccfd",
+          "tasks": "3c7ac894ced09939fe05401dc139f930923a1dd1acf5094a3d448add561a3691",
+          "memories": "84e4fdfebe2413428e4fd24f1baacdb82a0c6049a31d44216ea50667383e4aaf",
+          "clock": "6b5f40c09215713a1fa83ea2de2adcae17e605b8958a2d7379e15b561687ee8f"
+        },
+        "partsAfter": {
+          "commitments": "4d4212abd6e765821daf41ea29ed688105a1e511fb5dc93ee1162d3a1564ccfd",
+          "tasks": "3c7ac894ced09939fe05401dc139f930923a1dd1acf5094a3d448add561a3691",
+          "memories": "84e4fdfebe2413428e4fd24f1baacdb82a0c6049a31d44216ea50667383e4aaf",
+          "clock": "6b5f40c09215713a1fa83ea2de2adcae17e605b8958a2d7379e15b561687ee8f"
+        },
+        "commitment": "cancelled",
+        "clock": 1920
+      }
+    },
+    {
+      "name": "pending work survives the D2 exit and settles once in the new process",
+      "passed": true,
+      "detail": {
+        "restoredStatus": "working",
+        "finalStatus": "applied",
+        "receipts": 1,
+        "settleRecords": 1,
+        "laterRecords": 1,
+        "failureReason": null,
+        "dueAt": 1950
+      }
+    },
+    {
+      "name": "after the restart the absent NPC still acts on its belief",
+      "passed": true,
+      "detail": {
+        "candidates": [
+          "withdraw"
+        ],
+        "goals": [
+          {
+            "source": "legacy-commitment",
+            "taskId": "task-001-deliver-meal",
+            "legacyTaskId": "task-001-deliver-meal",
+            "commitmentId": "cm-c3c52fbf-338e-4466-bf45-4ae869145b71",
+            "revision": 1,
+            "type": "DELIVER_MEAL",
+            "status": "active",
+            "ready": true,
+            "conditions": [
+              "warehouse-supply"
+            ],
+            "deadline": null,
+            "beneficiaryId": "player"
+          }
+        ],
+        "actor": "warehouse",
+        "busy": null,
+        "commitment": [
+          {
+            "id": "cm-c3c52fbf-338e-4466-bf45-4ae869145b71",
+            "status": "cancelled",
+            "promisor": "npc_01",
+            "task": "task-001-deliver-meal"
+          },
+          {
+            "id": "cm-51f1cccd-0271-4c11-a491-77bfc2e70c4e",
+            "status": "cancelled",
+            "promisor": "npc_02",
+            "task": "task-002-deliver-meal"
+          }
+        ]
+      }
+    },
+    {
+      "name": "an NPC that never heard the cancellation cannot relay it",
+      "passed": true,
+      "detail": {
+        "relay": null
+      }
+    },
+    {
+      "name": "after the relay the promisor stops (no candidacy, no fulfilment)",
+      "passed": true,
+      "detail": {
+        "told": [
+          "npc_01"
+        ],
+        "candidates": 0,
+        "status": "cancelled"
+      }
+    },
+    {
+      "name": "the stop is observable: the next step offers no commitment action",
+      "passed": true,
+      "detail": {
+        "offered": [
+          "eat",
+          "move",
+          "move",
+          "wait",
+          "move"
+        ],
+        "record": "abstained",
+        "selected": null
+      }
+    },
+    {
+      "name": "cancellation provenance is player_statement, relay is npc, audience recorded",
+      "passed": true,
+      "detail": [
+        {
+          "source": "player_statement",
+          "authority": "npc",
+          "speakerId": "npc_02",
+          "observedAt": 2070,
+          "payload": {
+            "fromId": "player",
+            "toId": "npc_01",
+            "text": "玩家当面说已经取消了",
+            "relayedBy": "npc_02",
+            "originalEventId": "cmt-commitment_cancelled-cm-c3c52fbf-338e-4466-bf45-4ae869145b71-10",
+            "commitmentId": "cm-c3c52fbf-338e-4466-bf45-4ae869145b71",
+            "revision": 1,
+            "heardBy": "npc_01",
+            "toldBy": "npc_02"
+          }
+        },
+        {
+          "source": "player_statement",
+          "authority": "npc",
+          "speakerId": "npc_02",
+          "observedAt": 2070,
+          "payload": {
+            "fromId": "player",
+            "toId": "npc_02",
+            "text": "玩家当面说已经取消了",
+            "relayedBy": "npc_02",
+            "originalEventId": "cmt-commitment_cancelled-cm-51f1cccd-0271-4c11-a491-77bfc2e70c4e-11",
+            "commitmentId": "cm-51f1cccd-0271-4c11-a491-77bfc2e70c4e",
+            "revision": 1,
+            "heardBy": "npc_01",
+            "toldBy": "npc_02"
+          }
+        }
+      ]
+    }
+  ],
+  "outcome": {
+    "commitmentStatus": "cancelled",
+    "fulfilled": false,
+    "firstCancelEvent": "commitment_cancelled",
+    "actionsBeforeHeard": 2,
+    "actionsAfterRelay": 0,
+    "fingerprint": {
+      "before": "9dbc7942bb53476e3be39238c5d61f615b75114226f4fd840d07afcd77a46fbc",
+      "after": "45aeb6ca1eb21fdfb84f5c6a12a076418fd7ea7b56f7bd6ff9b237ab007f9514"
+    }
+  },
+  "memory": {
+    "raw": {
+      "kinds": [
+        "r8_resource",
+        "r8_intent-note",
+        "heating_settled",
+        "commitment_cancelled",
+        "commitment_cancelled"
+      ],
+      "kept": 5,
+      "dropped": 346,
+      "bytes": 1850,
+      "tokens": 617,
+      "budget": 640
+    },
+    "obligationFirst": {
+      "kinds": [
+        "commitment_proposed",
+        "commitment_accepted",
+        "commitment_proposed",
+        "commitment_accepted"
+      ],
+      "kept": 4,
+      "dropped": 347,
+      "bytes": 1843,
+      "tokens": 615,
+      "budget": 640
+    },
+    "keptOnlyByNewPolicy": [
+      "commitment_proposed",
+      "commitment_accepted",
+      "commitment_proposed",
+      "commitment_accepted"
+    ],
+    "notesTotal": 0,
+    "notesApplicable": [],
+    "condition": "unknown",
+    "observedAt": [
+      {
+        "kind": "commitment_proposed",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_01",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "commitment_accepted",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_01",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "commitment_proposed",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_02",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "commitment_accepted",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_02",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      }
+    ]
+  },
+  "files": [
+    "/data3/DATA/project/project_meishijiang/r11-wt/o/artifacts/r11/evidence/memory-stories/story1-heard-unheard-cancel/story1-heard-unheard-cancel.json"
+  ]
+}

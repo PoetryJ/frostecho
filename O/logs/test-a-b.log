@@ -1,0 +1,616 @@
+restored 0 packaged G11 evidence files
+TAP version 13
+# Subtest: original spatial profile is explicit; reference profile refuses it without changing state
+ok 1 - original spatial profile is explicit; reference profile refuses it without changing state
+  ---
+  duration_ms: 16.727849
+  type: 'test'
+  ...
+# Subtest: one adjacent cell commits coordinate/location and charges one world minute plus original effort once
+ok 2 - one adjacent cell commits coordinate/location and charges one world minute plus original effort once
+  ---
+  duration_ms: 25.45691
+  type: 'test'
+  ...
+# Subtest: wall, remote door, invalid actor and unsupported old travel have zero authoritative effects
+ok 3 - wall, remote door, invalid actor and unsupported old travel have zero authoritative effects
+  ---
+  duration_ms: 9.725128
+  type: 'test'
+  ...
+# Subtest: macro candidate move traverses the real map; all seven interiors remain accessible
+ok 4 - macro candidate move traverses the real map; all seven interiors remain accessible
+  ---
+  duration_ms: 775.249611
+  type: 'test'
+  ...
+# Subtest: same command replay is exact, conflicting content does not walk or advance time
+ok 5 - same command replay is exact, conflicting content does not walk or advance time
+  ---
+  duration_ms: 5.043886
+  type: 'test'
+  ...
+# Subtest: warehouse entrance observes real stock only for the arriving actor; remote observation is rejected
+ok 6 - warehouse entrance observes real stock only for the arriving actor; remote observation is rejected
+  ---
+  duration_ms: 138.720866
+  type: 'test'
+  ...
+# Subtest: runtime number encoding preserves live domain state and reads pre-encoding v1 sidecars
+ok 7 - runtime number encoding preserves live domain state and reads pre-encoding v1 sidecars
+  ---
+  duration_ms: 5.309686
+  type: 'test'
+  ...
+# Subtest: D2 save restored in a new process preserves all authority and door receipts through three-room return
+ok 8 - D2 save restored in a new process preserves all authority and door receipts through three-room return
+  ---
+  duration_ms: 1520.645086
+  type: 'test'
+  ...
+# Subtest: road closure blocks the real original village route, and rescue cannot silently teleport
+ok 9 - road closure blocks the real original village route, and rescue cannot silently teleport
+  ---
+  duration_ms: 37.493439
+  type: 'test'
+  ...
+# Subtest: two same-type tasks close only the selected task and report the committed completion
+ok 10 - two same-type tasks close only the selected task and report the committed completion
+  ---
+  duration_ms: 34.368409
+  type: 'test'
+  ...
+# Subtest: terminal tasks disappear from goals and cannot confer a reference obligation bonus
+ok 11 - terminal tasks disappear from goals and cannot confer a reference obligation bonus
+  ---
+  duration_ms: 14.328281
+  type: 'test'
+  ...
+# Subtest: COLLECT_MATERIAL closes only its explicitly bound worked receipt at its real work mode; proxy is marked
+ok 12 - COLLECT_MATERIAL closes only its explicitly bound worked receipt at its real work mode; proxy is marked
+  ---
+  duration_ms: 4.852175
+  type: 'test'
+  ...
+# Subtest: BOOST_MORALE closes only its explicitly bound worked receipt at its real work mode; proxy is marked
+ok 13 - BOOST_MORALE closes only its explicitly bound worked receipt at its real work mode; proxy is marked
+  ---
+  duration_ms: 4.889568
+  type: 'test'
+  ...
+# Subtest: COORDINATE closes only its explicitly bound worked receipt at its real work mode; proxy is marked
+ok 14 - COORDINATE closes only its explicitly bound worked receipt at its real work mode; proxy is marked
+  ---
+  duration_ms: 3.825767
+  type: 'test'
+  ...
+# Subtest: MAINTAIN_ORDER closes only its explicitly bound worked receipt at its real work mode; proxy is marked
+ok 15 - MAINTAIN_ORDER closes only its explicitly bound worked receipt at its real work mode; proxy is marked
+  ---
+  duration_ms: 3.030177
+  type: 'test'
+  ...
+# Subtest: SCOUT_RUINS closes only its explicitly bound worked receipt at its real work mode; proxy is marked
+ok 16 - SCOUT_RUINS closes only its explicitly bound worked receipt at its real work mode; proxy is marked
+  ---
+  duration_ms: 3.986522
+  type: 'test'
+  ...
+# Subtest: a forged task type cannot bind the wrong execution primitive or reuse an earlier receipt
+ok 17 - a forged task type cannot bind the wrong execution primitive or reuse an earlier receipt
+  ---
+  duration_ms: 4.139312
+  type: 'test'
+  ...
+# Subtest: bridge goal changes during scoring void the result without a second task queue
+ok 18 - bridge goal changes during scoring void the result without a second task queue
+  ---
+  duration_ms: 1.855111
+  type: 'test'
+  ...
+# Subtest: reference commitment bonus binds exact task/revision and yields to immediate survival needs
+ok 19 - reference commitment bonus binds exact task/revision and yields to immediate survival needs
+  ---
+  duration_ms: 1.35036
+  type: 'test'
+  ...
+# Subtest: toWorld matches the vendored display formula
+ok 20 - toWorld matches the vendored display formula
+  ---
+  duration_ms: 1.958179
+  type: 'test'
+  ...
+# Subtest: an indoor actor stands at the real door, never at indoor metres
+ok 21 - an indoor actor stands at the real door, never at indoor metres
+  ---
+  duration_ms: 1.64567
+  type: 'test'
+  ...
+# Subtest: version and clock come from the authority, and the gate refuses a rewind
+ok 22 - version and clock come from the authority, and the gate refuses a rewind
+  ---
+  duration_ms: 0.71475
+  type: 'test'
+  ...
+# Subtest: private memory and prompt text cannot ride into the graphics snapshot
+ok 23 - private memory and prompt text cannot ride into the graphics snapshot
+  ---
+  duration_ms: 0.98273
+  type: 'test'
+  ...
+# Subtest: a missing `where` record is counted, not invented
+ok 24 - a missing `where` record is counted, not invented
+  ---
+  duration_ms: 0.481373
+  type: 'test'
+  ...
+# Subtest: explicit original profile retains default three maps and all 2,560 original collision cells
+ok 25 - explicit original profile retains default three maps and all 2,560 original collision cells
+  ---
+  duration_ms: 16.327084
+  type: 'test'
+  ...
+# Subtest: real village route, command door conversion, interior path and coordinate save restore
+ok 26 - real village route, command door conversion, interior path and coordinate save restore
+  ---
+  duration_ms: 7.236013
+  type: 'test'
+  ...
+# Subtest: real village route, dorm_a door conversion, interior path and coordinate save restore
+ok 27 - real village route, dorm_a door conversion, interior path and coordinate save restore
+  ---
+  duration_ms: 1.323958
+  type: 'test'
+  ...
+# Subtest: real village route, dorm_b door conversion, interior path and coordinate save restore
+ok 28 - real village route, dorm_b door conversion, interior path and coordinate save restore
+  ---
+  duration_ms: 1.461521
+  type: 'test'
+  ...
+# Subtest: real village route, kitchen door conversion, interior path and coordinate save restore
+ok 29 - real village route, kitchen door conversion, interior path and coordinate save restore
+  ---
+  duration_ms: 1.535861
+  type: 'test'
+  ...
+# Subtest: real village route, warehouse door conversion, interior path and coordinate save restore
+ok 30 - real village route, warehouse door conversion, interior path and coordinate save restore
+  ---
+  duration_ms: 1.167457
+  type: 'test'
+  ...
+# Subtest: real village route, workshop door conversion, interior path and coordinate save restore
+ok 31 - real village route, workshop door conversion, interior path and coordinate save restore
+  ---
+  duration_ms: 1.523124
+  type: 'test'
+  ...
+# Subtest: real village route, medical door conversion, interior path and coordinate save restore
+ok 32 - real village route, medical door conversion, interior path and coordinate save restore
+  ---
+  duration_ms: 3.334001
+  type: 'test'
+  ...
+# Subtest: original village walls/furnace/decorations and indoor furniture cannot be crossed
+ok 33 - original village walls/furnace/decorations and indoor furniture cannot be crossed
+  ---
+  duration_ms: 1.691614
+  type: 'test'
+  ...
+# Subtest: closed original gates cut outdoor resources off while internal buildings remain reachable
+ok 34 - closed original gates cut outdoor resources off while internal buildings remain reachable
+  ---
+  duration_ms: 11.359263
+  type: 'test'
+  ...
+# Subtest: closed door and malformed save cannot teleport through wall or invent a profile
+ok 35 - closed door and malformed save cannot teleport through wall or invent a profile
+  ---
+  duration_ms: 1.213307
+  type: 'test'
+  ...
+# Subtest: source defects and missing command indoor art are explicit, registry instances are isolated
+ok 36 - source defects and missing command indoor art are explicit, registry instances are isolated
+  ---
+  duration_ms: 2.649099
+  type: 'test'
+  ...
+# Subtest: G2-a: assign/cancel-task/game-step/save and restore through the CLI
+ok 37 - G2-a: assign/cancel-task/game-step/save and restore through the CLI
+  ---
+  duration_ms: 570.968555
+  type: 'test'
+  ...
+# Subtest: G2-b: 8 NPC x 4 days = 96h ending is decided by the authoritative state
+not ok 38 - G2-b: 8 NPC x 4 days = 96h ending is decided by the authoritative state
+  ---
+  duration_ms: 495.068471
+  type: 'test'
+  location: '/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v2/gate-gameplay.test.js:42:22'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'all-dead'
+    - 'survived'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'survived'
+  actual: 'all-dead'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v2/gate-gameplay.test.js:59:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: G1-a: piped step/save/quit settles the step and saves its effects
+ok 39 - G1-a: piped step/save/quit settles the step and saves its effects
+  ---
+  duration_ms: 320.610022
+  type: 'test'
+  ...
+# Subtest: G1-b: EOF without quit drains the queue and exits cleanly
+ok 40 - G1-b: EOF without quit drains the queue and exits cleanly
+  ---
+  duration_ms: 251.241295
+  type: 'test'
+  ...
+# Subtest: G1-c: a cancel accepted before the queued step revokes its choice
+ok 41 - G1-c: a cancel accepted before the queued step revokes its choice
+  ---
+  duration_ms: 407.683199
+  type: 'test'
+  ...
+# Subtest: G1-d: promise -> cancel -> promise creates a new live instance after restore
+ok 42 - G1-d: promise -> cancel -> promise creates a new live instance after restore
+  ---
+  duration_ms: 682.277895
+  type: 'test'
+  ...
+# Subtest: G2-P1: the real CLI walks the village grid to the warehouse and the kitchen
+ok 43 - G2-P1: the real CLI walks the village grid to the warehouse and the kitchen
+  ---
+  duration_ms: 307.336385
+  type: 'test'
+  ...
+# Subtest: G2-P2: walls cannot be crossed; a sealed door is an observable report
+ok 44 - G2-P2: walls cannot be crossed; a sealed door is an observable report
+  ---
+  duration_ms: 282.15071
+  type: 'test'
+  ...
+# Subtest: G2-P3: witnessed shortage changes the next action; restock is retried
+not ok 45 - G2-P3: witnessed shortage changes the next action; restock is retried
+  ---
+  duration_ms: 414.350129
+  type: 'test'
+  location: '/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v3/gate-spatial.test.js:87:22'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'active' !== 'done'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'done'
+  actual: 'active'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v3/gate-spatial.test.js:108:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: G2-P4: an explicit cancel means zero delivery; save/restore keeps beliefs
+ok 46 - G2-P4: an explicit cancel means zero delivery; save/restore keeps beliefs
+  ---
+  duration_ms: 656.895203
+  type: 'test'
+  ...
+# Subtest: G2-P5: the original 8-NPC four-day chain still runs unchanged
+not ok 47 - G2-P5: the original 8-NPC four-day chain still runs unchanged
+  ---
+  duration_ms: 273.510118
+  type: 'test'
+  location: '/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v3/gate-spatial.test.js:141:22'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'all-dead'
+    - 'survived'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'survived'
+  actual: 'all-dead'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v3/gate-spatial.test.js:156:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: V4-G1: promise identity survives restart; restock accumulates; explicit retry replays
+ok 48 - V4-G1: promise identity survives restart; restock accumulates; explicit retry replays
+  ---
+  duration_ms: 957.148476
+  type: 'test'
+  ...
+# Subtest: V4-G2: save waits boundedly, cancel confirms before release, nothing stale commits
+ok 49 - V4-G2: save waits boundedly, cancel confirms before release, nothing stale commits
+  ---
+  duration_ms: 3362.367585
+  type: 'test'
+  ...
+# Subtest: V4-G2: EOF with a never-released scorer exits within the bound
+ok 50 - V4-G2: EOF with a never-released scorer exits within the bound
+  ---
+  duration_ms: 1528.801936
+  type: 'test'
+  ...
+# Subtest: V4-G3: the real CLI completes spatial deliveries over a simulated day
+not ok 51 - V4-G3: the real CLI completes spatial deliveries over a simulated day
+  ---
+  duration_ms: 260.06563
+  type: 'test'
+  location: '/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v4/gate-v4.test.js:143:22'
+  failureType: 'testCodeFailure'
+  error: 'at least one real meal_delivered receipt in the window'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v4/gate-v4.test.js:157:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: V4-G4: CLI story A — request, shortage proposal, accept, deliver, fulfilled
+not ok 52 - V4-G4: CLI story A — request, shortage proposal, accept, deliver, fulfilled
+  ---
+  duration_ms: 482.282115
+  type: 'test'
+  location: '/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v4/gate-v4.test.js:165:22'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'active'
+    - 'fulfilled'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'fulfilled'
+  actual: 'active'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v4/gate-v4.test.js:187:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: V4-G4: CLI story B — survival proposal, reject keeps terms, dying exit
+ok 53 - V4-G4: CLI story B — survival proposal, reject keeps terms, dying exit
+  ---
+  duration_ms: 645.942313
+  type: 'test'
+  ...
+# Subtest: V4-G5: a consumed rumor no longer drives empty probes
+ok 54 - V4-G5: a consumed rumor no longer drives empty probes
+  ---
+  duration_ms: 251.300156
+  type: 'test'
+  ...
+# Subtest: R5-G1: terminal withdraw cancels the bound task and delivers nothing
+ok 55 - R5-G1: terminal withdraw cancels the bound task and delivers nothing
+  ---
+  duration_ms: 555.528159
+  type: 'test'
+  ...
+# Subtest: R5-G2: cancel closes an open change; a later old accept cannot revive it
+ok 56 - R5-G2: cancel closes an open change; a later old accept cannot revive it
+  ---
+  duration_ms: 744.874157
+  type: 'test'
+  ...
+# Subtest: R5-G3: counter-accept binds one task, waits for the condition, then delivers
+not ok 57 - R5-G3: counter-accept binds one task, waits for the condition, then delivers
+  ---
+  duration_ms: 999.931117
+  type: 'test'
+  location: '/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v5/gate-r5.test.js:97:22'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      ok((saved(state).world.spatial?.deliveredMeals ?? 0) >= 1)
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v5/gate-r5.test.js:117:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: R5-G4: a save barrier revokes exactly its captured queued steps
+ok 58 - R5-G4: a save barrier revokes exactly its captured queued steps
+  ---
+  duration_ms: 746.036115
+  type: 'test'
+  ...
+# Subtest: R5-G5: travel replays the first receipt; same id/different target conflicts
+ok 59 - R5-G5: travel replays the first receipt; same id/different target conflicts
+  ---
+  duration_ms: 468.930618
+  type: 'test'
+  ...
+# Subtest: R5-G6: morning council creates a resolution, two real assignments and receipts
+not ok 60 - R5-G6: morning council creates a resolution, two real assignments and receipts
+  ---
+  duration_ms: 747.766562
+  type: 'test'
+  location: '/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v5/gate-r5.test.js:188:22'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      ok(tasks.some((task) => task.kind === 'supply-warehouse'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v5/gate-r5.test.js:218:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: R5-G7: an exit stops the old task; a substitute accepts a NEW request revision
+ok 61 - R5-G7: an exit stops the old task; a substitute accepts a NEW request revision
+  ---
+  duration_ms: 1495.581723
+  type: 'test'
+  ...
+# Subtest: R5-G8: council resolution replays across processes without duplicate dispatch
+ok 62 - R5-G8: council resolution replays across processes without duplicate dispatch
+  ---
+  duration_ms: 475.1214
+  type: 'test'
+  ...
+# Subtest: R5-G9: 8 NPCs live the same 96h with spatial work, one success and one honest shortage, and split saves match the continuous run
+not ok 63 - R5-G9: 8 NPCs live the same 96h with spatial work, one success and one honest shortage, and split saves match the continuous run
+  ---
+  duration_ms: 1872.244349
+  type: 'test'
+  location: '/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v5/gate-r5.test.js:386:22'
+  failureType: 'testCodeFailure'
+  error: 'at least one real meal_delivered'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v5/gate-r5.test.js:412:26)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: R6-P: a real stock_deposited receipt fulfils only that supply commitment
+not ok 64 - R6-P: a real stock_deposited receipt fulfils only that supply commitment
+  ---
+  duration_ms: 601.834277
+  type: 'test'
+  location: '/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v6/gate-r6.test.js:27:22'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'active' !== 'done'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'done'
+  actual: 'active'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v6/gate-r6.test.js:38:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: R6-P: cancel before the deposit does not fulfil, and a meal receipt still does
+not ok 65 - R6-P: cancel before the deposit does not fulfil, and a meal receipt still does
+  ---
+  duration_ms: 1327.179471
+  type: 'test'
+  location: '/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v6/gate-r6.test.js:54:22'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'active'
+    - 'fulfilled'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'fulfilled'
+  actual: 'active'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v6/gate-r6.test.js:71:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: R6-R: a step outside one save capture runs once
+ok 66 - R6-R: a step outside one save capture runs once
+  ---
+  duration_ms: 684.278384
+  type: 'test'
+  ...
+# Subtest: R6-R: an explicit cancel stays dead and a later save does not re-grant it
+ok 67 - R6-R: an explicit cancel stays dead and a later save does not re-grant it
+  ---
+  duration_ms: 237.79329
+  type: 'test'
+  ...
+# Subtest: R6 play: four mornings, one exit, one observed shortage, both arms agree
+not ok 68 - R6 play: four mornings, one exit, one observed shortage, both arms agree
+  ---
+  duration_ms: 5972.455284
+  type: 'test'
+  location: '/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v6/gate-r6.test.js:169:22'
+  failureType: 'testCodeFailure'
+  error: 'day3 delivery did not settle from gather→deposit→withdraw→deliver: last={"status":"pending-change","revision":2,"intents":[],"workLog":[],"actor":"npc_06","changes":["alt-source:accepted","suspend:rejected","suspend:open"],"tasks":["deliver-meal:active"]}'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    runArm (/data3/DATA/project/project_meishijiang/r11-wt/o/dist/scripts/verify-r6.js:237:15)
+    async runStory (/data3/DATA/project/project_meishijiang/r11-wt/o/dist/scripts/verify-r6.js:444:24)
+    async TestContext.<anonymous> (/data3/DATA/project/project_meishijiang/r11-wt/o/dist/tests/acceptance-v6/gate-r6.test.js:172:23)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
