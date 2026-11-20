@@ -1,0 +1,5279 @@
+{
+  "schema": "frostecho.r11.fourday/1",
+  "seed": "r11-d-base",
+  "profile": "gospel-5.8.19",
+  "mode": "reference",
+  "lives": 1,
+  "strategyLabel": "npc-schedule/home-at-night/1+outdoor-limit/120min/1+reference-survival/1+lethal-day-withdrawal/1+walk-escort/1+recorded-survival-exit/1+supply-then-restart/1",
+  "strategies": {
+    "nightShelter": true,
+    "weatherVeto": true,
+    "outdoorWithdrawal": true,
+    "routedRescue": true,
+    "survivalExit": true,
+    "machineRecovery": true,
+    "outdoorLimit": true
+  },
+  "strategiesOn": [
+    "npc-schedule/home-at-night/1",
+    "outdoor-limit/120min/1",
+    "reference-survival/1",
+    "lethal-day-withdrawal/1",
+    "walk-escort/1",
+    "recorded-survival-exit/1",
+    "supply-then-restart/1"
+  ],
+  "originalMap": false,
+  "mapProfile": "engine-3-map/1",
+  "mapIds": [
+    "village",
+    "warehouse",
+    "kitchen"
+  ],
+  "memoryPolicy": "conditional-experience",
+  "memorySelection": "obligation-first",
+  "sourceHEAD": null,
+  "node": "v22.23.4",
+  "startedAt": "2026-11-20T05:41:54.647Z",
+  "endings": [
+    {
+      "lifeNumber": 1,
+      "ending": "perfect",
+      "survivors": 8,
+      "elapsed": 4920,
+      "at": 5400
+    }
+  ],
+  "survivors": 8,
+  "dead": [],
+  "ending": {
+    "lifeNumber": 1,
+    "ending": "perfect",
+    "survivors": 8,
+    "elapsed": 4920,
+    "at": 5400
+  },
+  "endedAt": 5400,
+  "elapsed": 4920,
+  "resources": {
+    "food": 81,
+    "firewood": 0,
+    "power": 0,
+    "medicine": 3
+  },
+  "furnace": {
+    "lit": true,
+    "fuel": 13.199999999999873,
+    "warmth": 18
+  },
+  "heating": {
+    "strength": 0,
+    "indoorTemp": -66,
+    "effective": false
+  },
+  "decisions": 304,
+  "decisionStates": {
+    "working": 249,
+    "applied": 49,
+    "busy": 6
+  },
+  "council": [
+    {
+      "at": 480,
+      "day": 1,
+      "meetingId": "council-1",
+      "actorId": "npc_02",
+      "type": "COLLECT_WOOD",
+      "verdict": "accept",
+      "taskId": "task-1",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 480,
+      "day": 1,
+      "meetingId": "council-1",
+      "actorId": "npc_06",
+      "type": "COLLECT_WOOD",
+      "verdict": "accept",
+      "taskId": "task-2",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 480,
+      "day": 1,
+      "meetingId": "council-1",
+      "actorId": "npc_01",
+      "type": "COLLECT_WOOD",
+      "verdict": "accept",
+      "taskId": "task-3",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 480,
+      "day": 1,
+      "meetingId": "council-1",
+      "actorId": "npc_03",
+      "type": "MAINTAIN_POWER",
+      "verdict": "accept",
+      "taskId": "task-4",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 1770,
+      "day": 2,
+      "meetingId": "council-2",
+      "actorId": "npc_03",
+      "type": "MAINTAIN_POWER",
+      "verdict": "counter",
+      "taskId": "task-5",
+      "reassignedTo": null,
+      "reason": "自身状态不适合 MAINTAIN_POWER"
+    },
+    {
+      "at": 1770,
+      "day": 2,
+      "meetingId": "council-2",
+      "actorId": "npc_05",
+      "type": "MAINTAIN_POWER",
+      "verdict": "accept",
+      "taskId": "task-7",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 1770,
+      "day": 2,
+      "meetingId": "council-2",
+      "actorId": "npc_06",
+      "type": "REST_RECOVER",
+      "verdict": "accept",
+      "taskId": "task-8",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 2280,
+      "day": 2,
+      "meetingId": "council-3",
+      "actorId": "npc_03",
+      "type": "MAINTAIN_POWER",
+      "verdict": "counter",
+      "taskId": "task-9",
+      "reassignedTo": null,
+      "reason": "自身状态不适合 MAINTAIN_POWER"
+    },
+    {
+      "at": 2280,
+      "day": 2,
+      "meetingId": "council-3",
+      "actorId": "npc_05",
+      "type": "MAINTAIN_POWER",
+      "verdict": "accept",
+      "taskId": "task-11",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 2280,
+      "day": 2,
+      "meetingId": "council-3",
+      "actorId": "npc_06",
+      "type": "REST_RECOVER",
+      "verdict": "accept",
+      "taskId": "task-12",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 3165,
+      "day": 3,
+      "meetingId": "council-4",
+      "actorId": "npc_03",
+      "type": "MAINTAIN_POWER",
+      "verdict": "counter",
+      "taskId": "task-13",
+      "reassignedTo": null,
+      "reason": "自身状态不适合 MAINTAIN_POWER"
+    },
+    {
+      "at": 3165,
+      "day": 3,
+      "meetingId": "council-4",
+      "actorId": "npc_02",
+      "type": "COLLECT_WOOD",
+      "verdict": "counter",
+      "taskId": "task-15",
+      "reassignedTo": null,
+      "reason": "自身状态不适合 COLLECT_WOOD"
+    },
+    {
+      "at": 3165,
+      "day": 3,
+      "meetingId": "council-4",
+      "actorId": "npc_06",
+      "type": "COLLECT_WOOD",
+      "verdict": "accept",
+      "taskId": "task-17",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 3165,
+      "day": 3,
+      "meetingId": "council-4",
+      "actorId": "npc_01",
+      "type": "MAINTAIN_POWER",
+      "verdict": "accept",
+      "taskId": "task-18",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 3645,
+      "day": 3,
+      "meetingId": "council-5",
+      "actorId": "npc_03",
+      "type": "MAINTAIN_POWER",
+      "verdict": "counter",
+      "taskId": "task-19",
+      "reassignedTo": null,
+      "reason": "自身状态不适合 MAINTAIN_POWER"
+    },
+    {
+      "at": 3645,
+      "day": 3,
+      "meetingId": "council-5",
+      "actorId": "npc_02",
+      "type": "COLLECT_WOOD",
+      "verdict": "counter",
+      "taskId": "task-21",
+      "reassignedTo": null,
+      "reason": "自身状态不适合 COLLECT_WOOD"
+    },
+    {
+      "at": 3645,
+      "day": 3,
+      "meetingId": "council-5",
+      "actorId": "npc_06",
+      "type": "COLLECT_WOOD",
+      "verdict": "counter",
+      "taskId": "task-23",
+      "reassignedTo": null,
+      "reason": "自身状态不适合 COLLECT_WOOD"
+    },
+    {
+      "at": 3645,
+      "day": 3,
+      "meetingId": "council-5",
+      "actorId": "npc_01",
+      "type": "MAINTAIN_POWER",
+      "verdict": "counter",
+      "taskId": "task-25",
+      "reassignedTo": null,
+      "reason": "自身状态不适合 MAINTAIN_POWER"
+    },
+    {
+      "at": 4605,
+      "day": 4,
+      "meetingId": "council-6",
+      "actorId": "npc_03",
+      "type": "MAINTAIN_POWER",
+      "verdict": "counter",
+      "taskId": "task-27",
+      "reassignedTo": null,
+      "reason": "自身状态不适合 MAINTAIN_POWER"
+    },
+    {
+      "at": 4605,
+      "day": 4,
+      "meetingId": "council-6",
+      "actorId": "npc_05",
+      "type": "MAINTAIN_POWER",
+      "verdict": "counter",
+      "taskId": "task-29",
+      "reassignedTo": null,
+      "reason": "自身状态不适合 MAINTAIN_POWER"
+    },
+    {
+      "at": 4605,
+      "day": 4,
+      "meetingId": "council-6",
+      "actorId": "npc_07",
+      "type": "REST_RECOVER",
+      "verdict": "accept",
+      "taskId": "task-31",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 5085,
+      "day": 4,
+      "meetingId": "council-7",
+      "actorId": "npc_03",
+      "type": "MAINTAIN_POWER",
+      "verdict": "counter",
+      "taskId": "task-32",
+      "reassignedTo": null,
+      "reason": "自身状态不适合 MAINTAIN_POWER"
+    },
+    {
+      "at": 5085,
+      "day": 4,
+      "meetingId": "council-7",
+      "actorId": "npc_07",
+      "type": "MAINTAIN_POWER",
+      "verdict": "counter",
+      "taskId": "task-34",
+      "reassignedTo": null,
+      "reason": "自身状态不适合 MAINTAIN_POWER"
+    },
+    {
+      "at": 5085,
+      "day": 4,
+      "meetingId": "council-7",
+      "actorId": "npc_01",
+      "type": "REST_RECOVER",
+      "verdict": "accept",
+      "taskId": "task-36",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    }
+  ],
+  "intents": 200,
+  "terminal": {
+    "applied": 200,
+    "rejected": 0,
+    "cancelled": 0,
+    "unresolved": 0
+  },
+  "rejectedAtSettlement": [],
+  "rescues": [],
+  "nightWalks": [
+    {
+      "at": 1260,
+      "actorId": "npc_02",
+      "site": "dorm-b",
+      "minutes": 15,
+      "tiles": 0,
+      "receipt": null,
+      "reason": "queued_move"
+    },
+    {
+      "at": 1275,
+      "actorId": "npc_04",
+      "site": "dorm-b",
+      "minutes": 15,
+      "tiles": 0,
+      "receipt": null,
+      "reason": "queued_move"
+    },
+    {
+      "at": 1290,
+      "actorId": "npc_05",
+      "site": "dorm-a",
+      "minutes": 15,
+      "tiles": 0,
+      "receipt": null,
+      "reason": "queued_move"
+    },
+    {
+      "at": 1305,
+      "actorId": "npc_06",
+      "site": "dorm-a",
+      "minutes": 15,
+      "tiles": 0,
+      "receipt": null,
+      "reason": "queued_move"
+    },
+    {
+      "at": 1320,
+      "actorId": "npc_07",
+      "site": "dorm-a",
+      "minutes": 15,
+      "tiles": 0,
+      "receipt": null,
+      "reason": "queued_move"
+    },
+    {
+      "at": 1335,
+      "actorId": "npc_08",
+      "site": "dorm-a",
+      "minutes": 15,
+      "tiles": 0,
+      "receipt": null,
+      "reason": "queued_move"
+    },
+    {
+      "at": 1830,
+      "actorId": "npc_02",
+      "site": "dorm-b",
+      "minutes": 15,
+      "tiles": 0,
+      "receipt": null,
+      "reason": "queued_move"
+    },
+    {
+      "at": 1845,
+      "actorId": "npc_04",
+      "site": "dorm-b",
+      "minutes": 15,
+      "tiles": 0,
+      "receipt": null,
+      "reason": "queued_move"
+    },
+    {
+      "at": 2700,
+      "actorId": "npc_02",
+      "site": "dorm-b",
+      "minutes": 15,
+      "tiles": 0,
+      "receipt": null,
+      "reason": "queued_move"
+    },
+    {
+      "at": 2715,
+      "actorId": "npc_04",
+      "site": "dorm-b",
+      "minutes": 15,
+      "tiles": 0,
+      "receipt": null,
+      "reason": "queued_move"
+    },
+    {
+      "at": 2730,
+      "actorId": "npc_05",
+      "site": "dorm-a",
+      "minutes": 15,
+      "tiles": 0,
+      "receipt": null,
+      "reason": "queued_move"
+    },
+    {
+      "at": 4140,
+      "actorId": "npc_02",
+      "site": "dorm-b",
+      "minutes": 15,
+      "tiles": 0,
+      "receipt": null,
+      "reason": "queued_move"
+    },
+    {
+      "at": 4155,
+      "actorId": "npc_04",
+      "site": "dorm-b",
+      "minutes": 15,
+      "tiles": 0,
+      "receipt": null,
+      "reason": "queued_move"
+    },
+    {
+      "at": 4170,
+      "actorId": "npc_05",
+      "site": "dorm-a",
+      "minutes": 15,
+      "tiles": 0,
+      "receipt": null,
+      "reason": "queued_move"
+    }
+  ],
+  "outdoorReturns": [],
+  "strandedAtNight": [
+    {
+      "at": 1200,
+      "actorId": "npc_02",
+      "location": "dorm-a"
+    },
+    {
+      "at": 1200,
+      "actorId": "npc_03",
+      "location": "village"
+    },
+    {
+      "at": 1200,
+      "actorId": "npc_04",
+      "location": "dorm-a"
+    },
+    {
+      "at": 2640,
+      "actorId": "npc_02",
+      "location": "village"
+    },
+    {
+      "at": 2640,
+      "actorId": "npc_04",
+      "location": "village"
+    },
+    {
+      "at": 2640,
+      "actorId": "npc_05",
+      "location": "workshop"
+    },
+    {
+      "at": 4080,
+      "actorId": "npc_02",
+      "location": "dorm-a"
+    },
+    {
+      "at": 4080,
+      "actorId": "npc_04",
+      "location": "dorm-a"
+    },
+    {
+      "at": 4080,
+      "actorId": "npc_06",
+      "location": "warehouse"
+    },
+    {
+      "at": 4080,
+      "actorId": "npc_07",
+      "location": "warehouse"
+    },
+    {
+      "at": 4080,
+      "actorId": "npc_08",
+      "location": "warehouse"
+    }
+  ],
+  "weatherVetoes": [
+    {
+      "at": 1020,
+      "actorId": "npc_01",
+      "candidate": "a-da38572f198c",
+      "reason": "day-4 outdoor is lethal (-60 C); choice refused"
+    },
+    {
+      "at": 1020,
+      "actorId": "npc_02",
+      "candidate": "a-da38572f198c",
+      "reason": "day-4 outdoor is lethal (-60 C); choice refused"
+    },
+    {
+      "at": 1020,
+      "actorId": "npc_03",
+      "candidate": "a-da38572f198c",
+      "reason": "day-4 outdoor is lethal (-60 C); choice refused"
+    },
+    {
+      "at": 1020,
+      "actorId": "npc_04",
+      "candidate": "a-da38572f198c",
+      "reason": "day-4 outdoor is lethal (-60 C); choice refused"
+    }
+  ],
+  "outdoorWithdrawals": [],
+  "machineEvents": [],
+  "survivalExits": [],
+  "clock": [
+    {
+      "at": 480,
+      "day": 1,
+      "minuteOfDay": 480,
+      "firewood": 30,
+      "power": 30,
+      "food": 130,
+      "medicine": 3,
+      "furnaceFuel": 6,
+      "furnaceLit": true,
+      "heatingStrength": 0.86875,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-b",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-b",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-b",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-b"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {}
+    },
+    {
+      "at": 540,
+      "day": 1,
+      "minuteOfDay": 540,
+      "firewood": 29,
+      "power": 28,
+      "food": 130,
+      "medicine": 3,
+      "furnaceFuel": 5.6000000000000005,
+      "furnaceLit": true,
+      "heatingStrength": 0.854167,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "warehouse",
+        "npc_02": "warehouse",
+        "npc_03": "warehouse",
+        "npc_04": "warehouse",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 600,
+      "day": 1,
+      "minuteOfDay": 600,
+      "firewood": 20,
+      "power": 26,
+      "food": 128,
+      "medicine": 3,
+      "furnaceFuel": 21.2,
+      "furnaceLit": true,
+      "heatingStrength": 0.73125,
+      "heatingBand": "warm",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "warehouse",
+        "npc_02": "warehouse",
+        "npc_03": "warehouse",
+        "npc_04": "warehouse",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 660,
+      "day": 1,
+      "minuteOfDay": 660,
+      "firewood": 19,
+      "power": 24,
+      "food": 128,
+      "medicine": 3,
+      "furnaceFuel": 20.799999999999997,
+      "furnaceLit": true,
+      "heatingStrength": 0.689583,
+      "heatingBand": "warm",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "kitchen",
+        "npc_02": "kitchen",
+        "npc_03": "workshop",
+        "npc_04": "village",
+        "npc_05": "village",
+        "npc_06": "village",
+        "npc_07": "village",
+        "npc_08": "village"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 45,
+        "npc_05": 45,
+        "npc_06": 45,
+        "npc_07": 45,
+        "npc_08": 45
+      }
+    },
+    {
+      "at": 720,
+      "day": 1,
+      "minuteOfDay": 720,
+      "firewood": 38,
+      "power": 37,
+      "food": 128,
+      "medicine": 3,
+      "furnaceFuel": 20.399999999999995,
+      "furnaceLit": true,
+      "heatingStrength": 0.919792,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "kitchen",
+        "npc_02": "kitchen",
+        "npc_03": "workshop",
+        "npc_04": "village",
+        "npc_05": "village",
+        "npc_06": "village",
+        "npc_07": "village",
+        "npc_08": "village"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 105,
+        "npc_05": 105,
+        "npc_06": 105,
+        "npc_07": 105,
+        "npc_08": 105
+      }
+    },
+    {
+      "at": 780,
+      "day": 1,
+      "minuteOfDay": 780,
+      "firewood": 37,
+      "power": 35,
+      "food": 128,
+      "medicine": 3,
+      "furnaceFuel": 19.999999999999993,
+      "furnaceLit": true,
+      "heatingStrength": 0.905208,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "village",
+        "npc_02": "village",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 45,
+        "npc_02": 45,
+        "npc_03": 0,
+        "npc_04": 75,
+        "npc_05": 75,
+        "npc_06": 75,
+        "npc_07": 75,
+        "npc_08": 75
+      }
+    },
+    {
+      "at": 840,
+      "day": 1,
+      "minuteOfDay": 840,
+      "firewood": 33,
+      "power": 33,
+      "food": 128,
+      "medicine": 3,
+      "furnaceFuel": 43.59999999999999,
+      "furnaceLit": true,
+      "heatingStrength": 0.890625,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "village",
+        "npc_02": "village",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 105,
+        "npc_02": 105,
+        "npc_03": 0,
+        "npc_04": 15,
+        "npc_05": 15,
+        "npc_06": 15,
+        "npc_07": 15,
+        "npc_08": 15
+      }
+    },
+    {
+      "at": 900,
+      "day": 1,
+      "minuteOfDay": 900,
+      "firewood": 32,
+      "power": 31,
+      "food": 128,
+      "medicine": 3,
+      "furnaceFuel": 43.19999999999999,
+      "furnaceLit": true,
+      "heatingStrength": 0.876042,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "village",
+        "npc_04": "village",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 75,
+        "npc_02": 75,
+        "npc_03": 45,
+        "npc_04": 45,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 960,
+      "day": 1,
+      "minuteOfDay": 960,
+      "firewood": 31,
+      "power": 29,
+      "food": 128,
+      "medicine": 3,
+      "furnaceFuel": 42.79999999999999,
+      "furnaceLit": true,
+      "heatingStrength": 0.861458,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "village",
+        "npc_02": "village",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 105,
+        "npc_02": 105,
+        "npc_03": 15,
+        "npc_04": 15,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 1020,
+      "day": 1,
+      "minuteOfDay": 1020,
+      "firewood": 30,
+      "power": 27,
+      "food": 128,
+      "medicine": 3,
+      "furnaceFuel": 42.39999999999999,
+      "furnaceLit": true,
+      "heatingStrength": 0.846875,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "village",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 75,
+        "npc_02": 75,
+        "npc_03": 45,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 1080,
+      "day": 1,
+      "minuteOfDay": 1080,
+      "firewood": 29,
+      "power": 25,
+      "food": 128,
+      "medicine": 3,
+      "furnaceFuel": 41.99999999999999,
+      "furnaceLit": true,
+      "heatingStrength": 0.832292,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "village",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 15,
+        "npc_02": 15,
+        "npc_03": 15,
+        "npc_04": 45,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 1140,
+      "day": 1,
+      "minuteOfDay": 1140,
+      "firewood": 28,
+      "power": 23,
+      "food": 128,
+      "medicine": 3,
+      "furnaceFuel": 41.599999999999994,
+      "furnaceLit": true,
+      "heatingStrength": 0.817708,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "village",
+        "npc_02": "village",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 45,
+        "npc_02": 45,
+        "npc_03": 0,
+        "npc_04": 15,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 1200,
+      "day": 1,
+      "minuteOfDay": 1200,
+      "firewood": 27,
+      "power": 21,
+      "food": 128,
+      "medicine": 3,
+      "furnaceFuel": 41.199999999999996,
+      "furnaceLit": true,
+      "heatingStrength": 0.803125,
+      "heatingBand": "hot",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "village",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 15,
+        "npc_02": 15,
+        "npc_03": 45,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 1770,
+      "day": 2,
+      "minuteOfDay": 330,
+      "firewood": 17.5,
+      "power": 2,
+      "food": 128,
+      "medicine": 3,
+      "furnaceFuel": 37.39999999999995,
+      "furnaceLit": true,
+      "heatingStrength": 0.488542,
+      "heatingBand": "warm",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-b",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-b",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 2280,
+      "day": 2,
+      "minuteOfDay": 840,
+      "firewood": 9,
+      "power": 0,
+      "food": 128,
+      "medicine": 3,
+      "furnaceFuel": 33.99999999999995,
+      "furnaceLit": true,
+      "heatingStrength": 0.24375,
+      "heatingBand": "cold",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-b",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-b",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 2340,
+      "day": 2,
+      "minuteOfDay": 900,
+      "firewood": 8,
+      "power": 0,
+      "food": 128,
+      "medicine": 3,
+      "furnaceFuel": 33.59999999999995,
+      "furnaceLit": true,
+      "heatingStrength": 0.216667,
+      "heatingBand": "cold",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 2400,
+      "day": 2,
+      "minuteOfDay": 960,
+      "firewood": 7,
+      "power": 0,
+      "food": 127,
+      "medicine": 3,
+      "furnaceFuel": 33.19999999999995,
+      "furnaceLit": true,
+      "heatingStrength": 0.189583,
+      "heatingBand": "cold",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "village",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 45,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 2460,
+      "day": 2,
+      "minuteOfDay": 1020,
+      "firewood": 6,
+      "power": 0,
+      "food": 127,
+      "medicine": 3,
+      "furnaceFuel": 32.799999999999955,
+      "furnaceLit": true,
+      "heatingStrength": 0.1625,
+      "heatingBand": "cold",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "workshop",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 15,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 2520,
+      "day": 2,
+      "minuteOfDay": 1080,
+      "firewood": 5,
+      "power": 14.333333,
+      "food": 121,
+      "medicine": 3,
+      "furnaceFuel": 32.399999999999956,
+      "furnaceLit": true,
+      "heatingStrength": 0.239931,
+      "heatingBand": "cold",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "village",
+        "npc_04": "dorm-a",
+        "npc_05": "workshop",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 45,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 2580,
+      "day": 2,
+      "minuteOfDay": 1140,
+      "firewood": 4,
+      "power": 27.333333,
+      "food": 121,
+      "medicine": 3,
+      "furnaceFuel": 31.999999999999957,
+      "furnaceLit": true,
+      "heatingStrength": 0.307639,
+      "heatingBand": "cold",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "workshop",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 15,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 2640,
+      "day": 2,
+      "minuteOfDay": 1200,
+      "firewood": 3,
+      "power": 25.333333,
+      "food": 120,
+      "medicine": 3,
+      "furnaceFuel": 31.599999999999955,
+      "furnaceLit": true,
+      "heatingStrength": 0.265972,
+      "heatingBand": "cold",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "village",
+        "npc_03": "dorm-a",
+        "npc_04": "village",
+        "npc_05": "workshop",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 45,
+        "npc_03": 0,
+        "npc_04": 45,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 3165,
+      "day": 3,
+      "minuteOfDay": 285,
+      "firewood": 0,
+      "power": 7.833333,
+      "food": 120,
+      "medicine": 3,
+      "furnaceFuel": 28.099999999999934,
+      "furnaceLit": true,
+      "heatingStrength": 0.057118,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-b",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-b",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 3645,
+      "day": 3,
+      "minuteOfDay": 765,
+      "firewood": 0,
+      "power": 0,
+      "food": 112,
+      "medicine": 3,
+      "furnaceFuel": 24.899999999999917,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-b",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-b",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 3660,
+      "day": 3,
+      "minuteOfDay": 780,
+      "firewood": 0,
+      "power": 0,
+      "food": 110,
+      "medicine": 3,
+      "furnaceFuel": 24.799999999999915,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 3720,
+      "day": 3,
+      "minuteOfDay": 840,
+      "firewood": 0,
+      "power": 0,
+      "food": 108,
+      "medicine": 3,
+      "furnaceFuel": 24.399999999999913,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 3780,
+      "day": 3,
+      "minuteOfDay": 900,
+      "firewood": 0,
+      "power": 0,
+      "food": 104,
+      "medicine": 3,
+      "furnaceFuel": 23.999999999999915,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 3840,
+      "day": 3,
+      "minuteOfDay": 960,
+      "firewood": 0,
+      "power": 0,
+      "food": 104,
+      "medicine": 3,
+      "furnaceFuel": 23.599999999999916,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 3900,
+      "day": 3,
+      "minuteOfDay": 1020,
+      "firewood": 0,
+      "power": 0,
+      "food": 104,
+      "medicine": 3,
+      "furnaceFuel": 23.199999999999914,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "workshop",
+        "npc_02": "dorm-a",
+        "npc_03": "village",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 45,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 3960,
+      "day": 3,
+      "minuteOfDay": 1080,
+      "firewood": 2.5,
+      "power": 14.333333,
+      "food": 103,
+      "medicine": 3,
+      "furnaceFuel": 22.799999999999912,
+      "furnaceLit": true,
+      "heatingStrength": 0.172222,
+      "heatingBand": "cold",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "workshop",
+        "npc_02": "village",
+        "npc_03": "village",
+        "npc_04": "village",
+        "npc_05": "warehouse",
+        "npc_06": "village",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 45,
+        "npc_03": 105,
+        "npc_04": 45,
+        "npc_05": 0,
+        "npc_06": 45,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 4020,
+      "day": 3,
+      "minuteOfDay": 1140,
+      "firewood": 12.5,
+      "power": 12.333333,
+      "food": 103,
+      "medicine": 3,
+      "furnaceFuel": 22.39999999999991,
+      "furnaceLit": true,
+      "heatingStrength": 0.428472,
+      "heatingBand": "cold",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "village",
+        "npc_03": "dorm-a",
+        "npc_04": "village",
+        "npc_05": "dorm-a",
+        "npc_06": "village",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 105,
+        "npc_03": 75,
+        "npc_04": 105,
+        "npc_05": 0,
+        "npc_06": 105,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 4080,
+      "day": 3,
+      "minuteOfDay": 1200,
+      "firewood": 11.5,
+      "power": 10.333333,
+      "food": 103,
+      "medicine": 3,
+      "furnaceFuel": 21.999999999999908,
+      "furnaceLit": true,
+      "heatingStrength": 0.386806,
+      "heatingBand": "cold",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 75,
+        "npc_03": 15,
+        "npc_04": 75,
+        "npc_05": 0,
+        "npc_06": 75,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 4605,
+      "day": 4,
+      "minuteOfDay": 285,
+      "firewood": 2.75,
+      "power": 0,
+      "food": 101,
+      "medicine": 3,
+      "furnaceFuel": 18.499999999999886,
+      "furnaceLit": true,
+      "heatingStrength": 0.074479,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-b",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-b",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 5085,
+      "day": 4,
+      "minuteOfDay": 765,
+      "firewood": 0,
+      "power": 0,
+      "food": 96,
+      "medicine": 3,
+      "furnaceFuel": 15.299999999999873,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-b",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-b",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 5100,
+      "day": 4,
+      "minuteOfDay": 780,
+      "firewood": 0,
+      "power": 0,
+      "food": 90,
+      "medicine": 3,
+      "furnaceFuel": 15.199999999999873,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-b",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-b",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 5160,
+      "day": 4,
+      "minuteOfDay": 840,
+      "firewood": 0,
+      "power": 0,
+      "food": 89,
+      "medicine": 3,
+      "furnaceFuel": 14.799999999999875,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 5220,
+      "day": 4,
+      "minuteOfDay": 900,
+      "firewood": 0,
+      "power": 0,
+      "food": 87,
+      "medicine": 3,
+      "furnaceFuel": 14.399999999999874,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 5280,
+      "day": 4,
+      "minuteOfDay": 960,
+      "firewood": 0,
+      "power": 0,
+      "food": 87,
+      "medicine": 3,
+      "furnaceFuel": 13.999999999999874,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 5340,
+      "day": 4,
+      "minuteOfDay": 1020,
+      "firewood": 0,
+      "power": 0,
+      "food": 85,
+      "medicine": 3,
+      "furnaceFuel": 13.599999999999874,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "dorm-a",
+        "npc_06": "warehouse",
+        "npc_07": "warehouse",
+        "npc_08": "warehouse"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    },
+    {
+      "at": 5400,
+      "day": 4,
+      "minuteOfDay": 1080,
+      "firewood": 0,
+      "power": 0,
+      "food": 81,
+      "medicine": 3,
+      "furnaceFuel": 13.199999999999873,
+      "furnaceLit": true,
+      "heatingStrength": 0,
+      "heatingBand": "none",
+      "alive": 8,
+      "dead": [],
+      "locations": {
+        "npc_01": "dorm-a",
+        "npc_02": "dorm-a",
+        "npc_03": "dorm-a",
+        "npc_04": "dorm-a",
+        "npc_05": "warehouse",
+        "npc_06": "dorm-a",
+        "npc_07": "dorm-a",
+        "npc_08": "dorm-a"
+      },
+      "machines": {
+        "generator": "absent",
+        "lumberMill": "absent",
+        "foodCollector": "absent"
+      },
+      "outdoorMinutes": {
+        "npc_01": 0,
+        "npc_02": 0,
+        "npc_03": 0,
+        "npc_04": 0,
+        "npc_05": 0,
+        "npc_06": 0,
+        "npc_07": 0,
+        "npc_08": 0
+      }
+    }
+  ],
+  "clockSha256": "8b60c9f944dd3a650b998852d7344e26449deedfaf7bf6f55649bef4cfa5007f",
+  "trajectorySha256": "37576a44f192685b880d1e6c77123a22c0b440af82537644e0bb82bf72e09fda",
+  "settlement": {
+    "schema": "frostecho.r10.settlement-audit/1",
+    "clock": 5400,
+    "commitments": [
+      {
+        "commitmentId": "cm-55936000-b0b0-4c9d-8f12-52aa4cb91a26",
+        "goal": "supply-warehouse",
+        "status": "fulfilled",
+        "revision": 1,
+        "updatedAt": 555,
+        "evidenceEventIds": [
+          "npc_04-r8-14:stock_deposited:23"
+        ],
+        "uniqueEvidence": true,
+        "fulfilRecordsByObserver": {
+          "npc_01": 1,
+          "npc_02": 1,
+          "npc_03": 1,
+          "npc_04": 1,
+          "npc_05": 1,
+          "npc_06": 1,
+          "npc_07": 1,
+          "npc_08": 1
+        },
+        "promiseKeptByObserver": {
+          "npc_01": 0,
+          "npc_02": 0,
+          "npc_03": 0,
+          "npc_04": 1,
+          "npc_05": 0,
+          "npc_06": 0,
+          "npc_07": 0,
+          "npc_08": 0
+        },
+        "appliedProjections": 0,
+        "settledOnce": true
+      },
+      {
+        "commitmentId": "cm-8b62e28d-125d-4b71-93bd-ce285d7956a2",
+        "goal": "deliver-meal",
+        "status": "fulfilled",
+        "revision": 1,
+        "updatedAt": 675,
+        "evidenceEventIds": [
+          "npc_01-r8-38:meal_delivered:40"
+        ],
+        "uniqueEvidence": true,
+        "fulfilRecordsByObserver": {
+          "npc_01": 1,
+          "npc_02": 1,
+          "npc_03": 1,
+          "npc_04": 1,
+          "npc_05": 1,
+          "npc_06": 1,
+          "npc_07": 1,
+          "npc_08": 1
+        },
+        "promiseKeptByObserver": {
+          "npc_01": 1,
+          "npc_02": 0,
+          "npc_03": 0,
+          "npc_04": 0,
+          "npc_05": 0,
+          "npc_06": 0,
+          "npc_07": 0,
+          "npc_08": 0
+        },
+        "appliedProjections": 0,
+        "settledOnce": true
+      },
+      {
+        "commitmentId": "cm-a34d6cf6-5c96-4fa1-a10f-1d770de2a2cb",
+        "goal": "deliver-meal",
+        "status": "fulfilled",
+        "revision": 1,
+        "updatedAt": 675,
+        "evidenceEventIds": [
+          "npc_02-r8-38:meal_delivered:41"
+        ],
+        "uniqueEvidence": true,
+        "fulfilRecordsByObserver": {
+          "npc_01": 1,
+          "npc_02": 1,
+          "npc_03": 1,
+          "npc_04": 1,
+          "npc_05": 1,
+          "npc_06": 1,
+          "npc_07": 1,
+          "npc_08": 1
+        },
+        "promiseKeptByObserver": {
+          "npc_01": 0,
+          "npc_02": 1,
+          "npc_03": 0,
+          "npc_04": 0,
+          "npc_05": 0,
+          "npc_06": 0,
+          "npc_07": 0,
+          "npc_08": 0
+        },
+        "appliedProjections": 0,
+        "settledOnce": true
+      },
+      {
+        "commitmentId": "cm-b43772be-9291-45c7-984a-0e1c5f4dfdf3",
+        "goal": "supply-warehouse",
+        "status": "fulfilled",
+        "revision": 1,
+        "updatedAt": 555,
+        "evidenceEventIds": [
+          "npc_03-r8-14:stock_deposited:22"
+        ],
+        "uniqueEvidence": true,
+        "fulfilRecordsByObserver": {
+          "npc_01": 1,
+          "npc_02": 1,
+          "npc_03": 1,
+          "npc_04": 1,
+          "npc_05": 1,
+          "npc_06": 1,
+          "npc_07": 1,
+          "npc_08": 1
+        },
+        "promiseKeptByObserver": {
+          "npc_01": 0,
+          "npc_02": 0,
+          "npc_03": 1,
+          "npc_04": 0,
+          "npc_05": 0,
+          "npc_06": 0,
+          "npc_07": 0,
+          "npc_08": 0
+        },
+        "appliedProjections": 0,
+        "settledOnce": true
+      }
+    ],
+    "intents": [
+      {
+        "intentId": "npc_01-r8-116",
+        "actorId": "npc_01",
+        "action": "rest",
+        "demandId": "dem-5c0c2fb4e28e1266c5b1f51f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-116:rested:126"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-128",
+        "actorId": "npc_01",
+        "action": "move",
+        "demandId": "dem-c678858befc57e510488d89c",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-128:moved:130"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-140",
+        "actorId": "npc_01",
+        "action": "move",
+        "demandId": "dem-dbb9aa9f37e60e33755f48ca",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-140:moved:142"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-152",
+        "actorId": "npc_01",
+        "action": "rest",
+        "demandId": "dem-5c0c2fb4e28e1266c5b1f51f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-152:rested:162"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-210",
+        "actorId": "npc_01",
+        "action": "rest",
+        "demandId": "dem-5c0c2fb4e28e1266c5b1f51f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-210:rested:218"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-244",
+        "actorId": "npc_01",
+        "action": "rest",
+        "demandId": "dem-5c0c2fb4e28e1266c5b1f51f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-244:rested:250"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-256",
+        "actorId": "npc_01",
+        "action": "move",
+        "demandId": "dem-c678858befc57e510488d89c",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-256:moved:259"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-268",
+        "actorId": "npc_01",
+        "action": "move",
+        "demandId": "dem-dbb9aa9f37e60e33755f48ca",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-268:moved:270"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-294",
+        "actorId": "npc_01",
+        "action": "rest",
+        "demandId": "dem-5c0c2fb4e28e1266c5b1f51f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-294:rested:305"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-308",
+        "actorId": "npc_01",
+        "action": "rest",
+        "demandId": "dem-5c0c2fb4e28e1266c5b1f51f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-308:rested:318"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-320",
+        "actorId": "npc_01",
+        "action": "rest",
+        "demandId": "dem-5c0c2fb4e28e1266c5b1f51f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-320:rested:327"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-409",
+        "actorId": "npc_01",
+        "action": "rest",
+        "demandId": "dem-5c0c2fb4e28e1266c5b1f51f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-409:rested:419"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-437",
+        "actorId": "npc_01",
+        "action": "rest",
+        "demandId": "dem-5c0c2fb4e28e1266c5b1f51f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-437:rested:439"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-447",
+        "actorId": "npc_01",
+        "action": "move",
+        "demandId": "dem-a6597781a237ef5d37573bd1",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-447:moved:449"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-459",
+        "actorId": "npc_01",
+        "action": "work",
+        "demandId": "dem-079507eed37e9facb28280ed",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-459:worked:472"
+        ],
+        "claims": 1,
+        "appliedClaims": 1,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-475",
+        "actorId": "npc_01",
+        "action": "move",
+        "demandId": "dem-dbb9aa9f37e60e33755f48ca",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-475:moved:477"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-489",
+        "actorId": "npc_01",
+        "action": "rest",
+        "demandId": "dem-5c0c2fb4e28e1266c5b1f51f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-489:rested:498"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-550",
+        "actorId": "npc_01",
+        "action": "rest",
+        "demandId": "dem-5c0c2fb4e28e1266c5b1f51f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-550:rested:559"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-590",
+        "actorId": "npc_01",
+        "action": "rest",
+        "demandId": "dem-d17358a5d87593a3a26a5f66",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-590:rested:605"
+        ],
+        "claims": 1,
+        "appliedClaims": 1,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_01-r8-622",
+        "actorId": "npc_01",
+        "action": "rest",
+        "demandId": "dem-5c0c2fb4e28e1266c5b1f51f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_01-r8-622:rested:624"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-104",
+        "actorId": "npc_02",
+        "action": "move",
+        "demandId": "dem-d8c0a11fbc0451422724eaca",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-104:moved:107"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-116",
+        "actorId": "npc_02",
+        "action": "rest",
+        "demandId": "dem-ba8bd995e49ecb9a14bd693b",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-116:rested:127"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-128",
+        "actorId": "npc_02",
+        "action": "move",
+        "demandId": "dem-377b138cdec00c8043e16d36",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-128:moved:131"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-140",
+        "actorId": "npc_02",
+        "action": "move",
+        "demandId": "dem-d8c0a11fbc0451422724eaca",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-140:moved:143"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-152",
+        "actorId": "npc_02",
+        "action": "rest",
+        "demandId": "dem-ba8bd995e49ecb9a14bd693b",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-152:rested:163"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-210",
+        "actorId": "npc_02",
+        "action": "move",
+        "demandId": "dem-d8c0a11fbc0451422724eaca",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-210:moved:212"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-244",
+        "actorId": "npc_02",
+        "action": "move",
+        "demandId": "dem-d8c0a11fbc0451422724eaca",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-244:moved:246"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-256",
+        "actorId": "npc_02",
+        "action": "rest",
+        "demandId": "dem-ba8bd995e49ecb9a14bd693b",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-256:rested:266"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-268",
+        "actorId": "npc_02",
+        "action": "rest",
+        "demandId": "dem-ba8bd995e49ecb9a14bd693b",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-268:rested:277"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-294",
+        "actorId": "npc_02",
+        "action": "rest",
+        "demandId": "dem-ba8bd995e49ecb9a14bd693b",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-294:rested:306"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-308",
+        "actorId": "npc_02",
+        "action": "move",
+        "demandId": "dem-377b138cdec00c8043e16d36",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-308:moved:311"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-320",
+        "actorId": "npc_02",
+        "action": "move",
+        "demandId": "dem-d8c0a11fbc0451422724eaca",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-320:moved:322"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-409",
+        "actorId": "npc_02",
+        "action": "move",
+        "demandId": "dem-d8c0a11fbc0451422724eaca",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-409:moved:413"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-428",
+        "actorId": "npc_02",
+        "action": "rest",
+        "demandId": "dem-ba8bd995e49ecb9a14bd693b",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-428:rested:433"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-437",
+        "actorId": "npc_02",
+        "action": "rest",
+        "demandId": "dem-ba8bd995e49ecb9a14bd693b",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-437:rested:440"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-447",
+        "actorId": "npc_02",
+        "action": "rest",
+        "demandId": "dem-ba8bd995e49ecb9a14bd693b",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-447:rested:457"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-459",
+        "actorId": "npc_02",
+        "action": "move",
+        "demandId": "dem-377b138cdec00c8043e16d36",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-459:moved:462"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-475",
+        "actorId": "npc_02",
+        "action": "gather",
+        "demandId": "dem-4da522d31db86f3c1b92fc28",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-475:gathered:482"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-489",
+        "actorId": "npc_02",
+        "action": "move",
+        "demandId": "dem-d8c0a11fbc0451422724eaca",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-489:moved:491"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-502",
+        "actorId": "npc_02",
+        "action": "rest",
+        "demandId": "dem-ba8bd995e49ecb9a14bd693b",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-502:rested:511"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-598",
+        "actorId": "npc_02",
+        "action": "move",
+        "demandId": "dem-d8c0a11fbc0451422724eaca",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-598:moved:601"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-613",
+        "actorId": "npc_02",
+        "action": "rest",
+        "demandId": "dem-ba8bd995e49ecb9a14bd693b",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-613:rested:616"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-622",
+        "actorId": "npc_02",
+        "action": "rest",
+        "demandId": "dem-ba8bd995e49ecb9a14bd693b",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-622:rested:625"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_02-r8-633",
+        "actorId": "npc_02",
+        "action": "rest",
+        "demandId": "dem-ba8bd995e49ecb9a14bd693b",
+        "status": "applied",
+        "receiptIds": [
+          "npc_02-r8-633:rested:641"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-104",
+        "actorId": "npc_03",
+        "action": "move",
+        "demandId": "dem-40306717ddecd0599e1a0ef1",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-104:moved:108"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-116",
+        "actorId": "npc_03",
+        "action": "move",
+        "demandId": "dem-120315a741d2ef5597ab9e99",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-116:moved:118"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-128",
+        "actorId": "npc_03",
+        "action": "rest",
+        "demandId": "dem-2c6692cb345317df7f839b58",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-128:rested:139"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-140",
+        "actorId": "npc_03",
+        "action": "move",
+        "demandId": "dem-40306717ddecd0599e1a0ef1",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-140:moved:144"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-152",
+        "actorId": "npc_03",
+        "action": "move",
+        "demandId": "dem-120315a741d2ef5597ab9e99",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-152:moved:154"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-210",
+        "actorId": "npc_03",
+        "action": "rest",
+        "demandId": "dem-2c6692cb345317df7f839b58",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-210:rested:219"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-244",
+        "actorId": "npc_03",
+        "action": "rest",
+        "demandId": "dem-2c6692cb345317df7f839b58",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-244:rested:251"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-268",
+        "actorId": "npc_03",
+        "action": "rest",
+        "demandId": "dem-2c6692cb345317df7f839b58",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-268:rested:278"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-282",
+        "actorId": "npc_03",
+        "action": "move",
+        "demandId": "dem-40306717ddecd0599e1a0ef1",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-282:moved:288"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-294",
+        "actorId": "npc_03",
+        "action": "move",
+        "demandId": "dem-120315a741d2ef5597ab9e99",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-294:moved:296"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-308",
+        "actorId": "npc_03",
+        "action": "rest",
+        "demandId": "dem-2c6692cb345317df7f839b58",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-308:rested:319"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-320",
+        "actorId": "npc_03",
+        "action": "rest",
+        "demandId": "dem-2c6692cb345317df7f839b58",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-320:rested:328"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-416",
+        "actorId": "npc_03",
+        "action": "rest",
+        "demandId": "dem-2c6692cb345317df7f839b58",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-416:rested:425"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-428",
+        "actorId": "npc_03",
+        "action": "rest",
+        "demandId": "dem-2c6692cb345317df7f839b58",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-428:rested:434"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-437",
+        "actorId": "npc_03",
+        "action": "rest",
+        "demandId": "dem-2c6692cb345317df7f839b58",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-437:rested:441"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-447",
+        "actorId": "npc_03",
+        "action": "move",
+        "demandId": "dem-40306717ddecd0599e1a0ef1",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-447:moved:450"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-459",
+        "actorId": "npc_03",
+        "action": "gather",
+        "demandId": "dem-b1cb0760fd3cb097bd62fb17",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-459:gathered:469"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-475",
+        "actorId": "npc_03",
+        "action": "move",
+        "demandId": "dem-120315a741d2ef5597ab9e99",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-475:moved:478"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-489",
+        "actorId": "npc_03",
+        "action": "rest",
+        "demandId": "dem-2c6692cb345317df7f839b58",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-489:rested:499"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-551",
+        "actorId": "npc_03",
+        "action": "rest",
+        "demandId": "dem-2c6692cb345317df7f839b58",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-551:rested:560"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-598",
+        "actorId": "npc_03",
+        "action": "rest",
+        "demandId": "dem-2c6692cb345317df7f839b58",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-598:rested:609"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-613",
+        "actorId": "npc_03",
+        "action": "rest",
+        "demandId": "dem-2c6692cb345317df7f839b58",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-613:rested:617"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_03-r8-622",
+        "actorId": "npc_03",
+        "action": "rest",
+        "demandId": "dem-2c6692cb345317df7f839b58",
+        "status": "applied",
+        "receiptIds": [
+          "npc_03-r8-622:rested:626"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-104",
+        "actorId": "npc_04",
+        "action": "rest",
+        "demandId": "dem-51cf8fc13b6e17a54d86704f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-104:rested:115"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-116",
+        "actorId": "npc_04",
+        "action": "move",
+        "demandId": "dem-53400ecf4a5d009b0361cae0",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-116:moved:119"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-128",
+        "actorId": "npc_04",
+        "action": "move",
+        "demandId": "dem-5e847cb851b3ab381a6fe589",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-128:moved:132"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-140",
+        "actorId": "npc_04",
+        "action": "rest",
+        "demandId": "dem-51cf8fc13b6e17a54d86704f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-140:rested:147"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-152",
+        "actorId": "npc_04",
+        "action": "move",
+        "demandId": "dem-53400ecf4a5d009b0361cae0",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-152:moved:155"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-210",
+        "actorId": "npc_04",
+        "action": "move",
+        "demandId": "dem-5e847cb851b3ab381a6fe589",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-210:moved:213"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-244",
+        "actorId": "npc_04",
+        "action": "move",
+        "demandId": "dem-5e847cb851b3ab381a6fe589",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-244:moved:247"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-257",
+        "actorId": "npc_04",
+        "action": "rest",
+        "demandId": "dem-51cf8fc13b6e17a54d86704f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-257:rested:267"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-268",
+        "actorId": "npc_04",
+        "action": "rest",
+        "demandId": "dem-51cf8fc13b6e17a54d86704f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-268:rested:279"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-294",
+        "actorId": "npc_04",
+        "action": "rest",
+        "demandId": "dem-51cf8fc13b6e17a54d86704f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-294:rested:307"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-308",
+        "actorId": "npc_04",
+        "action": "move",
+        "demandId": "dem-53400ecf4a5d009b0361cae0",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-308:moved:312"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-320",
+        "actorId": "npc_04",
+        "action": "move",
+        "demandId": "dem-5e847cb851b3ab381a6fe589",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-320:moved:323"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-410",
+        "actorId": "npc_04",
+        "action": "move",
+        "demandId": "dem-5e847cb851b3ab381a6fe589",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-410:moved:414"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-428",
+        "actorId": "npc_04",
+        "action": "rest",
+        "demandId": "dem-51cf8fc13b6e17a54d86704f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-428:rested:435"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-437",
+        "actorId": "npc_04",
+        "action": "rest",
+        "demandId": "dem-51cf8fc13b6e17a54d86704f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-437:rested:442"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-447",
+        "actorId": "npc_04",
+        "action": "rest",
+        "demandId": "dem-51cf8fc13b6e17a54d86704f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-447:rested:458"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-459",
+        "actorId": "npc_04",
+        "action": "move",
+        "demandId": "dem-53400ecf4a5d009b0361cae0",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-459:moved:463"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-475",
+        "actorId": "npc_04",
+        "action": "gather",
+        "demandId": "dem-78f18e20279bdadff0fa12aa",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-475:gathered:483"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-489",
+        "actorId": "npc_04",
+        "action": "move",
+        "demandId": "dem-5e847cb851b3ab381a6fe589",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-489:moved:492"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-503",
+        "actorId": "npc_04",
+        "action": "rest",
+        "demandId": "dem-51cf8fc13b6e17a54d86704f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-503:rested:512"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-598",
+        "actorId": "npc_04",
+        "action": "move",
+        "demandId": "dem-5e847cb851b3ab381a6fe589",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-598:moved:602"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-613",
+        "actorId": "npc_04",
+        "action": "rest",
+        "demandId": "dem-51cf8fc13b6e17a54d86704f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-613:rested:618"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-622",
+        "actorId": "npc_04",
+        "action": "rest",
+        "demandId": "dem-51cf8fc13b6e17a54d86704f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-622:rested:627"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_04-r8-634",
+        "actorId": "npc_04",
+        "action": "rest",
+        "demandId": "dem-51cf8fc13b6e17a54d86704f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_04-r8-634:rested:642"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-104",
+        "actorId": "npc_05",
+        "action": "move",
+        "demandId": "dem-cdaa0f14ac6760e5370fcd5c",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-104:moved:109"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-116",
+        "actorId": "npc_05",
+        "action": "move",
+        "demandId": "dem-91313db2ddebbc23a02fa992",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-116:moved:120"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-128",
+        "actorId": "npc_05",
+        "action": "move",
+        "demandId": "dem-cdaa0f14ac6760e5370fcd5c",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-128:moved:133"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-140",
+        "actorId": "npc_05",
+        "action": "rest",
+        "demandId": "dem-ef2415536b8e0d057b11049f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-140:rested:148"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-152",
+        "actorId": "npc_05",
+        "action": "move",
+        "demandId": "dem-91313db2ddebbc23a02fa992",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-152:moved:156"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-210",
+        "actorId": "npc_05",
+        "action": "rest",
+        "demandId": "dem-ef2415536b8e0d057b11049f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-210:rested:220"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-244",
+        "actorId": "npc_05",
+        "action": "rest",
+        "demandId": "dem-ef2415536b8e0d057b11049f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-244:rested:252"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-257",
+        "actorId": "npc_05",
+        "action": "move",
+        "demandId": "dem-91313db2ddebbc23a02fa992",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-257:moved:260"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-268",
+        "actorId": "npc_05",
+        "action": "move",
+        "demandId": "dem-c341345cba9feafd7170fadf",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-268:moved:271"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-283",
+        "actorId": "npc_05",
+        "action": "work",
+        "demandId": "dem-095059597a4ab5d5b112c1da",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-283:worked:291"
+        ],
+        "claims": 1,
+        "appliedClaims": 1,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-294",
+        "actorId": "npc_05",
+        "action": "work",
+        "demandId": "dem-641d96733a0557fa25a17eb7",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-294:worked:302"
+        ],
+        "claims": 1,
+        "appliedClaims": 1,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-320",
+        "actorId": "npc_05",
+        "action": "move",
+        "demandId": "dem-91313db2ddebbc23a02fa992",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-320:moved:324"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-417",
+        "actorId": "npc_05",
+        "action": "rest",
+        "demandId": "dem-ef2415536b8e0d057b11049f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-417:rested:426"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-428",
+        "actorId": "npc_05",
+        "action": "rest",
+        "demandId": "dem-ef2415536b8e0d057b11049f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-428:rested:436"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-437",
+        "actorId": "npc_05",
+        "action": "rest",
+        "demandId": "dem-ef2415536b8e0d057b11049f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-437:rested:443"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-447",
+        "actorId": "npc_05",
+        "action": "move",
+        "demandId": "dem-91313db2ddebbc23a02fa992",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-447:moved:451"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-475",
+        "actorId": "npc_05",
+        "action": "move",
+        "demandId": "dem-cdaa0f14ac6760e5370fcd5c",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-475:moved:479"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-489",
+        "actorId": "npc_05",
+        "action": "rest",
+        "demandId": "dem-ef2415536b8e0d057b11049f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-489:rested:500"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-503",
+        "actorId": "npc_05",
+        "action": "move",
+        "demandId": "dem-91313db2ddebbc23a02fa992",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-503:moved:505"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-593",
+        "actorId": "npc_05",
+        "action": "rest",
+        "demandId": "dem-ef2415536b8e0d057b11049f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-593:rested:606"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-622",
+        "actorId": "npc_05",
+        "action": "rest",
+        "demandId": "dem-ef2415536b8e0d057b11049f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-622:rested:628"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-634",
+        "actorId": "npc_05",
+        "action": "rest",
+        "demandId": "dem-ef2415536b8e0d057b11049f",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-634:rested:643"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_05-r8-648",
+        "actorId": "npc_05",
+        "action": "move",
+        "demandId": "dem-91313db2ddebbc23a02fa992",
+        "status": "applied",
+        "receiptIds": [
+          "npc_05-r8-648:moved:650"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-104",
+        "actorId": "npc_06",
+        "action": "move",
+        "demandId": "dem-e633255869a9221eb7bfa8b2",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-104:moved:110"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-116",
+        "actorId": "npc_06",
+        "action": "move",
+        "demandId": "dem-8c85e3f79fb48c04b145d094",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-116:moved:121"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-128",
+        "actorId": "npc_06",
+        "action": "move",
+        "demandId": "dem-e633255869a9221eb7bfa8b2",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-128:moved:134"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-140",
+        "actorId": "npc_06",
+        "action": "rest",
+        "demandId": "dem-c4e77813d1324dcee2976bf2",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-140:rested:149"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-152",
+        "actorId": "npc_06",
+        "action": "move",
+        "demandId": "dem-8c85e3f79fb48c04b145d094",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-152:moved:157"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-210",
+        "actorId": "npc_06",
+        "action": "rest",
+        "demandId": "dem-e64c46c953b6b38ea521995d",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-210:rested:221"
+        ],
+        "claims": 1,
+        "appliedClaims": 1,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-244",
+        "actorId": "npc_06",
+        "action": "rest",
+        "demandId": "dem-da67ac3f70448cc13ff56bfa",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-244:rested:253"
+        ],
+        "claims": 1,
+        "appliedClaims": 1,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-257",
+        "actorId": "npc_06",
+        "action": "move",
+        "demandId": "dem-8c85e3f79fb48c04b145d094",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-257:moved:261"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-268",
+        "actorId": "npc_06",
+        "action": "move",
+        "demandId": "dem-e633255869a9221eb7bfa8b2",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-268:moved:272"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-294",
+        "actorId": "npc_06",
+        "action": "move",
+        "demandId": "dem-8c85e3f79fb48c04b145d094",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-294:moved:297"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-309",
+        "actorId": "npc_06",
+        "action": "move",
+        "demandId": "dem-e633255869a9221eb7bfa8b2",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-309:moved:313"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-320",
+        "actorId": "npc_06",
+        "action": "rest",
+        "demandId": "dem-c4e77813d1324dcee2976bf2",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-320:rested:329"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-411",
+        "actorId": "npc_06",
+        "action": "rest",
+        "demandId": "dem-c4e77813d1324dcee2976bf2",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-411:rested:420"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-437",
+        "actorId": "npc_06",
+        "action": "rest",
+        "demandId": "dem-c4e77813d1324dcee2976bf2",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-437:rested:444"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-447",
+        "actorId": "npc_06",
+        "action": "move",
+        "demandId": "dem-8c85e3f79fb48c04b145d094",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-447:moved:452"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-460",
+        "actorId": "npc_06",
+        "action": "move",
+        "demandId": "dem-1f39ac5f8e536d35136670db",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-460:moved:464"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-475",
+        "actorId": "npc_06",
+        "action": "gather",
+        "demandId": "dem-80eef793786241b945a99748",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-475:gathered:484"
+        ],
+        "claims": 1,
+        "appliedClaims": 1,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-489",
+        "actorId": "npc_06",
+        "action": "move",
+        "demandId": "dem-8c85e3f79fb48c04b145d094",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-489:moved:493"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-503",
+        "actorId": "npc_06",
+        "action": "move",
+        "demandId": "dem-e633255869a9221eb7bfa8b2",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-503:moved:506"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-598",
+        "actorId": "npc_06",
+        "action": "rest",
+        "demandId": "dem-c4e77813d1324dcee2976bf2",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-598:rested:610"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-614",
+        "actorId": "npc_06",
+        "action": "rest",
+        "demandId": "dem-c4e77813d1324dcee2976bf2",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-614:rested:619"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-622",
+        "actorId": "npc_06",
+        "action": "rest",
+        "demandId": "dem-c4e77813d1324dcee2976bf2",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-622:rested:629"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-634",
+        "actorId": "npc_06",
+        "action": "move",
+        "demandId": "dem-8c85e3f79fb48c04b145d094",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-634:moved:636"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_06-r8-648",
+        "actorId": "npc_06",
+        "action": "move",
+        "demandId": "dem-e633255869a9221eb7bfa8b2",
+        "status": "applied",
+        "receiptIds": [
+          "npc_06-r8-648:moved:651"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-104",
+        "actorId": "npc_07",
+        "action": "move",
+        "demandId": "dem-96be53dc0e8f3e18f2a012bd",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-104:moved:111"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-116",
+        "actorId": "npc_07",
+        "action": "move",
+        "demandId": "dem-2b1a4d5938b47c1a87cf84b9",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-116:moved:122"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-128",
+        "actorId": "npc_07",
+        "action": "move",
+        "demandId": "dem-96be53dc0e8f3e18f2a012bd",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-128:moved:135"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-140",
+        "actorId": "npc_07",
+        "action": "rest",
+        "demandId": "dem-4508c0027c26fc4b9ca2172c",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-140:rested:150"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-152",
+        "actorId": "npc_07",
+        "action": "move",
+        "demandId": "dem-2b1a4d5938b47c1a87cf84b9",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-152:moved:158"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-210",
+        "actorId": "npc_07",
+        "action": "rest",
+        "demandId": "dem-4508c0027c26fc4b9ca2172c",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-210:rested:222"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-244",
+        "actorId": "npc_07",
+        "action": "rest",
+        "demandId": "dem-4508c0027c26fc4b9ca2172c",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-244:rested:254"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-257",
+        "actorId": "npc_07",
+        "action": "move",
+        "demandId": "dem-2b1a4d5938b47c1a87cf84b9",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-257:moved:262"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-268",
+        "actorId": "npc_07",
+        "action": "move",
+        "demandId": "dem-96be53dc0e8f3e18f2a012bd",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-268:moved:273"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-294",
+        "actorId": "npc_07",
+        "action": "move",
+        "demandId": "dem-2b1a4d5938b47c1a87cf84b9",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-294:moved:298"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-309",
+        "actorId": "npc_07",
+        "action": "move",
+        "demandId": "dem-96be53dc0e8f3e18f2a012bd",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-309:moved:314"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-320",
+        "actorId": "npc_07",
+        "action": "rest",
+        "demandId": "dem-4508c0027c26fc4b9ca2172c",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-320:rested:330"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-411",
+        "actorId": "npc_07",
+        "action": "rest",
+        "demandId": "dem-4508c0027c26fc4b9ca2172c",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-411:rested:421"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-437",
+        "actorId": "npc_07",
+        "action": "rest",
+        "demandId": "dem-4508c0027c26fc4b9ca2172c",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-437:rested:445"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-447",
+        "actorId": "npc_07",
+        "action": "move",
+        "demandId": "dem-2b1a4d5938b47c1a87cf84b9",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-447:moved:453"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-460",
+        "actorId": "npc_07",
+        "action": "move",
+        "demandId": "dem-96be53dc0e8f3e18f2a012bd",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-460:moved:465"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-475",
+        "actorId": "npc_07",
+        "action": "rest",
+        "demandId": "dem-4508c0027c26fc4b9ca2172c",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-475:rested:487"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-489",
+        "actorId": "npc_07",
+        "action": "move",
+        "demandId": "dem-2b1a4d5938b47c1a87cf84b9",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-489:moved:494"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-503",
+        "actorId": "npc_07",
+        "action": "move",
+        "demandId": "dem-96be53dc0e8f3e18f2a012bd",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-503:moved:507"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-554",
+        "actorId": "npc_07",
+        "action": "rest",
+        "demandId": "dem-bfcf5aad2ec16e6fd9cfe392",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-554:rested:561"
+        ],
+        "claims": 1,
+        "appliedClaims": 1,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-614",
+        "actorId": "npc_07",
+        "action": "rest",
+        "demandId": "dem-4508c0027c26fc4b9ca2172c",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-614:rested:620"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-622",
+        "actorId": "npc_07",
+        "action": "rest",
+        "demandId": "dem-4508c0027c26fc4b9ca2172c",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-622:rested:630"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-634",
+        "actorId": "npc_07",
+        "action": "move",
+        "demandId": "dem-2b1a4d5938b47c1a87cf84b9",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-634:moved:637"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_07-r8-648",
+        "actorId": "npc_07",
+        "action": "move",
+        "demandId": "dem-96be53dc0e8f3e18f2a012bd",
+        "status": "applied",
+        "receiptIds": [
+          "npc_07-r8-648:moved:652"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-104",
+        "actorId": "npc_08",
+        "action": "move",
+        "demandId": "dem-2c3671439ad36b8e9819c319",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-104:moved:112"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-116",
+        "actorId": "npc_08",
+        "action": "move",
+        "demandId": "dem-db10c603acc0dcb8c3055857",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-116:moved:123"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-128",
+        "actorId": "npc_08",
+        "action": "move",
+        "demandId": "dem-2c3671439ad36b8e9819c319",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-128:moved:136"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-140",
+        "actorId": "npc_08",
+        "action": "rest",
+        "demandId": "dem-33c3e7bb9b2d5293714991da",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-140:rested:151"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-152",
+        "actorId": "npc_08",
+        "action": "move",
+        "demandId": "dem-db10c603acc0dcb8c3055857",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-152:moved:159"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-210",
+        "actorId": "npc_08",
+        "action": "rest",
+        "demandId": "dem-33c3e7bb9b2d5293714991da",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-210:rested:223"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-244",
+        "actorId": "npc_08",
+        "action": "rest",
+        "demandId": "dem-33c3e7bb9b2d5293714991da",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-244:rested:255"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-257",
+        "actorId": "npc_08",
+        "action": "move",
+        "demandId": "dem-db10c603acc0dcb8c3055857",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-257:moved:263"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-268",
+        "actorId": "npc_08",
+        "action": "move",
+        "demandId": "dem-2c3671439ad36b8e9819c319",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-268:moved:274"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-294",
+        "actorId": "npc_08",
+        "action": "move",
+        "demandId": "dem-db10c603acc0dcb8c3055857",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-294:moved:299"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-309",
+        "actorId": "npc_08",
+        "action": "move",
+        "demandId": "dem-2c3671439ad36b8e9819c319",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-309:moved:315"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-320",
+        "actorId": "npc_08",
+        "action": "rest",
+        "demandId": "dem-33c3e7bb9b2d5293714991da",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-320:rested:331"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-411",
+        "actorId": "npc_08",
+        "action": "rest",
+        "demandId": "dem-33c3e7bb9b2d5293714991da",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-411:rested:422"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-437",
+        "actorId": "npc_08",
+        "action": "rest",
+        "demandId": "dem-33c3e7bb9b2d5293714991da",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-437:rested:446"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-447",
+        "actorId": "npc_08",
+        "action": "move",
+        "demandId": "dem-db10c603acc0dcb8c3055857",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-447:moved:454"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-460",
+        "actorId": "npc_08",
+        "action": "move",
+        "demandId": "dem-2c3671439ad36b8e9819c319",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-460:moved:466"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-475",
+        "actorId": "npc_08",
+        "action": "rest",
+        "demandId": "dem-33c3e7bb9b2d5293714991da",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-475:rested:488"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-489",
+        "actorId": "npc_08",
+        "action": "move",
+        "demandId": "dem-db10c603acc0dcb8c3055857",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-489:moved:495"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-503",
+        "actorId": "npc_08",
+        "action": "move",
+        "demandId": "dem-2c3671439ad36b8e9819c319",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-503:moved:508"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-599",
+        "actorId": "npc_08",
+        "action": "rest",
+        "demandId": "dem-33c3e7bb9b2d5293714991da",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-599:rested:611"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-614",
+        "actorId": "npc_08",
+        "action": "rest",
+        "demandId": "dem-33c3e7bb9b2d5293714991da",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-614:rested:621"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-622",
+        "actorId": "npc_08",
+        "action": "rest",
+        "demandId": "dem-33c3e7bb9b2d5293714991da",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-622:rested:631"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-634",
+        "actorId": "npc_08",
+        "action": "move",
+        "demandId": "dem-db10c603acc0dcb8c3055857",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-634:moved:638"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "npc_08-r8-648",
+        "actorId": "npc_08",
+        "action": "move",
+        "demandId": "dem-2c3671439ad36b8e9819c319",
+        "status": "applied",
+        "receiptIds": [
+          "npc_08-r8-648:moved:653"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "r11-walk-night-npc_02-1260",
+        "actorId": "npc_02",
+        "action": "move",
+        "demandId": "dem-8d5ca385adf307b937817cfa",
+        "status": "applied",
+        "receiptIds": [
+          "r11-walk-night-npc_02-1260:moved:166"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "r11-walk-night-npc_02-1830",
+        "actorId": "npc_02",
+        "action": "move",
+        "demandId": "dem-d9e93273dbf901a3aba45258",
+        "status": "applied",
+        "receiptIds": [
+          "r11-walk-night-npc_02-1830:moved:226"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "r11-walk-night-npc_02-2700",
+        "actorId": "npc_02",
+        "action": "move",
+        "demandId": "dem-72164dae748f65ad56357107",
+        "status": "applied",
+        "receiptIds": [
+          "r11-walk-night-npc_02-2700:moved:334"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "r11-walk-night-npc_02-4140",
+        "actorId": "npc_02",
+        "action": "move",
+        "demandId": "dem-daaedde626d8550071e56356",
+        "status": "applied",
+        "receiptIds": [
+          "r11-walk-night-npc_02-4140:moved:515"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "r11-walk-night-npc_04-1275",
+        "actorId": "npc_04",
+        "action": "move",
+        "demandId": "dem-11dbe6da6d721730794d4a44",
+        "status": "applied",
+        "receiptIds": [
+          "r11-walk-night-npc_04-1275:moved:169"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "r11-walk-night-npc_04-1845",
+        "actorId": "npc_04",
+        "action": "move",
+        "demandId": "dem-562547d4468883c91926aedd",
+        "status": "applied",
+        "receiptIds": [
+          "r11-walk-night-npc_04-1845:moved:229"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "r11-walk-night-npc_04-2715",
+        "actorId": "npc_04",
+        "action": "move",
+        "demandId": "dem-0ed3819fb2fbf12c31b4bc62",
+        "status": "applied",
+        "receiptIds": [
+          "r11-walk-night-npc_04-2715:moved:337"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "r11-walk-night-npc_04-4155",
+        "actorId": "npc_04",
+        "action": "move",
+        "demandId": "dem-0883685ea520418967d545b7",
+        "status": "applied",
+        "receiptIds": [
+          "r11-walk-night-npc_04-4155:moved:518"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "r11-walk-night-npc_05-1290",
+        "actorId": "npc_05",
+        "action": "move",
+        "demandId": "dem-12c2a30f2a1a45e2f8327a6e",
+        "status": "applied",
+        "receiptIds": [
+          "r11-walk-night-npc_05-1290:moved:172"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "r11-walk-night-npc_05-2730",
+        "actorId": "npc_05",
+        "action": "move",
+        "demandId": "dem-d9133db5e62c75453fa9f395",
+        "status": "applied",
+        "receiptIds": [
+          "r11-walk-night-npc_05-2730:moved:340"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "r11-walk-night-npc_05-4170",
+        "actorId": "npc_05",
+        "action": "move",
+        "demandId": "dem-ab31715ddb136b9e6cd49124",
+        "status": "applied",
+        "receiptIds": [
+          "r11-walk-night-npc_05-4170:moved:521"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "r11-walk-night-npc_06-1305",
+        "actorId": "npc_06",
+        "action": "move",
+        "demandId": "dem-a758c0cee1cbc61666545c9b",
+        "status": "applied",
+        "receiptIds": [
+          "r11-walk-night-npc_06-1305:moved:175"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "r11-walk-night-npc_07-1320",
+        "actorId": "npc_07",
+        "action": "move",
+        "demandId": "dem-725bb9c23b218f997d6cfcb5",
+        "status": "applied",
+        "receiptIds": [
+          "r11-walk-night-npc_07-1320:moved:178"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      },
+      {
+        "intentId": "r11-walk-night-npc_08-1335",
+        "actorId": "npc_08",
+        "action": "move",
+        "demandId": "dem-b9894eefc976883b7e52cb65",
+        "status": "applied",
+        "receiptIds": [
+          "r11-walk-night-npc_08-1335:moved:181"
+        ],
+        "claims": 0,
+        "appliedClaims": 0,
+        "duplicatedTargets": [],
+        "settleLogEntries": 1,
+        "projectionOnce": true
+      }
+    ],
+    "pendingIntents": 0,
+    "duplicateDemands": 0,
+    "duplicates": {
+      "settledTwice": [],
+      "projectedTwice": [],
+      "duplicateFulfilments": []
+    },
+    "ok": true
+  },
+  "files": {
+    "trajectory": "/data3/DATA/project/project_meishijiang/r11-wt/d/artifacts/r11/d/ladder/r11-d-base--reference_survival_1/trajectory.jsonl",
+    "clock": "/data3/DATA/project/project_meishijiang/r11-wt/d/artifacts/r11/d/ladder/r11-d-base--reference_survival_1/clock.json",
+    "summary": "/data3/DATA/project/project_meishijiang/r11-wt/d/artifacts/r11/d/ladder/r11-d-base--reference_survival_1/summary.json",
+    "runnerState": "/data3/DATA/project/project_meishijiang/r11-wt/d/artifacts/r11/d/ladder/r11-d-base--reference_survival_1/state.json.runner.json"
+  }
+}

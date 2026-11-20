@@ -111,22 +111,44 @@ export interface WorkRule {
   resource?: 'food' | 'firewood';
   amount?: number;
   minutes?: number;
+  /**
+   * `GATHER_RATES` (`resource-system.js`): wood 8/h, food 5/h. The engine used
+   * one 8/h rule for both and rounded amount*2, so food was 60% too generous
+   * (parity DIVERGES #2). The rate is now explicit per resource.
+   */
+  gatherRatePerHour?: number;
+  /**
+   * `task-system.js:55-62` baseYield 15 per baseDuration 40 min = 22.5/h. The
+   * engine charged `work(power)` at the frozen 2/h (parity DIVERGES #3).
+   */
+  powerPerHour?: number;
+  /** Per-second aura of the original PREPARE_MEDICAL (`task-effects.js:216-240`). */
+  medicalAura?: { healthPerSecond: number; bodyTempPerSecond: number;
+    healthThreshold: number; hypothermiaBelow: number };
+  /** DISTRIBUTE_FOOD's own 20 minutes, not the generic 15-minute deposit. */
+  durationMinutes?: number;
 }
 
 export const WORK_RULES: Record<TaskTypeId, WorkRule | null> = {
-  COLLECT_WOOD: { action: 'gather', resource: 'firewood', amount: 2 },
-  COLLECT_FOOD: { action: 'gather', resource: 'food', amount: 2 },
-  MAINTAIN_POWER: { action: 'work', mode: 'power', minutes: 40 },
+  // `resource-system.js` GATHER_RATES: wood 8/h, food 5/h.
+  COLLECT_WOOD: { action: 'gather', resource: 'firewood', gatherRatePerHour: 8 },
+  COLLECT_FOOD: { action: 'gather', resource: 'food', gatherRatePerHour: 5 },
+  // `task-system.js:55-62`: +15 power per 40 minutes.
+  MAINTAIN_POWER: { action: 'work', mode: 'power', minutes: 40, powerPerHour: 22.5 },
   COLLECT_MATERIAL: { action: 'work', mode: 'explore', minutes: 60 },
   // `task-effects.js:320-336`: PREPARE_WARMTH is warmth preparation in the
   // warehouse. It spends NO wood; the earlier `refuel(2)` mapping invented a
   // wood sink (four residents burned 23 wood in five hours in the R10 run) and
   // is replaced by the original indoor 30-minute preparation.
   PREPARE_WARMTH: { action: 'rest', minutes: 30 },
-  PREPARE_MEDICAL: { action: 'medical', amount: 1 },
+  // `task-effects.js:216-240`: health < 60 in the same room +0.03/s, and a
+  // hypothermic patient also +0.005/s bodyTemp, for the whole 30 minutes.
+  PREPARE_MEDICAL: { action: 'medical', amount: 1,
+    medicalAura: { healthPerSecond: 0.03, bodyTempPerSecond: 0.005,
+      healthThreshold: 60, hypothermiaBelow: 35.5 } },
   BOOST_MORALE: { action: 'work', mode: 'morale', minutes: 30 },
   COORDINATE: { action: 'work', mode: 'coordinate', minutes: 60 },
-  DISTRIBUTE_FOOD: { action: 'deposit', amount: 1 },
+  DISTRIBUTE_FOOD: { action: 'deposit', amount: 1, durationMinutes: 20 },
   MAINTAIN_ORDER: { action: 'work', mode: 'order', minutes: 60 },
   REST_RECOVER: { action: 'rest', minutes: 60 },
   SCOUT_RUINS: { action: 'work', mode: 'scout', minutes: 40 },
@@ -514,6 +536,39 @@ export const tasksDomain: DomainModule<TasksState> = {
             type: 'food_distribution_insufficient', actorId: task.assigneeId,
             observedBy: 'all', payload: { taskId, need: cost,
               have: context.snapshot.resources.food } });
+        }
+      }
+      if (task.type === 'PREPARE_MEDICAL') {
+        // `task-effects.js:216-240`: a per-second aura on the room the medic
+        // stands in. The engine settles work on the clock, so the aura is
+        // applied ONCE over the real minutes the work occupied, sampled at
+        // settlement (`medical-aura/settlement-sampled`). That is the honest
+        // maximum here: the room is not re-scanned per second, so a patient
+        // who walks in halfway is treated as present for the whole window and
+        // one who leaves is treated as present for none. Named, not hidden.
+        const aura = WORK_RULES.PREPARE_MEDICAL?.medicalAura;
+        const medic = context.snapshot.npcs[task.assigneeId];
+        const minutes = TASK_CATALOG.PREPARE_MEDICAL.minutes;
+        const seconds = minutes * 60;
+        const reached: string[] = [];
+        if (aura && medic) {
+          for (const id of living) {
+            const patient = context.snapshot.npcs[id];
+            if (!patient || patient.location !== medic.location) continue;
+            const healthGain = patient.health < aura.healthThreshold
+              ? Number((aura.healthPerSecond * seconds).toFixed(3)) : 0;
+            const tempGain = patient.bodyTemp < aura.hypothermiaBelow
+              ? Number((aura.bodyTempPerSecond * seconds).toFixed(3)) : 0;
+            if (healthGain === 0 && tempGain === 0) continue;
+            reached.push(id);
+            result.intents.push({ id: `tasks:${taskId}:aura:${id}`, kind: 'actor',
+              actorId: id, delta: { health: healthGain, bodyTemp: tempGain },
+              source: 'tasks.medical-aura', preconditions: [{ kind: 'actor_alive', actorId: id }] });
+          }
+          result.events.push({ proposalId: `tasks:${taskId}:aura`,
+            type: 'medical_aura_settled', actorId: task.assigneeId, observedBy: 'all',
+            payload: { taskId, place: medic.location, minutes, reached,
+              model: 'medical-aura/settlement-sampled' } });
         }
       }
       return result;

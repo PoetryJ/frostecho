@@ -11,6 +11,8 @@
  *  - ids are opaque handles for mapping only, never training features.
  */
 import { canonicalJson, sha256Hex, type Candidate } from '../../decision/contracts';
+import { placeSatisfied } from '../../spatial-v2/site';
+import { OUTDOOR_LIMIT_MINUTES } from '../domains/survival/index';
 import { requiredPlaceOf, TASK_CATALOG, WORK_RULES, WORK_MODE_PLACE,
   type TaskTypeId } from '../domains/tasks/index';
 
@@ -18,6 +20,18 @@ export interface AgencyView {
   actorId: string;
   npc: { id: string; location: string; hunger: number; stamina: number;
     health: number; san: number; bodyTemp: number; alive: boolean };
+  /**
+   * Sites this actor counts as standing at, on the original map: its room, plus
+   * the room whose door cell it occupies in the village. Absent = the frozen
+   * location-only behaviour, so no caller silently widens the gate.
+   */
+  sites?: string[];
+  /**
+   * Accumulated outdoor minutes of this actor (`weather-system.js:29-40` limits
+   * day 2 to two game hours). Absent = the limit is not enforced, i.e. the
+   * frozen behaviour.
+   */
+  outdoorMinutes?: number;
   /** Public resources only. Warehouse stock is a belief, not this field. */
   resources: { food: number; firewood: number; power: number; medicine: number };
   furnace: { lit: boolean; fuel: number; warmth: number };
@@ -50,7 +64,7 @@ export interface ExperienceNote {
  */
 export type ActionKind =
   | 'eat' | 'rest' | 'gather' | 'work' | 'refuel' | 'medical' | 'move'
-  | 'withdraw' | 'deliver' | 'deposit' | 'build-machine'
+  | 'withdraw' | 'deliver' | 'deposit' | 'build-machine' | 'start-machine'
   | 'council-counter' | 'report-delay' | 'wait';
 
 function candidate(kind: ActionKind, description: string,
@@ -162,6 +176,19 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
   const { npc, resources, furnace } = view;
   if (!npc.alive) return { candidates: [], rules: ['dead'], notesUsed: [] };
 
+  /**
+   * Door-or-inside membership (`task-effects.js` isAtLocation). Without `sites`
+   * this is exactly the previous `location === place` comparison.
+   */
+  const at = (place: string | null): boolean =>
+    placeSatisfied(place, npc.location, view.sites ?? [npc.location]);
+  /**
+   * A work action must leave the actor above the kernel's `too_tired` floor
+   * (5 stamina). The engine charges WORK_MODE_SPEC.staminaPerMinute, not the
+   * catalogue cost, so the gate takes the larger of the two plus a margin.
+   */
+  const canSpend = (catalogueCost: number): boolean => npc.stamina > Math.max(catalogueCost, 10) + 5;
+
   if (resources.food >= 1 && npc.hunger < 80) {
     candidates.push(candidate('eat', '吃掉一份食物', { amount: 1 },
       ['food >= 1', 'hunger < 80'], { hunger: 18, food: -1 }));
@@ -172,12 +199,25 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
       ['awake'], { stamina: 20 }));
     rules.push('need.rest');
   }
-  if (npc.stamina > 15) {
-    candidates.push(candidate('gather', '去冰湖采集食物', { resource: 'food', amount: 2 },
-      ['stamina > 15'], { food: 8, stamina: -12 }));
-    candidates.push(candidate('gather', '去伐木场收集木柴', { resource: 'firewood', amount: 2 },
-      ['stamina > 15'], { firewood: 10, stamina: -15 }));
+  // `weather-system.js:29-40`: no resident goes out again after the day's
+  // outdoor limit. Absent field keeps the frozen behaviour exactly.
+  const outdoorSpent = view.outdoorMinutes ?? 0;
+  // The return walk starts 30 minutes before the budget is spent (the same
+  // margin the runner uses), so the board must stop offering outdoor work
+  // there, not at the hard limit.
+  const outdoorBlocked = view.outdoorMinutes !== undefined
+    && outdoorSpent >= OUTDOOR_LIMIT_MINUTES - 30;
+  if (npc.stamina > 15 && !outdoorBlocked) {
+    // `resource-system.js` GATHER_RATES: food 5/h, wood 8/h over 30 minutes.
+    candidates.push(candidate('gather', '去冰湖采集食物',
+      { resource: 'food', amount: 2, minutes: 30, ratePerHour: 5 },
+      ['stamina > 15'], { food: 2.5, stamina: -12 }));
+    candidates.push(candidate('gather', '去伐木场收集木柴',
+      { resource: 'firewood', amount: 2, minutes: 30, ratePerHour: 8 },
+      ['stamina > 15'], { firewood: 4, stamina: -15 }));
     rules.push('yield.gather');
+  } else if (outdoorBlocked) {
+    rules.push('outdoor.limit-reached');
   }
   // R10-D (shared file, one line, disclosed in D-R10.md): the original has ONE
   // central-heating model (`furnace-system.js:9-14`); its strength comes from
@@ -220,7 +260,7 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
   // If an accepted task needs a place this actor is not standing in, walking
   // there is the honest next option, not an impossible action.
   const needed = view.tasks.filter(task => task.status === 'accepted')
-    .map(task => PLACE_FOR_TASK[task.type]).find(place => place && place !== npc.location);
+    .map(task => PLACE_FOR_TASK[task.type]).find(place => place !== null && !at(place));
   if (needed) {
     candidates.push(candidate('move', `前往${needed}`, { to: needed, purpose: 'task-place' },
       ['alive'], { travelMinutes: 15 }));
@@ -233,30 +273,35 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
       case 'COLLECT_FOOD':
         // The candidate layer reads the same place table as the authority: an
         // action the executor would refuse is never offered; the walk is.
-        if (npc.location !== 'village') {
+        if (!at('village')) {
           rules.push(`task.work-place-blocked:${task.type}@village`);
           break;
         }
-        candidates.push(candidate('gather', '执行食物采集任务', { resource: 'food', amount: 2 },
-          ['stamina > 15'], { food: 8 }));
+        candidates.push(candidate('gather', '执行食物采集任务',
+          { resource: 'food', amount: 2, minutes: 30, ratePerHour: 5 },
+          [`stamina > 15`], { food: 2.5 }));
         rules.push('task.collect-food');
         break;
       case 'COLLECT_WOOD':
-        if (npc.location !== 'village') {
+        if (!at('village')) {
           rules.push(`task.work-place-blocked:${task.type}@village`);
           break;
         }
-        candidates.push(candidate('gather', '执行伐木任务', { resource: 'firewood', amount: 2 },
-          ['stamina > 15'], { firewood: 10 }));
+        candidates.push(candidate('gather', '执行伐木任务',
+          { resource: 'firewood', amount: 2, minutes: 30, ratePerHour: 8 },
+          ['stamina > 15'], { firewood: 4 }));
         rules.push('task.collect-wood');
         break;
       case 'MAINTAIN_POWER':
-        if (npc.location !== WORK_MODE_PLACE.power) {
+        if (!at(WORK_MODE_PLACE.power)) {
           rules.push(`task.work-place-blocked:${task.type}@${WORK_MODE_PLACE.power}`);
           break;
         }
-        candidates.push(candidate('work', '去车间维护电力', { minutes: 40 },
-          ['stamina > 10'], { power: 15, stamina: -10 }));
+        if (!canSpend(10)) { rules.push(`task.too-tired:${task.type}`); break; }
+        // `task-system.js:55-62`: baseYield 15 per 40 minutes.
+        candidates.push(candidate('work', '去车间维护电力',
+          { minutes: 40, mode: 'power', powerPerHour: 22.5 },
+          ['stamina > 15'], { power: 15, stamina: -10 }));
         rules.push('task.maintain-power');
         break;
       case 'BUILD_GENERATOR':
@@ -273,14 +318,19 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
         break;
       }
       case 'DISTRIBUTE_FOOD':
-        if (npc.location === 'warehouse') {
-          candidates.push(candidate('deposit', '把粮食送进仓库', { amount: 1 },
+        // `task-system.js:105-112`: 20 minutes, and the original site is
+        // `kitchen_door` (door or inside). The generic deposit primitive is 15
+        // minutes, so the task's own budget travels with the candidate.
+        if (at('warehouse')) {
+          candidates.push(candidate('deposit', '把粮食送进仓库',
+            { amount: 1, minutes: 20, place: 'warehouse' },
             ['carrying food'], { warehouse: 1 }));
           rules.push('task.distribute');
           break;
         }
-        if (npc.location === 'kitchen') {
-          candidates.push(candidate('deliver', '把饭送进厨房', { amount: 1 },
+        if (at('kitchen')) {
+          candidates.push(candidate('deliver', '把饭送进厨房',
+            { amount: 1, minutes: 20, to: 'kitchen' },
             ['carrying meals'], { meals: 1 }));
           rules.push('task.distribute');
           break;
@@ -289,19 +339,25 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
         break;
       case 'PREPARE_WARMTH':
         // `task-effects.js:320-336`: 30 minutes of preparation in the warehouse
-        // (blankets/clothing), NOT a wood-burning stoke. The old `refuel(2)`
-        // candidate burned the town's firewood and could not close this task
-        // any more once the domain mapping was corrected.
-        if (npc.location !== 'warehouse') {
+        // (blankets/clothing), NOT a wood-burning stoke. Door or inside.
+        if (!at('warehouse')) {
           rules.push('task.work-place-blocked:PREPARE_WARMTH@warehouse');
           break;
         }
-        candidates.push(candidate('rest', '在仓库准备御寒物资', { minutes: 30, place: 'warehouse' },
+        candidates.push(candidate('rest', '在仓库准备御寒物资',
+          { minutes: 30, place: 'warehouse' },
           ['alive'], { bodyTemp: 0.5, sanity: 3 }));
         rules.push('task.prepare-warmth');
         break;
       case 'PREPARE_MEDICAL':
-        candidates.push(candidate('medical', '按分工处理伤病', { medicine: 1 },
+        // `task-effects.js:216-240`: a 30-minute ward, +0.03 health/s to the
+        // room (see `medical-aura/settlement-sampled` in the task domain).
+        if (!at('medical')) {
+          rules.push('task.work-place-blocked:PREPARE_MEDICAL@medical');
+          break;
+        }
+        candidates.push(candidate('medical', '按分工处理伤病',
+          { medicine: 1, minutes: 30 },
           ['medicine >= 1'], { health: 25 }));
         rules.push('task.prepare-medical');
         break;
@@ -320,8 +376,12 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
         // executor would refuse it anyway, but the model should not be invited
         // to spend an hour on a doomed command).
         const required = WORK_MODE_PLACE[mode];
-        if (npc.location !== required) {
+        if (!at(required)) {
           rules.push(`task.work-place-blocked:${task.type}@${required}`);
+          break;
+        }
+        if (!canSpend(definition.staminaCost)) {
+          rules.push(`task.too-tired:${task.type}`);
           break;
         }
         const text: Record<string, string> = {
@@ -343,8 +403,14 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
         break;
       }
       case 'REST_RECOVER':
-        candidates.push(candidate('rest', '按分工休息恢复', { minutes: 60, place: 'dorm-a' },
-          ['awake'], { stamina: 20 }));
+        // `task-system.js:121-128` + `task-effects.js:337-345`: 60 minutes under
+        // working heating, at `dorm_a_door` — door or inside.
+        if (!at('dorm-a')) {
+          rules.push('task.work-place-blocked:REST_RECOVER@dorm-a');
+          break;
+        }
+        candidates.push(candidate('rest', '按分工休息恢复',
+          { minutes: 60, place: 'dorm-a' }, ['awake'], { stamina: 20 }));
         rules.push('task.rest');
         break;
       default:
@@ -396,9 +462,17 @@ export function buildActionOptions(view: AgencyView): OptionBuild {
   const gated: Candidate[] = [];
   let needsWalk: string | null = null;
   for (const entry of unique) {
+    // A walk to where the actor already stands is not an action: on the
+    // original map it settles as `already_in_destination_map` and burns the
+    // fifteen-minute slot.
+    if (entry.parameters.action === 'move'
+      && at(String(entry.parameters.to ?? ''))) {
+      rules.push(`action.already-at-site:${String(entry.parameters.to)}`);
+      continue;
+    }
     const site = requiredPlaceOf(String(entry.parameters.action ?? ''),
       entry.parameters as Record<string, unknown>);
-    if (site && view.npc.location !== site) {
+    if (site && !at(site)) {
       needsWalk = needsWalk ?? site;
       rules.push(`action.place-blocked:${String(entry.parameters.action)}@${site}`);
       continue;

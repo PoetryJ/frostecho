@@ -31,16 +31,24 @@ export function candidateCommand(candidate: Candidate, actorId: string, commandI
         || !['power', 'explore', 'morale', 'coordinate', 'order', 'scout'].includes(mode))) {
         throw new UnsupportedActionError(candidate.id, `work mode:${String(mode)}`);
       }
+      const powerPerHour = Number(parameters.powerPerHour);
       return { commandId, type: 'work', actorId, minutes: Number(parameters.minutes ?? 60),
         ...(mode ? { mode: mode as 'power' | 'explore' | 'morale' | 'coordinate' | 'order' | 'scout' }
-          : {}) };
+          : {}),
+        // R11-D: the original baseYield/duration travels with the command, so a
+        // task work action cannot silently fall back to the frozen 2/h shift.
+        ...(Number.isFinite(powerPerHour) && powerPerHour > 0 ? { powerPerHour } : {}) };
     }
     case 'gather': {
       const resource = parameters.resource;
       if (resource !== 'food' && resource !== 'firewood') {
         throw new UnsupportedActionError(candidate.id, `gather:${String(resource)}`);
       }
-      return { commandId, type: 'gather', actorId, resource, amount: Number(parameters.amount ?? 1) };
+      const ratePerHour = Number(parameters.ratePerHour);
+      const minutes = Number(parameters.minutes);
+      return { commandId, type: 'gather', actorId, resource, amount: Number(parameters.amount ?? 1),
+        ...(Number.isFinite(ratePerHour) && ratePerHour > 0 ? { ratePerHour } : {}),
+        ...(Number.isFinite(minutes) && minutes > 0 ? { minutes } : {}) };
     }
     case 'reserve': return { commandId, type: 'reserve', actorId,
       forId: String(parameters.forId ?? 'player'), amount: Number(parameters.amount ?? 1) };

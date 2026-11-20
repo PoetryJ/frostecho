@@ -28,6 +28,7 @@ import { lifeDomain, type LifeState } from '../domains/life/index';
 import { LEGACY_TILE_MINUTES, LegacySpatialController,
   type LegacyMovementResult } from './spatial';
 import type { Cell } from '../../spatial-v2/map';
+import { placeSatisfied, sitesFromFacts } from '../../spatial-v2/site';
 import type { LegacyPosition } from '../../spatial-v2/legacy-profile';
 
 export interface DomainStates {
@@ -202,6 +203,12 @@ export class R8Runtime {
    */
   private readonly intentGuards: IntentGuard[] = [];
   private readonly projectors: IntentProjector[] = [];
+  /**
+   * Intents currently being settled. A physical settlement may advance the
+   * clock (an original-map walk charges one minute per tile), and that nested
+   * `advanceWorld` must never re-claim the intent it was called from.
+   */
+  private readonly settling = new Set<string>();
   /** Every committed event by id: the only receipts a domain may accept. */
   private readonly committed = new Map<string, CommittedEventRef>();
   private readonly legacySpatial: LegacySpatialController;
@@ -803,7 +810,10 @@ export class R8Runtime {
     if (!npc || !npc.alive) return { status: 'cancelled', reason: 'actor_not_alive' };
     if (this.session.generationFor(intent.actorId) !== intent.generation)
       return { status: 'cancelled', reason: 'generation_revoked' };
-    if (intent.requiredPlace && npc.location !== intent.requiredPlace) {
+    // R11-D: a place may be a set of sites (indoor/outdoor), not one string.
+    if (intent.requiredPlace && !placeSatisfied(intent.requiredPlace, npc.location,
+      sitesFromFacts(this.world.r8?.facts as Record<string, number> | undefined,
+        intent.actorId, npc.location))) {
       return { status: 'rejected', reason: `wrong_location: `
         + `${String(intent.candidate.parameters.action)} needs ${intent.requiredPlace}, `
         + `actor is at ${npc.location}` };

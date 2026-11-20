@@ -89,7 +89,13 @@ if (files.length === 0) {
  */
 function testEnv() {
   const env = { ...process.env };
-  if (process.platform !== 'linux' || env.GENIE_TRASH_DIR) return env;
+  if (process.platform !== 'linux') return env;
+  // This shell presets GENIE_TRASH_DIR to the packaged native binary. That
+  // binary resolves the trash root to `/.Trash-1003` on this image and fails
+  // with EACCES for uid 1003, so an env-var presence check is not enough: the
+  // probe below always selects the freedesktop fallback unless explicitly
+  // opted out.
+  if (env.FROSTECHO_NATIVE_TRASH_PROBE === '1') return env;
   // Probe the packaged native trash binary the shim would use. On this image
   // (uid 1003) it resolves the trash root to `/.Trash-1003` and fails with
   // EACCES although $HOME is writable, so any rmSync in a test turns red for

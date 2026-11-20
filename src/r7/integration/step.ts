@@ -17,6 +17,7 @@ import { renderRequest } from '../jev/render';
 import { byteTokenCounter, renderMemoryBlock, renderMemoryLine,
   resolveTokenCounter, type TokenCounter } from '../jev/token-budget';
 import { TASK_CATALOG, receiptTypesFor, requiredPlaceOf } from '../domains/tasks/index';
+import { placeSatisfied, sitesFromFacts } from '../../spatial-v2/site';
 import type { R8Runtime } from './runtime';
 
 export interface StepOptions {
@@ -393,7 +394,11 @@ export function executeCandidate(runtime: R8Runtime, actorId: string,
   const place = requiredPlace(candidate);
   if (place) {
     const here = runtime.world.npcs[actorId]?.location;
-    if (here !== place) {
+    // R11-D: the same door-or-inside rule the authority uses, so the proposal
+    // layer and the executor cannot disagree about the site.
+    const sites = sitesFromFacts(runtime.world.r8?.facts as Record<string, number> | undefined,
+      actorId, String(here));
+    if (!placeSatisfied(place, String(here), sites)) {
       return { status: 'rejected',
         reason: `wrong_location: ${action}${candidate.parameters.mode
           ? `(${String(candidate.parameters.mode)})` : ''} needs ${place}, actor is at ${String(here)}`,
@@ -407,6 +412,16 @@ export function executeCandidate(runtime: R8Runtime, actorId: string,
     return { status: result.applied.length > 0 ? 'applied' : 'rejected',
       reason: result.rejected.map(entry => `${entry.code}:${entry.reason}`).join('; ')
         || 'intents applied',
+      eventIds: result.events.map(event => event.eventId) };
+  }
+  // R11-D: 机器停机 → 补给恢复. The restart is the production domain's own
+  // command, so the machine state and the receipt stay authoritative.
+  if (action === 'start-machine') {
+    const machine = String(candidate.parameters.machine);
+    const result = runtime.dispatch('production', 'start-machine', actorId, { machine });
+    return { status: result.applied.length > 0 ? 'applied' : 'rejected',
+      reason: result.rejected.map(entry => `${entry.code}:${entry.reason}`).join('; ')
+        || 'machine restarted',
       eventIds: result.events.map(event => event.eventId) };
   }
   if (action === 'council-counter' || action === 'report-delay') {
@@ -503,6 +518,13 @@ export async function runStep(runtime: R8Runtime, scorer: ScorePort,
       npc: { id: npc.id, location: npc.location, hunger: npc.hunger,
         stamina: npc.stamina, health: npc.health, san: npc.san,
         bodyTemp: npc.bodyTemp, alive: npc.alive },
+      // Door-or-inside, from the committed original position (R11-D).
+      sites: sitesFromFacts(runtime.world.r8?.facts as Record<string, number> | undefined,
+        actorId, npc.location),
+      // `weather-system.js:29-40`: the two-hour outdoor limit is a rule of the
+      // BOARD too, not only of the survival domain (D-R10 known gap).
+      outdoorMinutes: (runtime.states.survival as { outdoorMinutes: Record<string, number> })
+        .outdoorMinutes[actorId] ?? 0,
       resources: snapshot.resources,
       furnace: snapshot.furnace,
       weather: snapshot.weather,

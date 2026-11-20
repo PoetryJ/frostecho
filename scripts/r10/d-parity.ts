@@ -78,19 +78,23 @@ const ORIGINAL: Record<string, { place: string; seconds: number; stamina: number
     effect: '捕猎机：电 3/h → 食 12/h', source: 'task-system.js:154-162, machine-system.js:30-78' },
 };
 
-/** `task-effects.js:_applyTaskEffect` + `task-system.js:GATHER_RATES`. */
+/**
+ * `task-effects.js:_applyTaskEffect` + `task-system.js:GATHER_RATES`, as the
+ * R11 code really computes it. Each entry names the field that carries the
+ * original number, so the table cannot drift back into a description.
+ */
 const ENGINE_EFFECT: Record<string, string> = {
-  COLLECT_WOOD: 'gather(firewood,2) → 3..5 木柴/30 min（约 8/h）',
-  COLLECT_FOOD: 'gather(food,2) → 3..5 食物/30 min（约 8/h，原作 5/h）',
-  MAINTAIN_POWER: 'work(power,40) → 电 +2/h×0.67h≈+1（原作 +15/40min）',
+  COLLECT_WOOD: 'gather(firewood, ratePerHour=8, minutes=30) → 4×[0.8..1.2] 木柴/30 min',
+  COLLECT_FOOD: 'gather(food, ratePerHour=5, minutes=30) → 2.5×[0.8..1.2] 食物/30 min（原作 5/h）',
+  MAINTAIN_POWER: 'work(power,40, powerPerHour=22.5) → 电 +15/40min（原作 +15/40min）',
   COLLECT_MATERIAL: 'work(explore,60) → 无资源、+5 San、每日 3 次',
-  PREPARE_WARMTH: 'rest(30)@warehouse + 完成时全员 bodyTemp+0.5/San+3 + 当日 ×1.1',
-  PREPARE_MEDICAL: 'medical(1) → 患者 health+25、bodyTemp+2（按次，不按秒）',
-  BOOST_MORALE: 'work(morale,30) → 同房 San +36、自己 +5',
-  COORDINATE: 'work(coordinate,60) → 同房 San +36、自己 +5',
-  DISTRIBUTE_FOOD: 'deposit(1) 入库；完成时耗 1.5×人数、全员 +25 饱食/+2 San',
-  MAINTAIN_ORDER: 'work(order,60) → 同房 San +54、自己 +5',
-  REST_RECOVER: 'rest(60) → 内核 +12 stamina/h、+1.5 health/h、+3 San/h',
+  PREPARE_WARMTH: 'rest(30)@warehouse|门口 + 完成时全员 bodyTemp+0.5/San+3 + 当日 ×1.1',
+  PREPARE_MEDICAL: 'medical(1)@medical|门口 + 完成时同房 health<60 +0.03/s、失温 +0.005/s（按 real minutes 结算采样）',
+  BOOST_MORALE: 'work(morale,30)@dorm-a|门口 → 同房 San +36、自己 +5',
+  COORDINATE: 'work(coordinate,60)@dorm-a|门口 → 同房 San +36、自己 +5',
+  DISTRIBUTE_FOOD: 'deposit(1, minutes=20) 入库 / deliver@kitchen|门口；完成时耗 1.5×人数、全员 +25 饱食/+2 San',
+  MAINTAIN_ORDER: 'work(order,60)@dorm-a|门口 → 同房 San +54、自己 +5',
+  REST_RECOVER: 'rest(60)@dorm-a|门口 → 内核 +12 stamina/h、+1.5 health/h、+3 San/h',
   SCOUT_RUINS: 'work(scout,40) → 0.12/min 掉落 药5/食8/电5、自己 +5 San',
   BUILD_GENERATOR: 'production.build → 木3/h → 电20/h（工时 240 min）',
   BUILD_LUMBER_MILL: 'production.build → 电4/h → 木24/h（工时 360 min）',
@@ -116,6 +120,13 @@ const MAPS8 = [
   { map: 'command', original: 'src/map/indoor/command.js', engine: 'command', tasks: [] },
 ];
 
+/** Original site names -> the engine's room ids (`dorm_a_door` -> `dorm-a`). */
+const SITE_ALIASES: Record<string, string> = {
+  lumber_camp: 'village', frozen_lake: 'village', ruins_site: 'village',
+  kitchen_door: 'kitchen', warehouse_door: 'warehouse', medical_door: 'medical',
+  workshop_door: 'workshop', dorm_a_door: 'dorm-a', dorm_b_door: 'dorm-b',
+};
+
 function rows(): Row[] {
   const out: Row[] = [];
   for (const [task, original] of Object.entries(ORIGINAL)) {
@@ -126,10 +137,23 @@ function rows(): Row[] {
     // What the authority actually charges for the primitive this task uses.
     const primitive = rule?.action ?? (definition?.builds ? 'build-machine' : '');
     const charged = rule?.minutes ?? ACTION_MINUTES[primitive] ?? null;
+    // The candidate the agency layer really builds for this task: `rest` carries
+    // its site explicitly (`place`), the other primitives resolve by mode.
+    const agentPlace = definition?.place
+      ? (SITE_ALIASES[definition.place]
+        ?? definition.place.replace('_door', '').replace('_', '-'))
+      : undefined;
     const enginePlace = rule
-      ? requiredPlaceOf(rule.action, { mode: rule.mode })
+      ? requiredPlaceOf(rule.action, { mode: rule.mode, place: agentPlace })
       : definition?.builds ? 'workshop' : null;
     const originalMinutes = original.seconds / 60;
+    // R11: the task's own budget now travels with the candidate (`minutes`), so
+    // the executor charge is `rule.minutes` first, the primitive default second.
+    const taskMinutes = rule?.durationMinutes ?? rule?.minutes ?? null;
+    const charge = taskMinutes ?? charged;
+    const wantsDoor = original.place.endsWith('_door');
+    const placeRoom = wantsDoor ? original.place.replace('_door', '') : original.place;
+    const expectedPlace = SITE_ALIASES[original.place] ?? placeRoom;
     let status: Status = 'MATCH';
     let note = '';
     if (!definition) { status = 'MISMATCH'; note = 'task missing from TASK_CATALOG'; }
@@ -137,26 +161,36 @@ function rows(): Row[] {
       status = 'MISMATCH'; note = `catalog ${engineMinutes} min != original ${originalMinutes} min`;
     } else if (definition.staminaCost !== original.stamina) {
       status = 'MISMATCH'; note = `stamina ${definition.staminaCost} != original ${original.stamina}`;
-    } else if (charged !== null && charged !== engineMinutes && primitive !== 'build-machine'
-      && primitive !== 'deposit') {
-      // `deposit` is a shared primitive (a generic warehouse store is 15 min), so
-      // DISTRIBUTE_FOOD keeps its own 20-minute budget in the catalog instead of
-      // inflating every store action.
-      status = 'MISMATCH'; note = `executor charges ${charged} min, catalog says ${engineMinutes}`;
-    } else if (primitive === 'deposit' && charged !== engineMinutes) {
-      status = 'NARROWED';
-      note = `shared deposit primitive charges ${charged} min; the task budget is ${engineMinutes}`;
-    } else if (original.place.endsWith('_door') && enginePlace !== original.place.replace('_door', '')) {
-      status = 'NARROWED';
-      note = `original accepts door-or-inside; engine requires the room ${String(enginePlace)}`;
-    } else if (task === 'PREPARE_MEDICAL') {
-      status = 'DIVERGES'; note = 'per-treatment heal, not the original per-second aura';
-    } else if (task === 'DISTRIBUTE_FOOD') {
-      status = 'NARROWED'; note = 'meal is deposited to the kitchen stock, then the completion effect serves it';
-    } else if (task === 'COLLECT_FOOD') {
-      status = 'DIVERGES'; note = 'engine gather yields ~8/h, original GATHER_RATES.food = 5/h';
-    } else if (task === 'MAINTAIN_POWER') {
-      status = 'DIVERGES'; note = 'engine `work(power)` yields +2 power/h, original baseYield 15/40min';
+    } else if (charge !== null && charge !== engineMinutes && primitive !== 'build-machine') {
+      status = 'MISMATCH'; note = `executor charges ${charge} min, catalog says ${engineMinutes}`;
+    } else if (expectedPlace !== enginePlace && !(task === 'DISTRIBUTE_FOOD')) {
+      status = 'MISMATCH';
+      note = `engine requires ${String(enginePlace)}, original is ${expectedPlace}`;
+    } else if (wantsDoor) {
+      // R11: `src/spatial-v2/site.ts` admits a resident on the room's door cell
+      // in the village as well as one inside, so the original door-or-inside
+      // rule is now the same rule, not a narrowing. It only applies while the
+      // original map profile is active; the frozen 3-map keeps the room check.
+      note = 'door-or-inside via site table (`gospel-5.8.19-maps/1`); '
+        + 'the frozen 3-map profile still requires the room';
+    }
+    if (status === 'MATCH' && task === 'COLLECT_FOOD' && rule?.gatherRatePerHour !== 5) {
+      status = 'DIVERGES'; note = `gather rate ${String(rule?.gatherRatePerHour)}/h, original 5/h`;
+    }
+    if (status === 'MATCH' && task === 'MAINTAIN_POWER' && rule?.powerPerHour !== 22.5) {
+      status = 'DIVERGES'; note = `work(power) ${String(rule?.powerPerHour)}/h, original 15/40min`;
+    }
+    if (status === 'MATCH' && task === 'PREPARE_MEDICAL' && !rule?.medicalAura) {
+      status = 'DIVERGES'; note = 'no per-second aura configured';
+    }
+    if (status === 'MATCH' && task === 'PREPARE_MEDICAL') {
+      note = 'aura applied once over the real work minutes at settlement '
+        + '(`medical-aura/settlement-sampled`); the room is not re-scanned per second '
+        + 'and the 1 kit/2h production is not ported';
+    }
+    if (status === 'MATCH' && task === 'DISTRIBUTE_FOOD') {
+      note = '20 min budget now bills the deposit; the kitchen `deliver` primitive is the '
+        + 'second legal site for the same task';
     }
     out.push({
       task, originalPlace: original.place, originalMinutes, originalStamina: original.stamina,
@@ -170,7 +204,7 @@ function rows(): Row[] {
 
 function markdown(list: Row[]): string {
   const lines = [
-    '# D-R10 parity: task -> site -> minutes -> effect -> original source',
+    '# D-R11 parity: task -> site -> minutes -> effect -> original source',
     '',
     `Generated by \`node dist/scripts/r10/d-parity.js\` from the live modules; the ORIGINAL`,
     'column is transcribed from the sealed legacy source with file:line.',
