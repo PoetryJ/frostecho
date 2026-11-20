@@ -1,0 +1,365 @@
+{
+  "schema": "frostecho.r11c.real-run/1",
+  "generatedAt": "2026-11-20T15:55:00+08:00",
+  "freeze": {
+    "path": "handoff/FREEZE.json",
+    "sha256": "947eafc47dd2ec863876c0396193c3067b8fc350f53c69439d903497b8d59395",
+    "sourceCommit": "1d140c25dfe009f8e80580bd0d597b67274417dd",
+    "sourceTree": "277813af58975b23c0622f4ddf7150701b49eced",
+    "rendererSourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+    "rendererBuildSha256": "2309464ebb800c07ffa8904df962a87010a6595d11d09b857f6277235a9c7c1d"
+  },
+  "capture": {
+    "cases": 96,
+    "episodes": 12,
+    "slices": 8,
+    "byStory": {
+      "cancel-heard": 24,
+      "cancel-unheard": 24,
+      "change-unaccepted": 24,
+      "last-unit-contention": 24
+    },
+    "withActiveCommitment": 74,
+    "accessState": "reference",
+    "wallSeconds": 1257.342
+  },
+  "labels": {
+    "cases": 48,
+    "episodes": 12,
+    "sliceMinutes": 60,
+    "clockIssues": 0,
+    "deadlineBasis": {
+      "commitment-due": 11,
+      "frozen-default": 37
+    }
+  },
+  "corpus": {
+    "cases": 48,
+    "episodes": 12,
+    "families": {
+      "base": {
+        "cases": 48,
+        "bySplit": {
+          "train": {
+            "cases": 28,
+            "allAcceptable": 28,
+            "noneAcceptable": 0,
+            "discriminative": 0,
+            "labelledCases": 28,
+            "meanAcceptableSet": 5.1786
+          },
+          "dev": {
+            "cases": 12,
+            "allAcceptable": 12,
+            "noneAcceptable": 0,
+            "discriminative": 0,
+            "labelledCases": 12,
+            "meanAcceptableSet": 4.8333
+          },
+          "test": {
+            "cases": 8,
+            "allAcceptable": 8,
+            "noneAcceptable": 0,
+            "discriminative": 0,
+            "labelledCases": 8,
+            "meanAcceptableSet": 5
+          }
+        }
+      },
+      "fulfillment": {
+        "cases": 13,
+        "bySplit": {
+          "train": {
+            "cases": 6,
+            "allAcceptable": 0,
+            "noneAcceptable": 4,
+            "discriminative": 2,
+            "labelledCases": 2,
+            "meanAcceptableSet": 0.3333
+          },
+          "dev": {
+            "cases": 3,
+            "allAcceptable": 0,
+            "noneAcceptable": 1,
+            "discriminative": 2,
+            "labelledCases": 2,
+            "meanAcceptableSet": 0.6667
+          },
+          "test": {
+            "cases": 4,
+            "allAcceptable": 0,
+            "noneAcceptable": 3,
+            "discriminative": 1,
+            "labelledCases": 1,
+            "meanAcceptableSet": 0.25
+          }
+        }
+      }
+    },
+    "informationSufficient": false,
+    "targetReport": {
+      "devPoolStates": {
+        "target": 48,
+        "actual": 48,
+        "met": true
+      },
+      "devPoolEpisodes": {
+        "target": 12,
+        "actual": 12,
+        "met": true
+      },
+      "discriminativeStates": {
+        "target": 24,
+        "actual": 0,
+        "met": false
+      },
+      "devDiscriminative": {
+        "target": 32,
+        "actual": 0,
+        "met": false
+      },
+      "testDiscriminative": {
+        "target": 32,
+        "actual": 0,
+        "met": false
+      }
+    }
+  },
+  "encoding": {
+    "cases": 96,
+    "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475",
+    "execution": {
+      "batchSize": 1,
+      "maxTokens": 2048,
+      "padMultiple": 8,
+      "placement": "auto",
+      "qualificationLimits": [
+        0.02,
+        1.0,
+        0.001
+      ],
+      "runnerSourceSha256": "03263ee097f7915daee12c67906828e85b59ee11b73ecacdd0a1b83de35aaafc"
+    },
+    "qualification": {
+      "batch1": {
+        "batchShape": [
+          1,
+          1336
+        ],
+        "encoderForwardCalls": 1,
+        "forwardSeconds": 142.7560521811247,
+        "padding": "right-masked-position-ids/1",
+        "paddingTokens": 3,
+        "peakCudaAllocatedMiBByLogical": {
+          "0": 19664.86474609375
+        },
+        "readout": "joint-candidate-end-token",
+        "realTokens": 1333,
+        "rows": [
+          {
+            "batchRow": 0,
+            "candidateIds": [
+              "b-245f3ef8c59d9e9d",
+              "a-bae1f2dab8ef",
+              "a-4cd4d5e3e4b6",
+              "a-0b3f9fd02e70",
+              "a-4de955ab3c0e",
+              "a-3bc7f19405a7",
+              "a-da38572f198c"
+            ],
+            "candidateSetHash": "1adbcc9e5d0fe694b479660fc972577f02a43efb88e11060b4fcaaecc122b517",
+            "featureSha256": "cc173fea66c14695c8d4b8a841a5c01617cd7693ec61106980a334932c819393",
+            "inputSha256": "2c667a6a7857b822e40bc40f549cf36f0fae54d772164633ab281734f4b63fb5",
+            "positions": [
+              1159,
+              1191,
+              1227,
+              1255,
+              1279,
+              1297,
+              1323
+            ],
+            "renderedTextSha256": "0db70a8da8ac5f3ca74ba045ee593b9ff0ec5dfbbc706a182b03c846c08ae1f2",
+            "rendererId": "joint-c-action/2",
+            "rendererSourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+            "shape": [
+              7,
+              5120
+            ],
+            "tokenIdsSha256": "f137705c1371f88bd3d1b811904294546d739420aa8612ae47f28a27e63ffff3",
+            "tokens": 1333
+          }
+        ]
+      },
+      "batchN": {
+        "batchShape": [
+          1,
+          1336
+        ],
+        "encoderForwardCalls": 1,
+        "forwardSeconds": 11.127580381929874,
+        "padding": "right-masked-position-ids/1",
+        "paddingTokens": 3,
+        "peakCudaAllocatedMiBByLogical": {
+          "0": 19664.86474609375
+        },
+        "readout": "joint-candidate-end-token",
+        "realTokens": 1333,
+        "rows": [
+          {
+            "batchRow": 0,
+            "candidateIds": [
+              "b-245f3ef8c59d9e9d",
+              "a-bae1f2dab8ef",
+              "a-4cd4d5e3e4b6",
+              "a-0b3f9fd02e70",
+              "a-4de955ab3c0e",
+              "a-3bc7f19405a7",
+              "a-da38572f198c"
+            ],
+            "candidateSetHash": "1adbcc9e5d0fe694b479660fc972577f02a43efb88e11060b4fcaaecc122b517",
+            "featureSha256": "cc173fea66c14695c8d4b8a841a5c01617cd7693ec61106980a334932c819393",
+            "inputSha256": "2c667a6a7857b822e40bc40f549cf36f0fae54d772164633ab281734f4b63fb5",
+            "positions": [
+              1159,
+              1191,
+              1227,
+              1255,
+              1279,
+              1297,
+              1323
+            ],
+            "renderedTextSha256": "0db70a8da8ac5f3ca74ba045ee593b9ff0ec5dfbbc706a182b03c846c08ae1f2",
+            "rendererId": "joint-c-action/2",
+            "rendererSourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+            "shape": [
+              7,
+              5120
+            ],
+            "tokenIdsSha256": "f137705c1371f88bd3d1b811904294546d739420aa8612ae47f28a27e63ffff3",
+            "tokens": 1333
+          }
+        ]
+      },
+      "duplicateMaxAbs": 0.0,
+      "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475",
+      "featuresSha256": "4b966fbe1aee610392f689cde2f7fd96529f1b2c9060e0048b0a6bab96089991",
+      "limits": {
+        "duplicateMaxAbs": 0.001,
+        "maxAbs": 1.0,
+        "relativeL2": 0.02
+      },
+      "maxAbs": 0.0,
+      "ok": true,
+      "relativeL2": 0.0,
+      "schema": "frostecho.batch-qualification/1",
+      "scope": "Numerical batching check on one repeated real request; no model-quality or calibration claim."
+    },
+    "wallSecondsThisInvocation": 1293.1654876321554,
+    "physicalGpus": [
+      1
+    ],
+    "cardHoursCharged": 0.33,
+    "cacheSha256": "14a5f3718ff3ba165c0e33c410ff9fcde173eb8b6d07381229c8798bc1509578"
+  },
+  "heads": {
+    "base": {
+      "checkpoint": "warm-17.safetensors",
+      "checkpointSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+      "manifestSha256": "48ef46913c85781c5e3bed9033538dc60b421a979e744e0f7dc566335e9b4d5c",
+      "dev": {
+        "cases": 12,
+        "labelledCases": 12,
+        "emptySetCases": 0,
+        "discriminativeCases": 0,
+        "setNll": 0.0,
+        "top1InAcceptable": 1.0,
+        "meanAcceptableProbability": 1.0,
+        "discriminativeSetNll": null,
+        "discriminativeTop1": null,
+        "emptySet": {
+          "top1ProbabilityMean": null,
+          "abstainedAtUniform": null
+        }
+      },
+      "test": {
+        "cases": 8,
+        "labelledCases": 8,
+        "emptySetCases": 0,
+        "setNll": 0.0,
+        "top1InAcceptable": 1.0,
+        "meanAcceptableProbability": 1.0,
+        "discriminativeCases": 0,
+        "discriminativeSetNll": null,
+        "discriminativeTop1": null,
+        "emptySet": {
+          "top1ProbabilityMean": null,
+          "abstainedAtUniform": null
+        }
+      },
+      "counts": {
+        "test": 8,
+        "labelled": 8,
+        "empty": 0,
+        "discriminative": 0
+      }
+    },
+    "fulfillment": {
+      "checkpoint": "random-43.safetensors",
+      "checkpointSha256": "92b32dfe141fe1e4e2c70ade651361d6021f575b5bbda02ac2eb29c53e494ae8",
+      "manifestSha256": "59fe9c7c380836db986ebaf5e43f770865e8108e5ab89b989abff742d8d14a50",
+      "dev": {
+        "cases": 3,
+        "labelledCases": 2,
+        "emptySetCases": 1,
+        "discriminativeCases": 2,
+        "setNll": 4.928208952037494e-10,
+        "top1InAcceptable": 1.0,
+        "meanAcceptableProbability": 0.9999999995071788,
+        "discriminativeSetNll": 4.928208952037494e-10,
+        "discriminativeTop1": 1.0,
+        "emptySet": {
+          "top1ProbabilityMean": 0.6845901960185045,
+          "abstainedAtUniform": 0.0
+        }
+      },
+      "test": {
+        "cases": 4,
+        "labelledCases": 1,
+        "emptySetCases": 3,
+        "setNll": 4.0799541523028893e-10,
+        "top1InAcceptable": 1.0,
+        "meanAcceptableProbability": 0.9999999995920046,
+        "discriminativeCases": 1,
+        "discriminativeSetNll": 4.0799541523028893e-10,
+        "discriminativeTop1": 1.0,
+        "emptySet": {
+          "top1ProbabilityMean": 0.7805600580627704,
+          "abstainedAtUniform": 0.0
+        }
+      },
+      "counts": {
+        "test": 4,
+        "labelled": 1,
+        "empty": 3,
+        "discriminative": 1
+      }
+    }
+  },
+  "blindPackage": {
+    "packageId": "ba1ca15c0cc005543f10cb5429a44272b5991a5115c133ccee95421953bd6386",
+    "cases": 48,
+    "branches": 243,
+    "packetASha256": "f661c262d57ea951952cdee566646a17d4a148bd7c42b679bb15f1aa5ff8d2c8",
+    "packetBSha256": "0c05c43833d0a3b967c4d66c1bd6e897244e37f5f0721aa8d97878f23a44c5fe",
+    "reviewTemplateASha256": "606e4dfc5af1a751f06dd57ea67c9b5770d6de920ecc7dbaa4a4e3af8299059d",
+    "status": "A to F/G now; B held until both A seals"
+  },
+  "limitations": [
+    "base family is saturated: all 48 states are all-acceptable, 0 discriminative; its four heads see zero gradient",
+    "fulfillment has 13 defined states (2/2/1 discriminative in train/dev/test); near-zero set-NLL is overfit, not generalization",
+    "labels use 60-minute continuation cadence (12-way parallel) rather than 30; same reference rule, coarser decision points",
+    "no live-JEV states: reference only; GPU1 was used for encoding, not for a live scorer",
+    "12 episodes, 4 stories x 3"
+  ]
+}

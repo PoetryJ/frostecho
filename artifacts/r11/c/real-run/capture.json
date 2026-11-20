@@ -1,0 +1,49 @@
+{
+  "schema": "frostecho.r11c.capture/1",
+  "cases": 96,
+  "episodes": 12,
+  "slices": 8,
+  "policy": "reference",
+  "freezeSha256": "947eafc47dd2ec863876c0396193c3067b8fc350f53c69439d903497b8d59395",
+  "freezeSourceCommit": "1d140c25dfe009f8e80580bd0d597b67274417dd",
+  "splitSeed": "frostecho-r11-split-20261120",
+  "rendererSourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+  "rendererBuildSha256": "2309464ebb800c07ffa8904df962a87010a6595d11d09b857f6277235a9c7c1d",
+  "rendererId": "joint-c-action/2",
+  "memory": {
+    "memorySelection": "obligation-first",
+    "memoryPolicy": "conditional-experience",
+    "memoryTokenBudget": 640
+  },
+  "deadlineHorizonMinutes": 240,
+  "legacySpatial": true,
+  "manifestSha256": null,
+  "byStory": {
+    "cancel-heard": 24,
+    "cancel-unheard": 24,
+    "change-unaccepted": 24,
+    "last-unit-contention": 24
+  },
+  "byEpisode": {
+    "r11c-ep00": 8,
+    "r11c-ep01": 8,
+    "r11c-ep02": 8,
+    "r11c-ep03": 8,
+    "r11c-ep04": 8,
+    "r11c-ep05": 8,
+    "r11c-ep06": 8,
+    "r11c-ep07": 8,
+    "r11c-ep08": 8,
+    "r11c-ep09": 8,
+    "r11c-ep10": 8,
+    "r11c-ep11": 8
+  },
+  "byAccessState": {
+    "reference": 96
+  },
+  "withActiveCommitment": 74,
+  "wallSeconds": 1257.342,
+  "casesSha256": "c92435bfe6caad237f87da9f38ddb829958fdd38f66e1d3f6c2e35d48137a2e6",
+  "realModel": false,
+  "note": "States come from runStep under the frozen policy; story setups touch the world, never the observation."
+}

@@ -1,0 +1,63 @@
+{
+  "schema": "frostecho.r11c.test-eval/1",
+  "family": "fulfillment",
+  "firstAndOnlyRun": true,
+  "exploratory": false,
+  "exploratoryReason": null,
+  "evaluatedAt": "2026-11-20T15:44:38",
+  "outputDir": "/tmp/r11-real/train-fulfillment",
+  "manifestSha256": "59fe9c7c380836db986ebaf5e43f770865e8108e5ab89b989abff742d8d14a50",
+  "selectedCheckpoint": "random-43.safetensors",
+  "selectedCheckpointSha256": "92b32dfe141fe1e4e2c70ade651361d6021f575b5bbda02ac2eb29c53e494ae8",
+  "corpusSha256": "6ae9fbdc7eedb05ba9638a2941357b6da83c9a77bd3a1f44344dfca32886d2c2",
+  "cacheSha256": "14a5f3718ff3ba165c0e33c410ff9fcde173eb8b6d07381229c8798bc1509578",
+  "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475",
+  "rendererSourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+  "counts": {
+    "test": 4,
+    "labelled": 1,
+    "empty": 3,
+    "discriminative": 1
+  },
+  "metrics": {
+    "cases": 4,
+    "labelledCases": 1,
+    "emptySetCases": 3,
+    "setNll": 4.0799541523028893e-10,
+    "top1InAcceptable": 1.0,
+    "meanAcceptableProbability": 0.9999999995920046,
+    "discriminativeCases": 1,
+    "discriminativeSetNll": 4.0799541523028893e-10,
+    "discriminativeTop1": 1.0,
+    "emptySet": {
+      "top1ProbabilityMean": 0.7805600580627704,
+      "abstainedAtUniform": 0.0
+    }
+  },
+  "epochs": 40,
+  "selection": "lowest unrounded dev set-NLL, never test",
+  "limitations": [
+    "Weak branch labels from one fixed rule controller; not human preference.",
+    "All-acceptable cases carry zero gradient; see counts/discriminativeCounts.",
+    "Independent blind reviews are reported separately and do not admit execution."
+  ],
+  "baseline": {
+    "weight": "initial head",
+    "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+    "dev": {
+      "cases": 3,
+      "labelledCases": 2,
+      "emptySetCases": 1,
+      "discriminativeCases": 2,
+      "setNll": 0.8904148202079658,
+      "top1InAcceptable": 0.0,
+      "meanAcceptableProbability": 0.41635071317959976,
+      "discriminativeSetNll": 0.8904148202079658,
+      "discriminativeTop1": 0.0,
+      "emptySet": {
+        "top1ProbabilityMean": 0.9746415311788694,
+        "abstainedAtUniform": 0.0
+      }
+    }
+  }
+}
