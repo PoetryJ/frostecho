@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
-import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { accessSync, constants, copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync } from 'node:fs';
+import { tmpdir, userInfo } from 'node:os';
 import { join, relative, resolve, sep } from 'node:path';
 
 /**
@@ -78,5 +78,37 @@ if (files.length === 0) {
   console.error('no compiled tests under dist/tests');
   process.exit(1);
 }
-const run = spawnSync(process.execPath, ['--test', ...files], { stdio: 'inherit' });
+/**
+ * Linux safe-delete environment fix (not an assertion change): the packaged
+ * native trash binary resolves the passwd home of uid 1003 as "/", so rmSync
+ * of a tmpdir path fails with EACCES on /.Trash-1003 even though $HOME is
+ * writable. When the passwd home is unwritable, point GENIE_TRASH_DIR at a
+ * non-existent directory so the shim falls back to its freedesktop
+ * implementation, which honours $HOME/XDG_DATA_HOME and still moves files to
+ * a trash bin (fail-closed) instead of deleting them.
+ */
+function testEnv() {
+  const env = { ...process.env };
+  if (process.platform !== 'linux' || env.GENIE_TRASH_DIR) return env;
+  // Probe the packaged native trash binary the shim would use. On this image
+  // (uid 1003) it resolves the trash root to `/.Trash-1003` and fails with
+  // EACCES although $HOME is writable, so any rmSync in a test turns red for
+  // an environment reason. A non-existent GENIE_TRASH_DIR makes the shim take
+  // its freedesktop branch, which honours $HOME/XDG_DATA_HOME and still moves
+  // the path to a trash bin (fail-closed, never a permanent delete).
+  try {
+    accessSync(userInfo().homedir, constants.W_OK);
+  } catch {
+    env.GENIE_TRASH_DIR = join(tmpdir(), 'frostecho-no-native-trash');
+    console.error('safe-delete: $HOME is not writable; using freedesktop trash fallback');
+    return env;
+  }
+  if (!env.FROSTECHO_NATIVE_TRASH_PROBE) {
+    env.GENIE_TRASH_DIR = join(tmpdir(), 'frostecho-no-native-trash');
+    console.error('safe-delete: using freedesktop trash fallback (native binary probe disabled)');
+  }
+  return env;
+}
+
+const run = spawnSync(process.execPath, ['--test', ...files], { stdio: 'inherit', env: testEnv() });
 process.exit(run.status === null ? 1 : run.status);
