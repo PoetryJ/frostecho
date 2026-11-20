@@ -1,0 +1,254 @@
+{
+  "schema": "frostecho.r11.matrix-game/1",
+  "arm": "probe-bridge-first",
+  "family": "probe",
+  "seed": "r11h-1",
+  "recipe": null,
+  "memorySelection": "obligation-first",
+  "memoryTokenBudget": 640,
+  "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
+  "source": {
+    "head": "24406c4ba29a825306515db46edfacae99249976",
+    "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
+    "branch": "codex/r11-h"
+  },
+  "exits": {
+    "start": 0,
+    "resume": 0,
+    "continuous": 0,
+    "segmentedStart": 0,
+    "segmentedEnd": 0
+  },
+  "pids": {
+    "start": 1241254,
+    "resume": 1241529,
+    "services": []
+  },
+  "head": {
+    "headPath": null,
+    "headSha256": null,
+    "manifestPath": null,
+    "manifestSha256": null,
+    "labelSource": null,
+    "featureIdentityHash": null,
+    "rendererId": "joint-c-action/2",
+    "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+    "ok": true,
+    "reason": null
+  },
+  "save": {
+    "at": 2040,
+    "stateSha256": "86dceddc661544635156192d16ba4319005ab2410d83a31e4ae59c31309941fe",
+    "activeCommitments": 2,
+    "boundWorkingIntents": 2,
+    "pending": 8
+  },
+  "restore": {
+    "equal": true,
+    "diffs": 0,
+    "savedPid": 1241254,
+    "pid": 1241529
+  },
+  "interference": {
+    "saveClock": 2040,
+    "stories": [
+      {
+        "id": "cancel-heard",
+        "at": 2050,
+        "lateBy": 0,
+        "target": {
+          "commitmentId": "cm-709daa09-6e8f-4afd-ac3f-b32b476941fb"
+        }
+      },
+      {
+        "id": "cancel-unheard",
+        "at": 2050,
+        "lateBy": 0,
+        "target": {
+          "commitmentId": "cm-a2396d2f-3565-4581-ada4-1165f647553f"
+        }
+      },
+      {
+        "id": "offer-follow-up",
+        "at": 2060,
+        "lateBy": 0,
+        "target": {
+          "commitments": [
+            "cm-d4277ede-1968-47f2-a68f-36ae79c55642",
+            "cm-698c8376-bda3-4d42-a8a5-c8aa75f26e1e"
+          ]
+        }
+      },
+      {
+        "id": "drain-for-contention",
+        "at": 2060,
+        "lateBy": 0,
+        "target": {
+          "stockBefore": 2,
+          "stockAfter": 1
+        }
+      },
+      {
+        "id": "relay-unheard",
+        "at": 2070,
+        "lateBy": 0,
+        "target": {
+          "commitmentId": "cm-a2396d2f-3565-4581-ada4-1165f647553f"
+        }
+      },
+      {
+        "id": "reject-source-change",
+        "at": 2080,
+        "lateBy": 0,
+        "target": {
+          "commitments": [
+            "cm-698c8376-bda3-4d42-a8a5-c8aa75f26e1e"
+          ]
+        }
+      },
+      {
+        "id": "lift-old-failure",
+        "at": 2100,
+        "lateBy": 0,
+        "target": {
+          "observedBy": [
+            "npc_05",
+            "npc_08"
+          ]
+        }
+      },
+      {
+        "id": "watch",
+        "at": 2520,
+        "lateBy": 0,
+        "target": null
+      },
+      {
+        "id": "contention",
+        "at": 2060
+      }
+    ]
+  },
+  "replay": {
+    "continuous": {
+      "equal": true,
+      "diffs": 0
+    },
+    "segmented": {
+      "equal": true,
+      "diffs": 0
+    },
+    "countsAsModelResult": false
+  },
+  "final": {
+    "simTime": 5400,
+    "ending": "extinction",
+    "stateSha256": "3620d724ae127f620e07e0249dfb60517858399a3b6fe63eda54fefc4a7dfd70"
+  },
+  "metrics": {
+    "decisions": 463,
+    "realForwards": 0,
+    "gpuWallSeconds": 0,
+    "primary": {
+      "id": "verified_fulfilment_rate_per_instance",
+      "numerator": 5,
+      "denominator": 8,
+      "value": 0.625
+    },
+    "counts": {
+      "instances": 8,
+      "fulfilled": 5,
+      "overdue": 3,
+      "authorisedExit": 0,
+      "cancelled": 2,
+      "changesProposed": 1,
+      "duplicateReceipts": 0
+    },
+    "postCancel": {
+      "cancelledInstances": 2,
+      "attemptsAfter": 1,
+      "latePhysicalEffects": 0,
+      "lateReceipts": 0,
+      "unauthorisedAttempts": 1
+    },
+    "changes": {
+      "proposed": 1,
+      "accepted": 0,
+      "rejected": 1,
+      "unagreedSourceActions": 0,
+      "rows": [
+        {
+          "commitmentId": "cm-698c8376-bda3-4d42-a8a5-c8aa75f26e1e",
+          "kind": "alt-source",
+          "status": "rejected",
+          "proposedAt": 2060,
+          "respondedAt": 2080,
+          "proposedRevision": 2,
+          "revisionAfter": 1,
+          "accepted": false,
+          "source": "gather",
+          "unagreedSourceActions": 0
+        }
+      ]
+    },
+    "duplicateReceipts": {
+      "fulfilmentInstancesWithMultipleReceipts": 0,
+      "receiptIdsUsedTwice": []
+    },
+    "settlement": {
+      "intents": 351,
+      "byStatus": {
+        "applied": 346,
+        "cancelled": 2,
+        "rejected": 3
+      },
+      "failureReasons": {
+        "commitment_cancelled": 3,
+        "wrong_location: medical needs medical, actor is at dorm-b": 1,
+        "wrong_location: gather needs village, actor is at dorm-a": 1
+      },
+      "pendingWithinEnd": 0,
+      "expired": 0,
+      "directRejections": 37,
+      "busySkips": 18
+    },
+    "workHours": 3.25,
+    "survivors": 1,
+    "ending": "extinction",
+    "resources": {
+      "final": {
+        "food": 121,
+        "firewood": 0,
+        "power": 0
+      },
+      "inventoryHours": {
+        "food": 16.806,
+        "firewood": 0,
+        "power": 0
+      },
+      "gapHours": {
+        "food": 0,
+        "firewood": 28,
+        "power": 10
+      }
+    },
+    "exposure": {
+      "instances": 8,
+      "activeAtSave": 2,
+      "boundWorkAtSave": 2,
+      "cancelHeardOpportunities": 1,
+      "cancelUnheardOpportunities": 1,
+      "changeOpportunities": 1,
+      "restockOpportunityAt": 2100,
+      "restockWitnessed": 1,
+      "contentionOpportunities": 2
+    },
+    "reconciled": true
+  },
+  "evidenceSha256": "517327aae63466ed8ee930d0304cb44b527d6231025ba5efae8cc80aeedbe0e5",
+  "gameSha256": "d2936f3093e136683ee4aaac0b97df3ee1f87398730b4eb9995b96dc655fcbaa",
+  "status": "completed",
+  "verify": true,
+  "exposed": true,
+  "tamper": true
+}

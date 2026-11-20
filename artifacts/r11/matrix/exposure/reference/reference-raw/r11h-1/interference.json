@@ -1,0 +1,515 @@
+{
+  "schema": "frostecho.r11.interference/1",
+  "saveClock": 4860,
+  "schedule": [
+    {
+      "id": "cancel-heard",
+      "kind": "cancel",
+      "mode": "heard",
+      "afterSaveMinutes": 10,
+      "reason": "玩家当面改主意",
+      "at": 4870,
+      "deadlineAt": null,
+      "applied": true,
+      "target": {
+        "commitmentId": "cm-5fa04716-0993-48e8-a01e-5823d7c53288"
+      },
+      "appliedAt": 4870,
+      "detail": {
+        "commitmentId": "cm-5fa04716-0993-48e8-a01e-5823d7c53288",
+        "promisorId": "npc_06",
+        "goal": "supply-warehouse",
+        "revision": 1,
+        "mode": "heard",
+        "status": "cancelled",
+        "heardBy": [
+          "npc_06",
+          "npc_05"
+        ],
+        "inFlightAtCancel": 1,
+        "boundIntentsCancelled": 1,
+        "cancelledIntentIds": [
+          "npc_06-r8-688"
+        ]
+      },
+      "waitedFor": null,
+      "lateBy": 0,
+      "waitedMinutes": 0
+    },
+    {
+      "id": "cancel-unheard",
+      "kind": "cancel",
+      "mode": "unheard",
+      "afterSaveMinutes": 10,
+      "reason": "玩家只对旁人说起",
+      "at": 4870,
+      "deadlineAt": null,
+      "applied": true,
+      "target": {
+        "commitmentId": "cm-77a94aac-8f8c-4166-a483-9858148f9e9e"
+      },
+      "appliedAt": 4870,
+      "detail": {
+        "commitmentId": "cm-77a94aac-8f8c-4166-a483-9858148f9e9e",
+        "promisorId": "npc_08",
+        "goal": "supply-warehouse",
+        "revision": 1,
+        "mode": "unheard",
+        "status": "cancelled",
+        "heardBy": [
+          "npc_05"
+        ],
+        "inFlightAtCancel": 1,
+        "boundIntentsCancelled": 1,
+        "cancelledIntentIds": [
+          "npc_08-r8-688"
+        ]
+      },
+      "waitedFor": null,
+      "lateBy": 0,
+      "waitedMinutes": 0
+    },
+    {
+      "id": "offer-follow-up",
+      "kind": "follow-up",
+      "afterSaveMinutes": 20,
+      "note": "pre-designed delegation, issued only if the board has room",
+      "at": 4880,
+      "deadlineAt": null,
+      "applied": true,
+      "target": {
+        "commitments": [
+          "cm-9a600d06-98ca-4009-a85b-f4ceda2ee4d1",
+          "cm-fa57141d-9262-448c-a5cb-15a9c1beb789"
+        ]
+      },
+      "appliedAt": 4880,
+      "detail": {
+        "applied": true,
+        "added": [
+          {
+            "commitmentId": "cm-9a600d06-98ca-4009-a85b-f4ceda2ee4d1",
+            "promisorId": "npc_01",
+            "goal": "deliver-meal",
+            "origin": "follow-up-deliver",
+            "at": 4880,
+            "reason": "post-save-opportunity",
+            "taskId": "task-007-deliver-meal",
+            "status": "active",
+            "deadline": 3960
+          },
+          {
+            "commitmentId": "cm-fa57141d-9262-448c-a5cb-15a9c1beb789",
+            "promisorId": "npc_03",
+            "goal": "deliver-meal",
+            "origin": "follow-up-deliver",
+            "at": 4880,
+            "reason": "post-save-opportunity",
+            "taskId": "task-008-deliver-meal",
+            "status": "active",
+            "deadline": 3960
+          }
+        ]
+      },
+      "waitedFor": null,
+      "lateBy": 0,
+      "waitedMinutes": 0
+    },
+    {
+      "id": "drain-for-contention",
+      "kind": "drain",
+      "afterSaveMinutes": 20,
+      "leave": 1,
+      "at": 4880,
+      "deadlineAt": null,
+      "applied": true,
+      "target": {
+        "stockBefore": 2,
+        "stockAfter": 1
+      },
+      "appliedAt": 4880,
+      "detail": {
+        "applied": true,
+        "amount": 1,
+        "after": 1
+      },
+      "waitedFor": null,
+      "lateBy": 0,
+      "waitedMinutes": 0
+    },
+    {
+      "id": "relay-unheard",
+      "kind": "relay",
+      "afterSaveMinutes": 30,
+      "at": 4890,
+      "deadlineAt": null,
+      "applied": true,
+      "target": {
+        "commitmentId": "cm-77a94aac-8f8c-4166-a483-9858148f9e9e"
+      },
+      "appliedAt": 4890,
+      "detail": {
+        "applied": true,
+        "told": [
+          "npc_08",
+          "npc_05"
+        ],
+        "from": "npc_05"
+      },
+      "waitedFor": null,
+      "lateBy": 0,
+      "waitedMinutes": 0
+    },
+    {
+      "id": "reject-source-change",
+      "kind": "reject-change",
+      "afterSaveMinutes": 40,
+      "trigger": "open-change",
+      "deadlineMinutes": null,
+      "reason": "不同意改源，按原约定",
+      "at": 4900,
+      "deadlineAt": null,
+      "applied": false,
+      "target": null,
+      "appliedAt": null,
+      "detail": null,
+      "waitedFor": 4900
+    },
+    {
+      "id": "lift-old-failure",
+      "kind": "restock",
+      "afterSaveMinutes": 60,
+      "amount": 2,
+      "trigger": "after-reject",
+      "deadlineMinutes": null,
+      "source": "player-resupply",
+      "at": 4920,
+      "deadlineAt": null,
+      "applied": false,
+      "target": null,
+      "appliedAt": null,
+      "detail": null,
+      "waitedFor": 4920
+    },
+    {
+      "id": "watch",
+      "kind": "watch",
+      "afterSaveMinutes": 480,
+      "at": 5340,
+      "deadlineAt": null,
+      "applied": true,
+      "target": null,
+      "appliedAt": 5340,
+      "detail": {
+        "applied": true,
+        "note": "observation only"
+      },
+      "waitedFor": null,
+      "lateBy": 0,
+      "waitedMinutes": 0
+    }
+  ],
+  "starts": [
+    {
+      "commitmentId": "cm-5fa04716-0993-48e8-a01e-5823d7c53288",
+      "promisorId": "npc_06",
+      "goal": "supply-warehouse",
+      "origin": "checkpoint-delegation",
+      "at": 2040,
+      "reason": "legal-early-completion",
+      "taskId": "task-005-supply-warehouse",
+      "status": "active",
+      "deadline": 3960
+    },
+    {
+      "commitmentId": "cm-77a94aac-8f8c-4166-a483-9858148f9e9e",
+      "promisorId": "npc_08",
+      "goal": "supply-warehouse",
+      "origin": "checkpoint-delegation",
+      "at": 2040,
+      "reason": "legal-early-completion",
+      "taskId": "task-006-supply-warehouse",
+      "status": "active",
+      "deadline": 3960
+    },
+    {
+      "commitmentId": "cm-9a600d06-98ca-4009-a85b-f4ceda2ee4d1",
+      "promisorId": "npc_01",
+      "goal": "deliver-meal",
+      "origin": "follow-up-deliver",
+      "at": 4880,
+      "reason": "post-save-opportunity",
+      "taskId": "task-007-deliver-meal",
+      "status": "active",
+      "deadline": 3960
+    },
+    {
+      "commitmentId": "cm-fa57141d-9262-448c-a5cb-15a9c1beb789",
+      "promisorId": "npc_03",
+      "goal": "deliver-meal",
+      "origin": "follow-up-deliver",
+      "at": 4880,
+      "reason": "post-save-opportunity",
+      "taskId": "task-008-deliver-meal",
+      "status": "active",
+      "deadline": 3960
+    }
+  ],
+  "stories": [
+    {
+      "id": "cancel-heard",
+      "kind": "cancel",
+      "mode": "heard",
+      "at": 4870,
+      "scheduledAt": 4870,
+      "appliedAt": 4870,
+      "lateBy": 0,
+      "target": {
+        "commitmentId": "cm-5fa04716-0993-48e8-a01e-5823d7c53288"
+      },
+      "detail": {
+        "commitmentId": "cm-5fa04716-0993-48e8-a01e-5823d7c53288",
+        "promisorId": "npc_06",
+        "goal": "supply-warehouse",
+        "revision": 1,
+        "mode": "heard",
+        "status": "cancelled",
+        "heardBy": [
+          "npc_06",
+          "npc_05"
+        ],
+        "inFlightAtCancel": 1,
+        "boundIntentsCancelled": 1,
+        "cancelledIntentIds": [
+          "npc_06-r8-688"
+        ]
+      }
+    },
+    {
+      "id": "cancel-unheard",
+      "kind": "cancel",
+      "mode": "unheard",
+      "at": 4870,
+      "scheduledAt": 4870,
+      "appliedAt": 4870,
+      "lateBy": 0,
+      "target": {
+        "commitmentId": "cm-77a94aac-8f8c-4166-a483-9858148f9e9e"
+      },
+      "detail": {
+        "commitmentId": "cm-77a94aac-8f8c-4166-a483-9858148f9e9e",
+        "promisorId": "npc_08",
+        "goal": "supply-warehouse",
+        "revision": 1,
+        "mode": "unheard",
+        "status": "cancelled",
+        "heardBy": [
+          "npc_05"
+        ],
+        "inFlightAtCancel": 1,
+        "boundIntentsCancelled": 1,
+        "cancelledIntentIds": [
+          "npc_08-r8-688"
+        ]
+      }
+    },
+    {
+      "id": "offer-follow-up",
+      "kind": "follow-up",
+      "mode": null,
+      "at": 4880,
+      "scheduledAt": 4880,
+      "appliedAt": 4880,
+      "lateBy": 0,
+      "target": {
+        "commitments": [
+          "cm-9a600d06-98ca-4009-a85b-f4ceda2ee4d1",
+          "cm-fa57141d-9262-448c-a5cb-15a9c1beb789"
+        ]
+      },
+      "detail": {
+        "applied": true,
+        "added": [
+          {
+            "commitmentId": "cm-9a600d06-98ca-4009-a85b-f4ceda2ee4d1",
+            "promisorId": "npc_01",
+            "goal": "deliver-meal",
+            "origin": "follow-up-deliver",
+            "at": 4880,
+            "reason": "post-save-opportunity",
+            "taskId": "task-007-deliver-meal",
+            "status": "active",
+            "deadline": 3960
+          },
+          {
+            "commitmentId": "cm-fa57141d-9262-448c-a5cb-15a9c1beb789",
+            "promisorId": "npc_03",
+            "goal": "deliver-meal",
+            "origin": "follow-up-deliver",
+            "at": 4880,
+            "reason": "post-save-opportunity",
+            "taskId": "task-008-deliver-meal",
+            "status": "active",
+            "deadline": 3960
+          }
+        ]
+      }
+    },
+    {
+      "id": "drain-for-contention",
+      "kind": "drain",
+      "mode": null,
+      "at": 4880,
+      "scheduledAt": 4880,
+      "appliedAt": 4880,
+      "lateBy": 0,
+      "target": {
+        "stockBefore": 2,
+        "stockAfter": 1
+      },
+      "detail": {
+        "applied": true,
+        "amount": 1,
+        "after": 1
+      }
+    },
+    {
+      "id": "relay-unheard",
+      "kind": "relay",
+      "mode": null,
+      "at": 4890,
+      "scheduledAt": 4890,
+      "appliedAt": 4890,
+      "lateBy": 0,
+      "target": {
+        "commitmentId": "cm-77a94aac-8f8c-4166-a483-9858148f9e9e"
+      },
+      "detail": {
+        "applied": true,
+        "told": [
+          "npc_08",
+          "npc_05"
+        ],
+        "from": "npc_05"
+      }
+    },
+    {
+      "id": "reject-source-change",
+      "kind": "reject-change",
+      "mode": null,
+      "at": 4900,
+      "scheduledAt": 4900,
+      "appliedAt": null,
+      "lateBy": 0,
+      "target": null,
+      "detail": null
+    },
+    {
+      "id": "lift-old-failure",
+      "kind": "restock",
+      "mode": null,
+      "at": 4920,
+      "scheduledAt": 4920,
+      "appliedAt": null,
+      "lateBy": 0,
+      "target": null,
+      "detail": null
+    },
+    {
+      "id": "watch",
+      "kind": "watch",
+      "mode": null,
+      "at": 5340,
+      "scheduledAt": 5340,
+      "appliedAt": 5340,
+      "lateBy": 0,
+      "target": null,
+      "detail": {
+        "applied": true,
+        "note": "observation only"
+      }
+    },
+    {
+      "id": "contention",
+      "kind": "contention",
+      "scheduledAt": 4880,
+      "appliedAt": 4880,
+      "targets": [
+        {
+          "commitmentId": "cm-9a600d06-98ca-4009-a85b-f4ceda2ee4d1",
+          "promisorId": "npc_01",
+          "goal": "deliver-meal",
+          "outcome": "pending"
+        },
+        {
+          "commitmentId": "cm-fa57141d-9262-448c-a5cb-15a9c1beb789",
+          "promisorId": "npc_03",
+          "goal": "deliver-meal",
+          "outcome": "pending"
+        }
+      ],
+      "stockBefore": 2,
+      "stockAfter": 1
+    }
+  ],
+  "targets": {
+    "cancel": [
+      {
+        "commitmentId": "cm-5fa04716-0993-48e8-a01e-5823d7c53288",
+        "promisorId": "npc_06",
+        "goal": "supply-warehouse",
+        "revision": 1,
+        "mode": "heard",
+        "status": "cancelled",
+        "heardBy": [
+          "npc_06",
+          "npc_05"
+        ],
+        "inFlightAtCancel": 1,
+        "boundIntentsCancelled": 1,
+        "cancelledIntentIds": [
+          "npc_06-r8-688"
+        ]
+      },
+      {
+        "commitmentId": "cm-77a94aac-8f8c-4166-a483-9858148f9e9e",
+        "promisorId": "npc_08",
+        "goal": "supply-warehouse",
+        "revision": 1,
+        "mode": "unheard",
+        "status": "cancelled",
+        "heardBy": [
+          "npc_05"
+        ],
+        "inFlightAtCancel": 1,
+        "boundIntentsCancelled": 1,
+        "cancelledIntentIds": [
+          "npc_08-r8-688"
+        ]
+      }
+    ],
+    "contention": {
+      "at": 4880,
+      "stockBefore": 2,
+      "stockAfter": 1,
+      "drainer": "npc_07",
+      "amount": 1,
+      "status": "applied",
+      "reason": null,
+      "targets": [
+        {
+          "commitmentId": "cm-9a600d06-98ca-4009-a85b-f4ceda2ee4d1",
+          "promisorId": "npc_01",
+          "goal": "deliver-meal",
+          "outcome": "pending"
+        },
+        {
+          "commitmentId": "cm-fa57141d-9262-448c-a5cb-15a9c1beb789",
+          "promisorId": "npc_03",
+          "goal": "deliver-meal",
+          "outcome": "pending"
+        }
+      ]
+    }
+  }
+}

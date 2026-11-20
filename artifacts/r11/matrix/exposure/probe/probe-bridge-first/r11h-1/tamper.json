@@ -1,0 +1,210 @@
+{
+  "schema": "frostecho.r11.tamper/1",
+  "generatedAt": "2026-11-20T06:34:20.906Z",
+  "source": {
+    "head": "24406c4ba29a825306515db46edfacae99249976",
+    "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
+    "branch": "codex/r11-h"
+  },
+  "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
+  "dir": "artifacts/r11/matrix/exposure/probe/probe-bridge-first/r11h-1",
+  "exclusions": [
+    "pid",
+    "wallClock",
+    "latencyMs",
+    "serviceResidency"
+  ],
+  "results": [
+    {
+      "name": "commitment-reference",
+      "label": "d2-save",
+      "category": "commitment",
+      "mutatedPath": "commitments[cm-0d497378-d5b4-43e3-a841-6803dc013257].taskId",
+      "detected": true,
+      "diffs": 1,
+      "categories": {
+        "commitment": 1
+      },
+      "sample": {
+        "path": "$.commitments.commitments[0].taskId",
+        "category": "commitment",
+        "left": "task-001-deliver-meal",
+        "right": "task-tampered-reference",
+        "reason": "value"
+      },
+      "categoryDetected": true
+    },
+    {
+      "name": "map-position",
+      "label": "d2-save",
+      "category": "map",
+      "mutatedPath": "map.positions[npc_07]",
+      "detected": true,
+      "diffs": 2,
+      "categories": {
+        "map": 2
+      },
+      "sample": {
+        "path": "$.map.positions.npc_07.x",
+        "category": "map",
+        "left": 16,
+        "right": 17,
+        "reason": "value"
+      },
+      "categoryDetected": true
+    },
+    {
+      "name": "memory-source",
+      "label": "d2-save",
+      "category": "memory",
+      "mutatedPath": "memories[npc_01].records[m-d1b8b1a1788dd738].source",
+      "detected": true,
+      "diffs": 3,
+      "categories": {
+        "memory": 3
+      },
+      "sample": {
+        "path": "$.memories.npc_01.records[0].authority",
+        "category": "memory",
+        "left": "engine",
+        "right": "player",
+        "reason": "value"
+      },
+      "categoryDetected": true
+    },
+    {
+      "name": "travel-leg",
+      "label": "d2-save",
+      "category": "work",
+      "mutatedPath": "work[injected-travel]",
+      "detected": true,
+      "diffs": 1,
+      "categories": {
+        "work": 1
+      },
+      "sample": {
+        "path": "$.work.length",
+        "category": "work",
+        "left": 149,
+        "right": 150,
+        "reason": "array length"
+      },
+      "categoryDetected": true
+    },
+    {
+      "name": "receipt",
+      "label": "d2-save",
+      "category": "receipt",
+      "mutatedPath": "receipts[d:480:council_opened:old_qian].payload.amount",
+      "detected": true,
+      "diffs": 1,
+      "categories": {
+        "receipt": 1
+      },
+      "sample": {
+        "path": "$.receipts[0].payload.amount",
+        "category": "receipt",
+        "left": null,
+        "right": 99,
+        "reason": "missing on left"
+      },
+      "categoryDetected": true
+    },
+    {
+      "name": "commitment-reference",
+      "label": "d4-final",
+      "category": "commitment",
+      "mutatedPath": "commitments[cm-0d497378-d5b4-43e3-a841-6803dc013257].taskId",
+      "detected": true,
+      "diffs": 1,
+      "categories": {
+        "commitment": 1
+      },
+      "sample": {
+        "path": "$.commitments.commitments[0].taskId",
+        "category": "commitment",
+        "left": "task-001-deliver-meal",
+        "right": "task-tampered-reference",
+        "reason": "value"
+      },
+      "categoryDetected": true
+    },
+    {
+      "name": "map-position",
+      "label": "d4-final",
+      "category": "map",
+      "mutatedPath": "map.positions[npc_07]",
+      "detected": true,
+      "diffs": 2,
+      "categories": {
+        "map": 2
+      },
+      "sample": {
+        "path": "$.map.positions.npc_07.x",
+        "category": "map",
+        "left": 16,
+        "right": 17,
+        "reason": "value"
+      },
+      "categoryDetected": true
+    },
+    {
+      "name": "memory-source",
+      "label": "d4-final",
+      "category": "memory",
+      "mutatedPath": "memories[npc_01].records[m-d1b8b1a1788dd738].source",
+      "detected": true,
+      "diffs": 3,
+      "categories": {
+        "memory": 3
+      },
+      "sample": {
+        "path": "$.memories.npc_01.records[0].authority",
+        "category": "memory",
+        "left": "engine",
+        "right": "player",
+        "reason": "value"
+      },
+      "categoryDetected": true
+    },
+    {
+      "name": "travel-leg",
+      "label": "d4-final",
+      "category": "work",
+      "mutatedPath": "work[injected-travel]",
+      "detected": true,
+      "diffs": 1,
+      "categories": {
+        "work": 1
+      },
+      "sample": {
+        "path": "$.work.length",
+        "category": "work",
+        "left": 200,
+        "right": 201,
+        "reason": "array length"
+      },
+      "categoryDetected": true
+    },
+    {
+      "name": "receipt",
+      "label": "d4-final",
+      "category": "receipt",
+      "mutatedPath": "receipts[d:480:council_opened:old_qian].payload.amount",
+      "detected": true,
+      "diffs": 1,
+      "categories": {
+        "receipt": 1
+      },
+      "sample": {
+        "path": "$.receipts[0].payload.amount",
+        "category": "receipt",
+        "left": null,
+        "right": 99,
+        "reason": "missing on left"
+      },
+      "categoryDetected": true
+    }
+  ],
+  "ok": true
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "frostecho.r11.d-runner-compat/1",
+  "recordedAt": "2026-11-20T14:30:00+08:00",
+  "purpose": "Show that H's matrix driver and D's shared four-day runner build the same authority from the same seed. H does not fork the engine; it owns only its loop/interference/replay layer.",
+  "dRunner": {
+    "head": "857cbd7",
+    "entry": "dist/src/r7/integration/fourday.js (runFourDay)",
+    "command": "node dist/scripts/r10/d-fourday.js --seed r11h-1 --out /tmp/r11d-conform --strategy reference-rule/1",
+    "summary": { "schema": "frostecho.r11.fourday/1", "settlementOk": true, "clockSha256": "686ddc5856e243c2c170b306cd80fecda9cbc4f1d9dd3641ff461164c69d800f" }
+  },
+  "sameInitialWorld": {
+    "clockStart": 480,
+    "resources": { "food": 130, "firewood": 30, "power": 30, "medicine": 3 },
+    "furnace": { "fuel": 6, "lit": true },
+    "locations": {
+      "npc_01": "dorm-a", "npc_02": "dorm-b", "npc_03": "dorm-a", "npc_04": "dorm-b",
+      "npc_05": "dorm-a", "npc_06": "dorm-b", "npc_07": "dorm-a", "npc_08": "dorm-b"
+    },
+    "verdict": "identical at D1 08:00 for the same seed"
+  },
+  "declaredScenarioOverrides": {
+    "npcHungerStaminaHealth": "100/100/100 (D default 70/80/100) - identical for every H arm",
+    "warehouseFood": 2,
+    "npc07Location": "warehouse",
+    "why": "pre-registered initial world condition for shortage/contention; not a per-arm advantage"
+  },
+  "integrationDecision": "The matrix keeps its own H-owned loop because it needs (a) a save gated on active commitment + bound work, (b) interference after the new pid, and (c) recorded-action replay. It imports the same R8Runtime/GameplayLoop/createCommitmentBridge/runStep as runFourDay. Adoption of runFourDay.stopAfterDays inside H is left to O's merge; H's evidence records the shared authority and the exact differences above.",
+  "notVerifiedHere": [
+    "D's eleven strategy presets are not exercised by the R11 matrix (different experiment)",
+    "originalMap=true is not used: D reports extinction 1/8 there while A's travel settlement is open"
+  ]
+}

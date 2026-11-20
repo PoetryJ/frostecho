@@ -1,0 +1,166 @@
+{
+  "schema": "frostecho.r11.matrix-scenario/1",
+  "profile": "gospel-5.8.19",
+  "npcCount": 8,
+  "start": {
+    "day": 1,
+    "minuteOfDay": 480
+  },
+  "end": {
+    "day": 4,
+    "minuteOfDay": 1080
+  },
+  "resources": {
+    "food": 130,
+    "firewood": 30,
+    "power": 30,
+    "medicine": 3
+  },
+  "initialWorld": {
+    "warehouseFood": 2,
+    "npc07Location": "warehouse",
+    "npcs": {
+      "hunger": 100,
+      "stamina": 100,
+      "health": 100,
+      "san": 80,
+      "bodyTemp": 36.5
+    }
+  },
+  "commitments": [
+    {
+      "actorId": "npc_01",
+      "goal": "deliver-meal",
+      "verdict": "accept"
+    },
+    {
+      "actorId": "npc_02",
+      "goal": "deliver-meal",
+      "verdict": "accept"
+    },
+    {
+      "actorId": "npc_03",
+      "goal": "supply-warehouse",
+      "verdict": "accept"
+    },
+    {
+      "actorId": "npc_04",
+      "goal": "supply-warehouse",
+      "verdict": "accept"
+    }
+  ],
+  "deadlines": {
+    "initial": 3960,
+    "delegation": 3960
+  },
+  "checkpoint": {
+    "fromAbsoluteMinute": 1920,
+    "requireActiveCommitment": true,
+    "requireBoundWorkingIntent": true,
+    "delegation": {
+      "fromAbsoluteMinute": 2040,
+      "goal": "supply-warehouse",
+      "verdict": "accept",
+      "deadlineDay": 3,
+      "maxPerRound": 2,
+      "maxTotal": 4,
+      "maxActive": 2,
+      "selection": "least-fatigued idle promisor (stamina desc, hunger desc, id asc)"
+    }
+  },
+  "interference": {
+    "anchor": "saveClock",
+    "schedule": [
+      {
+        "id": "cancel-heard",
+        "kind": "cancel",
+        "mode": "heard",
+        "afterSaveMinutes": 10,
+        "reason": "玩家当面改主意"
+      },
+      {
+        "id": "cancel-unheard",
+        "kind": "cancel",
+        "mode": "unheard",
+        "afterSaveMinutes": 10,
+        "reason": "玩家只对旁人说起"
+      },
+      {
+        "id": "offer-follow-up",
+        "kind": "follow-up",
+        "afterSaveMinutes": 20,
+        "note": "pre-designed delegation, issued only if the board has room"
+      },
+      {
+        "id": "drain-for-contention",
+        "kind": "drain",
+        "afterSaveMinutes": 20,
+        "leave": 1
+      },
+      {
+        "id": "relay-unheard",
+        "kind": "relay",
+        "afterSaveMinutes": 30
+      },
+      {
+        "id": "reject-source-change",
+        "kind": "reject-change",
+        "afterSaveMinutes": 40,
+        "trigger": "open-change",
+        "deadlineMinutes": null,
+        "reason": "不同意改源，按原约定"
+      },
+      {
+        "id": "lift-old-failure",
+        "kind": "restock",
+        "afterSaveMinutes": 60,
+        "amount": 2,
+        "trigger": "after-reject",
+        "deadlineMinutes": null,
+        "source": "player-resupply"
+      },
+      {
+        "id": "watch",
+        "kind": "watch",
+        "afterSaveMinutes": 480
+      }
+    ],
+    "followUp": {
+      "goal": "deliver-meal",
+      "targetActive": 2,
+      "targetDeliverMeal": 2,
+      "deadlineDay": 3,
+      "maxTotal": 4
+    },
+    "witness": "npc_05",
+    "drainer": "npc_07"
+  },
+  "clock": {
+    "maxRounds": 1600,
+    "nightSkipFromMinute": 1200,
+    "nightSkipToMinute": 360
+  },
+  "memory": {
+    "topK": 12,
+    "budgetTokens": 640
+  },
+  "replay": {
+    "mode": "recorded-reselection",
+    "countsAsModelResult": false
+  },
+  "idFactory": "deterministic-state-context/1",
+  "exclusions": [
+    "pid",
+    "wallClock",
+    "latencyMs",
+    "serviceResidency"
+  ],
+  "scripts": {
+    "council": "dist/scripts/r8/playthrough.js runCouncilIfDue (reference council/1)",
+    "rescue": "playthrough rescue dispatch on rescue_needed",
+    "night": "playthrough night skip + routed walk home",
+    "referencePolicy": "reference-rules/1 over the same candidate set (no runner-side auto-withdraw)",
+    "livePolicy": "real scorer; no rule fallback"
+  },
+  "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877"
+}

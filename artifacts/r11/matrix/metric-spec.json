@@ -1,0 +1,38 @@
+{
+  "schema": "frostecho.r11.metric-spec/1",
+  "primary": {
+    "id": "verified_fulfilment_rate_per_instance",
+    "numerator": "commitment instances with >=1 authoritative receipt of the goal type, actor and place, within their own revision",
+    "denominator": "all commitment instances created in the game (initial + checkpoint/follow-up delegations)",
+    "nullPolicy": "if a game has 0 instances -> null (not 0)"
+  },
+  "secondary": [
+    "overdue_rate_per_instance",
+    "authorised_exit_rate_per_instance",
+    "post_cancel_late_physical_effects",
+    "post_cancel_unauthorised_attempts",
+    "unagreed_source_actions",
+    "duplicate_receipts",
+    "settlement_failures_by_reason",
+    "contention_resolved_with_receipt",
+    "restock_witnessed_then_fulfilled",
+    "work_hours_per_instance",
+    "survivors",
+    "ending",
+    "final_inventory_hours",
+    "four_day_resource_gap_hours"
+  ],
+  "exposure": {
+    "notExposed": "null / not_exposed when the pre-registered story precondition never coexisted with an active instance (legal early completion included)"
+  },
+  "rates": {
+    "foodPerHour": 7.2,
+    "firewoodPerHour": 0.4,
+    "powerPerHour": 2,
+    "note": "food: 8 NPCs x 0.9 hunger/h, 1 food == 1 hunger in survival-rules/2; firewood: furnace burn 0.4/h in evolveSpan; power: heating reserve denominator (2/h) used by the R10 coverage report, not a physical drain."
+  },
+  "gap": {
+    "definition": "hours in [start,end) where the authoritative level is <= 0, integrating the sampled timeline with the left-hand value"
+  },
+  "tolerance": "no statistical claim from 2 seeds; report per-seed pairs and their difference"
+}

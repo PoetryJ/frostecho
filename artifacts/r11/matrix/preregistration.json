@@ -1,0 +1,129 @@
+{
+  "schema": "frostecho.r11.preregistration/1",
+  "generatedAt": "2026-11-20T06:39:29.421Z",
+  "source": {
+    "head": "24406c4ba29a825306515db46edfacae99249976",
+    "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
+    "branch": "codex/r11-h"
+  },
+  "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
+  "metricSpecSha": "e9a66c50e436beb5d23fc6a885b4c1f13db48d3bfd57c5734fcd0037bc0030a1",
+  "seeds": [
+    "r11h-1",
+    "r11h-2"
+  ],
+  "seedJustification": "neither seed appears in any R10 arm directory or artifact",
+  "commonInitialWorld": {
+    "rule": "same seed -> same createWorldV2 state + same initial resources + same warehouse stock + same npc_07 location + same deterministic ids",
+    "hash": "d1-start.json.worldInitSha, identical for every arm of a seed"
+  },
+  "arms": [
+    {
+      "id": "base-raw",
+      "recipe": "base",
+      "memory": "raw-last12",
+      "family": "live"
+    },
+    {
+      "id": "base-conditional",
+      "recipe": "base",
+      "memory": "obligation-first",
+      "family": "live"
+    },
+    {
+      "id": "fulfil-raw",
+      "recipe": "fulfil",
+      "memory": "raw-last12",
+      "family": "live"
+    },
+    {
+      "id": "fulfil-conditional",
+      "recipe": "fulfil",
+      "memory": "obligation-first",
+      "family": "live"
+    },
+    {
+      "id": "reference-raw",
+      "recipe": null,
+      "memory": "raw-last12",
+      "family": "reference"
+    },
+    {
+      "id": "reference-conditional",
+      "recipe": null,
+      "memory": "obligation-first",
+      "family": "reference"
+    }
+  ],
+  "primaryMetric": {
+    "id": "verified_fulfilment_rate_per_instance",
+    "numerator": "commitment instances with >=1 authoritative receipt of the goal type, actor and place, within their own revision",
+    "denominator": "all commitment instances created in the game (initial + checkpoint/follow-up delegations)",
+    "nullPolicy": "if a game has 0 instances -> null (not 0)"
+  },
+  "secondaryMetrics": [
+    "overdue_rate_per_instance",
+    "authorised_exit_rate_per_instance",
+    "post_cancel_late_physical_effects",
+    "post_cancel_unauthorised_attempts",
+    "unagreed_source_actions",
+    "duplicate_receipts",
+    "settlement_failures_by_reason",
+    "contention_resolved_with_receipt",
+    "restock_witnessed_then_fulfilled",
+    "work_hours_per_instance",
+    "survivors",
+    "ending",
+    "final_inventory_hours",
+    "four_day_resource_gap_hours"
+  ],
+  "opportunityRule": {
+    "cancelHeard": "an active instance at saveClock + 60 min",
+    "cancelUnheard": "a second active instance at saveClock + 60 min",
+    "relay": "the unheard instance still active at saveClock + 90 min",
+    "change": "an open alt-source change created by a real out_of_stock after the drain",
+    "restock": "the warehouse restock at saveClock + 240 min; exposure = the promisor witnessed it (location-scoped engine memory)",
+    "contention": ">=2 active deliver-meal instances when the warehouse is drained to 1",
+    "notExposed": "null / not_exposed, never a zero"
+  },
+  "interferenceRule": "absolute world minutes = saveClock + the frozen offsets {\"cancelHeard\":10,\"cancelUnheard\":10,\"drain\":20,\"followUp\":20,\"relay\":30,\"rejectChange\":40,\"restock\":60,\"watch\":480}; the save itself is at the first round >= D2 08:00 with >=1 active commitment and >=1 working intent bound to that instance and revision",
+  "checkpointDelegation": {
+    "fromAbsoluteMinute": 2040,
+    "goal": "supply-warehouse",
+    "verdict": "accept",
+    "deadlineDay": 3,
+    "maxPerRound": 2,
+    "maxTotal": 4,
+    "maxActive": 2,
+    "selection": "least-fatigued idle promisor (stamina desc, hunger desc, id asc)"
+  },
+  "followUpDelegation": {
+    "goal": "deliver-meal",
+    "targetActive": 2,
+    "targetDeliverMeal": 2,
+    "deadlineDay": 3,
+    "maxTotal": 4
+  },
+  "replayControls": [
+    "continuous same-action replay",
+    "segmented same-action replay"
+  ],
+  "fullStateComponents": [
+    "world",
+    "map cells/roads/stocks/carry",
+    "tasks",
+    "commitments+refs",
+    "memories+provenance+relations",
+    "domains",
+    "intents/work progress/generations",
+    "receipts",
+    "rng (seed+version+next draws)"
+  ],
+  "exclusions": [
+    "pid",
+    "wallClock",
+    "latencyMs",
+    "serviceResidency"
+  ],
+  "budgetNote": "inherits the project 10 GPU-hour ledger; this freeze does not open a new pot"
+}
