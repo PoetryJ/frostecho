@@ -511,7 +511,7 @@
             "selectedId": "a-855bd71e8938",
             "disposition": "accept",
             "scorerId": "independent-cpu",
-            "latencyMs": 0,
+            "latencyMs": 1,
             "executionStatus": "working",
             "reason": "until 510",
             "eventIds": [],
@@ -602,13 +602,13 @@
     },
     {
       "name": "pending-delivery-hook-lost-on-restore",
-      "commitmentId": "cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646",
-      "parentPid": 1046166,
+      "commitmentId": "cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f",
+      "parentPid": 1090127,
       "child": {
-        "pid": 1046173,
+        "pid": 1090134,
         "commitments": [
           {
-            "commitmentId": "cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646",
+            "commitmentId": "cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f",
             "taskId": "task-001-deliver-meal",
             "promisorId": "npc_01",
             "beneficiaryId": "player",
@@ -634,7 +634,7 @@
             "kind": "deliver-meal",
             "status": "done",
             "assignedAt": 480,
-            "commitmentId": "cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646",
+            "commitmentId": "cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f",
             "inputId": "restore-delivery:task"
           }
         ],
@@ -657,14 +657,14 @@
           {
             "actorId": "npc_01",
             "requestId": "in-1-r8-score-npc_01",
-            "inputSha256": "fc70771afad99bf589dc750d86f5cb34c03e949dd0c4aa4c19d9f64a5177b9ed",
-            "candidateSetHash": "60812fc1757fe51490dd5b475bc4151ddaf6ed4b9d9399fa2a0f3e54c8c16f07",
-            "renderSha256": "b7bc727e7d76b2bed626ea6c891a401b058fe5374c6512c88872755258952970",
-            "observationText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置kitchen 饥饿70 体力15 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- [engine] moved 知于480 发生于480 关于npc_01,world {\"to\":\"kitchen\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"engine\",\"sourceEventIds\":[\"to-kitchen:moved:0\"]}\n- [engine] commitment_proposed 知于480 发生于480 关于npc_01,player {\"goal\":\"deliver-meal\",\"fromId\":\"npc_01\",\"toId\":\"player\",\"conditions\":\"warehouse-supply\",\"deadline\":-1,\"commitmentId\":\"cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646\",\"revision\":1,\"heardBy\":\"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08\",\"toldBy\":\"npc_01\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"npc_01\",\"sourceEventIds\":[\"cmt-commitment_proposed-cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646-0\"]}\n- [engine] commitment_accepted 知于480 发生于480 关于npc_01,player {\"fromId\":\"npc_01\",\"toId\":\"player\",\"text\":\"accepted-by-resident\",\"commitmentId\":\"cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646\",\"revision\":1,\"heardBy\":\"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08\",\"toldBy\":\"npc_01\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"npc_01\",\"sourceEventIds\":[\"cmt-commitment_accepted-cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646-1\"]}\n目标:{\"source\":\"legacy-commitment\",\"taskId\":\"task-001-deliver-meal\",\"legacyTaskId\":\"task-001-deliver-meal\",\"commitmentId\":\"cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646\",\"revision\":1,\"type\":\"DELIVER_MEAL\",\"status\":\"active\",\"ready\":true,\"conditions\":[\"warehouse-supply\"],\"deadline\":null,\"beneficiaryId\":\"player\"}\n可选行动:\n1. 把携带的饭送达厨房，完成这份送饭承诺 [deliver] {action=deliver amount=1 bridgeStep=deliver commitmentId=cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646 commitmentRevision=1 legacyTaskId=task-001-deliver-meal to=kitchen} 前提:alive、accepted commitment revision unchanged、carrying meals >= 1\n2. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n3. 给中央炉添柴 [refuel] {action=refuel amount=2} 前提:firewood >= 8、fuel < 20\n4. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n5. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n6. 原地等待 [wait] {action=wait} 前提:alive\n7. 前往dorm-a [move] {action=move purpose=task-place to=dorm-a} 前提:alive",
-            "jointText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置kitchen 饥饿70 体力15 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- [engine] moved 知于480 发生于480 关于npc_01,world {\"to\":\"kitchen\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"engine\",\"sourceEventIds\":[\"to-kitchen:moved:0\"]}\n- [engine] commitment_proposed 知于480 发生于480 关于npc_01,player {\"goal\":\"deliver-meal\",\"fromId\":\"npc_01\",\"toId\":\"player\",\"conditions\":\"warehouse-supply\",\"deadline\":-1,\"commitmentId\":\"cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646\",\"revision\":1,\"heardBy\":\"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08\",\"toldBy\":\"npc_01\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"npc_01\",\"sourceEventIds\":[\"cmt-commitment_proposed-cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646-0\"]}\n- [engine] commitment_accepted 知于480 发生于480 关于npc_01,player {\"fromId\":\"npc_01\",\"toId\":\"player\",\"text\":\"accepted-by-resident\",\"commitmentId\":\"cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646\",\"revision\":1,\"heardBy\":\"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08\",\"toldBy\":\"npc_01\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"npc_01\",\"sourceEventIds\":[\"cmt-commitment_accepted-cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646-1\"]}\n目标:{\"source\":\"legacy-commitment\",\"taskId\":\"task-001-deliver-meal\",\"legacyTaskId\":\"task-001-deliver-meal\",\"commitmentId\":\"cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646\",\"revision\":1,\"type\":\"DELIVER_MEAL\",\"status\":\"active\",\"ready\":true,\"conditions\":[\"warehouse-supply\"],\"deadline\":null,\"beneficiaryId\":\"player\"}\n可选行动:\n1. 把携带的饭送达厨房，完成这份送饭承诺 [deliver] {action=deliver amount=1 bridgeStep=deliver commitmentId=cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646 commitmentRevision=1 legacyTaskId=task-001-deliver-meal to=kitchen} 前提:alive、accepted commitment revision unchanged、carrying meals >= 1\n2. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n3. 给中央炉添柴 [refuel] {action=refuel amount=2} 前提:firewood >= 8、fuel < 20\n4. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n5. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n6. 原地等待 [wait] {action=wait} 前提:alive\n7. 前往dorm-a [move] {action=move purpose=task-place to=dorm-a} 前提:alive",
+            "inputSha256": "82d0400c46cfb548b61d84cb9624e386172a6c64d1bf7ec9dbf4b39174e68000",
+            "candidateSetHash": "30376f0805b8fe01f7166a41861d99603712789bb9f858f1f4986fc7acdcc2d7",
+            "renderSha256": "776b6d859c785d2b7a5d7310cec09dfd302101844df347d09dcefa2819ab060f",
+            "observationText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置kitchen 饥饿70 体力15 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- [engine] moved 知于480 发生于480 关于npc_01,world {\"to\":\"kitchen\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"engine\",\"sourceEventIds\":[\"to-kitchen:moved:0\"]}\n- [engine] commitment_proposed 知于480 发生于480 关于npc_01,player {\"goal\":\"deliver-meal\",\"fromId\":\"npc_01\",\"toId\":\"player\",\"conditions\":\"warehouse-supply\",\"deadline\":-1,\"commitmentId\":\"cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f\",\"revision\":1,\"heardBy\":\"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08\",\"toldBy\":\"npc_01\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"npc_01\",\"sourceEventIds\":[\"cmt-commitment_proposed-cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f-0\"]}\n- [engine] commitment_accepted 知于480 发生于480 关于npc_01,player {\"fromId\":\"npc_01\",\"toId\":\"player\",\"text\":\"accepted-by-resident\",\"commitmentId\":\"cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f\",\"revision\":1,\"heardBy\":\"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08\",\"toldBy\":\"npc_01\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"npc_01\",\"sourceEventIds\":[\"cmt-commitment_accepted-cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f-1\"]}\n目标:{\"source\":\"legacy-commitment\",\"taskId\":\"task-001-deliver-meal\",\"legacyTaskId\":\"task-001-deliver-meal\",\"commitmentId\":\"cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f\",\"revision\":1,\"type\":\"DELIVER_MEAL\",\"status\":\"active\",\"ready\":true,\"conditions\":[\"warehouse-supply\"],\"deadline\":null,\"beneficiaryId\":\"player\"}\n可选行动:\n1. 把携带的饭送达厨房，完成这份送饭承诺 [deliver] {action=deliver amount=1 bridgeStep=deliver commitmentId=cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f commitmentRevision=1 legacyTaskId=task-001-deliver-meal to=kitchen} 前提:alive、accepted commitment revision unchanged、carrying meals >= 1\n2. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n3. 给中央炉添柴 [refuel] {action=refuel amount=2} 前提:firewood >= 8、fuel < 20\n4. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n5. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n6. 原地等待 [wait] {action=wait} 前提:alive\n7. 前往dorm-a [move] {action=move purpose=task-place to=dorm-a} 前提:alive",
+            "jointText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置kitchen 饥饿70 体力15 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- [engine] moved 知于480 发生于480 关于npc_01,world {\"to\":\"kitchen\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"engine\",\"sourceEventIds\":[\"to-kitchen:moved:0\"]}\n- [engine] commitment_proposed 知于480 发生于480 关于npc_01,player {\"goal\":\"deliver-meal\",\"fromId\":\"npc_01\",\"toId\":\"player\",\"conditions\":\"warehouse-supply\",\"deadline\":-1,\"commitmentId\":\"cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f\",\"revision\":1,\"heardBy\":\"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08\",\"toldBy\":\"npc_01\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"npc_01\",\"sourceEventIds\":[\"cmt-commitment_proposed-cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f-0\"]}\n- [engine] commitment_accepted 知于480 发生于480 关于npc_01,player {\"fromId\":\"npc_01\",\"toId\":\"player\",\"text\":\"accepted-by-resident\",\"commitmentId\":\"cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f\",\"revision\":1,\"heardBy\":\"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08\",\"toldBy\":\"npc_01\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"npc_01\",\"sourceEventIds\":[\"cmt-commitment_accepted-cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f-1\"]}\n目标:{\"source\":\"legacy-commitment\",\"taskId\":\"task-001-deliver-meal\",\"legacyTaskId\":\"task-001-deliver-meal\",\"commitmentId\":\"cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f\",\"revision\":1,\"type\":\"DELIVER_MEAL\",\"status\":\"active\",\"ready\":true,\"conditions\":[\"warehouse-supply\"],\"deadline\":null,\"beneficiaryId\":\"player\"}\n可选行动:\n1. 把携带的饭送达厨房，完成这份送饭承诺 [deliver] {action=deliver amount=1 bridgeStep=deliver commitmentId=cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f commitmentRevision=1 legacyTaskId=task-001-deliver-meal to=kitchen} 前提:alive、accepted commitment revision unchanged、carrying meals >= 1\n2. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n3. 给中央炉添柴 [refuel] {action=refuel amount=2} 前提:firewood >= 8、fuel < 20\n4. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n5. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n6. 原地等待 [wait] {action=wait} 前提:alive\n7. 前往dorm-a [move] {action=move purpose=task-place to=dorm-a} 前提:alive",
             "candidates": [
               {
-                "id": "b-e4a8f6eae3ec81cb",
+                "id": "b-0f0a349379bde296",
                 "kind": "deliver",
                 "description": "把携带的饭送达厨房，完成这份送饭承诺",
                 "parameters": {
@@ -673,7 +673,7 @@
                   "amount": 1,
                   "bridgeStep": "deliver",
                   "legacyTaskId": "task-001-deliver-meal",
-                  "commitmentId": "cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646",
+                  "commitmentId": "cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f",
                   "commitmentRevision": 1
                 },
                 "preconditions": [
@@ -681,7 +681,7 @@
                   "accepted commitment revision unchanged",
                   "carrying meals >= 1"
                 ],
-                "text": " 把携带的饭送达厨房，完成这份送饭承诺 [deliver] {action=deliver amount=1 bridgeStep=deliver commitmentId=cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646 commitmentRevision=1 legacyTaskId=task-001-deliver-meal to=kitchen} 前提:alive、accepted commitment revision unchanged、carrying meals >= 1"
+                "text": " 把携带的饭送达厨房，完成这份送饭承诺 [deliver] {action=deliver amount=1 bridgeStep=deliver commitmentId=cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f commitmentRevision=1 legacyTaskId=task-001-deliver-meal to=kitchen} 前提:alive、accepted commitment revision unchanged、carrying meals >= 1"
               },
               {
                 "id": "a-bae1f2dab8ef",
@@ -776,7 +776,7 @@
               "action.place-blocked:rest@dorm-a",
               "action.walk-to-site"
             ],
-            "selectedId": "b-e4a8f6eae3ec81cb",
+            "selectedId": "b-0f0a349379bde296",
             "disposition": "accept",
             "scorerId": "independent-cpu",
             "latencyMs": 0,
@@ -804,7 +804,7 @@
       },
       "continuous": {
         "commitment": {
-          "commitmentId": "cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646",
+          "commitmentId": "cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f",
           "taskId": "task-001-deliver-meal",
           "promisorId": "npc_01",
           "beneficiaryId": "player",
@@ -829,7 +829,7 @@
             "kind": "deliver-meal",
             "status": "done",
             "assignedAt": 480,
-            "commitmentId": "cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646",
+            "commitmentId": "cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f",
             "inputId": "restore-delivery:task"
           }
         ],
@@ -849,7 +849,7 @@
       },
       "resumed": {
         "commitment": {
-          "commitmentId": "cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646",
+          "commitmentId": "cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f",
           "taskId": "task-001-deliver-meal",
           "promisorId": "npc_01",
           "beneficiaryId": "player",
@@ -874,7 +874,7 @@
             "kind": "deliver-meal",
             "status": "done",
             "assignedAt": 480,
-            "commitmentId": "cm-fa1faccd-6a9b-4c19-87f1-76d5823bb646",
+            "commitmentId": "cm-d86ae2c0-6e07-46e8-ba74-d8645e8d526f",
             "inputId": "restore-delivery:task"
           }
         ],
@@ -901,14 +901,14 @@
           {
             "actorId": "npc_01",
             "requestId": "in-1-r8-score-npc_01",
-            "inputSha256": "f14346e3dc3c3efcebce18f028d10994ce65da89580ccab417f8a0d96ea811f8",
-            "candidateSetHash": "7136e5130d16692af9d8e7267476c5f952a6fa7b4fba6a57276c930f24eaf2b2",
-            "renderSha256": "1ce1bee71543fba3470b9eb904bbe700421cb24065d16957ea00966be876a34a",
-            "observationText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置kitchen 饥饿70 体力15 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- [engine] moved 知于480 发生于480 关于npc_01,world {\"to\":\"kitchen\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"engine\",\"sourceEventIds\":[\"cancel-to-kitchen:moved:0\"]}\n- [engine] commitment_proposed 知于480 发生于480 关于npc_01,player {\"goal\":\"deliver-meal\",\"fromId\":\"npc_01\",\"toId\":\"player\",\"conditions\":\"warehouse-supply\",\"deadline\":-1,\"commitmentId\":\"cm-33d709b2-7a8d-475d-bef4-963596daa80d\",\"revision\":1,\"heardBy\":\"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08\",\"toldBy\":\"npc_01\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"npc_01\",\"sourceEventIds\":[\"cmt-commitment_proposed-cm-33d709b2-7a8d-475d-bef4-963596daa80d-0\"]}\n- [engine] commitment_accepted 知于480 发生于480 关于npc_01,player {\"fromId\":\"npc_01\",\"toId\":\"player\",\"text\":\"accepted-by-resident\",\"commitmentId\":\"cm-33d709b2-7a8d-475d-bef4-963596daa80d\",\"revision\":1,\"heardBy\":\"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08\",\"toldBy\":\"npc_01\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"npc_01\",\"sourceEventIds\":[\"cmt-commitment_accepted-cm-33d709b2-7a8d-475d-bef4-963596daa80d-1\"]}\n目标:{\"source\":\"legacy-commitment\",\"taskId\":\"task-001-deliver-meal\",\"legacyTaskId\":\"task-001-deliver-meal\",\"commitmentId\":\"cm-33d709b2-7a8d-475d-bef4-963596daa80d\",\"revision\":1,\"type\":\"DELIVER_MEAL\",\"status\":\"active\",\"ready\":true,\"conditions\":[\"warehouse-supply\"],\"deadline\":null,\"beneficiaryId\":\"player\"}\n可选行动:\n1. 把携带的饭送达厨房，完成这份送饭承诺 [deliver] {action=deliver amount=1 bridgeStep=deliver commitmentId=cm-33d709b2-7a8d-475d-bef4-963596daa80d commitmentRevision=1 legacyTaskId=task-001-deliver-meal to=kitchen} 前提:alive、accepted commitment revision unchanged、carrying meals >= 1\n2. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n3. 给中央炉添柴 [refuel] {action=refuel amount=2} 前提:firewood >= 8、fuel < 20\n4. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n5. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n6. 原地等待 [wait] {action=wait} 前提:alive\n7. 前往dorm-a [move] {action=move purpose=task-place to=dorm-a} 前提:alive",
-            "jointText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置kitchen 饥饿70 体力15 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- [engine] moved 知于480 发生于480 关于npc_01,world {\"to\":\"kitchen\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"engine\",\"sourceEventIds\":[\"cancel-to-kitchen:moved:0\"]}\n- [engine] commitment_proposed 知于480 发生于480 关于npc_01,player {\"goal\":\"deliver-meal\",\"fromId\":\"npc_01\",\"toId\":\"player\",\"conditions\":\"warehouse-supply\",\"deadline\":-1,\"commitmentId\":\"cm-33d709b2-7a8d-475d-bef4-963596daa80d\",\"revision\":1,\"heardBy\":\"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08\",\"toldBy\":\"npc_01\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"npc_01\",\"sourceEventIds\":[\"cmt-commitment_proposed-cm-33d709b2-7a8d-475d-bef4-963596daa80d-0\"]}\n- [engine] commitment_accepted 知于480 发生于480 关于npc_01,player {\"fromId\":\"npc_01\",\"toId\":\"player\",\"text\":\"accepted-by-resident\",\"commitmentId\":\"cm-33d709b2-7a8d-475d-bef4-963596daa80d\",\"revision\":1,\"heardBy\":\"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08\",\"toldBy\":\"npc_01\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"npc_01\",\"sourceEventIds\":[\"cmt-commitment_accepted-cm-33d709b2-7a8d-475d-bef4-963596daa80d-1\"]}\n目标:{\"source\":\"legacy-commitment\",\"taskId\":\"task-001-deliver-meal\",\"legacyTaskId\":\"task-001-deliver-meal\",\"commitmentId\":\"cm-33d709b2-7a8d-475d-bef4-963596daa80d\",\"revision\":1,\"type\":\"DELIVER_MEAL\",\"status\":\"active\",\"ready\":true,\"conditions\":[\"warehouse-supply\"],\"deadline\":null,\"beneficiaryId\":\"player\"}\n可选行动:\n1. 把携带的饭送达厨房，完成这份送饭承诺 [deliver] {action=deliver amount=1 bridgeStep=deliver commitmentId=cm-33d709b2-7a8d-475d-bef4-963596daa80d commitmentRevision=1 legacyTaskId=task-001-deliver-meal to=kitchen} 前提:alive、accepted commitment revision unchanged、carrying meals >= 1\n2. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n3. 给中央炉添柴 [refuel] {action=refuel amount=2} 前提:firewood >= 8、fuel < 20\n4. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n5. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n6. 原地等待 [wait] {action=wait} 前提:alive\n7. 前往dorm-a [move] {action=move purpose=task-place to=dorm-a} 前提:alive",
+            "inputSha256": "01dd2a344dbe9e494357dae616291d716fbc4bd190b5a28a63c10f885707fa7a",
+            "candidateSetHash": "64c6783ee50ead1e5ebcafe59b43cd33f818090be531f48e0642856e720d9428",
+            "renderSha256": "c031195982178dbd039ce4f60351ceebcf060cb6ea52660b66c9f3604ff1f4a3",
+            "observationText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置kitchen 饥饿70 体力15 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- [engine] moved 知于480 发生于480 关于npc_01,world {\"to\":\"kitchen\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"engine\",\"sourceEventIds\":[\"cancel-to-kitchen:moved:0\"]}\n- [engine] commitment_proposed 知于480 发生于480 关于npc_01,player {\"goal\":\"deliver-meal\",\"fromId\":\"npc_01\",\"toId\":\"player\",\"conditions\":\"warehouse-supply\",\"deadline\":-1,\"commitmentId\":\"cm-6b03d295-ba7a-42a0-aad7-137000136b2e\",\"revision\":1,\"heardBy\":\"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08\",\"toldBy\":\"npc_01\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"npc_01\",\"sourceEventIds\":[\"cmt-commitment_proposed-cm-6b03d295-ba7a-42a0-aad7-137000136b2e-0\"]}\n- [engine] commitment_accepted 知于480 发生于480 关于npc_01,player {\"fromId\":\"npc_01\",\"toId\":\"player\",\"text\":\"accepted-by-resident\",\"commitmentId\":\"cm-6b03d295-ba7a-42a0-aad7-137000136b2e\",\"revision\":1,\"heardBy\":\"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08\",\"toldBy\":\"npc_01\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"npc_01\",\"sourceEventIds\":[\"cmt-commitment_accepted-cm-6b03d295-ba7a-42a0-aad7-137000136b2e-1\"]}\n目标:{\"source\":\"legacy-commitment\",\"taskId\":\"task-001-deliver-meal\",\"legacyTaskId\":\"task-001-deliver-meal\",\"commitmentId\":\"cm-6b03d295-ba7a-42a0-aad7-137000136b2e\",\"revision\":1,\"type\":\"DELIVER_MEAL\",\"status\":\"active\",\"ready\":true,\"conditions\":[\"warehouse-supply\"],\"deadline\":null,\"beneficiaryId\":\"player\"}\n可选行动:\n1. 把携带的饭送达厨房，完成这份送饭承诺 [deliver] {action=deliver amount=1 bridgeStep=deliver commitmentId=cm-6b03d295-ba7a-42a0-aad7-137000136b2e commitmentRevision=1 legacyTaskId=task-001-deliver-meal to=kitchen} 前提:alive、accepted commitment revision unchanged、carrying meals >= 1\n2. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n3. 给中央炉添柴 [refuel] {action=refuel amount=2} 前提:firewood >= 8、fuel < 20\n4. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n5. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n6. 原地等待 [wait] {action=wait} 前提:alive\n7. 前往dorm-a [move] {action=move purpose=task-place to=dorm-a} 前提:alive",
+            "jointText": "第1天 第480分钟\n天气:snow\n公共资源 食物130 木柴30 电力30 药品3\n炉火:点着 燃料6\n自身:位置kitchen 饥饿70 体力15 健康100 精神80 体温36.50\n仓库认知:未核实\n问题:现在最该做什么？\n记忆:\n- [engine] moved 知于480 发生于480 关于npc_01,world {\"to\":\"kitchen\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"engine\",\"sourceEventIds\":[\"cancel-to-kitchen:moved:0\"]}\n- [engine] commitment_proposed 知于480 发生于480 关于npc_01,player {\"goal\":\"deliver-meal\",\"fromId\":\"npc_01\",\"toId\":\"player\",\"conditions\":\"warehouse-supply\",\"deadline\":-1,\"commitmentId\":\"cm-6b03d295-ba7a-42a0-aad7-137000136b2e\",\"revision\":1,\"heardBy\":\"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08\",\"toldBy\":\"npc_01\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"npc_01\",\"sourceEventIds\":[\"cmt-commitment_proposed-cm-6b03d295-ba7a-42a0-aad7-137000136b2e-0\"]}\n- [engine] commitment_accepted 知于480 发生于480 关于npc_01,player {\"fromId\":\"npc_01\",\"toId\":\"player\",\"text\":\"accepted-by-resident\",\"commitmentId\":\"cm-6b03d295-ba7a-42a0-aad7-137000136b2e\",\"revision\":1,\"heardBy\":\"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08\",\"toldBy\":\"npc_01\",\"occurredAt\":480,\"authority\":\"engine\",\"speakerId\":\"npc_01\",\"sourceEventIds\":[\"cmt-commitment_accepted-cm-6b03d295-ba7a-42a0-aad7-137000136b2e-1\"]}\n目标:{\"source\":\"legacy-commitment\",\"taskId\":\"task-001-deliver-meal\",\"legacyTaskId\":\"task-001-deliver-meal\",\"commitmentId\":\"cm-6b03d295-ba7a-42a0-aad7-137000136b2e\",\"revision\":1,\"type\":\"DELIVER_MEAL\",\"status\":\"active\",\"ready\":true,\"conditions\":[\"warehouse-supply\"],\"deadline\":null,\"beneficiaryId\":\"player\"}\n可选行动:\n1. 把携带的饭送达厨房，完成这份送饭承诺 [deliver] {action=deliver amount=1 bridgeStep=deliver commitmentId=cm-6b03d295-ba7a-42a0-aad7-137000136b2e commitmentRevision=1 legacyTaskId=task-001-deliver-meal to=kitchen} 前提:alive、accepted commitment revision unchanged、carrying meals >= 1\n2. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80\n3. 给中央炉添柴 [refuel] {action=refuel amount=2} 前提:firewood >= 8、fuel < 20\n4. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive\n5. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive\n6. 原地等待 [wait] {action=wait} 前提:alive\n7. 前往dorm-a [move] {action=move purpose=task-place to=dorm-a} 前提:alive",
             "candidates": [
               {
-                "id": "b-54d7ae01d5cec900",
+                "id": "b-051f250c0be9a342",
                 "kind": "deliver",
                 "description": "把携带的饭送达厨房，完成这份送饭承诺",
                 "parameters": {
@@ -917,7 +917,7 @@
                   "amount": 1,
                   "bridgeStep": "deliver",
                   "legacyTaskId": "task-001-deliver-meal",
-                  "commitmentId": "cm-33d709b2-7a8d-475d-bef4-963596daa80d",
+                  "commitmentId": "cm-6b03d295-ba7a-42a0-aad7-137000136b2e",
                   "commitmentRevision": 1
                 },
                 "preconditions": [
@@ -925,7 +925,7 @@
                   "accepted commitment revision unchanged",
                   "carrying meals >= 1"
                 ],
-                "text": " 把携带的饭送达厨房，完成这份送饭承诺 [deliver] {action=deliver amount=1 bridgeStep=deliver commitmentId=cm-33d709b2-7a8d-475d-bef4-963596daa80d commitmentRevision=1 legacyTaskId=task-001-deliver-meal to=kitchen} 前提:alive、accepted commitment revision unchanged、carrying meals >= 1"
+                "text": " 把携带的饭送达厨房，完成这份送饭承诺 [deliver] {action=deliver amount=1 bridgeStep=deliver commitmentId=cm-6b03d295-ba7a-42a0-aad7-137000136b2e commitmentRevision=1 legacyTaskId=task-001-deliver-meal to=kitchen} 前提:alive、accepted commitment revision unchanged、carrying meals >= 1"
               },
               {
                 "id": "a-bae1f2dab8ef",
@@ -1020,7 +1020,7 @@
               "action.place-blocked:rest@dorm-a",
               "action.walk-to-site"
             ],
-            "selectedId": "b-54d7ae01d5cec900",
+            "selectedId": "b-051f250c0be9a342",
             "disposition": "accept",
             "scorerId": "independent-cpu",
             "latencyMs": 0,
@@ -1048,7 +1048,7 @@
       },
       "cancelled": {
         "commitment": {
-          "commitmentId": "cm-33d709b2-7a8d-475d-bef4-963596daa80d",
+          "commitmentId": "cm-6b03d295-ba7a-42a0-aad7-137000136b2e",
           "taskId": "task-001-deliver-meal",
           "promisorId": "npc_01",
           "beneficiaryId": "player",
@@ -1066,7 +1066,7 @@
         },
         "event": {
           "type": "commitment_cancelled",
-          "commitmentId": "cm-33d709b2-7a8d-475d-bef4-963596daa80d",
+          "commitmentId": "cm-6b03d295-ba7a-42a0-aad7-137000136b2e",
           "revision": 1,
           "at": 480,
           "actorId": "npc_01",
@@ -1089,7 +1089,7 @@
             "source": "legacy-commitment",
             "taskId": "task-001-deliver-meal",
             "legacyTaskId": "task-001-deliver-meal",
-            "commitmentId": "cm-db4d5243-f305-4db8-8254-3ead657f8620",
+            "commitmentId": "cm-60265cd7-75d4-4d9e-b4f0-5b6fa46eb09c",
             "revision": 1,
             "type": "DELIVER_MEAL",
             "status": "active",
@@ -1103,7 +1103,7 @@
         ],
         "candidates": [
           {
-            "id": "b-bf290805df62b778",
+            "id": "b-76e904c2d73ba91e",
             "kind": "move",
             "description": "去仓库亲自核实并领取承诺要送的饭",
             "parameters": {
@@ -1112,7 +1112,7 @@
               "purpose": "verify-stock",
               "bridgeStep": "to-warehouse",
               "legacyTaskId": "task-001-deliver-meal",
-              "commitmentId": "cm-db4d5243-f305-4db8-8254-3ead657f8620",
+              "commitmentId": "cm-60265cd7-75d4-4d9e-b4f0-5b6fa46eb09c",
               "commitmentRevision": 1
             },
             "preconditions": [
@@ -1130,7 +1130,7 @@
             "source": "legacy-commitment",
             "taskId": "task-001-deliver-meal",
             "legacyTaskId": "task-001-deliver-meal",
-            "commitmentId": "cm-db4d5243-f305-4db8-8254-3ead657f8620",
+            "commitmentId": "cm-60265cd7-75d4-4d9e-b4f0-5b6fa46eb09c",
             "revision": 1,
             "type": "DELIVER_MEAL",
             "status": "active",
@@ -1144,7 +1144,7 @@
         ],
         "candidates": [
           {
-            "id": "b-bf290805df62b778",
+            "id": "b-76e904c2d73ba91e",
             "kind": "move",
             "description": "去仓库亲自核实并领取承诺要送的饭",
             "parameters": {
@@ -1153,7 +1153,7 @@
               "purpose": "verify-stock",
               "bridgeStep": "to-warehouse",
               "legacyTaskId": "task-001-deliver-meal",
-              "commitmentId": "cm-db4d5243-f305-4db8-8254-3ead657f8620",
+              "commitmentId": "cm-60265cd7-75d4-4d9e-b4f0-5b6fa46eb09c",
               "commitmentRevision": 1
             },
             "preconditions": [

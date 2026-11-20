@@ -726,7 +726,9 @@ export class R8Runtime {
           let landed = this.legacySpatial.landLeg(intent);
           for (let guard = 0; landed.status === 'landed' && guard < intent.move!.path.length;
             guard += 1) {
-            if (!this.isSettleable(intent) || intent.claim !== claim) break;
+            // Our own claim is still held, so ask the clock directly: a resumed
+            // world may already sit past several legs.
+            if (intent.claim !== claim || this.world.simTime < this.settleAtOf(intent)) break;
             landed = this.legacySpatial.landLeg(intent);
           }
           if (landed.status === 'landed') {
