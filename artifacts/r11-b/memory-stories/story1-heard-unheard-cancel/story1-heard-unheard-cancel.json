@@ -6,15 +6,15 @@
       "name": "a cancellation told to another NPC leaves the absent input byte-identical",
       "passed": true,
       "detail": {
-        "before": "c72011941749fd5aede9e6a0d947981921c1d510e84e57456a2f9ab7623827a1",
-        "after": "c72011941749fd5aede9e6a0d947981921c1d510e84e57456a2f9ab7623827a1",
+        "before": "dc673d229f0528640c29c460e8fc40592ba492e211e40d8f827e18d1bd0e67a2",
+        "after": "dc673d229f0528640c29c460e8fc40592ba492e211e40d8f827e18d1bd0e67a2",
         "textBytes": [
           3280,
           3280
         ],
         "memoryBlock": [
-          "9bc7c10ba73e91eb4acad33bb441587c498b261fccbcbc68d92be00fc59caf28",
-          "9bc7c10ba73e91eb4acad33bb441587c498b261fccbcbc68d92be00fc59caf28"
+          "0fcf87dd3d69dc7ef4be92eac53fd1e807ea3c74544359d6063f0c6c8172b25d",
+          "0fcf87dd3d69dc7ef4be92eac53fd1e807ea3c74544359d6063f0c6c8172b25d"
         ],
         "candidates": 8
       }
@@ -51,7 +51,7 @@
       "detail": {
         "actions": [
           {
-            "step": "b-4aa0725c3eb1429e",
+            "step": "b-22b66969ac418038",
             "status": "working"
           },
           {
@@ -73,18 +73,18 @@
       "name": "D2 exit restores the same commitment + memory state",
       "passed": true,
       "detail": {
-        "before": "b5c81b430199b36b",
-        "after": "b5c81b430199b36b",
+        "before": "09b1c4031deb75f5",
+        "after": "09b1c4031deb75f5",
         "partsBefore": {
-          "commitments": "ec6248929b6b98205aa7b8c254935a788197bcacbacf2d3f597e73dae258837d",
-          "tasks": "22154d66156f844eff723a676b85dc5a62af385e9d33dcabb56568ad505039bb",
-          "memories": "0450f3c3a228e88ad902aa3f6e99326f2b23ba96c726d4178aa79e5076b2a6e6",
+          "commitments": "38dae37841e2f0671d7df378b76cbcc235492fad4edc3b398550615bedac64bf",
+          "tasks": "9ee0a04ff2c95c688b3fd07ba246a49d4bbe02498f03a4007488e580502d9e80",
+          "memories": "5099979ad3249169b7a9070c16930c4a78c0de097448d362d8bd4b893ac2e4ac",
           "clock": "6b5f40c09215713a1fa83ea2de2adcae17e605b8958a2d7379e15b561687ee8f"
         },
         "partsAfter": {
-          "commitments": "ec6248929b6b98205aa7b8c254935a788197bcacbacf2d3f597e73dae258837d",
-          "tasks": "22154d66156f844eff723a676b85dc5a62af385e9d33dcabb56568ad505039bb",
-          "memories": "0450f3c3a228e88ad902aa3f6e99326f2b23ba96c726d4178aa79e5076b2a6e6",
+          "commitments": "38dae37841e2f0671d7df378b76cbcc235492fad4edc3b398550615bedac64bf",
+          "tasks": "9ee0a04ff2c95c688b3fd07ba246a49d4bbe02498f03a4007488e580502d9e80",
+          "memories": "5099979ad3249169b7a9070c16930c4a78c0de097448d362d8bd4b893ac2e4ac",
           "clock": "6b5f40c09215713a1fa83ea2de2adcae17e605b8958a2d7379e15b561687ee8f"
         },
         "commitment": "cancelled",
@@ -117,8 +117,8 @@
       "name": "the absent actor reads the same memory bytes after the D2 restart",
       "passed": true,
       "detail": {
-        "before": "9bc7c10ba73e91eb4acad33bb441587c498b261fccbcbc68d92be00fc59caf28",
-        "after": "9bc7c10ba73e91eb4acad33bb441587c498b261fccbcbc68d92be00fc59caf28",
+        "before": "0fcf87dd3d69dc7ef4be92eac53fd1e807ea3c74544359d6063f0c6c8172b25d",
+        "after": "0fcf87dd3d69dc7ef4be92eac53fd1e807ea3c74544359d6063f0c6c8172b25d",
         "bytes": [
           1843,
           1843
@@ -168,7 +168,7 @@
             "source": "legacy-commitment",
             "taskId": "task-001-deliver-meal",
             "legacyTaskId": "task-001-deliver-meal",
-            "commitmentId": "cm-1206c9f4-f19e-4c78-b47f-90b11fe8da30",
+            "commitmentId": "cm-42136c35-0565-44d8-bd57-ea408fc30c68",
             "revision": 1,
             "type": "DELIVER_MEAL",
             "status": "active",
@@ -184,13 +184,13 @@
         "busy": null,
         "commitment": [
           {
-            "id": "cm-1206c9f4-f19e-4c78-b47f-90b11fe8da30",
+            "id": "cm-42136c35-0565-44d8-bd57-ea408fc30c68",
             "status": "cancelled",
             "promisor": "npc_01",
             "task": "task-001-deliver-meal"
           },
           {
-            "id": "cm-e009763b-08bf-4f23-886d-9a1ce08df5a4",
+            "id": "cm-f7501ad2-9190-491f-8d75-f03a5e708cdc",
             "status": "cancelled",
             "promisor": "npc_02",
             "task": "task-002-deliver-meal"
@@ -209,8 +209,8 @@
       "name": "after a legitimate relay the input does move",
       "passed": true,
       "detail": {
-        "before": "c72011941749fd5aede9e6a0d947981921c1d510e84e57456a2f9ab7623827a1",
-        "after": "e695b2a94bb6bb7dc024e71ab6f8775ff6996bc541caa7157bced8c2c99bee24",
+        "before": "dc673d229f0528640c29c460e8fc40592ba492e211e40d8f827e18d1bd0e67a2",
+        "after": "2536f0409164bf1383d0869abb27fda08ac4ed80d40138a825e2e4a049a5b0cd",
         "candidates": 5
       }
     },
@@ -254,8 +254,8 @@
             "toId": "npc_01",
             "text": "玩家当面说已经取消了",
             "relayedBy": "npc_02",
-            "originalEventId": "cmt-commitment_cancelled-cm-1206c9f4-f19e-4c78-b47f-90b11fe8da30-10",
-            "commitmentId": "cm-1206c9f4-f19e-4c78-b47f-90b11fe8da30",
+            "originalEventId": "cmt-commitment_cancelled-cm-42136c35-0565-44d8-bd57-ea408fc30c68-10",
+            "commitmentId": "cm-42136c35-0565-44d8-bd57-ea408fc30c68",
             "revision": 1,
             "heardBy": "npc_01",
             "toldBy": "npc_02"
@@ -271,8 +271,8 @@
             "toId": "npc_02",
             "text": "玩家当面说已经取消了",
             "relayedBy": "npc_02",
-            "originalEventId": "cmt-commitment_cancelled-cm-e009763b-08bf-4f23-886d-9a1ce08df5a4-11",
-            "commitmentId": "cm-e009763b-08bf-4f23-886d-9a1ce08df5a4",
+            "originalEventId": "cmt-commitment_cancelled-cm-f7501ad2-9190-491f-8d75-f03a5e708cdc-11",
+            "commitmentId": "cm-f7501ad2-9190-491f-8d75-f03a5e708cdc",
             "revision": 1,
             "heardBy": "npc_01",
             "toldBy": "npc_02"
@@ -331,8 +331,8 @@
     "actionsBeforeHeard": 2,
     "actionsAfterRelay": 0,
     "fingerprint": {
-      "before": "14b460da3d41065131ce362af3d106015be5ef227e514f5142883d130c83a491",
-      "after": "b5c81b430199b36b3b936fd5f25e976f7b5562bccbc77dd21ff5b963c62be8bb"
+      "before": "2e884778fd09832d43bf327fc94f89d5f0946d0f21610e674ab04ce3f4929125",
+      "after": "09b1c4031deb75f5e8bf05cd5e057f7d98c33f35ccaadc3a0c37784c173d03ef"
     }
   },
   "memory": {
@@ -354,7 +354,7 @@
       "unitId": "utf8-bytes/3-ceil/1",
       "encoderTokens": null,
       "encoderStatus": "not-attached",
-      "blockSha256": "d6ff18f8f272faf19326e1871a5c996ec9c5586083f0d0cededb709698a69af2",
+      "blockSha256": "0c67abf827d2fc401e08a25e7619b70826a64e848968add077fa787d1aef3b6d",
       "segmentBytes": 1859,
       "truncated": true,
       "truncatedFacts": [
@@ -454,12 +454,12 @@
       "unitId": "utf8-bytes/3-ceil/1",
       "encoderTokens": null,
       "encoderStatus": "not-attached",
-      "blockSha256": "9bc7c10ba73e91eb4acad33bb441587c498b261fccbcbc68d92be00fc59caf28",
+      "blockSha256": "0fcf87dd3d69dc7ef4be92eac53fd1e807ea3c74544359d6063f0c6c8172b25d",
       "segmentBytes": 1852,
       "truncated": true,
       "truncatedFacts": [
         {
-          "pointer": "cmt-commitment_cancelled-cm-e009763b-08bf-4f23-886d-9a1ce08df5a4-377",
+          "pointer": "cmt-commitment_cancelled-cm-f7501ad2-9190-491f-8d75-f03a5e708cdc-377",
           "level": "omitted",
           "droppedFields": [
             "text",
@@ -472,7 +472,7 @@
           "omittedTextChars": 10
         },
         {
-          "pointer": "cmt-commitment_cancelled-cm-1206c9f4-f19e-4c78-b47f-90b11fe8da30-376",
+          "pointer": "cmt-commitment_cancelled-cm-42136c35-0565-44d8-bd57-ea408fc30c68-376",
           "level": "omitted",
           "droppedFields": [
             "text",

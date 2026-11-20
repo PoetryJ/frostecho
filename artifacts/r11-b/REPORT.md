@@ -1,6 +1,6 @@
 # R11-B：单条裁剪、同一投影、可恢复条件记忆
 
-源码 `d291669`（起点 `24406c4`，R10 源码 `288a288`）。全部为 CPU 运行，0 次 GPU/模型调用。
+源码 `ded82c6`（起点 `24406c4`，R10 源码 `288a288`）。全部为 CPU 运行，0 次 GPU/模型调用。
 本目录的每个数字都由已编译的产品模块产出（`dist/src/r7/...`），脚本只测量不判定。
 
 ## 1. 反例：首条记录突破预算
@@ -54,7 +54,7 @@ npm run build && node artifacts/r10-independent-audit/runtime/extra.cjs
 - 估算单位：`utf8-bytes/3-ceil/1` = `ceil(UTF-8 字节 / 3)`，`unitKind=estimated-token`，确定性、无 tokenizer。
 - 真实计数：`Qwen2TokenizerFast`（`/data2/model_weights/Qwen3.8-27B`，vocab 248077，CPU，`add_special_tokens=False`），
   对同一批字节计数，32 个文本 SHA 全部与 manifest 相符。
-- 结果：均值比 1.034，最大 **多出 143 token**（中文正文 + JSON 结构时估算偏低，估算不是上界）。
+- 结果：均值比 1.0371，最大 **多出 149 token**（中文正文 + JSON 结构时估算偏低，估算不是上界）。
   `estimateIsConservative=false` 如实记录。若调用方需要“不超过 N 个真实 token”，
   应把 tokenizer 计数作为 `StepOptions.tokenCounter` 传入（预算与编码侧同时切换），
   而不是把估算叫做 token。
@@ -74,7 +74,7 @@ CLI（`scripts/play-sprint.ts`）、网页（`CliBridge` 驱动同一 CLI）、�
 |---|---|---|
 | CLI / 网页（`CliBridge` 驱动同一 CLI） | `printf 'r8-step npc_01\nr8-step npc_02\nquit\n' \| node dist/scripts/play-sprint.js --profile gospel-5.8.19 --state …/state.json --fresh` | 两条记录 `memoryTokens=636/640`、`memoryBytes=1907`、`memoryProjectionId=memory-projection/2`、`memoryEncoderStatus=not-attached` |
 | 数据采集 | `node --test dist/tests/r11-b/shared-projection.test.js` | step 记录与 `renderRequest` 记忆段、`buildEnvelope().tokens.memory` 三方同值 |
-| 四日 runner | `node dist/scripts/r8/playthrough.js … --mode reference`（连续 / D2 保存后恢复） | 166/166 条决策记忆块 SHA 相同，见 §5b |
+| 四日 runner | `node dist/scripts/r8/playthrough.js … --mode reference`（连续 / D2 保存后恢复） | 120/120 条决策记忆块 SHA 相同，见 §5b |
 | 证据脚本 | `node dist/scripts/r11-b/memory-evidence.js` | 42 用例 `withinBudget=true`，6 条 step `agreesWithRender=true` |
 
 ## 5. 四故事与恢复（`memory-stories/`，`allPassed=true`）
@@ -100,7 +100,7 @@ CLI（`scripts/play-sprint.ts`）、网页（`CliBridge` 驱动同一 CLI）、�
   136 + 190 次决策、19 + 49 次执行、4 人存活、`bleak`。
 
 按 `(actorId, 世界时钟, requestId)` 把恢复段的每条决策与连续段的同一条配对，
-**166/166 条的 `memoryBlockSha256 / memoryTokens / memoryKept / memoryDropped` 完全相同**。
+**120/120 条的 `memoryBlockSha256 / memoryTokens / memoryKept / memoryDropped` 完全相同**。
 
 （连续与拆段的决策条数不同：318 vs 136+190，`rejected` 4 vs 6；同一 seed 在**基线 `24406c4`**
 上跑出同样的 318/326 与 4/6，说明这是保存/恢复的既有差异，不属于记忆投影，
