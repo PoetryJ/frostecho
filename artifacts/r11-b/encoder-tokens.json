@@ -1,0 +1,378 @@
+{
+  "schema": "frostecho.r11b.encoder-tokens/1",
+  "tokenizer": {
+    "id": "/data2/model_weights/Qwen3.8-27B",
+    "className": "Qwen2TokenizerFast",
+    "vocabSize": 248077,
+    "files": {
+      "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+      "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+      "vocab.json": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003",
+      "merges.txt": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d"
+    },
+    "device": "cpu",
+    "addSpecialTokens": false
+  },
+  "meaning": "estimateUnits = ceil(utf8 bytes / 3), the game's deterministic budget unit. encoderTokens = the encoder tokenizer applied to the same bytes. They are different quantities and are reported separately.",
+  "summary": {
+    "texts": 32,
+    "allShaMatch": true,
+    "estimateIsConservative": false,
+    "maxEncoderOverEstimate": 143,
+    "meanRatio": 1.034
+  },
+  "entries": [
+    {
+      "file": "texts/oversized-single.b64.raw-last12.memory.txt",
+      "bytes": 182,
+      "sha256": "318d433c4035616490254b0f34efd08f147d164ee48a6b5d0f92347f3dfcf0e6",
+      "manifestSha256": "318d433c4035616490254b0f34efd08f147d164ee48a6b5d0f92347f3dfcf0e6",
+      "shaMatchesManifest": true,
+      "estimateUnits": 61,
+      "encoderTokens": 56,
+      "encoderMinusEstimate": -5,
+      "ratioEncoderOverEstimate": 0.918
+    },
+    {
+      "file": "texts/oversized-single.b64.obligation-first.memory.txt",
+      "bytes": 182,
+      "sha256": "318d433c4035616490254b0f34efd08f147d164ee48a6b5d0f92347f3dfcf0e6",
+      "manifestSha256": "318d433c4035616490254b0f34efd08f147d164ee48a6b5d0f92347f3dfcf0e6",
+      "shaMatchesManifest": true,
+      "estimateUnits": 61,
+      "encoderTokens": 56,
+      "encoderMinusEstimate": -5,
+      "ratioEncoderOverEstimate": 0.918
+    },
+    {
+      "file": "texts/oversized-single.b96.raw-last12.memory.txt",
+      "bytes": 195,
+      "sha256": "c6b2947b3aeebae5576d0e4297f6693fef5ee8a7cd4fcd083e2a81d71a1de00c",
+      "manifestSha256": "c6b2947b3aeebae5576d0e4297f6693fef5ee8a7cd4fcd083e2a81d71a1de00c",
+      "shaMatchesManifest": true,
+      "estimateUnits": 65,
+      "encoderTokens": 60,
+      "encoderMinusEstimate": -5,
+      "ratioEncoderOverEstimate": 0.9231
+    },
+    {
+      "file": "texts/oversized-single.b96.obligation-first.memory.txt",
+      "bytes": 195,
+      "sha256": "c6b2947b3aeebae5576d0e4297f6693fef5ee8a7cd4fcd083e2a81d71a1de00c",
+      "manifestSha256": "c6b2947b3aeebae5576d0e4297f6693fef5ee8a7cd4fcd083e2a81d71a1de00c",
+      "shaMatchesManifest": true,
+      "estimateUnits": 65,
+      "encoderTokens": 60,
+      "encoderMinusEstimate": -5,
+      "ratioEncoderOverEstimate": 0.9231
+    },
+    {
+      "file": "texts/oversized-single.b192.raw-last12.memory.txt",
+      "bytes": 481,
+      "sha256": "7864ca7c543b689e74da8324f28837c76f82ed3ba8879eeb47a6c66d7a471605",
+      "manifestSha256": "7864ca7c543b689e74da8324f28837c76f82ed3ba8879eeb47a6c66d7a471605",
+      "shaMatchesManifest": true,
+      "estimateUnits": 161,
+      "encoderTokens": 131,
+      "encoderMinusEstimate": -30,
+      "ratioEncoderOverEstimate": 0.8137
+    },
+    {
+      "file": "texts/oversized-single.b192.obligation-first.memory.txt",
+      "bytes": 481,
+      "sha256": "7864ca7c543b689e74da8324f28837c76f82ed3ba8879eeb47a6c66d7a471605",
+      "manifestSha256": "7864ca7c543b689e74da8324f28837c76f82ed3ba8879eeb47a6c66d7a471605",
+      "shaMatchesManifest": true,
+      "estimateUnits": 161,
+      "encoderTokens": 131,
+      "encoderMinusEstimate": -30,
+      "ratioEncoderOverEstimate": 0.8137
+    },
+    {
+      "file": "texts/oversized-single.b640.raw-last12.memory.txt",
+      "bytes": 1057,
+      "sha256": "4bdeef8f35e1252fcf4e0cca4d148b152363c495b6769fc26b921c2d3a677692",
+      "manifestSha256": "4bdeef8f35e1252fcf4e0cca4d148b152363c495b6769fc26b921c2d3a677692",
+      "shaMatchesManifest": true,
+      "estimateUnits": 353,
+      "encoderTokens": 249,
+      "encoderMinusEstimate": -104,
+      "ratioEncoderOverEstimate": 0.7054
+    },
+    {
+      "file": "texts/oversized-single.b640.obligation-first.memory.txt",
+      "bytes": 1057,
+      "sha256": "4bdeef8f35e1252fcf4e0cca4d148b152363c495b6769fc26b921c2d3a677692",
+      "manifestSha256": "4bdeef8f35e1252fcf4e0cca4d148b152363c495b6769fc26b921c2d3a677692",
+      "shaMatchesManifest": true,
+      "estimateUnits": 353,
+      "encoderTokens": 249,
+      "encoderMinusEstimate": -104,
+      "ratioEncoderOverEstimate": 0.7054
+    },
+    {
+      "file": "texts/many-records.b64.raw-last12.memory.txt",
+      "bytes": 180,
+      "sha256": "d5733fdfa268935b04d68903e6386bb199bd6aa86c0572aa4a02a19ab7b027d8",
+      "manifestSha256": "d5733fdfa268935b04d68903e6386bb199bd6aa86c0572aa4a02a19ab7b027d8",
+      "shaMatchesManifest": true,
+      "estimateUnits": 60,
+      "encoderTokens": 60,
+      "encoderMinusEstimate": 0,
+      "ratioEncoderOverEstimate": 1.0
+    },
+    {
+      "file": "texts/many-records.b64.obligation-first.memory.txt",
+      "bytes": 182,
+      "sha256": "a7f41112a80b7878a11f162b72d69083c6d205c74ac682d5e8e9f5ac89a38f4b",
+      "manifestSha256": "a7f41112a80b7878a11f162b72d69083c6d205c74ac682d5e8e9f5ac89a38f4b",
+      "shaMatchesManifest": true,
+      "estimateUnits": 61,
+      "encoderTokens": 60,
+      "encoderMinusEstimate": -1,
+      "ratioEncoderOverEstimate": 0.9836
+    },
+    {
+      "file": "texts/many-records.b96.raw-last12.memory.txt",
+      "bytes": 286,
+      "sha256": "c85bc30fe1c2e158725eabe99c17c3b3fe103b3957b9a758fe310aa24fbd2bf8",
+      "manifestSha256": "c85bc30fe1c2e158725eabe99c17c3b3fe103b3957b9a758fe310aa24fbd2bf8",
+      "shaMatchesManifest": true,
+      "estimateUnits": 96,
+      "encoderTokens": 97,
+      "encoderMinusEstimate": 1,
+      "ratioEncoderOverEstimate": 1.0104
+    },
+    {
+      "file": "texts/many-records.b96.obligation-first.memory.txt",
+      "bytes": 286,
+      "sha256": "c4598feb7909de10532e5d25981f041003373a1417753cf1811b0eec7b247783",
+      "manifestSha256": "c4598feb7909de10532e5d25981f041003373a1417753cf1811b0eec7b247783",
+      "shaMatchesManifest": true,
+      "estimateUnits": 96,
+      "encoderTokens": 96,
+      "encoderMinusEstimate": 0,
+      "ratioEncoderOverEstimate": 1.0
+    },
+    {
+      "file": "texts/many-records.b192.raw-last12.memory.txt",
+      "bytes": 542,
+      "sha256": "60be87a20b71f8d340416490cf41b0c9fee791852f6a336b7eafde78f857108b",
+      "manifestSha256": "60be87a20b71f8d340416490cf41b0c9fee791852f6a336b7eafde78f857108b",
+      "shaMatchesManifest": true,
+      "estimateUnits": 181,
+      "encoderTokens": 182,
+      "encoderMinusEstimate": 1,
+      "ratioEncoderOverEstimate": 1.0055
+    },
+    {
+      "file": "texts/many-records.b192.obligation-first.memory.txt",
+      "bytes": 481,
+      "sha256": "29814d9aea20fe721373b4059d7b7844420dc0fc8a1a05ec2402bcc8c6254b70",
+      "manifestSha256": "29814d9aea20fe721373b4059d7b7844420dc0fc8a1a05ec2402bcc8c6254b70",
+      "shaMatchesManifest": true,
+      "estimateUnits": 161,
+      "encoderTokens": 157,
+      "encoderMinusEstimate": -4,
+      "ratioEncoderOverEstimate": 0.9752
+    },
+    {
+      "file": "texts/many-records.b640.raw-last12.memory.txt",
+      "bytes": 1902,
+      "sha256": "5208a94d0da2c08a8fca73f1105302e4a90d5c7cce129ff1fde992b4034b588e",
+      "manifestSha256": "5208a94d0da2c08a8fca73f1105302e4a90d5c7cce129ff1fde992b4034b588e",
+      "shaMatchesManifest": true,
+      "estimateUnits": 634,
+      "encoderTokens": 635,
+      "encoderMinusEstimate": 1,
+      "ratioEncoderOverEstimate": 1.0016
+    },
+    {
+      "file": "texts/many-records.b640.obligation-first.memory.txt",
+      "bytes": 1834,
+      "sha256": "b4f8076f3e16a3f3d9ea876e9e0845c4e1c9610a33d4a072392f9fe7847de526",
+      "manifestSha256": "b4f8076f3e16a3f3d9ea876e9e0845c4e1c9610a33d4a072392f9fe7847de526",
+      "shaMatchesManifest": true,
+      "estimateUnits": 612,
+      "encoderTokens": 602,
+      "encoderMinusEstimate": -10,
+      "ratioEncoderOverEstimate": 0.9837
+    },
+    {
+      "file": "texts/shortage-with-notes.b32.raw-last12.memory.txt",
+      "bytes": 92,
+      "sha256": "4cdb820c5bd9eb498376b834c09fd403d5da4b8de6b625270346469a96f593e4",
+      "manifestSha256": "4cdb820c5bd9eb498376b834c09fd403d5da4b8de6b625270346469a96f593e4",
+      "shaMatchesManifest": true,
+      "estimateUnits": 31,
+      "encoderTokens": 34,
+      "encoderMinusEstimate": 3,
+      "ratioEncoderOverEstimate": 1.0968
+    },
+    {
+      "file": "texts/shortage-with-notes.b32.obligation-first.memory.txt",
+      "bytes": 92,
+      "sha256": "4cdb820c5bd9eb498376b834c09fd403d5da4b8de6b625270346469a96f593e4",
+      "manifestSha256": "4cdb820c5bd9eb498376b834c09fd403d5da4b8de6b625270346469a96f593e4",
+      "shaMatchesManifest": true,
+      "estimateUnits": 31,
+      "encoderTokens": 34,
+      "encoderMinusEstimate": 3,
+      "ratioEncoderOverEstimate": 1.0968
+    },
+    {
+      "file": "texts/shortage-with-notes.b64.raw-last12.memory.txt",
+      "bytes": 187,
+      "sha256": "675c73671f2a82061e451e022a82b7c7545ba89204eab39653e01e55b8e08eaa",
+      "manifestSha256": "675c73671f2a82061e451e022a82b7c7545ba89204eab39653e01e55b8e08eaa",
+      "shaMatchesManifest": true,
+      "estimateUnits": 63,
+      "encoderTokens": 83,
+      "encoderMinusEstimate": 20,
+      "ratioEncoderOverEstimate": 1.3175
+    },
+    {
+      "file": "texts/shortage-with-notes.b64.obligation-first.memory.txt",
+      "bytes": 187,
+      "sha256": "675c73671f2a82061e451e022a82b7c7545ba89204eab39653e01e55b8e08eaa",
+      "manifestSha256": "675c73671f2a82061e451e022a82b7c7545ba89204eab39653e01e55b8e08eaa",
+      "shaMatchesManifest": true,
+      "estimateUnits": 63,
+      "encoderTokens": 83,
+      "encoderMinusEstimate": 20,
+      "ratioEncoderOverEstimate": 1.3175
+    },
+    {
+      "file": "texts/shortage-with-notes.b96.raw-last12.memory.txt",
+      "bytes": 257,
+      "sha256": "139197f2c0f27bdce66c8311634ad6627a7b7209043db15baa71390f995e8b37",
+      "manifestSha256": "139197f2c0f27bdce66c8311634ad6627a7b7209043db15baa71390f995e8b37",
+      "shaMatchesManifest": true,
+      "estimateUnits": 86,
+      "encoderTokens": 125,
+      "encoderMinusEstimate": 39,
+      "ratioEncoderOverEstimate": 1.4535
+    },
+    {
+      "file": "texts/shortage-with-notes.b96.obligation-first.memory.txt",
+      "bytes": 257,
+      "sha256": "139197f2c0f27bdce66c8311634ad6627a7b7209043db15baa71390f995e8b37",
+      "manifestSha256": "139197f2c0f27bdce66c8311634ad6627a7b7209043db15baa71390f995e8b37",
+      "shaMatchesManifest": true,
+      "estimateUnits": 86,
+      "encoderTokens": 125,
+      "encoderMinusEstimate": 39,
+      "ratioEncoderOverEstimate": 1.4535
+    },
+    {
+      "file": "texts/shortage-with-notes.b192.raw-last12.memory.txt",
+      "bytes": 562,
+      "sha256": "dd6c5f1f854dc17f99e7d64eab9c8d10c52940776f85bcb2dc539fdced5bf20e",
+      "manifestSha256": "dd6c5f1f854dc17f99e7d64eab9c8d10c52940776f85bcb2dc539fdced5bf20e",
+      "shaMatchesManifest": true,
+      "estimateUnits": 188,
+      "encoderTokens": 252,
+      "encoderMinusEstimate": 64,
+      "ratioEncoderOverEstimate": 1.3404
+    },
+    {
+      "file": "texts/shortage-with-notes.b192.obligation-first.memory.txt",
+      "bytes": 562,
+      "sha256": "dd6c5f1f854dc17f99e7d64eab9c8d10c52940776f85bcb2dc539fdced5bf20e",
+      "manifestSha256": "dd6c5f1f854dc17f99e7d64eab9c8d10c52940776f85bcb2dc539fdced5bf20e",
+      "shaMatchesManifest": true,
+      "estimateUnits": 188,
+      "encoderTokens": 252,
+      "encoderMinusEstimate": 64,
+      "ratioEncoderOverEstimate": 1.3404
+    },
+    {
+      "file": "texts/shortage-with-notes.b640.raw-last12.memory.txt",
+      "bytes": 1573,
+      "sha256": "4874aa123f2e1c613634ae094b0407162ad8dc04c447841804844d9f9f36456d",
+      "manifestSha256": "4874aa123f2e1c613634ae094b0407162ad8dc04c447841804844d9f9f36456d",
+      "shaMatchesManifest": true,
+      "estimateUnits": 525,
+      "encoderTokens": 643,
+      "encoderMinusEstimate": 118,
+      "ratioEncoderOverEstimate": 1.2248
+    },
+    {
+      "file": "texts/shortage-with-notes.b640.obligation-first.memory.txt",
+      "bytes": 1573,
+      "sha256": "4874aa123f2e1c613634ae094b0407162ad8dc04c447841804844d9f9f36456d",
+      "manifestSha256": "4874aa123f2e1c613634ae094b0407162ad8dc04c447841804844d9f9f36456d",
+      "shaMatchesManifest": true,
+      "estimateUnits": 525,
+      "encoderTokens": 643,
+      "encoderMinusEstimate": 118,
+      "ratioEncoderOverEstimate": 1.2248
+    },
+    {
+      "file": "texts/oversized-single.raw-last12.input.txt",
+      "bytes": 1779,
+      "sha256": "62f2ae3e33221769f771ca37a997847af4442389ef145c36ce62914757108a29",
+      "manifestSha256": "62f2ae3e33221769f771ca37a997847af4442389ef145c36ce62914757108a29",
+      "shaMatchesManifest": true,
+      "estimateUnits": 593,
+      "encoderTokens": 507,
+      "encoderMinusEstimate": -86,
+      "ratioEncoderOverEstimate": 0.855
+    },
+    {
+      "file": "texts/oversized-single.obligation-first.input.txt",
+      "bytes": 1779,
+      "sha256": "62f2ae3e33221769f771ca37a997847af4442389ef145c36ce62914757108a29",
+      "manifestSha256": "62f2ae3e33221769f771ca37a997847af4442389ef145c36ce62914757108a29",
+      "shaMatchesManifest": true,
+      "estimateUnits": 593,
+      "encoderTokens": 507,
+      "encoderMinusEstimate": -86,
+      "ratioEncoderOverEstimate": 0.855
+    },
+    {
+      "file": "texts/many-records.raw-last12.input.txt",
+      "bytes": 2624,
+      "sha256": "f849dd66dcecabe824f05eb1711540a185a673dd43d8b8136ff43aedc3882a46",
+      "manifestSha256": "f849dd66dcecabe824f05eb1711540a185a673dd43d8b8136ff43aedc3882a46",
+      "shaMatchesManifest": true,
+      "estimateUnits": 875,
+      "encoderTokens": 893,
+      "encoderMinusEstimate": 18,
+      "ratioEncoderOverEstimate": 1.0206
+    },
+    {
+      "file": "texts/many-records.obligation-first.input.txt",
+      "bytes": 2556,
+      "sha256": "5726c123ffcab3053331d374d166cdf56d516dab40d89dc0fcb8ff20a7cad73c",
+      "manifestSha256": "5726c123ffcab3053331d374d166cdf56d516dab40d89dc0fcb8ff20a7cad73c",
+      "shaMatchesManifest": true,
+      "estimateUnits": 852,
+      "encoderTokens": 860,
+      "encoderMinusEstimate": 8,
+      "ratioEncoderOverEstimate": 1.0094
+    },
+    {
+      "file": "texts/shortage-with-notes.raw-last12.input.txt",
+      "bytes": 2640,
+      "sha256": "bedf41daff902958efc90683fc1db8c3cf12f4ce460622bcfa2e1cce210602d2",
+      "manifestSha256": "bedf41daff902958efc90683fc1db8c3cf12f4ce460622bcfa2e1cce210602d2",
+      "shaMatchesManifest": true,
+      "estimateUnits": 880,
+      "encoderTokens": 1023,
+      "encoderMinusEstimate": 143,
+      "ratioEncoderOverEstimate": 1.1625
+    },
+    {
+      "file": "texts/shortage-with-notes.obligation-first.input.txt",
+      "bytes": 2640,
+      "sha256": "bedf41daff902958efc90683fc1db8c3cf12f4ce460622bcfa2e1cce210602d2",
+      "manifestSha256": "bedf41daff902958efc90683fc1db8c3cf12f4ce460622bcfa2e1cce210602d2",
+      "shaMatchesManifest": true,
+      "estimateUnits": 880,
+      "encoderTokens": 1023,
+      "encoderMinusEstimate": 143,
+      "ratioEncoderOverEstimate": 1.1625
+    }
+  ]
+}

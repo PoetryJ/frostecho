@@ -154,7 +154,7 @@ function select(candidates: readonly Candidate[], topK: number, budgetUnits: num
   if (budgetUnits <= 0) {
     for (const candidate of candidates.slice(0, topK)) {
       const compact = compactFact(candidate.fact, counter);
-      if (compact.truncation) omitted.push(compact.truncation);
+      if (compact.truncation) omitted.push({ ...compact.truncation, level: 'omitted' });
     }
     return { chosen, omitted };
   }
@@ -177,23 +177,37 @@ function select(candidates: readonly Candidate[], topK: number, budgetUnits: num
       admitted.push(candidate.fact);
       continue;
     }
-    // 2. A record that does not fit whole is TRIMMED, not admitted as-is. Room
-    //    is reserved for the records further down the order (their pointer
-    //    line + one join newline), capped at two thirds of what is left, so one
-    //    long obligation cannot erase every other fact; the top record keeps
-    //    the rest of the budget.
+    // 2. A record that does not fit whole is TRIMMED, not admitted as-is.
+    const compact = compactFact(candidate.fact, counter);
+    const minimum = counter.count(renderMemoryBlock([...admitted, compact.fact]));
+    if (minimum > budgetUnits) {
+      // Even its pointer line does not fit: omitted, and reported as such.
+      if (compact.truncation) omitted.push({ ...compact.truncation, level: 'omitted' });
+      continue;
+    }
+    // Room is reserved for the records further down the order (their pointer
+    // line + one join newline), capped at two thirds of what is left, so one
+    // long obligation cannot erase every other fact. Two guards keep the
+    // reservation honest: it never takes the CURRENT record below its identity
+    // line, and it is dropped entirely when it could not buy a single slot
+    // anyway (spending identity fields on nothing).
     let slotsLeft = topK - chosen.length - 1;
     let reserve = 0;
+    let largestLater = 0;
     for (let later = index + 1; later < candidates.length && slotsLeft > 0; later += 1) {
-      reserve += compactFact(candidates[later].fact, counter).units + 1;
+      const compactLater = compactFact(candidates[later].fact, counter).units + 1;
+      largestLater = Math.max(largestLater, compactLater);
+      reserve += compactLater;
       slotsLeft -= 1;
       if (reserve >= Math.floor(remaining * 2 / 3)) break;
     }
     reserve = Math.min(reserve, Math.floor(remaining * 2 / 3));
-    const fitted = fitFact(candidate.fact, budgetUnits - reserve, counter, admitted);
+    const reservedCap = budgetUnits - reserve;
+    const cap = reservedCap >= minimum && reserve >= largestLater
+      ? reservedCap : budgetUnits;
+    const fitted = fitFact(candidate.fact, cap, counter, admitted);
     if (!fitted) {
-      const compact = compactFact(candidate.fact, counter);
-      if (compact.truncation) omitted.push(compact.truncation);
+      if (compact.truncation) omitted.push({ ...compact.truncation, level: 'omitted' });
       continue;
     }
     chosen.push({ candidate, fitted });
@@ -204,7 +218,7 @@ function select(candidates: readonly Candidate[], topK: number, budgetUnits: num
   while (chosen.length > 0
     && counter.count(renderMemoryBlock(chosen.map(entry => entry.fitted.fact))) > budgetUnits) {
     const dropped = chosen.pop()!;
-    if (dropped.fitted.truncation) omitted.push(dropped.fitted.truncation);
+    if (dropped.fitted.truncation) omitted.push({ ...dropped.fitted.truncation, level: 'omitted' });
   }
   return { chosen, omitted };
 }

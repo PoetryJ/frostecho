@@ -1,0 +1,4453 @@
+{
+  "story": "story2-source-change-not-agreed",
+  "passed": true,
+  "checks": [
+    {
+      "name": "the promisor proposes an alternative source and waits (pending-change)",
+      "passed": true,
+      "detail": {
+        "status": "pending-change",
+        "changes": [
+          "open"
+        ],
+        "shortageReceipt": [
+          "npc_01-direct-4-withdraw:out_of_stock:4"
+        ]
+      }
+    },
+    {
+      "name": "no alternative-source action is offered before the answer",
+      "passed": true,
+      "detail": {
+        "steps": [
+          "await-answer"
+        ]
+      }
+    },
+    {
+      "name": "a rumour stays a player statement (never an engine stock fact)",
+      "passed": true,
+      "detail": [
+        {
+          "source": "player_statement",
+          "authority": "player",
+          "observedAt": 480
+        }
+      ]
+    },
+    {
+      "name": "story2 D2 exit: personal records, relations, dependencies and cursor restore",
+      "passed": true,
+      "detail": {
+        "differing": [],
+        "recordCounts": {
+          "npc_01": 294
+        },
+        "restoredCursor": {
+          "npc_01": 294,
+          "npc_02": 291,
+          "npc_03": 294,
+          "npc_04": 291,
+          "npc_05": 291,
+          "npc_06": 291,
+          "npc_07": 291,
+          "npc_08": 291
+        },
+        "cursorMatchesRecords": true
+      }
+    },
+    {
+      "name": "the unanswered proposal and its revision survive the restart",
+      "passed": true,
+      "detail": {
+        "status": "pending-change",
+        "changes": [
+          "open"
+        ]
+      }
+    },
+    {
+      "name": "pending work survives the D2 exit and settles once in the new process",
+      "passed": true,
+      "detail": {
+        "restoredStatus": "working",
+        "finalStatus": "applied",
+        "receipts": 1,
+        "settleRecords": 1,
+        "laterRecords": 1,
+        "failureReason": null,
+        "dueAt": 1950
+      }
+    },
+    {
+      "name": "after the restart the un-agreed source is still not actionable",
+      "passed": true,
+      "detail": {
+        "steps": [
+          "await-answer"
+        ]
+      }
+    },
+    {
+      "name": "a rejection restores the original terms and never adds the source",
+      "passed": true,
+      "detail": {
+        "conditions": [
+          "warehouse-supply"
+        ],
+        "steps": [
+          "rejected-source-shortage"
+        ]
+      }
+    },
+    {
+      "name": "the original promise is fulfilled on its own delivery receipt",
+      "passed": true,
+      "detail": {
+        "status": "fulfilled",
+        "evidence": [
+          "npc_01-r8-67:meal_delivered:69"
+        ],
+        "receipts": [
+          "npc_01-r8-67:meal_delivered:69"
+        ],
+        "withdraw": "applied",
+        "deliver": "working"
+      }
+    },
+    {
+      "name": "an explicit acceptance is what makes the new source executable",
+      "passed": true,
+      "detail": {
+        "status": "active",
+        "conditions": [
+          "warehouse-supply",
+          "source:gather"
+        ],
+        "steps": [
+          "to-village-alt"
+        ],
+        "receipts": [
+          "npc_01-r8-6:gathered:8"
+        ]
+      }
+    },
+    {
+      "name": "story2: a budget of 0 renders nothing, and 64/640 never overflow",
+      "passed": true,
+      "detail": {
+        "zero": {
+          "units": 0,
+          "kept": 0,
+          "block": ""
+        },
+        "tight": {
+          "units": 57,
+          "kept": 1,
+          "bytes": 171,
+          "truncated": true,
+          "budget": 64
+        },
+        "normal": {
+          "units": 640,
+          "kept": 5,
+          "bytes": 1920,
+          "truncated": true,
+          "budget": 640
+        }
+      }
+    },
+    {
+      "name": "story2: both arms share the budget, the unit and the candidate set",
+      "passed": true,
+      "detail": {
+        "raw": {
+          "budget": 640,
+          "units": 624,
+          "unitId": "utf8-bytes/3-ceil/1"
+        },
+        "ranked": {
+          "budget": 640,
+          "units": 640,
+          "unitId": "utf8-bytes/3-ceil/1"
+        },
+        "candidates": 3,
+        "sameCandidateSet": true
+      }
+    }
+  ],
+  "outcome": {
+    "statusResponded": "commitment_change_rejected",
+    "finalStatus": "fulfilled",
+    "evidence": [
+      "npc_01-r8-67:meal_delivered:69"
+    ],
+    "conditionStock": "restocked",
+    "agreedArmStatus": "gather-executed"
+  },
+  "memory": {
+    "budget": 640,
+    "raw": {
+      "kinds": [
+        "heating_settled",
+        "meal_delivered",
+        "commitment_action_committed",
+        "commitment_fulfilled",
+        "promise_kept"
+      ],
+      "kept": 5,
+      "dropped": 365,
+      "bytes": 1870,
+      "units": 624,
+      "budget": 640,
+      "unitKind": "estimated-token",
+      "unitId": "utf8-bytes/3-ceil/1",
+      "encoderTokens": null,
+      "encoderStatus": "not-attached",
+      "blockSha256": "f5a9a1d9979ad7b5a58cec509443000ec2ea675d3aa0d6fd53d7bfe31f4c9707",
+      "segmentBytes": 1879,
+      "truncated": true,
+      "truncatedFacts": [
+        {
+          "pointer": "team-heating_settled-386",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-385",
+          "level": "omitted",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-384",
+          "level": "omitted",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-383",
+          "level": "omitted",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-382",
+          "level": "omitted",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-381",
+          "level": "omitted",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-380",
+          "level": "omitted",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-379",
+          "level": "omitted",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "insideBudget": true
+    },
+    "obligationFirst": {
+      "kinds": [
+        "commitment_proposed",
+        "commitment_accepted",
+        "commitment_change_proposed",
+        "commitment_change_rejected",
+        "r8_actor"
+      ],
+      "kept": 5,
+      "dropped": 365,
+      "bytes": 1920,
+      "units": 640,
+      "budget": 640,
+      "unitKind": "estimated-token",
+      "unitId": "utf8-bytes/3-ceil/1",
+      "encoderTokens": null,
+      "encoderStatus": "not-attached",
+      "blockSha256": "e4506bed0f00fd3d84ce8fe9249a7d806581813ff0cd0f9a6c54c57fc9092426",
+      "segmentBytes": 1929,
+      "truncated": true,
+      "truncatedFacts": [
+        {
+          "pointer": "cmt-commitment_change_rejected-cm-d3501e46-7d1e-4f29-8316-125e0c9ac671-363",
+          "level": "pointer-only",
+          "droppedFields": [
+            "changeId",
+            "text"
+          ],
+          "omittedTextChars": 5
+        },
+        {
+          "pointer": "team-r8_actor-383",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "cmt-commitment_fulfilled-cm-d3501e46-7d1e-4f29-8316-125e0c9ac671-388",
+          "level": "omitted",
+          "droppedFields": [
+            "receiptEventId",
+            "receiptCommandId",
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 5
+        },
+        {
+          "pointer": "npc_01-r8-63:stock_withdrawn:63",
+          "level": "omitted",
+          "droppedFields": [
+            "carried",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "restock-after-reject:stock_restocked:62",
+          "level": "omitted",
+          "droppedFields": [
+            "source",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "rumor-restock-d02de6f4-3066-4da5-8d9e-4b3ed764693f",
+          "level": "omitted",
+          "droppedFields": [
+            "text",
+            "occurredAt"
+          ],
+          "omittedTextChars": 8
+        },
+        {
+          "pointer": "npc_01-direct-4-withdraw:out_of_stock:4",
+          "level": "omitted",
+          "droppedFields": [
+            "available",
+            "wanted",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "cmt-commitment_fulfilled-cm-d3501e46-7d1e-4f29-8316-125e0c9ac671-388:kept",
+          "level": "omitted",
+          "droppedFields": [
+            "text",
+            "confirmation",
+            "occurredAt"
+          ],
+          "omittedTextChars": 5
+        },
+        {
+          "pointer": "npc_01-r8-67:meal_delivered:69",
+          "level": "omitted",
+          "droppedFields": [
+            "action",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-r8-64:moved:66",
+          "level": "omitted",
+          "droppedFields": [
+            "action",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-r8-67:meal_delivered:69",
+          "level": "omitted",
+          "droppedFields": [
+            "to",
+            "totalDelivered",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-386",
+          "level": "omitted",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-385",
+          "level": "omitted",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-384",
+          "level": "omitted",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-382",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-381",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-380",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-379",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-378",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-377",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-376",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-r8-64:moved:66",
+          "level": "pointer-only",
+          "droppedFields": [
+            "to",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-374",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-373",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-372",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-371",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-370",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-369",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-368",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-367",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-366",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-365",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-364",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-361",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-360",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-359",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-358",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-357",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-356",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-355",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-354",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-353",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-352",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-351",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-349",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-348",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-347",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-346",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-345",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-344",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-343",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-342",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-341",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-340",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-339",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-337",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-336",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-335",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-334",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-333",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-332",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-331",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-330",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-329",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-328",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-327",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "pending:npc_01:rested:55",
+          "level": "pointer-only",
+          "droppedFields": [
+            "minutes",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-325",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-324",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-323",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-322",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-321",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-320",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-319",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-318",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-317",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-316",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-315",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-313",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-312",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-311",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-310",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-309",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-308",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-307",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-306",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-305",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-304",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-303",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-301",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-300",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-299",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-298",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-297",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-296",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-295",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-294",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-293",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-292",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-291",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-289",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-288",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-287",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-286",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-285",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-284",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-283",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-282",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-281",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-280",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-279",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-277",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-276",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-275",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-274",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-273",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-272",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-271",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-270",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-269",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-268",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-267",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-265",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-264",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-263",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-262",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-261",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-260",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-259",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-258",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-257",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-256",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-255",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-253",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-252",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-251",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-250",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-249",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-248",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-247",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-246",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-245",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-244",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-243",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-241",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-240",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-239",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-238",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-237",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-236",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-235",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-234",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-233",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-232",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-231",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-229",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-228",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-227",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-226",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-225",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-224",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-223",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-222",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-221",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-220",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-219",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-217",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-216",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-215",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-214",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-213",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-212",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-211",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-210",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-209",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-208",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-207",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-205",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-204",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-203",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-202",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-201",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-200",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-199",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-198",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-197",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-196",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-195",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-194",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-192",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-191",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-190",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-189",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-188",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-187",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-186",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-185",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-184",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-183",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-182",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-181",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-179",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-178",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-177",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-176",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-175",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-174",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-173",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-172",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-171",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-170",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-169",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-168",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-166",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-165",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-164",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-163",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-162",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-161",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-160",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-159",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-158",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-157",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-156",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-155",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-153",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-152",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-151",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-150",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-149",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-148",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-147",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-146",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-145",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-144",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-143",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-142",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-140",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-139",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-138",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-137",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-136",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-135",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-134",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-133",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-132",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-131",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-130",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-129",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-127",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-126",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-125",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-124",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-123",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-122",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-121",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-120",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-119",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-118",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-117",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-116",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-114",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-113",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-112",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-111",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-110",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-109",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-108",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-107",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-106",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-105",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-104",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-103",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-101",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-100",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-99",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-98",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-97",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-96",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-95",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-94",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-93",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-92",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-91",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-90",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-88",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-87",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-86",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-85",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-84",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-83",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-82",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-81",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-80",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-79",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-78",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-77",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-75",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-74",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-73",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-72",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-71",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-70",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-69",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-68",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-67",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-66",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-65",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-64",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-62",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-61",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-60",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-59",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-58",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-57",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-56",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-55",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-54",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-53",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-52",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-51",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-49",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-48",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-47",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-46",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-45",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-44",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-43",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-42",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-41",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-40",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-39",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-38",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-36",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-35",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-34",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-33",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-32",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-31",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-30",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-29",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-28",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-27",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-26",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-25",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-heating_settled-23",
+          "level": "pointer-only",
+          "droppedFields": [
+            "strength",
+            "band",
+            "wood",
+            "power",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_intent-note-22",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "key",
+            "value",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-21",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_resource-20",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-19",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-18",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-17",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-16",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-15",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-14",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-13",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-r8_actor-12",
+          "level": "pointer-only",
+          "droppedFields": [
+            "intentId",
+            "source",
+            "delta",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-11",
+          "level": "pointer-only",
+          "droppedFields": [
+            "tag",
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-10",
+          "level": "pointer-only",
+          "droppedFields": [
+            "tag",
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-9",
+          "level": "pointer-only",
+          "droppedFields": [
+            "tag",
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-8",
+          "level": "pointer-only",
+          "droppedFields": [
+            "tag",
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-7",
+          "level": "pointer-only",
+          "droppedFields": [
+            "tag",
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-6",
+          "level": "pointer-only",
+          "droppedFields": [
+            "tag",
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-5",
+          "level": "pointer-only",
+          "droppedFields": [
+            "tag",
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-4",
+          "level": "pointer-only",
+          "droppedFields": [
+            "tag",
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-report-delay-2",
+          "level": "pointer-only",
+          "droppedFields": [
+            "actorId",
+            "note",
+            "occurredAt"
+          ],
+          "omittedTextChars": 15
+        },
+        {
+          "pointer": "npc_01-move-warehouse-3:moved:3",
+          "level": "pointer-only",
+          "droppedFields": [
+            "to",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "insideBudget": true
+    },
+    "keptOnlyByNewPolicy": [
+      "commitment_proposed",
+      "commitment_accepted",
+      "commitment_change_proposed",
+      "commitment_change_rejected",
+      "r8_actor"
+    ],
+    "notesTotal": 2,
+    "notesApplicable": [
+      "note-restock-npc_01"
+    ],
+    "condition": "restocked",
+    "observedAt": [
+      {
+        "kind": "commitment_proposed",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_01",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "commitment_accepted",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_01",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "commitment_change_proposed",
+        "observedAt": 480,
+        "source": "engine",
+        "speakerId": "npc_01",
+        "heardBy": "npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08"
+      },
+      {
+        "kind": "commitment_change_rejected",
+        "observedAt": 2070,
+        "source": "engine",
+        "speakerId": null,
+        "heardBy": null
+      },
+      {
+        "kind": "r8_actor",
+        "observedAt": 2085,
+        "source": "engine",
+        "speakerId": null,
+        "heardBy": null
+      }
+    ]
+  },
+  "files": [
+    "/data3/DATA/project/project_meishijiang/r11-wt/b/artifacts/r11-b/memory-stories/story2-source-change-not-agreed/story2-source-change-not-agreed.json"
+  ]
+}
