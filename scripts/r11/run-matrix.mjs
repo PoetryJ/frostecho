@@ -2113,6 +2113,18 @@ function matrixMarkdown(table) {
     + 'and the pre-designed delegation provides the opportunity; no arm is credited with a '
     + 'zero-violation result on a zero opportunity.');
   lines.push('');
+  lines.push('## Resources — final inventory hours vs four-day gap hours');
+  lines.push('');
+  lines.push('| game | inventory h (food / firewood / power) | gap h (food / firewood / power) |');
+  lines.push('| --- | --- | --- |');
+  for (const row of table.rows) {
+    const inv = row.metrics?.resources?.inventoryHours ?? null;
+    const gap = row.metrics?.resources?.gapHours ?? null;
+    const fmt3 = value => value === null || value === undefined ? '—' : fmt(value, 1);
+    lines.push(`| ${row.dir} | ${inv ? `${fmt3(inv.food)} / ${fmt3(inv.firewood)} / ${fmt3(inv.power)}` : '—'} `
+      + `| ${gap ? `${fmt3(gap.food)} / ${fmt3(gap.firewood)} / ${fmt3(gap.power)}` : '—'} |`);
+  }
+  lines.push('');
   lines.push('checks: ' + Object.entries(table.checks)
     .map(([key, value]) => `${key}=${value}`).join(' · '));
   return `${lines.join('\n')}\n`;
