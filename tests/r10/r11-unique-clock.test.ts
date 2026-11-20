@@ -142,12 +142,18 @@ test('a queued move saves and resumes in a new runtime with the same result', ()
     assert.ok('intent' in begun);
     const savePath = join(dir, 'game');
     first.save(savePath);
-    // Advance halfway in the old process: the actor must not move before due.
+    // R11-A turned the walk into a segmented phase, so the actor really does
+    // advance along the planned path before `due`: the saving contract is the
+    // serialised `{path, leg, progress}`, not "the body is still at home".
     first.advanceWorld(begun.intent.startedAt + 5);
-    assert.equal(first.world.npcs.npc_01.location, 'dorm-a');
+    const midway = first.world.npcs.npc_01.location;
+    assert.notEqual(midway, 'warehouse', 'the walk is not teleported to the goal');
+    assert.ok(begun.intent.move!.leg > 0 && begun.intent.move!.leg < begun.intent.move!.path.length);
 
     const resumed = R8Runtime.load(savePath);
     assert.equal(resumed.intents.get('move')?.dueAt, begun.intent.dueAt);
+    assert.equal(resumed.intents.get('move')?.move?.path.length, begun.intent.move!.path.length,
+      'the whole path survives the save');
     resumed.advanceWorld(begun.intent.dueAt);
     assert.equal(resumed.world.simTime, begun.intent.dueAt);
     assert.equal(resumed.workLog.length, 1);

@@ -1,0 +1,57 @@
+{
+  "schema": "frostecho.r11a.replay/1",
+  "head": "e208def2ff64ee4d82d79150645310ec2f156073",
+  "tree": "/data3/DATA/project/project_meishijiang/r11-wt/a",
+  "at": "2026-11-20T05:58:46.714Z",
+  "exit": 0,
+  "gpuCalls": 0,
+  "counterexamples": [
+    {
+      "name": "cancelled-generation-still-settles",
+      "issueReproduced": false
+    },
+    {
+      "name": "non-hour-finish-chunk-dependence",
+      "issueReproduced": false
+    },
+    {
+      "name": "direct-candidate-bypasses-place-and-duration",
+      "issueReproduced": false
+    },
+    {
+      "name": "bound-second-task-closes-first",
+      "issueReproduced": false
+    },
+    {
+      "name": "pending-delivery-hook-lost-on-restore",
+      "issueReproduced": false
+    },
+    {
+      "name": "cancelled-bound-delivery-still-physical",
+      "issueReproduced": false
+    },
+    {
+      "name": "unheard-cancel-leaks-through-goal-metadata",
+      "issueReproduced": false
+    }
+  ],
+  "positives": [
+    {
+      "name": "delayed-parallel-positive",
+      "ok": true
+    }
+  ],
+  "counterexamplesClean": true,
+  "positivesIntact": true,
+  "deliveryReceipts": {
+    "continuous": 1,
+    "resumed": 1,
+    "child": 1,
+    "statuses": [
+      "fulfilled",
+      "fulfilled",
+      "fulfilled"
+    ]
+  },
+  "frozenScriptStdout": "{\n  \"cases\": [\n    {\n      \"name\": \"delayed-parallel-positive\",\n      \"ok\": true\n    },\n    {\n      \"name\": \"cancelled-generation-still-settles\",\n      \"issueReproduced\": false\n    },\n    {\n      \"name\": \"non-hour-finish-chunk-dependence\",\n      \"issueReproduced\": false\n    },\n    {\n      \"name\": \"direct-candidate-bypasses-place-and-duration\",\n      \"issueReproduced\": false\n    },\n    {\n      \"name\": \"bound-second-task-closes-first\",\n      \"issueReproduced\": false\n    },\n    {\n      \"name\": \"pending-delivery-hook-lost-on-restore\",\n      \"issueReproduced\": false\n    },\n    {\n      \"name\": \"cancelled-bound-delivery-still-physical\",\n      \"issueReproduced\": false\n    },\n    {\n      \"name\": \"unheard-cancel-leaks-through-goal-metadata\",\n      \"issueReproduced\": false\n    }\n  ]\n}\n"
+}

@@ -6,6 +6,7 @@ import { cellKey, type Cell } from '../../spatial-v2/map';
 import { LEGACY_MAP_IDS, createLegacyMapRegistry, findLegacyRoute, makeLegacyPosition,
   moveLegacyPosition, transitionLegacyDoor, parseLegacyPosition, type LegacyMapId,
   type LegacyPosition } from '../../spatial-v2/legacy-profile';
+import { nextLegAt, type ActionIntent, type IntentLeg } from './action-intent';
 import type { R8Runtime } from './runtime';
 
 export const LEGACY_TILE_MINUTES = 1;
@@ -19,6 +20,22 @@ const locationMap = (location: string): LegacyMapId =>
 export interface LegacyMovementResult {
   status: 'applied' | 'rejected' | 'duplicate'; reason: string; eventIds: string[];
   position: LegacyPosition | null; postStateVersion: number; elapsedMinutes: number;
+}
+/** A travel plan is pure data: no clock, no world mutation, fully serialisable. */
+export interface TravelPlan {
+  status: 'planned';
+  target: LegacyMapId;
+  path: IntentLeg[];
+  minutes: number;
+}
+export interface TravelPlanRejected { status: 'rejected'; reason: string }
+/** Outcome of landing ONE planned leg (a leg is one minute of real walking). */
+export interface LegLanding {
+  status: 'landed' | 'applied' | 'rejected';
+  reason: string;
+  eventId: string | null;
+  observedEventIds: string[];
+  position: LegacyPosition | null;
 }
 type Commit = (intents: readonly WorldIntent[], events: { type: string; actorId: string;
   payload: Record<string, unknown> }[]) => { applied: string[]; rejected: { code: string; reason: string }[];
@@ -102,47 +119,6 @@ export class LegacySpatialController {
     if (committed.rejected.length) throw new Error('legacy_spatial_enable_commit_failed');
     return { status: 'applied', eventIds: committed.events.map(event => event.eventId), positions };
   }
-  /**
-   * R11-A: minutes the original map route really costs, computed without
-   * mutating anything. One minute per tile plus one for each door. `null`
-   * means the route cannot be planned (unknown map / blocked path), so the
-   * caller keeps its estimated duration and settlement will report the refusal.
-   */
-  planTravelMinutes(actorId: string, targetLocation: string): number | null {
-    if (!this.enabled()) return null;
-    const target = locationMap(targetLocation);
-    const registry = this.registry();
-    if (!registry.maps[target]) return null;
-    let position: LegacyPosition;
-    try { position = this.position(actorId)!; } catch { return null; }
-    if (position.mapId === target) return 0;
-    let total = 0;
-    const walkLeg = (cell: Cell): boolean => {
-      const route = findLegacyRoute(position.mapId, position.cell, cell,
-        this.closedCells(position.mapId), registry);
-      if (!route.path) return false;
-      total += route.path.length - 1;
-      position = { ...position, cell };
-      return true;
-    };
-    const doorLeg = (): boolean => {
-      const transition = transitionLegacyDoor(position, registry);
-      if (!transition) return false;
-      total += LEGACY_TILE_MINUTES;
-      position = transition.to;
-      return true;
-    };
-    if (position.mapId !== 'village') {
-      const exit = registry.maps[position.mapId].triggers[0];
-      if (!exit || !walkLeg({ x: exit.x, y: exit.y }) || !doorLeg()) return null;
-    }
-    if (target !== 'village') {
-      const entry = registry.maps.village.triggers.find(trigger => trigger.target === target);
-      if (!entry || !walkLeg({ x: entry.x, y: entry.y }) || !doorLeg()) return null;
-    }
-    return total;
-  }
-
   private events(ids: string[]): WorldEvent[] {
     return ids.map(id => this.runtime.committedEvent(id)).filter(event => event !== null) as WorldEvent[];
   }
@@ -176,7 +152,12 @@ export class LegacySpatialController {
       simTime: this.runtime.world.simTime, payload: { commandId, digest, resultJson: JSON.stringify(full) } }]);
     return full;
   }
-  private land(actorId: string, to: LegacyPosition, commandId: string, kind: string): LegacyMovementResult {
+  /**
+   * Commit ONE physical step: coordinates, location and the real effort, then
+   * the step receipt. This never moves the clock; the caller owns time.
+   */
+  private commitStep(actorId: string, to: LegacyPosition, commandId: string, kind: string):
+    LegacyMovementResult {
     const before = this.runtime.world.simTime;
     const from = this.position(actorId)!;
     const intents = this.positionIntents(actorId, to, commandId);
@@ -191,13 +172,153 @@ export class LegacySpatialController {
         extraStamina: TRAVEL_STAMINA_PER_TILE, minutes: LEGACY_TILE_MINUTES } };
     this.runtime.recordCommitted([movement]);
     this.runtime.session.ingestTeamEvent(kind, movement.payload, before);
-    // R11-A: a tile crossed while settling is a projection of time the intent
-    // already paid for. Only a direct (non-intent) legacy call buys clock here.
-    if (!this.runtime.isSettling()) this.runtime.advanceWorld(before + LEGACY_TILE_MINUTES);
     const observed = kind === 'legacy_door_crossed' && to.mapId === 'warehouse'
       && this.runtime.world.npcs[actorId].alive ? this.observeStock(actorId, `${commandId}:inspect`) : null;
-    return { status: 'applied', reason: kind, eventIds: [movement.eventId, ...(observed?.eventIds ?? [])], position: this.position(actorId),
-      postStateVersion: this.runtime.world.version, elapsedMinutes: this.runtime.world.simTime - before };
+    return { status: 'applied', reason: kind, eventIds: [movement.eventId, ...(observed?.eventIds ?? [])],
+      position: this.position(actorId), postStateVersion: this.runtime.world.version,
+      elapsedMinutes: this.runtime.world.simTime - before };
+  }
+
+  /**
+   * Legacy synchronous step: the step itself never advances the clock, then
+   * the single clock owner pays its minute. This is the only clock request the
+   * legacy command path makes, and it is never issued from inside settlement.
+   */
+  private land(actorId: string, to: LegacyPosition, commandId: string, kind: string): LegacyMovementResult {
+    const before = this.runtime.world.simTime;
+    const stepped = this.commitStep(actorId, to, commandId, kind);
+    // The step receipt is stamped at the time it is paid for.
+    this.runtime.advanceWorld(before + LEGACY_TILE_MINUTES);
+    return { ...stepped, position: this.position(actorId),
+      postStateVersion: this.runtime.world.version,
+      elapsedMinutes: this.runtime.world.simTime - before };
+  }
+
+  /**
+   * Plan a macro `move` as a serialisable travel phase. Pure: it reads the
+   * world, never mutates it and never moves the clock, so the queue can price
+   * the walk correctly at enqueue time ("path and work minutes are planned").
+   */
+  planTravel(actorId: string, targetLocation: string): TravelPlan | TravelPlanRejected {
+    const refused = this.check(actorId);
+    if (refused) return { status: 'rejected', reason: refused };
+    const registry = this.registry();
+    const target = locationMap(targetLocation);
+    if (!registry.maps[target]) return { status: 'rejected', reason: 'unknown_original_destination' };
+    const from = this.position(actorId)!;
+    if (from.mapId === target) return { status: 'rejected', reason: 'already_in_destination_map' };
+    const path: IntentLeg[] = [];
+    let mapId = from.mapId;
+    let cell: Cell = { ...from.cell };
+    const walk = (goal: Cell): string | null => {
+      const route = findLegacyRoute(mapId, cell, goal, this.closedCells(mapId), registry);
+      if (!route.path) return 'original_route_blocked';
+      // Standing ON the door tile is not a failure: the leg list simply starts
+      // at the door itself, exactly like the synchronous walk accepted it.
+      if (route.path.length < 2) return null;
+      for (const step of route.path.slice(1)) {
+        path.push({ index: path.length, kind: 'cell', mapId,
+          cell: { x: step.x, y: step.y }, targetMapId: null, minutes: LEGACY_TILE_MINUTES });
+      }
+      cell = { ...route.path[route.path.length - 1] };
+      return null;
+    };
+    const door = (): string | null => {
+      let transition: ReturnType<typeof transitionLegacyDoor>;
+      try { transition = transitionLegacyDoor(makeLegacyPosition(mapId, cell, registry), registry); }
+      catch (error) { return (error as Error).message; }
+      if (!transition) return 'actor_not_at_original_door';
+      if (this.closedCells(transition.from.mapId).has(cellKey(transition.from.cell))
+        || this.closedCells(transition.to.mapId).has(cellKey(transition.to.cell)))
+        return 'original_door_closed';
+      path.push({ index: path.length, kind: 'door', mapId, cell: { ...cell },
+        targetMapId: transition.to.mapId, minutes: LEGACY_TILE_MINUTES });
+      mapId = transition.to.mapId;
+      cell = { ...transition.to.cell };
+      return null;
+    };
+    if (mapId !== 'village') {
+      const exit = registry.maps[mapId].triggers[0];
+      const failed = walk({ x: exit.x, y: exit.y }) ?? door();
+      if (failed) return { status: 'rejected', reason: failed };
+    }
+    if (target !== 'village') {
+      const entry = registry.maps.village.triggers.find(trigger => trigger.target === target)!;
+      const failed = walk({ x: entry.x, y: entry.y }) ?? door();
+      if (failed) return { status: 'rejected', reason: failed };
+    }
+    if (mapId !== target) return { status: 'rejected', reason: 'route_receipt_position_changed' };
+    if (path.length === 0) return { status: 'rejected', reason: 'already_at_destination' };
+    return { status: 'planned', target, path,
+      minutes: path.reduce((sum, leg) => sum + leg.minutes, 0) };
+  }
+
+  /**
+   * Land exactly the next leg of a queued travel intent. The clock has already
+   * been advanced by `advanceWorld` to this leg's due minute, so this only
+   * commits the physical effect of time that was paid. Landing the same leg
+   * twice is impossible: `progress.leg` is the cursor and the caller claims the
+   * intent first.
+   */
+  landLeg(intent: ActionIntent): LegLanding {
+    const move = intent.move;
+    const actorId = intent.actorId;
+    const failed = (reason: string): LegLanding => ({ status: 'rejected', reason, eventId: null,
+      observedEventIds: [], position: null });
+    if (!move) return failed('no_travel_plan');
+    if (!this.enabled()) return failed('original_map_not_enabled');
+    if (!this.runtime.world.npcs[actorId]?.alive) return failed('actor_not_alive');
+    if (this.runtime.ended) return failed('world_already_ended');
+    // The way was already shut when the trip was queued: the actor still spends
+    // the minute, and the refusal is a real record rather than a silent drop.
+    if (move.refusedReason) return failed(move.refusedReason);
+    if (move.leg >= move.path.length)
+      return { status: 'applied', reason: 'original_maps_traversed', eventId: null,
+        observedEventIds: [], position: this.position(actorId) };
+    const leg = move.path[move.leg];
+    const due = nextLegAt(intent);
+    if (due !== null && this.runtime.world.simTime < due) return failed(`leg_not_paid_yet:${due}`);
+    const end = absoluteMinute(this.runtime.profile, this.runtime.profile.endDay,
+      this.runtime.profile.endMinuteOfDay);
+    if (this.runtime.world.simTime + leg.minutes > end)
+      return failed('insufficient_time_before_ending');
+    if (this.runtime.world.npcs[actorId].stamina < TRAVEL_STAMINA_PER_TILE)
+      return failed('insufficient_stamina');
+    const here = this.position(actorId)!;
+    const commandId = `${intent.intentId}:step:${leg.index}`;
+    let next: LegacyPosition;
+    if (leg.kind === 'cell') {
+      if (here.mapId !== leg.mapId) return failed('travel_plan_position_drift');
+      try { next = moveLegacyPosition(here, leg.cell, this.closedCells(leg.mapId), this.registry()); }
+      catch (error) { return failed((error as Error).message); }
+    } else {
+      if (here.mapId !== leg.mapId || cellKey(here.cell) !== cellKey(leg.cell))
+        return failed('travel_plan_position_drift');
+      let transition: ReturnType<typeof transitionLegacyDoor>;
+      try { transition = transitionLegacyDoor(here, this.registry()); }
+      catch (error) { return failed((error as Error).message); }
+      if (!transition) return failed('actor_not_at_original_door');
+      if (this.closedCells(transition.from.mapId).has(cellKey(transition.from.cell))
+        || this.closedCells(transition.to.mapId).has(cellKey(transition.to.cell)))
+        return failed('original_door_closed');
+      next = transition.to;
+    }
+    let stepped: LegacyMovementResult;
+    try { stepped = this.commitStep(actorId, next, commandId,
+      leg.kind === 'door' ? 'legacy_door_crossed' : 'legacy_cell_moved'); }
+    catch (error) { return failed(`leg_commit_failed:${(error as Error).message}`); }
+    move.leg += 1;
+    move.progress += leg.minutes;
+    move.committedAt = this.runtime.world.simTime;
+    move.legReceiptIds.push(stepped.eventIds[0]);
+    move.landedAt.push(this.runtime.world.simTime);
+    const observedEventIds = stepped.eventIds.slice(1);
+    if (move.leg >= move.path.length) {
+      return { status: 'applied', reason: 'original_maps_traversed',
+        eventId: stepped.eventIds[0], observedEventIds, position: this.position(actorId) };
+    }
+    return { status: 'landed', reason: stepped.reason, eventId: stepped.eventIds[0],
+      observedEventIds, position: this.position(actorId) };
   }
   /** A direct engine observation is private to the actor inside the warehouse. */
   observeStock(actorId: string, suppliedId?: string): LegacyMovementResult {
@@ -280,18 +401,6 @@ export class LegacySpatialController {
     const target = locationMap(targetLocation), registry = this.registry();
     if (!registry.maps[target]) return this.reject(actorId, 'unknown_original_destination');
     if (this.position(actorId)!.mapId === target) return this.reject(actorId, 'already_in_destination_map');
-    // R11-A: the physical route may not cost more than the window the intent
-    // already paid for. Checked before the first tile, so a refusal has no
-    // partial side effect and no extra clock.
-    const settlement = this.runtime.currentSettlement();
-    if (settlement) {
-      const planned = this.planTravelMinutes(actorId, targetLocation);
-      if (planned === null) return this.reject(actorId, 'original_route_unknown');
-      if (planned > settlement.paidMinutes) {
-        return this.reject(actorId,
-          `travel_exceeds_paid_window:${planned}>${settlement.paidMinutes}`);
-      }
-    }
     const start = this.runtime.world.simTime, eventIds: string[] = [];
     let index = 0;
     const take = (result: LegacyMovementResult): boolean => {
