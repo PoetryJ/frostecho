@@ -1,0 +1,343 @@
+{
+  "schema": "frostecho.training-manifest/r11",
+  "experimental": true,
+  "researchTrainReady": false,
+  "mayTrainOnJev": false,
+  "countsAsAdmitted": false,
+  "calibrated": false,
+  "labelSource": "same-snapshot-branch-rollout",
+  "labelRule": "first-action-applied && actor-alive && no-population-loss && no-accepted-task-lost",
+  "labelFamily": "base",
+  "independentReviews": 0,
+  "device": "cpu",
+  "torchVersion": "2.5.1+cu121",
+  "corpusSha256": "10956da0ec37dc48b43e2fdb43ce28054defc28c1a5e6db00a856cebc0c02ebf",
+  "corpusSplits": {
+    "train": 28,
+    "dev": 12,
+    "test": 8
+  },
+  "cacheSha256": "14a5f3718ff3ba165c0e33c410ff9fcde173eb8b6d07381229c8798bc1509578",
+  "recordsSha256": "9b7f631741fada9a400b8abb63a3e61686ad13b24c3281663eecedaee3e91461",
+  "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475",
+  "featureIdentity": {
+    "actualParameterBytesByDevice": {
+      "cuda:0": 20063183744,
+      "meta": 33728813184
+    },
+    "attention": "eager",
+    "class": "Qwen3_5ForCausalLM",
+    "deviceMap": {
+      "lm_head": "cpu",
+      "model.embed_tokens": "0",
+      "model.layers.0": "0",
+      "model.layers.1": "0",
+      "model.layers.10": "0",
+      "model.layers.11": "0",
+      "model.layers.12": "0",
+      "model.layers.13": "0",
+      "model.layers.14": "0",
+      "model.layers.15": "0",
+      "model.layers.16": "0",
+      "model.layers.17": "0",
+      "model.layers.18": "0",
+      "model.layers.19": "0",
+      "model.layers.2": "0",
+      "model.layers.20": "0",
+      "model.layers.21": "0",
+      "model.layers.22": "0",
+      "model.layers.23": "cpu",
+      "model.layers.24": "cpu",
+      "model.layers.25": "cpu",
+      "model.layers.26": "cpu",
+      "model.layers.27": "cpu",
+      "model.layers.28": "cpu",
+      "model.layers.29": "cpu",
+      "model.layers.3": "0",
+      "model.layers.30": "cpu",
+      "model.layers.31": "cpu",
+      "model.layers.32": "cpu",
+      "model.layers.33": "cpu",
+      "model.layers.34": "cpu",
+      "model.layers.35": "cpu",
+      "model.layers.36": "cpu",
+      "model.layers.37": "cpu",
+      "model.layers.38": "cpu",
+      "model.layers.39": "cpu",
+      "model.layers.4": "0",
+      "model.layers.40": "cpu",
+      "model.layers.41": "cpu",
+      "model.layers.42": "cpu",
+      "model.layers.43": "cpu",
+      "model.layers.44": "cpu",
+      "model.layers.45": "cpu",
+      "model.layers.46": "cpu",
+      "model.layers.47": "cpu",
+      "model.layers.48": "cpu",
+      "model.layers.49": "cpu",
+      "model.layers.5": "0",
+      "model.layers.50": "cpu",
+      "model.layers.51": "cpu",
+      "model.layers.52": "cpu",
+      "model.layers.53": "cpu",
+      "model.layers.54": "cpu",
+      "model.layers.55": "cpu",
+      "model.layers.56": "cpu",
+      "model.layers.57": "cpu",
+      "model.layers.58": "cpu",
+      "model.layers.59": "cpu",
+      "model.layers.6": "0",
+      "model.layers.60": "cpu",
+      "model.layers.61": "cpu",
+      "model.layers.62": "cpu",
+      "model.layers.63": "cpu",
+      "model.layers.7": "0",
+      "model.layers.8": "0",
+      "model.layers.9": "0",
+      "model.norm": "cpu",
+      "model.rotary_emb": "cpu"
+    },
+    "dimension": 5120,
+    "encoderSourceSha256": "1e9f9bfb2271008e9c95da9af9453990b7447151eae80458138243795e6d3d98",
+    "metadataSha256": {
+      "config.json": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab",
+      "model.safetensors.index.json": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df",
+      "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27"
+    },
+    "modelPath": "/data2/model_weights/Qwen3.8-27B",
+    "padMultiple": 8,
+    "padding": "right-masked-position-ids/1",
+    "physicalGpus": [
+      1
+    ],
+    "precision": "bfloat16",
+    "quantization": "none",
+    "readout": "joint-candidate-end-token",
+    "rendererSourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+    "rotaryBufferDevices": {
+      "inv_freq": "cuda:0",
+      "original_inv_freq": "cuda:0"
+    },
+    "schema": "frostecho.joint-c-feature-identity/1",
+    "torch": "2.5.1+cu121",
+    "transformers": "5.2.0",
+    "weightIdentityScope": "local checkpoint metadata; no new full-shard hash claim"
+  },
+  "encodingExecution": {
+    "batchSize": 1,
+    "maxTokens": 2048,
+    "padMultiple": 8,
+    "placement": "auto",
+    "qualificationLimits": [
+      0.02,
+      1.0,
+      0.001
+    ],
+    "runnerSourceSha256": "03263ee097f7915daee12c67906828e85b59ee11b73ecacdd0a1b83de35aaafc"
+  },
+  "encodingQualification": {
+    "featuresSha256": "4b966fbe1aee610392f689cde2f7fd96529f1b2c9060e0048b0a6bab96089991",
+    "path": "qualification.json",
+    "sha256": "00f740fe33fac13f53c22ecdd363d43c23d82948c322b3fd56531c65d87e11e1",
+    "ok": true,
+    "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475"
+  },
+  "memory": {
+    "policy": "conditional-experience",
+    "selection": "obligation-first",
+    "tokenBudget": 640,
+    "renderer": "joint-c-action/2"
+  },
+  "deadlineProtocol": {
+    "continuationPolicy": "reference-rule/1",
+    "horizonMinutes": 240,
+    "absolute": true,
+    "pendingIsNotFailure": true
+  },
+  "splitUnit": "sourceEpisodeId",
+  "rendererSourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+  "encoderSourceSha256": "1e9f9bfb2271008e9c95da9af9453990b7447151eae80458138243795e6d3d98",
+  "trainingCodeSha256": "d1f8c15732b2e5eb9d1f38dc4fd31ea049b9e000dbf2515103baed325e909729",
+  "initialHeadSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+  "selectedCheckpoint": "warm-17.safetensors",
+  "selectedCheckpointSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+  "selection": "lowest unrounded dev set-NLL, never test",
+  "counts": {
+    "train": 28,
+    "dev": 12,
+    "test": 8
+  },
+  "labelledCounts": {
+    "train": 28,
+    "dev": 12,
+    "test": 8
+  },
+  "emptySetCounts": {
+    "train": 0,
+    "dev": 0,
+    "test": 0
+  },
+  "discriminativeCounts": {
+    "train": 0,
+    "dev": 0,
+    "test": 0
+  },
+  "baseline": {
+    "weight": "initial head",
+    "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+    "dev": {
+      "cases": 12,
+      "labelledCases": 12,
+      "emptySetCases": 0,
+      "discriminativeCases": 0,
+      "setNll": 0.0,
+      "top1InAcceptable": 1.0,
+      "meanAcceptableProbability": 1.0,
+      "discriminativeSetNll": null,
+      "discriminativeTop1": null,
+      "emptySet": {
+        "top1ProbabilityMean": null,
+        "abstainedAtUniform": null
+      }
+    }
+  },
+  "selectedMetrics": {
+    "init": "warm",
+    "seed": 17,
+    "selectedEpoch": 0,
+    "dev": {
+      "cases": 12,
+      "labelledCases": 12,
+      "emptySetCases": 0,
+      "discriminativeCases": 0,
+      "setNll": 0.0,
+      "top1InAcceptable": 1.0,
+      "meanAcceptableProbability": 1.0,
+      "discriminativeSetNll": null,
+      "discriminativeTop1": null,
+      "emptySet": {
+        "top1ProbabilityMean": null,
+        "abstainedAtUniform": null
+      }
+    },
+    "train": {
+      "cases": 28,
+      "labelledCases": 28,
+      "emptySetCases": 0,
+      "discriminativeCases": 0,
+      "setNll": 0.0,
+      "top1InAcceptable": 1.0,
+      "meanAcceptableProbability": 1.0,
+      "discriminativeSetNll": null,
+      "discriminativeTop1": null,
+      "emptySet": {
+        "top1ProbabilityMean": null,
+        "abstainedAtUniform": null
+      }
+    }
+  },
+  "fourHeads": [
+    {
+      "init": "warm",
+      "seed": 17,
+      "checkpoint": "warm-17.safetensors",
+      "checkpointSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+      "selectedEpoch": 0,
+      "dev": {
+        "cases": 12,
+        "labelledCases": 12,
+        "emptySetCases": 0,
+        "discriminativeCases": 0,
+        "setNll": 0.0,
+        "top1InAcceptable": 1.0,
+        "meanAcceptableProbability": 1.0,
+        "discriminativeSetNll": null,
+        "discriminativeTop1": null,
+        "emptySet": {
+          "top1ProbabilityMean": null,
+          "abstainedAtUniform": null
+        }
+      }
+    },
+    {
+      "init": "warm",
+      "seed": 43,
+      "checkpoint": "warm-43.safetensors",
+      "checkpointSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+      "selectedEpoch": 0,
+      "dev": {
+        "cases": 12,
+        "labelledCases": 12,
+        "emptySetCases": 0,
+        "discriminativeCases": 0,
+        "setNll": 0.0,
+        "top1InAcceptable": 1.0,
+        "meanAcceptableProbability": 1.0,
+        "discriminativeSetNll": null,
+        "discriminativeTop1": null,
+        "emptySet": {
+          "top1ProbabilityMean": null,
+          "abstainedAtUniform": null
+        }
+      }
+    },
+    {
+      "init": "random",
+      "seed": 17,
+      "checkpoint": "random-17.safetensors",
+      "checkpointSha256": "5d7e03cb5354c63ca4d25df098e26ad3d27aab8a6ccae16ee9f0ad005fb03ae9",
+      "selectedEpoch": 0,
+      "dev": {
+        "cases": 12,
+        "labelledCases": 12,
+        "emptySetCases": 0,
+        "discriminativeCases": 0,
+        "setNll": 0.0,
+        "top1InAcceptable": 1.0,
+        "meanAcceptableProbability": 1.0,
+        "discriminativeSetNll": null,
+        "discriminativeTop1": null,
+        "emptySet": {
+          "top1ProbabilityMean": null,
+          "abstainedAtUniform": null
+        }
+      }
+    },
+    {
+      "init": "random",
+      "seed": 43,
+      "checkpoint": "random-43.safetensors",
+      "checkpointSha256": "96c99be08308c55c93344c22400a934d4bd029d3e9086b01628a18c35cdc9d3c",
+      "selectedEpoch": 0,
+      "dev": {
+        "cases": 12,
+        "labelledCases": 12,
+        "emptySetCases": 0,
+        "discriminativeCases": 0,
+        "setNll": 0.0,
+        "top1InAcceptable": 1.0,
+        "meanAcceptableProbability": 1.0,
+        "discriminativeSetNll": null,
+        "discriminativeTop1": null,
+        "emptySet": {
+          "top1ProbabilityMean": null,
+          "abstainedAtUniform": null
+        }
+      }
+    }
+  ],
+  "backboneGradients": 0,
+  "backboneLoadedByTrainer": false,
+  "epochs": 40,
+  "batchSize": 16,
+  "learningRate": 0.001,
+  "weightDecay": 0.01,
+  "normalisation": "non-affine LayerNorm eps=1e-5 (serve_joint.normalized)",
+  "setLoss": "logsumexp(z_all)-logsumexp(z_A); empty A is excluded and counted",
+  "seconds": 5.44499097764492,
+  "limitations": [
+    "Weak branch labels from one fixed rule controller; not human preference.",
+    "All-acceptable cases carry zero gradient; see counts/discriminativeCounts.",
+    "Independent blind reviews are reported separately and do not admit execution."
+  ]
+}
