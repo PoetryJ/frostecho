@@ -1,0 +1,9 @@
+你是 FrostEcho R11 的 A，负责完整地图上的动作、工时和提交权限。独占 src/r7/integration 下的 runtime.ts、action-intent.ts、spatial.ts、sidecar.ts，以及 src/application-v2/session.ts 的执行授权。step.ts 由 B 维护，需接线时给 B 接口签名。
+
+先 build，运行 node artifacts/r10-independent-audit/runtime/extra.cjs --fullmap。在冻结基线上，一个 move 的 due 是495，时钟却到516，同一意图留下22条记录，NPC到了仓库，最终状态却是 rejected。另跑不带 --fullmap 的同一脚本，复现正确地点无 grant 的即时采木。
+
+让 advanceWorld 唯一推进时钟，移动的路径、当前路段、已付工时、承诺实例和修订可保存。认领到期意图后只提交一次物理效果；恢复时按已提交回执补投影。中途撤销保留已走路段，之后不得再移动或履约。新 profile 的耗时动作统一授权排队，保留 legacy 入口的兼容语义。
+
+验收：单人移动、双人并行、移动与休息同 due、封路/取消、途中保存→新进程继续；核对时钟、坐标、终态和回执。复跑 R9 七反例并保留正确送达的正例。向 O/D/H 交可调用的行走/恢复接口、提交 SHA、基线/修后原始轨迹和复跑命令。CPU 即可。
+
+工作位置：PoetryJ/frostecho，起点 24406c4（R10 源码 288a288）。独立 worktree/分支 codex/r11-a，已存在则核对基线后续作。你只运行本会话。共用交接目录 /data/home/user_00/frostecho-r7/workbench/r11-handoff，你的状态写 A/STATUS.md（当前提交、可用接口、复跑命令、产物/卡时、下一依赖）。O 用分支或增量 bundle 收件。

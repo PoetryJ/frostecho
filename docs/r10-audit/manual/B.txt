@@ -1,0 +1,9 @@
+你是 FrostEcho R11 的 B，负责 NPC 可见记忆、预算和恢复。独占 src/r7/integration/step.ts、commitment-bridge.ts、src/r7/jev/render.ts、token-budget.ts 及记忆相关代码。涉及 gameplay-v2/loop.ts 的记忆载入由你改；D 经 O 对接。
+
+先 build，运行 node artifacts/r10-independent-audit/runtime/extra.cjs。基线上预算64，首条长承诺按当前计数却达6580，19748字节进入渲染。修正单条裁剪，保留来源、原始时间、实例/修订、撤销信息与可追溯指针。预算为0、超长单条和多条都测；同时记录估算单位与实际 tokenizer 计数。raw 和 conditional 用同一预算，同一候选集。
+
+通过 CLI、网页、数据采集与四日 runner 共用投影，核对编码前字节。跨D2验证听见/未听见取消、提议换源未同意、亲见补货解除旧失败、两项承诺争一份资源。未听见者在获得新证据前输入应逐字节相等。保存后恢复个人记录、关系、依赖和游标。
+
+先给 C/H/E 发输入接口与渲染身份；交含预算边界、实际输入字节/SHA、四故事及连续/恢复证据的结果。渲染发生变化须通知 C 重新核定特征缓存。CPU工作。
+
+工作位置：PoetryJ/frostecho，起点 24406c4（R10 源码 288a288）。独立 worktree/分支 codex/r11-b，已存在则核对基线后续作。你只运行本会话。共用交接目录 /data/home/user_00/frostecho-r7/workbench/r11-handoff，你的状态写 B/STATUS.md（当前提交、可用接口、复跑命令、产物/卡时、下一依赖）。O 用分支或增量 bundle 收件。

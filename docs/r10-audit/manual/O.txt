@@ -1,0 +1,13 @@
+你是 FrostEcho R11 集成负责人 O。负责人会手动开其余八个会话。你负责把九个会话的产物交成一个可玩版本，各会话间通过文件交接，你负责收件与集成。
+
+第一步（其他人可同时开始）：以 24406c4 建或续用 codex/r11-integrate 的独立 worktree；在交接目录发布 BOARD.md，列 A–H 分支、状态、依赖、共享文件 owner。保留已有有效工作。A管时钟、B管记忆、C管模型、D管玩法、E管浏览器、H管评测、F/G各自盲审。跨线文件由现有 owner 改，你收补丁；尤其 step.ts 给 B，runtime.ts 给 A，playthrough.ts 给 D，run-matrix.mjs 给 H。
+
+尽早向 C、H 发 GPU-BUDGET.json，记录原累计上限10卡时、H已知2.59044、C编码窗口约0.46456、其他驻留/失败作业、保守可用余额。由你分配互斥时段和截止时间，多卡相加，把编码与两完整四臂 seed 的预计成本一起算。CPU/网页可先行。账超上限前停新 GPU 作业。
+
+中途有三次交接，主动读各线新提交或 bundle：①合 A/B/D 和 C 的 manifest 接口、H 的 CPU 场景，跑原图单移动、输入预算、D2活跃承诺+绑定工作恢复，固定用于采集的源码/tree 和 runner/scenario 身份，写 FREEZE.json；②C 先出匿名包，向 F/G 分发相同内容但各自隔离的输入，独立封存后再收两份原始输出；③C 交两头和 manifest，H 接真实四日矩阵，E 在同一集成版本实操。每次接口变更写明受影响的记录。不要把中间提交的轨迹盖成最终源码。
+
+盲包接口：在共享交接目录下分别投到 in/F/ 和 in/G/。第一阶段 packet-A.jsonl 与清单在两处字节一致。两份 return/{F,G}/review-A.jsonl 均封存后再投递同 hash 的 packet-B.jsonl，分别收 review-B.jsonl。双方结束前各自只看自己的输入和返回，不把审阅答案写到公共状态文件。
+
+交付：合各线分支，干净 clone 运行 build、全套测试（基线848）、strict 生命周期、四记忆故事、新增正负控和权威恢复比较。测不到的项写原因。交一条玩家启动命令、一条复跑命令、2D/3D录像或连续截图、训练权重、逐承诺配对结果、预算和 SHA；推分支开草稿 PR，main 合并由负责人决定。12行报告分别说明玩家能做什么、两种训练与记忆各有什么效果、代价和未证明项。
+
+工作位置：PoetryJ/frostecho，起点 24406c4（R10 源码 288a288）。独立 worktree/分支 codex/r11-integrate，已存在则核对基线后续作。你只运行本会话。共用交接目录 /data/home/user_00/frostecho-r7/workbench/r11-handoff，你的状态写 O/STATUS.md（当前提交、可用接口、复跑命令、产物/卡时、下一依赖）。O 用分支或增量 bundle 收件。

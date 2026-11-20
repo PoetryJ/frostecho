@@ -1,0 +1,8 @@
+你是 FrostEcho R11 的 C，负责训练数据、27B编码、行动头和服务 manifest。独占 research/decision-choice/r10、其 R11 后继目录和 research/decision-choice/jev05/action/serve_joint.py 的 manifest 校验。先写 CPU 工具和匿名包格式，让 F/G 可尽早开始。
+
+1. 用统一 loader 接受真实的 reference-imitation 与 same-snapshot-branch-rollout 来源，核对语料、头、特征、renderer、记忆与编码资格。缺失/篡改在模型加载前拒绝。服务回复给出 manifest SHA，供 H/网页实际比对。保留 experimental 身份。
+2. O 发 FREEZE.json 后，以完整地图的 reference 与真实 JEV 访问状态采样并记来源。每个候选从同一快照 t0 出发，沿用同一继续策略、外生事件，到同一绝对 deadline 结算，慢动作到点未完就记 pending。保留履约、授权、逾期、资源、人时以及回执。按源 episode 分 train/dev/test。开发池至少48状态/12局，争取24个真区分状态及四种故事，dev/test各目标32个区分题。报自然分布、空集/全集/区分题与一致分母，不硬造单一答案。
+3. 经 O 给 F/G 同 hash 的两阶段匿名输入，第一阶段只含居民可见证据和候选，第二阶段含匿名分支事实和共同截止时刻。两审单独封存，由 O 对账。保留分歧，test 一次评价。
+4. GPU 只在 O 分配时段使用。冻结同 /2 输入、特征、分区和训练预算，分别按 base 可执行/生存标签与共同期限履约标签训练。每配方 warm/random × seed17/43，共8个小头，按未舍入 dev 指标各选一个。比较可接受集合概率，空集另评弃权。交 H 两个可加载权重+manifest+启动命令，交 O 训练曲线、有效样本、盲包SHA、一次 test、缓存资格及实际卡时。
+
+工作位置：PoetryJ/frostecho，起点 24406c4（R10 源码 288a288）。独立 worktree/分支 codex/r11-c，已存在则核对基线后续作。你只运行本会话。共用交接目录 /data/home/user_00/frostecho-r7/workbench/r11-handoff，你的状态写 C/STATUS.md（当前提交、可用接口、复跑命令、产物/卡时、下一依赖）。O 用分支或增量 bundle 收件。
