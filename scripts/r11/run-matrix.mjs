@@ -1717,16 +1717,19 @@ function gameIdentity({ arm, seed, dir, exits }) {
   const phases = ['start', 'resume'].map(phase => read(`phase-${phase}.json`)).filter(Boolean);
   const forwards = phases.reduce((sum, phase) => sum + (phase.scorer?.forwardCalls ?? 0), 0);
   const gpuWall = phases.reduce((sum, phase) => sum + (phase.scorer?.serviceWallSeconds ?? 0), 0);
+  // The source that actually ran this game, not the source that regenerated
+  // the summary: phase-start / d1-start wrote it at run time.
+  const runSource = read('d1-start.json')?.source ?? read('phase-start.json')?.source ?? SOURCE;
   const identity = {
     schema: 'frostecho.r11.matrix-game/1', arm: arm.id, family: arm.family, seed,
     recipe: arm.recipe, memorySelection: arm.memory,
     execution: arm.family === 'live' ? 'gpu' : 'cpu',
-    memoryTokenBudget: SCENARIO.memory.budgetTokens, scenarioSha: SCENARIO_SHA, source: SOURCE,
+    memoryTokenBudget: SCENARIO.memory.budgetTokens, scenarioSha: SCENARIO_SHA, source: runSource,
     // Reproducibility bindings O asked for. `sourceCommit` is the commit that
     // actually ran; `freezeSourceCommit` is the integration tree O froze. They
     // differ until O merges this branch into the frozen tree, and both are
     // recorded instead of pretending they are the same.
-    sourceCommit: SOURCE.head,
+    sourceCommit: runSource.head,
     freezeSha256: oFreezeSha(),
     freezeSourceCommit: O_FREEZE?.sourceCommit ?? null,
     rendererBuildSha256: O_FREEZE?.renderer?.buildSha256 ?? null,
