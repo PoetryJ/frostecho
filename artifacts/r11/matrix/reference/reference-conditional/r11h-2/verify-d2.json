@@ -1,0 +1,182 @@
+{
+  "schema": "frostecho.r11.verify-d2/1",
+  "generatedAt": "2026-11-20T06:30:14.749Z",
+  "source": {
+    "head": "24406c4ba29a825306515db46edfacae99249976",
+    "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
+    "branch": "codex/r11-h"
+  },
+  "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
+  "inputs": {
+    "dir": "artifacts/r11/matrix/reference/reference-conditional/r11h-2",
+    "save": "artifacts/r11/matrix/reference/reference-conditional/r11h-2/d2/session.json"
+  },
+  "checks": [
+    {
+      "name": "D2 save has an active commitment",
+      "passed": true,
+      "detail": {
+        "active": 2
+      }
+    },
+    {
+      "name": "D2 save has work bound to the same instance AND revision",
+      "passed": true,
+      "detail": {
+        "bound": 2
+      }
+    },
+    {
+      "name": "the save is a real file set with hashes",
+      "passed": true,
+      "detail": {
+        "files": 8
+      }
+    },
+    {
+      "name": "the resume ran in a NEW pid",
+      "passed": true,
+      "detail": {
+        "start": 1229622,
+        "resume": 1229958
+      }
+    },
+    {
+      "name": "restore equals the saved full state (world/map/tasks/commitments/memory/work/generations/receipts/rng)",
+      "passed": true,
+      "detail": {
+        "diffs": 0,
+        "categories": {}
+      }
+    },
+    {
+      "name": "interference fired only AFTER the save clock",
+      "passed": true,
+      "detail": {
+        "saveClock": 2040
+      }
+    },
+    {
+      "name": "both cancel modes were offered (heard and unheard)",
+      "passed": true,
+      "detail": [
+        {
+          "id": "cancel-heard",
+          "mode": "heard",
+          "detail": {
+            "commitmentId": "cm-3ef74c39-eb8b-4f83-aaad-d77c5111657f",
+            "promisorId": "npc_03",
+            "goal": "supply-warehouse",
+            "revision": 1,
+            "mode": "heard",
+            "status": "cancelled",
+            "heardBy": [
+              "npc_03",
+              "npc_05"
+            ],
+            "inFlightAtCancel": 1,
+            "boundIntentsCancelled": 1,
+            "cancelledIntentIds": [
+              "npc_03-r8-256"
+            ]
+          }
+        },
+        {
+          "id": "cancel-unheard",
+          "mode": "unheard",
+          "detail": {
+            "commitmentId": "cm-71a5c9a3-f4b8-4942-a864-4a9e1aa9dea9",
+            "promisorId": "npc_04",
+            "goal": "supply-warehouse",
+            "revision": 1,
+            "mode": "unheard",
+            "status": "cancelled",
+            "heardBy": [
+              "npc_05"
+            ],
+            "inFlightAtCancel": 1,
+            "boundIntentsCancelled": 1,
+            "cancelledIntentIds": [
+              "npc_04-r8-256"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "the unheard cancellation had a real relay opportunity",
+      "passed": true,
+      "detail": {
+        "applied": true,
+        "told": [
+          "npc_04",
+          "npc_05"
+        ],
+        "from": "npc_05"
+      }
+    },
+    {
+      "name": "continuous same-action replay equals the main final state",
+      "passed": true,
+      "detail": {
+        "diffs": 0
+      }
+    },
+    {
+      "name": "segmented same-action replay equals the main final state",
+      "passed": true,
+      "detail": {
+        "diffs": 0
+      }
+    },
+    {
+      "name": "metrics were recomputed from the complete logs",
+      "passed": true,
+      "detail": {
+        "obligations": 8,
+        "intents": 433
+      }
+    }
+  ],
+  "exposure": [
+    {
+      "name": "a source change was proposed and the beneficiary refused it",
+      "passed": false,
+      "detail": null
+    },
+    {
+      "name": "the old failure condition was lifted by a witnessed restock",
+      "passed": false,
+      "detail": null
+    },
+    {
+      "name": "two commitments contended for the last unit",
+      "passed": true,
+      "detail": {
+        "at": 2060,
+        "stockBefore": 2,
+        "stockAfter": 1,
+        "drainer": "npc_07",
+        "amount": 1,
+        "status": "applied",
+        "reason": null,
+        "targets": [
+          {
+            "commitmentId": "cm-459a23f2-d9c0-4459-a510-0a6db680bea0",
+            "promisorId": "npc_06",
+            "goal": "deliver-meal",
+            "outcome": "pending"
+          },
+          {
+            "commitmentId": "cm-e6f74746-f3ba-494e-a5ad-d9e10feed37f",
+            "promisorId": "npc_08",
+            "goal": "deliver-meal",
+            "outcome": "pending"
+          }
+        ]
+      }
+    }
+  ],
+  "ok": true,
+  "exposed": false
+}

@@ -1,0 +1,850 @@
+{
+  "schema": "frostecho.r11.metrics/1",
+  "metricSpec": {
+    "schema": "frostecho.r11.metric-spec/1",
+    "primary": {
+      "id": "verified_fulfilment_rate_per_instance",
+      "numerator": "commitment instances with >=1 authoritative receipt of the goal type, actor and place, within their own revision",
+      "denominator": "all commitment instances created in the game (initial + checkpoint/follow-up delegations)",
+      "nullPolicy": "if a game has 0 instances -> null (not 0)"
+    },
+    "secondary": [
+      "overdue_rate_per_instance",
+      "authorised_exit_rate_per_instance",
+      "post_cancel_late_physical_effects",
+      "post_cancel_unauthorised_attempts",
+      "unagreed_source_actions",
+      "duplicate_receipts",
+      "settlement_failures_by_reason",
+      "contention_resolved_with_receipt",
+      "restock_witnessed_then_fulfilled",
+      "work_hours_per_instance",
+      "survivors",
+      "ending",
+      "final_inventory_hours",
+      "four_day_resource_gap_hours"
+    ],
+    "exposure": {
+      "notExposed": "null / not_exposed when the pre-registered story precondition never coexisted with an active instance (legal early completion included)"
+    },
+    "rates": {
+      "foodPerHour": 7.2,
+      "firewoodPerHour": 0.4,
+      "powerPerHour": 2,
+      "note": "food: 8 NPCs x 0.9 hunger/h, 1 food == 1 hunger in survival-rules/2; firewood: furnace burn 0.4/h in evolveSpan; power: heating reserve denominator (2/h) used by the R10 coverage report, not a physical drain."
+    },
+    "gap": {
+      "definition": "hours in [start,end) where the authoritative level is <= 0, integrating the sampled timeline with the left-hand value"
+    },
+    "tolerance": "no statistical claim from 2 seeds; report per-seed pairs and their difference"
+  },
+  "counts": {
+    "instances": 8,
+    "fulfilled": 5,
+    "overdue": 3,
+    "authorisedExit": 0,
+    "cancelled": 2,
+    "changesProposed": 1,
+    "duplicateReceipts": 0
+  },
+  "primary": {
+    "id": "verified_fulfilment_rate_per_instance",
+    "numerator": 5,
+    "denominator": 8,
+    "value": 0.625
+  },
+  "obligations": [
+    {
+      "commitmentId": "cm-0d497378-d5b4-43e3-a841-6803dc013257",
+      "promisorId": "npc_01",
+      "goal": "deliver-meal",
+      "origin": "initial",
+      "taskId": "task-001-deliver-meal",
+      "createdAt": 480,
+      "deadline": 3960,
+      "revision": 1,
+      "status": "fulfilled",
+      "terminalAt": 675,
+      "exposure": {
+        "activeAtSave": false,
+        "boundWorkAtSave": 0,
+        "cancelHeardOpportunity": false,
+        "cancelUnheardOpportunity": false,
+        "cancelHeardAt": null,
+        "cancelRelayedAt": null,
+        "changeProposedOpportunity": false,
+        "restockOpportunityAt": 2100,
+        "restockWitnessedAt": null,
+        "contentionOpportunityAt": null
+      },
+      "fulfilment": {
+        "verified": true,
+        "receipts": [
+          "npc_01-r8-38:meal_delivered:44"
+        ],
+        "at": 675,
+        "withinDeadline": true,
+        "withoutReceipt": false
+      },
+      "overdue": false,
+      "authorisedExit": false,
+      "exitReason": null,
+      "cancel": null,
+      "change": null,
+      "shortage": {
+        "firstObservedAt": null,
+        "observationCount": 0
+      },
+      "restock": {
+        "witnessedAt": null,
+        "nextWithdrawAt": null
+      },
+      "contention": null,
+      "work": {
+        "intents": 3,
+        "byStatus": {
+          "applied": 3
+        },
+        "workHours": 0.75,
+        "failures": []
+      }
+    },
+    {
+      "commitmentId": "cm-76360706-487f-4a9e-ad14-6e4a1d5d975c",
+      "promisorId": "npc_02",
+      "goal": "deliver-meal",
+      "origin": "initial",
+      "taskId": "task-002-deliver-meal",
+      "createdAt": 480,
+      "deadline": 3960,
+      "revision": 1,
+      "status": "fulfilled",
+      "terminalAt": 675,
+      "exposure": {
+        "activeAtSave": false,
+        "boundWorkAtSave": 0,
+        "cancelHeardOpportunity": false,
+        "cancelUnheardOpportunity": false,
+        "cancelHeardAt": null,
+        "cancelRelayedAt": null,
+        "changeProposedOpportunity": false,
+        "restockOpportunityAt": 2100,
+        "restockWitnessedAt": null,
+        "contentionOpportunityAt": null
+      },
+      "fulfilment": {
+        "verified": true,
+        "receipts": [
+          "npc_02-r8-38:meal_delivered:45"
+        ],
+        "at": 675,
+        "withinDeadline": true,
+        "withoutReceipt": false
+      },
+      "overdue": false,
+      "authorisedExit": false,
+      "exitReason": null,
+      "cancel": null,
+      "change": null,
+      "shortage": {
+        "firstObservedAt": null,
+        "observationCount": 0
+      },
+      "restock": {
+        "witnessedAt": null,
+        "nextWithdrawAt": null
+      },
+      "contention": null,
+      "work": {
+        "intents": 3,
+        "byStatus": {
+          "applied": 3
+        },
+        "workHours": 0.75,
+        "failures": []
+      }
+    },
+    {
+      "commitmentId": "cm-f6b262f5-47e0-45e8-a3fb-897942f92858",
+      "promisorId": "npc_03",
+      "goal": "supply-warehouse",
+      "origin": "initial",
+      "taskId": "task-003-supply-warehouse",
+      "createdAt": 480,
+      "deadline": 3960,
+      "revision": 1,
+      "status": "fulfilled",
+      "terminalAt": 555,
+      "exposure": {
+        "activeAtSave": false,
+        "boundWorkAtSave": 0,
+        "cancelHeardOpportunity": false,
+        "cancelUnheardOpportunity": false,
+        "cancelHeardAt": null,
+        "cancelRelayedAt": null,
+        "changeProposedOpportunity": false,
+        "restockOpportunityAt": 2100,
+        "restockWitnessedAt": null,
+        "contentionOpportunityAt": null
+      },
+      "fulfilment": {
+        "verified": true,
+        "receipts": [
+          "npc_03-r8-14:stock_deposited:16"
+        ],
+        "at": 555,
+        "withinDeadline": true,
+        "withoutReceipt": false
+      },
+      "overdue": false,
+      "authorisedExit": false,
+      "exitReason": null,
+      "cancel": null,
+      "change": null,
+      "shortage": {
+        "firstObservedAt": null,
+        "observationCount": 0
+      },
+      "restock": {
+        "witnessedAt": null,
+        "nextWithdrawAt": null
+      },
+      "contention": null,
+      "work": {
+        "intents": 2,
+        "byStatus": {
+          "applied": 2
+        },
+        "workHours": 0.5,
+        "failures": []
+      }
+    },
+    {
+      "commitmentId": "cm-874ce683-a05f-4df9-a7d1-76524a1a38d5",
+      "promisorId": "npc_04",
+      "goal": "supply-warehouse",
+      "origin": "initial",
+      "taskId": "task-004-supply-warehouse",
+      "createdAt": 480,
+      "deadline": 3960,
+      "revision": 1,
+      "status": "fulfilled",
+      "terminalAt": 555,
+      "exposure": {
+        "activeAtSave": false,
+        "boundWorkAtSave": 0,
+        "cancelHeardOpportunity": false,
+        "cancelUnheardOpportunity": false,
+        "cancelHeardAt": null,
+        "cancelRelayedAt": null,
+        "changeProposedOpportunity": false,
+        "restockOpportunityAt": 2100,
+        "restockWitnessedAt": null,
+        "contentionOpportunityAt": null
+      },
+      "fulfilment": {
+        "verified": true,
+        "receipts": [
+          "npc_04-r8-14:stock_deposited:17"
+        ],
+        "at": 555,
+        "withinDeadline": true,
+        "withoutReceipt": false
+      },
+      "overdue": false,
+      "authorisedExit": false,
+      "exitReason": null,
+      "cancel": null,
+      "change": null,
+      "shortage": {
+        "firstObservedAt": null,
+        "observationCount": 0
+      },
+      "restock": {
+        "witnessedAt": null,
+        "nextWithdrawAt": null
+      },
+      "contention": null,
+      "work": {
+        "intents": 2,
+        "byStatus": {
+          "applied": 2
+        },
+        "workHours": 0.5,
+        "failures": []
+      }
+    },
+    {
+      "commitmentId": "cm-a2396d2f-3565-4581-ada4-1165f647553f",
+      "promisorId": "npc_03",
+      "goal": "supply-warehouse",
+      "origin": "checkpoint-delegation",
+      "taskId": "task-005-supply-warehouse",
+      "createdAt": 2040,
+      "deadline": 3960,
+      "revision": 1,
+      "status": "cancelled",
+      "terminalAt": 2050,
+      "exposure": {
+        "activeAtSave": true,
+        "boundWorkAtSave": 1,
+        "cancelHeardOpportunity": false,
+        "cancelUnheardOpportunity": true,
+        "cancelHeardAt": 2070,
+        "cancelRelayedAt": 2070,
+        "changeProposedOpportunity": false,
+        "restockOpportunityAt": 2100,
+        "restockWitnessedAt": null,
+        "contentionOpportunityAt": null
+      },
+      "fulfilment": {
+        "verified": false,
+        "receipts": [],
+        "at": null,
+        "withinDeadline": null,
+        "withoutReceipt": false
+      },
+      "overdue": true,
+      "authorisedExit": false,
+      "exitReason": null,
+      "cancel": {
+        "at": 2050,
+        "heardAt": 2070,
+        "relayedAt": 2070,
+        "heardByPromisor": true,
+        "boundIntentsCancelled": 1,
+        "attemptsAfter": 1,
+        "receiptsAfter": 0,
+        "latePhysicalEffects": 0,
+        "lateReceiptIds": []
+      },
+      "change": null,
+      "shortage": {
+        "firstObservedAt": null,
+        "observationCount": 0
+      },
+      "restock": {
+        "witnessedAt": null,
+        "nextWithdrawAt": null
+      },
+      "contention": null,
+      "work": {
+        "intents": 2,
+        "byStatus": {
+          "cancelled": 1,
+          "rejected": 1
+        },
+        "workHours": 0,
+        "failures": [
+          {
+            "intentId": "npc_03-r8-256",
+            "status": "cancelled",
+            "reason": "commitment_cancelled",
+            "kind": "move"
+          },
+          {
+            "intentId": "npc_03-r8-258",
+            "status": "rejected",
+            "reason": "commitment_cancelled",
+            "kind": "move"
+          }
+        ]
+      }
+    },
+    {
+      "commitmentId": "cm-709daa09-6e8f-4afd-ac3f-b32b476941fb",
+      "promisorId": "npc_04",
+      "goal": "supply-warehouse",
+      "origin": "checkpoint-delegation",
+      "taskId": "task-006-supply-warehouse",
+      "createdAt": 2040,
+      "deadline": 3960,
+      "revision": 1,
+      "status": "cancelled",
+      "terminalAt": 2050,
+      "exposure": {
+        "activeAtSave": true,
+        "boundWorkAtSave": 1,
+        "cancelHeardOpportunity": true,
+        "cancelUnheardOpportunity": false,
+        "cancelHeardAt": 2050,
+        "cancelRelayedAt": null,
+        "changeProposedOpportunity": false,
+        "restockOpportunityAt": 2100,
+        "restockWitnessedAt": null,
+        "contentionOpportunityAt": null
+      },
+      "fulfilment": {
+        "verified": false,
+        "receipts": [],
+        "at": null,
+        "withinDeadline": null,
+        "withoutReceipt": false
+      },
+      "overdue": true,
+      "authorisedExit": false,
+      "exitReason": null,
+      "cancel": {
+        "at": 2050,
+        "heardAt": 2050,
+        "relayedAt": null,
+        "heardByPromisor": true,
+        "boundIntentsCancelled": 1,
+        "attemptsAfter": 0,
+        "receiptsAfter": 0,
+        "latePhysicalEffects": 0,
+        "lateReceiptIds": []
+      },
+      "change": null,
+      "shortage": {
+        "firstObservedAt": null,
+        "observationCount": 0
+      },
+      "restock": {
+        "witnessedAt": null,
+        "nextWithdrawAt": null
+      },
+      "contention": null,
+      "work": {
+        "intents": 1,
+        "byStatus": {
+          "cancelled": 1
+        },
+        "workHours": 0,
+        "failures": [
+          {
+            "intentId": "npc_04-r8-256",
+            "status": "cancelled",
+            "reason": "commitment_cancelled",
+            "kind": "move"
+          }
+        ]
+      }
+    },
+    {
+      "commitmentId": "cm-d4277ede-1968-47f2-a68f-36ae79c55642",
+      "promisorId": "npc_06",
+      "goal": "deliver-meal",
+      "origin": "follow-up-deliver",
+      "taskId": "task-007-deliver-meal",
+      "createdAt": 2060,
+      "deadline": 3960,
+      "revision": 1,
+      "status": "fulfilled",
+      "terminalAt": 2115,
+      "exposure": {
+        "activeAtSave": false,
+        "boundWorkAtSave": 0,
+        "cancelHeardOpportunity": false,
+        "cancelUnheardOpportunity": false,
+        "cancelHeardAt": null,
+        "cancelRelayedAt": null,
+        "changeProposedOpportunity": false,
+        "restockOpportunityAt": 2100,
+        "restockWitnessedAt": null,
+        "contentionOpportunityAt": null
+      },
+      "fulfilment": {
+        "verified": true,
+        "receipts": [
+          "npc_06-r8-295:meal_delivered:302"
+        ],
+        "at": 2115,
+        "withinDeadline": true,
+        "withoutReceipt": false
+      },
+      "overdue": false,
+      "authorisedExit": false,
+      "exitReason": null,
+      "cancel": null,
+      "change": null,
+      "shortage": {
+        "firstObservedAt": null,
+        "observationCount": 0
+      },
+      "restock": {
+        "witnessedAt": null,
+        "nextWithdrawAt": null
+      },
+      "contention": {
+        "commitmentId": "cm-d4277ede-1968-47f2-a68f-36ae79c55642",
+        "promisorId": "npc_06",
+        "goal": "deliver-meal",
+        "outcome": "won",
+        "withdrawEventId": "npc_06-r8-268:stock_withdrawn:268",
+        "at": 2060,
+        "remainingAfter": 0
+      },
+      "work": {
+        "intents": 2,
+        "byStatus": {
+          "applied": 2
+        },
+        "workHours": 0.5,
+        "failures": []
+      }
+    },
+    {
+      "commitmentId": "cm-698c8376-bda3-4d42-a8a5-c8aa75f26e1e",
+      "promisorId": "npc_08",
+      "goal": "deliver-meal",
+      "origin": "follow-up-deliver",
+      "taskId": "task-008-deliver-meal",
+      "createdAt": 2060,
+      "deadline": 3960,
+      "revision": 1,
+      "status": "active",
+      "terminalAt": null,
+      "exposure": {
+        "activeAtSave": false,
+        "boundWorkAtSave": 0,
+        "cancelHeardOpportunity": false,
+        "cancelUnheardOpportunity": false,
+        "cancelHeardAt": null,
+        "cancelRelayedAt": null,
+        "changeProposedOpportunity": true,
+        "restockOpportunityAt": 2100,
+        "restockWitnessedAt": 2100,
+        "contentionOpportunityAt": null
+      },
+      "fulfilment": {
+        "verified": false,
+        "receipts": [],
+        "at": null,
+        "withinDeadline": null,
+        "withoutReceipt": false
+      },
+      "overdue": true,
+      "authorisedExit": false,
+      "exitReason": null,
+      "cancel": null,
+      "change": {
+        "kind": "alt-source",
+        "status": "rejected",
+        "proposedAt": 2060,
+        "respondedAt": 2080,
+        "proposedRevision": 2,
+        "revisionAfter": 1,
+        "accepted": false,
+        "source": "gather",
+        "unagreedSourceActions": 0
+      },
+      "shortage": {
+        "firstObservedAt": null,
+        "observationCount": 0
+      },
+      "restock": {
+        "witnessedAt": 2100,
+        "nextWithdrawAt": null
+      },
+      "contention": {
+        "commitmentId": "cm-698c8376-bda3-4d42-a8a5-c8aa75f26e1e",
+        "promisorId": "npc_08",
+        "goal": "deliver-meal",
+        "outcome": "lost-then-recovered",
+        "shortageEventId": "npc_08-r8-269:out_of_stock:269",
+        "at": 2060,
+        "shortageAt": 2060,
+        "recoveredEventId": "npc_08-r8-295:stock_withdrawn:295",
+        "recoveredAt": 2100,
+        "remainingAfter": 1
+      },
+      "work": {
+        "intents": 1,
+        "byStatus": {
+          "applied": 1
+        },
+        "workHours": 0.25,
+        "failures": []
+      }
+    }
+  ],
+  "exposure": {
+    "instances": 8,
+    "activeAtSave": 2,
+    "boundWorkAtSave": 2,
+    "cancelHeardOpportunities": 1,
+    "cancelUnheardOpportunities": 1,
+    "changeOpportunities": 1,
+    "restockOpportunityAt": 2100,
+    "restockWitnessed": 1,
+    "contentionOpportunities": 2
+  },
+  "postCancel": {
+    "cancelledInstances": 2,
+    "attemptsAfter": 1,
+    "latePhysicalEffects": 0,
+    "lateReceipts": 0,
+    "unauthorisedAttempts": 1
+  },
+  "changes": {
+    "proposed": 1,
+    "accepted": 0,
+    "rejected": 1,
+    "unagreedSourceActions": 0,
+    "rows": [
+      {
+        "commitmentId": "cm-698c8376-bda3-4d42-a8a5-c8aa75f26e1e",
+        "kind": "alt-source",
+        "status": "rejected",
+        "proposedAt": 2060,
+        "respondedAt": 2080,
+        "proposedRevision": 2,
+        "revisionAfter": 1,
+        "accepted": false,
+        "source": "gather",
+        "unagreedSourceActions": 0
+      }
+    ]
+  },
+  "contention": {
+    "targets": [
+      {
+        "commitmentId": "cm-698c8376-bda3-4d42-a8a5-c8aa75f26e1e",
+        "promisorId": "npc_08",
+        "goal": "deliver-meal",
+        "outcome": "lost-then-recovered",
+        "shortageEventId": "npc_08-r8-269:out_of_stock:269",
+        "at": 2060,
+        "shortageAt": 2060,
+        "recoveredEventId": "npc_08-r8-295:stock_withdrawn:295",
+        "recoveredAt": 2100,
+        "remainingAfter": 1
+      },
+      {
+        "commitmentId": "cm-d4277ede-1968-47f2-a68f-36ae79c55642",
+        "promisorId": "npc_06",
+        "goal": "deliver-meal",
+        "outcome": "won",
+        "withdrawEventId": "npc_06-r8-268:stock_withdrawn:268",
+        "at": 2060,
+        "remainingAfter": 0
+      }
+    ],
+    "resolved": 1
+  },
+  "duplicates": {
+    "fulfilmentInstancesWithMultipleReceipts": 0,
+    "receiptIdsUsedTwice": []
+  },
+  "settlement": {
+    "intents": 351,
+    "byStatus": {
+      "applied": 346,
+      "cancelled": 2,
+      "rejected": 3
+    },
+    "failureReasons": {
+      "commitment_cancelled": 3,
+      "wrong_location: medical needs medical, actor is at dorm-b": 1,
+      "wrong_location: gather needs village, actor is at dorm-a": 1
+    },
+    "pendingWithinEnd": 0,
+    "expired": 0,
+    "directRejections": 37,
+    "busySkips": 18
+  },
+  "work": {
+    "hours": 3.25
+  },
+  "resources": {
+    "samples": 45,
+    "final": {
+      "food": 121,
+      "firewood": 0,
+      "power": 0
+    },
+    "inventoryHours": {
+      "food": 16.806,
+      "firewood": 0,
+      "power": 0
+    },
+    "gapHours": {
+      "food": 0,
+      "firewood": 28,
+      "power": 10
+    },
+    "zeroWindows": [
+      {
+        "resource": "firewood",
+        "from": 2520,
+        "to": 2580
+      },
+      {
+        "resource": "firewood",
+        "from": 2580,
+        "to": 2640
+      },
+      {
+        "resource": "firewood",
+        "from": 2640,
+        "to": 3120
+      },
+      {
+        "resource": "firewood",
+        "from": 3120,
+        "to": 3240
+      },
+      {
+        "resource": "firewood",
+        "from": 3240,
+        "to": 3300
+      },
+      {
+        "resource": "firewood",
+        "from": 3300,
+        "to": 3360
+      },
+      {
+        "resource": "firewood",
+        "from": 4560,
+        "to": 4680
+      },
+      {
+        "resource": "firewood",
+        "from": 4680,
+        "to": 4740
+      },
+      {
+        "resource": "firewood",
+        "from": 4740,
+        "to": 4800
+      },
+      {
+        "resource": "firewood",
+        "from": 4800,
+        "to": 4860
+      },
+      {
+        "resource": "power",
+        "from": 4800,
+        "to": 4860
+      },
+      {
+        "resource": "firewood",
+        "from": 4860,
+        "to": 4920
+      },
+      {
+        "resource": "power",
+        "from": 4860,
+        "to": 4920
+      },
+      {
+        "resource": "firewood",
+        "from": 4920,
+        "to": 4980
+      },
+      {
+        "resource": "power",
+        "from": 4920,
+        "to": 4980
+      },
+      {
+        "resource": "firewood",
+        "from": 4980,
+        "to": 5040
+      },
+      {
+        "resource": "power",
+        "from": 4980,
+        "to": 5040
+      },
+      {
+        "resource": "firewood",
+        "from": 5040,
+        "to": 5100
+      },
+      {
+        "resource": "power",
+        "from": 5040,
+        "to": 5100
+      },
+      {
+        "resource": "firewood",
+        "from": 5100,
+        "to": 5160
+      },
+      {
+        "resource": "power",
+        "from": 5100,
+        "to": 5160
+      },
+      {
+        "resource": "firewood",
+        "from": 5160,
+        "to": 5220
+      },
+      {
+        "resource": "power",
+        "from": 5160,
+        "to": 5220
+      },
+      {
+        "resource": "firewood",
+        "from": 5220,
+        "to": 5280
+      },
+      {
+        "resource": "power",
+        "from": 5220,
+        "to": 5280
+      },
+      {
+        "resource": "firewood",
+        "from": 5280,
+        "to": 5340
+      },
+      {
+        "resource": "power",
+        "from": 5280,
+        "to": 5340
+      },
+      {
+        "resource": "firewood",
+        "from": 5340,
+        "to": 5400
+      },
+      {
+        "resource": "power",
+        "from": 5340,
+        "to": 5400
+      }
+    ],
+    "firstZeroAt": {
+      "food": null,
+      "firewood": 2520,
+      "power": 4800
+    }
+  },
+  "survivors": 1,
+  "ending": "extinction",
+  "notExposed": [],
+  "resourceControls": {
+    "positive": true,
+    "negative": true,
+    "missing": true,
+    "expected": {
+      "food": 3,
+      "firewood": 5,
+      "power": 1
+    },
+    "actual": {
+      "food": 3,
+      "firewood": 5,
+      "power": 1
+    },
+    "ok": true
+  },
+  "reconciliation": {
+    "ok": true,
+    "checks": {
+      "noDuplicateReceipt": true,
+      "noUnauthorisedSourceAction": true,
+      "noLatePhysicalEffect": true,
+      "everyFulfilmentReceipted": true,
+      "settlementsTerminalWithinEnd": true,
+      "resourceGapIntegrates": true
+    }
+  }
+}

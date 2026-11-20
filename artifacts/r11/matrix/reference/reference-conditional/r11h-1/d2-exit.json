@@ -1,0 +1,186 @@
+{
+  "schema": "frostecho.r11.matrix-d2-exit/1",
+  "pid": 1188276,
+  "arm": "reference-conditional",
+  "seed": "r11h-1",
+  "family": "reference",
+  "memorySelection": "obligation-first",
+  "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
+  "simTime": 2040,
+  "headSha256": null,
+  "manifestSha256": null,
+  "inputSequence": 152,
+  "checkpoint": {
+    "at": 2040,
+    "activeCommitments": 2,
+    "boundWorkingIntents": 2,
+    "pending": 8,
+    "commitments": [
+      {
+        "commitmentId": "cm-a2396d2f-3565-4581-ada4-1165f647553f",
+        "promisorId": "npc_03",
+        "goal": "supply-warehouse",
+        "revision": 1,
+        "status": "active",
+        "deadline": 3960,
+        "taskId": "task-005-supply-warehouse",
+        "createdAt": 2040,
+        "boundWorkingIntents": [
+          {
+            "intentId": "npc_03-r8-256",
+            "action": "move",
+            "startedAt": 2040,
+            "dueAt": 2055,
+            "commitmentId": "cm-a2396d2f-3565-4581-ada4-1165f647553f",
+            "commitmentRevision": 1,
+            "generation": 0,
+            "taskId": "task-005-supply-warehouse"
+          }
+        ]
+      },
+      {
+        "commitmentId": "cm-709daa09-6e8f-4afd-ac3f-b32b476941fb",
+        "promisorId": "npc_04",
+        "goal": "supply-warehouse",
+        "revision": 1,
+        "status": "active",
+        "deadline": 3960,
+        "taskId": "task-006-supply-warehouse",
+        "createdAt": 2040,
+        "boundWorkingIntents": [
+          {
+            "intentId": "npc_04-r8-256",
+            "action": "move",
+            "startedAt": 2040,
+            "dueAt": 2055,
+            "commitmentId": "cm-709daa09-6e8f-4afd-ac3f-b32b476941fb",
+            "commitmentRevision": 1,
+            "generation": 0,
+            "taskId": "task-006-supply-warehouse"
+          }
+        ]
+      }
+    ],
+    "intents": [
+      {
+        "intentId": "npc_01-r8-256",
+        "actorId": "npc_01",
+        "action": "gather",
+        "startedAt": 2040,
+        "dueAt": 2070,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": "task-13",
+        "generation": 0
+      },
+      {
+        "intentId": "npc_02-r8-256",
+        "actorId": "npc_02",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null,
+        "generation": 0
+      },
+      {
+        "intentId": "npc_03-r8-256",
+        "actorId": "npc_03",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": "cm-a2396d2f-3565-4581-ada4-1165f647553f",
+        "commitmentRevision": 1,
+        "taskId": "task-005-supply-warehouse",
+        "generation": 0
+      },
+      {
+        "intentId": "npc_04-r8-256",
+        "actorId": "npc_04",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": "cm-709daa09-6e8f-4afd-ac3f-b32b476941fb",
+        "commitmentRevision": 1,
+        "taskId": "task-006-supply-warehouse",
+        "generation": 0
+      },
+      {
+        "intentId": "npc_05-r8-256",
+        "actorId": "npc_05",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null,
+        "generation": 0
+      },
+      {
+        "intentId": "npc_06-r8-256",
+        "actorId": "npc_06",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null,
+        "generation": 0
+      },
+      {
+        "intentId": "npc_07-r8-256",
+        "actorId": "npc_07",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null,
+        "generation": 0
+      },
+      {
+        "intentId": "npc_08-r8-256",
+        "actorId": "npc_08",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null,
+        "generation": 0
+      }
+    ],
+    "generations": {}
+  },
+  "delegations": [
+    {
+      "commitmentId": "cm-a2396d2f-3565-4581-ada4-1165f647553f",
+      "promisorId": "npc_03",
+      "goal": "supply-warehouse",
+      "origin": "checkpoint-delegation",
+      "at": 2040,
+      "reason": "legal-early-completion",
+      "taskId": "task-005-supply-warehouse",
+      "status": "active",
+      "deadline": 3960
+    },
+    {
+      "commitmentId": "cm-709daa09-6e8f-4afd-ac3f-b32b476941fb",
+      "promisorId": "npc_04",
+      "goal": "supply-warehouse",
+      "origin": "checkpoint-delegation",
+      "at": 2040,
+      "reason": "legal-early-completion",
+      "taskId": "task-006-supply-warehouse",
+      "status": "active",
+      "deadline": 3960
+    }
+  ],
+  "exits": [],
+  "decisions": 168,
+  "decisionsSha256": "a428e58b0ae0ea1a93a01d7ad6465fb1146436110c7b87d69ded17eb346a0492",
+  "stateSha256": "86dceddc661544635156192d16ba4319005ab2410d83a31e4ae59c31309941fe",
+  "nextClockTarget": 2100,
+  "countsAsModelResult": false
+}

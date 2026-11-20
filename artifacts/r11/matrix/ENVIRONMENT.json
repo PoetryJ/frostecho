@@ -1,0 +1,42 @@
+{
+  "schema": "frostecho.r11.environment/1",
+  "recordedAt": "2026-11-20T14:30:00+08:00",
+  "repo": "PoetryJ/frostecho",
+  "source": {
+    "branch": "codex/r11-h",
+    "head": "24406c4ba29a825306515db46edfacae99249976",
+    "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
+    "baseline": "24406c4",
+    "r10Source": "288a288"
+  },
+  "host": {
+    "kernel": "5.4.119-19.0009.56",
+    "cpuCount": 24,
+    "memTotalGiB": 85,
+    "gpus": [
+      { "index": 0, "name": "NVIDIA A10", "totalMiB": 23028, "usedMiB": 20124, "foreign": true },
+      { "index": 1, "name": "NVIDIA A10", "totalMiB": 24564, "usedMiB": 19789, "foreign": true }
+    ],
+    "gpuConclusion": "both A10s held by other projects (~19.8 GiB each); the 27B encoder (~19.6 GiB) never started in this session, so every H number here is CPU. Card-hours charged by H: 0."
+  },
+  "node": {
+    "path": "/data/home/user_00/.local/node22/bin/node",
+    "version": "v22.23.4",
+    "typescript": "5.9.3"
+  },
+  "python": {
+    "path": "/data/home/user_00/frostecho-r7/.venv/bin/python",
+    "version": "3.12.2",
+    "torch": "2.5.1+cu121",
+    "cudaAvailable": true,
+    "encoder": "/data2/model_weights/Qwen3.8-27B"
+  },
+  "controls": {
+    "deterministicIds": "deterministic-state-context/1 (hash of seed|uuid-context|occurrence)",
+    "excludedFromStateCompare": ["pid", "wallClock", "latencyMs", "serviceResidency"],
+    "nightSkipFix": "R11 runner: 04:00 wake is next 06:00, not next day 06:00 (R10 skipped the D2 08:00 window)"
+  },
+  "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
+  "seeds": ["r11h-1", "r11h-2"],
+  "replay": { "continuous": "single process, start+resume decisions", "segmented": "save/exit/new pid, same split as production", "countsAsModelResult": false }
+}

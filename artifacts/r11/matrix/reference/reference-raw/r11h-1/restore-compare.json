@@ -1,0 +1,168 @@
+{
+  "schema": "frostecho.r11.restore-compare/1",
+  "phase": "resume",
+  "pid": 1181363,
+  "savedPid": 1181305,
+  "restoredFrom": "artifacts/r11/matrix/reference/reference-raw/r11h-1/d2/session.json",
+  "savedAt": 2040,
+  "now": 2040,
+  "pendingIntents": 8,
+  "checkpoint": {
+    "at": 2040,
+    "activeCommitments": 2,
+    "boundWorkingIntents": 2,
+    "pending": 8,
+    "commitments": [
+      {
+        "commitmentId": "cm-a2396d2f-3565-4581-ada4-1165f647553f",
+        "promisorId": "npc_03",
+        "goal": "supply-warehouse",
+        "revision": 1,
+        "status": "active",
+        "deadline": 3960,
+        "taskId": "task-005-supply-warehouse",
+        "createdAt": 2040,
+        "boundWorkingIntents": [
+          {
+            "intentId": "npc_03-r8-256",
+            "action": "move",
+            "startedAt": 2040,
+            "dueAt": 2055,
+            "commitmentId": "cm-a2396d2f-3565-4581-ada4-1165f647553f",
+            "commitmentRevision": 1,
+            "generation": 0,
+            "taskId": "task-005-supply-warehouse"
+          }
+        ]
+      },
+      {
+        "commitmentId": "cm-709daa09-6e8f-4afd-ac3f-b32b476941fb",
+        "promisorId": "npc_04",
+        "goal": "supply-warehouse",
+        "revision": 1,
+        "status": "active",
+        "deadline": 3960,
+        "taskId": "task-006-supply-warehouse",
+        "createdAt": 2040,
+        "boundWorkingIntents": [
+          {
+            "intentId": "npc_04-r8-256",
+            "action": "move",
+            "startedAt": 2040,
+            "dueAt": 2055,
+            "commitmentId": "cm-709daa09-6e8f-4afd-ac3f-b32b476941fb",
+            "commitmentRevision": 1,
+            "generation": 0,
+            "taskId": "task-006-supply-warehouse"
+          }
+        ]
+      }
+    ],
+    "intents": [
+      {
+        "intentId": "npc_01-r8-256",
+        "actorId": "npc_01",
+        "action": "gather",
+        "startedAt": 2040,
+        "dueAt": 2070,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": "task-13",
+        "generation": 0
+      },
+      {
+        "intentId": "npc_02-r8-256",
+        "actorId": "npc_02",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null,
+        "generation": 0
+      },
+      {
+        "intentId": "npc_03-r8-256",
+        "actorId": "npc_03",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": "cm-a2396d2f-3565-4581-ada4-1165f647553f",
+        "commitmentRevision": 1,
+        "taskId": "task-005-supply-warehouse",
+        "generation": 0
+      },
+      {
+        "intentId": "npc_04-r8-256",
+        "actorId": "npc_04",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": "cm-709daa09-6e8f-4afd-ac3f-b32b476941fb",
+        "commitmentRevision": 1,
+        "taskId": "task-006-supply-warehouse",
+        "generation": 0
+      },
+      {
+        "intentId": "npc_05-r8-256",
+        "actorId": "npc_05",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null,
+        "generation": 0
+      },
+      {
+        "intentId": "npc_06-r8-256",
+        "actorId": "npc_06",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null,
+        "generation": 0
+      },
+      {
+        "intentId": "npc_07-r8-256",
+        "actorId": "npc_07",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null,
+        "generation": 0
+      },
+      {
+        "intentId": "npc_08-r8-256",
+        "actorId": "npc_08",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null,
+        "generation": 0
+      }
+    ],
+    "generations": {}
+  },
+  "compare": {
+    "schema": "frostecho.r11.state-compare/1",
+    "equal": true,
+    "diffs": 0,
+    "categories": {},
+    "samples": [],
+    "leftSha256": "4114ea17144b06d8e48e144c44d9417064d2d083c5cbc00a056eb5da6efc09ea",
+    "rightSha256": "4114ea17144b06d8e48e144c44d9417064d2d083c5cbc00a056eb5da6efc09ea"
+  },
+  "exclusions": [
+    "pid",
+    "wallClock",
+    "latencyMs",
+    "serviceResidency"
+  ]
+}

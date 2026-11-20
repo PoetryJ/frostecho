@@ -1,0 +1,16 @@
+# R11-H: commit the verdicts, hashes and small summaries; keep the raw
+# trajectories/states on disk (they are bound by summary.json.evidence and by
+# d2/save-manifest.json, and are packed separately with a SHA256SUMS file).
+**/decisions-*.jsonl
+**/decisions.jsonl
+**/final-state.json
+**/save-state.json
+**/d2/session.json
+**/d2/session.json.*.json
+**/replay-continuous/final-state.json
+**/replay-segmented/final-state.json
+**/replay-segmented/d2/session.json*
+**/scorer-*.jsonl
+**/*.superseded-*
+**/phase-*.stdout.log
+**/phase-*.stderr.log
