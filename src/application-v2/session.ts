@@ -16,6 +16,7 @@ import { makeChoiceResult, type Candidate, type ChoiceRequest } from '../decisio
 import { buildPlanningRequest, referenceScorer, type PromiseRef, type PlanningView,
   type ScorerPort } from '../planning/candidates';
 import { candidateCommand, UnsupportedActionError } from '../planning/commands';
+import { placeSatisfied, sitesFromFacts } from '../spatial-v2/site';
 import { isWorkGrant, requiredPlaceOf, requiresWorkIntent, type WorkGrant }
   from '../execution/place-rules';
 import { FairScheduler, type TaskLease, type TaskOutcome } from '../scheduler-v2/scheduler';
@@ -519,7 +520,14 @@ export class PlaySession {
     }
     const action = String(candidate.parameters.action ?? '');
     const place = requiredPlaceOf(action, candidate.parameters as Record<string, unknown>);
-    if (place && acting.location !== place) {
+    // R11-D (shared gate, one line, disclosed in D-R11.md): the original accepts
+    // a task at `*_door` **or** inside the room (`task-effects.js` isAtLocation).
+    // With the original map on, the committed position knows both, so a resident
+    // standing on the warehouse door cell in the 50x40 village is at the
+    // warehouse. Without facts the old, stricter location equality still holds.
+    const sites = sitesFromFacts(this.world.r8?.facts as Record<string, number> | undefined,
+      actorId, acting.location);
+    if (!placeSatisfied(place, acting.location, sites)) {
       return { status: 'rejected', eventIds: [], postStateVersion: this.world.version,
         reason: `wrong_location: ${action}${candidate.parameters.mode
           ? `(${String(candidate.parameters.mode)})` : ''} needs ${place}, actor is at ${acting.location}` };

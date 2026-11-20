@@ -139,10 +139,18 @@ export interface SpatialState {
 
 export type Command =
   | { commandId: string; type: 'advance'; minutes: number; recovery?: boolean }
-  | { commandId: string; type: 'gather'; actorId: string; resource: 'food' | 'firewood'; amount: number }
+  /**
+   * R11-D: `ratePerHour` is the original `GATHER_RATES` (wood 8/h, food 5/h).
+   * Without it the legacy `amount * 2` yield is unchanged, so older commands
+   * and fixtures keep their exact numbers.
+   */
+  | { commandId: string; type: 'gather'; actorId: string; resource: 'food' | 'firewood';
+    amount: number; minutes?: number; ratePerHour?: number }
   | { commandId: string; type: 'eat'; actorId: string; amount: number }
   | { commandId: string; type: 'rest'; actorId: string; minutes: number }
-  | { commandId: string; type: 'work'; actorId: string; minutes: number; mode?: WorkMode }
+  | { commandId: string; type: 'work'; actorId: string; minutes: number; mode?: WorkMode;
+    /** R11-D: `task-system.js:55-62` = 15 power per 40 min (22.5/h). */
+    powerPerHour?: number }
   | { commandId: string; type: 'refuel'; actorId: string; amount: number }
   | { commandId: string; type: 'medical'; actorId: string; targetId: string; amount: number }
   | { commandId: string; type: 'move'; actorId: string; to: LocationId }
@@ -359,8 +367,13 @@ export function applyCommand(state: WorldV2, command: Command): { state: WorldV2
         throw new SurvivalError('bad_amount', 'gather amount must be positive');
       }
       const yieldFactor = 0.8 + hashUnit(next.rngSeed, next.version, `gather:${command.resource}`) * 0.4;
-      // A gathering trip brings back roughly two units per requested unit.
-      const gained = Math.round(command.amount * 2 * yieldFactor);
+      // R11-D: with an explicit original rate the trip yields rate * hours,
+      // not "two units per requested unit". Wood 8/h and food 5/h were the same
+      // number in the engine, which made food 60% too cheap.
+      const gained = command.ratePerHour !== undefined
+        ? Math.max(1, Math.round((Number(command.minutes ?? 30) / 60)
+          * command.ratePerHour * yieldFactor))
+        : Math.round(command.amount * 2 * yieldFactor);
       if (command.resource === 'food') resources.food += gained;
       else resources.firewood += gained;
       npcs[npc.id] = { ...npc, stamina: clamp(npc.stamina - command.amount * 0.6, 0, 100),
@@ -405,8 +418,11 @@ export function applyCommand(state: WorldV2, command: Command): { state: WorldV2
         throw new SurvivalError('bad_work_mode', `unknown work mode ${String(command.mode)}`);
       }
       if (mode === 'power') {
-        // Frozen survival-rules/2 behaviour: a power shift.
-        const produced = Math.max(1, Math.round(hours * 2));
+        // Frozen survival-rules/2 behaviour: a power shift. An explicit
+        // original rate (22.5/h = 15 per 40 min) replaces the 2/h default.
+        const produced = command.powerPerHour !== undefined
+          ? Math.max(1, Math.round(hours * command.powerPerHour))
+          : Math.max(1, Math.round(hours * 2));
         resources.power = clamp(resources.power + produced, 0, 1000);
         npcs[npc.id] = { ...npc, stamina: clamp(npc.stamina - 14 * hours, 0, 100),
           hunger: clamp(npc.hunger - 4 * hours, 0, 100) };

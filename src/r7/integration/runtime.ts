@@ -27,6 +27,7 @@ import { crisesDomain, type CrisesState } from '../domains/crises/index';
 import { lifeDomain, type LifeState } from '../domains/life/index';
 import { LegacySpatialController, type LegacyMovementResult } from './spatial';
 import type { Cell } from '../../spatial-v2/map';
+import { placeSatisfied, sitesFromFacts } from '../../spatial-v2/site';
 import type { LegacyPosition } from '../../spatial-v2/legacy-profile';
 
 export interface DomainStates {
@@ -193,6 +194,12 @@ export class R8Runtime {
    */
   private readonly intentGuards: IntentGuard[] = [];
   private readonly projectors: IntentProjector[] = [];
+  /**
+   * Intents currently being settled. A physical settlement may advance the
+   * clock (an original-map walk charges one minute per tile), and that nested
+   * `advanceWorld` must never re-claim the intent it was called from.
+   */
+  private readonly settling = new Set<string>();
   /** Every committed event by id: the only receipts a domain may accept. */
   private readonly committed = new Map<string, CommittedEventRef>();
   private readonly legacySpatial: LegacySpatialController;
@@ -584,13 +591,34 @@ export class R8Runtime {
    */
   settleDueIntents(): { actorId: string; kind: string; status: string; eventIds: string[] }[] {
     const due = [...this.intents.values()]
-      .filter(intent => intent.status === 'working' && this.world.simTime >= intent.dueAt)
+      // R11 (A item, claimed here because the four-day driver cannot run without
+      // it): a settlement that physically travels calls `advanceWorld` again.
+      // Without an explicit claim the nested call re-settles the SAME intent, so
+      // one logical intent produced up to 400 terminal log entries and up to 400
+      // `action_rejected` records in a single four-day run. `settling` is the
+      // claim: an intent already being settled is never taken twice.
+      .filter(intent => intent.status === 'working' && !this.settling.has(intent.intentId)
+        && this.world.simTime >= intent.dueAt)
       // A strict total order that does not depend on ICU/locale or Map
       // insertion order: (dueAt, intentId) with a code-unit comparison.
       .sort((left, right) => left.dueAt - right.dueAt
         || (left.intentId < right.intentId ? -1 : left.intentId > right.intentId ? 1 : 0));
     const done: { actorId: string; kind: string; status: string; eventIds: string[] }[] = [];
     for (const intent of due) {
+      this.settling.add(intent.intentId);
+      try {
+        done.push(this.settleOne(intent));
+      } finally {
+        this.settling.delete(intent.intentId);
+      }
+    }
+    return done;
+  }
+
+  /** The body of one settlement; `settling` is already claimed by the caller. */
+  private settleOne(intent: ActionIntent): { actorId: string; kind: string;
+    status: string; eventIds: string[] } {
+    {
       let status: ActionStatus = 'applied';
       let reason: string | null = null;
       let eventIds: string[] = [];
@@ -599,7 +627,9 @@ export class R8Runtime {
         status = 'cancelled'; reason = 'actor_not_alive';
       } else if (this.session.generationFor(intent.actorId) !== intent.generation) {
         status = 'cancelled'; reason = 'generation_revoked';
-      } else if (intent.requiredPlace && npc.location !== intent.requiredPlace) {
+      } else if (!placeSatisfied(intent.requiredPlace, npc.location,
+        sitesFromFacts(this.world.r8?.facts as Record<string, number> | undefined,
+          intent.actorId, npc.location))) {
         status = 'rejected';
         reason = `wrong_location: ${String(intent.candidate.parameters.action)} needs `
           + `${intent.requiredPlace}, actor is at ${npc.location}`;
@@ -642,10 +672,9 @@ export class R8Runtime {
         this.applyProjection(intent, eventIds);
       }
       this.logIntent(intent);
-      done.push({ actorId: intent.actorId, kind: String(intent.candidate.parameters.action),
-        status, eventIds });
+      return { actorId: intent.actorId, kind: String(intent.candidate.parameters.action),
+        status, eventIds };
     }
-    return done;
   }
 
   /** Alias kept for callers that name the R9 method. */
