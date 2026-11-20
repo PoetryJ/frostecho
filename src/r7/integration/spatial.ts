@@ -102,6 +102,47 @@ export class LegacySpatialController {
     if (committed.rejected.length) throw new Error('legacy_spatial_enable_commit_failed');
     return { status: 'applied', eventIds: committed.events.map(event => event.eventId), positions };
   }
+  /**
+   * R11-A: minutes the original map route really costs, computed without
+   * mutating anything. One minute per tile plus one for each door. `null`
+   * means the route cannot be planned (unknown map / blocked path), so the
+   * caller keeps its estimated duration and settlement will report the refusal.
+   */
+  planTravelMinutes(actorId: string, targetLocation: string): number | null {
+    if (!this.enabled()) return null;
+    const target = locationMap(targetLocation);
+    const registry = this.registry();
+    if (!registry.maps[target]) return null;
+    let position: LegacyPosition;
+    try { position = this.position(actorId)!; } catch { return null; }
+    if (position.mapId === target) return 0;
+    let total = 0;
+    const walkLeg = (cell: Cell): boolean => {
+      const route = findLegacyRoute(position.mapId, position.cell, cell,
+        this.closedCells(position.mapId), registry);
+      if (!route.path) return false;
+      total += route.path.length - 1;
+      position = { ...position, cell };
+      return true;
+    };
+    const doorLeg = (): boolean => {
+      const transition = transitionLegacyDoor(position, registry);
+      if (!transition) return false;
+      total += LEGACY_TILE_MINUTES;
+      position = transition.to;
+      return true;
+    };
+    if (position.mapId !== 'village') {
+      const exit = registry.maps[position.mapId].triggers[0];
+      if (!exit || !walkLeg({ x: exit.x, y: exit.y }) || !doorLeg()) return null;
+    }
+    if (target !== 'village') {
+      const entry = registry.maps.village.triggers.find(trigger => trigger.target === target);
+      if (!entry || !walkLeg({ x: entry.x, y: entry.y }) || !doorLeg()) return null;
+    }
+    return total;
+  }
+
   private events(ids: string[]): WorldEvent[] {
     return ids.map(id => this.runtime.committedEvent(id)).filter(event => event !== null) as WorldEvent[];
   }
@@ -150,7 +191,9 @@ export class LegacySpatialController {
         extraStamina: TRAVEL_STAMINA_PER_TILE, minutes: LEGACY_TILE_MINUTES } };
     this.runtime.recordCommitted([movement]);
     this.runtime.session.ingestTeamEvent(kind, movement.payload, before);
-    this.runtime.advanceWorld(before + LEGACY_TILE_MINUTES);
+    // R11-A: a tile crossed while settling is a projection of time the intent
+    // already paid for. Only a direct (non-intent) legacy call buys clock here.
+    if (!this.runtime.isSettling()) this.runtime.advanceWorld(before + LEGACY_TILE_MINUTES);
     const observed = kind === 'legacy_door_crossed' && to.mapId === 'warehouse'
       && this.runtime.world.npcs[actorId].alive ? this.observeStock(actorId, `${commandId}:inspect`) : null;
     return { status: 'applied', reason: kind, eventIds: [movement.eventId, ...(observed?.eventIds ?? [])], position: this.position(actorId),
@@ -237,6 +280,18 @@ export class LegacySpatialController {
     const target = locationMap(targetLocation), registry = this.registry();
     if (!registry.maps[target]) return this.reject(actorId, 'unknown_original_destination');
     if (this.position(actorId)!.mapId === target) return this.reject(actorId, 'already_in_destination_map');
+    // R11-A: the physical route may not cost more than the window the intent
+    // already paid for. Checked before the first tile, so a refusal has no
+    // partial side effect and no extra clock.
+    const settlement = this.runtime.currentSettlement();
+    if (settlement) {
+      const planned = this.planTravelMinutes(actorId, targetLocation);
+      if (planned === null) return this.reject(actorId, 'original_route_unknown');
+      if (planned > settlement.paidMinutes) {
+        return this.reject(actorId,
+          `travel_exceeds_paid_window:${planned}>${settlement.paidMinutes}`);
+      }
+    }
     const start = this.runtime.world.simTime, eventIds: string[] = [];
     let index = 0;
     const take = (result: LegacyMovementResult): boolean => {

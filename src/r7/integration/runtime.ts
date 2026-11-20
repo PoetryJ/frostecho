@@ -196,6 +196,16 @@ export class R8Runtime {
   /** Every committed event by id: the only receipts a domain may accept. */
   private readonly committed = new Map<string, CommittedEventRef>();
   private readonly legacySpatial: LegacySpatialController;
+  /**
+   * R11-A: settlement reentrancy guard. While an intent is being settled, the
+   * physical effect may not advance the global clock (the intent already paid
+   * for its window), and a nested settle may not claim the same intent again.
+   */
+  private settlingDepth = 0;
+  private readonly settlingIntents = new Set<string>();
+  private activeSettlement: ActionIntent | null = null;
+  /** Nested advance attempts are counted as evidence, never as clock movement. */
+  nestedAdvanceSuppressed = 0;
 
   constructor(readonly session: PlaySession, profile: TimeProfile = GOSPEL_PROFILE,
     states?: DomainStates) {
@@ -254,9 +264,17 @@ export class R8Runtime {
 
   /** Explicit opt-in. No coordinate changes occur in the legacy/default flow. */
   enableLegacySpatial(): ReturnType<LegacySpatialController['enable']> {
+    // R11-A capability: on the original-map authority a work action may not
+    // run inline without an intent-minted grant. Legacy callers that never
+    // enable the original map keep their historical command path.
+    this.session.requireWorkGrant = true;
     return this.legacySpatial.enable();
   }
   legacyPosition(actorId: string): LegacyPosition | null { return this.legacySpatial.position(actorId); }
+  /** Planned original-map travel minutes (null when the route is unknown/blocked). */
+  legacySpatialMinutes(actorId: string, target: string): number | null {
+    return this.legacySpatial.planTravelMinutes(actorId, target);
+  }
   moveLegacy(actorId: string, to: Cell, commandId?: string): LegacyMovementResult {
     return this.legacySpatial.move(actorId, to, commandId);
   }
@@ -309,6 +327,15 @@ export class R8Runtime {
     const from = this.world.simTime;
     if (!Number.isFinite(to) || to < from) {
       throw new Error(`advanceWorld refuses to move backwards: ${from} -> ${to}`);
+    }
+    // R11-A: inside settlement the paid window is already on the clock. A
+    // physical effect (the original tile walk) must project, not buy more time.
+    // Returning an empty report is deliberate: it cannot silently shorten or
+    // extend anybody's clock, and the counter keeps the attempt auditable.
+    if (this.settlingDepth > 0) {
+      this.nestedAdvanceSuppressed += 1;
+      return { from, to: from, reachedEnd: false, segments: [],
+        rejections: [], events: [], domainEvents: [] };
     }
     const profileEnd = absoluteMinute(this.profile, this.profile.endDay,
       this.profile.endMinuteOfDay);
@@ -491,16 +518,24 @@ export class R8Runtime {
     }
     const busy = this.work.get(input.actorId);
     if (busy) return { rejected: `actor ${input.actorId} is busy until ${busy.endsAt}` };
-    if (!Number.isFinite(input.minutes) || input.minutes <= 0)
-      return { rejected: `invalid work duration ${input.minutes}` };
+    const action = String(input.candidate.parameters.action ?? '');
+    // R11-A: the original map's travel is planned up front, so the paid window
+    // equals the real route. A fixed 15/20-minute estimate would either settle
+    // the actor mid-route or buy extra clock at settlement.
+    const plannedMinutes = action === 'move' && this.legacySpatial.enabled()
+      ? this.legacySpatial.planTravelMinutes(input.actorId,
+        String(input.candidate.parameters.to ?? '')) : null;
+    const minutes = plannedMinutes !== null && plannedMinutes > 0
+      ? plannedMinutes : input.minutes;
+    if (!Number.isFinite(minutes) || minutes <= 0)
+      return { rejected: `invalid work duration ${minutes}` };
     if (this.intents.has(input.intentId))
       return { rejected: `intent ${input.intentId} already exists` };
-    const action = String(input.candidate.parameters.action ?? '');
     const place = requiredPlaceOf(action, input.candidate.parameters as Record<string, unknown>);
     if (place && npc.location !== place) {
       return { rejected: `wrong_location: ${action} needs ${place}, actor is at ${npc.location}` };
     }
-    const intent = createIntent({ ...input, demandId,
+    const intent = createIntent({ ...input, minutes, demandId,
       generation: this.session.generationFor(input.actorId) },
       this.world.simTime, place, npc.location);
     this.intents.set(intent.intentId, intent);
@@ -584,7 +619,8 @@ export class R8Runtime {
    */
   settleDueIntents(): { actorId: string; kind: string; status: string; eventIds: string[] }[] {
     const due = [...this.intents.values()]
-      .filter(intent => intent.status === 'working' && this.world.simTime >= intent.dueAt)
+      .filter(intent => intent.status === 'working' && this.world.simTime >= intent.dueAt
+        && !this.settlingIntents.has(intent.intentId))
       // A strict total order that does not depend on ICU/locale or Map
       // insertion order: (dueAt, intentId) with a code-unit comparison.
       .sort((left, right) => left.dueAt - right.dueAt
@@ -619,6 +655,12 @@ export class R8Runtime {
         }
       }
       if (status === 'applied') {
+        // Claim BEFORE the physical effect: a nested settle (the original
+        // travel path calls back into the clock) sees a claimed intent and
+        // cannot execute, log or bill it a second time.
+        this.settlingIntents.add(intent.intentId);
+        this.settlingDepth += 1;
+        this.activeSettlement = intent;
         try {
           const grant = mintWorkGrant(intent.intentId, intent.actorId, intent.candidateId);
           const outcome = this.session.executeCandidate(intent.actorId, intent.candidate,
@@ -631,6 +673,10 @@ export class R8Runtime {
         } catch (error) {
           status = 'rejected';
           reason = `error:${(error as Error).message}`;
+        } finally {
+          this.activeSettlement = null;
+          this.settlingDepth -= 1;
+          this.settlingIntents.delete(intent.intentId);
         }
       }
       intent.status = status;
@@ -651,6 +697,20 @@ export class R8Runtime {
   /** Alias kept for callers that name the R9 method. */
   settleWork(): { actorId: string; kind: string; status: string; eventIds: string[] }[] {
     return this.settleDueIntents();
+  }
+
+  /** True while a committed intent's physical effect is being applied. */
+  isSettling(): boolean { return this.settlingDepth > 0; }
+
+  /**
+   * The window the current settlement already paid for. Physical effects use
+   * it to project themselves inside the paid minutes instead of buying more.
+   */
+  currentSettlement(): { intentId: string; startedAt: number; dueAt: number;
+    paidMinutes: number } | null {
+    const intent = this.activeSettlement;
+    return intent ? { intentId: intent.intentId, startedAt: intent.startedAt,
+      dueAt: intent.dueAt, paidMinutes: intent.dueAt - intent.startedAt } : null;
   }
 
   /**
