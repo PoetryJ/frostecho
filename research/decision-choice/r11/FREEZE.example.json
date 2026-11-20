@@ -1,0 +1,34 @@
+{
+  "schema": "frostecho.r11.freeze/1",
+  "status": "frozen",
+  "sourceCommit": "<the frozen integration commit>",
+  "renderer": {
+    "id": "joint-c-action/2",
+    "sourceSha256": "<sha256 of src/r7/jev/render.ts at that commit>",
+    "buildSha256": "<sha256 of dist/src/r7/jev/render.js at that commit>"
+  },
+  "memory": {
+    "policy": "conditional-experience",
+    "selection": "obligation-first",
+    "tokenBudget": 640
+  },
+  "deadline": {
+    "horizonMinutes": 240,
+    "protocol": "same-snapshot-absolute-deadline/1"
+  },
+  "scenario": {
+    "episodes": 12,
+    "slices": 8,
+    "capPerEpisode": 8,
+    "npcCount": 8,
+    "resources": { "food": 130, "firewood": 30, "power": 30, "medicine": 3 }
+  },
+  "splits": {
+    "seed": "<split salt>",
+    "unit": "sourceEpisodeId",
+    "train": 0.6,
+    "dev": 0.2,
+    "test": 0.2
+  },
+  "notes": "The collector refuses without this file and requires its out-of-band sha256. deadline.horizonMinutes is the pre-registered H; each case's t* is the focal commitment deadline when it is in the future, else t0+H."
+}

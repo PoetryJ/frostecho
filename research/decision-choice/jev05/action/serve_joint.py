@@ -22,12 +22,17 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+CONTRACT_DIR = HERE.parents[1] / "r11"
+if str(CONTRACT_DIR) not in sys.path:
+    sys.path.insert(0, str(CONTRACT_DIR))
 from joint_encoder import JointEncoder, ROOT, file_sha, prepare
+import manifest_contract
 
 HEAD = ROOT / "artifacts/sprint-r7/legacy-reuse/c43-increment-batch4-1/warm-start-17/best.safetensors"
 ENCODER = Path("/data2/model_weights/Qwen3.8-27B")
 EPS = 1e-5
 RENDERER = "joint-c-action/2"
+ENCODER_SOURCE = HERE / "joint_encoder.py"
 
 
 def canonical(value):
@@ -111,31 +116,24 @@ def score_features(features, weights, temperature, tau):
     return logits, probabilities, best, bool(probabilities[best] >= tau)
 
 
-def load_training_manifest(path, head_sha):
+def validate_training_manifest(path, head_sha, *, head_path=None, features_dir=None,
+                               memory=None):
+    """One shared, versioned contract. Missing/tampered manifests raise here,
+    before `load_head` or the encoder is touched."""
+    return manifest_contract.validate(
+        Path(path), Path(head_path) if head_path is not None else None,
+        head_sha=head_sha, renderer_source=ROOT / "src/r7/jev/render.ts",
+        encoder_source=ENCODER_SOURCE, memory=memory, features_dir=features_dir)
+
+
+def load_training_manifest(path, head_sha, *, head_path=None, features_dir=None,
+                           memory=None):
+    """Validate, then return the raw document (kept for existing callers/tests)."""
     if path is None:
         return None
-    document = json.loads(Path(path).read_text(encoding="utf-8"))
-    if (document.get("schema") != "frostecho.action-weak-experiment/1"
-            or document.get("experimental") is not True
-            or document.get("countsAsAdmitted") is not False
-            or document.get("calibrated") is not False
-            or document.get("researchTrainReady") is not False
-            or document.get("mayTrainOnJev") is not False
-            or document.get("labelSource") != "reference-imitation"):
-        raise ValueError("training manifest must identify the unadmitted weak-reference experiment")
-    if document.get("selectedCheckpointSha256") != head_sha:
-        raise ValueError("selected training head SHA differs from --head")
-    if not isinstance(document.get("featureIdentity"), dict) or stable_sha(document["featureIdentity"]) != document.get("featureIdentityHash"):
-        raise ValueError("training feature identity hash mismatch")
-    execution = document.get("encodingExecution", {})
-    qualification = document.get("encodingQualification", {})
-    if execution.get("batchSize") != 1 or execution.get("padMultiple") != 8:
-        raise ValueError("online head requires the completed batch1 / pad8 encoding experiment")
-    if (not isinstance(qualification, dict) or not qualification.get("path")
-            or not isinstance(qualification.get("sha256"), str) or len(qualification["sha256"]) != 64
-            or not isinstance(qualification.get("featuresSha256"), str) or len(qualification["featuresSha256"]) != 64):
-        raise ValueError("training manifest lacks its encoding qualification binding")
-    return document
+    validate_training_manifest(path, head_sha, head_path=head_path,
+                               features_dir=features_dir, memory=memory)
+    return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
 def calibration_policy():
@@ -198,6 +196,12 @@ def build_parser():
     parser.add_argument("--temperature", type=float, default=None)
     parser.add_argument("--tau", type=float, default=None)
     parser.add_argument("--memory-policy", default="conditional-experience")
+    parser.add_argument("--memory-selection", default="obligation-first")
+    parser.add_argument("--memory-token-budget", type=int, default=640)
+    parser.add_argument("--features-dir", type=Path,
+                        help="optional feature cache whose bytes the manifest must also match")
+    parser.add_argument("--diagnostic-unbound", action="store_true",
+                        help="score without a manifest; never selects an action")
     parser.add_argument("--mode", default="jev-experimental", choices=["jev-experimental", "jev-admitted"])
     parser.add_argument("--certificate", type=Path)
     parser.add_argument("--trusted-artifact-sha")
@@ -212,18 +216,34 @@ def run(args):
     if not physical or len(set(physical)) != len(physical) or min(physical) < 0:
         raise ValueError("physical GPUs must be unique nonnegative indices")
     os.environ["CUDA_VISIBLE_DEVICES"] = ",".join(map(str, physical))
-    if args.max_length < 1 or not args.memory_policy:
-        raise ValueError("positive token budget and a memory policy are required")
+    if (args.max_length < 1 or not args.memory_policy or not args.memory_selection
+            or args.memory_token_budget < 1):
+        raise ValueError("positive token budget, a memory policy, a selection and a budget are required")
     temperature = args.temperature if args.temperature is not None else 1.0
     tau = args.tau if args.tau is not None else 0.0
     validate_policy_numbers(temperature, tau)
     admitted = args.mode == "jev-admitted"
+    bound = args.training_manifest is not None
+    if args.diagnostic_unbound and bound:
+        raise ValueError("--diagnostic-unbound cannot be combined with --training-manifest")
+    if admitted and args.diagnostic_unbound:
+        raise ValueError("an unbound diagnostic cannot admit execution")
     if admitted and (args.certificate is None or not args.trusted_artifact_sha or args.expected_identity is None):
         raise ValueError("admitted mode requires --certificate, --trusted-artifact-sha and --expected-identity")
-    if admitted and args.training_manifest is not None:
+    if admitted and bound:
         raise ValueError("weak-reference training manifest cannot admit execution")
+    if not admitted and not bound and not args.diagnostic_unbound:
+        raise ValueError("a --training-manifest is required; --diagnostic-unbound is the only unbound mode")
+    if not Path(args.head).exists():
+        raise ValueError(f"head {args.head} does not exist")
     head_sha = file_sha(args.head)
-    manifest = load_training_manifest(args.training_manifest, head_sha)
+    manifest = validate_training_manifest(
+        args.training_manifest, head_sha, head_path=args.head,
+        features_dir=args.features_dir,
+        memory={"policy": args.memory_policy, "selection": args.memory_selection,
+                "tokenBudget": args.memory_token_budget}) if bound else None
+    if manifest and manifest["memory"] and manifest["memory"].get("renderer") not in (None, RENDERER):
+        raise ValueError("manifest memory renderer differs from the loaded renderer")
     expected = json.loads(args.expected_identity.read_text(encoding="utf-8")) if admitted else None
     loaded = read_certificate(args.certificate, trusted_artifact_sha=args.trusted_artifact_sha,
                               expected_identity=expected) if admitted else None
@@ -249,15 +269,25 @@ def run(args):
         raise ValueError("online encoder/backend/placement differs from the selected training features")
     if admitted and expected.get("encoderSha256") != feature_hash:
         raise ValueError("runtime calibration encoder identity mismatch")
-    identity = {"scorerId": "jev-joint-c/1", "mode": args.mode, "encoderId": str(args.encoder),
+    identity = {"scorerId": "jev-joint-c/1", "mode": args.mode, "bound": bound,
+                "encoderId": str(args.encoder),
                 "headSha256": head_sha, "rendererId": RENDERER, "memoryPolicyId": args.memory_policy,
+                "memorySelection": args.memory_selection,
+                "memoryTokenBudget": args.memory_token_budget,
                 "temperature": temperature, "tau": tau, "featureIdentityHash": feature_hash,
                 "certificateSha256": loaded["artifact"]["artifactSha256"] if admitted else None,
-                "trainingManifestSha256": file_sha(args.training_manifest) if manifest else None,
+                "trainingManifestSha256": manifest["sha256"] if manifest else None,
+                "manifestSha256": manifest["sha256"] if manifest else None,
+                "manifestContractVersion": manifest["contractVersion"] if manifest else None,
+                "manifestSchema": manifest["schema"] if manifest else None,
                 "experimental": not admitted, "countsAsAdmitted": admitted,
                 "labelSource": manifest["labelSource"] if manifest else None,
-                "independentReviews": manifest.get("independentReviews", 0) if manifest else None,
+                "labelRule": manifest["labelRule"] if manifest else None,
+                "deadlineProtocol": manifest["deadlineProtocol"] if manifest else None,
+                "independentReviews": manifest.get("independentReviews") if manifest else None,
                 "realModel": True, "utility": None}
+    if not bound:
+        identity["diagnosticUnbound"] = True
     startup = {"event": "ready", "identity": identity, "featureIdentity": feature_identity,
                "encoder": encoder.identity, "serveSourceSha256": file_sha(Path(__file__)),
                "evidenceDirectory": str(evidence.directory) if evidence.directory else None}
@@ -300,13 +330,21 @@ def run(args):
                                                         identity=expected, content_hash=prepared["inputSha256"])
                 probabilities = np.asarray(decision["probabilities"])
                 selected, accept = decision["selectedId"], decision["disposition"] == "accept"
+            if not bound:
+                # Diagnostic evidence only: an unbound run never executes an action.
+                selected, accept = None, False
             feature_evidence = evidence.features(index, vectors, prepared["candidateIds"])
+            reason = (f"diagnostic-unbound: pmax={float(probabilities[best]):.6f}; no action executed"
+                      if not bound else
+                      f"joint-C pmax={float(probabilities[best]):.6f}, T={temperature}, tau={tau}")
             result = {"requestId": request["requestId"], "candidateSetHash": request["candidateSetHash"],
                       "inputSha256": envelope["inputSha256"],
                       "scores": [{"candidateId": candidate_id, "logit": float(logits[i]), "probability": float(probabilities[i])}
                                  for i, candidate_id in enumerate(prepared["candidateIds"])],
                       "selectedId": selected, "disposition": "accept" if accept else "abstain",
-                      "reason": f"joint-C pmax={float(probabilities[best]):.6f}, T={temperature}, tau={tau}",
+                      "reason": reason,
+                      "bound": bound,
+                      "manifestSha256": identity["manifestSha256"],
                       "identity": {**identity, **counts}, "encoder": trace, "utility": None,
                       "featureEvidence": feature_evidence,
                       "latencyMs": round((time.monotonic() - started) * 1000, 3)}
@@ -321,11 +359,13 @@ def run(args):
                       "inputSha256": envelope.get("inputSha256") if isinstance(envelope, dict) else None,
                       "error": f"{type(error).__name__}: {error}", "selectedId": None,
                       "disposition": "error", "scores": [], "identity": {**identity, **counts},
+                      "bound": bound, "manifestSha256": identity["manifestSha256"],
                       "encoder": trace, "latencyMs": round((time.monotonic() - started) * 1000, 3)}
         evidence.write_json(f"{index:06d}.result.json", result)
         sys.stdout.write(canonical(result) + "\n")
         sys.stdout.flush()
-    summary = {"event": "exit", **counts, "countsAsAdmitted": admitted,
+    summary = {"event": "exit", **counts, "countsAsAdmitted": admitted, "bound": bound,
+               "manifestSha256": identity["manifestSha256"],
                "exitCode": 2 if counts["requestsFailed"] else 0}
     evidence.write_json("summary.json", summary)
     log(summary)

@@ -1,0 +1,10 @@
+{
+  "schema": "frostecho.r11.freeze/1",
+  "status": "frozen",
+  "sourceCommit": "fixture-cpu-selftest-not-o",
+  "renderer": {"id": "joint-c-action/2", "sourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e"},
+  "memory": {"policy": "conditional-experience", "selection": "obligation-first", "tokenBudget": 640},
+  "deadline": {"horizonMinutes": 240, "protocol": "same-snapshot-absolute-deadline/1"},
+  "scenario": {"episodes": 2, "slices": 3, "capPerEpisode": 4, "npcCount": 8},
+  "splits": {"seed": "fixture-split", "unit": "sourceEpisodeId"}
+}

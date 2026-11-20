@@ -1,0 +1,175 @@
+{
+  "schema": "frostecho.r11c.evidence/1",
+  "generatedAt": "2026-11-20T12:00:00+08:00",
+  "source": {
+    "branch": "codex/r11-c",
+    "head": "9000026",
+    "base": "24406c4",
+    "tree": "7c918cc281919ed3361d708e4e1a8b90adeceb9f",
+    "dirty": [],
+    "note": "head is the code commit; the evidence commit adds only artifacts/r11/c and the handoff copy"
+  },
+  "contract": {
+    "path": "research/decision-choice/r11/manifest_contract.py",
+    "sha256": "a4cd40cbf4ccbcbb9b897ce580163c77280ed6c9766b2492747eb4b983c1b8a2",
+    "schemaVersions": [
+      "frostecho.action-weak-experiment/1 (legacy, reference-imitation only)",
+      "frostecho.action-training-manifest/2"
+    ],
+    "labelSources": [
+      "reference-imitation",
+      "same-snapshot-branch-rollout"
+    ],
+    "checks": [
+      "head sha/name/tensor",
+      "feature identity hash/dimension/padding/renderer/encoder",
+      "encoding execution batch1/pad8/maxTokens/placement",
+      "qualification bytes and sealed ok",
+      "cache/records/corpus bytes",
+      "memory policy/selection/budget",
+      "deadline protocol",
+      "splits by sourceEpisodeId",
+      "backboneGradients 0"
+    ],
+    "refusalCodes": [
+      "manifest-missing",
+      "manifest-json",
+      "manifest-schema",
+      "manifest-admission-flags",
+      "label-source",
+      "head-missing",
+      "head-sha",
+      "head-name",
+      "head-tensor",
+      "feature-identity-hash",
+      "feature-identity-dimension",
+      "feature-identity-padding",
+      "feature-identity-renderer",
+      "feature-identity-encoder",
+      "encoding-execution",
+      "encoding-qualification",
+      "encoding-qualification-bytes",
+      "cache-sha",
+      "corpus-sha",
+      "memory-identity",
+      "deadline-protocol",
+      "backbone"
+    ]
+  },
+  "service": {
+    "path": "research/decision-choice/jev05/action/serve_joint.py",
+    "sha256": "b5a252869ec5f6bb48e56d5290aec5af070d7d44f1939b95077e60c0dd4f11dc",
+    "manifestArgument": "--training-manifest (required unless --diagnostic-unbound)",
+    "replyFields": [
+      "bound",
+      "manifestSha256",
+      "identity.manifestSha256",
+      "identity.trainingManifestSha256",
+      "identity.manifestContractVersion",
+      "identity.labelSource",
+      "identity.labelRule",
+      "identity.deadlineProtocol"
+    ],
+    "unbound": "--diagnostic-unbound scores but always selectedId=null/disposition=abstain",
+    "admission": "unchanged: experimental only; jev-admitted still needs a recomputed certificate"
+  },
+  "blindPackage": {
+    "builder": "research/decision-choice/r11/blind_package.py",
+    "sha256": "ed1305cbdfd6816cc99c86f16f315e6ef90b394dabcf8a81563586f6a2c2c1b7",
+    "fixture": {
+      "packageId": "05ee25318384d50f92ca0e07cdcc7c5f6774fb8b1a5f05b5d86e62954d1a6b5c",
+      "cases": 12,
+      "branches": 70,
+      "stage1Sha256": "0e5cf4a3304f8de1d4e0aaf76fdebe5f58310aeb177bba4273134a9b0246b21e",
+      "stage2Sha256": "561d87e0203fd5edb5fa1329dc9e64d018459911237d661cc60268dfb9e1122a",
+      "reviewTemplateSha256": "8614e5d581ddf181ca68a8c0a68e07dfc36661b17eaaa1bb7b87d6d3a04d3edd",
+      "salt": "fixture freeze sha"
+    },
+    "properties": [
+      "same packageId for F and G",
+      "stage1 has observation+candidates only",
+      "stage2 adds branch facts and the common deadline",
+      "leak scan refuses provenance keys/text",
+      "seals immutable and one per reviewer",
+      "reconcile keeps every disagreement"
+    ]
+  },
+  "tests": [
+    {
+      "name": "r11-cpu",
+      "command": "python -m unittest discover -p 'test_*.py' (research/decision-choice/r11/tests)",
+      "cases": 22,
+      "result": "OK",
+      "logSha256": "fcb139a659f4262c2f6b673fb250f84e925c039ed910e3b36698d84f00e7b525"
+    },
+    {
+      "name": "action-regression",
+      "command": "python -m unittest test_serve_joint test_joint_encoder",
+      "cases": 25,
+      "result": "OK",
+      "logSha256": "16642b0345cd03e754483a032876d7f44a213357b40b5399eeb3f8d897c09c4f"
+    },
+    {
+      "name": "typescript-build",
+      "command": "npm run build",
+      "result": "OK",
+      "logSha256": "e74fce9b17b32bd1393ee10e3c5e4b6096a8180a52cf0fa595245085b4e0028f"
+    }
+  ],
+  "fixtureRuns": [
+    {
+      "kind": "cpu-selftest-not-o-evidence",
+      "freezeSha256": "732ea842c23fea9a5523555e72e73764ade07581b75d3740b14b93a7a31bee25",
+      "captureCases": 12,
+      "episodes": 3,
+      "labelStrict": {
+        "exit": 2,
+        "labelsWritten": false,
+        "clockIntegrity": "artifacts/r11/c/fixture/clock-integrity-refusal.json",
+        "failingCases": 8,
+        "duplicateSettlementCases": 8,
+        "clockOverrunCases": 8
+      },
+      "labelAllowed": {
+        "exit": 0,
+        "labelsTrustworthy": false,
+        "note": "only to exercise corpus/trainer/blind-package shapes"
+      },
+      "corpus": {
+        "baseCases": 12,
+        "fulfillmentCases": 10,
+        "informationSufficient": false
+      },
+      "jevProtocolSmoke": {
+        "responder": "fake JSONL child, not a model",
+        "cases": 2,
+        "manifestShaBinding": true
+      }
+    }
+  ],
+  "clockIntegrity": {
+    "observedOn": "base 24406c4 with enableLegacySpatial",
+    "symptom": "one intent was settled up to 964 times; the clock left t* by 25 minutes",
+    "cause": "settleDueIntents -> executeCandidate -> nested advance re-enters settlement",
+    "effect": "no labels are written by default; the strict gate exited 2 in the fixture run",
+    "owner": "A (single clock / one settlement), merge required before real C sampling"
+  },
+  "cost": {
+    "gpuAllocatedHours": 0,
+    "gpuJobs": [],
+    "note": "no encoding or live model call was run; GPU is reserved for O's slot"
+  },
+  "artifacts": {
+    "committed": [
+      "research/decision-choice/r11",
+      "artifacts/r11/c"
+    ],
+    "largeData": []
+  },
+  "nextDependencies": [
+    "O: FREEZE.json + out-of-band sha256 (shape in research/decision-choice/r11/FREEZE.example.json)",
+    "A: single-clock runner merged; re-run label-deadline-branches without --allow-known-clock-defect",
+    "O: GPU slot + physical GPU indices for real 27B encoding and the two-family training",
+    "F/G: review the same packageId; O seals and reconciles"
+  ]
+}
