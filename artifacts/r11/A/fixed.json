@@ -1,0 +1,260 @@
+{
+  "schema": "frostecho.r11a.fixed/1",
+  "head": "24406c4ba29a825306515db46edfacae99249976",
+  "tree": "/data3/DATA/project/project_meishijiang/r11-wt/a",
+  "at": "2026-11-20T05:41:09.314Z",
+  "gpuCalls": 0,
+  "cases": [
+    {
+      "name": "single-move",
+      "startedAt": 480,
+      "dueAt": 501,
+      "plannedMinutes": 21,
+      "requestedMinutes": 15,
+      "pathLegs": 21,
+      "midway": {
+        "clock": 490,
+        "status": "working",
+        "leg": 10,
+        "progress": 10,
+        "workLog": 0,
+        "position": {
+          "schema": "frostecho.legacy-position/1",
+          "profileId": "gospel-5.8.19-maps/1",
+          "mapId": "village",
+          "cell": {
+            "x": 12,
+            "y": 21
+          }
+        }
+      },
+      "final": {
+        "clock": 501,
+        "due": 501,
+        "status": "applied",
+        "position": {
+          "schema": "frostecho.legacy-position/1",
+          "profileId": "gospel-5.8.19-maps/1",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          }
+        },
+        "location": "warehouse",
+        "workLog": 1,
+        "receipts": 21,
+        "settledAt": 501
+      },
+      "verdict": true
+    },
+    {
+      "name": "two-parallel-moves",
+      "first": {
+        "due": 495,
+        "status": "applied",
+        "receipts": 15,
+        "position": {
+          "schema": "frostecho.legacy-position/1",
+          "profileId": "gospel-5.8.19-maps/1",
+          "mapId": "kitchen",
+          "cell": {
+            "x": 3,
+            "y": 3
+          }
+        }
+      },
+      "second": {
+        "due": 505,
+        "status": "applied",
+        "receipts": 25,
+        "position": {
+          "schema": "frostecho.legacy-position/1",
+          "profileId": "gospel-5.8.19-maps/1",
+          "mapId": "medical",
+          "cell": {
+            "x": 5,
+            "y": 6
+          }
+        }
+      },
+      "clock": 505,
+      "workLog": 2,
+      "verdict": true
+    },
+    {
+      "name": "move-and-rest-same-due",
+      "due": 502,
+      "restDue": 502,
+      "clock": 502,
+      "moveStatus": "applied",
+      "restStatus": "applied",
+      "rested": 1,
+      "workLog": [
+        {
+          "intentId": "sd-move",
+          "status": "applied",
+          "settledAt": 502
+        },
+        {
+          "intentId": "sd-rest",
+          "status": "applied",
+          "settledAt": 502
+        }
+      ],
+      "verdict": true
+    },
+    {
+      "name": "road-closed-mid-route",
+      "closedAt": {
+        "x": 16,
+        "y": 23
+      },
+      "walkedBefore": 3,
+      "status": "rejected",
+      "failureReason": "legacy_move_not_adjacent_or_blocked",
+      "leg": 3,
+      "progress": 3,
+      "receipts": 3,
+      "clock": 630,
+      "dueAt": 510,
+      "positionBeforeClose": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "village",
+        "cell": {
+          "x": 16,
+          "y": 24
+        }
+      },
+      "positionAfter": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "village",
+        "cell": {
+          "x": 16,
+          "y": 24
+        }
+      },
+      "verdict": true
+    },
+    {
+      "name": "cancel-mid-route",
+      "cancelled": true,
+      "cancelAt": 484,
+      "walkedBefore": 4,
+      "leg": 4,
+      "receipts": 4,
+      "status": "cancelled",
+      "clock": 558,
+      "positionBeforeCancel": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "village",
+        "cell": {
+          "x": 16,
+          "y": 25
+        }
+      },
+      "positionAfter": {
+        "schema": "frostecho.legacy-position/1",
+        "profileId": "gospel-5.8.19-maps/1",
+        "mapId": "village",
+        "cell": {
+          "x": 16,
+          "y": 25
+        }
+      },
+      "workLog": 1,
+      "verdict": true
+    },
+    {
+      "name": "save-mid-route-new-process",
+      "saved": {
+        "clock": 487,
+        "leg": 7
+      },
+      "childExit": 0,
+      "childError": "",
+      "resumed": {
+        "clock": 501,
+        "status": "applied",
+        "leg": 21,
+        "receipts": [
+          "legacy-step:141e2bd57348a0236001c1e6db58d874389dad91708731f22ec28c2bc09f84ea",
+          "legacy-step:020e3796c28c6d995e502b601d4344dec0fe0ce9cd4181c0e4f21715768f6a50",
+          "legacy-step:286288c44341238919b497f1dfb77fc1839b1f182e7b8912a720eef0e1e8f600",
+          "legacy-step:a94e3db9c201e64b48964320bee5316c20895e03b6313ff855e398a5703822d5",
+          "legacy-step:469c83ae1ca72f1107db0931e21508f4a9287dd57f4d175985473ee8f7ac3027",
+          "legacy-step:1623c42a86f2eb98d2e4d3de3c5fbeef15b51cb80fe55ff0abdd7a4cbc28eb86",
+          "legacy-step:815d94a94e542dfe5042a623a00193dc14c5b96162d8e6611995faa251935c63",
+          "legacy-step:0d8fbd54f648fe625b9229c1f0a3ea3a9fe4f3ffca3a463ec8f12f619b22b661",
+          "legacy-step:1d284969da58b73bd098f0f731bb26e77afec5516d8fe1563f0ab8da596753ab",
+          "legacy-step:0d0956e796c4c8d23fa34b88a171b0345172113bc77c62bec49c3c7811dcba28",
+          "legacy-step:8ebbe9bfc2797b912cb707b3109b32863a0e114ad55c8b099a7642c6685d5ab9",
+          "legacy-step:15d5f572196503f0ae46ebfbe044fbe0d7587918f9b3f9e01bd4089c5f583fef",
+          "legacy-step:79417291cb5f1b6e774b9718c1f78e8530c46ecd5733537db3ca845ca2f9677c",
+          "legacy-step:ffe967ccde8a81e83e34e73fe56181f2cd0027102f992e839468ba69215645b8",
+          "legacy-step:ff6131e72ba45db496edc8eb3ffdbc4c53a212f8e47470f8d0519d917bed033a",
+          "legacy-step:cc388d8f15f16066d9abd3c5d0853dc014985706090dd908f3206456ac517d63",
+          "legacy-step:20ee69637ee3738f719985488db28754fa0fe4949b0a4cc79bf59724e84938a6",
+          "legacy-step:1e4ca8e7e13860d0a75bfa76a9a845799004fb682a754b47bae24fa494a9eb19",
+          "legacy-step:4453a723b5f9dff0865abc88780eea4819fca95b44bf0d292b8a8978d67e0103",
+          "legacy-step:17b0db070492d3ab3d04c8b9c3eb8eb1cbd86f3f8d206a17dc04531bca8902bf",
+          "legacy-step:bc315ce94506208aeeeb7af14729d39983ad641f7f6021af1222c48c98069bdb"
+        ],
+        "newEventIds": 255,
+        "workLog": 1,
+        "position": {
+          "schema": "frostecho.legacy-position/1",
+          "profileId": "gospel-5.8.19-maps/1",
+          "mapId": "warehouse",
+          "cell": {
+            "x": 5,
+            "y": 6
+          }
+        },
+        "savedLeg": 7,
+        "savedClock": 487
+      },
+      "verdict": true
+    },
+    {
+      "name": "authority-boundary",
+      "before": {
+        "clock": 480,
+        "wood": 30
+      },
+      "inline": {
+        "status": "rejected",
+        "reason": "work_requires_intent: gather spends authoritative time; queue it and settle on the clock"
+      },
+      "afterRefusal": {
+        "clock": 480,
+        "wood": 30,
+        "gathered": 0
+      },
+      "queued": {
+        "status": "queued",
+        "intentId": "au-queued",
+        "dueAt": 510
+      },
+      "after": {
+        "clock": 510,
+        "wood": 34.5,
+        "gathered": 1
+      },
+      "yield": 5,
+      "verdict": true
+    },
+    {
+      "name": "nested-advance-refused",
+      "threw": "reentrant_advance_world: advanceWorld is the only clock owner",
+      "clock": 490,
+      "status": "applied",
+      "settledAt": 490,
+      "verdict": true
+    }
+  ],
+  "ok": true
+}

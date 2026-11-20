@@ -1,0 +1,64 @@
+{
+  "sourceHead": "288a288",
+  "gpuCalls": 0,
+  "cases": [
+    {
+      "name": "first-oversized-memory-bypasses-budget",
+      "budget": 64,
+      "kept": 1,
+      "tokens": 6580,
+      "renderedMemorySegment": [
+        {
+          "bytes": 19748,
+          "hasTail": true
+        }
+      ],
+      "stepRecorded": [
+        {
+          "memoryBudget": 64,
+          "memoryTokens": 6580
+        }
+      ],
+      "issueReproduced": true
+    },
+    {
+      "name": "correct-place-undefined-grant-bypasses-time",
+      "before": {
+        "time": 480,
+        "wood": 30
+      },
+      "wrapper": {
+        "status": "rejected",
+        "eventIds": [],
+        "reason": "work_requires_intent: gather spends authoritative time; queue it and settle on the clock"
+      },
+      "low": {
+        "status": "rejected",
+        "eventIds": [],
+        "postStateVersion": 1,
+        "reason": "work_requires_intent: gather spends authoritative time; queue it and settle on the clock"
+      },
+      "after": {
+        "time": 480,
+        "wood": 30
+      },
+      "issueReproduced": false
+    },
+    {
+      "name": "queued-demand-dedup-positive",
+      "first": "first",
+      "repeat": "first",
+      "duplicate": true,
+      "intents": 1,
+      "receipts": 1,
+      "ok": true
+    },
+    {
+      "name": "original-map-due-move-reentrancy",
+      "exit": 0,
+      "signal": null,
+      "stdout": "{\"clock\":495,\"target\":495,\"workLog\":0,\"status\":\"working\",\"failures\":[],\"actor\":\"village\"}\n",
+      "stderr": ""
+    }
+  ]
+}

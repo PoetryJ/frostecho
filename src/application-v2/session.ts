@@ -16,7 +16,7 @@ import { makeChoiceResult, type Candidate, type ChoiceRequest } from '../decisio
 import { buildPlanningRequest, referenceScorer, type PromiseRef, type PlanningView,
   type ScorerPort } from '../planning/candidates';
 import { candidateCommand, UnsupportedActionError } from '../planning/commands';
-import { isWorkGrant, requiredPlaceOf, requiresWorkIntent, type WorkGrant }
+import { durationOf, isWorkGrant, requiredPlaceOf, requiresWorkIntent, type WorkGrant }
   from '../execution/place-rules';
 import { FairScheduler, type TaskLease, type TaskOutcome } from '../scheduler-v2/scheduler';
 import type { PromiseInstance } from './lifecycle';
@@ -63,6 +63,28 @@ export interface InputReceipt {
   result: unknown;
 }
 
+/**
+ * Who owns the right to execute a time-consuming action.
+ *
+ * - `work-intent`: the queued authority. `executeCandidate` refuses a work
+ *   action that carries no settlement grant, so `undefined` is NOT a
+ *   capability. The R8 profile runs in this mode.
+ * - `legacy-inline`: the R1-R6 reference drivers (the legacy task-board loop,
+ *   the pre-R8 CLI `step`) whose historical semantics is "one step, no queue".
+ *   Keeping it is deliberate; every inline work execution is recorded so it is
+ *   visible rather than silent.
+ */
+export type WorkAuthority = 'legacy-inline' | 'work-intent';
+
+/** One time-consuming execution that really ran outside the queue. */
+export interface InlineWorkExecution {
+  at: number;
+  actorId: string;
+  commandId: string;
+  action: string;
+  minutes: number;
+}
+
 export interface StepDecision {
   actorId: string;
   status: string;
@@ -94,6 +116,12 @@ export class PlaySession {
   readonly inputReceipts: Record<string, InputReceipt> = {};
   readonly seed: string;
   readonly npcIds: string[];
+  /** R11: which authority may execute a time-consuming action inline. */
+  workAuthority: WorkAuthority = 'legacy-inline';
+  /** R11: inline work that really ran outside the queue, for the audit trail. */
+  readonly inlineWorkExecutions: InlineWorkExecution[] = [];
+  /** Depth of the explicit legacy entry; 0 means the queued contract is on. */
+  private inlineAllowance = 0;
   /** R3 (M): injectable scorer seam for real-model / async acceptance runs. */
   private readonly scorerProvider: () => ScorerPort;
 
@@ -510,6 +538,33 @@ export class PlaySession {
    *   - the work contract: a work action is queued as an intent, not executed
    *     inline with zero elapsed time.
    */
+  /** Switch this session to the queued authority (the R8 profile does this). */
+  useWorkIntentAuthority(): void {
+    this.workAuthority = 'work-intent';
+  }
+
+  /**
+   * Explicit legacy entry for the R1-R6 reference drivers. It keeps their
+   * historical inline semantics on purpose, and every time-consuming execution
+   * it really performs is recorded, so "the new profile never runs work inline"
+   * stays checkable instead of being an unwritten rule.
+   */
+  executeCandidateLegacy(actorId: string, candidate: Candidate, commandId: string,
+    grant?: WorkGrant): ExecutionOutcome {
+    this.inlineAllowance += 1;
+    let outcome: ExecutionOutcome;
+    try {
+      outcome = this.executeCandidate(actorId, candidate, commandId, grant);
+    } finally {
+      this.inlineAllowance -= 1;
+    }
+    if (outcome.status === 'applied' && requiresWorkIntent(candidate) && grant === undefined) {
+      this.inlineWorkExecutions.push({ at: this.world.simTime, actorId, commandId,
+        action: String(candidate.parameters.action ?? ''), minutes: durationOf(candidate) });
+    }
+    return outcome;
+  }
+
   executeCandidate(actorId: string, candidate: Candidate, commandId: string,
     grant?: WorkGrant): ExecutionOutcome {
     const acting = this.world.npcs[actorId];
@@ -524,10 +579,19 @@ export class PlaySession {
         reason: `wrong_location: ${action}${candidate.parameters.mode
           ? `(${String(candidate.parameters.mode)})` : ''} needs ${place}, actor is at ${acting.location}` };
     }
-    if (requiresWorkIntent(candidate) && grant !== undefined
-      && !(isWorkGrant(grant) && grant.actorId === actorId)) {
-      return { status: 'rejected', eventIds: [], postStateVersion: this.world.version,
-        reason: `work_grant_mismatch: ${action} was not authorised for this actor` };
+    if (requiresWorkIntent(candidate)) {
+      if (grant !== undefined && !(isWorkGrant(grant) && grant.actorId === actorId)) {
+        return { status: 'rejected', eventIds: [], postStateVersion: this.world.version,
+          reason: `work_grant_mismatch: ${action} was not authorised for this actor` };
+      }
+      // The queued authority is not opt-in-by-omission: a missing grant is a
+      // missing capability, not a legacy default.
+      if (grant === undefined && this.workAuthority === 'work-intent'
+        && this.inlineAllowance === 0) {
+        return { status: 'rejected', eventIds: [], postStateVersion: this.world.version,
+          reason: `work_requires_intent: ${action} spends authoritative time; `
+            + 'queue it and settle on the clock' };
+      }
     }
     let command: Command | null;
     try {
@@ -639,7 +703,9 @@ export class PlaySession {
           return { status: 'rejected', eventIds: [], postStateVersion: this.world.version,
             reason: 'stale_memory' };
         }
-        return this.executeCandidate(actorId, candidate, commandId);
+        // The R1-R6 CLI `step` is the legacy driver, so it declares the legacy
+        // capability explicitly instead of relying on a missing grant.
+        return this.executeCandidateLegacy(actorId, candidate, commandId);
       },
       query: async commandId => this.outcomes[commandId] ?? { status: 'unknown', eventIds: [],
         postStateVersion: null, reason: 'not recorded' },

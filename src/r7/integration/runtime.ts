@@ -16,9 +16,9 @@ import {
   type Rejection, type TimeProfile, type WorldIntent,
 } from '../contracts';
 import { commitIntents, ensureR8, snapshotOf } from './intents';
-import { mintWorkGrant, requiredPlaceOf } from '../../execution/place-rules';
-import { createIntent, demandIdOf, projectionOf, type ActionIntent, type ActionStatus,
-  type ProjectionClaim } from './action-intent';
+import { durationOf, mintWorkGrant, requiredPlaceOf } from '../../execution/place-rules';
+import { createIntent, demandIdOf, projectionOf, remainingLegTimes, type ActionIntent,
+  type ActionStatus, type IntentProgress, type ProjectionClaim } from './action-intent';
 import { survivalDomain, type SurvivalState } from '../domains/survival/index';
 import { productionDomain, type ProductionState } from '../domains/production/index';
 import { tasksDomain, WORK_MODE_TASK, type TasksState, type WorkMode } from '../domains/tasks/index';
@@ -196,10 +196,17 @@ export class R8Runtime {
   /** Every committed event by id: the only receipts a domain may accept. */
   private readonly committed = new Map<string, CommittedEventRef>();
   private readonly legacySpatial: LegacySpatialController;
+  /** Guard: `advanceWorld` is the only clock owner and never re-enters itself. */
+  private advancing = false;
+  private claimSequence = 0;
 
   constructor(readonly session: PlaySession, profile: TimeProfile = GOSPEL_PROFILE,
     states?: DomainStates) {
     this.profile = profile;
+    // The session's work authority is NOT switched here: a caller that hands in
+    // an existing session keeps whatever it declared (the legacy drivers pass a
+    // legacy session). `create` switches it only when the runtime is the one
+    // that created the world, i.e. when it is the profile's only driver.
     const context = this.context();
     this.states = states ?? (this.registry.initialise(context) as unknown as DomainStates);
     this.legacySpatial = new LegacySpatialController(this, (intents, events) => this.commit(intents, events));
@@ -223,7 +230,11 @@ export class R8Runtime {
     session.world.resources.power = options.resources?.power ?? 30;
     session.world.resources.medicine = options.resources?.medicine ?? 3;
     ensureR8(session.world);
-    return new R8Runtime(session, profile);
+    const runtime = new R8Runtime(session, profile);
+    // This runtime created the world, so it is the profile's single driver: the
+    // queued authority applies. A handed-in session keeps its own declaration.
+    session.useWorkIntentAuthority();
+    return runtime;
   }
 
   get world(): WorldV2 {
@@ -310,6 +321,19 @@ export class R8Runtime {
     if (!Number.isFinite(to) || to < from) {
       throw new Error(`advanceWorld refuses to move backwards: ${from} -> ${to}`);
     }
+    // The single clock owner. A nested call would advance time inside a span
+    // that is already being paid for, which is exactly the R10 defect; refuse
+    // it instead of silently charging the same minutes twice.
+    if (this.advancing) throw new Error('reentrant_advance_world: advanceWorld is the only clock owner');
+    this.advancing = true;
+    try {
+      return this.advanceSpan(from, to);
+    } finally {
+      this.advancing = false;
+    }
+  }
+
+  private advanceSpan(from: number, to: number): AdvanceReport {
     const profileEnd = absoluteMinute(this.profile, this.profile.endDay,
       this.profile.endMinuteOfDay);
     const target = Math.min(to, profileEnd);
@@ -415,6 +439,8 @@ export class R8Runtime {
       .flatMap(record => record.lessons).slice(-20);
     const next = R8Runtime.create({ ...options, profile: this.profile,
       seed: `${this.session.seed}-life${(this.states.life as LifeState).lifeNumber}` });
+    // The next life keeps the authority its driver really had.
+    next.session.workAuthority = this.session.workAuthority;
     // Carry the life bookkeeping, never current facts.
     (next.states.life as LifeState).lifeNumber = (this.states.life as LifeState).lifeNumber;
     (next.states.life as LifeState).pastLives = (this.states.life as LifeState).pastLives
@@ -500,12 +526,53 @@ export class R8Runtime {
     if (place && npc.location !== place) {
       return { rejected: `wrong_location: ${action} needs ${place}, actor is at ${npc.location}` };
     }
-    const intent = createIntent({ ...input, demandId,
+    // A macro move on the original map is a continuous phase, so its duration
+    // is PLANNED from the real route at enqueue time; the caller's guess stays
+    // visible as `requestedMinutes` instead of silently becoming the promise.
+    let move: IntentProgress | null = null;
+    if (action === 'move' && this.legacySpatial.enabled() && this.offersTravel(input.actorId, input.candidate)) {
+      const plan = this.legacySpatial.planTravel(input.actorId, String(input.candidate.parameters.to ?? ''));
+      if (plan.status === 'rejected') return { rejected: plan.reason };
+      move = { kind: 'legacy-travel', target: String(input.candidate.parameters.to ?? ''),
+        path: plan.path, leg: 0, progress: 0, plannedMinutes: plan.minutes,
+        requestedMinutes: input.minutes, cancelAt: null, committedAt: null,
+        legReceiptIds: [], landedAt: [] };
+    }
+    const intent = createIntent({ ...input, demandId, move,
       generation: this.session.generationFor(input.actorId) },
       this.world.simTime, place, npc.location);
     this.intents.set(intent.intentId, intent);
     this.syncWorkView();
     return { intent };
+  }
+
+  /**
+   * `verify-stock` already standing inside the warehouse is an observation, not
+   * a journey: it keeps its historical zero-minute semantics. Everything else
+   * that names a location walks the real map.
+   */
+  private offersTravel(actorId: string,
+    candidate: import('../../decision/contracts').Candidate): boolean {
+    if (candidate.parameters.purpose !== 'verify-stock') return true;
+    return this.legacySpatial.position(actorId)?.mapId !== 'warehouse';
+  }
+
+  /**
+   * New-profile entry for any time-consuming candidate. A macro move becomes a
+   * planned travel phase; every other action keeps its flat duration. Both are
+   * settled by `advanceWorld` alone.
+   */
+  queueAction(input: {
+    intentId: string; commandId: string; actorId: string;
+    candidate: import('../../decision/contracts').Candidate; minutes?: number;
+    inputSha256?: string | null; taskId?: string | null; taskType?: string | null;
+    commitmentId?: string | null; commitmentRevision?: number | null;
+    demandId?: string | null;
+  }): { status: 'queued' | 'duplicate'; intent: ActionIntent } | { status: 'rejected'; reason: string } {
+    const minutes = input.minutes ?? durationOf(input.candidate);
+    const begun = this.beginIntent({ ...input, minutes });
+    if ('rejected' in begun) return { status: 'rejected', reason: begun.rejected };
+    return { status: begun.duplicate ? 'duplicate' : 'queued', intent: begun.intent };
   }
 
   /** Compatibility wrapper: no explicit instance binding. */
@@ -548,19 +615,33 @@ export class R8Runtime {
     this.projectors.push(projector);
   }
 
-  /** Due times of every queued action: they are clock boundaries. */
+  /**
+   * Every moment this queued action must be looked at: its `due` and, for a
+   * continuous travel phase, each remaining leg. They are clock boundaries, so
+   * a walk is paid tile by tile and the span never has to be re-run.
+   */
   pendingDuePoints(): number[] {
-    return [...this.intents.values()].filter(intent => intent.status === 'working')
-      .map(intent => intent.dueAt);
+    const points: number[] = [];
+    for (const intent of this.intents.values()) {
+      if (intent.status !== 'working') continue;
+      points.push(intent.dueAt);
+      points.push(...remainingLegTimes(intent));
+    }
+    return points;
   }
 
   /**
    * Cancel a queued action before it commits: zero late physical effect, and
-   * the cancelled record stays readable (reason + time).
+   * the cancelled record stays readable (reason + time). A cancelled walk keeps
+   * the legs it already paid for and the position it really reached; from that
+   * moment it can neither move again nor fulfil anything.
    */
   cancelIntent(intentId: string, reason: string): boolean {
     const intent = this.intents.get(intentId);
     if (!intent || intent.status !== 'working') return false;
+    // A claimed intent is mid-commit: refusing here is what keeps "one receipt
+    // per physical effect" true under a concurrent cancel.
+    if (intent.claim) return false;
     this.finishIntent(intent, 'cancelled', reason);
     return true;
   }
@@ -570,6 +651,7 @@ export class R8Runtime {
     const cancelled: string[] = [];
     for (const intent of [...this.intents.values()]) {
       if (intent.status !== 'working' || intent.commitmentId !== commitmentId) continue;
+      if (intent.claim) continue;
       this.finishIntent(intent, 'cancelled', reason);
       cancelled.push(intent.intentId);
     }
@@ -584,42 +666,41 @@ export class R8Runtime {
    */
   settleDueIntents(): { actorId: string; kind: string; status: string; eventIds: string[] }[] {
     const due = [...this.intents.values()]
-      .filter(intent => intent.status === 'working' && this.world.simTime >= intent.dueAt)
+      .filter((intent): boolean => this.isSettleable(intent))
       // A strict total order that does not depend on ICU/locale or Map
       // insertion order: (dueAt, intentId) with a code-unit comparison.
       .sort((left, right) => left.dueAt - right.dueAt
         || (left.intentId < right.intentId ? -1 : left.intentId > right.intentId ? 1 : 0));
     const done: { actorId: string; kind: string; status: string; eventIds: string[] }[] = [];
     for (const intent of due) {
+      if (intent.status !== 'working' || intent.claim) continue;
+      const claim = this.claimIntent(intent);
       let status: ActionStatus = 'applied';
       let reason: string | null = null;
       let eventIds: string[] = [];
-      const npc = this.world.npcs[intent.actorId];
-      if (!npc || !npc.alive) {
-        status = 'cancelled'; reason = 'actor_not_alive';
-      } else if (this.session.generationFor(intent.actorId) !== intent.generation) {
-        status = 'cancelled'; reason = 'generation_revoked';
-      } else if (intent.requiredPlace && npc.location !== intent.requiredPlace) {
-        status = 'rejected';
-        reason = `wrong_location: ${String(intent.candidate.parameters.action)} needs `
-          + `${intent.requiredPlace}, actor is at ${npc.location}`;
-      } else {
-        // A withdrawn authorisation is a REFUSAL the actor really receives, not
-        // a silent cancellation: the world keeps its answer, and the actor gets
-        // its own observation of the failed attempt.
-        for (const guard of this.intentGuards) {
-          const revoked = guard(intent);
-          if (revoked) { status = 'rejected'; reason = revoked; break; }
-        }
-        if (status === 'applied' && intent.taskId && intent.taskType) {
-          const task = this.taskRow(intent.taskId);
-          if (!task || task.status !== 'accepted' || task.assigneeId !== intent.actorId) {
-            status = 'cancelled'; reason = 'task_not_open';
+      try {
+        const revoked = this.revocationOf(intent);
+        if (revoked) { status = revoked.status; reason = revoked.reason; }
+        else if (intent.move) {
+          // Continuous phase: land the legs the paid clock has reached. Within
+          // `advanceWorld` that is exactly one leg per one-minute boundary; the
+          // loop also covers a resume whose clock already passed a step.
+          let landed = this.legacySpatial.landLeg(intent);
+          for (let guard = 0; landed.status === 'landed' && guard < intent.move!.path.length;
+            guard += 1) {
+            if (!this.isSettleable(intent) || intent.claim !== claim) break;
+            landed = this.legacySpatial.landLeg(intent);
           }
-        }
-      }
-      if (status === 'applied') {
-        try {
+          if (landed.status === 'landed') {
+            // Still walking: the intent stays working and produces no terminal
+            // record, but the landed legs are already committed receipts.
+            this.syncWorkView();
+            continue;
+          }
+          status = landed.status === 'applied' ? 'applied' : 'rejected';
+          reason = landed.reason;
+          eventIds = [...intent.move.legReceiptIds, ...landed.observedEventIds];
+        } else {
           const grant = mintWorkGrant(intent.intentId, intent.actorId, intent.candidateId);
           const outcome = this.session.executeCandidate(intent.actorId, intent.candidate,
             intent.commandId, grant);
@@ -628,24 +709,96 @@ export class R8Runtime {
             : outcome.status === 'rejected' ? 'rejected' : 'unresolved';
           eventIds = outcome.eventIds;
           reason = outcome.reason ?? null;
-        } catch (error) {
-          status = 'rejected';
-          reason = `error:${(error as Error).message}`;
         }
+      } catch (error) {
+        status = 'rejected';
+        reason = `error:${(error as Error).message}`;
+      } finally {
+        // Release only OUR claim: an intent re-queued by a nested call keeps
+        // its own lease instead of being released by the outer frame.
+        if (intent.claim === claim) intent.claim = null;
       }
-      intent.status = status;
-      intent.receiptIds = eventIds;
-      intent.failureReason = reason;
-      intent.settledAt = this.world.simTime;
-      if (status === 'rejected' && reason) this.recordRejection(intent, reason);
-      if (status === 'applied' && eventIds.length > 0) {
-        this.applyProjection(intent, eventIds);
-      }
-      this.logIntent(intent);
+      this.finishSettlement(intent, status, reason, eventIds);
       done.push({ actorId: intent.actorId, kind: String(intent.candidate.parameters.action),
         status, eventIds });
     }
     return done;
+  }
+
+  /**
+   * A claimed intent is already being settled further up the stack: the claim
+   * is what makes a nested or repeated pass unable to take it again.
+   */
+  private isSettleable(intent: ActionIntent): boolean {
+    if (intent.status !== 'working') return false;
+    if (intent.claim) return false;
+    return this.world.simTime >= this.settleAtOf(intent);
+  }
+
+  /** When this intent next needs the clock: its next leg, else its due time. */
+  private settleAtOf(intent: ActionIntent): number {
+    if (intent.move && intent.move.leg < intent.move.path.length) {
+      const next = intent.startedAt + intent.move.progress + intent.move.path[intent.move.leg].minutes;
+      return Math.min(next, intent.dueAt);
+    }
+    return intent.dueAt;
+  }
+
+  /**
+   * Claim the intent for the duration of one settlement attempt. The token is
+   * process-local on purpose: a restore clears claims, because a claim held by
+   * a dead process must never block the resumed world.
+   */
+  private claimIntent(intent: ActionIntent): { at: number; token: string } {
+    this.claimSequence += 1;
+    const claim = { at: this.world.simTime,
+      token: `${intent.intentId}@${this.world.simTime}#${this.claimSequence}` };
+    intent.claim = claim;
+    return claim;
+  }
+
+  /** Authorisation checks shared by instant work and every travel leg. */
+  private revocationOf(intent: ActionIntent): { status: ActionStatus; reason: string } | null {
+    const npc = this.world.npcs[intent.actorId];
+    if (!npc || !npc.alive) return { status: 'cancelled', reason: 'actor_not_alive' };
+    if (this.session.generationFor(intent.actorId) !== intent.generation)
+      return { status: 'cancelled', reason: 'generation_revoked' };
+    if (intent.requiredPlace && npc.location !== intent.requiredPlace) {
+      return { status: 'rejected', reason: `wrong_location: `
+        + `${String(intent.candidate.parameters.action)} needs ${intent.requiredPlace}, `
+        + `actor is at ${npc.location}` };
+    }
+    // A withdrawn authorisation is a REFUSAL the actor really receives, not a
+    // silent cancellation: the world keeps its answer, and the actor gets its
+    // own observation of the failed attempt.
+    for (const guard of this.intentGuards) {
+      const revoked = guard(intent);
+      if (revoked) return { status: 'rejected', reason: revoked };
+    }
+    if (intent.taskId && intent.taskType) {
+      const task = this.taskRow(intent.taskId);
+      if (!task || task.status !== 'accepted' || task.assigneeId !== intent.actorId) {
+        return { status: 'cancelled', reason: 'task_not_open' };
+      }
+    }
+    return null;
+  }
+
+  /** One terminal record per intent, with its receipts projected once. */
+  private finishSettlement(intent: ActionIntent, status: ActionStatus,
+    reason: string | null, eventIds: string[]): void {
+    intent.status = status;
+    intent.receiptIds = eventIds;
+    intent.failureReason = reason;
+    intent.settledAt = this.world.simTime;
+    intent.claim = null;
+    if (status === 'rejected' && reason) this.recordRejection(intent, reason);
+    if (status === 'applied' && eventIds.length > 0) {
+      // The ledger absorbs the ARRIVAL receipt, not every tile: the per-leg
+      // receipts are the time evidence, the last one is the outcome.
+      this.applyProjection(intent, [eventIds[eventIds.length - 1]]);
+    }
+    this.logIntent(intent);
   }
 
   /** Alias kept for callers that name the R9 method. */
@@ -747,7 +900,16 @@ export class R8Runtime {
   private finishIntent(intent: ActionIntent, status: ActionStatus, reason: string | null): void {
     intent.status = status;
     intent.failureReason = reason;
-    intent.receiptIds = [];
+    intent.claim = null;
+    if (intent.move) {
+      // The walked legs really happened: keep their receipts as evidence, and
+      // record where the walk stopped so a reader cannot mistake it for a
+      // journey that never started.
+      intent.move.cancelAt = this.world.simTime;
+      intent.receiptIds = [...intent.move.legReceiptIds];
+    } else {
+      intent.receiptIds = [];
+    }
     intent.settledAt = this.world.simTime;
     this.logIntent(intent);
   }
@@ -844,6 +1006,7 @@ export class R8Runtime {
     }) as {
       schema: string; clock: number; ended: boolean;
       endingKind: string | null; states: DomainStates;
+      workAuthority?: string;
       journal?: R8Runtime['journal']; rejections?: Rejection[];
       committed?: CommittedEventRef[];
       intents?: ActionIntent[];
@@ -859,6 +1022,9 @@ export class R8Runtime {
     if (document.states.crises.lastFoodConflictMinute === null)
       document.states.crises.lastFoodConflictMinute = Number.NEGATIVE_INFINITY;
     const runtime = new R8Runtime(session, profile, document.states);
+    // The work authority is part of the saved authority, not a process default:
+    // a restored Gospel run stays queued even though the driver changed.
+    if (document.workAuthority === 'work-intent') session.useWorkIntentAuthority();
     runtime.ended = Boolean(document.ended);
     runtime.endingKind = document.endingKind ?? null;
     if (document.journal) runtime.journal.push(...document.journal);
@@ -869,7 +1035,24 @@ export class R8Runtime {
       // Pre-R10 intents predate the demand identity; backfill it from the same
       // content hash so a restored queue still dedupes re-issued demands.
       if (!intent.demandId) intent.demandId = demandIdOf(intent);
+      // Pre-R11 records have no claim/continuous phase.
+      intent.claim = null;
+      intent.move = intent.move ?? null;
       runtime.intents.set(intent.intentId, intent);
+      // A travel phase resumes from the receipts it really committed. A missing
+      // leg receipt means the physical effect is gone, so the intent is not
+      // silently re-walked: it becomes an explicit unresolved record.
+      if (intent.move) {
+        const missing = intent.move.legReceiptIds.filter(id => !runtime.committed.has(id));
+        const drifted = intent.move.legReceiptIds.length !== intent.move.leg;
+        if (missing.length > 0 || drifted) {
+          intent.move.landedAt = intent.move.landedAt.slice(0, intent.move.legReceiptIds.length);
+          intent.status = 'unresolved';
+          intent.failureReason = missing.length > 0
+            ? `leg_receipt_missing_on_restore:${missing[0]}`
+            : 'travel_plan_receipt_count_mismatch';
+        }
+      }
     }
     // R9 sidecars only stored the occupancy tuple. Migrate it into a real
     // intent so the resumed process settles from data, not from a closure.
@@ -894,8 +1077,8 @@ export class R8Runtime {
         requiredPlace: requiredPlaceOf(String(item.candidate.parameters.action ?? ''),
           item.candidate.parameters as Record<string, unknown>),
         startPlace: runtime.world.npcs[item.actorId]?.location ?? 'village',
-        status: 'working', receiptIds: [], failureReason: null, projections: [],
-        settledAt: null,
+        status: 'working', claim: null, move: null, receiptIds: [], failureReason: null,
+        projections: [], settledAt: null,
       });
     }
     runtime.syncWorkView();
@@ -914,13 +1097,16 @@ export class R8Runtime {
     return {
       schema: 'frostecho.r8-runtime/1',
       profile: this.profile.id,
+      workAuthority: this.session.workAuthority,
       clock: this.world.simTime,
       ended: this.ended,
       endingKind: this.endingKind,
       states: this.states,
       journal: this.journal,
       committed: [...this.committed.values()],
-      intents: [...this.intents.values()],
+      // A claim is a live lease inside one settlement attempt, never durable
+      // state: persisting it would let a dead process block the resumed world.
+      intents: [...this.intents.values()].map(intent => ({ ...intent, claim: null })),
       // Derived view kept for readers of the R9 sidecar shape.
       work: [...this.work.values()],
       workLog: this.workLog,
