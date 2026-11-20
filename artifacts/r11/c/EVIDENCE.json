@@ -214,6 +214,28 @@
       "commitment-due": 3,
       "frozen-default": 3
     },
-    "evidence": "artifacts/r11/c/fixture/integration-aeb296b"
+    "evidence": "artifacts/r11/c/fixture/integration-aeb296b",
+    "runAll": {
+      "command": "research/decision-choice/r11/run-all.sh <out> <fixture-freeze> <sha> 3 3",
+      "exit": 0,
+      "log": "artifacts/r11/c/tests/run-all-fixture-aeb296b.log",
+      "corpus": {
+        "cases": 12,
+        "episodes": 3,
+        "families": {
+          "base": 12,
+          "fulfillment": 10
+        },
+        "informationSufficient": false
+      },
+      "blindPackageId": "3b092b5771055e2d8712d8ee871e131349ad2f806dfd34ce635de366919968fc",
+      "packetASha256": "c059b83eb0baa83f8343eb3f32b5da05050daef8a5df72053ac6055d8e3c966c",
+      "packetBSha256": "22b4763028465f7aa3ea2dd3789121f05d60839822e99c283600a87532405ce2",
+      "note": "fixture freeze; proves the chain runs on the fixed runner, not that the volumes meet the R11 targets"
+    },
+    "clockGate": {
+      "strictExitOn24406c4": 2,
+      "passesOnAeb296b": true
+    }
   }
 }
