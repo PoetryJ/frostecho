@@ -1,0 +1,37 @@
+{
+  "schema": "frostecho.r11c.capture/1",
+  "cases": 6,
+  "episodes": 2,
+  "slices": 3,
+  "policy": "reference",
+  "freezeSha256": "732ea842c23fea9a5523555e72e73764ade07581b75d3740b14b93a7a31bee25",
+  "freezeSourceCommit": "fixture-cpu-selftest-not-o",
+  "splitSeed": "fixture-split",
+  "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+  "rendererBuildSha256": "3c4b7b395053a6f7d948594f761316f96b994c14f8cb0c1c855ca4da893c6237",
+  "rendererId": "joint-c-action/2",
+  "memory": {
+    "memorySelection": "obligation-first",
+    "memoryPolicy": "conditional-experience",
+    "memoryTokenBudget": 640
+  },
+  "deadlineHorizonMinutes": 240,
+  "legacySpatial": true,
+  "manifestSha256": null,
+  "byStory": {
+    "cancel-heard": 3,
+    "cancel-unheard": 3
+  },
+  "byEpisode": {
+    "r11c-ep00": 3,
+    "r11c-ep01": 3
+  },
+  "byAccessState": {
+    "reference": 6
+  },
+  "withActiveCommitment": 5,
+  "wallSeconds": 6.246,
+  "casesSha256": "17aff81d973701a3e2c9f47ba034c7a2acb2732f4b92b7f7d85fbe8c3e77d01d",
+  "realModel": false,
+  "note": "States come from runStep under the frozen policy; story setups touch the world, never the observation."
+}

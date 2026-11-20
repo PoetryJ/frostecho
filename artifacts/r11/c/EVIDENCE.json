@@ -166,7 +166,9 @@
     "symptom": "one intent was settled up to 964 times; the clock left t* by 25 minutes",
     "cause": "settleDueIntents -> executeCandidate -> nested advance re-enters settlement",
     "effect": "no labels are written by default; the strict gate exited 2 in the fixture run",
-    "owner": "A (single clock / one settlement), merge required before real C sampling"
+    "owner": "A (single clock / one settlement), merge required before real C sampling",
+    "verifiedOn": "aeb296b: 0 duplicate settlements, 0 clock overrun, labels written",
+    "baseStillBroken": true
   },
   "cost": {
     "gpuAllocatedHours": 0,
@@ -178,5 +180,40 @@
     "A: single-clock runner merged; rerun label-deadline-branches without --allow-known-clock-defect",
     "O: GPU release + physical indices for real encoding and two-family training",
     "F/G: same packageId; A seals, O releases B, B seals, O reconciles"
-  ]
+  ],
+  "integrationCheck": {
+    "runnerCommit": "aeb296b (codex/r11-integrate; A single-clock fix)",
+    "build": "npm run build OK in a temporary archive of that commit (my own tree untouched)",
+    "fixture": "same fixture freeze as above; still not O's FREEZE and not real data",
+    "captureCases": 6,
+    "episodes": 2,
+    "labelsWritten": true,
+    "labelsTrustworthy": true,
+    "clockIntegrity": {
+      "ok": true,
+      "failingCases": 0,
+      "allowedByOperator": false
+    },
+    "base": {
+      "allAcceptableCases": 6,
+      "noneAcceptableCases": 0,
+      "discriminativeCases": 0,
+      "meanAcceptablePerCase": 4.8333,
+      "rulePickAcceptable": 6
+    },
+    "fulfillment": {
+      "definedCases": 3,
+      "allAcceptableCases": 0,
+      "noneAcceptableCases": 2,
+      "discriminativeCases": 1,
+      "meanAcceptablePerCase": 0.3333,
+      "emptySetCases": 2,
+      "rulePickAcceptable": 1
+    },
+    "deadlineBasis": {
+      "commitment-due": 3,
+      "frozen-default": 3
+    },
+    "evidence": "artifacts/r11/c/fixture/integration-aeb296b"
+  }
 }
