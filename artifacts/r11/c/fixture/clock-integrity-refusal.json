@@ -1,0 +1,142 @@
+{
+  "schema": "frostecho.r11c.clock-integrity/1",
+  "ok": false,
+  "cases": 8,
+  "failingCases": 8,
+  "duplicateSettlementCases": 8,
+  "clockOverrunCases": 8,
+  "allowedByOperator": false,
+  "detail": "A branch that settles one intent more than once, or moves the clock past the absolute deadline, is not a same-deadline counterfactual. Labels stay unwritten until the shared runner has one clock and one settlement.",
+  "examples": [
+    {
+      "caseId": "r11c-00-s0-npc_01-000",
+      "issues": [
+        {
+          "candidateIndex": 0,
+          "candidateId": "b-59aadbbdb243d92d",
+          "duplicateSettlements": 817,
+          "clockOverrunMinutes": 25,
+          "clockAtDeadline": 745
+        },
+        {
+          "candidateIndex": 1,
+          "candidateId": "a-bae1f2dab8ef",
+          "duplicateSettlements": 964,
+          "clockOverrunMinutes": 10,
+          "clockAtDeadline": 730
+        },
+        {
+          "candidateIndex": 2,
+          "candidateId": "a-4cd4d5e3e4b6",
+          "duplicateSettlements": 964,
+          "clockOverrunMinutes": 20,
+          "clockAtDeadline": 740
+        }
+      ]
+    },
+    {
+      "caseId": "r11c-00-s0-npc_02-001",
+      "issues": [
+        {
+          "candidateIndex": 0,
+          "candidateId": "b-55648ec1d1db3fa9",
+          "duplicateSettlements": 647,
+          "clockOverrunMinutes": 25,
+          "clockAtDeadline": 745
+        },
+        {
+          "candidateIndex": 1,
+          "candidateId": "a-bae1f2dab8ef",
+          "duplicateSettlements": 964,
+          "clockOverrunMinutes": 10,
+          "clockAtDeadline": 730
+        },
+        {
+          "candidateIndex": 2,
+          "candidateId": "a-4cd4d5e3e4b6",
+          "duplicateSettlements": 894,
+          "clockOverrunMinutes": 20,
+          "clockAtDeadline": 740
+        }
+      ]
+    },
+    {
+      "caseId": "r11c-00-s1-npc_04-002",
+      "issues": [
+        {
+          "candidateIndex": 0,
+          "candidateId": "b-7f5f3d8f5249c405",
+          "duplicateSettlements": 394,
+          "clockOverrunMinutes": 0,
+          "clockAtDeadline": 1000
+        },
+        {
+          "candidateIndex": 1,
+          "candidateId": "a-bae1f2dab8ef",
+          "duplicateSettlements": 724,
+          "clockOverrunMinutes": 47,
+          "clockAtDeadline": 1047
+        },
+        {
+          "candidateIndex": 2,
+          "candidateId": "a-4cd4d5e3e4b6",
+          "duplicateSettlements": 394,
+          "clockOverrunMinutes": 0,
+          "clockAtDeadline": 1000
+        }
+      ]
+    },
+    {
+      "caseId": "r11c-00-s1-npc_01-003",
+      "issues": [
+        {
+          "candidateIndex": 0,
+          "candidateId": "b-4df47649a3982faa",
+          "duplicateSettlements": 746,
+          "clockOverrunMinutes": 52,
+          "clockAtDeadline": 1052
+        },
+        {
+          "candidateIndex": 1,
+          "candidateId": "a-bae1f2dab8ef",
+          "duplicateSettlements": 746,
+          "clockOverrunMinutes": 52,
+          "clockAtDeadline": 1052
+        },
+        {
+          "candidateIndex": 2,
+          "candidateId": "a-4cd4d5e3e4b6",
+          "duplicateSettlements": 731,
+          "clockOverrunMinutes": 30,
+          "clockAtDeadline": 1030
+        }
+      ]
+    },
+    {
+      "caseId": "r11c-01-s0-npc_06-000",
+      "issues": [
+        {
+          "candidateIndex": 0,
+          "candidateId": "a-bae1f2dab8ef",
+          "duplicateSettlements": 964,
+          "clockOverrunMinutes": 10,
+          "clockAtDeadline": 730
+        },
+        {
+          "candidateIndex": 1,
+          "candidateId": "a-4cd4d5e3e4b6",
+          "duplicateSettlements": 964,
+          "clockOverrunMinutes": 20,
+          "clockAtDeadline": 740
+        },
+        {
+          "candidateIndex": 2,
+          "candidateId": "a-0b3f9fd02e70",
+          "duplicateSettlements": 765,
+          "clockOverrunMinutes": 25,
+          "clockAtDeadline": 745
+        }
+      ]
+    }
+  ]
+}
