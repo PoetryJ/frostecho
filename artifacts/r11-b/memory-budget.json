@@ -1,0 +1,3971 @@
+{
+  "schema": "frostecho.r11b.memory-evidence/1",
+  "projectionId": "memory-projection/2",
+  "counter": {
+    "id": "utf8-bytes/3-ceil/1",
+    "definition": "ceil(utf8 bytes / 3)",
+    "kind": "estimated-token"
+  },
+  "note": "units are an ESTIMATE. The real tokenizer count is in encoder-tokens.json, produced by tokenize_blocks.py with the encoder's own tokenizer.",
+  "budgets": [
+    0,
+    8,
+    32,
+    64,
+    96,
+    192,
+    640
+  ],
+  "selections": [
+    "raw-last12",
+    "obligation-first"
+  ],
+  "matrix": [
+    {
+      "fixture": "oversized-single",
+      "budget": 0,
+      "selection": "raw-last12",
+      "units": 0,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 0,
+      "withinBudget": true,
+      "kept": 0,
+      "dropped": 1,
+      "suppressed": 0,
+      "blockBytes": 0,
+      "segmentBytes": 0,
+      "blockSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "segmentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "large-realistic-commitment",
+          "level": "omitted",
+          "originalSha256": "ffeae9145a0710415da39cd1233d07c48915c5a0bef695d859a774b1ad99b096",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 6500
+        }
+      ],
+      "kinds": [],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": null
+    },
+    {
+      "fixture": "oversized-single",
+      "budget": 0,
+      "selection": "obligation-first",
+      "units": 0,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 0,
+      "withinBudget": true,
+      "kept": 0,
+      "dropped": 1,
+      "suppressed": 0,
+      "blockBytes": 0,
+      "segmentBytes": 0,
+      "blockSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "segmentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "large-realistic-commitment",
+          "level": "omitted",
+          "originalSha256": "ffeae9145a0710415da39cd1233d07c48915c5a0bef695d859a774b1ad99b096",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 6500
+        }
+      ],
+      "kinds": [],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": null
+    },
+    {
+      "fixture": "oversized-single",
+      "budget": 8,
+      "selection": "raw-last12",
+      "units": 0,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 8,
+      "withinBudget": true,
+      "kept": 0,
+      "dropped": 1,
+      "suppressed": 0,
+      "blockBytes": 0,
+      "segmentBytes": 0,
+      "blockSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "segmentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "large-realistic-commitment",
+          "level": "omitted",
+          "originalSha256": "ffeae9145a0710415da39cd1233d07c48915c5a0bef695d859a774b1ad99b096",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 6500
+        }
+      ],
+      "kinds": [],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": null
+    },
+    {
+      "fixture": "oversized-single",
+      "budget": 8,
+      "selection": "obligation-first",
+      "units": 0,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 8,
+      "withinBudget": true,
+      "kept": 0,
+      "dropped": 1,
+      "suppressed": 0,
+      "blockBytes": 0,
+      "segmentBytes": 0,
+      "blockSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "segmentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "large-realistic-commitment",
+          "level": "omitted",
+          "originalSha256": "ffeae9145a0710415da39cd1233d07c48915c5a0bef695d859a774b1ad99b096",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 6500
+        }
+      ],
+      "kinds": [],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": null
+    },
+    {
+      "fixture": "oversized-single",
+      "budget": 32,
+      "selection": "raw-last12",
+      "units": 0,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 32,
+      "withinBudget": true,
+      "kept": 0,
+      "dropped": 1,
+      "suppressed": 0,
+      "blockBytes": 0,
+      "segmentBytes": 0,
+      "blockSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "segmentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "large-realistic-commitment",
+          "level": "omitted",
+          "originalSha256": "ffeae9145a0710415da39cd1233d07c48915c5a0bef695d859a774b1ad99b096",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 6500
+        }
+      ],
+      "kinds": [],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": null
+    },
+    {
+      "fixture": "oversized-single",
+      "budget": 32,
+      "selection": "obligation-first",
+      "units": 0,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 32,
+      "withinBudget": true,
+      "kept": 0,
+      "dropped": 1,
+      "suppressed": 0,
+      "blockBytes": 0,
+      "segmentBytes": 0,
+      "blockSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "segmentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "large-realistic-commitment",
+          "level": "omitted",
+          "originalSha256": "ffeae9145a0710415da39cd1233d07c48915c5a0bef695d859a774b1ad99b096",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 6500
+        }
+      ],
+      "kinds": [],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": null
+    },
+    {
+      "fixture": "oversized-single",
+      "budget": 64,
+      "selection": "raw-last12",
+      "units": 61,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 64,
+      "withinBudget": true,
+      "kept": 1,
+      "dropped": 0,
+      "suppressed": 0,
+      "blockBytes": 182,
+      "segmentBytes": 191,
+      "blockSha256": "318d433c4035616490254b0f34efd08f147d164ee48a6b5d0f92347f3dfcf0e6",
+      "segmentSha256": "9fbee215d952578d34d30c9ace21db58985e9784dad9d06be5989a69d33651b1",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "large-realistic-commitment",
+          "level": "pointer-only",
+          "originalSha256": "ffeae9145a0710415da39cd1233d07c48915c5a0bef695d859a774b1ad99b096",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "revision"
+          ],
+          "omittedTextChars": 6500
+        }
+      ],
+      "kinds": [
+        "commitment_accepted"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/oversized-single.b64.raw-last12.memory.txt",
+        "sha256": "318d433c4035616490254b0f34efd08f147d164ee48a6b5d0f92347f3dfcf0e6",
+        "bytes": 182
+      }
+    },
+    {
+      "fixture": "oversized-single",
+      "budget": 64,
+      "selection": "obligation-first",
+      "units": 61,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 64,
+      "withinBudget": true,
+      "kept": 1,
+      "dropped": 0,
+      "suppressed": 0,
+      "blockBytes": 182,
+      "segmentBytes": 191,
+      "blockSha256": "318d433c4035616490254b0f34efd08f147d164ee48a6b5d0f92347f3dfcf0e6",
+      "segmentSha256": "9fbee215d952578d34d30c9ace21db58985e9784dad9d06be5989a69d33651b1",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "large-realistic-commitment",
+          "level": "pointer-only",
+          "originalSha256": "ffeae9145a0710415da39cd1233d07c48915c5a0bef695d859a774b1ad99b096",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "revision"
+          ],
+          "omittedTextChars": 6500
+        }
+      ],
+      "kinds": [
+        "commitment_accepted"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/oversized-single.b64.obligation-first.memory.txt",
+        "sha256": "318d433c4035616490254b0f34efd08f147d164ee48a6b5d0f92347f3dfcf0e6",
+        "bytes": 182
+      }
+    },
+    {
+      "fixture": "oversized-single",
+      "budget": 96,
+      "selection": "raw-last12",
+      "units": 65,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 96,
+      "withinBudget": true,
+      "kept": 1,
+      "dropped": 0,
+      "suppressed": 0,
+      "blockBytes": 195,
+      "segmentBytes": 204,
+      "blockSha256": "c6b2947b3aeebae5576d0e4297f6693fef5ee8a7cd4fcd083e2a81d71a1de00c",
+      "segmentSha256": "a49562de62f13d3efe3bac33f611ef8b3bb5e5b47d005fc5b197769ab8c7f4a1",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "large-realistic-commitment",
+          "level": "pointer-only",
+          "originalSha256": "ffeae9145a0710415da39cd1233d07c48915c5a0bef695d859a774b1ad99b096",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text"
+          ],
+          "omittedTextChars": 6500
+        }
+      ],
+      "kinds": [
+        "commitment_accepted"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/oversized-single.b96.raw-last12.memory.txt",
+        "sha256": "c6b2947b3aeebae5576d0e4297f6693fef5ee8a7cd4fcd083e2a81d71a1de00c",
+        "bytes": 195
+      }
+    },
+    {
+      "fixture": "oversized-single",
+      "budget": 96,
+      "selection": "obligation-first",
+      "units": 65,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 96,
+      "withinBudget": true,
+      "kept": 1,
+      "dropped": 0,
+      "suppressed": 0,
+      "blockBytes": 195,
+      "segmentBytes": 204,
+      "blockSha256": "c6b2947b3aeebae5576d0e4297f6693fef5ee8a7cd4fcd083e2a81d71a1de00c",
+      "segmentSha256": "a49562de62f13d3efe3bac33f611ef8b3bb5e5b47d005fc5b197769ab8c7f4a1",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "large-realistic-commitment",
+          "level": "pointer-only",
+          "originalSha256": "ffeae9145a0710415da39cd1233d07c48915c5a0bef695d859a774b1ad99b096",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text"
+          ],
+          "omittedTextChars": 6500
+        }
+      ],
+      "kinds": [
+        "commitment_accepted"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/oversized-single.b96.obligation-first.memory.txt",
+        "sha256": "c6b2947b3aeebae5576d0e4297f6693fef5ee8a7cd4fcd083e2a81d71a1de00c",
+        "bytes": 195
+      }
+    },
+    {
+      "fixture": "oversized-single",
+      "budget": 192,
+      "selection": "raw-last12",
+      "units": 161,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 192,
+      "withinBudget": true,
+      "kept": 1,
+      "dropped": 0,
+      "suppressed": 0,
+      "blockBytes": 481,
+      "segmentBytes": 490,
+      "blockSha256": "7864ca7c543b689e74da8324f28837c76f82ed3ba8879eeb47a6c66d7a471605",
+      "segmentSha256": "8beac2eb99d20dbb6d441ed9bcbc08de8372a95a433ab588790e06aff1983c4e",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "large-realistic-commitment",
+          "level": "text-trim",
+          "originalSha256": "ffeae9145a0710415da39cd1233d07c48915c5a0bef695d859a774b1ad99b096",
+          "occurredAt": 480,
+          "droppedFields": [],
+          "omittedTextChars": 6436
+        }
+      ],
+      "kinds": [
+        "commitment_accepted"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/oversized-single.b192.raw-last12.memory.txt",
+        "sha256": "7864ca7c543b689e74da8324f28837c76f82ed3ba8879eeb47a6c66d7a471605",
+        "bytes": 481
+      }
+    },
+    {
+      "fixture": "oversized-single",
+      "budget": 192,
+      "selection": "obligation-first",
+      "units": 161,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 192,
+      "withinBudget": true,
+      "kept": 1,
+      "dropped": 0,
+      "suppressed": 0,
+      "blockBytes": 481,
+      "segmentBytes": 490,
+      "blockSha256": "7864ca7c543b689e74da8324f28837c76f82ed3ba8879eeb47a6c66d7a471605",
+      "segmentSha256": "8beac2eb99d20dbb6d441ed9bcbc08de8372a95a433ab588790e06aff1983c4e",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "large-realistic-commitment",
+          "level": "text-trim",
+          "originalSha256": "ffeae9145a0710415da39cd1233d07c48915c5a0bef695d859a774b1ad99b096",
+          "occurredAt": 480,
+          "droppedFields": [],
+          "omittedTextChars": 6436
+        }
+      ],
+      "kinds": [
+        "commitment_accepted"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/oversized-single.b192.obligation-first.memory.txt",
+        "sha256": "7864ca7c543b689e74da8324f28837c76f82ed3ba8879eeb47a6c66d7a471605",
+        "bytes": 481
+      }
+    },
+    {
+      "fixture": "oversized-single",
+      "budget": 640,
+      "selection": "raw-last12",
+      "units": 353,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 640,
+      "withinBudget": true,
+      "kept": 1,
+      "dropped": 0,
+      "suppressed": 0,
+      "blockBytes": 1057,
+      "segmentBytes": 1066,
+      "blockSha256": "4bdeef8f35e1252fcf4e0cca4d148b152363c495b6769fc26b921c2d3a677692",
+      "segmentSha256": "2db972ff743af2976cd7a6b476ad849262ccef261a3acda6053dd39b533dd220",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "large-realistic-commitment",
+          "level": "text-trim",
+          "originalSha256": "ffeae9145a0710415da39cd1233d07c48915c5a0bef695d859a774b1ad99b096",
+          "occurredAt": 480,
+          "droppedFields": [],
+          "omittedTextChars": 6244
+        }
+      ],
+      "kinds": [
+        "commitment_accepted"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/oversized-single.b640.raw-last12.memory.txt",
+        "sha256": "4bdeef8f35e1252fcf4e0cca4d148b152363c495b6769fc26b921c2d3a677692",
+        "bytes": 1057
+      }
+    },
+    {
+      "fixture": "oversized-single",
+      "budget": 640,
+      "selection": "obligation-first",
+      "units": 353,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 640,
+      "withinBudget": true,
+      "kept": 1,
+      "dropped": 0,
+      "suppressed": 0,
+      "blockBytes": 1057,
+      "segmentBytes": 1066,
+      "blockSha256": "4bdeef8f35e1252fcf4e0cca4d148b152363c495b6769fc26b921c2d3a677692",
+      "segmentSha256": "2db972ff743af2976cd7a6b476ad849262ccef261a3acda6053dd39b533dd220",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "large-realistic-commitment",
+          "level": "text-trim",
+          "originalSha256": "ffeae9145a0710415da39cd1233d07c48915c5a0bef695d859a774b1ad99b096",
+          "occurredAt": 480,
+          "droppedFields": [],
+          "omittedTextChars": 6244
+        }
+      ],
+      "kinds": [
+        "commitment_accepted"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/oversized-single.b640.obligation-first.memory.txt",
+        "sha256": "4bdeef8f35e1252fcf4e0cca4d148b152363c495b6769fc26b921c2d3a677692",
+        "bytes": 1057
+      }
+    },
+    {
+      "fixture": "many-records",
+      "budget": 0,
+      "selection": "raw-last12",
+      "units": 0,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 0,
+      "withinBudget": true,
+      "kept": 0,
+      "dropped": 9,
+      "suppressed": 0,
+      "blockBytes": 0,
+      "segmentBytes": 0,
+      "blockSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "segmentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "team-team_chatter-5",
+          "level": "omitted",
+          "originalSha256": "81bd9d64e7918588018521ec763d81ccd565aa68dfc9d8dd3790558819e3c74f",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-4",
+          "level": "omitted",
+          "originalSha256": "617b0cdc573ebe3fefe8a6daabc92284470a39ec450946293ee614ab587d26b9",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-3",
+          "level": "omitted",
+          "originalSha256": "6bbc3942d789e55633231f4f1fd10f0bead741b76cf99bf4f1de9aedf1dd3fd7",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-2",
+          "level": "omitted",
+          "originalSha256": "b987b8e388fe60addd2af248559a6902b7306bfc0e3ff94f1d6cb5ed7cee49f1",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-1",
+          "level": "omitted",
+          "originalSha256": "bc87bb7a42153f7d1b60897430c791224ea827aba0a09ec81ff8b386c6f231ac",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-0",
+          "level": "omitted",
+          "originalSha256": "e7836907a99a46bd60dd133ad73711c6fed8c103668ff62b32f24ab8c76b7b95",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "bulk-2",
+          "level": "omitted",
+          "originalSha256": "a790ae93b2e5498becf7a4e37ea0c8ae98838fbc442e39b54117eb4002e5a23e",
+          "occurredAt": 482,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-1",
+          "level": "omitted",
+          "originalSha256": "1b43c1180eda41d5f0241ef8c8692f6d6535dc8aa5485dfb4111f9fd9bce84be",
+          "occurredAt": 481,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-0",
+          "level": "omitted",
+          "originalSha256": "c136f162918f2a70ce2b0e5bda7736652326a6f043c52bac43b5f31e3a5f2eaa",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        }
+      ],
+      "kinds": [],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": null
+    },
+    {
+      "fixture": "many-records",
+      "budget": 0,
+      "selection": "obligation-first",
+      "units": 0,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 0,
+      "withinBudget": true,
+      "kept": 0,
+      "dropped": 9,
+      "suppressed": 0,
+      "blockBytes": 0,
+      "segmentBytes": 0,
+      "blockSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "segmentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "bulk-2",
+          "level": "omitted",
+          "originalSha256": "a790ae93b2e5498becf7a4e37ea0c8ae98838fbc442e39b54117eb4002e5a23e",
+          "occurredAt": 482,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-1",
+          "level": "omitted",
+          "originalSha256": "1b43c1180eda41d5f0241ef8c8692f6d6535dc8aa5485dfb4111f9fd9bce84be",
+          "occurredAt": 481,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-0",
+          "level": "omitted",
+          "originalSha256": "c136f162918f2a70ce2b0e5bda7736652326a6f043c52bac43b5f31e3a5f2eaa",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "team-team_chatter-5",
+          "level": "omitted",
+          "originalSha256": "81bd9d64e7918588018521ec763d81ccd565aa68dfc9d8dd3790558819e3c74f",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-4",
+          "level": "omitted",
+          "originalSha256": "617b0cdc573ebe3fefe8a6daabc92284470a39ec450946293ee614ab587d26b9",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-3",
+          "level": "omitted",
+          "originalSha256": "6bbc3942d789e55633231f4f1fd10f0bead741b76cf99bf4f1de9aedf1dd3fd7",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-2",
+          "level": "omitted",
+          "originalSha256": "b987b8e388fe60addd2af248559a6902b7306bfc0e3ff94f1d6cb5ed7cee49f1",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-1",
+          "level": "omitted",
+          "originalSha256": "bc87bb7a42153f7d1b60897430c791224ea827aba0a09ec81ff8b386c6f231ac",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-0",
+          "level": "omitted",
+          "originalSha256": "e7836907a99a46bd60dd133ad73711c6fed8c103668ff62b32f24ab8c76b7b95",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": null
+    },
+    {
+      "fixture": "many-records",
+      "budget": 8,
+      "selection": "raw-last12",
+      "units": 0,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 8,
+      "withinBudget": true,
+      "kept": 0,
+      "dropped": 9,
+      "suppressed": 0,
+      "blockBytes": 0,
+      "segmentBytes": 0,
+      "blockSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "segmentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "team-team_chatter-5",
+          "level": "omitted",
+          "originalSha256": "81bd9d64e7918588018521ec763d81ccd565aa68dfc9d8dd3790558819e3c74f",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-4",
+          "level": "omitted",
+          "originalSha256": "617b0cdc573ebe3fefe8a6daabc92284470a39ec450946293ee614ab587d26b9",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-3",
+          "level": "omitted",
+          "originalSha256": "6bbc3942d789e55633231f4f1fd10f0bead741b76cf99bf4f1de9aedf1dd3fd7",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-2",
+          "level": "omitted",
+          "originalSha256": "b987b8e388fe60addd2af248559a6902b7306bfc0e3ff94f1d6cb5ed7cee49f1",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-1",
+          "level": "omitted",
+          "originalSha256": "bc87bb7a42153f7d1b60897430c791224ea827aba0a09ec81ff8b386c6f231ac",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-0",
+          "level": "omitted",
+          "originalSha256": "e7836907a99a46bd60dd133ad73711c6fed8c103668ff62b32f24ab8c76b7b95",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "bulk-2",
+          "level": "omitted",
+          "originalSha256": "a790ae93b2e5498becf7a4e37ea0c8ae98838fbc442e39b54117eb4002e5a23e",
+          "occurredAt": 482,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-1",
+          "level": "omitted",
+          "originalSha256": "1b43c1180eda41d5f0241ef8c8692f6d6535dc8aa5485dfb4111f9fd9bce84be",
+          "occurredAt": 481,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-0",
+          "level": "omitted",
+          "originalSha256": "c136f162918f2a70ce2b0e5bda7736652326a6f043c52bac43b5f31e3a5f2eaa",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        }
+      ],
+      "kinds": [],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": null
+    },
+    {
+      "fixture": "many-records",
+      "budget": 8,
+      "selection": "obligation-first",
+      "units": 0,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 8,
+      "withinBudget": true,
+      "kept": 0,
+      "dropped": 9,
+      "suppressed": 0,
+      "blockBytes": 0,
+      "segmentBytes": 0,
+      "blockSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "segmentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "bulk-2",
+          "level": "omitted",
+          "originalSha256": "a790ae93b2e5498becf7a4e37ea0c8ae98838fbc442e39b54117eb4002e5a23e",
+          "occurredAt": 482,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-1",
+          "level": "omitted",
+          "originalSha256": "1b43c1180eda41d5f0241ef8c8692f6d6535dc8aa5485dfb4111f9fd9bce84be",
+          "occurredAt": 481,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-0",
+          "level": "omitted",
+          "originalSha256": "c136f162918f2a70ce2b0e5bda7736652326a6f043c52bac43b5f31e3a5f2eaa",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "team-team_chatter-5",
+          "level": "omitted",
+          "originalSha256": "81bd9d64e7918588018521ec763d81ccd565aa68dfc9d8dd3790558819e3c74f",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-4",
+          "level": "omitted",
+          "originalSha256": "617b0cdc573ebe3fefe8a6daabc92284470a39ec450946293ee614ab587d26b9",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-3",
+          "level": "omitted",
+          "originalSha256": "6bbc3942d789e55633231f4f1fd10f0bead741b76cf99bf4f1de9aedf1dd3fd7",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-2",
+          "level": "omitted",
+          "originalSha256": "b987b8e388fe60addd2af248559a6902b7306bfc0e3ff94f1d6cb5ed7cee49f1",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-1",
+          "level": "omitted",
+          "originalSha256": "bc87bb7a42153f7d1b60897430c791224ea827aba0a09ec81ff8b386c6f231ac",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-0",
+          "level": "omitted",
+          "originalSha256": "e7836907a99a46bd60dd133ad73711c6fed8c103668ff62b32f24ab8c76b7b95",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": null
+    },
+    {
+      "fixture": "many-records",
+      "budget": 32,
+      "selection": "raw-last12",
+      "units": 0,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 32,
+      "withinBudget": true,
+      "kept": 0,
+      "dropped": 9,
+      "suppressed": 0,
+      "blockBytes": 0,
+      "segmentBytes": 0,
+      "blockSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "segmentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "team-team_chatter-5",
+          "level": "omitted",
+          "originalSha256": "81bd9d64e7918588018521ec763d81ccd565aa68dfc9d8dd3790558819e3c74f",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-4",
+          "level": "omitted",
+          "originalSha256": "617b0cdc573ebe3fefe8a6daabc92284470a39ec450946293ee614ab587d26b9",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-3",
+          "level": "omitted",
+          "originalSha256": "6bbc3942d789e55633231f4f1fd10f0bead741b76cf99bf4f1de9aedf1dd3fd7",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-2",
+          "level": "omitted",
+          "originalSha256": "b987b8e388fe60addd2af248559a6902b7306bfc0e3ff94f1d6cb5ed7cee49f1",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-1",
+          "level": "omitted",
+          "originalSha256": "bc87bb7a42153f7d1b60897430c791224ea827aba0a09ec81ff8b386c6f231ac",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-0",
+          "level": "omitted",
+          "originalSha256": "e7836907a99a46bd60dd133ad73711c6fed8c103668ff62b32f24ab8c76b7b95",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "bulk-2",
+          "level": "omitted",
+          "originalSha256": "a790ae93b2e5498becf7a4e37ea0c8ae98838fbc442e39b54117eb4002e5a23e",
+          "occurredAt": 482,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-1",
+          "level": "omitted",
+          "originalSha256": "1b43c1180eda41d5f0241ef8c8692f6d6535dc8aa5485dfb4111f9fd9bce84be",
+          "occurredAt": 481,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-0",
+          "level": "omitted",
+          "originalSha256": "c136f162918f2a70ce2b0e5bda7736652326a6f043c52bac43b5f31e3a5f2eaa",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        }
+      ],
+      "kinds": [],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": null
+    },
+    {
+      "fixture": "many-records",
+      "budget": 32,
+      "selection": "obligation-first",
+      "units": 0,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 32,
+      "withinBudget": true,
+      "kept": 0,
+      "dropped": 9,
+      "suppressed": 0,
+      "blockBytes": 0,
+      "segmentBytes": 0,
+      "blockSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "segmentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "bulk-2",
+          "level": "omitted",
+          "originalSha256": "a790ae93b2e5498becf7a4e37ea0c8ae98838fbc442e39b54117eb4002e5a23e",
+          "occurredAt": 482,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-1",
+          "level": "omitted",
+          "originalSha256": "1b43c1180eda41d5f0241ef8c8692f6d6535dc8aa5485dfb4111f9fd9bce84be",
+          "occurredAt": 481,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-0",
+          "level": "omitted",
+          "originalSha256": "c136f162918f2a70ce2b0e5bda7736652326a6f043c52bac43b5f31e3a5f2eaa",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "team-team_chatter-5",
+          "level": "omitted",
+          "originalSha256": "81bd9d64e7918588018521ec763d81ccd565aa68dfc9d8dd3790558819e3c74f",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-4",
+          "level": "omitted",
+          "originalSha256": "617b0cdc573ebe3fefe8a6daabc92284470a39ec450946293ee614ab587d26b9",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-3",
+          "level": "omitted",
+          "originalSha256": "6bbc3942d789e55633231f4f1fd10f0bead741b76cf99bf4f1de9aedf1dd3fd7",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-2",
+          "level": "omitted",
+          "originalSha256": "b987b8e388fe60addd2af248559a6902b7306bfc0e3ff94f1d6cb5ed7cee49f1",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-1",
+          "level": "omitted",
+          "originalSha256": "bc87bb7a42153f7d1b60897430c791224ea827aba0a09ec81ff8b386c6f231ac",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-0",
+          "level": "omitted",
+          "originalSha256": "e7836907a99a46bd60dd133ad73711c6fed8c103668ff62b32f24ab8c76b7b95",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": null
+    },
+    {
+      "fixture": "many-records",
+      "budget": 64,
+      "selection": "raw-last12",
+      "units": 60,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 64,
+      "withinBudget": true,
+      "kept": 1,
+      "dropped": 8,
+      "suppressed": 0,
+      "blockBytes": 180,
+      "segmentBytes": 189,
+      "blockSha256": "d5733fdfa268935b04d68903e6386bb199bd6aa86c0572aa4a02a19ab7b027d8",
+      "segmentSha256": "b8eb24344039c6c1e8f819026ee1e782737a0f2cbe74a030b3a0196ea78c6807",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "team-team_chatter-4",
+          "level": "omitted",
+          "originalSha256": "617b0cdc573ebe3fefe8a6daabc92284470a39ec450946293ee614ab587d26b9",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-3",
+          "level": "omitted",
+          "originalSha256": "6bbc3942d789e55633231f4f1fd10f0bead741b76cf99bf4f1de9aedf1dd3fd7",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-2",
+          "level": "omitted",
+          "originalSha256": "b987b8e388fe60addd2af248559a6902b7306bfc0e3ff94f1d6cb5ed7cee49f1",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-1",
+          "level": "omitted",
+          "originalSha256": "bc87bb7a42153f7d1b60897430c791224ea827aba0a09ec81ff8b386c6f231ac",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-0",
+          "level": "omitted",
+          "originalSha256": "e7836907a99a46bd60dd133ad73711c6fed8c103668ff62b32f24ab8c76b7b95",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "bulk-2",
+          "level": "omitted",
+          "originalSha256": "a790ae93b2e5498becf7a4e37ea0c8ae98838fbc442e39b54117eb4002e5a23e",
+          "occurredAt": 482,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-1",
+          "level": "omitted",
+          "originalSha256": "1b43c1180eda41d5f0241ef8c8692f6d6535dc8aa5485dfb4111f9fd9bce84be",
+          "occurredAt": 481,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-0",
+          "level": "omitted",
+          "originalSha256": "c136f162918f2a70ce2b0e5bda7736652326a6f043c52bac43b5f31e3a5f2eaa",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        }
+      ],
+      "kinds": [
+        "team_chatter"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/many-records.b64.raw-last12.memory.txt",
+        "sha256": "d5733fdfa268935b04d68903e6386bb199bd6aa86c0572aa4a02a19ab7b027d8",
+        "bytes": 180
+      }
+    },
+    {
+      "fixture": "many-records",
+      "budget": 64,
+      "selection": "obligation-first",
+      "units": 61,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 64,
+      "withinBudget": true,
+      "kept": 1,
+      "dropped": 8,
+      "suppressed": 0,
+      "blockBytes": 182,
+      "segmentBytes": 191,
+      "blockSha256": "a7f41112a80b7878a11f162b72d69083c6d205c74ac682d5e8e9f5ac89a38f4b",
+      "segmentSha256": "c78795d820301de23b1cfc3a3222e5509d530442d094ee43efd19a7d34062036",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "bulk-2",
+          "level": "pointer-only",
+          "originalSha256": "a790ae93b2e5498becf7a4e37ea0c8ae98838fbc442e39b54117eb4002e5a23e",
+          "occurredAt": 482,
+          "droppedFields": [
+            "text"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-1",
+          "level": "omitted",
+          "originalSha256": "1b43c1180eda41d5f0241ef8c8692f6d6535dc8aa5485dfb4111f9fd9bce84be",
+          "occurredAt": 481,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-0",
+          "level": "omitted",
+          "originalSha256": "c136f162918f2a70ce2b0e5bda7736652326a6f043c52bac43b5f31e3a5f2eaa",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "team-team_chatter-5",
+          "level": "omitted",
+          "originalSha256": "81bd9d64e7918588018521ec763d81ccd565aa68dfc9d8dd3790558819e3c74f",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-4",
+          "level": "omitted",
+          "originalSha256": "617b0cdc573ebe3fefe8a6daabc92284470a39ec450946293ee614ab587d26b9",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-3",
+          "level": "omitted",
+          "originalSha256": "6bbc3942d789e55633231f4f1fd10f0bead741b76cf99bf4f1de9aedf1dd3fd7",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-2",
+          "level": "omitted",
+          "originalSha256": "b987b8e388fe60addd2af248559a6902b7306bfc0e3ff94f1d6cb5ed7cee49f1",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-1",
+          "level": "omitted",
+          "originalSha256": "bc87bb7a42153f7d1b60897430c791224ea827aba0a09ec81ff8b386c6f231ac",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-0",
+          "level": "omitted",
+          "originalSha256": "e7836907a99a46bd60dd133ad73711c6fed8c103668ff62b32f24ab8c76b7b95",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [
+        "commitment_change_proposed"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/many-records.b64.obligation-first.memory.txt",
+        "sha256": "a7f41112a80b7878a11f162b72d69083c6d205c74ac682d5e8e9f5ac89a38f4b",
+        "bytes": 182
+      }
+    },
+    {
+      "fixture": "many-records",
+      "budget": 96,
+      "selection": "raw-last12",
+      "units": 96,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 96,
+      "withinBudget": true,
+      "kept": 2,
+      "dropped": 7,
+      "suppressed": 0,
+      "blockBytes": 286,
+      "segmentBytes": 295,
+      "blockSha256": "c85bc30fe1c2e158725eabe99c17c3b3fe103b3957b9a758fe310aa24fbd2bf8",
+      "segmentSha256": "095242142f2ff900a755be83f22f475a60951283298f44ece792a80dc4bcc6e3",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "team-team_chatter-4",
+          "level": "pointer-only",
+          "originalSha256": "617b0cdc573ebe3fefe8a6daabc92284470a39ec450946293ee614ab587d26b9",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-3",
+          "level": "pointer-only",
+          "originalSha256": "6bbc3942d789e55633231f4f1fd10f0bead741b76cf99bf4f1de9aedf1dd3fd7",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-2",
+          "level": "pointer-only",
+          "originalSha256": "b987b8e388fe60addd2af248559a6902b7306bfc0e3ff94f1d6cb5ed7cee49f1",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-1",
+          "level": "pointer-only",
+          "originalSha256": "bc87bb7a42153f7d1b60897430c791224ea827aba0a09ec81ff8b386c6f231ac",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-0",
+          "level": "pointer-only",
+          "originalSha256": "e7836907a99a46bd60dd133ad73711c6fed8c103668ff62b32f24ab8c76b7b95",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "bulk-2",
+          "level": "pointer-only",
+          "originalSha256": "a790ae93b2e5498becf7a4e37ea0c8ae98838fbc442e39b54117eb4002e5a23e",
+          "occurredAt": 482,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-1",
+          "level": "pointer-only",
+          "originalSha256": "1b43c1180eda41d5f0241ef8c8692f6d6535dc8aa5485dfb4111f9fd9bce84be",
+          "occurredAt": 481,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-0",
+          "level": "pointer-only",
+          "originalSha256": "c136f162918f2a70ce2b0e5bda7736652326a6f043c52bac43b5f31e3a5f2eaa",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        }
+      ],
+      "kinds": [
+        "team_chatter",
+        "team_chatter"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/many-records.b96.raw-last12.memory.txt",
+        "sha256": "c85bc30fe1c2e158725eabe99c17c3b3fe103b3957b9a758fe310aa24fbd2bf8",
+        "bytes": 286
+      }
+    },
+    {
+      "fixture": "many-records",
+      "budget": 96,
+      "selection": "obligation-first",
+      "units": 96,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 96,
+      "withinBudget": true,
+      "kept": 1,
+      "dropped": 8,
+      "suppressed": 0,
+      "blockBytes": 286,
+      "segmentBytes": 295,
+      "blockSha256": "c4598feb7909de10532e5d25981f041003373a1417753cf1811b0eec7b247783",
+      "segmentSha256": "d4c7a2ddc66a87380ec7c3afe0ff798207fe40f846a11818d32bf66345c3f9c8",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "bulk-2",
+          "level": "text-trim",
+          "originalSha256": "a790ae93b2e5498becf7a4e37ea0c8ae98838fbc442e39b54117eb4002e5a23e",
+          "occurredAt": 482,
+          "droppedFields": [],
+          "omittedTextChars": 2096
+        },
+        {
+          "pointer": "bulk-1",
+          "level": "pointer-only",
+          "originalSha256": "1b43c1180eda41d5f0241ef8c8692f6d6535dc8aa5485dfb4111f9fd9bce84be",
+          "occurredAt": 481,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-0",
+          "level": "pointer-only",
+          "originalSha256": "c136f162918f2a70ce2b0e5bda7736652326a6f043c52bac43b5f31e3a5f2eaa",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "team-team_chatter-5",
+          "level": "pointer-only",
+          "originalSha256": "81bd9d64e7918588018521ec763d81ccd565aa68dfc9d8dd3790558819e3c74f",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-4",
+          "level": "pointer-only",
+          "originalSha256": "617b0cdc573ebe3fefe8a6daabc92284470a39ec450946293ee614ab587d26b9",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-3",
+          "level": "pointer-only",
+          "originalSha256": "6bbc3942d789e55633231f4f1fd10f0bead741b76cf99bf4f1de9aedf1dd3fd7",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-2",
+          "level": "pointer-only",
+          "originalSha256": "b987b8e388fe60addd2af248559a6902b7306bfc0e3ff94f1d6cb5ed7cee49f1",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-1",
+          "level": "pointer-only",
+          "originalSha256": "bc87bb7a42153f7d1b60897430c791224ea827aba0a09ec81ff8b386c6f231ac",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-0",
+          "level": "pointer-only",
+          "originalSha256": "e7836907a99a46bd60dd133ad73711c6fed8c103668ff62b32f24ab8c76b7b95",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [
+        "commitment_change_proposed"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/many-records.b96.obligation-first.memory.txt",
+        "sha256": "c4598feb7909de10532e5d25981f041003373a1417753cf1811b0eec7b247783",
+        "bytes": 286
+      }
+    },
+    {
+      "fixture": "many-records",
+      "budget": 192,
+      "selection": "raw-last12",
+      "units": 181,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 192,
+      "withinBudget": true,
+      "kept": 3,
+      "dropped": 6,
+      "suppressed": 0,
+      "blockBytes": 542,
+      "segmentBytes": 551,
+      "blockSha256": "60be87a20b71f8d340416490cf41b0c9fee791852f6a336b7eafde78f857108b",
+      "segmentSha256": "1b72051434f29342f6bec2501c6549eaa92ce9469d7aaf4b8de1401e64e78112",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "team-team_chatter-2",
+          "level": "omitted",
+          "originalSha256": "b987b8e388fe60addd2af248559a6902b7306bfc0e3ff94f1d6cb5ed7cee49f1",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-1",
+          "level": "omitted",
+          "originalSha256": "bc87bb7a42153f7d1b60897430c791224ea827aba0a09ec81ff8b386c6f231ac",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-0",
+          "level": "omitted",
+          "originalSha256": "e7836907a99a46bd60dd133ad73711c6fed8c103668ff62b32f24ab8c76b7b95",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "bulk-2",
+          "level": "omitted",
+          "originalSha256": "a790ae93b2e5498becf7a4e37ea0c8ae98838fbc442e39b54117eb4002e5a23e",
+          "occurredAt": 482,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-1",
+          "level": "omitted",
+          "originalSha256": "1b43c1180eda41d5f0241ef8c8692f6d6535dc8aa5485dfb4111f9fd9bce84be",
+          "occurredAt": 481,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-0",
+          "level": "omitted",
+          "originalSha256": "c136f162918f2a70ce2b0e5bda7736652326a6f043c52bac43b5f31e3a5f2eaa",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        }
+      ],
+      "kinds": [
+        "team_chatter",
+        "team_chatter",
+        "team_chatter"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/many-records.b192.raw-last12.memory.txt",
+        "sha256": "60be87a20b71f8d340416490cf41b0c9fee791852f6a336b7eafde78f857108b",
+        "bytes": 542
+      }
+    },
+    {
+      "fixture": "many-records",
+      "budget": 192,
+      "selection": "obligation-first",
+      "units": 161,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 192,
+      "withinBudget": true,
+      "kept": 3,
+      "dropped": 6,
+      "suppressed": 0,
+      "blockBytes": 481,
+      "segmentBytes": 490,
+      "blockSha256": "29814d9aea20fe721373b4059d7b7844420dc0fc8a1a05ec2402bcc8c6254b70",
+      "segmentSha256": "3365c4f314c961ef750b9ce1b9ebb31b74dc2bc9269e401bc7d553164002558f",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "bulk-0",
+          "level": "pointer-only",
+          "originalSha256": "c136f162918f2a70ce2b0e5bda7736652326a6f043c52bac43b5f31e3a5f2eaa",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-1",
+          "level": "pointer-only",
+          "originalSha256": "1b43c1180eda41d5f0241ef8c8692f6d6535dc8aa5485dfb4111f9fd9bce84be",
+          "occurredAt": 481,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-2",
+          "level": "pointer-only",
+          "originalSha256": "a790ae93b2e5498becf7a4e37ea0c8ae98838fbc442e39b54117eb4002e5a23e",
+          "occurredAt": 482,
+          "droppedFields": [
+            "text"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "team-team_chatter-5",
+          "level": "omitted",
+          "originalSha256": "81bd9d64e7918588018521ec763d81ccd565aa68dfc9d8dd3790558819e3c74f",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-4",
+          "level": "omitted",
+          "originalSha256": "617b0cdc573ebe3fefe8a6daabc92284470a39ec450946293ee614ab587d26b9",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-3",
+          "level": "omitted",
+          "originalSha256": "6bbc3942d789e55633231f4f1fd10f0bead741b76cf99bf4f1de9aedf1dd3fd7",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-2",
+          "level": "omitted",
+          "originalSha256": "b987b8e388fe60addd2af248559a6902b7306bfc0e3ff94f1d6cb5ed7cee49f1",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-1",
+          "level": "omitted",
+          "originalSha256": "bc87bb7a42153f7d1b60897430c791224ea827aba0a09ec81ff8b386c6f231ac",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-0",
+          "level": "omitted",
+          "originalSha256": "e7836907a99a46bd60dd133ad73711c6fed8c103668ff62b32f24ab8c76b7b95",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [
+        "commitment_change_proposed",
+        "commitment_change_proposed",
+        "commitment_change_proposed"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/many-records.b192.obligation-first.memory.txt",
+        "sha256": "29814d9aea20fe721373b4059d7b7844420dc0fc8a1a05ec2402bcc8c6254b70",
+        "bytes": 481
+      }
+    },
+    {
+      "fixture": "many-records",
+      "budget": 640,
+      "selection": "raw-last12",
+      "units": 634,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 640,
+      "withinBudget": true,
+      "kept": 9,
+      "dropped": 0,
+      "suppressed": 0,
+      "blockBytes": 1902,
+      "segmentBytes": 1911,
+      "blockSha256": "5208a94d0da2c08a8fca73f1105302e4a90d5c7cce129ff1fde992b4034b588e",
+      "segmentSha256": "9aa6a1e8d2184f4ff9f0556309ffaecf1d223c9b16a36a663aec201be9a1f1a1",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "bulk-0",
+          "level": "pointer-only",
+          "originalSha256": "c136f162918f2a70ce2b0e5bda7736652326a6f043c52bac43b5f31e3a5f2eaa",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-1",
+          "level": "pointer-only",
+          "originalSha256": "1b43c1180eda41d5f0241ef8c8692f6d6535dc8aa5485dfb4111f9fd9bce84be",
+          "occurredAt": 481,
+          "droppedFields": [
+            "text"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-2",
+          "level": "text-trim",
+          "originalSha256": "a790ae93b2e5498becf7a4e37ea0c8ae98838fbc442e39b54117eb4002e5a23e",
+          "occurredAt": 482,
+          "droppedFields": [],
+          "omittedTextChars": 2036
+        }
+      ],
+      "kinds": [
+        "commitment_change_proposed",
+        "commitment_change_proposed",
+        "commitment_change_proposed",
+        "team_chatter",
+        "team_chatter",
+        "team_chatter",
+        "team_chatter",
+        "team_chatter",
+        "team_chatter"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/many-records.b640.raw-last12.memory.txt",
+        "sha256": "5208a94d0da2c08a8fca73f1105302e4a90d5c7cce129ff1fde992b4034b588e",
+        "bytes": 1902
+      }
+    },
+    {
+      "fixture": "many-records",
+      "budget": 640,
+      "selection": "obligation-first",
+      "units": 612,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 640,
+      "withinBudget": true,
+      "kept": 5,
+      "dropped": 4,
+      "suppressed": 0,
+      "blockBytes": 1834,
+      "segmentBytes": 1843,
+      "blockSha256": "b4f8076f3e16a3f3d9ea876e9e0845c4e1c9610a33d4a072392f9fe7847de526",
+      "segmentSha256": "426b8ece902120e9abe4d0e248309a34a304019b73154bcc64cb2d174b94ce2f",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "bulk-0",
+          "level": "pointer-only",
+          "originalSha256": "c136f162918f2a70ce2b0e5bda7736652326a6f043c52bac43b5f31e3a5f2eaa",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text"
+          ],
+          "omittedTextChars": 2100
+        },
+        {
+          "pointer": "bulk-1",
+          "level": "text-trim",
+          "originalSha256": "1b43c1180eda41d5f0241ef8c8692f6d6535dc8aa5485dfb4111f9fd9bce84be",
+          "occurredAt": 481,
+          "droppedFields": [],
+          "omittedTextChars": 2084
+        },
+        {
+          "pointer": "bulk-2",
+          "level": "text-trim",
+          "originalSha256": "a790ae93b2e5498becf7a4e37ea0c8ae98838fbc442e39b54117eb4002e5a23e",
+          "occurredAt": 482,
+          "droppedFields": [],
+          "omittedTextChars": 1844
+        },
+        {
+          "pointer": "team-team_chatter-3",
+          "level": "omitted",
+          "originalSha256": "6bbc3942d789e55633231f4f1fd10f0bead741b76cf99bf4f1de9aedf1dd3fd7",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-2",
+          "level": "omitted",
+          "originalSha256": "b987b8e388fe60addd2af248559a6902b7306bfc0e3ff94f1d6cb5ed7cee49f1",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-1",
+          "level": "omitted",
+          "originalSha256": "bc87bb7a42153f7d1b60897430c791224ea827aba0a09ec81ff8b386c6f231ac",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "team-team_chatter-0",
+          "level": "omitted",
+          "originalSha256": "e7836907a99a46bd60dd133ad73711c6fed8c103668ff62b32f24ab8c76b7b95",
+          "occurredAt": 480,
+          "droppedFields": [
+            "index",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [
+        "commitment_change_proposed",
+        "commitment_change_proposed",
+        "commitment_change_proposed",
+        "team_chatter",
+        "team_chatter"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/many-records.b640.obligation-first.memory.txt",
+        "sha256": "b4f8076f3e16a3f3d9ea876e9e0845c4e1c9610a33d4a072392f9fe7847de526",
+        "bytes": 1834
+      }
+    },
+    {
+      "fixture": "shortage-with-notes",
+      "budget": 0,
+      "selection": "raw-last12",
+      "units": 0,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 0,
+      "withinBudget": true,
+      "kept": 0,
+      "dropped": 5,
+      "suppressed": 0,
+      "blockBytes": 0,
+      "segmentBytes": 0,
+      "blockSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "segmentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "cmt-commitment_accepted-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-1",
+          "level": "omitted",
+          "originalSha256": "22149c2383ea280840b70783b57c9d548370a88e7d2b789496e34fda873cf86c",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 20
+        },
+        {
+          "pointer": "cmt-commitment_proposed-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-0",
+          "level": "omitted",
+          "originalSha256": "26c43690db4a42980996c2141fc2f81422e148cb551cf0625f740ed9acbe1341",
+          "occurredAt": 480,
+          "droppedFields": [
+            "goal",
+            "conditions",
+            "deadline",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-2:out_of_stock:2",
+          "level": "omitted",
+          "originalSha256": "803efeb65605dd1c82381799edff84ce64da633eeba442564602e1845f85f6c8",
+          "occurredAt": 480,
+          "droppedFields": [
+            "available",
+            "wanted",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-1:stock_withdrawn:1",
+          "level": "omitted",
+          "originalSha256": "83ba4faa908da871ec867ffc3df46c1602e7f16289731b85ae55734276ebd957",
+          "occurredAt": 480,
+          "droppedFields": [
+            "carried",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "ev-move:moved:0",
+          "level": "omitted",
+          "originalSha256": "39d993710c63f47c76acb299d902f76f3668b9afc065748a1da5d036b62d1f76",
+          "occurredAt": 480,
+          "droppedFields": [
+            "to",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": null
+    },
+    {
+      "fixture": "shortage-with-notes",
+      "budget": 0,
+      "selection": "obligation-first",
+      "units": 0,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 0,
+      "withinBudget": true,
+      "kept": 0,
+      "dropped": 5,
+      "suppressed": 0,
+      "blockBytes": 0,
+      "segmentBytes": 0,
+      "blockSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "segmentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "cmt-commitment_accepted-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-1",
+          "level": "omitted",
+          "originalSha256": "22149c2383ea280840b70783b57c9d548370a88e7d2b789496e34fda873cf86c",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 20
+        },
+        {
+          "pointer": "cmt-commitment_proposed-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-0",
+          "level": "omitted",
+          "originalSha256": "26c43690db4a42980996c2141fc2f81422e148cb551cf0625f740ed9acbe1341",
+          "occurredAt": 480,
+          "droppedFields": [
+            "goal",
+            "conditions",
+            "deadline",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-2:out_of_stock:2",
+          "level": "omitted",
+          "originalSha256": "803efeb65605dd1c82381799edff84ce64da633eeba442564602e1845f85f6c8",
+          "occurredAt": 480,
+          "droppedFields": [
+            "available",
+            "wanted",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-1:stock_withdrawn:1",
+          "level": "omitted",
+          "originalSha256": "83ba4faa908da871ec867ffc3df46c1602e7f16289731b85ae55734276ebd957",
+          "occurredAt": 480,
+          "droppedFields": [
+            "carried",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "ev-move:moved:0",
+          "level": "omitted",
+          "originalSha256": "39d993710c63f47c76acb299d902f76f3668b9afc065748a1da5d036b62d1f76",
+          "occurredAt": 480,
+          "droppedFields": [
+            "to",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": null
+    },
+    {
+      "fixture": "shortage-with-notes",
+      "budget": 8,
+      "selection": "raw-last12",
+      "units": 0,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 8,
+      "withinBudget": true,
+      "kept": 0,
+      "dropped": 5,
+      "suppressed": 0,
+      "blockBytes": 0,
+      "segmentBytes": 0,
+      "blockSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "segmentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "cmt-commitment_accepted-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-1",
+          "level": "omitted",
+          "originalSha256": "22149c2383ea280840b70783b57c9d548370a88e7d2b789496e34fda873cf86c",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 20
+        },
+        {
+          "pointer": "cmt-commitment_proposed-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-0",
+          "level": "omitted",
+          "originalSha256": "26c43690db4a42980996c2141fc2f81422e148cb551cf0625f740ed9acbe1341",
+          "occurredAt": 480,
+          "droppedFields": [
+            "goal",
+            "conditions",
+            "deadline",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-2:out_of_stock:2",
+          "level": "omitted",
+          "originalSha256": "803efeb65605dd1c82381799edff84ce64da633eeba442564602e1845f85f6c8",
+          "occurredAt": 480,
+          "droppedFields": [
+            "available",
+            "wanted",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-1:stock_withdrawn:1",
+          "level": "omitted",
+          "originalSha256": "83ba4faa908da871ec867ffc3df46c1602e7f16289731b85ae55734276ebd957",
+          "occurredAt": 480,
+          "droppedFields": [
+            "carried",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "ev-move:moved:0",
+          "level": "omitted",
+          "originalSha256": "39d993710c63f47c76acb299d902f76f3668b9afc065748a1da5d036b62d1f76",
+          "occurredAt": 480,
+          "droppedFields": [
+            "to",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": null
+    },
+    {
+      "fixture": "shortage-with-notes",
+      "budget": 8,
+      "selection": "obligation-first",
+      "units": 0,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 8,
+      "withinBudget": true,
+      "kept": 0,
+      "dropped": 5,
+      "suppressed": 0,
+      "blockBytes": 0,
+      "segmentBytes": 0,
+      "blockSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "segmentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "cmt-commitment_accepted-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-1",
+          "level": "omitted",
+          "originalSha256": "22149c2383ea280840b70783b57c9d548370a88e7d2b789496e34fda873cf86c",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 20
+        },
+        {
+          "pointer": "cmt-commitment_proposed-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-0",
+          "level": "omitted",
+          "originalSha256": "26c43690db4a42980996c2141fc2f81422e148cb551cf0625f740ed9acbe1341",
+          "occurredAt": 480,
+          "droppedFields": [
+            "goal",
+            "conditions",
+            "deadline",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-2:out_of_stock:2",
+          "level": "omitted",
+          "originalSha256": "803efeb65605dd1c82381799edff84ce64da633eeba442564602e1845f85f6c8",
+          "occurredAt": 480,
+          "droppedFields": [
+            "available",
+            "wanted",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-1:stock_withdrawn:1",
+          "level": "omitted",
+          "originalSha256": "83ba4faa908da871ec867ffc3df46c1602e7f16289731b85ae55734276ebd957",
+          "occurredAt": 480,
+          "droppedFields": [
+            "carried",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "ev-move:moved:0",
+          "level": "omitted",
+          "originalSha256": "39d993710c63f47c76acb299d902f76f3668b9afc065748a1da5d036b62d1f76",
+          "occurredAt": 480,
+          "droppedFields": [
+            "to",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": null
+    },
+    {
+      "fixture": "shortage-with-notes",
+      "budget": 32,
+      "selection": "raw-last12",
+      "units": 31,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 32,
+      "withinBudget": true,
+      "kept": 1,
+      "dropped": 4,
+      "suppressed": 0,
+      "blockBytes": 92,
+      "segmentBytes": 101,
+      "blockSha256": "4cdb820c5bd9eb498376b834c09fd403d5da4b8de6b625270346469a96f593e4",
+      "segmentSha256": "f944c5801dc87f48f1d5ce03734747927a9753914c9069cc77c17c1b91543b79",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "ev-move:moved:0",
+          "level": "pointer-only",
+          "originalSha256": "39d993710c63f47c76acb299d902f76f3668b9afc065748a1da5d036b62d1f76",
+          "occurredAt": 480,
+          "droppedFields": [
+            "to",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "cmt-commitment_accepted-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-1",
+          "level": "omitted",
+          "originalSha256": "22149c2383ea280840b70783b57c9d548370a88e7d2b789496e34fda873cf86c",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 20
+        },
+        {
+          "pointer": "cmt-commitment_proposed-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-0",
+          "level": "omitted",
+          "originalSha256": "26c43690db4a42980996c2141fc2f81422e148cb551cf0625f740ed9acbe1341",
+          "occurredAt": 480,
+          "droppedFields": [
+            "goal",
+            "conditions",
+            "deadline",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-2:out_of_stock:2",
+          "level": "omitted",
+          "originalSha256": "803efeb65605dd1c82381799edff84ce64da633eeba442564602e1845f85f6c8",
+          "occurredAt": 480,
+          "droppedFields": [
+            "available",
+            "wanted",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-1:stock_withdrawn:1",
+          "level": "omitted",
+          "originalSha256": "83ba4faa908da871ec867ffc3df46c1602e7f16289731b85ae55734276ebd957",
+          "occurredAt": 480,
+          "droppedFields": [
+            "carried",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [
+        "moved"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/shortage-with-notes.b32.raw-last12.memory.txt",
+        "sha256": "4cdb820c5bd9eb498376b834c09fd403d5da4b8de6b625270346469a96f593e4",
+        "bytes": 92
+      }
+    },
+    {
+      "fixture": "shortage-with-notes",
+      "budget": 32,
+      "selection": "obligation-first",
+      "units": 31,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 32,
+      "withinBudget": true,
+      "kept": 1,
+      "dropped": 4,
+      "suppressed": 0,
+      "blockBytes": 92,
+      "segmentBytes": 101,
+      "blockSha256": "4cdb820c5bd9eb498376b834c09fd403d5da4b8de6b625270346469a96f593e4",
+      "segmentSha256": "f944c5801dc87f48f1d5ce03734747927a9753914c9069cc77c17c1b91543b79",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "ev-move:moved:0",
+          "level": "pointer-only",
+          "originalSha256": "39d993710c63f47c76acb299d902f76f3668b9afc065748a1da5d036b62d1f76",
+          "occurredAt": 480,
+          "droppedFields": [
+            "to",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "cmt-commitment_accepted-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-1",
+          "level": "omitted",
+          "originalSha256": "22149c2383ea280840b70783b57c9d548370a88e7d2b789496e34fda873cf86c",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 20
+        },
+        {
+          "pointer": "cmt-commitment_proposed-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-0",
+          "level": "omitted",
+          "originalSha256": "26c43690db4a42980996c2141fc2f81422e148cb551cf0625f740ed9acbe1341",
+          "occurredAt": 480,
+          "droppedFields": [
+            "goal",
+            "conditions",
+            "deadline",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-2:out_of_stock:2",
+          "level": "omitted",
+          "originalSha256": "803efeb65605dd1c82381799edff84ce64da633eeba442564602e1845f85f6c8",
+          "occurredAt": 480,
+          "droppedFields": [
+            "available",
+            "wanted",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-1:stock_withdrawn:1",
+          "level": "omitted",
+          "originalSha256": "83ba4faa908da871ec867ffc3df46c1602e7f16289731b85ae55734276ebd957",
+          "occurredAt": 480,
+          "droppedFields": [
+            "carried",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [
+        "moved"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/shortage-with-notes.b32.obligation-first.memory.txt",
+        "sha256": "4cdb820c5bd9eb498376b834c09fd403d5da4b8de6b625270346469a96f593e4",
+        "bytes": 92
+      }
+    },
+    {
+      "fixture": "shortage-with-notes",
+      "budget": 64,
+      "selection": "raw-last12",
+      "units": 63,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 64,
+      "withinBudget": true,
+      "kept": 1,
+      "dropped": 4,
+      "suppressed": 0,
+      "blockBytes": 187,
+      "segmentBytes": 196,
+      "blockSha256": "992739274a5729dd84984da3a7c6327e9dfd9c4f290a31f59944962c150088d2",
+      "segmentSha256": "8112c149b1855542ca8989c214254a23b721d2c4acdc217e0a202fc6b9e0d92f",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "cmt-commitment_accepted-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-1",
+          "level": "pointer-only",
+          "originalSha256": "22149c2383ea280840b70783b57c9d548370a88e7d2b789496e34fda873cf86c",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 20
+        },
+        {
+          "pointer": "cmt-commitment_proposed-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-0",
+          "level": "omitted",
+          "originalSha256": "26c43690db4a42980996c2141fc2f81422e148cb551cf0625f740ed9acbe1341",
+          "occurredAt": 480,
+          "droppedFields": [
+            "goal",
+            "conditions",
+            "deadline",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-2:out_of_stock:2",
+          "level": "omitted",
+          "originalSha256": "803efeb65605dd1c82381799edff84ce64da633eeba442564602e1845f85f6c8",
+          "occurredAt": 480,
+          "droppedFields": [
+            "available",
+            "wanted",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-1:stock_withdrawn:1",
+          "level": "omitted",
+          "originalSha256": "83ba4faa908da871ec867ffc3df46c1602e7f16289731b85ae55734276ebd957",
+          "occurredAt": 480,
+          "droppedFields": [
+            "carried",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "ev-move:moved:0",
+          "level": "omitted",
+          "originalSha256": "39d993710c63f47c76acb299d902f76f3668b9afc065748a1da5d036b62d1f76",
+          "occurredAt": 480,
+          "droppedFields": [
+            "to",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [
+        "commitment_accepted"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/shortage-with-notes.b64.raw-last12.memory.txt",
+        "sha256": "992739274a5729dd84984da3a7c6327e9dfd9c4f290a31f59944962c150088d2",
+        "bytes": 187
+      }
+    },
+    {
+      "fixture": "shortage-with-notes",
+      "budget": 64,
+      "selection": "obligation-first",
+      "units": 63,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 64,
+      "withinBudget": true,
+      "kept": 1,
+      "dropped": 4,
+      "suppressed": 0,
+      "blockBytes": 187,
+      "segmentBytes": 196,
+      "blockSha256": "992739274a5729dd84984da3a7c6327e9dfd9c4f290a31f59944962c150088d2",
+      "segmentSha256": "8112c149b1855542ca8989c214254a23b721d2c4acdc217e0a202fc6b9e0d92f",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "cmt-commitment_accepted-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-1",
+          "level": "pointer-only",
+          "originalSha256": "22149c2383ea280840b70783b57c9d548370a88e7d2b789496e34fda873cf86c",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 20
+        },
+        {
+          "pointer": "cmt-commitment_proposed-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-0",
+          "level": "omitted",
+          "originalSha256": "26c43690db4a42980996c2141fc2f81422e148cb551cf0625f740ed9acbe1341",
+          "occurredAt": 480,
+          "droppedFields": [
+            "goal",
+            "conditions",
+            "deadline",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-2:out_of_stock:2",
+          "level": "omitted",
+          "originalSha256": "803efeb65605dd1c82381799edff84ce64da633eeba442564602e1845f85f6c8",
+          "occurredAt": 480,
+          "droppedFields": [
+            "available",
+            "wanted",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-1:stock_withdrawn:1",
+          "level": "omitted",
+          "originalSha256": "83ba4faa908da871ec867ffc3df46c1602e7f16289731b85ae55734276ebd957",
+          "occurredAt": 480,
+          "droppedFields": [
+            "carried",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "ev-move:moved:0",
+          "level": "omitted",
+          "originalSha256": "39d993710c63f47c76acb299d902f76f3668b9afc065748a1da5d036b62d1f76",
+          "occurredAt": 480,
+          "droppedFields": [
+            "to",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [
+        "commitment_accepted"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/shortage-with-notes.b64.obligation-first.memory.txt",
+        "sha256": "992739274a5729dd84984da3a7c6327e9dfd9c4f290a31f59944962c150088d2",
+        "bytes": 187
+      }
+    },
+    {
+      "fixture": "shortage-with-notes",
+      "budget": 96,
+      "selection": "raw-last12",
+      "units": 86,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 96,
+      "withinBudget": true,
+      "kept": 1,
+      "dropped": 4,
+      "suppressed": 0,
+      "blockBytes": 257,
+      "segmentBytes": 266,
+      "blockSha256": "feb5be483fc92734e4237a587f3f6fdd21df7bb583579987afeddb434222494d",
+      "segmentSha256": "fdef21d62abb3905dbe99459664804049f4cd116b6516211b0ae94b7024800a8",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "cmt-commitment_accepted-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-1",
+          "level": "pointer-only",
+          "originalSha256": "22149c2383ea280840b70783b57c9d548370a88e7d2b789496e34fda873cf86c",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text"
+          ],
+          "omittedTextChars": 20
+        },
+        {
+          "pointer": "cmt-commitment_proposed-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-0",
+          "level": "omitted",
+          "originalSha256": "26c43690db4a42980996c2141fc2f81422e148cb551cf0625f740ed9acbe1341",
+          "occurredAt": 480,
+          "droppedFields": [
+            "goal",
+            "conditions",
+            "deadline",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-2:out_of_stock:2",
+          "level": "omitted",
+          "originalSha256": "803efeb65605dd1c82381799edff84ce64da633eeba442564602e1845f85f6c8",
+          "occurredAt": 480,
+          "droppedFields": [
+            "available",
+            "wanted",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-1:stock_withdrawn:1",
+          "level": "omitted",
+          "originalSha256": "83ba4faa908da871ec867ffc3df46c1602e7f16289731b85ae55734276ebd957",
+          "occurredAt": 480,
+          "droppedFields": [
+            "carried",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "ev-move:moved:0",
+          "level": "omitted",
+          "originalSha256": "39d993710c63f47c76acb299d902f76f3668b9afc065748a1da5d036b62d1f76",
+          "occurredAt": 480,
+          "droppedFields": [
+            "to",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [
+        "commitment_accepted"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/shortage-with-notes.b96.raw-last12.memory.txt",
+        "sha256": "feb5be483fc92734e4237a587f3f6fdd21df7bb583579987afeddb434222494d",
+        "bytes": 257
+      }
+    },
+    {
+      "fixture": "shortage-with-notes",
+      "budget": 96,
+      "selection": "obligation-first",
+      "units": 86,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 96,
+      "withinBudget": true,
+      "kept": 1,
+      "dropped": 4,
+      "suppressed": 0,
+      "blockBytes": 257,
+      "segmentBytes": 266,
+      "blockSha256": "feb5be483fc92734e4237a587f3f6fdd21df7bb583579987afeddb434222494d",
+      "segmentSha256": "fdef21d62abb3905dbe99459664804049f4cd116b6516211b0ae94b7024800a8",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "cmt-commitment_accepted-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-1",
+          "level": "pointer-only",
+          "originalSha256": "22149c2383ea280840b70783b57c9d548370a88e7d2b789496e34fda873cf86c",
+          "occurredAt": 480,
+          "droppedFields": [
+            "text"
+          ],
+          "omittedTextChars": 20
+        },
+        {
+          "pointer": "cmt-commitment_proposed-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-0",
+          "level": "omitted",
+          "originalSha256": "26c43690db4a42980996c2141fc2f81422e148cb551cf0625f740ed9acbe1341",
+          "occurredAt": 480,
+          "droppedFields": [
+            "goal",
+            "conditions",
+            "deadline",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-2:out_of_stock:2",
+          "level": "omitted",
+          "originalSha256": "803efeb65605dd1c82381799edff84ce64da633eeba442564602e1845f85f6c8",
+          "occurredAt": 480,
+          "droppedFields": [
+            "available",
+            "wanted",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-1:stock_withdrawn:1",
+          "level": "omitted",
+          "originalSha256": "83ba4faa908da871ec867ffc3df46c1602e7f16289731b85ae55734276ebd957",
+          "occurredAt": 480,
+          "droppedFields": [
+            "carried",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "ev-move:moved:0",
+          "level": "omitted",
+          "originalSha256": "39d993710c63f47c76acb299d902f76f3668b9afc065748a1da5d036b62d1f76",
+          "occurredAt": 480,
+          "droppedFields": [
+            "to",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [
+        "commitment_accepted"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/shortage-with-notes.b96.obligation-first.memory.txt",
+        "sha256": "feb5be483fc92734e4237a587f3f6fdd21df7bb583579987afeddb434222494d",
+        "bytes": 257
+      }
+    },
+    {
+      "fixture": "shortage-with-notes",
+      "budget": 192,
+      "selection": "raw-last12",
+      "units": 188,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 192,
+      "withinBudget": true,
+      "kept": 2,
+      "dropped": 3,
+      "suppressed": 0,
+      "blockBytes": 562,
+      "segmentBytes": 571,
+      "blockSha256": "1280c9a596cb838d36dd6fe69bb8b702acf9fb0e435acd0054f15bbd5f9a2464",
+      "segmentSha256": "f6c752b49babfa2c90f9db521075700f79a956f19dd553147248ca2eba515ee6",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "npc_01-ev-withdraw-2:out_of_stock:2",
+          "level": "pointer-only",
+          "originalSha256": "803efeb65605dd1c82381799edff84ce64da633eeba442564602e1845f85f6c8",
+          "occurredAt": 480,
+          "droppedFields": [
+            "available",
+            "wanted",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "cmt-commitment_proposed-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-0",
+          "level": "omitted",
+          "originalSha256": "26c43690db4a42980996c2141fc2f81422e148cb551cf0625f740ed9acbe1341",
+          "occurredAt": 480,
+          "droppedFields": [
+            "goal",
+            "conditions",
+            "deadline",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-1:stock_withdrawn:1",
+          "level": "omitted",
+          "originalSha256": "83ba4faa908da871ec867ffc3df46c1602e7f16289731b85ae55734276ebd957",
+          "occurredAt": 480,
+          "droppedFields": [
+            "carried",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "ev-move:moved:0",
+          "level": "omitted",
+          "originalSha256": "39d993710c63f47c76acb299d902f76f3668b9afc065748a1da5d036b62d1f76",
+          "occurredAt": 480,
+          "droppedFields": [
+            "to",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [
+        "out_of_stock",
+        "commitment_accepted"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/shortage-with-notes.b192.raw-last12.memory.txt",
+        "sha256": "1280c9a596cb838d36dd6fe69bb8b702acf9fb0e435acd0054f15bbd5f9a2464",
+        "bytes": 562
+      }
+    },
+    {
+      "fixture": "shortage-with-notes",
+      "budget": 192,
+      "selection": "obligation-first",
+      "units": 188,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 192,
+      "withinBudget": true,
+      "kept": 2,
+      "dropped": 3,
+      "suppressed": 0,
+      "blockBytes": 562,
+      "segmentBytes": 571,
+      "blockSha256": "1280c9a596cb838d36dd6fe69bb8b702acf9fb0e435acd0054f15bbd5f9a2464",
+      "segmentSha256": "f6c752b49babfa2c90f9db521075700f79a956f19dd553147248ca2eba515ee6",
+      "truncated": true,
+      "trims": [
+        {
+          "pointer": "npc_01-ev-withdraw-2:out_of_stock:2",
+          "level": "pointer-only",
+          "originalSha256": "803efeb65605dd1c82381799edff84ce64da633eeba442564602e1845f85f6c8",
+          "occurredAt": 480,
+          "droppedFields": [
+            "available",
+            "wanted",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "cmt-commitment_proposed-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-0",
+          "level": "omitted",
+          "originalSha256": "26c43690db4a42980996c2141fc2f81422e148cb551cf0625f740ed9acbe1341",
+          "occurredAt": 480,
+          "droppedFields": [
+            "goal",
+            "conditions",
+            "deadline",
+            "occurredAt",
+            "commitmentId",
+            "revision"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "npc_01-ev-withdraw-1:stock_withdrawn:1",
+          "level": "omitted",
+          "originalSha256": "83ba4faa908da871ec867ffc3df46c1602e7f16289731b85ae55734276ebd957",
+          "occurredAt": 480,
+          "droppedFields": [
+            "carried",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        },
+        {
+          "pointer": "ev-move:moved:0",
+          "level": "omitted",
+          "originalSha256": "39d993710c63f47c76acb299d902f76f3668b9afc065748a1da5d036b62d1f76",
+          "occurredAt": 480,
+          "droppedFields": [
+            "to",
+            "occurredAt"
+          ],
+          "omittedTextChars": 0
+        }
+      ],
+      "kinds": [
+        "out_of_stock",
+        "commitment_accepted"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/shortage-with-notes.b192.obligation-first.memory.txt",
+        "sha256": "1280c9a596cb838d36dd6fe69bb8b702acf9fb0e435acd0054f15bbd5f9a2464",
+        "bytes": 562
+      }
+    },
+    {
+      "fixture": "shortage-with-notes",
+      "budget": 640,
+      "selection": "raw-last12",
+      "units": 525,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 640,
+      "withinBudget": true,
+      "kept": 5,
+      "dropped": 0,
+      "suppressed": 0,
+      "blockBytes": 1573,
+      "segmentBytes": 1582,
+      "blockSha256": "a7084d5dcd6620417a3c277eb140e184ac364e20b6eff97b4c1c26f26136edd7",
+      "segmentSha256": "3d8eb42eaaf044d54a3113e42d3486176a1aaafa056d8a2a8fbd356902741270",
+      "truncated": false,
+      "trims": [],
+      "kinds": [
+        "moved",
+        "stock_withdrawn",
+        "out_of_stock",
+        "commitment_proposed",
+        "commitment_accepted"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/shortage-with-notes.b640.raw-last12.memory.txt",
+        "sha256": "a7084d5dcd6620417a3c277eb140e184ac364e20b6eff97b4c1c26f26136edd7",
+        "bytes": 1573
+      }
+    },
+    {
+      "fixture": "shortage-with-notes",
+      "budget": 640,
+      "selection": "obligation-first",
+      "units": 525,
+      "unitId": "utf8-bytes/3-ceil/1",
+      "unitKind": "estimated-token",
+      "budgetUnits": 640,
+      "withinBudget": true,
+      "kept": 5,
+      "dropped": 0,
+      "suppressed": 0,
+      "blockBytes": 1573,
+      "segmentBytes": 1582,
+      "blockSha256": "a7084d5dcd6620417a3c277eb140e184ac364e20b6eff97b4c1c26f26136edd7",
+      "segmentSha256": "3d8eb42eaaf044d54a3113e42d3486176a1aaafa056d8a2a8fbd356902741270",
+      "truncated": false,
+      "trims": [],
+      "kinds": [
+        "moved",
+        "stock_withdrawn",
+        "out_of_stock",
+        "commitment_proposed",
+        "commitment_accepted"
+      ],
+      "encoder": {
+        "id": null,
+        "tokens": null,
+        "status": "not-attached"
+      },
+      "text": {
+        "file": "texts/shortage-with-notes.b640.obligation-first.memory.txt",
+        "sha256": "a7084d5dcd6620417a3c277eb140e184ac364e20b6eff97b4c1c26f26136edd7",
+        "bytes": 1573
+      }
+    }
+  ],
+  "steps": [
+    {
+      "fixture": "oversized-single",
+      "selection": "raw-last12",
+      "actorId": "npc_01",
+      "projectionId": "memory-projection/2",
+      "input": {
+        "bytes": 1779,
+        "sha256": "62f2ae3e33221769f771ca37a997847af4442389ef145c36ce62914757108a29",
+        "file": "texts/oversized-single.raw-last12.input.txt"
+      },
+      "inputSha256Recorded": "b2719e5ba696329f3b026eea81506b2ea348353883bd1f317f6110a40623b770",
+      "renderSha256Recorded": "62f2ae3e33221769f771ca37a997847af4442389ef145c36ce62914757108a29",
+      "memory": {
+        "units": 353,
+        "unitId": "utf8-bytes/3-ceil/1",
+        "unitKind": "estimated-token",
+        "budget": 640,
+        "bytes": 1057,
+        "kept": 1,
+        "dropped": 0,
+        "blockSha256": "4bdeef8f35e1252fcf4e0cca4d148b152363c495b6769fc26b921c2d3a677692",
+        "segmentSha256": "2db972ff743af2976cd7a6b476ad849262ccef261a3acda6053dd39b533dd220",
+        "segmentBytes": 1066,
+        "encoderId": null,
+        "encoderTokens": null,
+        "encoderStatus": "not-attached",
+        "truncated": true,
+        "trims": [
+          {
+            "pointer": "large-realistic-commitment",
+            "level": "text-trim",
+            "droppedFields": []
+          }
+        ],
+        "cursor": {
+          "records": 1,
+          "keptRecords": 1,
+          "lastRecordId": "m-f417cda1ea8ccb1c",
+          "lastObservedAt": 480
+        }
+      },
+      "agreesWithRender": true,
+      "renderer": "joint-c-action/2",
+      "segmentBytes": 1066
+    },
+    {
+      "fixture": "oversized-single",
+      "selection": "obligation-first",
+      "actorId": "npc_01",
+      "projectionId": "memory-projection/2",
+      "input": {
+        "bytes": 1779,
+        "sha256": "62f2ae3e33221769f771ca37a997847af4442389ef145c36ce62914757108a29",
+        "file": "texts/oversized-single.obligation-first.input.txt"
+      },
+      "inputSha256Recorded": "374a92c6395e55fddc029692d3eab6bbaba96503dd7f57daac5118573b6aa5b3",
+      "renderSha256Recorded": "62f2ae3e33221769f771ca37a997847af4442389ef145c36ce62914757108a29",
+      "memory": {
+        "units": 353,
+        "unitId": "utf8-bytes/3-ceil/1",
+        "unitKind": "estimated-token",
+        "budget": 640,
+        "bytes": 1057,
+        "kept": 1,
+        "dropped": 0,
+        "blockSha256": "4bdeef8f35e1252fcf4e0cca4d148b152363c495b6769fc26b921c2d3a677692",
+        "segmentSha256": "2db972ff743af2976cd7a6b476ad849262ccef261a3acda6053dd39b533dd220",
+        "segmentBytes": 1066,
+        "encoderId": null,
+        "encoderTokens": null,
+        "encoderStatus": "not-attached",
+        "truncated": true,
+        "trims": [
+          {
+            "pointer": "large-realistic-commitment",
+            "level": "text-trim",
+            "droppedFields": []
+          }
+        ],
+        "cursor": {
+          "records": 1,
+          "keptRecords": 1,
+          "lastRecordId": "m-f417cda1ea8ccb1c",
+          "lastObservedAt": 480
+        }
+      },
+      "agreesWithRender": true,
+      "renderer": "joint-c-action/2",
+      "segmentBytes": 1066
+    },
+    {
+      "fixture": "many-records",
+      "selection": "raw-last12",
+      "actorId": "npc_01",
+      "projectionId": "memory-projection/2",
+      "input": {
+        "bytes": 2624,
+        "sha256": "f849dd66dcecabe824f05eb1711540a185a673dd43d8b8136ff43aedc3882a46",
+        "file": "texts/many-records.raw-last12.input.txt"
+      },
+      "inputSha256Recorded": "0a71a0106a61d720b330f88fd1040be1f8479930bdf4ffbe4e9e9ba762cf31b8",
+      "renderSha256Recorded": "f849dd66dcecabe824f05eb1711540a185a673dd43d8b8136ff43aedc3882a46",
+      "memory": {
+        "units": 634,
+        "unitId": "utf8-bytes/3-ceil/1",
+        "unitKind": "estimated-token",
+        "budget": 640,
+        "bytes": 1902,
+        "kept": 9,
+        "dropped": 0,
+        "blockSha256": "5208a94d0da2c08a8fca73f1105302e4a90d5c7cce129ff1fde992b4034b588e",
+        "segmentSha256": "9aa6a1e8d2184f4ff9f0556309ffaecf1d223c9b16a36a663aec201be9a1f1a1",
+        "segmentBytes": 1911,
+        "encoderId": null,
+        "encoderTokens": null,
+        "encoderStatus": "not-attached",
+        "truncated": true,
+        "trims": [
+          {
+            "pointer": "bulk-0",
+            "level": "pointer-only",
+            "droppedFields": [
+              "text"
+            ]
+          },
+          {
+            "pointer": "bulk-1",
+            "level": "pointer-only",
+            "droppedFields": [
+              "text"
+            ]
+          },
+          {
+            "pointer": "bulk-2",
+            "level": "text-trim",
+            "droppedFields": []
+          }
+        ],
+        "cursor": {
+          "records": 9,
+          "keptRecords": 9,
+          "lastRecordId": "m-26a392f775f49e96",
+          "lastObservedAt": 480
+        }
+      },
+      "agreesWithRender": true,
+      "renderer": "joint-c-action/2",
+      "segmentBytes": 1911
+    },
+    {
+      "fixture": "many-records",
+      "selection": "obligation-first",
+      "actorId": "npc_01",
+      "projectionId": "memory-projection/2",
+      "input": {
+        "bytes": 2556,
+        "sha256": "5726c123ffcab3053331d374d166cdf56d516dab40d89dc0fcb8ff20a7cad73c",
+        "file": "texts/many-records.obligation-first.input.txt"
+      },
+      "inputSha256Recorded": "01fa140cd6f61a89cbb5d0929e5178c83c28bf2c1ad120f3691143ce9e1c235e",
+      "renderSha256Recorded": "5726c123ffcab3053331d374d166cdf56d516dab40d89dc0fcb8ff20a7cad73c",
+      "memory": {
+        "units": 612,
+        "unitId": "utf8-bytes/3-ceil/1",
+        "unitKind": "estimated-token",
+        "budget": 640,
+        "bytes": 1834,
+        "kept": 5,
+        "dropped": 4,
+        "blockSha256": "b4f8076f3e16a3f3d9ea876e9e0845c4e1c9610a33d4a072392f9fe7847de526",
+        "segmentSha256": "426b8ece902120e9abe4d0e248309a34a304019b73154bcc64cb2d174b94ce2f",
+        "segmentBytes": 1843,
+        "encoderId": null,
+        "encoderTokens": null,
+        "encoderStatus": "not-attached",
+        "truncated": true,
+        "trims": [
+          {
+            "pointer": "bulk-0",
+            "level": "pointer-only",
+            "droppedFields": [
+              "text"
+            ]
+          },
+          {
+            "pointer": "bulk-1",
+            "level": "text-trim",
+            "droppedFields": []
+          },
+          {
+            "pointer": "bulk-2",
+            "level": "text-trim",
+            "droppedFields": []
+          },
+          {
+            "pointer": "team-team_chatter-3",
+            "level": "omitted",
+            "droppedFields": [
+              "index",
+              "occurredAt"
+            ]
+          },
+          {
+            "pointer": "team-team_chatter-2",
+            "level": "omitted",
+            "droppedFields": [
+              "index",
+              "occurredAt"
+            ]
+          },
+          {
+            "pointer": "team-team_chatter-1",
+            "level": "omitted",
+            "droppedFields": [
+              "index",
+              "occurredAt"
+            ]
+          },
+          {
+            "pointer": "team-team_chatter-0",
+            "level": "omitted",
+            "droppedFields": [
+              "index",
+              "occurredAt"
+            ]
+          }
+        ],
+        "cursor": {
+          "records": 9,
+          "keptRecords": 5,
+          "lastRecordId": "m-26a392f775f49e96",
+          "lastObservedAt": 480
+        }
+      },
+      "agreesWithRender": true,
+      "renderer": "joint-c-action/2",
+      "segmentBytes": 1843
+    },
+    {
+      "fixture": "shortage-with-notes",
+      "selection": "raw-last12",
+      "actorId": "npc_01",
+      "projectionId": "memory-projection/2",
+      "input": {
+        "bytes": 2640,
+        "sha256": "82bc4b97cf35f858b5fb345bcf9dce80f8405ebfdf881b6c5e737e929ac46be7",
+        "file": "texts/shortage-with-notes.raw-last12.input.txt"
+      },
+      "inputSha256Recorded": "ac6173e1bbe2a29bbc91cfd2d9ce88c99f4e0399869fa3327dbb64639f5903ce",
+      "renderSha256Recorded": "82bc4b97cf35f858b5fb345bcf9dce80f8405ebfdf881b6c5e737e929ac46be7",
+      "memory": {
+        "units": 448,
+        "unitId": "utf8-bytes/3-ceil/1",
+        "unitKind": "estimated-token",
+        "budget": 640,
+        "bytes": 1343,
+        "kept": 4,
+        "dropped": 0,
+        "blockSha256": "d29d25f3a0844427c72d2dffa8b535c51f36c3e9c39d4538574a652e0d1be391",
+        "segmentSha256": "1a8c879f533724ad83ab2a02659f0a4dc10bd60eb293d53e5ba18e3f4451a1f6",
+        "segmentBytes": 1352,
+        "encoderId": null,
+        "encoderTokens": null,
+        "encoderStatus": "not-attached",
+        "truncated": false,
+        "trims": [],
+        "cursor": {
+          "records": 5,
+          "keptRecords": 4,
+          "lastRecordId": "m-4baf884d36136cfb",
+          "lastObservedAt": 480
+        }
+      },
+      "agreesWithRender": true,
+      "renderer": "joint-c-action/2",
+      "segmentBytes": 1352
+    },
+    {
+      "fixture": "shortage-with-notes",
+      "selection": "obligation-first",
+      "actorId": "npc_01",
+      "projectionId": "memory-projection/2",
+      "input": {
+        "bytes": 2640,
+        "sha256": "82bc4b97cf35f858b5fb345bcf9dce80f8405ebfdf881b6c5e737e929ac46be7",
+        "file": "texts/shortage-with-notes.obligation-first.input.txt"
+      },
+      "inputSha256Recorded": "c711b5cf374c39934e74a9e6684f493c651f8e37667b8a62cc81566c5aa24f7c",
+      "renderSha256Recorded": "82bc4b97cf35f858b5fb345bcf9dce80f8405ebfdf881b6c5e737e929ac46be7",
+      "memory": {
+        "units": 448,
+        "unitId": "utf8-bytes/3-ceil/1",
+        "unitKind": "estimated-token",
+        "budget": 640,
+        "bytes": 1343,
+        "kept": 4,
+        "dropped": 0,
+        "blockSha256": "d29d25f3a0844427c72d2dffa8b535c51f36c3e9c39d4538574a652e0d1be391",
+        "segmentSha256": "1a8c879f533724ad83ab2a02659f0a4dc10bd60eb293d53e5ba18e3f4451a1f6",
+        "segmentBytes": 1352,
+        "encoderId": null,
+        "encoderTokens": null,
+        "encoderStatus": "not-attached",
+        "truncated": false,
+        "trims": [],
+        "cursor": {
+          "records": 5,
+          "keptRecords": 4,
+          "lastRecordId": "m-4baf884d36136cfb",
+          "lastObservedAt": 480
+        }
+      },
+      "agreesWithRender": true,
+      "renderer": "joint-c-action/2",
+      "segmentBytes": 1352
+    }
+  ],
+  "texts": [
+    {
+      "file": "texts/oversized-single.b64.raw-last12.memory.txt",
+      "sha256": "318d433c4035616490254b0f34efd08f147d164ee48a6b5d0f92347f3dfcf0e6",
+      "bytes": 182
+    },
+    {
+      "file": "texts/oversized-single.b64.obligation-first.memory.txt",
+      "sha256": "318d433c4035616490254b0f34efd08f147d164ee48a6b5d0f92347f3dfcf0e6",
+      "bytes": 182
+    },
+    {
+      "file": "texts/oversized-single.b96.raw-last12.memory.txt",
+      "sha256": "c6b2947b3aeebae5576d0e4297f6693fef5ee8a7cd4fcd083e2a81d71a1de00c",
+      "bytes": 195
+    },
+    {
+      "file": "texts/oversized-single.b96.obligation-first.memory.txt",
+      "sha256": "c6b2947b3aeebae5576d0e4297f6693fef5ee8a7cd4fcd083e2a81d71a1de00c",
+      "bytes": 195
+    },
+    {
+      "file": "texts/oversized-single.b192.raw-last12.memory.txt",
+      "sha256": "7864ca7c543b689e74da8324f28837c76f82ed3ba8879eeb47a6c66d7a471605",
+      "bytes": 481
+    },
+    {
+      "file": "texts/oversized-single.b192.obligation-first.memory.txt",
+      "sha256": "7864ca7c543b689e74da8324f28837c76f82ed3ba8879eeb47a6c66d7a471605",
+      "bytes": 481
+    },
+    {
+      "file": "texts/oversized-single.b640.raw-last12.memory.txt",
+      "sha256": "4bdeef8f35e1252fcf4e0cca4d148b152363c495b6769fc26b921c2d3a677692",
+      "bytes": 1057
+    },
+    {
+      "file": "texts/oversized-single.b640.obligation-first.memory.txt",
+      "sha256": "4bdeef8f35e1252fcf4e0cca4d148b152363c495b6769fc26b921c2d3a677692",
+      "bytes": 1057
+    },
+    {
+      "file": "texts/many-records.b64.raw-last12.memory.txt",
+      "sha256": "d5733fdfa268935b04d68903e6386bb199bd6aa86c0572aa4a02a19ab7b027d8",
+      "bytes": 180
+    },
+    {
+      "file": "texts/many-records.b64.obligation-first.memory.txt",
+      "sha256": "a7f41112a80b7878a11f162b72d69083c6d205c74ac682d5e8e9f5ac89a38f4b",
+      "bytes": 182
+    },
+    {
+      "file": "texts/many-records.b96.raw-last12.memory.txt",
+      "sha256": "c85bc30fe1c2e158725eabe99c17c3b3fe103b3957b9a758fe310aa24fbd2bf8",
+      "bytes": 286
+    },
+    {
+      "file": "texts/many-records.b96.obligation-first.memory.txt",
+      "sha256": "c4598feb7909de10532e5d25981f041003373a1417753cf1811b0eec7b247783",
+      "bytes": 286
+    },
+    {
+      "file": "texts/many-records.b192.raw-last12.memory.txt",
+      "sha256": "60be87a20b71f8d340416490cf41b0c9fee791852f6a336b7eafde78f857108b",
+      "bytes": 542
+    },
+    {
+      "file": "texts/many-records.b192.obligation-first.memory.txt",
+      "sha256": "29814d9aea20fe721373b4059d7b7844420dc0fc8a1a05ec2402bcc8c6254b70",
+      "bytes": 481
+    },
+    {
+      "file": "texts/many-records.b640.raw-last12.memory.txt",
+      "sha256": "5208a94d0da2c08a8fca73f1105302e4a90d5c7cce129ff1fde992b4034b588e",
+      "bytes": 1902
+    },
+    {
+      "file": "texts/many-records.b640.obligation-first.memory.txt",
+      "sha256": "b4f8076f3e16a3f3d9ea876e9e0845c4e1c9610a33d4a072392f9fe7847de526",
+      "bytes": 1834
+    },
+    {
+      "file": "texts/shortage-with-notes.b32.raw-last12.memory.txt",
+      "sha256": "4cdb820c5bd9eb498376b834c09fd403d5da4b8de6b625270346469a96f593e4",
+      "bytes": 92
+    },
+    {
+      "file": "texts/shortage-with-notes.b32.obligation-first.memory.txt",
+      "sha256": "4cdb820c5bd9eb498376b834c09fd403d5da4b8de6b625270346469a96f593e4",
+      "bytes": 92
+    },
+    {
+      "file": "texts/shortage-with-notes.b64.raw-last12.memory.txt",
+      "sha256": "992739274a5729dd84984da3a7c6327e9dfd9c4f290a31f59944962c150088d2",
+      "bytes": 187
+    },
+    {
+      "file": "texts/shortage-with-notes.b64.obligation-first.memory.txt",
+      "sha256": "992739274a5729dd84984da3a7c6327e9dfd9c4f290a31f59944962c150088d2",
+      "bytes": 187
+    },
+    {
+      "file": "texts/shortage-with-notes.b96.raw-last12.memory.txt",
+      "sha256": "feb5be483fc92734e4237a587f3f6fdd21df7bb583579987afeddb434222494d",
+      "bytes": 257
+    },
+    {
+      "file": "texts/shortage-with-notes.b96.obligation-first.memory.txt",
+      "sha256": "feb5be483fc92734e4237a587f3f6fdd21df7bb583579987afeddb434222494d",
+      "bytes": 257
+    },
+    {
+      "file": "texts/shortage-with-notes.b192.raw-last12.memory.txt",
+      "sha256": "1280c9a596cb838d36dd6fe69bb8b702acf9fb0e435acd0054f15bbd5f9a2464",
+      "bytes": 562
+    },
+    {
+      "file": "texts/shortage-with-notes.b192.obligation-first.memory.txt",
+      "sha256": "1280c9a596cb838d36dd6fe69bb8b702acf9fb0e435acd0054f15bbd5f9a2464",
+      "bytes": 562
+    },
+    {
+      "file": "texts/shortage-with-notes.b640.raw-last12.memory.txt",
+      "sha256": "a7084d5dcd6620417a3c277eb140e184ac364e20b6eff97b4c1c26f26136edd7",
+      "bytes": 1573
+    },
+    {
+      "file": "texts/shortage-with-notes.b640.obligation-first.memory.txt",
+      "sha256": "a7084d5dcd6620417a3c277eb140e184ac364e20b6eff97b4c1c26f26136edd7",
+      "bytes": 1573
+    },
+    {
+      "file": "texts/oversized-single.raw-last12.input.txt",
+      "sha256": "62f2ae3e33221769f771ca37a997847af4442389ef145c36ce62914757108a29",
+      "bytes": 1779
+    },
+    {
+      "file": "texts/oversized-single.obligation-first.input.txt",
+      "sha256": "62f2ae3e33221769f771ca37a997847af4442389ef145c36ce62914757108a29",
+      "bytes": 1779
+    },
+    {
+      "file": "texts/many-records.raw-last12.input.txt",
+      "sha256": "f849dd66dcecabe824f05eb1711540a185a673dd43d8b8136ff43aedc3882a46",
+      "bytes": 2624
+    },
+    {
+      "file": "texts/many-records.obligation-first.input.txt",
+      "sha256": "5726c123ffcab3053331d374d166cdf56d516dab40d89dc0fcb8ff20a7cad73c",
+      "bytes": 2556
+    },
+    {
+      "file": "texts/shortage-with-notes.raw-last12.input.txt",
+      "sha256": "82bc4b97cf35f858b5fb345bcf9dce80f8405ebfdf881b6c5e737e929ac46be7",
+      "bytes": 2640
+    },
+    {
+      "file": "texts/shortage-with-notes.obligation-first.input.txt",
+      "sha256": "82bc4b97cf35f858b5fb345bcf9dce80f8405ebfdf881b6c5e737e929ac46be7",
+      "bytes": 2640
+    }
+  ]
+}

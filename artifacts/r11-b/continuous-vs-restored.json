@@ -1,0 +1,18 @@
+{
+  "schema": "frostecho.r11b.continuous-vs-restored/1",
+  "continuous": {
+    "dir": "/tmp/r11b-final-cont",
+    "decisions": 318
+  },
+  "restored": {
+    "dir": "/tmp/r11b-final-split",
+    "decisions": 136
+  },
+  "memoryDecisionsCompared": 120,
+  "counts": {
+    "identical": 120
+  },
+  "allIdentical": true,
+  "note": "Compared on (actorId, world clock, requestId): the same decision, made in a different process after a D2 save. Only the memory fields are compared here; the full authority comparison belongs to H.",
+  "differences": []
+}

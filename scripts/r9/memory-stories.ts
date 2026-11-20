@@ -35,6 +35,8 @@ import { createCommitmentBridge,
 import { R8Runtime } from '../../src/r7/integration/runtime';
 import { durationOf, executeCandidate, latestStockCondition, notesFor, runStep,
   visibleMemory, type MemorySelection } from '../../src/r7/integration/step';
+import { renderRequest } from '../../src/r7/jev/render';
+import type { MemoryProjection } from '../../src/r7/memory/window';
 import { DEFAULT_WAREHOUSE_FOOD, type LocationId } from '../../src/survival/world-v2';
 
 const DAY2_START = 1920; // absolute minute: day 2, 08:00
@@ -101,7 +103,7 @@ function directAction(env: Env, actorId: string, action: string,
 async function step(env: Env, actorId: string, pick: (request: ChoiceRequest) => Candidate | undefined,
   selection: MemorySelection = 'obligation-first'): Promise<{ record: Record<string, unknown> | null;
     memory: ReturnType<typeof visibleMemory> | null; request: ChoiceRequest | null }> {
-  const captured: { memory?: ReturnType<typeof visibleMemory>;
+  const captured: { memory?: MemoryProjection;
     request?: ChoiceRequest } = {};
   const result = await runStep(env.runtime, forced(request => {
     // Capture the exact bounded memory this actor was given (both arms).
@@ -116,6 +118,42 @@ async function step(env: Env, actorId: string, pick: (request: ChoiceRequest) =>
   }
   if (record) env.steps.push(record);
   return { record, memory: captured.memory ?? null, request: captured.request ?? null };
+}
+
+/**
+ * Capture the input this actor WOULD get, without committing anything: an
+ * abstaining scorer leaves the world untouched, so two probes can be compared
+ * byte for byte. This is how "the absent NPC never heard it" is measured rather
+ * than described.
+ */
+async function probe(env: Env, actorId: string, selection: MemorySelection = 'obligation-first',
+  budget = 640): Promise<{ text: string; sha256: string; memory: MemoryProjection;
+    candidates: string[]; billed: Record<string, unknown> | null }> {
+  let captured: ChoiceRequest | null = null;
+  const scorer = {
+    identity: referenceAgencyScorer().identity,
+    score(request: ChoiceRequest) {
+      captured = request;
+      return makeChoiceResult({ request, scorerId: 'r9-story-probe',
+        scores: request.candidates.map(row => ({ candidateId: row.id, logit: 0 })),
+        disposition: 'abstain', selectedId: null, reason: 'probe only: no commit' });
+    },
+  };
+  const result = await runStep(env.runtime, scorer, { actorIds: [actorId],
+    memorySelection: selection, memoryTokenBudget: budget, goalBridge: env.bridge });
+  const request = captured as ChoiceRequest | null;
+  if (!request) throw new Error(`probe captured no request for ${actorId}`);
+  const text = renderRequest(request).text;
+  const record = result.records[0];
+  return { text, sha256: hash(text),
+    // The record's evidence says what the step billed; the re-derived projection
+    // is only reported, never compared, because the text above is the input.
+    memory: visibleMemory(env.runtime, actorId, 12, selection, budget),
+    candidates: request.candidates.map(row => row.id),
+    billed: record ? { units: record.memoryTokens ?? -1,
+      budget: record.memoryBudget ?? -1, kept: record.memoryKept ?? -1,
+      bytes: record.memoryBytes ?? -1, truncated: record.memoryTruncated ?? false,
+      blockSha256: record.memoryBlockSha256 ?? '' } : null };
 }
 
 function candidatesOf(env: Env, actorId: string): { goals: Record<string, unknown>[];
@@ -148,25 +186,28 @@ function newProcess(env: Env): Env {
   return { ...env, runtime, play, bridge: createCommitmentBridge(runtime, play) };
 }
 
-/** Rebuild the P loop on the SAME restored session (never a second session). */
+/**
+ * Rebuild the P loop on the SAME restored session (never a second session).
+ * `fromSidecars` is the ONE reader: tasks, experience, commitments, council and
+ * the decision-memory cursor all come back through it.
+ */
 function gameplayOn(runtime: R8Runtime, path: string): GameplayLoop {
-  const read = (suffix: string): Record<string, unknown> | null => {
-    const file = `${path}.${suffix}.json`;
-    return existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) as Record<string, unknown> : null;
-  };
-  const tasks = read('tasks');
-  const commitments = read('commitments');
-  const council = read('council');
-  const experience = read('experience');
-  return new GameplayLoop(runtime.session,
-    tasks ? TaskBoard.fromJSON(tasks as never) : new TaskBoard(),
-    { ...(commitments ? { commitments: CommitmentBoard.fromJSON(commitments as never) } : {}),
-      ...(council ? { council: CouncilBoard.fromJSON(council as never) } : {}),
-      ...(experience ? { experience: ExperienceStore.fromJSON(experience as never) } : {}) });
+  return GameplayLoop.fromSidecars(runtime.session, path);
 }
 
 function hash(value: unknown): string {
   return createHash('sha256').update(JSON.stringify(value)).digest('hex');
+}
+
+/** The first byte where two inputs differ, with a little context: evidence. */
+function firstDifference(left: string, right: string): Record<string, unknown> | null {
+  if (left === right) return null;
+  const limit = Math.min(left.length, right.length);
+  let index = 0;
+  while (index < limit && left[index] === right[index]) index += 1;
+  const window = (text: string) => text.slice(Math.max(0, index - 40), index + 60);
+  return { index, left: window(left), right: window(right),
+    lengths: [left.length, right.length] };
 }
 
 function fingerprintParts(env: Env, actorIds: string[]): Record<string, string> {
@@ -179,6 +220,44 @@ function fingerprintParts(env: Env, actorIds: string[]): Record<string, string> 
       heardBy: (record.payload as Record<string, unknown>).heardBy ?? null })))),
     clock: hash(env.runtime.world.simTime),
   };
+}
+
+/**
+ * Every part of the memory state a save must carry: the actor's own records,
+ * its relations/promises, the conditional notes (dependencies) and the ingest
+ * cursor. Each part is hashed separately so a mismatch names the part.
+ */
+function restoreParts(env: Env, actorIds: string[]): Record<string, unknown> {
+  // `save()` syncs before writing; measure the state that is actually saved.
+  env.play.syncLongTermMemory();
+  const knowledge = env.runtime.session.knowledge();
+  return {
+    records: Object.fromEntries(actorIds.map(id => [id, hash(memoryOf(env, id))])),
+    relations: Object.fromEntries(actorIds.map(id => [id,
+      hash({ relation: knowledge[id]?.relation ?? null,
+        promises: knowledge[id]?.promises ?? [] })])),
+    notes: Object.fromEntries(actorIds.map(id => [id, hash(notesFor(env.runtime, id))])),
+    experience: hash(env.play.experience.toJSON()),
+    cursors: hash(env.play.memoryCursors()),
+    decisionMemory: hash(env.play.longTermMemory.serialize()),
+    recordCounts: Object.fromEntries(actorIds.map(id => [id, memoryOf(env, id).length])),
+    cursorValues: env.play.memoryCursors(),
+  };
+}
+
+/** Compare the saved memory state with the state a NEW process restored. */
+function checkRestore(before: Record<string, unknown>, after: Record<string, unknown>,
+  actorIds: string[], label: string): StoryResult['checks'][number] {
+  const parts = ['records', 'relations', 'notes', 'experience', 'cursors', 'decisionMemory'];
+  const differing = parts.filter(part => hash(before[part]) !== hash(after[part]));
+  const counts = before.recordCounts as Record<string, number>;
+  const cursor = after.cursorValues as Record<string, number>;
+  return note(`${label}: personal records, relations, dependencies and cursor restore`,
+    differing.length === 0 && actorIds.every(id => counts[id] === (after.recordCounts as
+      Record<string, number>)[id] && typeof cursor[id] === 'number'),
+    { differing, recordCounts: counts, restoredCursor: cursor,
+      cursorMatchesRecords: actorIds.every(id => cursor[id] ===
+        (after.recordCounts as Record<string, number>)[id]) });
 }
 
 function stateFingerprint(env: Env, actorIds: string[]): string {
@@ -282,18 +361,34 @@ function emptyWarehouse(env: Env, actorId: string): { consumed: number; receipts
   return { consumed: stock, receipts: outcome.eventIds };
 }
 
-function memoryArmReport(env: Env, actorId: string, policy: MemoryPolicyId) {
-  const raw = visibleMemory(env.runtime, actorId, 12, 'raw-last12');
-  const ranked = visibleMemory(env.runtime, actorId, 12, 'obligation-first');
+/** One arm as the projection reports it; both arms use the SAME budget. */
+function armOf(projection: MemoryProjection) {
+  return {
+    kinds: projection.facts.map(fact => fact.kind), kept: projection.kept,
+    dropped: projection.dropped, bytes: projection.bytes,
+    units: projection.units, budget: projection.budgetUnits,
+    unitKind: projection.unitKind, unitId: projection.unitId,
+    encoderTokens: projection.encoder.tokens, encoderStatus: projection.encoder.status,
+    blockSha256: projection.blockSha256, segmentBytes: projection.segmentBytes,
+    truncated: projection.truncated,
+    truncatedFacts: projection.truncatedFacts.map(entry => ({ pointer: entry.pointer,
+      level: entry.level, droppedFields: entry.droppedFields,
+      omittedTextChars: entry.omittedTextChars })),
+    insideBudget: projection.units <= projection.budgetUnits,
+  };
+}
+
+function memoryArmReport(env: Env, actorId: string, policy: MemoryPolicyId, budget = 640) {
+  // Same budget, same candidate set: only the selection rule differs.
+  const raw = visibleMemory(env.runtime, actorId, 12, 'raw-last12', budget);
+  const ranked = visibleMemory(env.runtime, actorId, 12, 'obligation-first', budget);
   const context = { place: 'warehouse', taskState: 'declined',
     stock: latestStockCondition(env.runtime, actorId) };
   const notes = notesFor(env.runtime, actorId);
   return {
-    raw: { kinds: raw.facts.map(fact => fact.kind), kept: raw.kept,
-      dropped: raw.dropped, bytes: raw.bytes, tokens: raw.tokens, budget: raw.budgetTokens },
-    obligationFirst: { kinds: ranked.facts.map(fact => fact.kind), kept: ranked.kept,
-      dropped: ranked.dropped, bytes: ranked.bytes, tokens: ranked.tokens,
-      budget: ranked.budgetTokens },
+    budget,
+    raw: armOf(raw),
+    obligationFirst: armOf(ranked),
     keptOnlyByNewPolicy: ranked.facts.map(fact => fact.kind)
       .filter(kind => !raw.facts.map(fact => fact.kind).includes(kind)),
     notesTotal: notes.length,
@@ -303,6 +398,45 @@ function memoryArmReport(env: Env, actorId: string, policy: MemoryPolicyId) {
       source: fact.source, speakerId: (fact.payload as Record<string, unknown>).speakerId ?? null,
       heardBy: (fact.payload as Record<string, unknown>).heardBy ?? null })),
   };
+}
+
+/**
+ * The budget boundary of this actor, measured on the projection the live step
+ * bills: 0 renders nothing, 64 renders only what fits, 640 renders what fits,
+ * and both arms are charged in the same unit against the same budget with the
+ * same candidate set.
+ */
+async function budgetChecks(env: Env, actorId: string, label: string):
+  Promise<StoryResult['checks']> {
+  const zero = visibleMemory(env.runtime, actorId, 12, 'obligation-first', 0);
+  const tight = visibleMemory(env.runtime, actorId, 12, 'obligation-first', 64);
+  const normal = visibleMemory(env.runtime, actorId, 12, 'obligation-first', 640);
+  const rawArm = visibleMemory(env.runtime, actorId, 12, 'raw-last12', 640);
+  const rawProbe = await probe(env, actorId, 'raw-last12');
+  const rankedProbe = await probe(env, actorId, 'obligation-first');
+  return [
+    note(`${label}: a budget of 0 renders nothing, and 64/640 never overflow`,
+      zero.units === 0 && zero.facts.length === 0 && zero.block === ''
+      && zero.budgetUnits === 0
+      && tight.units <= 64 && normal.units <= 640
+      && tight.bytes === Buffer.byteLength(tight.block, 'utf8')
+      && normal.bytes === Buffer.byteLength(normal.block, 'utf8'),
+      { zero: { units: zero.units, kept: zero.kept, block: zero.block },
+        tight: { units: tight.units, kept: tight.kept, bytes: tight.bytes,
+          truncated: tight.truncated, budget: tight.budgetUnits },
+        normal: { units: normal.units, kept: normal.kept, bytes: normal.bytes,
+          truncated: normal.truncated, budget: normal.budgetUnits } }),
+    note(`${label}: both arms share the budget, the unit and the candidate set`,
+      rawArm.budgetUnits === 640 && normal.budgetUnits === 640
+      && rawArm.unitId === normal.unitId
+      && rawArm.unitId === tight.unitId
+      && JSON.stringify(rawProbe.candidates) === JSON.stringify(rankedProbe.candidates),
+      { raw: { budget: rawArm.budgetUnits, units: rawArm.units, unitId: rawArm.unitId },
+        ranked: { budget: normal.budgetUnits, units: normal.units, unitId: normal.unitId },
+        candidates: rankedProbe.candidates.length,
+        sameCandidateSet: JSON.stringify(rawProbe.candidates)
+          === JSON.stringify(rankedProbe.candidates) }),
+  ];
 }
 
 // ---------------------------------------------------------------------------
@@ -326,9 +460,24 @@ async function story1(): Promise<void> {
     place: 'warehouse', resource: 'food', amount: 2, source: 'player' });
   chatter(env, 6, 's1-noise');
 
+  // The exact input the absent NPC would receive BEFORE it could hear anything.
+  const unheardProbeBefore = await probe(env, 'npc_01');
   const cancelled = env.play.cancelCommitment(commitmentId, { heardBy: ['npc_02'],
     reason: '玩家改主意，不送了' });
   env.play.cancelCommitment(otherId, { heardBy: ['npc_02'], reason: '玩家改主意，不送了' });
+  // ... and immediately after somebody else was told. No new evidence reached
+  // npc_01, so this must be the same bytes.
+  const unheardProbeAfter = await probe(env, 'npc_01');
+  checks.push(note('a cancellation told to another NPC leaves the absent input byte-identical',
+    unheardProbeAfter.sha256 === unheardProbeBefore.sha256
+    && unheardProbeAfter.text === unheardProbeBefore.text
+    && unheardProbeAfter.memory.blockSha256 === unheardProbeBefore.memory.blockSha256
+    && JSON.stringify(unheardProbeAfter.candidates) === JSON.stringify(unheardProbeBefore.candidates),
+    { before: unheardProbeBefore.sha256, after: unheardProbeAfter.sha256,
+      textBytes: [Buffer.byteLength(unheardProbeBefore.text, 'utf8'),
+        Buffer.byteLength(unheardProbeAfter.text, 'utf8')],
+      memoryBlock: [unheardProbeBefore.memory.blockSha256, unheardProbeAfter.memory.blockSha256],
+      candidates: unheardProbeAfter.candidates.length }));
   const heard = candidatesOf(env, 'npc_02');
   const unheard = candidatesOf(env, 'npc_01');
   checks.push(note('the present NPC heard the cancellation and stops',
@@ -372,8 +521,13 @@ async function story1(): Promise<void> {
 
   // D2 exit + new process.
   env.runtime.advanceWorld(DAY2_START);
+  // The memory bytes the absent actor would be given at the exit clock; the
+  // observation legitimately moves with time, the memory block must not.
+  const exitProjection = visibleMemory(env.runtime, 'npc_01', 12, 'obligation-first', 640);
+  const exitView = candidatesOf(env, 'npc_01');
   const pendingAtExit = pendingWorkAtExit(env, 'npc_01');
   const fingerprintBeforeExit = stateFingerprint(env, ['npc_01', 'npc_02']);
+  const restoreBefore = restoreParts(env, ['npc_01', 'npc_02']);
   const restored = newProcess(env);
   const fingerprintAfterExit = stateFingerprint(restored, ['npc_01', 'npc_02']);
   checks.push(note('D2 exit restores the same commitment + memory state',
@@ -383,6 +537,28 @@ async function story1(): Promise<void> {
       partsAfter: fingerprintParts(restored, ['npc_01', 'npc_02']),
       commitment: restored.play.commitments.find(commitmentId)?.status,
       clock: restored.runtime.world.simTime }));
+  checks.push(checkRestore(restoreBefore, restoreParts(restored, ['npc_01', 'npc_02']),
+    ['npc_01', 'npc_02'], 'D2 exit'));
+  // The memory bytes survive the process boundary: no new evidence was heard,
+  // so the block the absent actor would read is the same block, byte for byte.
+  const restoredProjection = visibleMemory(restored.runtime, 'npc_01', 12,
+    'obligation-first', 640);
+  checks.push(note('the absent actor reads the same memory bytes after the D2 restart',
+    restoredProjection.blockSha256 === exitProjection.blockSha256
+    && restoredProjection.block === exitProjection.block
+    && restoredProjection.kept === exitProjection.kept,
+    { before: exitProjection.blockSha256, after: restoredProjection.blockSha256,
+      bytes: [exitProjection.bytes, restoredProjection.bytes],
+      kept: [exitProjection.kept, restoredProjection.kept],
+      firstDifference: firstDifference(exitProjection.block, restoredProjection.block) }));
+  // The unchanged belief still offers the same actions across the restart: the
+  // bridge view is a pure function of this actor's own records plus its body.
+  const restoredView = candidatesOf(restored, 'npc_01');
+  checks.push(note('the absent actor still acts on the pre-exit belief after the restart',
+    JSON.stringify(restoredView) === JSON.stringify(exitView),
+    { candidates: restoredView.candidates.length,
+      steps: restoredView.candidates.map(row => row.parameters.bridgeStep),
+      goalsActive: restoredView.goals.map(goal => goal.status) }));
   checkPendingResume(restored, pendingAtExit, checks);
   const stillUnheard = candidatesOf(restored, 'npc_01');
   checks.push(note('after the restart the absent NPC still acts on its belief',
@@ -402,6 +578,12 @@ async function story1(): Promise<void> {
   const relay = restored.play.relayCancellation(commitmentId,
     { tellerId: 'npc_02', audience: ['npc_01'] });
   restored.play.relayCancellation(otherId, { tellerId: 'npc_02', audience: ['npc_01'] });
+  // NOW the actor has new evidence, so its input must move.
+  const unheardProbeRelayed = await probe(restored, 'npc_01');
+  checks.push(note('after a legitimate relay the input does move',
+    unheardProbeRelayed.sha256 !== unheardProbeBefore.sha256,
+    { before: unheardProbeBefore.sha256, after: unheardProbeRelayed.sha256,
+      candidates: unheardProbeRelayed.candidates.length }));
   const afterRelay = candidatesOf(restored, 'npc_01');
   checks.push(note('after the relay the promisor stops (no candidacy, no fulfilment)',
     relay !== null && afterRelay.candidates.length === 0
@@ -434,6 +616,7 @@ async function story1(): Promise<void> {
       speakerId: record.speakerId, observedAt: record.observedAt,
       payload: record.payload }))));
 
+  checks.push(...await budgetChecks(restored, 'npc_01', 'story1'));
   const memory = memoryArmReport(restored, 'npc_01', 'conditional-experience');
   const result: StoryResult = { story: env.story, passed: checks.every(check => check.passed),
     checks,
@@ -489,8 +672,11 @@ async function story2(): Promise<void> {
   env.runtime.advanceWorld(DAY2_START);
   const pendingAtExit = pendingWorkAtExit(env, 'npc_01');
   const before = stateFingerprint(env, ['npc_01']);
+  const restoreBefore = restoreParts(env, ['npc_01']);
   const restored = newProcess(env);
   const after = stateFingerprint(restored, ['npc_01']);
+  checks.push(checkRestore(restoreBefore, restoreParts(restored, ['npc_01']),
+    ['npc_01'], 'story2 D2 exit'));
   const restoredPending = restored.play.commitments.find(commitmentId)!;
   checks.push(note('the unanswered proposal and its revision survive the restart',
     before === after && restoredPending.status === 'pending-change'
@@ -565,6 +751,7 @@ async function story2(): Promise<void> {
     { status: agreed.status, conditions: agreed.conditions, steps: agreedSteps,
       receipts: gatheredReceipt.map(event => event.eventId) }));
 
+  checks.push(...await budgetChecks(restored, 'npc_01', 'story2'));
   const memory = memoryArmReport(restored, 'npc_01', 'conditional-experience');
   const result: StoryResult = { story: env.story, passed: checks.every(check => check.passed),
     checks,
@@ -597,7 +784,10 @@ async function story3(): Promise<void> {
   chatter(env, 20, 's3-noise-a');
   env.runtime.advanceWorld(DAY2_START);
   const pendingAtExit = pendingWorkAtExit(env, 'npc_01');
+  const restoreBefore = restoreParts(env, ['npc_01']);
   const restored = newProcess(env);
+  checks.push(checkRestore(restoreBefore, restoreParts(restored, ['npc_01']),
+    ['npc_01'], 'story3 D2 exit'));
   const afterRestart = memoryArmReport(restored, 'npc_01', 'conditional-experience');
   checks.push(note('the conditional lesson survives the D2 restart',
     afterRestart.notesApplicable.length === 1, { applicable: afterRestart.notesApplicable }));
@@ -626,10 +816,10 @@ async function story3(): Promise<void> {
     // Identical budget, not identical count: the difference must come from the
     // selection rule, never from one arm being fed more memory.
     && lifted.obligationFirst.budget === lifted.raw.budget
-    && lifted.obligationFirst.tokens <= lifted.obligationFirst.budget
-    && lifted.raw.tokens <= lifted.raw.budget,
+    && lifted.obligationFirst.units <= lifted.obligationFirst.budget
+    && lifted.raw.units <= lifted.raw.budget,
     { raw: lifted.raw.kinds, obligationFirst: lifted.obligationFirst.kinds,
-      tokens: { raw: lifted.raw.tokens, obligationFirst: lifted.obligationFirst.tokens },
+      units: { raw: lifted.raw.units, obligationFirst: lifted.obligationFirst.units },
       budget: { raw: lifted.raw.budget, obligationFirst: lifted.obligationFirst.budget } }));
 
   // Two arms from the SAME post-restock state, in separate processes:
@@ -670,6 +860,7 @@ async function story3(): Promise<void> {
       kind: wastedLog?.kind ?? null,
       minutes: (wastedLog?.endsAt ?? 0) - (wastedLog?.startedAt ?? 0) }));
 
+  checks.push(...await budgetChecks(restored, 'npc_01', 'story3'));
   const result: StoryResult = { story: env.story, passed: checks.every(check => check.passed),
     checks,
     outcome: { conditionBefore: shortageMemory.condition, conditionAfter: lifted.condition,
@@ -718,8 +909,11 @@ async function story4(): Promise<void> {
   env.runtime.advanceWorld(DAY2_START);
   const pendingAtExit = pendingWorkAtExit(env, 'npc_01');
   const before = stateFingerprint(env, ['npc_01', 'npc_02']);
+  const restoreBefore = restoreParts(env, ['npc_01', 'npc_02']);
   const restored = newProcess(env);
   const after = stateFingerprint(restored, ['npc_01', 'npc_02']);
+  checks.push(checkRestore(restoreBefore, restoreParts(restored, ['npc_01', 'npc_02']),
+    ['npc_01', 'npc_02'], 'story4 D2 exit'));
   checks.push(note('both promises and the shortage evidence survive the D2 restart',
     before === after && restored.play.commitments.find(second.commitment.commitmentId)?.status
       === 'pending-change', { before: before.slice(0, 16), after: after.slice(0, 16) }));
@@ -761,6 +955,7 @@ async function story4(): Promise<void> {
     && afterCancel.candidates.length === 0,
     { candidates: afterCancel.candidates.length }));
 
+  checks.push(...await budgetChecks(restored, 'npc_02', 'story4'));
   const memory = memoryArmReport(restored, 'npc_02', 'conditional-experience');
   const result: StoryResult = { story: env.story, passed: checks.every(check => check.passed),
     checks,

@@ -1,0 +1,21 @@
+第1天 第480分钟
+天气:snow
+公共资源 食物130 木柴30 电力30 药品3
+炉火:点着 燃料6
+自身:位置warehouse 饥饿70 体力77 健康100 精神80 体温36.50
+仓库认知:0份
+问题:现在最该做什么？
+记忆:
+- [engine] moved 知于480 发生于480 关于npc_01,world {"to":"warehouse","occurredAt":480,"authority":"engine","speakerId":"engine","sourceEventIds":["ev-move:moved:0"]}
+- [engine] stock_withdrawn 知于480 发生于480 关于npc_01,player {"place":"warehouse","amount":4,"remaining":0,"carried":4,"occurredAt":480,"authority":"engine","speakerId":"engine","sourceEventIds":["npc_01-ev-withdraw-1:stock_withdrawn:1"]}
+- [engine] commitment_proposed 知于480 发生于480 关于npc_01,player {"goal":"deliver-meal","fromId":"npc_01","toId":"player","conditions":"warehouse-supply","deadline":-1,"commitmentId":"cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb","revision":1,"heardBy":"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08","toldBy":"npc_01","occurredAt":480,"authority":"engine","speakerId":"npc_01","sourceEventIds":["cmt-commitment_proposed-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-0"]}
+- [engine] commitment_accepted 知于480 发生于480 关于npc_01,player {"fromId":"npc_01","toId":"player","text":"accepted-by-resident","commitmentId":"cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb","revision":1,"heardBy":"npc_01;npc_02;npc_03;npc_04;npc_05;npc_06;npc_07;npc_08","toldBy":"npc_01","occurredAt":480,"authority":"engine","speakerId":"npc_01","sourceEventIds":["cmt-commitment_accepted-cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb-1"]}
+目标:{"source":"legacy-commitment","taskId":"task-001-deliver-meal","legacyTaskId":"task-001-deliver-meal","commitmentId":"cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb","revision":1,"type":"DELIVER_MEAL","status":"active","ready":true,"conditions":["warehouse-supply"],"deadline":null,"beneficiaryId":"player"}
+可选行动:
+1. 携带饭前往厨房履约 [move] {action=move bridgeStep=to-kitchen commitmentId=cm-60e1ec89-b0fe-40a9-9493-517d4215e9eb commitmentRevision=1 legacyTaskId=task-001-deliver-meal purpose=travel to=kitchen} 前提:alive、accepted commitment revision unchanged
+2. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80
+3. 给中央炉添柴 [refuel] {action=refuel amount=2} 前提:firewood >= 8、fuel < 20
+4. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive
+5. 说明延误并给出新时点 [report-delay] {action=report-delay} 前提:alive
+6. 原地等待 [wait] {action=wait} 前提:alive
+7. 前往village [move] {action=move purpose=task-place to=village} 前提:alive

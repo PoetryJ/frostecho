@@ -1,0 +1,20 @@
+第1天 第480分钟
+天气:snow
+公共资源 食物130 木柴30 电力30 药品3
+炉火:点着 燃料6
+自身:位置dorm-a 饥饿70 体力80 健康100 精神80 体温36.50
+仓库认知:未核实
+问题:现在最该做什么？
+记忆:
+- [player_statement] commitment_change_proposed 知于481 发生于480 关于npc_01,player {"occurredAt":480,"commitmentId":"cpu-b0","revision":1,"pointer":"bulk-0","truncated":true}
+- [player_statement] commitment_change_proposed 知于482 发生于481 关于npc_01,player {"text":"第1条长条件。第1条长条件。第1…[+2084字]","commitmentId":"cpu-b1","revision":2,"occurredAt":481,"authority":"player","speakerId":"player","sourceEventIds":["bulk-1"],"truncated":true,"omittedChars":2084}
+- [player_statement] commitment_change_proposed 知于483 发生于482 关于npc_01,player {"text":"第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长条件。第2条长…[+1844字]","commitmentId":"cpu-b2","revision":3,"occurredAt":482,"authority":"player","speakerId":"player","sourceEventIds":["bulk-2"],"truncated":true,"omittedChars":1844}
+- [engine] team_chatter 知于480 发生于480 关于npc_01,council {"index":4,"occurredAt":480,"authority":"engine","speakerId":"council","sourceEventIds":["team-team_chatter-4"]}
+- [engine] team_chatter 知于480 发生于480 关于npc_01,council {"index":5,"occurredAt":480,"authority":"engine","speakerId":"council","sourceEventIds":["team-team_chatter-5"]}
+可选行动:
+1. 吃掉一份食物 [eat] {action=eat amount=1} 前提:food >= 1、hunger < 80
+2. 给中央炉添柴 [refuel] {action=refuel amount=2} 前提:firewood >= 8、fuel < 20
+3. 去仓库核实存粮 [move] {action=move purpose=verify-stock to=warehouse} 前提:alive
+4. 前往仓库 [move] {action=move purpose=travel to=warehouse} 前提:alive
+5. 原地等待 [wait] {action=wait} 前提:alive
+6. 前往village [move] {action=move purpose=task-place to=village} 前提:alive

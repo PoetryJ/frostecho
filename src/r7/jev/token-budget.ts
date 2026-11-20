@@ -121,7 +121,11 @@ export function canonicalJson(value: unknown): string {
     .map(key => `${JSON.stringify(key)}:${canonicalJson(object[key])}`).join(',')}}`;
 }
 
-export type MemoryTrimLevel = 'text-trim' | 'fields-dropped' | 'pointer-only';
+/**
+ * `omitted` means the record did not enter the window at all (even its pointer
+ * line was too long, or the budget was 0); the trim record still names it.
+ */
+export type MemoryTrimLevel = 'text-trim' | 'fields-dropped' | 'pointer-only' | 'omitted';
 
 /** What a trimmed record still proves, and what it lost. */
 export interface MemoryTruncationRecord {
