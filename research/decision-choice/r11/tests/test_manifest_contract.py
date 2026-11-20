@@ -138,6 +138,12 @@ class ManifestContractTests(unittest.TestCase):
                          sha(self.dir / "qualification.json"))
         self.assertFalse(report["countsAsAdmitted"])
 
+    def test_the_integration_schema_alias_is_the_same_contract(self):
+        self.rewrite(lambda d: d.update(schema=contract.SCHEMA_R11))
+        report = self.validate()
+        self.assertEqual(report["contractVersion"], 2)
+        self.assertEqual(report["schemaCanonical"], contract.SCHEMA_R11)
+
     def test_reference_imitation_is_accepted_by_the_same_contract(self):
         self.rewrite(lambda d: d.update(labelSource=contract.LABEL_REFERENCE,
                                        deadlineProtocol=None))

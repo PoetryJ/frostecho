@@ -26,6 +26,10 @@ from pathlib import Path
 
 SCHEMA_V1 = "frostecho.action-weak-experiment/1"
 SCHEMA_V2 = "frostecho.action-training-manifest/2"
+# O's integration name for the same version-2 document. Accepted as an alias so
+# the validator is genuinely shared instead of forking on the id.
+SCHEMA_R11 = "frostecho.training-manifest/r11"
+SCHEMA_V2_ALIASES = (SCHEMA_V2, SCHEMA_R11)
 LABEL_REFERENCE = "reference-imitation"
 LABEL_BRANCH = "same-snapshot-branch-rollout"
 LABEL_SOURCES = (LABEL_REFERENCE, LABEL_BRANCH)
@@ -286,7 +290,7 @@ def validate(path: Path, head: Path | None = None, *, head_sha: str | None = Non
     if not isinstance(document, dict):
         raise Refusal("manifest-json", "manifest root must be an object")
     schema = document.get("schema")
-    if schema == SCHEMA_V2:
+    if schema in SCHEMA_V2_ALIASES:
         version = 2
     elif schema == SCHEMA_V1:
         if not allow_legacy_v1:
@@ -306,7 +310,7 @@ def validate(path: Path, head: Path | None = None, *, head_sha: str | None = Non
         if source != LABEL_REFERENCE:
             raise Refusal("label-source",
                           "version 1 is reference-imitation only; branch rollouts require "
-                          f"{SCHEMA_V2}")
+                          f"{SCHEMA_V2} / {SCHEMA_R11}")
         if document.get("selectedCheckpointSha256") != (
                 head_sha if head_sha is not None else (file_sha(head) if head else None)):
             raise Refusal("head-sha", "selectedCheckpointSha256 differs from the supplied head")
@@ -324,7 +328,7 @@ def validate(path: Path, head: Path | None = None, *, head_sha: str | None = Non
                            "encodingQualification.featuresSha256") is None):
             raise Refusal("encoding-qualification",
                           "training manifest lacks its encoding qualification binding")
-        return {"schema": schema, "contractVersion": 1, "sha256": sha_bytes(raw),
+        return {"schema": schema, "schemaCanonical": SCHEMA_V1, "contractVersion": 1, "sha256": sha_bytes(raw),
                 "labelSource": source, "labelRule": rule,
                 "labelFamily": document.get("labelFamily"),
                 "independentReviews": document.get("independentReviews", 0),
@@ -359,7 +363,7 @@ def validate(path: Path, head: Path | None = None, *, head_sha: str | None = Non
         raise Refusal("backbone", "this recipe trains small heads only (backboneGradients 0)")
     if document.get("backboneLoadedByTrainer") is not False:
         raise Refusal("backbone", "the trainer must not load the backbone")
-    return {"schema": schema, "contractVersion": 2, "sha256": sha_bytes(raw),
+    return {"schema": schema, "schemaCanonical": SCHEMA_R11, "contractVersion": 2, "sha256": sha_bytes(raw),
             "labelSource": source, "labelRule": rule,
             "labelFamily": document.get("labelFamily"),
             "independentReviews": document.get("independentReviews"),

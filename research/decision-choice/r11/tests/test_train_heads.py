@@ -131,7 +131,8 @@ class TrainHeadsTests(unittest.TestCase):
                     capture_output=True, text=True, cwd=str(REPO))
                 self.assertEqual(run.returncode, 0, run.stderr)
                 document = json.loads((out / "training-manifest.json").read_text())
-                self.assertEqual(document["schema"], contract.SCHEMA_V2)
+                self.assertIn(document["schema"], contract.SCHEMA_V2_ALIASES)
+                self.assertEqual(document["schema"], contract.SCHEMA_R11)
                 self.assertEqual(len(document["fourHeads"]), 4)
                 self.assertEqual({entry["init"] for entry in document["fourHeads"]},
                                  {"warm", "random"})
