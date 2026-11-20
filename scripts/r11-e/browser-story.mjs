@@ -197,12 +197,19 @@ async function recoverPage(reason) {
 
 async function waitFor(fn, argValue, label, timeout = timeoutMs) {
   const started = Date.now();
-  let last = null;
+  let last = null, wedged = 0;
   while (Date.now() - started < timeout) {
     try {
       last = await evalTimed(fn, argValue);
+      wedged = 0;
       if (last) return last;
-    } catch { /* page may be mid-navigation or briefly wedged */ }
+    } catch {
+      wedged += 1;
+      if (wedged >= 3) {
+        await recoverPage(`wait-timeout:${label}`).catch(() => {});
+        wedged = 0;
+      }
+    }
     await page.waitForTimeout(150);
   }
   throw new Error(`timeout waiting for ${label}: ${JSON.stringify(last)?.slice(0, 400)}`);
@@ -234,8 +241,19 @@ function fingerprint() {
 const trace = (label, extra) => console.log(`[trace] ${new Date().toISOString()} ${label}`,
   extra === undefined ? '' : JSON.stringify(extra)?.slice(0, 300));
 
+async function ensurePageAlive(where) {
+  try {
+    await evalTimed(() => 1 + 1, null, 5000);
+    return false;
+  } catch {
+    await recoverPage(`unresponsive:${where}`).catch(() => {});
+    return true;
+  }
+}
+
 async function clickButton(label, stepName) {
   trace('click:start', { label, stepName });
+  await ensurePageAlive(`click:${label}`);
   const locator = page.locator('#hud-npcs, #task-actions, #commitment-actions, #move-actions, .command-row')
     .locator('button', { hasText: label });
   const count = await locator.count();
@@ -292,6 +310,7 @@ async function clickButton(label, stepName) {
 }
 
 async function typeCommand(line, stepName) {
+  await ensurePageAlive(`type:${stepName ?? line}`);
   const before = await evalTimed(() => window.frostEcho.ops().length);
   try {
     await page.fill('#command', line);
@@ -323,6 +342,7 @@ async function typeCommand(line, stepName) {
 
 async function clickActor(id) {
   trace('actor:start', { id });
+  await ensurePageAlive(`actor:${id}`);
   await page.click(`#hud-npcs li[data-npc="${id}"]`);
   await waitFor((wanted) => window.frostEcho.selected() === wanted, id, `select ${id}`, 10_000);
   selectedId = id;
@@ -359,6 +379,7 @@ async function shot(name) {
     await recoverPage(`screenshot:${name}`).catch(() => {});
   } finally {
     try { await evalTimed(() => window.frostEcho.pauseRender(false), null, 5000); } catch { /* page gone */ }
+    await ensurePageAlive(`post-shot:${name}`);
   }
   trace('shot:done', { name });
   return path;
@@ -585,9 +606,10 @@ async function main() {
   assert('final_receipt_still_visible', deliverRow(d4)?.status === 'fulfilled', deliverRow(d4));
   // Measure the live 3D page BEFORE the last still: a still can occasionally
   // stall the SwiftShader compositor, and the measurement must not depend on it.
+  await ensurePageAlive('d4-measure');
   const anchors3dLate = await evalTimed(() => window.frostEcho.anchors(), null, 30_000);
   writeFileSync(join(out, 'anchors-3d.json'), `${JSON.stringify(anchors3dLate, null, 2)}\n`);
-  const frames = await evalTimed(() => new Promise((done) => {
+  const measure = () => evalTimed(() => new Promise((done) => {
     const samples = [];
     let previous = performance.now();
     const tick = (now) => {
@@ -602,13 +624,28 @@ async function main() {
     };
     requestAnimationFrame(tick);
   }), null, 120_000);
-  const stats = await evalTimed(() => window.frostEcho.stats());
-  const telemetry = await page.textContent('#telemetry');
-  report.frames = { raf: frames, renderer: { drawCalls: stats.drawCalls, gpuMs: stats.gpuMs,
-    timed: stats.gpuTimestamp, width: stats.width, height: stats.height }, telemetry };
-  assert('frames_measured', frames.p50 > 0 && frames.samples >= 60, frames);
-  assert('gpu_timer_or_honest_fallback', stats.gpuTimestamp || /GPU 计时不可用/.test(telemetry ?? ''),
-    { timed: stats.gpuTimestamp, telemetry });
+  let frames = null;
+  try { frames = await measure(); } catch {
+    await recoverPage('frames');
+    try { frames = await measure(); } catch { frames = null; }
+  }
+  assert('frames_measured', Boolean(frames) && frames.p50 > 0 && frames.samples >= 60, frames);
+  let stats = null, telemetry = null;
+  try {
+    stats = await evalTimed(() => window.frostEcho.stats());
+    telemetry = await page.textContent('#telemetry');
+  } catch {
+    await recoverPage('stats');
+    try {
+      stats = await evalTimed(() => window.frostEcho.stats());
+      telemetry = await page.textContent('#telemetry');
+    } catch { stats = null; }
+  }
+  report.frames = { raf: frames, renderer: stats ? { drawCalls: stats.drawCalls, gpuMs: stats.gpuMs,
+    timed: stats.gpuTimestamp, width: stats.width, height: stats.height } : null, telemetry };
+  assert('gpu_timer_or_honest_fallback', Boolean(stats)
+    && (stats.gpuTimestamp || /GPU 计时不可用/.test(telemetry ?? '')),
+    { timed: stats?.gpuTimestamp ?? null, telemetry });
   await shot('day4');
 
   // 10. 2D page reads the same snapshot at the same tick
