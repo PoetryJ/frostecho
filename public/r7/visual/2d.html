@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="data:," />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>FrostEcho · 2D 同状态</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body { margin: 0; background: #0b141b; color: #edf1ef; font-family: system-ui, sans-serif; }
+      header { display: flex; gap: 18px; align-items: baseline; padding: 14px 20px;
+        border-bottom: 1px solid #c6d2d626; }
+      header h1 { font-size: 14px; margin: 0; letter-spacing: .14em; font-weight: 500; }
+      header a { color: #e5bd87; font-size: 11px; text-decoration: none; }
+      #meta { color: #a2b2bc; font-size: 11px; margin-left: auto; font-variant-numeric: tabular-nums; }
+      main { display: grid; grid-template-columns: auto 340px; gap: 20px; padding: 18px 20px; }
+      canvas { border: 1px solid #c6d2d626; border-radius: 4px; background: #0e1a22; }
+      aside { font-size: 11px; line-height: 1.6; color: #a2b2bc; }
+      aside h2 { font-size: 9px; letter-spacing: .15em; color: #a2b2bc; margin: 14px 0 4px; font-weight: 400; }
+      aside ul { margin: 0; padding-left: 14px; font-size: 10px; }
+      aside strong { color: #edf1ef; font-weight: 500; }
+      .mono { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 10px; }
+      .hint { color: #e5bd87; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>FROSTECHO · 2D</h1>
+      <a href="/">← 3D 同状态</a>
+      <span id="meta">连接中…</span>
+    </header>
+    <main>
+      <canvas id="map" width="760" height="640"></canvas>
+      <aside>
+        <h2>SESSION</h2>
+        <div id="session" class="mono">—</div>
+        <h2>RESIDENTS</h2>
+        <ul id="roster"></ul>
+        <h2>STOCK</h2>
+        <div id="stock" class="mono">—</div>
+        <h2>COMMITMENTS</h2>
+        <ul id="commitments"></ul>
+        <h2>ROUTE</h2>
+        <div id="route" class="mono">—</div>
+        <p class="hint">此页只读 <span class="mono">api/visual/state</span> 的同一份 VisualSnapshot/1，不发送命令。</p>
+      </aside>
+    </main>
+    <script type="module" src="map2d.js"></script>
+  </body>
+</html>

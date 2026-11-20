@@ -3,11 +3,14 @@
 
 .game-panel {
   position: fixed;
+  z-index: 6;
   left: 40px;
-  top: 50%;
-  transform: translateY(-46%);
-  width: 300px;
-  max-height: 74vh;
+  /* A centred panel changes height with its lists, which moves every button a
+     few pixels on each poll and makes a real pointer press never "stable".
+     Pin both edges instead so the layout is still while state changes. */
+  top: 76px;
+  bottom: 92px;
+  width: 330px;
   overflow-y: auto;
   padding: 18px 16px;
   background: var(--panel);
@@ -28,6 +31,14 @@
 }
 .hud-line.mono { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 10px; }
 .hud-line.error { color: #e08a86; }
+.hud-line.hint {
+  color: var(--accent);
+  font-size: 10px;
+  line-height: 1.5;
+  border-left: 2px solid #e5bd8766;
+  padding-left: 7px;
+  margin-top: 8px;
+}
 .hud-list {
   margin: 4px 0 0;
   padding: 0 0 0 14px;
@@ -38,6 +49,47 @@
 .hud-list li[data-phase="working"] { color: #e5bd87; }
 .hud-list li[data-phase="blocked"] { color: #d98a86; }
 .hud-list li[data-phase="dead"] { color: #79868d; text-decoration: line-through; }
+.hud-list .muted { color: #6f7f88; list-style: none; margin-left: -14px; }
+
+/* Roster: one clickable row per resident, exactly the authority's 8 ids. */
+.roster { padding-left: 0; list-style: none; }
+.roster li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 6px;
+  align-items: baseline;
+  padding: 3px 5px;
+  margin: 1px 0;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.roster li:hover { border-color: #e5bd8755; background: #1a2b3555; }
+.roster li.selected { border-color: var(--accent); background: #e5bd8718; }
+.roster li strong { color: var(--ink); font-weight: 500; }
+.roster li span { color: var(--muted); font-size: 9px; }
+.roster li em { font-style: normal; font-size: 9px; color: #8fa3ad; }
+.roster li[data-phase="working"] em { color: #e5bd87; }
+.roster li[data-phase="blocked"] em { color: #d98a86; }
+.roster li[data-phase="dead"] { opacity: 0.55; text-decoration: line-through; }
+
+/* Tasks and commitments: clickable rows show the authoritative ids. */
+.tasks { padding-left: 0; list-style: none; }
+.tasks li, .commitments li {
+  padding: 4px 6px;
+  margin: 3px 0;
+  border-left: 2px solid #c6d2d633;
+  background: #0f1c2433;
+}
+.tasks li strong, .commitments li strong { display: block; color: var(--ink); font-weight: 500; }
+.tasks li span, .commitments li span { display: block; color: var(--muted); font-size: 9px; }
+.tasks li em, .commitments li em { display: block; font-style: normal; font-size: 9px; color: #e5bd87; }
+.commitments li[data-status="pending-change"] { border-left-color: #e5bd87; }
+.commitments li[data-status="fulfilled"] { border-left-color: #9ec8a4; }
+.commitments li[data-status="cancelled"],
+.commitments li[data-status="withdrawn"],
+.commitments li[data-status="declined"] { border-left-color: #d98a86; opacity: 0.8; }
+
 .command-row { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
 .command-row input {
   flex: 1 1 140px;
@@ -59,7 +111,33 @@
   border-radius: 3px;
   cursor: pointer;
 }
-.command-row button:hover { border-color: var(--accent); color: var(--accent); }
+.command-row button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.command-row button:disabled { opacity: 0.35; cursor: default; }
+
+/* 3D labels: a screen-space chip per authority actor; click selects. */
+#actor-labels { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+.actor-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: auto;
+  padding: 3px 7px;
+  font: 10px/1.2 ui-monospace, Menlo, Consolas, monospace;
+  color: #dfe9ec;
+  background: #0b171ecc;
+  border: 1px solid #c6d2d644;
+  border-radius: 10px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+.actor-label:hover { border-color: var(--accent); }
+.actor-label.selected { border-color: var(--accent); background: #e5bd8733; color: #fff4e2; }
+.actor-label[data-phase="working"] { border-color: #e5bd8788; }
+.actor-label[data-phase="blocked"] { border-color: #d98a8699; }
+.actor-label[data-phase="dead"] { opacity: 0.45; text-decoration: line-through; }
+body.clean #actor-labels { display: none; }
+
 #connection[data-state="live"] { color: #9ec8a4; }
 #connection[data-state="connecting"] { color: #e5bd87; }
 #connection[data-state="offline"] { color: #e08a86; }
