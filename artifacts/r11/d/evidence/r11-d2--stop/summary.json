@@ -1,0 +1,195 @@
+{
+  "schema": "frostecho.r8.playthrough/1",
+  "profile": "gospel-5.8.19",
+  "seed": "r11-d2",
+  "mode": "reference",
+  "memoryPolicy": "conditional-experience",
+  "sourceHEAD": null,
+  "startedAt": "2026-11-20T06:00:12.054Z",
+  "lives": 1,
+  "strategy": "npc-schedule/home-at-night/1+outdoor-limit/120min/1+reference-survival/1+lethal-day-withdrawal/1+walk-escort/1+recorded-survival-exit/1+supply-then-restart/1",
+  "strategiesOn": [
+    "npc-schedule/home-at-night/1",
+    "outdoor-limit/120min/1",
+    "reference-survival/1",
+    "lethal-day-withdrawal/1",
+    "walk-escort/1",
+    "recorded-survival-exit/1",
+    "supply-then-restart/1"
+  ],
+  "originalMap": false,
+  "mapProfile": "engine-3-map/1",
+  "endings": [],
+  "decisions": 120,
+  "executed": 2,
+  "rejected": 0,
+  "rejections": [],
+  "settlement": {
+    "intents": 126,
+    "pending": 8,
+    "terminal": {
+      "applied": 118,
+      "rejected": 0,
+      "cancelled": 0,
+      "unresolved": 0
+    },
+    "decisionStates": {
+      "working": 118,
+      "applied": 2
+    },
+    "receipts": 879,
+    "rejectedAtSettlement": [],
+    "unsettledWork": [
+      {
+        "actorId": "npc_06",
+        "selectedId": "a-0811648aa308",
+        "requestId": "in-118-r8-score-npc_06"
+      }
+    ],
+    "scope": "fresh-run",
+    "reconciled": false
+  },
+  "council": [
+    {
+      "at": 480,
+      "day": 1,
+      "meetingId": "council-1",
+      "actorId": "npc_02",
+      "type": "COLLECT_WOOD",
+      "verdict": "accept",
+      "taskId": "task-1",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 480,
+      "day": 1,
+      "meetingId": "council-1",
+      "actorId": "npc_06",
+      "type": "COLLECT_WOOD",
+      "verdict": "accept",
+      "taskId": "task-2",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 480,
+      "day": 1,
+      "meetingId": "council-1",
+      "actorId": "npc_01",
+      "type": "COLLECT_WOOD",
+      "verdict": "accept",
+      "taskId": "task-3",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 480,
+      "day": 1,
+      "meetingId": "council-1",
+      "actorId": "npc_03",
+      "type": "MAINTAIN_POWER",
+      "verdict": "accept",
+      "taskId": "task-4",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 1770,
+      "day": 2,
+      "meetingId": "council-2",
+      "actorId": "npc_03",
+      "type": "MAINTAIN_POWER",
+      "verdict": "counter",
+      "taskId": "task-5",
+      "reassignedTo": null,
+      "reason": "自身状态不适合 MAINTAIN_POWER"
+    },
+    {
+      "at": 1770,
+      "day": 2,
+      "meetingId": "council-2",
+      "actorId": "npc_05",
+      "type": "MAINTAIN_POWER",
+      "verdict": "accept",
+      "taskId": "task-7",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 1770,
+      "day": 2,
+      "meetingId": "council-2",
+      "actorId": "npc_06",
+      "type": "REST_RECOVER",
+      "verdict": "accept",
+      "taskId": "task-8",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 2280,
+      "day": 2,
+      "meetingId": "council-3",
+      "actorId": "npc_03",
+      "type": "MAINTAIN_POWER",
+      "verdict": "counter",
+      "taskId": "task-9",
+      "reassignedTo": null,
+      "reason": "自身状态不适合 MAINTAIN_POWER"
+    },
+    {
+      "at": 2280,
+      "day": 2,
+      "meetingId": "council-3",
+      "actorId": "npc_05",
+      "type": "MAINTAIN_POWER",
+      "verdict": "accept",
+      "taskId": "task-11",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    },
+    {
+      "at": 2280,
+      "day": 2,
+      "meetingId": "council-3",
+      "actorId": "npc_06",
+      "type": "REST_RECOVER",
+      "verdict": "accept",
+      "taskId": "task-12",
+      "reassignedTo": null,
+      "reason": "可以接下"
+    }
+  ],
+  "files": {
+    "trajectory": "/tmp/r11d-d2/trajectory.jsonl",
+    "clock": "/tmp/r11d-d2/clock.json",
+    "summary": "/tmp/r11d-d2/summary-reference-r11-d2-2026-11-20T06-00-08-975Z.json",
+    "runnerState": "/tmp/r11d-d2/state.json.runner.json",
+    "settlementAudit": "/tmp/r11d-d2/settlement-audit-reference-r11-d2-2026-11-20T06-00-08-975Z.json",
+    "runtimeDocument": "/tmp/r11d-d2/runtime-reference-r11-d2-2026-11-20T06-00-08-975Z.json",
+    "trajectorySha256": "11ace3c87d508d0cf2b4eb8debb0b94ba41bb13f2ffd5b09b984e37bc07844c3",
+    "clockSha256": "000e46abae94d48fee0a9b36ef784c8dd0ccdd60e2bdadb1aebbd7300460590c"
+  },
+  "environment": {
+    "node": "v22.23.4",
+    "platform": "linux",
+    "originalMap": false,
+    "strategy": "npc-schedule/home-at-night/1+outdoor-limit/120min/1+reference-survival/1+lethal-day-withdrawal/1+walk-escort/1+recorded-survival-exit/1+supply-then-restart/1",
+    "scorerIdentity": {
+      "scorerId": "reference-rule/1"
+    },
+    "duplicateDemands": 0,
+    "rescues": 0,
+    "nightWalks": 8,
+    "weatherVetoes": 0,
+    "outdoorWithdrawals": 0
+  },
+  "stopped": {
+    "requestedDay": 2,
+    "day": 2,
+    "simTime": 2280,
+    "pending": 8,
+    "state": "/tmp/r11d-d2/state.json"
+  }
+}

@@ -20,7 +20,7 @@ import { GOSPEL_PROFILE, REFERENCE_PROFILE, type TimeProfile } from '../../src/r
 import type { MemoryPolicyId } from '../../src/r7/agency/options';
 import { JointScorerClient, parseScorerCommand } from '../../src/r7/ui/joint-scorer';
 import { auditSettlement, saveFourDaySidecars } from '../../src/r7/integration/sidecar';
-import { FourDayRunner, holdCouncil, notesFor, presetOf, strategiesFromList,
+import { FourDayRunner, holdCouncil, notesFor, presetOf, readFourDayRunnerState, strategiesFromList,
   type DecisionRow, type FourDayMode, type FourDayStrategies, type MemorySelection }
   from '../../src/r7/integration/fourday';
 
@@ -137,6 +137,11 @@ interface RunReport {
     reconciled: boolean;
   };
   council: FourDayRunner['council'];
+  /** Set when this process continued another process's save (D2 story). */
+  restore?: { from: string; savedAt: string | null; clock: number;
+    commitments: number; pendingIntents: number;
+    commitmentsCarried: { commitmentId: string; goal: string; status: string;
+      revision: number; promisorId: string }[] };
   files: Record<string, string>;
   environment: Record<string, unknown>;
   stopped?: { requestedDay: number; day: number; simTime: number; pending: number;
@@ -221,6 +226,18 @@ async function main(): Promise<void> {
       weatherVetoes: summary.weatherVetoes.length,
       outdoorWithdrawals: summary.outdoorWithdrawals.length },
   };
+  if (args.restore) {
+    const saved = readFourDayRunnerState(args.restore);
+    report.restore = {
+      from: args.restore, savedAt: saved.savedAt,
+      clock: result.runtime.world.simTime,
+      commitments: result.play.commitments.all().length,
+      pendingIntents: intents.filter(intent => intent.status === 'working').length,
+      commitmentsCarried: result.play.commitments.all().map(row => ({
+        commitmentId: row.commitmentId, goal: row.goal, status: row.status,
+        revision: row.revision, promisorId: row.promisorId })),
+    };
+  }
   if (runner.runner.stopAfterDays !== null && !summary.ending) {
     report.stopped = { requestedDay: runner.runner.stopAfterDays,
       day: summary.endedAt > 0 ? Math.floor(summary.endedAt / args.profile.minutesPerDay)
