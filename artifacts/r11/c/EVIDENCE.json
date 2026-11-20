@@ -1,27 +1,33 @@
 {
-  "schema": "frostecho.r11c.evidence/1",
-  "generatedAt": "2026-11-20T12:00:00+08:00",
+  "schema": "frostecho.r11c.evidence/2",
+  "generatedAt": "2026-11-20T13:30:00+08:00",
   "source": {
     "branch": "codex/r11-c",
-    "head": "9000026",
+    "head": "9ee5c0a",
     "base": "24406c4",
-    "tree": "7c918cc281919ed3361d708e4e1a8b90adeceb9f",
+    "tree": "f63665bc5cc921b281d05b8abeaa4fb1cf6091df",
     "dirty": [],
     "note": "head is the code commit; the evidence commit adds only artifacts/r11/c and the handoff copy"
   },
   "contract": {
-    "path": "research/decision-choice/r11/manifest_contract.py",
-    "sha256": "a4cd40cbf4ccbcbb9b897ce580163c77280ed6c9766b2492747eb4b983c1b8a2",
-    "schemaVersions": [
-      "frostecho.action-weak-experiment/1 (legacy, reference-imitation only)",
+    "python": "research/decision-choice/r11/manifest_contract.py",
+    "pythonSha256": "6f4d3c165d63dc7aabbb6d4e7a835d81c3a5e258cbf1d01ed642c4d82ddd0cd6",
+    "javascript": "scripts/r11/manifest-validator.mjs",
+    "javascriptSha256": "30ba99a3e566fd29dbb3b70b11b9538ffc21658c6958c87f56554a4e13a22e82",
+    "schemaVersions": {
+      "1": "frostecho.action-weak-experiment/1 (reference-imitation only)",
+      "2": "frostecho.training-manifest/r11"
+    },
+    "schemaAliases": [
       "frostecho.action-training-manifest/2"
     ],
     "labelSources": [
       "reference-imitation",
       "same-snapshot-branch-rollout"
     ],
+    "crossLanguageHash": "the JS and Python validators compute the same featureIdentityHash (test node --test manifest-validator.test.mjs)",
     "checks": [
-      "head sha/name/tensor",
+      "head sha/name/safetensors F32 [1,5120] finite",
       "feature identity hash/dimension/padding/renderer/encoder",
       "encoding execution batch1/pad8/maxTokens/placement",
       "qualification bytes and sealed ok",
@@ -75,39 +81,47 @@
   },
   "blindPackage": {
     "builder": "research/decision-choice/r11/blind_package.py",
-    "sha256": "ed1305cbdfd6816cc99c86f16f315e6ef90b394dabcf8a81563586f6a2c2c1b7",
+    "sha256": "3b3f85b52b2c435b290baf83a36c7e4235bc75b4b9933d17644fc594c11d4e45",
     "fixture": {
-      "packageId": "05ee25318384d50f92ca0e07cdcc7c5f6774fb8b1a5f05b5d86e62954d1a6b5c",
+      "packageId": "43b0649f1c1fc8a0b4c5dbafee92630af9d44735071999830cff636f8501adf4",
       "cases": 12,
       "branches": 70,
-      "stage1Sha256": "0e5cf4a3304f8de1d4e0aaf76fdebe5f58310aeb177bba4273134a9b0246b21e",
-      "stage2Sha256": "561d87e0203fd5edb5fa1329dc9e64d018459911237d661cc60268dfb9e1122a",
-      "reviewTemplateSha256": "8614e5d581ddf181ca68a8c0a68e07dfc36661b17eaaa1bb7b87d6d3a04d3edd",
+      "packetASha256": "0a6301250d302d3dd6283708295ff0950571e1d245c43c738f4eab46569f80cb",
+      "packetBSha256": "2fe3a272d91098291be29bf3e1f0541f8d14979348a185ff3396d8ff00015fae",
+      "reviewTemplateASha256": "e9454cf1eddac9f56e00cafab792894919bedc5e559144c6c0521c242b22ba7a",
+      "reviewTemplateBSha256": "aff9e5ca38de6224efbd1d8fe97bb2d89ec8a6847f559cc53e8049c5e1533981",
       "salt": "fixture freeze sha"
     },
-    "properties": [
-      "same packageId for F and G",
-      "stage1 has observation+candidates only",
-      "stage2 adds branch facts and the common deadline",
-      "leak scan refuses provenance keys/text",
-      "seals immutable and one per reviewer",
-      "reconcile keeps every disagreement"
-    ]
+    "protocol": [
+      "packet-A = visible observation + candidates only",
+      "packet-B = anonymous branch facts + common deadline, released only after both A seals",
+      "one packageId for F and G",
+      "seals immutable and per reviewer/stage",
+      "reconcile keeps every disagreement, no majority"
+    ],
+    "example": "handoff/C/example-packet (marked fixture, not real data)"
   },
   "tests": [
     {
       "name": "r11-cpu",
       "command": "python -m unittest discover -p 'test_*.py' (research/decision-choice/r11/tests)",
-      "cases": 22,
+      "cases": 23,
       "result": "OK",
-      "logSha256": "fcb139a659f4262c2f6b673fb250f84e925c039ed910e3b36698d84f00e7b525"
+      "logSha256": "743ce99ef1184488f067e671396e25ea8e41ccc89e450a3d7956eb56eb75e213"
+    },
+    {
+      "name": "manifest-validator-js",
+      "command": "node --test research/decision-choice/r11/tests/manifest-validator.test.mjs",
+      "cases": 3,
+      "result": "OK",
+      "logSha256": "e88d9446adf5f65cb92c3f952036e06ae0b14ce5b951b3116c26ebc68f952240"
     },
     {
       "name": "action-regression",
       "command": "python -m unittest test_serve_joint test_joint_encoder",
       "cases": 25,
       "result": "OK",
-      "logSha256": "16642b0345cd03e754483a032876d7f44a213357b40b5399eeb3f8d897c09c4f"
+      "logSha256": "59b5a4f71aeff5dc3ff8f8dc9ba16d177d786c3667c854b23efde5abcfb9c931"
     },
     {
       "name": "typescript-build",
@@ -125,7 +139,7 @@
       "labelStrict": {
         "exit": 2,
         "labelsWritten": false,
-        "clockIntegrity": "artifacts/r11/c/fixture/clock-integrity-refusal.json",
+        "report": "artifacts/r11/c/fixture/clock-integrity-refusal.json",
         "failingCases": 8,
         "duplicateSettlementCases": 8,
         "clockOverrunCases": 8
@@ -152,24 +166,76 @@
     "symptom": "one intent was settled up to 964 times; the clock left t* by 25 minutes",
     "cause": "settleDueIntents -> executeCandidate -> nested advance re-enters settlement",
     "effect": "no labels are written by default; the strict gate exited 2 in the fixture run",
-    "owner": "A (single clock / one settlement), merge required before real C sampling"
+    "owner": "A (single clock / one settlement), merge required before real C sampling",
+    "verifiedOn": "aeb296b: 0 duplicate settlements, 0 clock overrun, labels written",
+    "baseStillBroken": true
   },
   "cost": {
     "gpuAllocatedHours": 0,
     "gpuJobs": [],
-    "note": "no encoding or live model call was run; GPU is reserved for O's slot"
-  },
-  "artifacts": {
-    "committed": [
-      "research/decision-choice/r11",
-      "artifacts/r11/c"
-    ],
-    "largeData": []
+    "note": "no encoding or live model call was run; O's slot is 13:00-16:00 but the 27B cannot fit while foreign processes hold the cards"
   },
   "nextDependencies": [
     "O: FREEZE.json + out-of-band sha256 (shape in research/decision-choice/r11/FREEZE.example.json)",
-    "A: single-clock runner merged; re-run label-deadline-branches without --allow-known-clock-defect",
-    "O: GPU slot + physical GPU indices for real 27B encoding and the two-family training",
-    "F/G: review the same packageId; O seals and reconciles"
-  ]
+    "A: single-clock runner merged; rerun label-deadline-branches without --allow-known-clock-defect",
+    "O: GPU release + physical indices for real encoding and two-family training",
+    "F/G: same packageId; A seals, O releases B, B seals, O reconciles"
+  ],
+  "integrationCheck": {
+    "runnerCommit": "aeb296b (codex/r11-integrate; A single-clock fix)",
+    "build": "npm run build OK in a temporary archive of that commit (my own tree untouched)",
+    "fixture": "same fixture freeze as above; still not O's FREEZE and not real data",
+    "captureCases": 6,
+    "episodes": 2,
+    "labelsWritten": true,
+    "labelsTrustworthy": true,
+    "clockIntegrity": {
+      "ok": true,
+      "failingCases": 0,
+      "allowedByOperator": false
+    },
+    "base": {
+      "allAcceptableCases": 6,
+      "noneAcceptableCases": 0,
+      "discriminativeCases": 0,
+      "meanAcceptablePerCase": 4.8333,
+      "rulePickAcceptable": 6
+    },
+    "fulfillment": {
+      "definedCases": 3,
+      "allAcceptableCases": 0,
+      "noneAcceptableCases": 2,
+      "discriminativeCases": 1,
+      "meanAcceptablePerCase": 0.3333,
+      "emptySetCases": 2,
+      "rulePickAcceptable": 1
+    },
+    "deadlineBasis": {
+      "commitment-due": 3,
+      "frozen-default": 3
+    },
+    "evidence": "artifacts/r11/c/fixture/integration-aeb296b",
+    "runAll": {
+      "command": "research/decision-choice/r11/run-all.sh <out> <fixture-freeze> <sha> 3 3",
+      "exit": 0,
+      "log": "artifacts/r11/c/tests/run-all-fixture-aeb296b.log",
+      "corpus": {
+        "cases": 12,
+        "episodes": 3,
+        "families": {
+          "base": 12,
+          "fulfillment": 10
+        },
+        "informationSufficient": false
+      },
+      "blindPackageId": "3b092b5771055e2d8712d8ee871e131349ad2f806dfd34ce635de366919968fc",
+      "packetASha256": "c059b83eb0baa83f8343eb3f32b5da05050daef8a5df72053ac6055d8e3c966c",
+      "packetBSha256": "22b4763028465f7aa3ea2dd3789121f05d60839822e99c283600a87532405ce2",
+      "note": "fixture freeze; proves the chain runs on the fixed runner, not that the volumes meet the R11 targets"
+    },
+    "clockGate": {
+      "strictExitOn24406c4": 2,
+      "passesOnAeb296b": true
+    }
+  }
 }

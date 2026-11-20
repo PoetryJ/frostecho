@@ -1,0 +1,184 @@
+{
+  "schema": "frostecho.r11c.corpus/1",
+  "cases": 12,
+  "episodes": {
+    "r11c-ep02": "train",
+    "r11c-ep00": "dev",
+    "r11c-ep01": "test"
+  },
+  "episodeCount": 3,
+  "developmentEpisodes": 2,
+  "splitSeed": "r11c-split-1",
+  "splitUnit": "sourceEpisodeId",
+  "trainRatio": 0.6,
+  "devRatio": 0.2,
+  "labelSource": "same-snapshot-branch-rollout",
+  "labelFamilies": {
+    "base": {
+      "family": "base",
+      "cases": 12,
+      "bySplit": {
+        "train": {
+          "cases": 4,
+          "allAcceptable": 4,
+          "noneAcceptable": 0,
+          "discriminative": 0,
+          "labelledCases": 4,
+          "meanAcceptableSet": 6
+        },
+        "dev": {
+          "cases": 4,
+          "allAcceptable": 4,
+          "noneAcceptable": 0,
+          "discriminative": 0,
+          "labelledCases": 4,
+          "meanAcceptableSet": 6
+        },
+        "test": {
+          "cases": 4,
+          "allAcceptable": 4,
+          "noneAcceptable": 0,
+          "discriminative": 0,
+          "labelledCases": 4,
+          "meanAcceptableSet": 5.5
+        }
+      },
+      "byStory": {
+        "cancel-heard": {
+          "cases": 4,
+          "distinctAcceptableSets": 4,
+          "allAcceptable": 4,
+          "noneAcceptable": 0,
+          "discriminative": 0,
+          "labelledCases": 4,
+          "meanAcceptableSet": 6
+        },
+        "cancel-unheard": {
+          "cases": 4,
+          "distinctAcceptableSets": 3,
+          "allAcceptable": 4,
+          "noneAcceptable": 0,
+          "discriminative": 0,
+          "labelledCases": 4,
+          "meanAcceptableSet": 5.5
+        },
+        "change-unaccepted": {
+          "cases": 4,
+          "distinctAcceptableSets": 4,
+          "allAcceptable": 4,
+          "noneAcceptable": 0,
+          "discriminative": 0,
+          "labelledCases": 4,
+          "meanAcceptableSet": 6
+        }
+      },
+      "storiesPresent": 3,
+      "storiesWithDifferentOutcomes": 3,
+      "corpusSha256": "8df6b3ef94da80ebcb4b74f643277fc432d8f55b1e382f4a6296a02add1f44e9"
+    },
+    "fulfillment": {
+      "family": "fulfillment",
+      "cases": 10,
+      "bySplit": {
+        "train": {
+          "cases": 4,
+          "allAcceptable": 0,
+          "noneAcceptable": 4,
+          "discriminative": 0,
+          "labelledCases": 0,
+          "meanAcceptableSet": 0
+        },
+        "dev": {
+          "cases": 4,
+          "allAcceptable": 0,
+          "noneAcceptable": 3,
+          "discriminative": 1,
+          "labelledCases": 1,
+          "meanAcceptableSet": 0.25
+        },
+        "test": {
+          "cases": 2,
+          "allAcceptable": 0,
+          "noneAcceptable": 2,
+          "discriminative": 0,
+          "labelledCases": 0,
+          "meanAcceptableSet": 0
+        }
+      },
+      "byStory": {
+        "cancel-heard": {
+          "cases": 4,
+          "distinctAcceptableSets": 2,
+          "allAcceptable": 0,
+          "noneAcceptable": 3,
+          "discriminative": 1,
+          "labelledCases": 1,
+          "meanAcceptableSet": 0.25
+        },
+        "cancel-unheard": {
+          "cases": 2,
+          "distinctAcceptableSets": 1,
+          "allAcceptable": 0,
+          "noneAcceptable": 2,
+          "discriminative": 0,
+          "labelledCases": 0,
+          "meanAcceptableSet": 0
+        },
+        "change-unaccepted": {
+          "cases": 4,
+          "distinctAcceptableSets": 1,
+          "allAcceptable": 0,
+          "noneAcceptable": 4,
+          "discriminative": 0,
+          "labelledCases": 0,
+          "meanAcceptableSet": 0
+        }
+      },
+      "storiesPresent": 3,
+      "storiesWithDifferentOutcomes": 1,
+      "corpusSha256": "e1cca3df3a5036cbda5dec30d37f07ca4ae7665610b7494ac03feb4972fa2264"
+    }
+  },
+  "targets": {
+    "devPoolStates": 48,
+    "devPoolEpisodes": 12,
+    "discriminativeStates": 24,
+    "devDiscriminative": 32,
+    "testDiscriminative": 32
+  },
+  "targetReport": {
+    "devPoolStates": {
+      "target": 48,
+      "actual": 12,
+      "met": false
+    },
+    "devPoolEpisodes": {
+      "target": 12,
+      "actual": 3,
+      "met": false
+    },
+    "discriminativeStates": {
+      "target": 24,
+      "actual": 0,
+      "met": false
+    },
+    "devDiscriminative": {
+      "target": 32,
+      "actual": 0,
+      "met": false
+    },
+    "testDiscriminative": {
+      "target": 32,
+      "actual": 0,
+      "met": false
+    }
+  },
+  "missingLabels": 0,
+  "crossSplitTextMoves": 0,
+  "casesSha256": "b38e2c7a9694b840f4b458e5bcd73e092c254211f87d516b531c63244bd61d07",
+  "labelsSha256": "2ffb9ff367781b4d93691cdd7b88de8f7b55bb610f58f6c921c4db9ed659c134",
+  "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+  "freezeSha256": "732ea842c23fea9a5523555e72e73764ade07581b75d3740b14b93a7a31bee25",
+  "informationSufficient": false,
+  "note": "Empty acceptable sets stay in the corpus as evidence and are excluded from every loss; they are never replaced by a made-up correct candidate."
+}

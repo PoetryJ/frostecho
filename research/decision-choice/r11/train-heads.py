@@ -412,7 +412,7 @@ def main():
     horizon = next(iter(deadlines))
     qualification = cache["qualification"]
     artifact = {
-        "schema": "frostecho.action-training-manifest/2",
+        "schema": "frostecho.training-manifest/r11",
         "experimental": True, "researchTrainReady": False, "mayTrainOnJev": False,
         "countsAsAdmitted": False, "calibrated": False,
         "labelSource": "same-snapshot-branch-rollout",

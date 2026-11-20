@@ -1,0 +1,278 @@
+
+> frostecho@0.1.0 build
+> tsc -p tsconfig.json
+
+{"episode":0,"story":"cancel-heard","kept":4,"elapsedMs":3117}
+{"episode":1,"story":"cancel-unheard","kept":4,"elapsedMs":6179}
+{"episode":2,"story":"change-unaccepted","kept":4,"elapsedMs":9625}
+{"ok":true,"schema":"frostecho.r11c.capture/1","cases":12,"episodes":3,"slices":3,"policy":"reference","freezeSha256":"732ea842c23fea9a5523555e72e73764ade07581b75d3740b14b93a7a31bee25","freezeSourceCommit":"fixture-cpu-selftest-not-o","splitSeed":"fixture-split","rendererSourceSha256":"6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e","rendererBuildSha256":"3c4b7b395053a6f7d948594f761316f96b994c14f8cb0c1c855ca4da893c6237","rendererId":"joint-c-action/2","memory":{"memorySelection":"obligation-first","memoryPolicy":"conditional-experience","memoryTokenBudget":640},"deadlineHorizonMinutes":240,"legacySpatial":true,"manifestSha256":null,"byStory":{"cancel-heard":4,"cancel-unheard":4,"change-unaccepted":4},"byEpisode":{"r11c-ep00":4,"r11c-ep01":4,"r11c-ep02":4},"byAccessState":{"reference":12},"withActiveCommitment":10,"wallSeconds":9.627,"casesSha256":"dbaf1700fb3a619db28ccd577fda80be2f9968479b8e12279122a4a334f2ed42","realModel":false,"note":"States come from runStep under the frozen policy; story setups touch the world, never the observation."}
+{"caseId":"r11c-00-s0-npc_01-000","deadline":720,"basis":"commitment-due","base":7,"fulfillment":0,"defined":7}
+{"caseId":"r11c-00-s0-npc_02-001","deadline":720,"basis":"commitment-due","base":7,"fulfillment":0,"defined":7}
+{"caseId":"r11c-00-s1-npc_04-002","deadline":720,"basis":"commitment-due","base":5,"fulfillment":1,"defined":5}
+{"caseId":"r11c-00-s1-npc_01-003","deadline":720,"basis":"commitment-due","base":5,"fulfillment":0,"defined":5}
+{"caseId":"r11c-01-s0-npc_06-000","deadline":720,"basis":"frozen-default","base":6,"fulfillment":0,"defined":0}
+{"caseId":"r11c-01-s0-npc_07-001","deadline":720,"basis":"frozen-default","base":6,"fulfillment":0,"defined":0}
+{"caseId":"r11c-01-s1-npc_01-002","deadline":720,"basis":"commitment-due","base":5,"fulfillment":0,"defined":5}
+{"caseId":"r11c-01-s1-npc_02-003","deadline":720,"basis":"commitment-due","base":5,"fulfillment":0,"defined":5}
+{"caseId":"r11c-02-s0-npc_03-000","deadline":720,"basis":"commitment-due","base":7,"fulfillment":0,"defined":7}
+{"caseId":"r11c-02-s0-npc_04-001","deadline":720,"basis":"commitment-due","base":7,"fulfillment":0,"defined":7}
+{"caseId":"r11c-02-s1-npc_01-002","deadline":720,"basis":"commitment-due","base":5,"fulfillment":0,"defined":5}
+{"caseId":"r11c-02-s1-npc_02-003","deadline":720,"basis":"commitment-due","base":5,"fulfillment":0,"defined":5}
+{
+  "ok": true,
+  "schema": "frostecho.r11c.deadline-labels/1",
+  "cases": 12,
+  "totalBranches": 70,
+  "horizonMinutes": 240,
+  "sliceMinutes": 30,
+  "deadlineBasis": {
+    "commitment-due": 10,
+    "frozen-default": 2
+  },
+  "base": {
+    "allAcceptableCases": 12,
+    "noneAcceptableCases": 0,
+    "discriminativeCases": 0,
+    "meanAcceptablePerCase": 5.8333,
+    "rulePickAcceptable": 12
+  },
+  "fulfillment": {
+    "definedCases": 10,
+    "allAcceptableCases": 0,
+    "noneAcceptableCases": 9,
+    "discriminativeCases": 1,
+    "meanAcceptablePerCase": 0.1,
+    "emptySetCases": 9,
+    "rulePickAcceptable": 1
+  },
+  "byStory": {
+    "cancel-heard": {
+      "cases": 4,
+      "baseDiscriminative": 0,
+      "fulfillmentDefined": 4,
+      "fulfillmentDiscriminative": 1,
+      "noneFulfillment": 3
+    },
+    "cancel-unheard": {
+      "cases": 4,
+      "baseDiscriminative": 0,
+      "fulfillmentDefined": 2,
+      "fulfillmentDiscriminative": 0,
+      "noneFulfillment": 2
+    },
+    "change-unaccepted": {
+      "cases": 4,
+      "baseDiscriminative": 0,
+      "fulfillmentDefined": 4,
+      "fulfillmentDiscriminative": 0,
+      "noneFulfillment": 4
+    }
+  },
+  "casesSha256": "b38e2c7a9694b840f4b458e5bcd73e092c254211f87d516b531c63244bd61d07",
+  "labelsSha256": "1d65f4fc7325016d8a2c309780166fac1ef18e464f2e12912afdada25792b3f0",
+  "deadlinesSha256": "8317c0e306a8c94a00ca1e168f54d9768f3b2bac95e23bd3d53dbffdd729c26f",
+  "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+  "freezeSha256": "732ea842c23fea9a5523555e72e73764ade07581b75d3740b14b93a7a31bee25",
+  "clockIntegrity": {
+    "ok": true,
+    "failingCases": 0,
+    "allowedByOperator": false
+  },
+  "labelsTrustworthy": true,
+  "controller": {
+    "mode": "reference",
+    "scorerId": "reference-rule/1",
+    "rendererId": "agency-options/1",
+    "experimental": false,
+    "countsAsAdmitted": false
+  },
+  "note": "All branches share one snapshot, one fixed controller and one absolute deadline; pending slow actions are recorded as pending, never extended."
+}
+{
+  "ok": true,
+  "schema": "frostecho.r11c.corpus/1",
+  "cases": 12,
+  "episodes": {
+    "r11c-ep02": "train",
+    "r11c-ep00": "dev",
+    "r11c-ep01": "test"
+  },
+  "episodeCount": 3,
+  "developmentEpisodes": 2,
+  "splitSeed": "r11c-split-1",
+  "splitUnit": "sourceEpisodeId",
+  "trainRatio": 0.6,
+  "devRatio": 0.2,
+  "labelSource": "same-snapshot-branch-rollout",
+  "labelFamilies": {
+    "base": {
+      "family": "base",
+      "cases": 12,
+      "bySplit": {
+        "train": {
+          "cases": 4,
+          "allAcceptable": 4,
+          "noneAcceptable": 0,
+          "discriminative": 0,
+          "labelledCases": 4,
+          "meanAcceptableSet": 6
+        },
+        "dev": {
+          "cases": 4,
+          "allAcceptable": 4,
+          "noneAcceptable": 0,
+          "discriminative": 0,
+          "labelledCases": 4,
+          "meanAcceptableSet": 6
+        },
+        "test": {
+          "cases": 4,
+          "allAcceptable": 4,
+          "noneAcceptable": 0,
+          "discriminative": 0,
+          "labelledCases": 4,
+          "meanAcceptableSet": 5.5
+        }
+      },
+      "byStory": {
+        "cancel-heard": {
+          "cases": 4,
+          "distinctAcceptableSets": 4,
+          "allAcceptable": 4,
+          "noneAcceptable": 0,
+          "discriminative": 0,
+          "labelledCases": 4,
+          "meanAcceptableSet": 6
+        },
+        "cancel-unheard": {
+          "cases": 4,
+          "distinctAcceptableSets": 3,
+          "allAcceptable": 4,
+          "noneAcceptable": 0,
+          "discriminative": 0,
+          "labelledCases": 4,
+          "meanAcceptableSet": 5.5
+        },
+        "change-unaccepted": {
+          "cases": 4,
+          "distinctAcceptableSets": 4,
+          "allAcceptable": 4,
+          "noneAcceptable": 0,
+          "discriminative": 0,
+          "labelledCases": 4,
+          "meanAcceptableSet": 6
+        }
+      },
+      "storiesPresent": 3,
+      "storiesWithDifferentOutcomes": 3,
+      "corpusSha256": "8df6b3ef94da80ebcb4b74f643277fc432d8f55b1e382f4a6296a02add1f44e9"
+    },
+    "fulfillment": {
+      "family": "fulfillment",
+      "cases": 10,
+      "bySplit": {
+        "train": {
+          "cases": 4,
+          "allAcceptable": 0,
+          "noneAcceptable": 4,
+          "discriminative": 0,
+          "labelledCases": 0,
+          "meanAcceptableSet": 0
+        },
+        "dev": {
+          "cases": 4,
+          "allAcceptable": 0,
+          "noneAcceptable": 3,
+          "discriminative": 1,
+          "labelledCases": 1,
+          "meanAcceptableSet": 0.25
+        },
+        "test": {
+          "cases": 2,
+          "allAcceptable": 0,
+          "noneAcceptable": 2,
+          "discriminative": 0,
+          "labelledCases": 0,
+          "meanAcceptableSet": 0
+        }
+      },
+      "byStory": {
+        "cancel-heard": {
+          "cases": 4,
+          "distinctAcceptableSets": 2,
+          "allAcceptable": 0,
+          "noneAcceptable": 3,
+          "discriminative": 1,
+          "labelledCases": 1,
+          "meanAcceptableSet": 0.25
+        },
+        "cancel-unheard": {
+          "cases": 2,
+          "distinctAcceptableSets": 1,
+          "allAcceptable": 0,
+          "noneAcceptable": 2,
+          "discriminative": 0,
+          "labelledCases": 0,
+          "meanAcceptableSet": 0
+        },
+        "change-unaccepted": {
+          "cases": 4,
+          "distinctAcceptableSets": 1,
+          "allAcceptable": 0,
+          "noneAcceptable": 4,
+          "discriminative": 0,
+          "labelledCases": 0,
+          "meanAcceptableSet": 0
+        }
+      },
+      "storiesPresent": 3,
+      "storiesWithDifferentOutcomes": 1,
+      "corpusSha256": "e1cca3df3a5036cbda5dec30d37f07ca4ae7665610b7494ac03feb4972fa2264"
+    }
+  },
+  "targets": {
+    "devPoolStates": 48,
+    "devPoolEpisodes": 12,
+    "discriminativeStates": 24,
+    "devDiscriminative": 32,
+    "testDiscriminative": 32
+  },
+  "targetReport": {
+    "devPoolStates": {
+      "target": 48,
+      "actual": 12,
+      "met": false
+    },
+    "devPoolEpisodes": {
+      "target": 12,
+      "actual": 3,
+      "met": false
+    },
+    "discriminativeStates": {
+      "target": 24,
+      "actual": 0,
+      "met": false
+    },
+    "devDiscriminative": {
+      "target": 32,
+      "actual": 0,
+      "met": false
+    },
+    "testDiscriminative": {
+      "target": 32,
+      "actual": 0,
+      "met": false
+    }
+  },
+  "missingLabels": 0,
+  "crossSplitTextMoves": 0,
+  "casesSha256": "b38e2c7a9694b840f4b458e5bcd73e092c254211f87d516b531c63244bd61d07",
+  "labelsSha256": "2ffb9ff367781b4d93691cdd7b88de8f7b55bb610f58f6c921c4db9ed659c134",
+  "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+  "freezeSha256": "732ea842c23fea9a5523555e72e73764ade07581b75d3740b14b93a7a31bee25",
+  "informationSufficient": false,
+  "note": "Empty acceptable sets stay in the corpus as evidence and are excluded from every loss; they are never replaced by a made-up correct candidate."
+}
+{"ok": true, "schema": "frostecho.r11c.blind-package/1", "packageId": "3b092b5771055e2d8712d8ee871e131349ad2f806dfd34ce635de366919968fc", "salt": "732ea842c23fea9a5523555e72e73764ade07581b75d3740b14b93a7a31bee25", "packetA": {"path": "packet-A.jsonl", "sha256": "c059b83eb0baa83f8343eb3f32b5da05050daef8a5df72053ac6055d8e3c966c"}, "packetB": {"path": "packet-B.jsonl", "sha256": "22b4763028465f7aa3ea2dd3789121f05d60839822e99c283600a87532405ce2"}, "reviewTemplateA": {"path": "review-template-A.jsonl", "sha256": "e9454cf1eddac9f56e00cafab792894919bedc5e559144c6c0521c242b22ba7a"}, "reviewTemplateB": {"path": "review-template-B.jsonl", "sha256": "aff9e5ca38de6224efbd1d8fe97bb2d89ec8a6847f559cc53e8049c5e1533981"}, "key": {"path": "key.json", "sha256": "433888e6817295a925f16bb4323ba30a312c972d8f308918bacdc0cc2b4d02b6"}, "counts": {"cases": 12, "branches": 70, "candidates": 70}, "reviewers": ["F", "G"], "rule": "same packageId for F and G; A seals before B is released; disagreements are preserved"}
+{"ok": true, "packageId": "3b092b5771055e2d8712d8ee871e131349ad2f806dfd34ce635de366919968fc", "cases": 12, "branches": 70, "packetASha256": "c059b83eb0baa83f8343eb3f32b5da05050daef8a5df72053ac6055d8e3c966c", "packetBSha256": "22b4763028465f7aa3ea2dd3789121f05d60839822e99c283600a87532405ce2"}
+R11 C chain complete under /tmp/r11-o-runall2

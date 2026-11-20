@@ -1,0 +1,62 @@
+{
+  "schema": "frostecho.r11c.deadline-labels/1",
+  "cases": 6,
+  "totalBranches": 29,
+  "horizonMinutes": 240,
+  "sliceMinutes": 30,
+  "deadlineBasis": {
+    "commitment-due": 3,
+    "frozen-default": 3
+  },
+  "base": {
+    "allAcceptableCases": 6,
+    "noneAcceptableCases": 0,
+    "discriminativeCases": 0,
+    "meanAcceptablePerCase": 4.8333,
+    "rulePickAcceptable": 6
+  },
+  "fulfillment": {
+    "definedCases": 3,
+    "allAcceptableCases": 0,
+    "noneAcceptableCases": 2,
+    "discriminativeCases": 1,
+    "meanAcceptablePerCase": 0.3333,
+    "emptySetCases": 2,
+    "rulePickAcceptable": 1
+  },
+  "byStory": {
+    "cancel-heard": {
+      "cases": 3,
+      "baseDiscriminative": 0,
+      "fulfillmentDefined": 2,
+      "fulfillmentDiscriminative": 1,
+      "noneFulfillment": 1
+    },
+    "cancel-unheard": {
+      "cases": 3,
+      "baseDiscriminative": 0,
+      "fulfillmentDefined": 1,
+      "fulfillmentDiscriminative": 0,
+      "noneFulfillment": 1
+    }
+  },
+  "casesSha256": "0785fc3ab99c104630a238b44b16831ca194676007eecf769e9bf5a820b2710d",
+  "labelsSha256": "a5ebea0a6e8db56b20359b6538c34f3a27e60fd3decd8b28b5c548cfcdf8309f",
+  "deadlinesSha256": "18642fc1f746f059dec6ed766d438e900530c2ec496d85e705178ac3a739e73c",
+  "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+  "freezeSha256": "732ea842c23fea9a5523555e72e73764ade07581b75d3740b14b93a7a31bee25",
+  "clockIntegrity": {
+    "ok": true,
+    "failingCases": 0,
+    "allowedByOperator": false
+  },
+  "labelsTrustworthy": true,
+  "controller": {
+    "mode": "reference",
+    "scorerId": "reference-rule/1",
+    "rendererId": "agency-options/1",
+    "experimental": false,
+    "countsAsAdmitted": false
+  },
+  "note": "All branches share one snapshot, one fixed controller and one absolute deadline; pending slow actions are recorded as pending, never extended."
+}
