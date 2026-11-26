@@ -1,0 +1,232 @@
+{
+  "schema": "frostecho.r11.matrix-game/1",
+  "arm": "reference-conditional",
+  "family": "reference",
+  "seed": "r11h-1",
+  "recipe": null,
+  "memorySelection": "obligation-first",
+  "memoryTokenBudget": 640,
+  "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
+  "source": {
+    "head": "24406c4ba29a825306515db46edfacae99249976",
+    "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
+    "branch": "codex/r11-h"
+  },
+  "exits": {
+    "start": 0,
+    "resume": 0,
+    "continuous": 0,
+    "segmentedStart": 0,
+    "segmentedEnd": 0
+  },
+  "pids": {
+    "start": 1137207,
+    "resume": 1137616,
+    "services": []
+  },
+  "head": {
+    "headPath": null,
+    "headSha256": null,
+    "manifestPath": null,
+    "manifestSha256": null,
+    "labelSource": null,
+    "featureIdentityHash": null,
+    "rendererId": "joint-c-action/2",
+    "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
+    "ok": true,
+    "reason": null
+  },
+  "save": {
+    "at": 4860,
+    "stateSha256": "6718365dbf1aba59621344dc2cd04d4ed5e8c39585022cb5ed7fdd3ab00c37af",
+    "activeCommitments": 2,
+    "boundWorkingIntents": 2,
+    "pending": 7
+  },
+  "restore": {
+    "equal": true,
+    "diffs": 0,
+    "savedPid": 1137207,
+    "pid": 1137616
+  },
+  "interference": {
+    "saveClock": 4860,
+    "stories": [
+      {
+        "id": "cancel-heard",
+        "at": 4870,
+        "lateBy": 0,
+        "target": {
+          "commitmentId": "cm-5fa04716-0993-48e8-a01e-5823d7c53288"
+        }
+      },
+      {
+        "id": "cancel-unheard",
+        "at": 4870,
+        "lateBy": 0,
+        "target": {
+          "commitmentId": "cm-77a94aac-8f8c-4166-a483-9858148f9e9e"
+        }
+      },
+      {
+        "id": "offer-follow-up",
+        "at": 4880,
+        "lateBy": 0,
+        "target": {
+          "commitments": [
+            "cm-9a600d06-98ca-4009-a85b-f4ceda2ee4d1",
+            "cm-fa57141d-9262-448c-a5cb-15a9c1beb789"
+          ]
+        }
+      },
+      {
+        "id": "drain-for-contention",
+        "at": 4880,
+        "lateBy": 0,
+        "target": {
+          "stockBefore": 2,
+          "stockAfter": 1
+        }
+      },
+      {
+        "id": "relay-unheard",
+        "at": 4890,
+        "lateBy": 0,
+        "target": {
+          "commitmentId": "cm-77a94aac-8f8c-4166-a483-9858148f9e9e"
+        }
+      },
+      {
+        "id": "reject-source-change",
+        "at": null,
+        "lateBy": 0,
+        "target": null
+      },
+      {
+        "id": "lift-old-failure",
+        "at": null,
+        "lateBy": 0,
+        "target": null
+      },
+      {
+        "id": "watch",
+        "at": 5340,
+        "lateBy": 0,
+        "target": null
+      },
+      {
+        "id": "contention",
+        "at": 4880
+      }
+    ]
+  },
+  "replay": {
+    "continuous": {
+      "equal": true,
+      "diffs": 0
+    },
+    "segmented": {
+      "equal": true,
+      "diffs": 0
+    },
+    "countsAsModelResult": false
+  },
+  "final": {
+    "simTime": 5400,
+    "ending": "bleak",
+    "stateSha256": "6c51548a40580b1aaeacb92350e74f917c1741477965ebbe849b40b0fc9778eb"
+  },
+  "metrics": {
+    "decisions": 502,
+    "realForwards": 0,
+    "gpuWallSeconds": 0,
+    "primary": {
+      "id": "verified_fulfilment_rate_per_instance",
+      "numerator": 4,
+      "denominator": 8,
+      "value": 0.5
+    },
+    "counts": {
+      "instances": 8,
+      "fulfilled": 4,
+      "overdue": 4,
+      "authorisedExit": 0,
+      "cancelled": 2,
+      "changesProposed": 0,
+      "duplicateReceipts": 0
+    },
+    "postCancel": {
+      "cancelledInstances": 2,
+      "attemptsAfter": 1,
+      "latePhysicalEffects": 0,
+      "lateReceipts": 0,
+      "unauthorisedAttempts": 1
+    },
+    "changes": {
+      "proposed": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "unagreedSourceActions": 0,
+      "rows": []
+    },
+    "duplicateReceipts": {
+      "fulfilmentInstancesWithMultipleReceipts": 0,
+      "receiptIdsUsedTwice": []
+    },
+    "settlement": {
+      "intents": 425,
+      "byStatus": {
+        "applied": 417,
+        "rejected": 4,
+        "cancelled": 4
+      },
+      "failureReasons": {
+        "wrong_location: rest needs dorm-a, actor is at dorm-b": 3,
+        "commitment_cancelled": 3,
+        "actor_not_alive": 2
+      },
+      "pendingWithinEnd": 0,
+      "expired": 0,
+      "directRejections": 0,
+      "busySkips": 18
+    },
+    "workHours": 2.5,
+    "survivors": 3,
+    "ending": "bleak",
+    "resources": {
+      "final": {
+        "food": 116,
+        "firewood": 0,
+        "power": 0
+      },
+      "inventoryHours": {
+        "food": 16.111,
+        "firewood": 0,
+        "power": 0
+      },
+      "gapHours": {
+        "food": 0,
+        "firewood": 9,
+        "power": 9
+      }
+    },
+    "exposure": {
+      "instances": 8,
+      "activeAtSave": 2,
+      "boundWorkAtSave": 2,
+      "cancelHeardOpportunities": 1,
+      "cancelUnheardOpportunities": 1,
+      "changeOpportunities": 0,
+      "restockOpportunityAt": 4920,
+      "restockWitnessed": 0,
+      "contentionOpportunities": 2
+    },
+    "reconciled": true
+  },
+  "evidenceSha256": "cc35faa27b8dddf07aa84f1b90e493a79e2e77cfe4d35393f64393c2736823b6",
+  "gameSha256": "437475c24a7eed33353a6e73b6c669afd99c1fecbe10ebd6668202ff9029b3e7",
+  "status": "completed",
+  "verify": true,
+  "exposed": false,
+  "tamper": true
+}

@@ -1,0 +1,164 @@
+{
+  "schema": "frostecho.r11.matrix-phase/1",
+  "phase": "start",
+  "pid": 1241254,
+  "arm": "probe-bridge-first",
+  "seed": "r11h-1",
+  "family": "probe",
+  "memorySelection": "obligation-first",
+  "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
+  "source": {
+    "head": "24406c4ba29a825306515db46edfacae99249976",
+    "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
+    "branch": "codex/r11-h"
+  },
+  "at": "2026-11-20T06:32:31.045Z",
+  "cpuSeconds": 7.76,
+  "exitCode": 0,
+  "outcome": "checkpoint",
+  "checkpoint": {
+    "at": 2040,
+    "activeCommitments": 2,
+    "boundWorkingIntents": 2,
+    "pending": 8,
+    "commitments": [
+      {
+        "commitmentId": "cm-a2396d2f-3565-4581-ada4-1165f647553f",
+        "promisorId": "npc_03",
+        "goal": "supply-warehouse",
+        "revision": 1,
+        "status": "active",
+        "deadline": 3960,
+        "taskId": "task-005-supply-warehouse",
+        "createdAt": 2040,
+        "boundWorkingIntents": [
+          {
+            "intentId": "npc_03-r8-256",
+            "action": "move",
+            "startedAt": 2040,
+            "dueAt": 2055,
+            "commitmentId": "cm-a2396d2f-3565-4581-ada4-1165f647553f",
+            "commitmentRevision": 1,
+            "generation": 0,
+            "taskId": "task-005-supply-warehouse"
+          }
+        ]
+      },
+      {
+        "commitmentId": "cm-709daa09-6e8f-4afd-ac3f-b32b476941fb",
+        "promisorId": "npc_04",
+        "goal": "supply-warehouse",
+        "revision": 1,
+        "status": "active",
+        "deadline": 3960,
+        "taskId": "task-006-supply-warehouse",
+        "createdAt": 2040,
+        "boundWorkingIntents": [
+          {
+            "intentId": "npc_04-r8-256",
+            "action": "move",
+            "startedAt": 2040,
+            "dueAt": 2055,
+            "commitmentId": "cm-709daa09-6e8f-4afd-ac3f-b32b476941fb",
+            "commitmentRevision": 1,
+            "generation": 0,
+            "taskId": "task-006-supply-warehouse"
+          }
+        ]
+      }
+    ],
+    "intents": [
+      {
+        "intentId": "npc_01-r8-256",
+        "actorId": "npc_01",
+        "action": "gather",
+        "startedAt": 2040,
+        "dueAt": 2070,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": "task-13",
+        "generation": 0
+      },
+      {
+        "intentId": "npc_02-r8-256",
+        "actorId": "npc_02",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null,
+        "generation": 0
+      },
+      {
+        "intentId": "npc_03-r8-256",
+        "actorId": "npc_03",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": "cm-a2396d2f-3565-4581-ada4-1165f647553f",
+        "commitmentRevision": 1,
+        "taskId": "task-005-supply-warehouse",
+        "generation": 0
+      },
+      {
+        "intentId": "npc_04-r8-256",
+        "actorId": "npc_04",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": "cm-709daa09-6e8f-4afd-ac3f-b32b476941fb",
+        "commitmentRevision": 1,
+        "taskId": "task-006-supply-warehouse",
+        "generation": 0
+      },
+      {
+        "intentId": "npc_05-r8-256",
+        "actorId": "npc_05",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null,
+        "generation": 0
+      },
+      {
+        "intentId": "npc_06-r8-256",
+        "actorId": "npc_06",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null,
+        "generation": 0
+      },
+      {
+        "intentId": "npc_07-r8-256",
+        "actorId": "npc_07",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null,
+        "generation": 0
+      },
+      {
+        "intentId": "npc_08-r8-256",
+        "actorId": "npc_08",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null,
+        "generation": 0
+      }
+    ],
+    "generations": {}
+  },
+  "decisions": 168,
+  "scorer": null
+}

@@ -1,0 +1,211 @@
+{
+  "schema": "frostecho.r11.matrix-start/1",
+  "pid": 1241254,
+  "arm": "probe-bridge-first",
+  "seed": "r11h-1",
+  "family": "probe",
+  "memorySelection": "obligation-first",
+  "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
+  "source": {
+    "head": "24406c4ba29a825306515db46edfacae99249976",
+    "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
+    "branch": "codex/r11-h"
+  },
+  "preflight": {
+    "headSha256": null,
+    "manifestSha256": null,
+    "featureIdentityHash": null,
+    "labelSource": null,
+    "manifestBinding": null,
+    "rendererId": "joint-c-action/2",
+    "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e"
+  },
+  "worldInitSha": "a03ef17553acdfcf97cd57acfe172bb1ad3c189966c9b2c5fa658e80eda9ad5f",
+  "worldInit": {
+    "seed": "r11h-1",
+    "profile": "gospel-5.8.19",
+    "simTime": 480,
+    "resources": {
+      "food": 130,
+      "firewood": 30,
+      "power": 30,
+      "medicine": 3
+    },
+    "spatial": {
+      "positions": {
+        "npc_07": {
+          "x": 16,
+          "y": 15
+        }
+      },
+      "stocks": {
+        "warehouse": {
+          "food": 2
+        }
+      },
+      "carry": {},
+      "closedCells": [],
+      "deliveredMeals": 0
+    },
+    "npcs": [
+      {
+        "id": "npc_01",
+        "location": "dorm-a",
+        "alive": true,
+        "hunger": 100,
+        "stamina": 100,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_02",
+        "location": "dorm-b",
+        "alive": true,
+        "hunger": 100,
+        "stamina": 100,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_03",
+        "location": "dorm-a",
+        "alive": true,
+        "hunger": 100,
+        "stamina": 100,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_04",
+        "location": "dorm-b",
+        "alive": true,
+        "hunger": 100,
+        "stamina": 100,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_05",
+        "location": "dorm-a",
+        "alive": true,
+        "hunger": 100,
+        "stamina": 100,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_06",
+        "location": "dorm-b",
+        "alive": true,
+        "hunger": 100,
+        "stamina": 100,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_07",
+        "location": "warehouse",
+        "alive": true,
+        "hunger": 100,
+        "stamina": 100,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      },
+      {
+        "id": "npc_08",
+        "location": "dorm-b",
+        "alive": true,
+        "hunger": 100,
+        "stamina": 100,
+        "health": 100,
+        "san": 80,
+        "bodyTemp": 36.5
+      }
+    ],
+    "commitments": [
+      {
+        "actorId": "npc_01",
+        "goal": "deliver-meal",
+        "commitmentId": "cm-0d497378-d5b4-43e3-a841-6803dc013257",
+        "taskId": "task-001-deliver-meal",
+        "status": "active",
+        "deadline": 3960
+      },
+      {
+        "actorId": "npc_02",
+        "goal": "deliver-meal",
+        "commitmentId": "cm-76360706-487f-4a9e-ad14-6e4a1d5d975c",
+        "taskId": "task-002-deliver-meal",
+        "status": "active",
+        "deadline": 3960
+      },
+      {
+        "actorId": "npc_03",
+        "goal": "supply-warehouse",
+        "commitmentId": "cm-f6b262f5-47e0-45e8-a3fb-897942f92858",
+        "taskId": "task-003-supply-warehouse",
+        "status": "active",
+        "deadline": 3960
+      },
+      {
+        "actorId": "npc_04",
+        "goal": "supply-warehouse",
+        "commitmentId": "cm-874ce683-a05f-4df9-a7d1-76524a1a38d5",
+        "taskId": "task-004-supply-warehouse",
+        "status": "active",
+        "deadline": 3960
+      }
+    ],
+    "memoryBudget": 640
+  },
+  "commitments": [
+    {
+      "actorId": "npc_01",
+      "goal": "deliver-meal",
+      "verdict": "accept",
+      "commitmentId": "cm-0d497378-d5b4-43e3-a841-6803dc013257",
+      "taskId": "task-001-deliver-meal",
+      "status": "active",
+      "deadline": 3960,
+      "origin": "initial"
+    },
+    {
+      "actorId": "npc_02",
+      "goal": "deliver-meal",
+      "verdict": "accept",
+      "commitmentId": "cm-76360706-487f-4a9e-ad14-6e4a1d5d975c",
+      "taskId": "task-002-deliver-meal",
+      "status": "active",
+      "deadline": 3960,
+      "origin": "initial"
+    },
+    {
+      "actorId": "npc_03",
+      "goal": "supply-warehouse",
+      "verdict": "accept",
+      "commitmentId": "cm-f6b262f5-47e0-45e8-a3fb-897942f92858",
+      "taskId": "task-003-supply-warehouse",
+      "status": "active",
+      "deadline": 3960,
+      "origin": "initial"
+    },
+    {
+      "actorId": "npc_04",
+      "goal": "supply-warehouse",
+      "verdict": "accept",
+      "commitmentId": "cm-874ce683-a05f-4df9-a7d1-76524a1a38d5",
+      "taskId": "task-004-supply-warehouse",
+      "status": "active",
+      "deadline": 3960,
+      "origin": "initial"
+    }
+  ],
+  "deterministicIds": true
+}

@@ -1,0 +1,84 @@
+{
+  "schema": "frostecho.r11.matrix-spec/1",
+  "generatedAt": "2026-11-20T06:39:55.849Z",
+  "source": {
+    "head": "24406c4ba29a825306515db46edfacae99249976",
+    "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
+    "branch": "codex/r11-h"
+  },
+  "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
+  "freeze": {
+    "path": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/H/FREEZE.json",
+    "sha256": "947eafc47dd2ec863876c0396193c3067b8fc350f53c69439d903497b8d59395",
+    "sourceCommit": "1d140c25dfe009f8e80580bd0d597b67274417dd",
+    "rendererBuildSha256": "2309464ebb800c07ffa8904df962a87010a6595d11d09b857f6277235a9c7c1d"
+  },
+  "seeds": [
+    "r11h-1",
+    "r11h-2"
+  ],
+  "arms": [
+    {
+      "id": "base-raw",
+      "family": "live",
+      "recipe": "base",
+      "memory": "raw-last12",
+      "head": {
+        "label": "r11-base",
+        "head": "artifacts/r11/heads/base/warm-17.safetensors",
+        "manifest": "artifacts/r11/heads/base/training-manifest.json"
+      }
+    },
+    {
+      "id": "base-conditional",
+      "family": "live",
+      "recipe": "base",
+      "memory": "obligation-first",
+      "head": {
+        "label": "r11-base",
+        "head": "artifacts/r11/heads/base/warm-17.safetensors",
+        "manifest": "artifacts/r11/heads/base/training-manifest.json"
+      }
+    },
+    {
+      "id": "fulfil-raw",
+      "family": "live",
+      "recipe": "fulfil",
+      "memory": "raw-last12",
+      "head": {
+        "label": "r11-fulfil",
+        "head": "artifacts/r11/heads/fulfil/warm-17.safetensors",
+        "manifest": "artifacts/r11/heads/fulfil/training-manifest.json"
+      }
+    },
+    {
+      "id": "fulfil-conditional",
+      "family": "live",
+      "recipe": "fulfil",
+      "memory": "obligation-first",
+      "head": {
+        "label": "r11-fulfil",
+        "head": "artifacts/r11/heads/fulfil/warm-17.safetensors",
+        "manifest": "artifacts/r11/heads/fulfil/training-manifest.json"
+      }
+    },
+    {
+      "id": "reference-raw",
+      "family": "reference",
+      "recipe": null,
+      "memory": "raw-last12",
+      "head": null
+    },
+    {
+      "id": "reference-conditional",
+      "family": "reference",
+      "recipe": null,
+      "memory": "obligation-first",
+      "head": null
+    }
+  ],
+  "liveGames": 8,
+  "referenceGames": 4,
+  "memoryBudgetTokens": 640,
+  "note": "live arms refuse to start when head/manifest/renderer/feature identity is missing; they never fall back to rules or replay"
+}
