@@ -1,0 +1,35 @@
+{
+  "schema": "frostecho.r11.freeze/1",
+  "status": "draft",
+  "sourceCommit": "PENDING-FINAL-HEAD",
+  "sourceTree": "PENDING",
+  "renderer": {
+    "id": "joint-c-action/2",
+    "sourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+    "buildSha256": "2309464ebb800c07ffa8904df962a87010a6595d11d09b857f6277235a9c7c1d"
+  },
+  "memory": {
+    "policy": "conditional-experience",
+    "selection": "obligation-first",
+    "tokenBudget": 640,
+    "windowFix": "B aa2ec8d: reservation cannot push the current record below its identity line; omitted records carry level=omitted"
+  },
+  "deadline": { "horizonMinutes": 240, "protocol": "same-snapshot-absolute-deadline/1", "pendingIsNotFailure": true },
+  "scenario": { "episodes": 12, "slices": 8, "capPerEpisode": 8, "npcCount": 8,
+    "resources": { "food": 130, "firewood": 30, "power": 30, "medicine": 3 } },
+  "splits": { "seed": "frostecho-r11-split-20261120", "unit": "sourceEpisodeId", "train": 0.6, "dev": 0.2, "test": 0.2 },
+  "supersedes": "947eafc47dd2ec863876c0396193c3067b8fc350f53c69439d903497b8d59395",
+  "affectedRecords": {
+    "count": 24,
+    "episodes": ["r11c-ep02", "r11c-ep06", "r11c-ep10"],
+    "labeledCases": 12,
+    "list": "evidence/B-MEMORY-IMPACT.json"
+  },
+  "requiredBeforeFrozen": [
+    "C recomputes renderSha256/inputSha256 for the 24 affected states",
+    "C re-encodes only those states and regenerates both manifests/corpora/test-eval",
+    "C rebuilds packet-A/B; any already-delivered packet remains valid for v1 only and cannot be silently replaced",
+    "O issues the out-of-band sha256 and a new blind round id"
+  ],
+  "notes": "Draft only. Do NOT pass --freeze-sha256 with this file; the collector requires status=frozen. v1 stays authoritative for the current matrix and blind review."
+}
