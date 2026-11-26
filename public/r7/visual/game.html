@@ -2,17 +2,18 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
+    <link rel="icon" href="data:," />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="theme-color" content="#0c1721" />
     <meta name="description"
-      content="FrostEcho 游戏画面：白障风暴中的真实 8 名居民，位置与状态来自权威 CLI 快照。" />
+      content="FrostEcho 游戏画面：白障风暴中的真实 8 名居民，位置、承诺与回执来自同一权威 CLI 快照。" />
     <title>FrostEcho · 雪原回响（游戏画面）</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="game.css" />
   </head>
   <body>
     <canvas id="scene" tabindex="0"
-      aria-label="FrostEcho 村庄；拖动环顾，WASD 飞行，Q/E 升降"></canvas>
+      aria-label="FrostEcho 村庄；拖动环顾，WASD 飞行，Q/E 升降；点击居民标牌选择"></canvas>
     <div id="loading" role="status">
       <span class="eyebrow">FROSTECHO / GAME VIEW</span>
       <h1>雪原正在醒来</h1>
@@ -25,12 +26,13 @@
         <span class="brand-mark">F</span>
         <div>
           <span class="wordmark">FROSTECHO</span
-          ><span class="brand-sub">雪原回响 · 游戏画面</span>
+          ><span class="brand-sub">雪原回响 · 游戏画面 / 同一权威</span>
         </div>
       </div>
       <div class="header-actions">
         <span id="gpu-status" class="status">WebGPU 正在初始化</span>
         <span id="connection" class="status" data-state="connecting">连接中…</span>
+        <a class="status" href="2d.html" target="_blank" rel="noreferrer">2D 同状态 ↗</a>
         <button id="sound" aria-pressed="false" title="开启或关闭程序化环境声">
           环境声 关闭</button
         ><button id="hide-ui" title="隐藏界面；按 H 恢复">纯净画面 H</button>
@@ -41,10 +43,10 @@
       <span class="eyebrow">GAME VIEW / ONE AUTHORITY</span>
       <h1 id="scene-title">风雪来自仿真，<br />灯火来自回执。</h1>
       <p id="scene-description">
-        八名居民的位置、炉火与任务都读自同一条 CLI 快照。<br />画面只呈现，不推进。
+        八名居民的位置、承诺与库存都读自同一条 CLI 快照。<br />画面只呈现，操作回送同一命令入口。
       </p>
       <button class="enter" id="enter">进入雪原 <span>↗</span></button>
-      <span class="fineprint">展示层：FrostEcho-WebGPU @ f77bf54（MIT）· 权威：本仓 CLI</span>
+      <span class="fineprint">展示层：FrostEcho-WebGPU @ f77bf54（MIT）· 权威：本仓 play-sprint CLI</span>
     </main>
 
     <aside class="scene-panel" aria-label="场景与视角">
@@ -80,43 +82,73 @@
       </div>
     </aside>
 
-    <aside class="game-panel" aria-label="权威状态与命令">
-      <div class="panel-label">AUTHORITY <span>同一 tick 的快照</span></div>
+    <aside class="game-panel" aria-label="权威状态与操作">
+      <div class="panel-label">SESSION <span>唯一 runner</span></div>
+      <p id="hud-session" class="hud-line mono">未开始</p>
+      <p id="hud-scorer" class="hud-line mono"></p>
       <p id="hud-clock" class="hud-line">等待第一条快照…</p>
       <p id="hud-resources" class="hud-line"></p>
       <p id="hud-furnace" class="hud-line"></p>
-      <p id="hud-phases" class="hud-line"></p>
-      <div class="panel-label">RESIDENTS <span>位置来自 where</span></div>
-      <ul id="hud-npcs" class="hud-list"></ul>
-      <div class="panel-label">TASKS <span>生产 / 送饭</span></div>
-      <ul id="hud-tasks" class="hud-list"></ul>
-      <div class="panel-label">RECEIPTS <span>最近已提交</span></div>
-      <ul id="hud-events" class="hud-list"></ul>
-      <div class="panel-label">COMMAND <span>回送原 CLI</span></div>
       <div class="command-row">
-        <input id="command" type="text" placeholder="task-status / assign npc_01 leave-food"
+        <button data-session="new">新游戏</button>
+        <button data-session="continue">继续存档</button>
+        <button data-command="save">保存</button>
+        <button data-command="r8-map-enable">启用原图</button>
+      </div>
+
+      <div class="panel-label">RESIDENTS <span>点击选择；位置来自 where</span></div>
+      <ul id="hud-npcs" class="hud-list roster"></ul>
+
+      <div class="panel-label">SELECTED <span id="selected-name">未选择</span></div>
+      <p id="selected-vitals" class="hud-line">点击左侧居民或画面标牌。</p>
+      <p id="selected-projection" class="hud-line mono"></p>
+
+      <div class="panel-label">TASKS <span>点击任务查看可执行操作</span></div>
+      <ul id="hud-tasks" class="hud-list tasks"></ul>
+      <div class="command-row" id="task-actions"></div>
+
+      <div class="panel-label">COMMITMENTS <span>承诺 / 改源 / 回执</span></div>
+      <ul id="hud-commitments" class="hud-list commitments"></ul>
+      <div class="command-row" id="commitment-actions"></div>
+      <p id="story-hint" class="hud-line hint"></p>
+
+      <div class="panel-label">STOCK <span>只读权威回执</span></div>
+      <p id="hud-stock" class="hud-line"></p>
+      <ul id="hud-carry" class="hud-list"></ul>
+      <div class="command-row" id="move-actions"></div>
+
+      <div class="panel-label">ROUTE <span>实际走过的路段</span></div>
+      <p id="hud-route" class="hud-line"></p>
+      <ul id="hud-legs" class="hud-list mono"></ul>
+
+      <div class="panel-label">RECEIPTS <span>最近已提交事件</span></div>
+      <ul id="hud-events" class="hud-list"></ul>
+
+      <div class="panel-label">COMMAND <span>逐字回送原 CLI</span></div>
+      <div class="command-row">
+        <input id="command" type="text" placeholder="task-status / where npc_03"
           autocomplete="off" />
         <button id="send">发送</button>
       </div>
       <div class="command-row">
-        <button data-command="game-step">走一步</button>
-        <button data-command="advance 15">推进 15 分</button>
-        <button data-command="task-status">任务板</button>
         <button data-command="observe">观察</button>
-      </div>
-      <div class="command-row">
-        <button data-session="new">新游戏</button>
-        <button data-session="continue">继续存档</button>
+        <button data-command="task-status">任务板</button>
+        <button data-command="commitment-status">承诺表</button>
+        <button data-command="r8-status">运行文档</button>
       </div>
       <p id="hud-command-result" class="hud-line mono"></p>
       <p id="hud-error" class="hud-line error"></p>
+      <p class="hud-line note">3D 画布在部分软件 WebGPU（SwiftShader）上只输出纯色/天空；
+        右上角「2D 同状态」读取同一份快照，可看到同一世界的平面图。</p>
     </aside>
+
+    <div id="actor-labels" aria-hidden="true"></div>
 
     <footer class="hud">
       <div class="controls">
         <span><kbd>W A S D</kbd> 飞行</span><span><kbd>Q / E</kbd> 升降</span
         ><span><kbd>拖动</kbd> 环顾</span><span><kbd>Shift</kbd> 加速</span
-        ><span><kbd>1–4</kbd> 视角</span><span><kbd>Esc</kbd> 释放鼠标</span>
+        ><span><kbd>1–4</kbd> 视角</span><span><kbd>Tab</kbd> 下一个居民</span>
       </div>
       <button id="tour">自动环游</button>
     </footer>

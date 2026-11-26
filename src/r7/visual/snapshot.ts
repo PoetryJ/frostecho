@@ -1,10 +1,10 @@
 /**
- * VisualSnapshot/1 — the only thing the 3D display is allowed to read.
+ * VisualSnapshot/1 — the only thing the 3D and 2D displays are allowed to read.
  *
  * Ownership (E): this file and `adapter.ts` are the display adapter. They never
  * advance the clock, never move an NPC, never settle work and never write a save.
  * Every field below is copied from a record the authoritative CLI already emitted
- * (`observe` / `task-status` / `where`, plus the transport's own command records).
+ * (`observe` / `task-status` / `where` / committed receipts), never recomputed.
  *
  * Protocol notes from docs/r9-audit/WEBGPU-BRIDGE.md:
  *  - monotonic `worldVersion`; out-of-order snapshots are rejected;
@@ -12,7 +12,9 @@
  *  - indoor legacy maps must NOT be plotted as village coordinates. An actor
  *    inside `dorm_a` is drawn at the building door and flagged `indoor`; the
  *    display shows where the authority says it is, not an invented interior;
- *  - NPC private memory must never enter the graphics snapshot.
+ *  - NPC private memory must never enter the graphics snapshot. R11 adds a
+ *    display-safe *projection summary* (counts/counter/ids only) so the player
+ *    can see what B's bounded memory did without reading the prompt text.
  */
 import { BUILDINGS } from '../../spatial-v2/map';
 
@@ -21,6 +23,8 @@ export const VISUAL_SCHEMA = 'frostecho.visual/1';
 export const TILE_METERS = 2;
 /** Village grid origin used by the original map (upstream `toWorld`). */
 export const MAP_ORIGIN = { x: 25, y: 20 } as const;
+/** The runner the display is attached to. Never a second one. */
+export const VISUAL_RUNNER = 'dist/scripts/play-sprint.js';
 
 export interface Cell { x: number; y: number }
 export interface WorldPoint { x: number; y: number; z: number }
@@ -72,11 +76,118 @@ export interface VisualEvent {
   detail: Record<string, string | number | boolean | null>;
 }
 
+/** One committed original-map move. The route is what was actually walked. */
+export interface VisualLeg {
+  eventId: string;
+  type: 'cell' | 'door';
+  actorId: string;
+  simTime: number;
+  commandId: string;
+  fromMap: string;
+  toMap: string;
+  from: Cell;
+  to: Cell;
+  minutes: number;
+}
+
+export interface VisualRoute {
+  actorId: string;
+  legs: VisualLeg[];
+  summary: { tiles: number; doors: number; minutes: number;
+    fromMap: string | null; from: Cell | null; toMap: string | null; to: Cell | null };
+}
+
+export interface VisualStock {
+  /** Last authoritative warehouse food observation/receipt, not a live guess. */
+  warehouse: { remaining: number | null; eventId: string | null; simTime: number | null;
+    source: string | null; commandId: string | null };
+  /** Last stock movement that carried meals (withdraw/deliver). */
+  carry: { meals: number | null; eventId: string | null; simTime: number | null };
+  /** Public resource pool, straight from `observe`. */
+  public: Record<string, number>;
+}
+
+export interface VisualTask {
+  taskId: string;
+  type: string;
+  assigneeId: string | null;
+  status: string;
+  revision: number | null;
+  commitmentId: string | null;
+  source: 'board' | 'domain';
+}
+
+export interface VisualChange {
+  changeId: string;
+  kind: string;
+  status: string;
+  proposedAt: number | null;
+  source: string | null;
+  reason: string | null;
+}
+
+export interface VisualObligation {
+  commitmentId: string;
+  taskId: string | null;
+  promisorId: string | null;
+  beneficiaryId: string | null;
+  goal: string;
+  status: string;
+  revision: number | null;
+  dueAt: number | null;
+  createdAt: number | null;
+  updatedAt: number | null;
+  changes: VisualChange[];
+  /** Receipt ids only; the page links them to the receipt list. */
+  evidenceEventIds: string[];
+}
+
+/** B's bounded-memory projection, reduced to numbers and opaque ids. */
+export interface VisualProjection {
+  selection: string | null;
+  counterId: string | null;
+  budget: number | null;
+  tokens: number | null;
+  kept: number | null;
+  dropped: number | null;
+  /** Records that left the raw window because an applicable note owned them. */
+  suppressed: number | null;
+  noteIds: string[];
+  requestId: string | null;
+  worldVersion: number | null;
+  /** Optional fields from B's r11 window; only present when the CLI emits them. */
+  truncated: number | null;
+  bytes: number | null;
+  blockSha256: string | null;
+  segmentSha256: string | null;
+  encoderTokens: number | null;
+}
+
+/** One receipt that moves a promise forward; the page never recomputes it. */
+export interface VisualProgress {
+  eventId: string;
+  type: string;
+  actorId: string;
+  simTime: number;
+  detail: Record<string, string | number | boolean | null>;
+}
+
+export interface VisualWork {
+  intentId: string;
+  actorId: string;
+  kind: string;
+  taskId: string | null;
+  commitmentId: string | null;
+  startedAt: number | null;
+  endsAt: number | null;
+}
+
 export interface VisualSnapshot {
   schema: typeof VISUAL_SCHEMA;
   sessionId: string | null;
   profile: string;
   mode: string;
+  runner: string;
   /** Authoritative world version. Never increased by this module. */
   worldVersion: number;
   simTime: number;
@@ -91,10 +202,20 @@ export interface VisualSnapshot {
   furnace: { lit: boolean; fuel: number; warmth: number; heatingStrength: number | null };
   production: { machines: Record<string, string>; buildRemaining: Record<string, number>;
     buildWorker: Record<string, string> };
-  tasks: Array<{ taskId: string; type: string; assigneeId: string | null;
-    status: string; revision: number | null }>;
-  obligations: Array<{ commitmentId: string; beneficiaryId: string | null;
-    status: string; dueAt: number | null }>;
+  tasks: VisualTask[];
+  obligations: VisualObligation[];
+  work: VisualWork[];
+  /** Last receipts that can move a promise forward, newest last. */
+  progress: VisualProgress[];
+  stock: VisualStock;
+  routes: VisualRoute[];
+  projections: Record<string, VisualProjection>;
+  scorer: { scorerId: string | null; mode: string | null; rendererId: string | null;
+    experimental: boolean | null; countsAsAdmitted: boolean | null };
+  save: { savedAt: string | null; canContinue: boolean };
+  ending: string;
+  crises: { active: Array<{ crisisId: string; kind: string; startedAtMinute: number | null;
+    detail: string | null }>; resolved: number };
   recentEvents: VisualEvent[];
   lastCommittedOrdinal: number;
 }
@@ -106,6 +227,8 @@ export interface BridgeState {
   status: Record<string, any> | null;
   positions: Record<string, any>;
   records: Record<string, any>[];
+  savedAt?: string | null;
+  canContinue?: boolean;
   lastError?: string | null;
 }
 
@@ -174,7 +297,8 @@ function pendingWork(status: Record<string, any> | null): Map<string, Record<str
 }
 
 const EVENT_DETAIL_KEYS = ['resource', 'delta', 'amount', 'key', 'value', 'taskId', 'type',
-  'receipt', 'receiptType', 'strength', 'kind', 'status', 'reason', 'to', 'mapId'];
+  'receipt', 'receiptType', 'strength', 'kind', 'status', 'reason', 'to', 'mapId',
+  'remaining', 'place', 'carried', 'total', 'totalDelivered'];
 
 function summariseEvent(event: Record<string, any>, ordinal: number): VisualEvent {
   const payload = event?.payload && typeof event.payload === 'object' ? event.payload : {};
@@ -185,8 +309,144 @@ function summariseEvent(event: Record<string, any>, ordinal: number): VisualEven
     detail[key] = typeof value === 'number' || typeof value === 'boolean'
       ? value : typeof value === 'string' ? value : String(value);
   }
-  return { ordinal, eventId: String(event?.eventId ?? ''), type: String(event?.type ?? ''),
+  return { ordinal: ordinal, eventId: String(event?.eventId ?? ''), type: String(event?.type ?? ''),
     actorId: String(event?.actorId ?? ''), simTime: numberOrNull(event?.simTime) ?? 0, detail };
+}
+
+interface ReceiptRow { event: Record<string, any>; order: number }
+
+/**
+ * One merged, de-duplicated receipt stream.
+ *
+ * `r8.committed` is the runtime ledger; the transport records carry the raw
+ * WorldEvents of direct commands (`withdraw`, `deposit`, `travel`, `advance`).
+ * A stock movement committed by `withdraw` is NOT in the runtime ledger, so the
+ * display would otherwise keep an older observation and claim the warehouse is
+ * full. Ties at one world minute go to the later record, which is the command
+ * order the CLI actually executed.
+ */
+function mergedEvents(bridge: BridgeState, committed: Record<string, any>[]): ReceiptRow[] {
+  const seen = new Map<string, ReceiptRow>();
+  let order = 0;
+  const add = (event: Record<string, any>): void => {
+    const id = String(event?.eventId ?? '');
+    if (!id || seen.has(id)) return;
+    seen.set(id, { event, order: order++ });
+  };
+  for (const event of committed) add(event);
+  for (const row of Array.isArray(bridge.records) ? bridge.records : []) {
+    for (const event of Array.isArray(row?.events) ? row.events : []) add(event);
+  }
+  return [...seen.values()];
+}
+
+/**
+ * The committed original-map legs. Only receipts the authority already wrote are
+ * shown: a planned route would be a promise, not a road actually walked.
+ */
+function collectRoutes(rows: ReceiptRow[]): VisualRoute[] {
+  const byActor = new Map<string, VisualLeg[]>();
+  for (const { event } of rows) {
+    const type = String(event?.type ?? '');
+    if (type !== 'legacy_cell_moved' && type !== 'legacy_door_crossed') continue;
+    const payload = event?.payload ?? {};
+    const actorId = String(event?.actorId ?? '');
+    if (!actorId) continue;
+    const cell = (x: unknown, y: unknown): Cell => ({ x: Number(x ?? 0), y: Number(y ?? 0) });
+    const legs = byActor.get(actorId) ?? [];
+    legs.push({
+      eventId: String(event?.eventId ?? ''),
+      type: type === 'legacy_door_crossed' ? 'door' : 'cell',
+      actorId,
+      simTime: numberOrNull(event?.simTime) ?? 0,
+      commandId: String(payload.commandId ?? ''),
+      fromMap: String(payload.fromMap ?? ''),
+      toMap: String(payload.toMap ?? ''),
+      from: cell(payload.fromX, payload.fromY),
+      to: cell(payload.x, payload.y),
+      minutes: numberOrNull(payload.minutes) ?? 1,
+    });
+    byActor.set(actorId, legs);
+  }
+  return [...byActor.entries()].map(([actorId, all]) => {
+    const legs = all.slice(-64);
+    const first = legs[0], last = legs.at(-1);
+    return {
+      actorId,
+      legs,
+      summary: {
+        tiles: legs.filter(leg => leg.type === 'cell').length,
+        doors: legs.filter(leg => leg.type === 'door').length,
+        minutes: legs.reduce((sum, leg) => sum + leg.minutes, 0),
+        fromMap: first?.fromMap ?? null,
+        from: first?.from ?? null,
+        toMap: last?.toMap ?? null,
+        to: last?.to ?? null,
+      },
+    };
+  });
+}
+
+/**
+ * The last authoritative warehouse/carry receipt. The value is what the engine
+ * committed, never a locally decremented counter; a stock that was never looked
+ * at stays null and the HUD says so.
+ */
+function collectStock(rows: ReceiptRow[], resources: Record<string, number>): VisualStock {
+  const stock: VisualStock = {
+    warehouse: { remaining: null, eventId: null, simTime: null, source: null, commandId: null },
+    carry: { meals: null, eventId: null, simTime: null },
+    public: { ...resources },
+  };
+  const observationTypes = new Set(['warehouse_stock_observed', 'stock_withdrawn', 'stock_deposited',
+    'out_of_stock', 'stock_restocked']);
+  const ordered = [...rows].sort((a, b) => (numberOrNull(a.event?.simTime) ?? 0)
+    - (numberOrNull(b.event?.simTime) ?? 0) || a.order - b.order);
+  for (const { event } of ordered) {
+    const type = String(event?.type ?? '');
+    if (type === 'stock_withdrawn') {
+      const carried = numberOrNull(event?.payload?.carried ?? event?.payload?.amount);
+      if (carried !== null) stock.carry = { meals: carried, eventId: String(event?.eventId ?? ''),
+        simTime: numberOrNull(event?.simTime) };
+    }
+    if (type === 'meal_delivered') {
+      stock.carry = { meals: 0, eventId: String(event?.eventId ?? ''),
+        simTime: numberOrNull(event?.simTime) };
+    }
+    if (!observationTypes.has(type)) continue;
+    const payload = event?.payload ?? {};
+    const raw = type === 'stock_deposited' ? payload.total
+      : type === 'out_of_stock' ? 0 : payload.remaining;
+    const remaining = numberOrNull(raw);
+    if (remaining === null) continue;
+    stock.warehouse = { remaining, eventId: String(event?.eventId ?? ''),
+      simTime: numberOrNull(event?.simTime), source: type,
+      commandId: payload.commandId ? String(payload.commandId) : null };
+  }
+  return stock;
+}
+
+/** B's projection reduced to numbers: no prompt text, no lesson copy. */
+function projectionOf(step: Record<string, any> | undefined): VisualProjection | null {
+  if (!step) return null;
+  const notes = Array.isArray(step.memoryNotes) ? step.memoryNotes : [];
+  return {
+    selection: step.memorySelection ? String(step.memorySelection) : null,
+    counterId: step.memoryCounterId ? String(step.memoryCounterId) : null,
+    budget: numberOrNull(step.memoryBudget),
+    tokens: numberOrNull(step.memoryTokens),
+    kept: numberOrNull(step.memoryKept),
+    dropped: numberOrNull(step.memoryDropped),
+    suppressed: numberOrNull(step.memoryNoteSuppressed),
+    noteIds: notes.map((note: Record<string, any>) => String(note?.noteId ?? '')).filter(Boolean),
+    requestId: step.requestId ? String(step.requestId) : null,
+    worldVersion: numberOrNull(step.worldVersion),
+    truncated: numberOrNull(step.memoryTruncated),
+    bytes: numberOrNull(step.memoryBytes),
+    blockSha256: step.memoryBlockSha256 ? String(step.memoryBlockSha256) : null,
+    segmentSha256: step.memorySegmentSha256 ? String(step.memorySegmentSha256) : null,
+    encoderTokens: numberOrNull(step.memoryEncoderTokens),
+  };
 }
 
 export function buildVisualSnapshot(bridge: BridgeState,
@@ -277,30 +537,63 @@ export function buildVisualSnapshot(bridge: BridgeState,
 
   // Authoritative version = the widest version witnessed by committed events or
   // by the per-actor step records. This module never adds to it.
+  const rows = mergedEvents(bridge, committed);
   let worldVersion = 0;
-  for (const event of committed) {
+  for (const { event } of rows) {
     worldVersion = Math.max(worldVersion, versionFromEventId(event?.eventId));
   }
   for (const step of steps.values()) {
     worldVersion = Math.max(worldVersion, numberOrNull(step?.worldVersion) ?? 0);
   }
 
-  const heating = [...committed].reverse().find(event => event?.type === 'heating_settled');
+  const heating = [...rows].reverse().map(row => row.event)
+    .find(event => event?.type === 'heating_settled');
   const tasks = Array.isArray(status.tasks) ? status.tasks : Array.isArray(r8?.states?.tasks?.tasks)
     ? r8.states.tasks.tasks : [];
   const obligations = Array.isArray(status.commitments) ? status.commitments : [];
 
-  const recentEvents = committed
-    .map((event, ordinal) => ({ event, ordinal }))
+  const recentEvents = [...rows]
+    .sort((a, b) => (numberOrNull(a.event?.simTime) ?? 0) - (numberOrNull(b.event?.simTime) ?? 0)
+      || a.order - b.order)
     .filter(row => row.event?.type !== 'r8_actor')
     .slice(-24)
-    .map(row => summariseEvent(row.event, row.ordinal));
+    .map(row => summariseEvent(row.event, row.order));
+
+  const routes = collectRoutes(rows);
+  const PROGRESS_TYPES = new Set(['gathered', 'stock_deposited', 'stock_withdrawn',
+    'out_of_stock', 'warehouse_stock_observed', 'meal_delivered', 'commitment_proposed',
+    'commitment_accepted', 'commitment_change_proposed', 'commitment_change_accepted',
+    'commitment_cancelled', 'commitment_fulfilled', 'commitment_withdrawn']);
+  const progress: VisualProgress[] = [...rows]
+    .sort((a, b) => (numberOrNull(a.event?.simTime) ?? 0) - (numberOrNull(b.event?.simTime) ?? 0)
+      || a.order - b.order)
+    .filter(row => PROGRESS_TYPES.has(String(row.event?.type ?? '')))
+    .slice(-48)
+    .map(row => summariseEvent(row.event, row.order))
+    .map(event => ({ eventId: event.eventId, type: event.type, actorId: event.actorId,
+      simTime: event.simTime, detail: event.detail }));
+  const stock = collectStock(rows, observation.resources && typeof observation.resources === 'object'
+    ? observation.resources : {});
+  const projections: Record<string, VisualProjection> = {};
+  for (const [actorId, step] of steps) {
+    const projection = projectionOf(step);
+    if (projection) projections[actorId] = projection;
+  }
+  const work: VisualWork[] = [];
+  for (const entry of Array.isArray(r8.work) ? r8.work : []) {
+    if (!entry || typeof entry !== 'object') continue;
+    work.push({ intentId: String(entry.intentId ?? ''), actorId: String(entry.actorId ?? ''),
+      kind: String(entry.kind ?? ''), taskId: entry.taskId ? String(entry.taskId) : null,
+      commitmentId: entry.commitmentId ? String(entry.commitmentId) : null,
+      startedAt: numberOrNull(entry.startedAt), endsAt: numberOrNull(entry.endsAt) });
+  }
 
   const snapshot: VisualSnapshot = {
     schema: VISUAL_SCHEMA,
     sessionId: bridge.sessionId,
     profile: String(bridge.profile ?? ''),
     mode: String(bridge.mode ?? ''),
+    runner: VISUAL_RUNNER,
     worldVersion,
     simTime: numberOrNull(observation.simTime) ?? 0,
     day: numberOrNull(observation.day) ?? 0,
@@ -330,20 +623,63 @@ export function buildVisualSnapshot(bridge: BridgeState,
       assigneeId: task?.assigneeId ? String(task.assigneeId) : task?.actorId ? String(task.actorId) : null,
       status: String(task?.status ?? ''),
       revision: numberOrNull(task?.revision),
+      commitmentId: task?.commitmentId ? String(task.commitmentId) : null,
+      source: task?.domain === 'r8' ? 'domain' as const : 'board' as const,
     })),
     obligations: obligations.map((row: Record<string, any>) => ({
       commitmentId: String(row?.commitmentId ?? row?.id ?? ''),
+      taskId: row?.taskId ? String(row.taskId) : null,
+      promisorId: row?.promisorId ? String(row.promisorId) : null,
       beneficiaryId: row?.beneficiaryId ? String(row.beneficiaryId) : null,
+      goal: String(row?.goal ?? ''),
       status: String(row?.status ?? ''),
-      dueAt: numberOrNull(row?.dueAt),
+      revision: numberOrNull(row?.revision),
+      dueAt: numberOrNull(row?.deadline),
+      createdAt: numberOrNull(row?.createdAt),
+      updatedAt: numberOrNull(row?.updatedAt),
+      changes: (Array.isArray(row?.changes) ? row.changes : []).map((change: Record<string, any>) => ({
+        changeId: String(change?.changeId ?? ''),
+        kind: String(change?.kind ?? ''),
+        status: String(change?.status ?? ''),
+        proposedAt: numberOrNull(change?.proposedAt),
+        source: change?.terms?.source ? String(change.terms.source) : null,
+        reason: change?.reason ? String(change.reason).slice(0, 120) : null,
+      })),
+      evidenceEventIds: (Array.isArray(row?.evidenceEventIds) ? row.evidenceEventIds : [])
+        .map((id: unknown) => String(id)),
     })),
+    work,
+    progress,
+    stock,
+    routes,
+    projections,
+    scorer: {
+      scorerId: status.scorer?.scorerId ? String(status.scorer.scorerId) : null,
+      mode: status.scorer?.mode ? String(status.scorer.mode) : null,
+      rendererId: status.scorer?.rendererId ? String(status.scorer.rendererId) : null,
+      experimental: typeof status.scorer?.experimental === 'boolean' ? status.scorer.experimental : null,
+      countsAsAdmitted: typeof status.scorer?.countsAsAdmitted === 'boolean'
+        ? status.scorer.countsAsAdmitted : null,
+    },
+    save: { savedAt: bridge.savedAt ?? null, canContinue: Boolean(bridge.canContinue) },
+    ending: String(status.ending ?? r8.endingKind ?? 'none'),
+    crises: {
+      active: (Array.isArray(r8?.states?.crises?.active) ? r8.states.crises.active : [])
+        .map((crisis: Record<string, any>) => ({
+          crisisId: String(crisis?.crisisId ?? ''),
+          kind: String(crisis?.kind ?? ''),
+          startedAtMinute: numberOrNull(crisis?.startedAtMinute),
+          detail: crisis?.detail ? String(crisis.detail).slice(0, 160) : null,
+        })),
+      resolved: Array.isArray(r8?.states?.crises?.history) ? r8.states.crises.history.length : 0,
+    },
     recentEvents,
     lastCommittedOrdinal: committed.length - 1,
   };
   return { snapshot, rejected };
 }
 
-/** Strings that only exist in an actor's private memory rendering. */
+/** Strings that only exist in an actor's private prompt/memory rendering. */
 const PRIVATE_MARKERS = ['observationText', 'jointText', '记忆:', 'memoryKept', 'memoryDropped'];
 
 /**

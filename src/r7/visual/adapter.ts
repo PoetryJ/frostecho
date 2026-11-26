@@ -15,7 +15,7 @@
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer, IncomingMessage, ServerResponse } from 'node:http';
 import { extname, resolve, sep } from 'node:path';
-import { assertNoPrivateMemory, buildVisualSnapshot, VisualVersionGate,
+import { assertNoPrivateMemory, buildVisualSnapshot, VISUAL_RUNNER, VisualVersionGate,
   type Catalog, type VisualSnapshot } from './snapshot';
 
 export interface VisualAdapterOptions {
@@ -108,6 +108,7 @@ export function createVisualAdapter(options: VisualAdapterOptions) {
       if (path.startsWith('/api/visual/')) {
         if (path === '/api/visual/health' && req.method === 'GET') {
           return sendJson(res, { ok: true, schema: 'frostecho.visual/1', gameBaseUrl: base,
+            runner: VISUAL_RUNNER, pid: process.pid,
             browser: process.env.FROSTECHO_VISUAL_BROWSER ?? null });
         }
         if (path === '/api/visual/catalog' && req.method === 'GET') {
