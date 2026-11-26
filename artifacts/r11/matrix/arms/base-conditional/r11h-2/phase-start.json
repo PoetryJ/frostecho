@@ -1,19 +1,135 @@
 {
   "schema": "frostecho.r11.matrix-phase/1",
   "phase": "start",
-  "pid": 1259139,
+  "pid": 1385700,
   "arm": "base-conditional",
   "seed": "r11h-2",
   "family": "live",
   "memorySelection": "obligation-first",
   "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
   "source": {
-    "head": "24406c4ba29a825306515db46edfacae99249976",
-    "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
-    "branch": "codex/r11-h"
+    "head": "b0919f15916f8c92f46462718657bed5017d12f1",
+    "tree": "48000a4bd71e95ef82324aef97353aab10c933d4",
+    "branch": "codex/r11-h-run"
   },
-  "at": "2026-11-20T06:39:58.187Z",
-  "cpuSeconds": 0.322,
-  "exitCode": 12,
-  "refused": "head_artifact_missing"
+  "at": "2026-11-20T09:39:01.695Z",
+  "cpuSeconds": 1257.009,
+  "exitCode": 0,
+  "outcome": "checkpoint",
+  "checkpoint": {
+    "at": 2040,
+    "activeCommitments": 2,
+    "boundWorkingIntents": 1,
+    "pending": 2,
+    "commitments": [
+      {
+        "commitmentId": "cm-3ef74c39-eb8b-4f83-aaad-d77c5111657f",
+        "promisorId": "npc_03",
+        "goal": "supply-warehouse",
+        "revision": 1,
+        "status": "active",
+        "deadline": 3960,
+        "taskId": "task-005-supply-warehouse",
+        "createdAt": 2040,
+        "boundWorkingIntents": [
+          {
+            "intentId": "npc_03-r8-164",
+            "action": "move",
+            "startedAt": 2040,
+            "dueAt": 2055,
+            "commitmentId": "cm-3ef74c39-eb8b-4f83-aaad-d77c5111657f",
+            "commitmentRevision": 1,
+            "generation": 0,
+            "taskId": "task-005-supply-warehouse"
+          }
+        ]
+      },
+      {
+        "commitmentId": "cm-0707e103-4904-4c09-a41b-b21ee1ee41a1",
+        "promisorId": "npc_08",
+        "goal": "supply-warehouse",
+        "revision": 1,
+        "status": "active",
+        "deadline": 3960,
+        "taskId": "task-006-supply-warehouse",
+        "createdAt": 2040,
+        "boundWorkingIntents": []
+      }
+    ],
+    "intents": [
+      {
+        "intentId": "npc_03-r8-164",
+        "actorId": "npc_03",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": "cm-3ef74c39-eb8b-4f83-aaad-d77c5111657f",
+        "commitmentRevision": 1,
+        "taskId": "task-005-supply-warehouse",
+        "generation": 0
+      },
+      {
+        "intentId": "npc_05-r8-164",
+        "actorId": "npc_05",
+        "action": "move",
+        "startedAt": 2040,
+        "dueAt": 2055,
+        "commitmentId": null,
+        "commitmentRevision": null,
+        "taskId": null,
+        "generation": 0
+      }
+    ],
+    "generations": {}
+  },
+  "decisions": 129,
+  "scorer": {
+    "requests": 129,
+    "singleCandidateSkips": 0,
+    "timeouts": 0,
+    "forwardCalls": 129,
+    "serviceWallSeconds": 1255.986,
+    "servicePids": [
+      1385716
+    ],
+    "serviceStartedAt": "2026-11-20T09:18:05.081Z",
+    "serviceClosedAt": null,
+    "identity": {
+      "bound": true,
+      "certificateSha256": null,
+      "countsAsAdmitted": false,
+      "deadlineProtocol": {
+        "absolute": true,
+        "continuationPolicy": "reference-rule/1",
+        "horizonMinutes": 240,
+        "pendingIsNotFailure": true
+      },
+      "encoderForwardAttempts": 129,
+      "encoderForwardCalls": 129,
+      "encoderId": "/data2/model_weights/Qwen3.8-27B",
+      "experimental": true,
+      "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475",
+      "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+      "independentReviews": 0,
+      "labelRule": "first-action-applied && actor-alive && no-population-loss && no-accepted-task-lost",
+      "labelSource": "same-snapshot-branch-rollout",
+      "manifestContractVersion": 2,
+      "manifestSchema": "frostecho.training-manifest/r11",
+      "manifestSha256": "48ef46913c85781c5e3bed9033538dc60b421a979e744e0f7dc566335e9b4d5c",
+      "memoryPolicyId": "conditional-experience",
+      "memorySelection": "obligation-first",
+      "memoryTokenBudget": 640,
+      "mode": "jev-experimental",
+      "realModel": true,
+      "rendererId": "joint-c-action/2",
+      "requestsFailed": 0,
+      "requestsReceived": 129,
+      "scorerId": "jev-joint-c/1",
+      "scoresSucceeded": 129,
+      "tau": 0,
+      "temperature": 1,
+      "trainingManifestSha256": "48ef46913c85781c5e3bed9033538dc60b421a979e744e0f7dc566335e9b4d5c",
+      "utility": null
+    }
+  }
 }

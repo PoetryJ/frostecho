@@ -188,7 +188,10 @@ export class LegacySpatialController {
     const before = this.runtime.world.simTime;
     const stepped = this.commitStep(actorId, to, commandId, kind);
     // The step receipt is stamped at the time it is paid for.
-    this.runtime.advanceWorld(before + LEGACY_TILE_MINUTES);
+    // One physical tile is one minute. If a caller already advanced the shared
+    // clock past this tile (a resume or a leg boundary), never ask it to move
+    // backwards; the tile still commits, and the paid window is unchanged.
+    this.runtime.advanceWorld(Math.max(before + LEGACY_TILE_MINUTES, this.runtime.world.simTime));
     return { ...stepped, position: this.position(actorId),
       postStateVersion: this.runtime.world.version,
       elapsedMinutes: this.runtime.world.simTime - before };

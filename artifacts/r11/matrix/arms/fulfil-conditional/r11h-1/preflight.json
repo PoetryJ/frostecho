@@ -1,13 +1,118 @@
 {
-  "ok": false,
-  "code": 12,
-  "reason": "head_artifact_missing",
-  "headPath": "artifacts/r11/heads/fulfil/warm-17.safetensors",
-  "manifestPath": "artifacts/r11/heads/fulfil/training-manifest.json",
+  "ok": true,
+  "code": 0,
+  "headPath": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-fulfillment/random-43.safetensors",
+  "manifestPath": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-fulfillment/training-manifest.json",
   "rendererId": "joint-c-action/2",
-  "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
-  "headExists": false,
-  "manifestExists": false,
+  "rendererSourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+  "headExists": true,
+  "manifestExists": true,
+  "schema": "frostecho.training-manifest/r11",
+  "labelSource": "same-snapshot-branch-rollout",
+  "manifestSha256": "59fe9c7c380836db986ebaf5e43f770865e8108e5ab89b989abff742d8d14a50",
+  "headSha256": "92b32dfe141fe1e4e2c70ade651361d6021f575b5bbda02ac2eb29c53e494ae8",
+  "selectedCheckpointSha256": "92b32dfe141fe1e4e2c70ade651361d6021f575b5bbda02ac2eb29c53e494ae8",
+  "selectedCheckpoint": "random-43.safetensors",
+  "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475",
+  "manifestRendererSourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+  "dimension": 5120,
+  "manifestMemoryPolicy": null,
+  "armMemory": "obligation-first",
+  "encodingExecution": {
+    "batchSize": 1,
+    "maxTokens": 2048,
+    "padMultiple": 8,
+    "placement": "auto",
+    "qualificationLimits": [
+      0.02,
+      1,
+      0.001
+    ],
+    "runnerSourceSha256": "03263ee097f7915daee12c67906828e85b59ee11b73ecacdd0a1b83de35aaafc"
+  },
+  "encodingQualification": {
+    "featuresSha256": "4b966fbe1aee610392f689cde2f7fd96529f1b2c9060e0048b0a6bab96089991",
+    "path": "qualification.json",
+    "sha256": "00f740fe33fac13f53c22ecdd363d43c23d82948c322b3fd56531c65d87e11e1",
+    "ok": true,
+    "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475"
+  },
+  "training": null,
+  "admitted": false,
+  "experimental": true,
+  "manifestBinding": {
+    "mode": "r11-manifest",
+    "headSha256": "92b32dfe141fe1e4e2c70ade651361d6021f575b5bbda02ac2eb29c53e494ae8",
+    "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475",
+    "manifestSha256": "59fe9c7c380836db986ebaf5e43f770865e8108e5ab89b989abff742d8d14a50",
+    "rendererId": "joint-c-action/2",
+    "labelSource": "same-snapshot-branch-rollout"
+  },
+  "sharedManifest": {
+    "available": true,
+    "validator": "scripts/r11/manifest-validator.mjs",
+    "ok": true,
+    "result": {
+      "ok": true,
+      "contractVersion": 2,
+      "schema": "frostecho.training-manifest/r11",
+      "schemaCanonical": "frostecho.training-manifest/r11",
+      "sha256": "59fe9c7c380836db986ebaf5e43f770865e8108e5ab89b989abff742d8d14a50",
+      "labelSource": "same-snapshot-branch-rollout",
+      "labelRule": "believed-obligation-fulfilled-by-deadline-or-authorised-exit && actor-alive && no-unauthorized-side-effect && no-obligation-open-past-deadline",
+      "labelFamily": "fulfillment",
+      "independentReviews": 0,
+      "selectedCheckpoint": "random-43.safetensors",
+      "selectedCheckpointSha256": "92b32dfe141fe1e4e2c70ade651361d6021f575b5bbda02ac2eb29c53e494ae8",
+      "head": {
+        "path": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-fulfillment/random-43.safetensors",
+        "sha256": "92b32dfe141fe1e4e2c70ade651361d6021f575b5bbda02ac2eb29c53e494ae8"
+      },
+      "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475",
+      "rendererSourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+      "execution": {
+        "batchSize": 1,
+        "maxTokens": 2048,
+        "padMultiple": 8,
+        "placement": "auto",
+        "qualificationLimits": [
+          0.02,
+          1,
+          0.001
+        ],
+        "runnerSourceSha256": "03263ee097f7915daee12c67906828e85b59ee11b73ecacdd0a1b83de35aaafc"
+      },
+      "qualification": {
+        "featuresSha256": "4b966fbe1aee610392f689cde2f7fd96529f1b2c9060e0048b0a6bab96089991",
+        "path": "qualification.json",
+        "sha256": "00f740fe33fac13f53c22ecdd363d43c23d82948c322b3fd56531c65d87e11e1",
+        "ok": true,
+        "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475"
+      },
+      "memory": {
+        "policy": "conditional-experience",
+        "selection": "obligation-first",
+        "tokenBudget": 640,
+        "renderer": "joint-c-action/2"
+      },
+      "corpus": {
+        "sha256": "6ae9fbdc7eedb05ba9638a2941357b6da83c9a77bd3a1f44344dfca32886d2c2",
+        "splits": {
+          "train": 6,
+          "dev": 3,
+          "test": 4
+        }
+      },
+      "deadlineProtocol": {
+        "continuationPolicy": "reference-rule/1",
+        "horizonMinutes": 240,
+        "absolute": true,
+        "pendingIsNotFailure": true
+      },
+      "experimental": true,
+      "countsAsAdmitted": false
+    }
+  },
   "arm": "fulfil-conditional",
   "seed": "r11h-1",
   "family": "live",
@@ -22,14 +127,14 @@
     "--placement",
     "auto",
     "--head",
-    "/data3/DATA/project/project_meishijiang/r11-wt/h/artifacts/r11/heads/fulfil/warm-17.safetensors",
+    "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-fulfillment/random-43.safetensors",
     "--training-manifest",
-    "/data3/DATA/project/project_meishijiang/r11-wt/h/artifacts/r11/heads/fulfil/training-manifest.json",
+    "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-fulfillment/training-manifest.json",
     "--max-length",
     "2048",
     "--memory-policy",
     "conditional-experience",
     "--output-dir",
-    "/data3/DATA/project/project_meishijiang/r11-wt/h/artifacts/r11/matrix/arms/fulfil-conditional/r11h-1/scorer"
+    "/data3/DATA/project/project_meishijiang/r11-wt/h-run/artifacts/r11/matrix/arms/fulfil-conditional/r11h-1/scorer"
   ]
 }

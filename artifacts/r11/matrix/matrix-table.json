@@ -1,17 +1,17 @@
 {
   "schema": "frostecho.r11.matrix-table/1",
-  "generatedAt": "2026-11-20T06:43:22.225Z",
+  "generatedAt": "2026-11-26T05:04:47.108Z",
   "source": {
-    "head": "24406c4ba29a825306515db46edfacae99249976",
-    "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
-    "branch": "codex/r11-h"
+    "head": "b0919f15916f8c92f46462718657bed5017d12f1",
+    "tree": "48000a4bd71e95ef82324aef97353aab10c933d4",
+    "branch": "codex/r11-h-run"
   },
   "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
   "seeds": [
     "r11h-1",
     "r11h-2"
   ],
-  "mode": "cpu",
+  "mode": "gpu",
   "memoryBudgetTokens": 640,
   "checks": {
     "scenarioIdentical": true,
@@ -19,9 +19,9 @@
     "memoryBudgetIdentical": true,
     "commitmentInputPositiveControl": true,
     "commitmentInputNegativeControl": true,
-    "liveArmsStarted": 0,
-    "liveArmsRefusedAtPreflight": 8,
-    "liveArmsFailedAfterStart": 0,
+    "liveArmsStarted": 2,
+    "liveArmsRefusedAtPreflight": 2,
+    "liveArmsFailedAfterStart": 4,
     "referenceGamesCompleted": 4,
     "resumeUsedNewProcess": true,
     "saveHadBoundWork": true,
@@ -30,8 +30,8 @@
     "replaySegmentedEqual": true,
     "tamperDetected": true,
     "pairedSeedCoverage": false,
-    "realForwards": 0,
-    "gpuWallSeconds": 0
+    "realForwards": 327,
+    "gpuWallSeconds": 3305.18
   },
   "rows": [
     {
@@ -45,38 +45,38 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
       "source": {
-        "head": "24406c4ba29a825306515db46edfacae99249976",
-        "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
-        "branch": "codex/r11-h"
+        "head": "b0919f15916f8c92f46462718657bed5017d12f1",
+        "tree": "48000a4bd71e95ef82324aef97353aab10c933d4",
+        "branch": "codex/r11-h-run"
       },
-      "sourceCommit": "24406c4ba29a825306515db46edfacae99249976",
+      "sourceCommit": "b0919f15916f8c92f46462718657bed5017d12f1",
       "freezeSha256": "947eafc47dd2ec863876c0396193c3067b8fc350f53c69439d903497b8d59395",
       "freezeSourceCommit": "1d140c25dfe009f8e80580bd0d597b67274417dd",
       "rendererBuildSha256": "2309464ebb800c07ffa8904df962a87010a6595d11d09b857f6277235a9c7c1d",
-      "manifestSha256": null,
+      "manifestSha256": "48ef46913c85781c5e3bed9033538dc60b421a979e744e0f7dc566335e9b4d5c",
       "exits": {
-        "start": 12,
+        "start": 16,
         "resume": null,
         "continuous": null,
         "segmentedStart": null,
         "segmentedEnd": null
       },
       "pids": {
-        "start": 1259046,
+        "start": 1366367,
         "resume": null,
         "services": []
       },
       "head": {
-        "headPath": "artifacts/r11/heads/base/warm-17.safetensors",
-        "headSha256": null,
-        "manifestPath": "artifacts/r11/heads/base/training-manifest.json",
-        "manifestSha256": null,
-        "labelSource": null,
-        "featureIdentityHash": null,
+        "headPath": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-base/warm-17.safetensors",
+        "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+        "manifestPath": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-base/training-manifest.json",
+        "manifestSha256": "48ef46913c85781c5e3bed9033538dc60b421a979e744e0f7dc566335e9b4d5c",
+        "labelSource": "same-snapshot-branch-rollout",
+        "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475",
         "rendererId": "joint-c-action/2",
-        "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
-        "ok": false,
-        "reason": "head_artifact_missing"
+        "rendererSourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+        "ok": true,
+        "reason": null
       },
       "save": null,
       "restore": null,
@@ -88,9 +88,9 @@
       },
       "final": null,
       "metrics": null,
-      "evidenceSha256": "ffb2e763827919316e6eaaf90df9f9c328d7f5036b9f5fa5035808521a175fc3",
-      "gameSha256": "86f60b9bdf45596ffe1a5b400cc5b98936601a08e90d8436216a523d46253b84",
-      "status": "failed:start:12",
+      "evidenceSha256": "92a41570186b334b9b9c7d21f345b8484f414e4dd42aabc982ca9f2da0b37be8",
+      "gameSha256": "74910cd3011de135cee2fb3c300170d3eef16e7ed44509169e52a04a10f0ab78",
+      "status": "failed:start:16",
       "dir": "artifacts/r11/matrix/arms/base-raw/r11h-1",
       "verifyOk": null,
       "exposed": null,
@@ -107,38 +107,38 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
       "source": {
-        "head": "24406c4ba29a825306515db46edfacae99249976",
-        "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
-        "branch": "codex/r11-h"
+        "head": "b0919f15916f8c92f46462718657bed5017d12f1",
+        "tree": "48000a4bd71e95ef82324aef97353aab10c933d4",
+        "branch": "codex/r11-h-run"
       },
-      "sourceCommit": "24406c4ba29a825306515db46edfacae99249976",
+      "sourceCommit": "b0919f15916f8c92f46462718657bed5017d12f1",
       "freezeSha256": "947eafc47dd2ec863876c0396193c3067b8fc350f53c69439d903497b8d59395",
       "freezeSourceCommit": "1d140c25dfe009f8e80580bd0d597b67274417dd",
       "rendererBuildSha256": "2309464ebb800c07ffa8904df962a87010a6595d11d09b857f6277235a9c7c1d",
-      "manifestSha256": null,
+      "manifestSha256": "48ef46913c85781c5e3bed9033538dc60b421a979e744e0f7dc566335e9b4d5c",
       "exits": {
-        "start": 12,
+        "start": 16,
         "resume": null,
         "continuous": null,
         "segmentedStart": null,
         "segmentedEnd": null
       },
       "pids": {
-        "start": 1259121,
+        "start": 1369256,
         "resume": null,
         "services": []
       },
       "head": {
-        "headPath": "artifacts/r11/heads/base/warm-17.safetensors",
-        "headSha256": null,
-        "manifestPath": "artifacts/r11/heads/base/training-manifest.json",
-        "manifestSha256": null,
-        "labelSource": null,
-        "featureIdentityHash": null,
+        "headPath": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-base/warm-17.safetensors",
+        "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+        "manifestPath": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-base/training-manifest.json",
+        "manifestSha256": "48ef46913c85781c5e3bed9033538dc60b421a979e744e0f7dc566335e9b4d5c",
+        "labelSource": "same-snapshot-branch-rollout",
+        "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475",
         "rendererId": "joint-c-action/2",
-        "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
-        "ok": false,
-        "reason": "head_artifact_missing"
+        "rendererSourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+        "ok": true,
+        "reason": null
       },
       "save": null,
       "restore": null,
@@ -150,9 +150,9 @@
       },
       "final": null,
       "metrics": null,
-      "evidenceSha256": "d55de367c5e818d9ae456c6056f3520630dfa0fbd88be3697d0a1bc808d119ff",
-      "gameSha256": "cd135e4b30cc500527cb3f86c107f182fb19accf0e2653825b9fe23cc6d9182e",
-      "status": "failed:start:12",
+      "evidenceSha256": "82577154e9ef73eb9162df403e551aa9630da40aa215d8b4fdd9707143dbf07d",
+      "gameSha256": "a5ccaa6dfca92ea23f2bb42985f47e1b2ef8cb856c5922cb0b1f9e3f9b1a590d",
+      "status": "failed:start:16",
       "dir": "artifacts/r11/matrix/arms/base-raw/r11h-2",
       "verifyOk": null,
       "exposed": null,
@@ -169,56 +169,228 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
       "source": {
-        "head": "24406c4ba29a825306515db46edfacae99249976",
-        "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
-        "branch": "codex/r11-h"
+        "head": "b0919f15916f8c92f46462718657bed5017d12f1",
+        "tree": "48000a4bd71e95ef82324aef97353aab10c933d4",
+        "branch": "codex/r11-h-run"
       },
-      "sourceCommit": "24406c4ba29a825306515db46edfacae99249976",
+      "sourceCommit": "b0919f15916f8c92f46462718657bed5017d12f1",
       "freezeSha256": "947eafc47dd2ec863876c0396193c3067b8fc350f53c69439d903497b8d59395",
       "freezeSourceCommit": "1d140c25dfe009f8e80580bd0d597b67274417dd",
       "rendererBuildSha256": "2309464ebb800c07ffa8904df962a87010a6595d11d09b857f6277235a9c7c1d",
-      "manifestSha256": null,
+      "manifestSha256": "48ef46913c85781c5e3bed9033538dc60b421a979e744e0f7dc566335e9b4d5c",
       "exits": {
-        "start": 12,
-        "resume": null,
-        "continuous": null,
-        "segmentedStart": null,
-        "segmentedEnd": null
+        "start": 0,
+        "resume": 0,
+        "continuous": 0,
+        "segmentedStart": 0,
+        "segmentedEnd": 0
       },
       "pids": {
-        "start": 1259068,
-        "resume": null,
-        "services": []
+        "start": 1372058,
+        "resume": 1384132,
+        "services": [
+          1372069,
+          1384146
+        ]
       },
       "head": {
-        "headPath": "artifacts/r11/heads/base/warm-17.safetensors",
-        "headSha256": null,
-        "manifestPath": "artifacts/r11/heads/base/training-manifest.json",
-        "manifestSha256": null,
-        "labelSource": null,
-        "featureIdentityHash": null,
+        "headPath": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-base/warm-17.safetensors",
+        "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+        "manifestPath": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-base/training-manifest.json",
+        "manifestSha256": "48ef46913c85781c5e3bed9033538dc60b421a979e744e0f7dc566335e9b4d5c",
+        "labelSource": "same-snapshot-branch-rollout",
+        "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475",
         "rendererId": "joint-c-action/2",
-        "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
-        "ok": false,
-        "reason": "head_artifact_missing"
+        "rendererSourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+        "ok": true,
+        "reason": null
       },
-      "save": null,
-      "restore": null,
-      "interference": null,
+      "save": {
+        "at": 2100,
+        "stateSha256": "ab9d65a622c3249618da52469e59a03344d6363eb61ebfadda0edcb2ea8a56bf",
+        "activeCommitments": 2,
+        "boundWorkingIntents": 1,
+        "pending": 2
+      },
+      "restore": {
+        "equal": true,
+        "diffs": 0,
+        "savedPid": 1372058,
+        "pid": 1384132
+      },
+      "interference": {
+        "saveClock": 2100,
+        "stories": [
+          {
+            "id": "cancel-heard",
+            "at": 2110,
+            "lateBy": 0,
+            "target": {
+              "commitmentId": "cm-77a94aac-8f8c-4166-a483-9858148f9e9e"
+            }
+          },
+          {
+            "id": "cancel-unheard",
+            "at": 2110,
+            "lateBy": 0,
+            "target": {
+              "commitmentId": "cm-a2396d2f-3565-4581-ada4-1165f647553f"
+            }
+          },
+          {
+            "id": "offer-follow-up",
+            "at": 2120,
+            "lateBy": 0,
+            "target": null
+          },
+          {
+            "id": "drain-for-contention",
+            "at": 2120,
+            "lateBy": 0,
+            "target": {
+              "stockBefore": 2,
+              "stockAfter": 2
+            }
+          },
+          {
+            "id": "relay-unheard",
+            "at": 2130,
+            "lateBy": 0,
+            "target": {
+              "commitmentId": "cm-a2396d2f-3565-4581-ada4-1165f647553f"
+            }
+          },
+          {
+            "id": "reject-source-change",
+            "at": null,
+            "lateBy": 0,
+            "target": null
+          },
+          {
+            "id": "lift-old-failure",
+            "at": null,
+            "lateBy": 0,
+            "target": null
+          },
+          {
+            "id": "watch",
+            "at": null,
+            "lateBy": 0,
+            "target": null
+          },
+          {
+            "id": "contention",
+            "at": 2120
+          }
+        ]
+      },
       "replay": {
-        "continuous": null,
-        "segmented": null,
+        "continuous": {
+          "equal": true,
+          "diffs": 0
+        },
+        "segmented": {
+          "equal": true,
+          "diffs": 0
+        },
         "countsAsModelResult": false
       },
-      "final": null,
-      "metrics": null,
-      "evidenceSha256": "5ed780beca3171cd6a585ee5abf57228859cd9667419fbfc558d59d6e27c3a38",
-      "gameSha256": "db4d48be34e2a6794a35ca0f2a9c7b3d3b3f8379398ff14578dc3bd763ceb80d",
-      "status": "failed:start:12",
+      "final": {
+        "simTime": 2460,
+        "ending": "extinction",
+        "stateSha256": "97311f805d23632344d93ef101f6d83ad7ab2e2eb206e8a6e8d6c4d6cfac5a8b"
+      },
+      "metrics": {
+        "decisions": 147,
+        "realForwards": 143,
+        "gpuWallSeconds": 1448.757,
+        "primary": {
+          "id": "verified_fulfilment_rate_per_instance",
+          "numerator": 4,
+          "denominator": 6,
+          "value": 0.666667
+        },
+        "counts": {
+          "instances": 6,
+          "fulfilled": 4,
+          "overdue": 0,
+          "authorisedExit": 0,
+          "cancelled": 2,
+          "changesProposed": 0,
+          "duplicateReceipts": 0
+        },
+        "postCancel": {
+          "cancelledInstances": 2,
+          "attemptsAfter": 0,
+          "latePhysicalEffects": 0,
+          "lateReceipts": 0,
+          "unauthorisedAttempts": 0
+        },
+        "changes": {
+          "proposed": 0,
+          "accepted": 0,
+          "rejected": 0,
+          "unagreedSourceActions": 0,
+          "rows": []
+        },
+        "duplicateReceipts": {
+          "fulfilmentInstancesWithMultipleReceipts": 0,
+          "receiptIdsUsedTwice": []
+        },
+        "settlement": {
+          "intents": 79,
+          "byStatus": {
+            "applied": 78,
+            "cancelled": 1
+          },
+          "failureReasons": {
+            "commitment_cancelled": 1
+          },
+          "pendingWithinEnd": 0,
+          "expired": 0,
+          "directRejections": 3,
+          "busySkips": 4
+        },
+        "workHours": 2.5,
+        "survivors": 0,
+        "ending": "extinction",
+        "resources": {
+          "final": {
+            "food": 126,
+            "firewood": 0,
+            "power": 0
+          },
+          "inventoryHours": {
+            "food": 17.5,
+            "firewood": 0,
+            "power": 0
+          },
+          "gapHours": {
+            "food": 0,
+            "firewood": 6,
+            "power": 6
+          }
+        },
+        "exposure": {
+          "instances": 6,
+          "activeAtSave": 2,
+          "boundWorkAtSave": 1,
+          "cancelHeardOpportunities": 1,
+          "cancelUnheardOpportunities": 1,
+          "changeOpportunities": 0,
+          "restockOpportunityAt": null,
+          "restockWitnessed": 0,
+          "contentionOpportunities": 0
+        },
+        "reconciled": true
+      },
+      "evidenceSha256": "173d8fc7b4c60b47261760b1eadb7f4bf3831702775d936084c2160792eab8e6",
+      "gameSha256": "a4d209ac6bd483519b63bc9188a59ae97af864dfd30e3c3fffab36a8d1c1b6b2",
+      "status": "completed",
       "dir": "artifacts/r11/matrix/arms/base-conditional/r11h-1",
-      "verifyOk": null,
-      "exposed": null,
-      "tamperOk": null
+      "verifyOk": true,
+      "exposed": false,
+      "tamperOk": true
     },
     {
       "schema": "frostecho.r11.matrix-game/1",
@@ -231,56 +403,234 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
       "source": {
-        "head": "24406c4ba29a825306515db46edfacae99249976",
-        "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
-        "branch": "codex/r11-h"
+        "head": "b0919f15916f8c92f46462718657bed5017d12f1",
+        "tree": "48000a4bd71e95ef82324aef97353aab10c933d4",
+        "branch": "codex/r11-h-run"
       },
-      "sourceCommit": "24406c4ba29a825306515db46edfacae99249976",
+      "sourceCommit": "b0919f15916f8c92f46462718657bed5017d12f1",
       "freezeSha256": "947eafc47dd2ec863876c0396193c3067b8fc350f53c69439d903497b8d59395",
       "freezeSourceCommit": "1d140c25dfe009f8e80580bd0d597b67274417dd",
       "rendererBuildSha256": "2309464ebb800c07ffa8904df962a87010a6595d11d09b857f6277235a9c7c1d",
-      "manifestSha256": null,
+      "manifestSha256": "48ef46913c85781c5e3bed9033538dc60b421a979e744e0f7dc566335e9b4d5c",
       "exits": {
-        "start": 12,
-        "resume": null,
-        "continuous": null,
-        "segmentedStart": null,
-        "segmentedEnd": null
+        "start": 0,
+        "resume": 0,
+        "continuous": 0,
+        "segmentedStart": 0,
+        "segmentedEnd": 0
       },
       "pids": {
-        "start": 1259139,
-        "resume": null,
-        "services": []
+        "start": 1385700,
+        "resume": 1403303,
+        "services": [
+          1385716,
+          1403322
+        ]
       },
       "head": {
-        "headPath": "artifacts/r11/heads/base/warm-17.safetensors",
-        "headSha256": null,
-        "manifestPath": "artifacts/r11/heads/base/training-manifest.json",
-        "manifestSha256": null,
-        "labelSource": null,
-        "featureIdentityHash": null,
+        "headPath": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-base/warm-17.safetensors",
+        "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+        "manifestPath": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-base/training-manifest.json",
+        "manifestSha256": "48ef46913c85781c5e3bed9033538dc60b421a979e744e0f7dc566335e9b4d5c",
+        "labelSource": "same-snapshot-branch-rollout",
+        "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475",
         "rendererId": "joint-c-action/2",
-        "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
-        "ok": false,
-        "reason": "head_artifact_missing"
+        "rendererSourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+        "ok": true,
+        "reason": null
       },
-      "save": null,
-      "restore": null,
-      "interference": null,
+      "save": {
+        "at": 2040,
+        "stateSha256": "9635cfabcb85ba2838f94b0244481a6df3195e07cff11ac34e58f5b4e702ad0e",
+        "activeCommitments": 2,
+        "boundWorkingIntents": 1,
+        "pending": 2
+      },
+      "restore": {
+        "equal": true,
+        "diffs": 0,
+        "savedPid": 1385700,
+        "pid": 1403303
+      },
+      "interference": {
+        "saveClock": 2040,
+        "stories": [
+          {
+            "id": "cancel-heard",
+            "at": 2050,
+            "lateBy": 0,
+            "target": {
+              "commitmentId": "cm-3ef74c39-eb8b-4f83-aaad-d77c5111657f"
+            }
+          },
+          {
+            "id": "cancel-unheard",
+            "at": 2050,
+            "lateBy": 0,
+            "target": {
+              "commitmentId": "cm-0707e103-4904-4c09-a41b-b21ee1ee41a1"
+            }
+          },
+          {
+            "id": "offer-follow-up",
+            "at": 2060,
+            "lateBy": 0,
+            "target": {
+              "commitments": [
+                "cm-352216e0-c3e7-4b67-aec2-23d3c5a0a561"
+              ]
+            }
+          },
+          {
+            "id": "drain-for-contention",
+            "at": 2060,
+            "lateBy": 0,
+            "target": {
+              "stockBefore": 2,
+              "stockAfter": 2
+            }
+          },
+          {
+            "id": "relay-unheard",
+            "at": 2070,
+            "lateBy": 0,
+            "target": {
+              "commitmentId": "cm-0707e103-4904-4c09-a41b-b21ee1ee41a1"
+            }
+          },
+          {
+            "id": "reject-source-change",
+            "at": null,
+            "lateBy": 0,
+            "target": null
+          },
+          {
+            "id": "lift-old-failure",
+            "at": null,
+            "lateBy": 0,
+            "target": null
+          },
+          {
+            "id": "watch",
+            "at": 2520,
+            "lateBy": 0,
+            "target": null
+          },
+          {
+            "id": "contention",
+            "at": 2060
+          }
+        ]
+      },
       "replay": {
-        "continuous": null,
-        "segmented": null,
+        "continuous": {
+          "equal": true,
+          "diffs": 0
+        },
+        "segmented": {
+          "equal": true,
+          "diffs": 0
+        },
         "countsAsModelResult": false
       },
-      "final": null,
-      "metrics": null,
-      "evidenceSha256": "bfa2a8f3843e032e6399876362f470f61c667b4b4d1c6f157e1a03d2e76d5ecb",
-      "gameSha256": "800ece8e807babc6a059064bad4ac53f6830bd1e9615f33d6d53451cc6c70707",
-      "status": "failed:start:12",
+      "final": {
+        "simTime": 5400,
+        "ending": "extinction",
+        "stateSha256": "f19ee470935ed862bfefa51fa109a17a87d26e41a61f7c238cdac730723e2c9e"
+      },
+      "metrics": {
+        "decisions": 189,
+        "realForwards": 184,
+        "gpuWallSeconds": 1856.423,
+        "primary": {
+          "id": "verified_fulfilment_rate_per_instance",
+          "numerator": 4,
+          "denominator": 7,
+          "value": 0.571429
+        },
+        "counts": {
+          "instances": 7,
+          "fulfilled": 4,
+          "overdue": 3,
+          "authorisedExit": 0,
+          "cancelled": 2,
+          "changesProposed": 0,
+          "duplicateReceipts": 0
+        },
+        "postCancel": {
+          "cancelledInstances": 2,
+          "attemptsAfter": 1,
+          "latePhysicalEffects": 0,
+          "lateReceipts": 0,
+          "unauthorisedAttempts": 1
+        },
+        "changes": {
+          "proposed": 0,
+          "accepted": 0,
+          "rejected": 0,
+          "unagreedSourceActions": 0,
+          "rows": []
+        },
+        "duplicateReceipts": {
+          "fulfilmentInstancesWithMultipleReceipts": 0,
+          "receiptIdsUsedTwice": []
+        },
+        "settlement": {
+          "intents": 101,
+          "byStatus": {
+            "applied": 98,
+            "cancelled": 2,
+            "rejected": 1
+          },
+          "failureReasons": {
+            "commitment_cancelled": 2,
+            "actor_not_alive": 1
+          },
+          "pendingWithinEnd": 0,
+          "expired": 0,
+          "directRejections": 19,
+          "busySkips": 5
+        },
+        "workHours": 3,
+        "survivors": 1,
+        "ending": "extinction",
+        "resources": {
+          "final": {
+            "food": 126,
+            "firewood": 0,
+            "power": 0
+          },
+          "inventoryHours": {
+            "food": 17.5,
+            "firewood": 0,
+            "power": 0
+          },
+          "gapHours": {
+            "food": 0,
+            "firewood": 55.333,
+            "power": 55
+          }
+        },
+        "exposure": {
+          "instances": 7,
+          "activeAtSave": 2,
+          "boundWorkAtSave": 1,
+          "cancelHeardOpportunities": 1,
+          "cancelUnheardOpportunities": 1,
+          "changeOpportunities": 0,
+          "restockOpportunityAt": null,
+          "restockWitnessed": 0,
+          "contentionOpportunities": 1
+        },
+        "reconciled": true
+      },
+      "evidenceSha256": "c696ef77744aaa72bf442765bd2ebe81923487d3372fa8ce456d61fe07733190",
+      "gameSha256": "d0626e936d8a6bc0a9aa43935ce7c6ca8666eece76cfc9235e8a694fc241f813",
+      "status": "completed",
       "dir": "artifacts/r11/matrix/arms/base-conditional/r11h-2",
-      "verifyOk": null,
-      "exposed": null,
-      "tamperOk": null
+      "verifyOk": true,
+      "exposed": false,
+      "tamperOk": true
     },
     {
       "schema": "frostecho.r11.matrix-game/1",
@@ -417,38 +767,38 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
       "source": {
-        "head": "24406c4ba29a825306515db46edfacae99249976",
-        "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
-        "branch": "codex/r11-h"
+        "head": "b0919f15916f8c92f46462718657bed5017d12f1",
+        "tree": "48000a4bd71e95ef82324aef97353aab10c933d4",
+        "branch": "codex/r11-h-run"
       },
-      "sourceCommit": "24406c4ba29a825306515db46edfacae99249976",
+      "sourceCommit": "b0919f15916f8c92f46462718657bed5017d12f1",
       "freezeSha256": "947eafc47dd2ec863876c0396193c3067b8fc350f53c69439d903497b8d59395",
       "freezeSourceCommit": "1d140c25dfe009f8e80580bd0d597b67274417dd",
       "rendererBuildSha256": "2309464ebb800c07ffa8904df962a87010a6595d11d09b857f6277235a9c7c1d",
-      "manifestSha256": null,
+      "manifestSha256": "59fe9c7c380836db986ebaf5e43f770865e8108e5ab89b989abff742d8d14a50",
       "exits": {
-        "start": 12,
+        "start": 16,
         "resume": null,
         "continuous": null,
         "segmentedStart": null,
         "segmentedEnd": null
       },
       "pids": {
-        "start": 1259102,
+        "start": 740857,
         "resume": null,
         "services": []
       },
       "head": {
-        "headPath": "artifacts/r11/heads/fulfil/warm-17.safetensors",
-        "headSha256": null,
-        "manifestPath": "artifacts/r11/heads/fulfil/training-manifest.json",
-        "manifestSha256": null,
-        "labelSource": null,
-        "featureIdentityHash": null,
+        "headPath": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-fulfillment/random-43.safetensors",
+        "headSha256": "92b32dfe141fe1e4e2c70ade651361d6021f575b5bbda02ac2eb29c53e494ae8",
+        "manifestPath": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-fulfillment/training-manifest.json",
+        "manifestSha256": "59fe9c7c380836db986ebaf5e43f770865e8108e5ab89b989abff742d8d14a50",
+        "labelSource": "same-snapshot-branch-rollout",
+        "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475",
         "rendererId": "joint-c-action/2",
-        "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
-        "ok": false,
-        "reason": "head_artifact_missing"
+        "rendererSourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+        "ok": true,
+        "reason": null
       },
       "save": null,
       "restore": null,
@@ -460,9 +810,9 @@
       },
       "final": null,
       "metrics": null,
-      "evidenceSha256": "17a30c919de228ddf085d3260b5ae5caea99c503e92bd4bb2d8ab68bfb6c7b1f",
-      "gameSha256": "7a16f0079ca0e8fc68d9c5e6e315974415821b8d709b4785c549556262680783",
-      "status": "failed:start:12",
+      "evidenceSha256": "63c54ef5ce5bc51e7607e28824cf8b4d6e864e714af813ade79fea08a7a9ce82",
+      "gameSha256": "9cb8d053eaba706d360f96e16813d1258101b83ee62b2177bd00c6764bf0da66",
+      "status": "failed:start:16",
       "dir": "artifacts/r11/matrix/arms/fulfil-conditional/r11h-1",
       "verifyOk": null,
       "exposed": null,
@@ -479,38 +829,38 @@
       "memoryTokenBudget": 640,
       "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
       "source": {
-        "head": "24406c4ba29a825306515db46edfacae99249976",
-        "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
-        "branch": "codex/r11-h"
+        "head": "b0919f15916f8c92f46462718657bed5017d12f1",
+        "tree": "48000a4bd71e95ef82324aef97353aab10c933d4",
+        "branch": "codex/r11-h-run"
       },
-      "sourceCommit": "24406c4ba29a825306515db46edfacae99249976",
+      "sourceCommit": "b0919f15916f8c92f46462718657bed5017d12f1",
       "freezeSha256": "947eafc47dd2ec863876c0396193c3067b8fc350f53c69439d903497b8d59395",
       "freezeSourceCommit": "1d140c25dfe009f8e80580bd0d597b67274417dd",
       "rendererBuildSha256": "2309464ebb800c07ffa8904df962a87010a6595d11d09b857f6277235a9c7c1d",
-      "manifestSha256": null,
+      "manifestSha256": "59fe9c7c380836db986ebaf5e43f770865e8108e5ab89b989abff742d8d14a50",
       "exits": {
-        "start": 12,
+        "start": 16,
         "resume": null,
         "continuous": null,
         "segmentedStart": null,
         "segmentedEnd": null
       },
       "pids": {
-        "start": 1259186,
+        "start": 949219,
         "resume": null,
         "services": []
       },
       "head": {
-        "headPath": "artifacts/r11/heads/fulfil/warm-17.safetensors",
-        "headSha256": null,
-        "manifestPath": "artifacts/r11/heads/fulfil/training-manifest.json",
-        "manifestSha256": null,
-        "labelSource": null,
-        "featureIdentityHash": null,
+        "headPath": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-fulfillment/random-43.safetensors",
+        "headSha256": "92b32dfe141fe1e4e2c70ade651361d6021f575b5bbda02ac2eb29c53e494ae8",
+        "manifestPath": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-fulfillment/training-manifest.json",
+        "manifestSha256": "59fe9c7c380836db986ebaf5e43f770865e8108e5ab89b989abff742d8d14a50",
+        "labelSource": "same-snapshot-branch-rollout",
+        "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475",
         "rendererId": "joint-c-action/2",
-        "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
-        "ok": false,
-        "reason": "head_artifact_missing"
+        "rendererSourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+        "ok": true,
+        "reason": null
       },
       "save": null,
       "restore": null,
@@ -522,9 +872,9 @@
       },
       "final": null,
       "metrics": null,
-      "evidenceSha256": "75b8b6ef9b6797f78d31a8390d9704e30a759e19ef42dbe3766c51d9fe67c9ea",
-      "gameSha256": "8f75eae65bd81d96bdc5be0842c465b34c50eb7d67194f88135d7636b167e267",
-      "status": "failed:start:12",
+      "evidenceSha256": "b312a3fd4de6b3fca1ca3948486eb3d45bf6f169a5d993fbb3f8f4ac6ce39561",
+      "gameSha256": "57648bca97a1686b43f78c470f552d153345a060e831d01d7b8af8aee2912b93",
+      "status": "failed:start:16",
       "dir": "artifacts/r11/matrix/arms/fulfil-conditional/r11h-2",
       "verifyOk": null,
       "exposed": null,

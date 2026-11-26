@@ -9,53 +9,225 @@
   "memoryTokenBudget": 640,
   "scenarioSha": "8c10c158d599eb59e60b57073114dc2bc2c0912096d7415e2bdb01ef485fa877",
   "source": {
-    "head": "24406c4ba29a825306515db46edfacae99249976",
-    "tree": "8a086f57eadc636ce19567f9748117bb33c93260",
-    "branch": "codex/r11-h"
+    "head": "b0919f15916f8c92f46462718657bed5017d12f1",
+    "tree": "48000a4bd71e95ef82324aef97353aab10c933d4",
+    "branch": "codex/r11-h-run"
   },
-  "sourceCommit": "24406c4ba29a825306515db46edfacae99249976",
+  "sourceCommit": "b0919f15916f8c92f46462718657bed5017d12f1",
   "freezeSha256": "947eafc47dd2ec863876c0396193c3067b8fc350f53c69439d903497b8d59395",
   "freezeSourceCommit": "1d140c25dfe009f8e80580bd0d597b67274417dd",
   "rendererBuildSha256": "2309464ebb800c07ffa8904df962a87010a6595d11d09b857f6277235a9c7c1d",
-  "manifestSha256": null,
+  "manifestSha256": "48ef46913c85781c5e3bed9033538dc60b421a979e744e0f7dc566335e9b4d5c",
   "exits": {
-    "start": 12,
-    "resume": null,
-    "continuous": null,
-    "segmentedStart": null,
-    "segmentedEnd": null
+    "start": 0,
+    "resume": 0,
+    "continuous": 0,
+    "segmentedStart": 0,
+    "segmentedEnd": 0
   },
   "pids": {
-    "start": 1259068,
-    "resume": null,
-    "services": []
+    "start": 1372058,
+    "resume": 1384132,
+    "services": [
+      1372069,
+      1384146
+    ]
   },
   "head": {
-    "headPath": "artifacts/r11/heads/base/warm-17.safetensors",
-    "headSha256": null,
-    "manifestPath": "artifacts/r11/heads/base/training-manifest.json",
-    "manifestSha256": null,
-    "labelSource": null,
-    "featureIdentityHash": null,
+    "headPath": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-base/warm-17.safetensors",
+    "headSha256": "2a54971583f91f3d1f94831444277d1af2ac054e4a3017850ba62e5561a4dd04",
+    "manifestPath": "/data/home/user_00/frostecho-r7/workbench/r11-handoff/C/real-run/train-base/training-manifest.json",
+    "manifestSha256": "48ef46913c85781c5e3bed9033538dc60b421a979e744e0f7dc566335e9b4d5c",
+    "labelSource": "same-snapshot-branch-rollout",
+    "featureIdentityHash": "b6304f9fed43eb6b9a4c27547a2bcfb03f93d75e64572fa302482dcf1c305475",
     "rendererId": "joint-c-action/2",
-    "rendererSourceSha256": "6cbd3644190bafbefb85c01d96c9e76fbc9ff3150b90c6ca0cd237829c04403e",
-    "ok": false,
-    "reason": "head_artifact_missing"
+    "rendererSourceSha256": "00617e4804430cde91e078c25f105e83521063a02b3c0a84f7eb83d8bcc3fc90",
+    "ok": true,
+    "reason": null
   },
-  "save": null,
-  "restore": null,
-  "interference": null,
+  "save": {
+    "at": 2100,
+    "stateSha256": "ab9d65a622c3249618da52469e59a03344d6363eb61ebfadda0edcb2ea8a56bf",
+    "activeCommitments": 2,
+    "boundWorkingIntents": 1,
+    "pending": 2
+  },
+  "restore": {
+    "equal": true,
+    "diffs": 0,
+    "savedPid": 1372058,
+    "pid": 1384132
+  },
+  "interference": {
+    "saveClock": 2100,
+    "stories": [
+      {
+        "id": "cancel-heard",
+        "at": 2110,
+        "lateBy": 0,
+        "target": {
+          "commitmentId": "cm-77a94aac-8f8c-4166-a483-9858148f9e9e"
+        }
+      },
+      {
+        "id": "cancel-unheard",
+        "at": 2110,
+        "lateBy": 0,
+        "target": {
+          "commitmentId": "cm-a2396d2f-3565-4581-ada4-1165f647553f"
+        }
+      },
+      {
+        "id": "offer-follow-up",
+        "at": 2120,
+        "lateBy": 0,
+        "target": null
+      },
+      {
+        "id": "drain-for-contention",
+        "at": 2120,
+        "lateBy": 0,
+        "target": {
+          "stockBefore": 2,
+          "stockAfter": 2
+        }
+      },
+      {
+        "id": "relay-unheard",
+        "at": 2130,
+        "lateBy": 0,
+        "target": {
+          "commitmentId": "cm-a2396d2f-3565-4581-ada4-1165f647553f"
+        }
+      },
+      {
+        "id": "reject-source-change",
+        "at": null,
+        "lateBy": 0,
+        "target": null
+      },
+      {
+        "id": "lift-old-failure",
+        "at": null,
+        "lateBy": 0,
+        "target": null
+      },
+      {
+        "id": "watch",
+        "at": null,
+        "lateBy": 0,
+        "target": null
+      },
+      {
+        "id": "contention",
+        "at": 2120
+      }
+    ]
+  },
   "replay": {
-    "continuous": null,
-    "segmented": null,
+    "continuous": {
+      "equal": true,
+      "diffs": 0
+    },
+    "segmented": {
+      "equal": true,
+      "diffs": 0
+    },
     "countsAsModelResult": false
   },
-  "final": null,
-  "metrics": null,
-  "evidenceSha256": "5ed780beca3171cd6a585ee5abf57228859cd9667419fbfc558d59d6e27c3a38",
-  "gameSha256": "db4d48be34e2a6794a35ca0f2a9c7b3d3b3f8379398ff14578dc3bd763ceb80d",
-  "status": "failed:start:12",
-  "verify": null,
-  "exposed": null,
-  "tamper": null
+  "final": {
+    "simTime": 2460,
+    "ending": "extinction",
+    "stateSha256": "97311f805d23632344d93ef101f6d83ad7ab2e2eb206e8a6e8d6c4d6cfac5a8b"
+  },
+  "metrics": {
+    "decisions": 147,
+    "realForwards": 143,
+    "gpuWallSeconds": 1448.757,
+    "primary": {
+      "id": "verified_fulfilment_rate_per_instance",
+      "numerator": 4,
+      "denominator": 6,
+      "value": 0.666667
+    },
+    "counts": {
+      "instances": 6,
+      "fulfilled": 4,
+      "overdue": 0,
+      "authorisedExit": 0,
+      "cancelled": 2,
+      "changesProposed": 0,
+      "duplicateReceipts": 0
+    },
+    "postCancel": {
+      "cancelledInstances": 2,
+      "attemptsAfter": 0,
+      "latePhysicalEffects": 0,
+      "lateReceipts": 0,
+      "unauthorisedAttempts": 0
+    },
+    "changes": {
+      "proposed": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "unagreedSourceActions": 0,
+      "rows": []
+    },
+    "duplicateReceipts": {
+      "fulfilmentInstancesWithMultipleReceipts": 0,
+      "receiptIdsUsedTwice": []
+    },
+    "settlement": {
+      "intents": 79,
+      "byStatus": {
+        "applied": 78,
+        "cancelled": 1
+      },
+      "failureReasons": {
+        "commitment_cancelled": 1
+      },
+      "pendingWithinEnd": 0,
+      "expired": 0,
+      "directRejections": 3,
+      "busySkips": 4
+    },
+    "workHours": 2.5,
+    "survivors": 0,
+    "ending": "extinction",
+    "resources": {
+      "final": {
+        "food": 126,
+        "firewood": 0,
+        "power": 0
+      },
+      "inventoryHours": {
+        "food": 17.5,
+        "firewood": 0,
+        "power": 0
+      },
+      "gapHours": {
+        "food": 0,
+        "firewood": 6,
+        "power": 6
+      }
+    },
+    "exposure": {
+      "instances": 6,
+      "activeAtSave": 2,
+      "boundWorkAtSave": 1,
+      "cancelHeardOpportunities": 1,
+      "cancelUnheardOpportunities": 1,
+      "changeOpportunities": 0,
+      "restockOpportunityAt": null,
+      "restockWitnessed": 0,
+      "contentionOpportunities": 0
+    },
+    "reconciled": true
+  },
+  "evidenceSha256": "173d8fc7b4c60b47261760b1eadb7f4bf3831702775d936084c2160792eab8e6",
+  "gameSha256": "a4d209ac6bd483519b63bc9188a59ae97af864dfd30e3c3fffab36a8d1c1b6b2",
+  "status": "completed",
+  "verify": true,
+  "exposed": false,
+  "tamper": true
 }

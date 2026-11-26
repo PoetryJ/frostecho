@@ -487,8 +487,10 @@ function checkpointState(runtime, play) {
 
 /* ------------------------------ scorers ------------------------------ */
 class LiveScorer {
-  constructor(command, { transcript, timeoutMs = 300000, binding = null } = {}) {
-    this.command = command; this.transcript = transcript; this.timeoutMs = timeoutMs;
+  constructor(command, { transcript, timeoutMs = 300000, readyMs = 1800000, binding = null } = {}) {
+    this.command = command; this.transcript = transcript;
+    this.timeoutMs = Number(process.env.FROSTECHO_SCORE_TIMEOUT_MS ?? timeoutMs);
+    this.readyMs = Number(process.env.FROSTECHO_READY_MS ?? readyMs); this.readyWait = null;
     this.binding = binding; this.child = null; this.pending = new Map(); this.pinned = null;
     this.identity = { mode: 'jev-experimental', scorerId: 'jev-joint-c/1',
       rendererId: RENDERER_ID, experimental: true, countsAsAdmitted: false };
@@ -535,7 +537,11 @@ class LiveScorer {
         if (!line.trim().startsWith('{')) continue;
         try {
           const parsed = JSON.parse(line);
-          if (parsed.event === 'ready') this.ready = parsed;
+          if (parsed.event === 'ready') {
+            this.ready = parsed;
+            clearTimeout(this.readyTimer);
+            this.readyResolve?.();
+          }
         } catch { /* diagnostics */ }
       }
     });
@@ -544,8 +550,17 @@ class LiveScorer {
       if (this.child === child) this.child = null;
       this.serviceClosedAt = new Date().toISOString();
       this.record({ event: 'scorer_exit', code });
+      this.readyReject?.(new Error(`scorer_process_exited:${code}`));
       fail(new Error(`scorer_process_exited:${code}`));
     });
+    if (!this.readyWait) {
+      this.readyWait = new Promise((resolve, reject) => {
+        this.readyResolve = resolve;
+        this.readyReject = reject;
+        this.readyTimer = setTimeout(() => reject(new Error('scorer_ready_timeout')), this.readyMs);
+      });
+      this.readyWait.catch(() => {});
+    }
     this.record({ event: 'scorer_start', command: this.command, pid: child.pid ?? null });
     return child;
   }
@@ -559,6 +574,9 @@ class LiveScorer {
         reason: 'deterministic sole candidate; no model call' });
     }
     if (this.pending.has(request.requestId)) throw new Error('duplicate_live_requestId');
+    // A 27B service may spend minutes loading before it accepts a line; the
+    // first request waits for its ready event instead of timing out mid-load.
+    if (this.ready === null && this.readyWait) await this.readyWait;
     const envelope = encodingEnvelope(request, ROOT);
     this.requests += 1;
     this.record({ event: 'score_request', envelope });
@@ -747,6 +765,10 @@ function advanceOneRound(ctx) {
       ? dayStart + PROFILE.nightSkipToMinute
       : dayStart + PROFILE.minutesPerDay + PROFILE.nightSkipToMinute;
     to = Math.min(wake, before + 8 * 60);
+    // A wake that is not in the future (a stale minute-of-day after a long
+    // rollover) must never turn into a backwards advance; fall back to the
+    // ordinary 30-minute round.
+    if (to <= before) to = before + 30;
     for (const actorId of runtime.context().actorIds) {
       const npc = runtime.world.npcs[actorId];
       if (!npc?.alive) continue;
@@ -773,7 +795,7 @@ function advanceOneRound(ctx) {
   const interventionAt = nextScheduledIntervention(ctx);
   if (interventionAt !== null && interventionAt > before && interventionAt < to) to = interventionAt;
   if (snapshot.furnace.lit) ctx.furnaceLitHours += Math.max(0, to - before) / 60;
-  const report = runtime.advanceWorld(to);
+  const report = runtime.advanceWorld(Math.max(to, runtime.world.simTime));
   if (process.env.R11_DEBUG) {
     console.error(`[debug-advance] ${before} -> ${to} (now ${runtime.world.simTime})`);
   }
